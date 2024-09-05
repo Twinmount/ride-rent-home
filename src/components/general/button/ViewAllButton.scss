@@ -1,0 +1,23 @@
+.common_view_all_btn {
+  margin-top: 1rem;
+  margin-left: auto;
+  align-self: end;
+  width: fit-content;
+  height: 2rem;
+  color: black;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(41, 41, 41);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  column-gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+
+  &:hover {
+    scale: 1.007;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+  }
+}

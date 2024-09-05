@@ -1,0 +1,113 @@
+// general styles and mobile styles
+.location-section {
+  min-height: fit-content;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 2rem;
+  background-color: white;
+  border-radius: 1rem;
+
+  h2 {
+    margin-bottom: 1.7rem;
+    margin-top: 1.7rem;
+    font-weight: lighter;
+    text-align: center;
+    font-size: 1.5rem;
+
+    span {
+      font-weight: bold;
+    }
+  }
+
+  .location-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: auto;
+    justify-items: center;
+    gap: 1.4rem;
+    margin-bottom: 1.5rem;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+
+    .location-card {
+      transition: all 0.7s ease-in;
+      position: relative;
+      height: 7rem;
+      width: 100%;
+      min-width: 10rem;
+      max-width: 12rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2rem;
+      overflow: hidden;
+      text-align: center;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scale(1.1);
+        transition: transform 0.5s ease-out;
+      }
+
+      &:hover {
+        img {
+          transform: scale(1);
+        }
+      }
+
+      figcaption {
+        position: absolute;
+        bottom: 0.2rem;
+        padding: 0;
+        margin: 0;
+        white-space: nowrap;
+        font-weight: bold;
+        color: white;
+        z-index: 2;
+      }
+
+      // Overlay effect
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 40%;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+        z-index: 1;
+      }
+    }
+  }
+
+  .location-container>* {
+    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/*  (min-width: 768px) and above */
+@media (min-width: 768px) {
+  .location-section {
+    .location-container {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+/* (min-width: 1024px) and above */
+@media (min-width: 1024px) {
+  .location-section {
+    .location-container {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}

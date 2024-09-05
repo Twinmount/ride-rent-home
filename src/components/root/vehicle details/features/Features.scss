@@ -1,0 +1,90 @@
+@import '../../../../styles/variables';
+
+/* Default styles for mobile devices and above */
+.features-section {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin: 1rem auto;
+  box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 100% !important;
+  position: relative;
+  overflow: hidden;
+
+  h2 {
+    color: rgb(29, 29, 29);
+    margin-bottom: 2rem;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    height: auto;
+    max-height: 20rem;
+
+    .feature {
+      display: flex;
+      column-gap: 0.3rem;
+      align-items: center;
+
+      .entity {
+        color: $yellow;
+        font-size: large;
+      }
+
+      .feature-details {
+        white-space: nowrap;
+        font-weight: 400;
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  // overlay for features
+  .overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 6rem;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.9));
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+  }
+}
+
+
+
+/*  (min-width: 768px) and above */
+@media (min-width: 768px) {
+  .features-section {
+    .features {
+      grid-template-columns: repeat(3, 1fr);
+
+      .feature {
+        .feature-details {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}
+
+/* (min-width: 1024px) and above */
+@media (min-width: 1024px) {
+  .features-section {
+    .features {
+      grid-template-columns: repeat(4, 1fr);
+
+      .feature {
+        .feature-details {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}

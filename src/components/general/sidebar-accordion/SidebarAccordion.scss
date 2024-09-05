@@ -1,0 +1,8 @@
+.accordion-item {
+
+  transition: transform 0.3s ease-out;
+
+  &:hover {
+    transform: translateX(10px);
+  }
+}

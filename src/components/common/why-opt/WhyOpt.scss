@@ -1,0 +1,44 @@
+/* Default styles for mobile devices and above */
+.why-opt-section {
+  height: auto;
+  padding-bottom: 3rem;
+  background: white;
+  padding-top: 1rem;
+  border-radius: 1rem;
+
+  h2 {
+    text-align: center;
+    margin: 1rem auto;
+    font-weight: bold;
+  }
+
+  .description {
+    max-width: 95%;
+    margin: auto;
+    margin-bottom: 2rem;
+
+    p {
+      text-align: center;
+      font-weight: 400;
+    }
+  }
+}
+
+/*  (min-width: 768px) and above */
+@media (min-width: 768px) {
+  .why-opt-section {
+    .description {
+      max-width: 80%;
+
+      p {
+        font-size: 01rem;
+      }
+    }
+  }
+}
+
+/*  (min-width: 768px) and above */
+@media (min-width: 768px) {}
+
+/* (min-width: 1024px) and above */
+@media (min-width: 1024px) {}

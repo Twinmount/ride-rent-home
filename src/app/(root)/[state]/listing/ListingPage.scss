@@ -1,0 +1,63 @@
+@import '../../../../styles/variables';
+
+/* Default styles for mobile devices and above */
+.listing-section {
+  background-color: $gray_bg ;
+
+
+  // top navbar
+  .listing-navbar {
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding-right: 5%;
+
+    .list-navbar-right {
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      gap: 1rem;
+
+      .dropdown {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        select {
+          outline: none;
+          cursor: pointer;
+          color: black;
+          border: 2px solid gray;
+          border-radius: 5px;
+          padding: 5px 10px;
+          width: 4rem;
+          height: 40px;
+          font-weight: bold;
+          text-align: center;
+        }
+
+        select:focus {
+          border: 2px solid $yellow ;
+        }
+      }
+
+
+
+    }
+  }
+
+
+  // listing filter + grid container
+  .listing-container {
+    display: flex;
+    gap: 2rem;
+  }
+
+}
+
+/*  (min-width: 768px) and above */
+@media (min-width: 768px) {}
+
+/* (min-width: 1024px) and above */
+@media (min-width: 1024px) {}

@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '../styles/_variables.scss';
+
+
+/* Default styles for mobile devices and above */
+
+/*  (min-width: 768px) and above */
+@media (min-width: 768px) {}
+
+/* (min-width: 1024px) and above */
+@media (min-width: 1024px) {}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.scrollable-element {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'FiraSans', sans-serif;
+  font-weight: normal;
+  background-color: #f2f7f6;
+  overflow-x: hidden !important;
+}
+
+ul,
+ol,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+figure,
+p {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  margin: 0;
+  padding: 0;
+}
+
+figure,
+figcaption,
+a {
+  text-decoration: none;
+  color: black;
+}
+
+img {
+  -webkit-user-drag: none;
+  -moz-user-drag: none;
+  -ms-user-drag: none;
+}
+
+/* scrollbar styling */
+/* For Chrome, Safari, and Opera */
+::-webkit-scrollbar {
+  width: 12px;
+  border-radius: 10px !important;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #87878700;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ffa733;
+  border-radius: 10px;
+  border: 3px solid #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #ffa733;
+}
+
+/* For Internet Explorer and Edge */
+body {
+  scrollbar-face-color: #888;
+  scrollbar-track-color: #f5f5f5;
+}
+
+// custom yellow underline for heading
+.custom-heading {
+  position: relative;
+  margin-bottom: 1rem;
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -0.9rem;
+    left: 0;
+    width: 100%;
+    height: 0.2rem;
+    background: linear-gradient(to right,
+        $yellow 3rem,
+        rgb(225, 225, 225) 3rem);
+  }
+}
+
+.default-btn {
+  padding: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 0.5rem;
+  color: black;
+  font-style: normal;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.yellow-gradient {
+  background: $gradient;
+}
+
+.padding {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+
+  // Small screens (sm)
+  @media (min-width: 576px) {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  // Medium screens (md)
+  @media (min-width: 768px) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  // Large screens (lg)
+  @media (min-width: 992px) {
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+  }
+
+  // Extra large screens (xl)
+  @media (min-width: 1200px) {
+    padding-left: 4rem !important;
+    padding-right: 4rem !important;
+  }
+
+
+
+
+
+
+}
+
+.wrapper {
+  @extend .padding;
+  padding-bottom: 2rem;
+  max-width: 100rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@layer utilities {
+
+
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+  .flex-between {
+    @apply flex items-center justify-between;
+  }
+
+}

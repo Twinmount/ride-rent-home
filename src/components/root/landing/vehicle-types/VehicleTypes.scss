@@ -1,0 +1,143 @@
+@import '../../../../styles/variables';
+
+/* Default styles for mobile devices and above */
+.vehicle-types-section {
+  min-height: fit-content;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 2rem;
+
+  h1 {
+    text-align: center;
+    margin: auto 1rem;
+    margin-bottom: 1.7rem;
+    font-size: 1.5rem;
+
+    .selected-type {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      border-radius: 0.3rem;
+      margin: auto 0.3rem;
+      font-weight: 500;
+    }
+
+  }
+
+  .vehicle-types-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+
+    .vehicle-types-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 9rem;
+      height: 8rem;
+      justify-content: start;
+      padding: 0.2rem;
+      border-radius: 1rem;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+
+      &:hover {
+        background: $gradient;
+        scale: 1.02;
+      }
+
+      .top {
+        height: 60%;
+        width: 80%;
+        max-width: 80%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
+        text-align: center;
+        margin-top: 0.7rem;
+
+        img {
+          width: 90%;
+          height: 90%;
+          max-height: 90%;
+          max-width: 90%;
+          object-fit: contain;
+          object-position: center;
+        }
+      }
+
+      .caption {
+        padding: 0;
+        margin: 0;
+        white-space: nowrap;
+        text-align: center;
+        max-width: 95%;
+        font-size: 0.8rem;
+      }
+
+      .options {
+        padding: 0;
+        margin: 0;
+        font-size: 0.65rem;
+        margin-bottom: auto;
+      }
+    }
+  }
+
+  .show-more-button {
+    margin-top: 1rem;
+    margin-right: 2rem;
+    align-self: end;
+    width: fit-content;
+    height: 2rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(41, 41, 41);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    column-gap: 0.4rem;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+
+    &:hover {
+      scale: 1.007;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+    }
+
+    // icon
+    .icon {
+      transition: transform 0.2s ease-out;
+      transform: rotate(0deg);
+    }
+
+    &.expanded {
+      .icon {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
+
+/*  (min-width: 768px) and above */
+@media (min-width: 768px) {
+  .vehicle-types-section {
+    .vehicle-types-container {
+      width: 80%;
+    }
+  }
+}
+
+/* (min-width: 1024px) and above */
+@media (min-width: 1024px) {}

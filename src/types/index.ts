@@ -1,0 +1,217 @@
+import {
+  FeatureType,
+  RentalDetailsType,
+  SpecificationType,
+} from './vehicle-types'
+
+export type PageProps = {
+  params: { state: string; category: string }
+  searchParams: { [key: string]: string | undefined }
+}
+
+export type StateCategoryProps = {
+  state: string
+  category: string
+}
+
+// state type
+export interface StateType {
+  countryId: string
+  stateId: string
+  stateName: string
+  stateValue: string
+  subHeading: string
+  metaTitle: string
+  metaDescription: string
+  stateImage: any
+}
+
+//  interface for the get-all-states  API response
+export interface FetchStatesResponse {
+  result: StateType[]
+  status: string
+  statusCode: number
+}
+
+export interface CityType {
+  stateId: string
+  cityId: string
+  cityName: string
+  cityValue: string
+}
+
+//  interface for the location API response
+export interface FetchCitiesResponse {
+  result: CityType[]
+  status: string
+  statusCode: number
+}
+
+// category type
+export interface CategoryType {
+  categoryId: string
+  name: string
+  value: string
+}
+
+// response for fetch all categories
+export interface FetchCategoriesResponse {
+  status: string
+  result: {
+    list: CategoryType[] // Array of categories
+    page: number // Current page number
+    total: number // Total number of categories
+  }
+  statusCode: number
+}
+
+// type of single vehicle type
+export interface VehicleTypeType {
+  typeId: string
+  name: string
+  value: string
+}
+
+//  interface for the vehicle types (GET ALL) API response
+export interface FetchTypesResponse {
+  status: string
+  result: {
+    list: VehicleTypeType[] // Array of vehicle types
+    page: number // Current page number
+    total: number // Total number of categories
+  }
+  statusCode: number
+}
+
+// type of single brand
+export interface BrandType {
+  id: string
+  vehicleCategoryId: string
+  brandName: string
+  brandValue: string
+  subHeading: string
+  brandLogo: any
+  metaTitle: string
+  metaDescription: string
+}
+
+//  interface for the Brand GET ALL) API response
+export interface FetchBrandsResponse {
+  status: string
+  result: {
+    list: BrandType[] // Array of brands
+    page: number // Current page number
+    total: number // Total number of categories
+  }
+  statusCode: number
+}
+
+// ====== URL QUERY PARAMS
+export type UrlQueryParams = {
+  params: string
+  key: string
+  value: string | null
+}
+
+export type RemoveUrlQueryParams = {
+  params: string
+  keysToRemove: string[]
+}
+
+// state type
+export interface StateType {
+  countryId: string
+  stateId: string
+  stateName: string
+  stateValue: string
+  subHeading: string
+  metaTitle: string
+  metaDescription: string
+  stateImage: any
+}
+
+//  interface for the get-all-states  API response
+export interface FetchStatesResponse {
+  result: StateType[]
+  status: string
+  statusCode: number
+}
+
+// single promotion type
+export interface PromotionType {
+  promotionId: string
+  promotionImage: string
+  promotionLink: string
+}
+
+//  get-all-promotions  API response
+export interface FetchPromotionsResponse {
+  result: {
+    list: PromotionType[]
+    page: string
+    limit: string
+    total: number
+  }
+  status: string
+  statusCode: number
+}
+
+// vehicle details page type
+export interface VehicleDetailsPageType {
+  brandName: BrandType
+  modelName: string
+  subTitle: string //have to add this field in the admin level 1 form
+  state: StateType
+  cities: CityType[] //selected 5 cities from the level 1 form
+  vehiclePhotos: string[] //photos of the vehicle
+  specs: SpecificationType //specifications data (level 2 form)
+  features: FeatureType // features of the vehicle (level 3 form)
+  companyData: CompanyType //specified below
+}
+
+// company type
+export interface CompanyType {
+  companyProfile: string //company profile pic
+  companyName: string //company name
+  companySpecs: Object //4 data that has to be added in level 1 form
+  rentalDetails: RentalDetailsType //that rental details object in level 1 form
+  contactDetails: Object //object containing whatsapp, phone number, email
+}
+
+// individual vehicle card type
+export interface VehicleCardType {
+  brand: BrandType //populate brands
+  thumbnail: string //thumbnail image
+  companyProfile: string //company profile image
+  vehicleModel: string
+  vehicleSpecs: Object //that 6 specs per category based on the excel sheet
+  state: string //state name
+  price: RentalDetailsType //that rental details object from level 1 form
+  contact: Object // object containing mobile,whatsapp(both from level 1 form) and email(from company details form)
+}
+
+// link type
+export interface LinkType {
+  linkId: string
+  label: string
+  link: string
+}
+
+//  interface for the get-all-links  API response
+export interface FetchLinksResponse {
+  result: {
+    list: LinkType[]
+    page: string
+    limit: string
+    total: number
+  }
+  status: string
+  statusCode: number
+}
+
+export enum VehicleHomeFilter {
+  AFFORDABLE_VEHICLE = 'affordable-vehicle',
+  POPULAR_MODELS = 'popular-models',
+  TOP_BRANDS = 'top-brands',
+  LATEST_MODELS = 'latest-models',
+}

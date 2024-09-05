@@ -1,0 +1,77 @@
+@import '../../../../styles/variables';
+
+/* Default styles for mobile devices and above */
+
+.social {
+  display: flex;
+  column-gap: 0.6rem;
+
+  .icon-box {
+    .icon {
+      background-color: black;
+      color: white;
+      width: 2rem;
+      height: 2rem;
+      padding: 0.4rem;
+      border-radius: 100%;
+      transform: scale(1);
+      transition: transform 0.2s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+
+    // facebook
+    .facebook {
+      background-color: #1877F2;
+
+    }
+
+    // instagram
+    .instagram {
+
+      background-color: #E4405F;
+
+    }
+
+    // pinterest
+    .pinterest {
+
+      background-color: #BD081C;
+
+    }
+
+    // linkedin
+    .linkedin {
+
+      background-color: #0077B5;
+
+
+    }
+
+    // twitter
+    .twitter {
+
+      background-color: #1DA1F2;
+
+    }
+
+    //behance
+    .youtube {
+
+      background-color: #FF0000;
+      /* Behance iconic color on hover */
+
+    }
+  }
+}
+
+
+
+/*  (min-width: 768px) and above */
+@media (min-width: 768px) {}
+
+/* (min-width: 1200px) and above */
+@media (min-width: 1200px) {}

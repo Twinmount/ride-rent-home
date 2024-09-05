@@ -1,0 +1,62 @@
+/* Default styles for mobile devices and above */
+.images-container {
+  margin-right: 2rem;
+  background-color: white;
+  border-radius: 1rem;
+  padding: 0.4rem;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  min-width: 100%;
+  max-width: 90rem !important;
+  height: auto;
+  overflow: hidden;
+
+  .main-container,
+  .sub-container {
+    height: auto;
+    min-height: 70vh;
+    max-height: 90vh;
+  }
+
+  .dots-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.3rem;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin: 0 5px;
+    transition: background-color 0.3s;
+  }
+
+  .dot.active {
+    background-color: #000;
+  }
+}
+
+
+
+
+/*  (min-width: 768px) and above */
+@media (min-width: 768px) {
+  .images-container {
+    width: 100%;
+    min-width: 60vw;
+    max-width: 100%;
+  }
+}
+
+/* (min-width: 1200px) and above */
+@media (min-width: 1200px) {
+  .images-container {
+
+    // mini gallery
+    .mini-card-grid {
+      display: block;
+    }
+  }
+}

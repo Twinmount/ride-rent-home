@@ -1,0 +1,58 @@
+@import '../../../../styles/variables';
+
+/* Default styles for mobile devices and above */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  // background-color: $gray_bg ;
+  padding: 1rem;
+  border-radius: 1rem;
+
+  &.multi-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  &.two-column-vertical {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+
+/*  (min-width: 768px) and above */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(1, 1fr);
+
+    &.multi-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &.two-column-vertical {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+
+  }
+}
+
+/* (min-width: 1200px) and above */
+@media (min-width: 1200px) {
+  // .grid {
+  //   margin-left: 18rem;
+  // }
+}
+
+/* (min-width: 1200px) and above */
+@media (min-width: 1420px) {
+  .grid {
+
+
+    &.multi-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}

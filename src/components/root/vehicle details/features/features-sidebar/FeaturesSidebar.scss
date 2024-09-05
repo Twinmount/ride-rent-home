@@ -1,0 +1,66 @@
+@import '../../../../../styles/variables';
+
+.feature-sidebar-heading {
+  margin-bottom: 1.5rem;
+}
+
+.feature-sub-section {
+  margin-bottom: 2rem;
+
+  .sub-heading-container {
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
+    margin-bottom: 0.7rem;
+
+    .sub-heading-icon {
+      width: 1.3rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .icon {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    .sub-heading {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+  }
+
+  .sub-feature-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 0.5rem;
+    column-gap: 0.1rem;
+
+    .feature {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      display: flex;
+      align-items: start;
+      justify-content: start;
+      text-align: start;
+      column-gap: 0.4rem;
+      transition: transform 0.1s ease-out;
+      font-size: 0.9rem;
+
+
+      &:hover {
+        transform: translateX(5px);
+      }
+
+      .entity {
+        color: $yellow;
+        font-size: large;
+      }
+    }
+
+  }
+}
