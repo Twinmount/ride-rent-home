@@ -6,7 +6,7 @@ export default function NotFound() {
       <div className="mt-56">
         <h1 className="text-4xl font-semibold">Not Found :&#40;</h1>
         <p className="mb-12 text-gray-700">
-          The requested vehicle either doesn't exist or the vehicle ID is
+          The requested vehicle either doesn&apos;t exist or the vehicle ID is
           invalid.
         </p>
         <Link
