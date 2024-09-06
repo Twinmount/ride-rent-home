@@ -27,7 +27,7 @@ The Ride Rent Client (Next.Js) Platform is a web application designed to allow a
    npm install
    ```
 
-## Running the Project locally/ or in development mode
+## Running the Project locally
 
 To run the project locally, use the following command:
 
@@ -40,7 +40,15 @@ npm run dev
 To build the project, use the following command:
 
 ```bash
-npm run build
+npm run build:dev
+```
+
+## Building the Project in Production
+
+To build the project, use the following command:
+
+```bash
+npm run build:dev
 ```
 
 ## Run the build version
