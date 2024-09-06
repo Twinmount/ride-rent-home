@@ -53,7 +53,7 @@ const Images = ({ photos }: ImagesProps) => {
           {photos.map((src, index) => (
             <CarouselItem
               key={index}
-              className="w-full rounded-[1rem] relative p-0  overflow-hidden"
+              className="w-full min-w-[100%] rounded-[1rem] relative p-0  overflow-hidden"
             >
               <Image
                 src={src}

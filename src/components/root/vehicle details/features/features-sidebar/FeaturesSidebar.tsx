@@ -9,17 +9,20 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { FeatureType } from '@/types/vehicle-types'
+import { formatKeyForIcon } from '@/helpers'
 
 type FeaturesSidebarProps = {
   features: Record<string, FeatureType[]>
+  vehicleCategory: string
 }
 
-// Helper function to format the feature category key
-const formatCategoryForIcon = (category: string) => {
-  return category.toLowerCase().replace(/\s+/g, '-')
-}
+export default function FeaturesSidebar({
+  features,
+  vehicleCategory,
+}: FeaturesSidebarProps) {
+  // Base URL for fetching icons
+  const baseAssetsUrl = process.env.ASSETS_URL
 
-export default function FeaturesSidebar({ features }: FeaturesSidebarProps) {
   // Convert features object to an array for easier mapping
   const featureEntries = Object.entries(features)
 
@@ -39,7 +42,7 @@ export default function FeaturesSidebar({ features }: FeaturesSidebarProps) {
                 <div className="sub-heading-container">
                   <div className="sub-heading-icon">
                     <img
-                      src={`/assets/icons/vehicle-features/${formatCategoryForIcon(
+                      src={`${baseAssetsUrl}/icons/vehicle-features/${formatKeyForIcon(
                         category
                       )}.svg`}
                       alt={`${category} icon`}

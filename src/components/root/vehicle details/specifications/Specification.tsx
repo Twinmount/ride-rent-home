@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/tooltip'
 import MotionDiv from '@/components/general/framer-motion/MotionDiv'
 import './Specification.scss'
+import { formatKeyForIcon } from '@/helpers'
 
 // Update the SpecificationItem type based on the current Specs structure
 interface SpecificationItem {
@@ -23,15 +24,13 @@ type SpecificationsProps = {
   vehicleCategory?: string
 }
 
-// Helper function to format the key to match icon naming convention
-const formatKeyForIcon = (key: string) => {
-  return key.toLowerCase().replace(/\s+/g, '-')
-}
-
 const Specification: FC<SpecificationsProps> = ({
   specifications,
-  vehicleCategory = 'cars',
+  vehicleCategory,
 }) => {
+  // Base URL for fetching icons
+  const baseAssetsUrl = process.env.ASSETS_URL
+
   return (
     <MotionDiv className="specification-container">
       <h2 className="custom-heading">Specifications</h2>
@@ -45,7 +44,7 @@ const Specification: FC<SpecificationsProps> = ({
                   <div className="spec-icon-box">
                     {/* Using the formatted spec name to dynamically fetch the icon */}
                     <img
-                      src={`/assets/icons/vehicle-specifications/${vehicleCategory}/${formatKeyForIcon(
+                      src={`${baseAssetsUrl}/icons/vehicle-specifications/${vehicleCategory}/${formatKeyForIcon(
                         key
                       )}.svg`}
                       alt={`${spec.name} icon`}

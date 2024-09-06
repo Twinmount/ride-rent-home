@@ -30,7 +30,7 @@ export default function FooterQuickLinks() {
           {linksData.length > 0 ? (
             linksData.map((link) => (
               <Link
-                href={`/listing?state=${link.link}`}
+                href={`/${link.link}`}
                 className="link-wrapper"
                 key={link.linkId}
               >

@@ -17,6 +17,7 @@ import FAQ from '@/components/common/FAQ/FAQ'
 import RelatedResults from '@/components/root/vehicle details/related-results/RelatedResults'
 import { VehicleDetailsResponse } from '@/types/vehicle-details-types'
 import { VehicleHomeFilter } from '@/types'
+import QuickLinks from '@/components/root/vehicle details/quick-links/QuickLinks'
 
 type ParamsProps = {
   params: { state: string; category: string; vehicleId: string }
@@ -79,9 +80,15 @@ export default async function VehicleDetails({
               {/* Images */}
               <Images photos={vehicle?.vehiclePhotos} />
               {/* Specification */}
-              <Specification specifications={vehicle?.specs} />
+              <Specification
+                specifications={vehicle?.specs}
+                vehicleCategory={category}
+              />
               {/* Features */}
-              <VehicleFeatures features={vehicle?.features} />
+              <VehicleFeatures
+                features={vehicle?.features}
+                vehicleCategory={category}
+              />
             </div>
 
             {/* container right */}
@@ -91,6 +98,8 @@ export default async function VehicleDetails({
                 company={vehicle?.company}
                 rentalDetails={vehicle?.rentalDetails}
               />
+
+              <QuickLinks state={state} />
             </div>
           </div>
         </section>

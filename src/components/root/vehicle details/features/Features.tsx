@@ -1,5 +1,4 @@
 import './Features.scss'
-import { FaFire } from 'react-icons/fa'
 import FeaturesSidebar from './features-sidebar/FeaturesSidebar'
 import MotionDiv from '@/components/general/framer-motion/MotionDiv'
 import { MotionH2 } from '@/components/general/framer-motion/MotionElm'
@@ -7,9 +6,13 @@ import { FeatureType } from '@/types/vehicle-types'
 
 type VehicleFeaturesProps = {
   features: Record<string, FeatureType[]>
+  vehicleCategory: string
 }
 
-const VehicleFeatures = ({ features }: VehicleFeaturesProps) => {
+const VehicleFeatures = ({
+  features,
+  vehicleCategory,
+}: VehicleFeaturesProps) => {
   // Flatten the features object to get a limited number of features
   const featureEntries = Object.entries(features)
   const limitedFeatures: { category: string; features: FeatureType[] }[] = []
@@ -55,7 +58,10 @@ const VehicleFeatures = ({ features }: VehicleFeaturesProps) => {
 
       {/* Features Sidebar */}
       <div className="overlay">
-        <FeaturesSidebar features={features} />
+        <FeaturesSidebar
+          features={features}
+          vehicleCategory={vehicleCategory}
+        />
       </div>
     </div>
   )
