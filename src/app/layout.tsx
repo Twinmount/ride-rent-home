@@ -24,9 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={firaSans.className}>
         <ReactQueryProvider>
-          <AppProvider>
-            <main className="mt-[4.85rem]">{children}</main>
-          </AppProvider>
+          <AppProvider>{children}</AppProvider>
         </ReactQueryProvider>
       </body>
     </html>

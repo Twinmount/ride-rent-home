@@ -1,4 +1,3 @@
-import Footer from '@/components/footer/Footer'
 import Link from 'next/link'
 import '../styles/NotFound.scss'
 
@@ -49,7 +48,6 @@ export default function NotFound() {
         </div>
       </section>
       {/* Footer */}
-      <Footer />
     </>
   )
 }

@@ -18,6 +18,7 @@ import RelatedResults from '@/components/root/vehicle details/related-results/Re
 import { VehicleDetailsResponse } from '@/types/vehicle-details-types'
 import { VehicleHomeFilter } from '@/types'
 import QuickLinks from '@/components/root/vehicle details/quick-links/QuickLinks'
+import { notFound } from 'next/navigation'
 
 type ParamsProps = {
   params: { state: string; category: string; vehicleId: string }
@@ -35,6 +36,10 @@ export default async function VehicleDetails({
     `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`
   )
   const data: VehicleDetailsResponse = await response.json()
+
+  if (data?.status === 'NOT_SUCCESS' || response.status === 400) {
+    return notFound() // This will trigger the Next.js 404 page
+  }
 
   const vehicle = data.result
 
