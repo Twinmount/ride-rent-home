@@ -76,6 +76,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
           {Object.entries(vehicle.vehicleSpecs).map(([key, spec]) => (
             <div key={key} className="spec">
               {/* Using the formatted spec name to dynamically fetch the icon */}
+
               <img
                 src={`${baseAssetsUrl}/icons/vehicle-specifications/${category}/${formatKeyForIcon(
                   key
