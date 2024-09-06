@@ -2,7 +2,7 @@ import { FetchStatesResponse } from '@/types'
 import Link from 'next/link'
 
 export default async function FooterLocations() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL
+  const baseUrl = process.env.API_URL
 
   // Fetch the states data from the API
   const response = await fetch(`${baseUrl}/states/list`)

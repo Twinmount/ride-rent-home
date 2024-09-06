@@ -1,5 +1,5 @@
-import MainCard from '@/components/card/vehicle-card/main-card/MainCard'
 import './Latest.scss'
+import MainCard from '@/components/card/vehicle-card/main-card/MainCard'
 import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper'
 import ViewAllButton from '@/components/general/button/ViewAllButton'
 import MotionSection from '@/components/general/framer-motion/MotionSection'
