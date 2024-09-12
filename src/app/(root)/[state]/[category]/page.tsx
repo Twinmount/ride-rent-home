@@ -18,8 +18,6 @@ import { Suspense } from 'react'
 import { PageProps } from '@/types'
 
 export default function Home({ params: { state, category } }: PageProps) {
-  const baseUrl = process.env.API_URL
-
   return (
     <>
       <Landing state={state} category={category} />
