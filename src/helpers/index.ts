@@ -45,6 +45,7 @@ export const sortCategories = (categories: CategoryType[]): CategoryType[] => {
     'bicycles',
     'buses',
     'leisure-boats',
+    'yachts',
     'vans',
     'buggies',
     'charters',

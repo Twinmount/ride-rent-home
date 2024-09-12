@@ -45,7 +45,7 @@ export default async function TopBrands({
           <div key={brand.id} className="brand-card slide-visible">
             <div className="image-box">
               <Image
-                src={`${baseAssetsUrl}/icons/brands/audi.png`}
+                src={`${baseAssetsUrl}/icons/brands/bugatti.png`}
                 width={80}
                 height={80}
                 alt={brand.brandName}

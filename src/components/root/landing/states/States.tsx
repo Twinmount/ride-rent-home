@@ -14,6 +14,8 @@ export default async function States({ category }: { category: string }) {
   // Extract the states list from the response
   const states = data.result
 
+  if (states.length === 0) return null
+
   return (
     <MotionSection className="location-section wrapper">
       <h2>
@@ -22,20 +24,22 @@ export default async function States({ category }: { category: string }) {
       </h2>
       <div className="location-container">
         {/* Map through states and render each one */}
-        {states.map((state: StateType) => (
-          <Link
-            href={`/${state.stateValue}/${category}/listing`}
-            key={state.stateId}
-            className="location-card "
-          >
-            <Image
-              fill
-              src={state.stateImage}
-              alt={`${state.stateName} logo`}
-            />
-            <figcaption>{state.stateName}</figcaption>
-          </Link>
-        ))}
+        {states.map((state: StateType) =>
+          state.stateImage ? (
+            <Link
+              href={`/${state.stateValue}/${category}/listing`}
+              key={state.stateId}
+              className="location-card "
+            >
+              <Image
+                fill
+                src={state.stateImage}
+                alt={`${state.stateName} logo`}
+              />
+              <figcaption>{state.stateName}</figcaption>
+            </Link>
+          ) : null
+        )}
       </div>
     </MotionSection>
   )
