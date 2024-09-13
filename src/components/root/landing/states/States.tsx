@@ -27,7 +27,7 @@ export default async function States({ category }: { category: string }) {
         {states.map((state: StateType) =>
           state.stateImage ? (
             <Link
-              href={`/${state.stateValue}/${category}/listing`}
+              href={`/${state.stateValue}/listing?category=${category}`}
               key={state.stateId}
               className="location-card "
             >

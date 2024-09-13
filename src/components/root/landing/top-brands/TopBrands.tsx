@@ -36,7 +36,7 @@ export default async function TopBrands({
     <MotionSection className="top-brands-section wrapper">
       <h2 className="common-heading">
         Rent from top brands in{' '}
-        <span className="capitalize yellow-gradient p-1 rounded-xl">
+        <span className="capitalize yellow-gradient px-2 rounded-xl">
           {state}
         </span>
       </h2>
