@@ -2,8 +2,9 @@ import './TopBrands.scss'
 import MotionSection from '@/components/general/framer-motion/MotionSection'
 import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper'
 import ViewAllButton from '@/components/general/button/ViewAllButton'
-import { FetchBrandsResponse, BrandType } from '@/types'
+import { BrandType, FetchTopBrandsResponse } from '@/types'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export const fetchCache = 'default-cache'
 
@@ -22,10 +23,10 @@ export default async function TopBrands({
   )
 
   // Parse the JSON response
-  const data: FetchBrandsResponse = await response.json()
+  const data: FetchTopBrandsResponse = await response.json()
 
   // Extract the list of brands from the response
-  const brands = data?.result?.list || []
+  const brands = data?.result || []
 
   const baseAssetsUrl = process.env.ASSETS_URL
 
@@ -42,7 +43,11 @@ export default async function TopBrands({
 
       <CarouselWrapper>
         {brands.map((brand: BrandType) => (
-          <div key={brand.id} className="brand-card slide-visible">
+          <Link
+            href={`/${state}/listing?brand=${brand.brandValue}&category=${category}`}
+            key={brand.id}
+            className="brand-card slide-visible"
+          >
             <div className="image-box">
               <Image
                 src={`${baseAssetsUrl}/icons/brands/bugatti.png`}
@@ -52,11 +57,11 @@ export default async function TopBrands({
               />
             </div>
             <div className="brand-info truncate">{brand.brandName}</div>
-          </div>
+          </Link>
         ))}
       </CarouselWrapper>
 
-      <ViewAllButton link="/brands" />
+      <ViewAllButton link={`/${state}/${category}/brands`} />
     </MotionSection>
   )
 }

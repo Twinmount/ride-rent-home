@@ -14,6 +14,7 @@ export const fetchStates = async (): Promise<
   try {
     const response = await fetch(`/api/states`, {
       method: 'GET',
+      cache: 'no-store',
     })
 
     if (!response.ok) {
@@ -187,6 +188,7 @@ export const fetchQuickLinksByValue = async (
   try {
     const response = await fetch(`/api/quick-links/value/${stateValue}`, {
       method: 'GET',
+      cache: 'no-store',
     })
 
     // Check if the response is OK

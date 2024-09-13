@@ -8,7 +8,7 @@ export default async function States({ category }: { category: string }) {
   const baseUrl = process.env.API_URL
 
   // Fetch the states data from the API
-  const response = await fetch(`${baseUrl}/states/list`)
+  const response = await fetch(`${baseUrl}/states/list`, { cache: 'no-store' })
   const data: FetchStatesResponse = await response.json()
 
   // Extract the states list from the response

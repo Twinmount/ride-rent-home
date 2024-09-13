@@ -33,7 +33,8 @@ export default async function VehicleDetails({
   const filter = searchParams.filter || VehicleHomeFilter.POPULAR_MODELS
   // Fetch the vehicle data from the API
   const response = await fetch(
-    `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`
+    `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
+    { cache: 'no-store' }
   )
   const data: VehicleDetailsResponse = await response.json()
 

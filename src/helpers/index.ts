@@ -65,3 +65,13 @@ export const formatKeyForIcon = (key: string) => {
 export const formatPhoneNumber = (countryCode: string, phoneNumber: string) => {
   return `+${countryCode} ${phoneNumber}`
 }
+
+// change to singular
+export const singularizeType = (type: string) => {
+  if (type.toLowerCase() === 'buses') {
+    return 'Bus'
+  } else if (type.toLowerCase() === 'buggies') {
+    return 'Buggy'
+  }
+  return type.endsWith('s') ? type.slice(0, -1) : type
+}

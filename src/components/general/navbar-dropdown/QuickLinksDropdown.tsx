@@ -23,6 +23,7 @@ export default function QuickLinksDropdown() {
     queryKey: ['quick-links', state],
     queryFn: () => fetchQuickLinksByValue(state),
     enabled: !!state,
+    staleTime: 0,
   })
 
   const linksData: LinkType[] = data?.result?.list || []

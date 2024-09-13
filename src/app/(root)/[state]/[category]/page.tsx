@@ -2,7 +2,6 @@ import FAQ from '@/components/common/FAQ/FAQ'
 import WhyOpt from '@/components/common/why-opt/WhyOpt'
 import SectionLoading from '@/components/general/section-loading/SectionLoading'
 import Affordable from '@/components/root/landing/affordable/Affordable'
-import CarSubTypes from '@/components/root/landing/car-sub-types/CarSubTypes'
 import Documents from '@/components/root/landing/documents/Documents'
 import RideRentFeatures from '@/components/root/landing/features/Features'
 import Landing from '@/components/root/landing/landing/Landing'
@@ -33,10 +32,6 @@ export default function Home({ params: { state, category } }: PageProps) {
 
       <Suspense fallback={<SectionLoading />}>
         <Latest state={state} category={category} />
-      </Suspense>
-
-      <Suspense fallback={<SectionLoading />}>
-        <CarSubTypes />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>

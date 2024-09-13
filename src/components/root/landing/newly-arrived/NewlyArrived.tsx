@@ -1,5 +1,5 @@
-import MainCard from '@/components/card/vehicle-card/main-card/MainCard'
 import './NewlyArrived.scss'
+import MainCard from '@/components/card/vehicle-card/main-card/MainCard'
 import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper'
 import ViewAllButton from '@/components/general/button/ViewAllButton'
 import MotionSection from '@/components/general/framer-motion/MotionSection'
@@ -13,8 +13,8 @@ export default async function NewlyArrived({
   const baseUrl = process.env.API_URL
   // Fetch brand data from your API endpoint
   const response = await fetch(
-    `${baseUrl}/vehicle/home-page/list?page=1&limit=10&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.LATEST_MODELS}`,
-    { method: 'GET' }
+    `${baseUrl}/vehicle/home-page/list?page=1&limit=10&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.POPULAR_MODELS}`,
+    { method: 'GET', cache: 'no-cache' }
   )
 
   // Parse the JSON response
@@ -28,9 +28,9 @@ export default async function NewlyArrived({
     <MotionSection className="newly-arrived-section wrapper">
       <h2 className="heading">
         Newly arrived{' '}
-        <span className="yellow-gradient p-1 rounded-xl">{category}</span> for
+        <span className="yellow-gradient px-1 rounded-xl">{category}</span> for
         rent in{' '}
-        <span className="capitalize yellow-gradient p-1 rounded-xl">
+        <span className="capitalize yellow-gradient px-2 rounded-xl">
           {state}
         </span>
       </h2>

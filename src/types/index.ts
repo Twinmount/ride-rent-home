@@ -95,6 +95,13 @@ export interface BrandType {
   metaDescription: string
 }
 
+//  Top brands API response
+export interface FetchTopBrandsResponse {
+  status: string
+  result: BrandType[]
+  statusCode: number
+}
+
 //  interface for the Brand GET ALL) API response
 export interface FetchBrandsResponse {
   status: string
@@ -102,6 +109,7 @@ export interface FetchBrandsResponse {
     list: BrandType[] // Array of brands
     page: number // Current page number
     total: number // Total number of categories
+    totalNumberOfPages: number // Total number of pages
   }
   statusCode: number
 }

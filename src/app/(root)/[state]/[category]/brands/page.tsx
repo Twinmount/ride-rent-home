@@ -4,19 +4,21 @@ import MotionDiv from '@/components/general/framer-motion/MotionDiv'
 import BrandSearch from '@/components/root/brand/BrandSearch'
 import { FetchBrandsResponse } from '@/types'
 import Link from 'next/link'
-import CategoryTabs from '@/components/root/brand/CategoryTabs'
-import BrandWrapper from '@/components/root/brand/BrandWrapper'
 import Pagination from '@/components/general/pagination/Pagination'
+import { singularizeType } from '@/helpers'
+
+type ParamsProps = {
+  params: { state: string; category: string }
+  searchParams: { [key: string]: string | undefined }
+}
 
 export default async function Brands({
+  params: { state, category },
   searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined }
-}) {
+}: ParamsProps) {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL
   const page = parseInt(searchParams.page || '1', 10)
   const search = searchParams.search || ''
-  const category = searchParams.category || ''
 
   const response = await fetch(
     `${baseUrl}/vehicle-brand/list?page=${page}&limit=20&sortOrder=ASC&categoryValue=${category}&search=${search}`,
@@ -28,33 +30,35 @@ export default async function Brands({
 
   // Extract the list of brands from the response
   const brands = data?.result?.list || []
-  const totalPages = Math.ceil((data?.result?.total || 0) / 20)
+  const totalPages = data?.result?.totalNumberOfPages || 1
+
+  const baseAssetsUrl = process.env.ASSETS_URL
 
   return (
     <section className="brands-section wrapper">
       <MotionDiv className="top">
+        <h1 className="text-2xl lg:text-4xl font-semibold mb-4 uppercase">
+          <span className="text-yellow"> {singularizeType(category)}</span>{' '}
+          Brands
+        </h1>
+
         {/* brands search */}
         <Suspense fallback={<div>Search...</div>}>
           <BrandSearch />
-        </Suspense>
-
-        {/* category tabs */}
-        <Suspense fallback={<div>Loading categories...</div>}>
-          <CategoryTabs />
         </Suspense>
 
         {/* brands data */}
         {brands.length > 0 ? (
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 place-items-center gap-y-4 pb-20">
             {brands.map((data) => (
-              <BrandWrapper
+              <Link
+                href={`/${state}/listing?category=${category}&brand=${data.brandValue}`}
                 key={data.id}
-                brandValue={data.brandValue}
                 className="w-full bg-white border min-w-32 h-36 rounded-xl"
               >
-                <div className="flex-center w-auto h-[7.5rem] p-2 ">
+                <div className="flex-center w-auto h-[6.5rem] p-2 ">
                   <img
-                    src={data.brandLogo}
+                    src={`${baseAssetsUrl}/icons/brands/bugatti.png`}
                     alt={data.brandName}
                     className="object-contain w-[95%] h-full max-w-28"
                   />
@@ -62,7 +66,7 @@ export default async function Brands({
                 <div className="max-w-full text-sm font-semibold text-center">
                   {data.brandName}
                 </div>
-              </BrandWrapper>
+              </Link>
             ))}
           </div>
         ) : (

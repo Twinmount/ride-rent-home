@@ -27,6 +27,7 @@ export default function StatesDropdown() {
   const { data, isLoading } = useQuery({
     queryKey: ['states'],
     queryFn: fetchStates,
+    staleTime: 0,
   })
 
   const states: StateType[] = data?.result || []

@@ -9,6 +9,7 @@ import { fetchVehicleTypesByValue } from '@/lib/next-api/next-api'
 import { VehicleTypeType } from '@/types'
 import GridSkelton from '@/components/skelton/GridSkelton'
 import Link from 'next/link'
+import { singularizeType } from '@/helpers'
 
 const VehicleTypes = ({
   category,
@@ -56,15 +57,6 @@ const VehicleTypes = ({
       ? vehicleTypes
       : vehicleTypes.slice(0, 6)
     : vehicleTypes
-
-  const singularizeType = (type: string) => {
-    if (type.toLowerCase() === 'buses') {
-      return 'Bus'
-    } else if (type.toLowerCase() === 'buggies') {
-      return 'Buggy'
-    }
-    return type.endsWith('s') ? type.slice(0, -1) : type
-  }
 
   const handleToggleShowTypes = () => {
     setShowAllTypes(!showAllTypes)

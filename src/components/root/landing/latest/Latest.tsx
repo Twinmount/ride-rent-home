@@ -12,7 +12,7 @@ export default async function Latest({ state, category }: StateCategoryProps) {
   // Fetch latest vehicle data from your API endpoint
   const response = await fetch(
     `${baseUrl}/vehicle/home-page/list?page=1&limit=10&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.LATEST_MODELS}`,
-    { method: 'GET' }
+    { method: 'GET', cache: 'no-cache' }
   )
 
   // Parse the JSON response
@@ -25,9 +25,9 @@ export default async function Latest({ state, category }: StateCategoryProps) {
     <MotionSection className="latest-section wrapper">
       <h2 className="heading">
         Latest{' '}
-        <span className="yellow-gradient p-1 rounded-xl">{category}</span> for
+        <span className="yellow-gradient px-1 rounded-xl">{category}</span> for
         rent in{' '}
-        <span className="capitalize yellow-gradient p-1 rounded-xl">
+        <span className="capitalize yellow-gradient px-2 rounded-xl">
           {state}
         </span>
       </h2>

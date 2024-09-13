@@ -36,6 +36,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
     queryKey: ['vehicles', searchParams.toString()],
     queryFn: () => FetchVehicleByFilters(searchParams.toString()),
     enabled: !!searchParams.toString(), // Ensures the query runs only when searchParams is available
+    staleTime: 0,
   })
 
   const category = searchParams.get('category') || undefined
