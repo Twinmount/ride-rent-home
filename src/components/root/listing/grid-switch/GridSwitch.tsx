@@ -2,7 +2,7 @@
 
 import './GridSwitch.scss'
 import { IoGridOutline, IoList } from 'react-icons/io5'
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { formUrlQuery } from '@/helpers'
 import { useEffect } from 'react'
 
@@ -12,7 +12,6 @@ type GridSwitchProps = {
 
 const GridSwitch = ({ isGridView }: GridSwitchProps) => {
   const router = useRouter()
-  const pathname = usePathname()
   const searchParams = useSearchParams()
 
   // Set initial state to URL on component mount

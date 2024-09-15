@@ -5,6 +5,7 @@ import ViewAllButton from '@/components/general/button/ViewAllButton'
 import { BrandType, FetchTopBrandsResponse } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
+import { convertToLabel } from '@/helpers'
 
 export const fetchCache = 'default-cache'
 
@@ -37,7 +38,7 @@ export default async function TopBrands({
       <h2 className="common-heading">
         Rent from top brands in{' '}
         <span className="capitalize yellow-gradient px-2 rounded-xl">
-          {state}
+          {convertToLabel(state as string)}
         </span>
       </h2>
 

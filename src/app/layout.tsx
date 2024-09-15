@@ -1,5 +1,4 @@
 import './globals.scss'
-import { AppProvider } from '@/context/AppContext'
 import { ReactQueryProvider } from '@/utils/ReactQueryProvider'
 import type { Metadata } from 'next'
 import { Fira_Sans } from 'next/font/google'
@@ -97,9 +96,7 @@ export default function RootLayout({
           />
         </noscript>
 
-        <ReactQueryProvider>
-          <AppProvider>{children}</AppProvider>
-        </ReactQueryProvider>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
 
         {/* LinkedIn Insight Tag */}
         <Script id="linkedin-insight-tag" strategy="afterInteractive">

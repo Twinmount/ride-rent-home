@@ -3,7 +3,7 @@
 
 // grid vs list button
 .grid-style {
-  display: flex;
+  display: none;
   align-items: center;
   column-gap: 0.5rem;
 
@@ -34,5 +34,12 @@
     .icon {
       scale: 1.3;
     }
+  }
+}
+
+/*  (min-width: 850px) and above */
+@media (min-width: 850px) {
+  .grid-style {
+    display: flex;
   }
 }

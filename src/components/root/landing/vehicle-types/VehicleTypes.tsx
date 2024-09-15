@@ -9,7 +9,7 @@ import { fetchVehicleTypesByValue } from '@/lib/next-api/next-api'
 import { VehicleTypeType } from '@/types'
 import GridSkelton from '@/components/skelton/GridSkelton'
 import Link from 'next/link'
-import { singularizeType } from '@/helpers'
+import { convertToLabel, singularizeType } from '@/helpers'
 
 const VehicleTypes = ({
   category,
@@ -67,7 +67,7 @@ const VehicleTypes = ({
       <h1>
         Choose the{' '}
         <span className="yellow-gradient selected-type">
-          {singularizeType(category)}
+          {convertToLabel(singularizeType(category))}
         </span>{' '}
         type that is convenient for you
       </h1>

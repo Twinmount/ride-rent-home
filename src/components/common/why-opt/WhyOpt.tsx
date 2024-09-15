@@ -1,11 +1,15 @@
+import { StateCategoryProps } from '@/types'
 import './WhyOpt.scss'
-import WhyOptHeading from './WhyOptHeading'
 import MotionSection from '@/components/general/framer-motion/MotionSection'
+import { convertToLabel } from '@/helpers'
 
-const WhyOpt = () => {
+const WhyOpt = ({ state, category }: StateCategoryProps) => {
   return (
     <MotionSection className="wrapper why-opt-section">
-      <WhyOptHeading />
+      <h2>
+        Why Opt RIDE.RENT When Looking for {convertToLabel(category)} for Rent
+        in {convertToLabel(state)}{' '}
+      </h2>
 
       <div className="description">
         <p>
@@ -13,7 +17,7 @@ const WhyOpt = () => {
           vast array of vehicles awaits. From timeless classics to the pinnacle
           of modern luxury, our diverse fleet caters to every preference.
           Renting with us is a breeze—simply peruse our extensive selection of
-          cars for rent to match your style and budget, and reachout to our
+          cars for rent to match your style and budget, and reach out to our
           agents with ease!
           <br />
           <br />

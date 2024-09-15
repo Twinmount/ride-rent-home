@@ -75,3 +75,20 @@ export const singularizeType = (type: string) => {
   }
   return type.endsWith('s') ? type.slice(0, -1) : type
 }
+
+/**
+ * Converts a value back into its corresponding label.
+ *
+ * @param value - The value string in lowercase with hyphens.
+ * @returns The formatted label string.
+ */
+export function convertToLabel(value: string): string {
+  if (!value) {
+    return '' // Return an empty string if value is undefined, null, or an empty string
+  }
+
+  return value
+    .split('-') // Split the value by hyphen
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+    .join(' ') // Join the words back with spaces
+}

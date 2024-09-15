@@ -1,3 +1,5 @@
+@import '../../../../styles/variables';
+
 /* Default styles for mobile devices and above */
 .car-card-container {
   height: fit-content;
@@ -6,7 +8,8 @@
   border-radius: 0.8rem;
   background-color: white;
   min-width: 18rem;
-  width: 100%;
+  width: 20rem;
+  min-width: 20rem;
   max-width: 20rem;
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3);
   cursor: pointer;
@@ -84,20 +87,50 @@
 
     // specs grid
     .specs-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr);
+      display: flex;
+      flex-wrap: wrap;
       row-gap: 0.6rem;
+      column-gap: 0.1rem;
       margin-bottom: 0.3rem;
 
       .spec {
+        width: 6rem;
         display: flex;
         justify-content: start;
         align-items: center;
         column-gap: 0.3rem;
         font-size: 0.8rem;
-        line-height: 0;
+        line-height: 1.2;
         color: gray;
+        position: relative;
+
+        .spec-icon {
+          flex-shrink: 0;
+        }
+
+        .each-spec-value {
+          width: 100%;
+          height: auto;
+          overflow: hidden;
+          white-space: nowrap; // Prevent wrapping
+          text-overflow: ellipsis; // Add ellipsis for truncation
+          word-wrap: break-word;
+          position: relative;
+
+          // On hover, show full text
+          &:hover {
+            white-space: wrap;
+            overflow: visible;
+            background-color: $yellow;
+            color: rgb(255, 255, 255);
+            position: absolute;
+            z-index: 10; // Ensure it is on top
+            padding: 0.3rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); //
+            max-width: 100%;
+            border-radius: 5px;
+          }
+        }
       }
     }
 

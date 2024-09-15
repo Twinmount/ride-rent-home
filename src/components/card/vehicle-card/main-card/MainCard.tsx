@@ -69,20 +69,21 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
 
           {/* vehicle specs grid */}
           <div className="specs-grid">
-            {Object.entries(vehicle.vehicleSpecs).map(([key, spec]) => (
-              <div key={key} className="spec">
-                {/* Using the formatted spec name to dynamically fetch the icon */}
-                <img
-                  src={`${baseAssetsUrl}/icons/vehicle-specifications/${category}/${formatKeyForIcon(
-                    key
-                  )}.svg`}
-                  alt={`${spec.name} icon`}
-                  className="spec-icon "
-                />
-
-                {spec.value || 'N/A'}
-              </div>
-            ))}
+            {Object.entries(vehicle.vehicleSpecs).map(([key, spec]) => {
+              return (
+                <div key={key} className="spec">
+                  {/* Using the formatted spec name to dynamically fetch the icon */}
+                  <img
+                    src={`${baseAssetsUrl}/icons/vehicle-specifications/${category}/${formatKeyForIcon(
+                      key
+                    )}.svg`}
+                    alt={`${spec.name} icon`}
+                    className="spec-icon"
+                  />
+                  <div className="each-spec-value">{spec.name || 'N/A'}</div>
+                </div>
+              )
+            })}
           </div>
 
           {/* location and price */}

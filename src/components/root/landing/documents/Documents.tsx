@@ -1,12 +1,16 @@
 import MotionSection from '@/components/general/framer-motion/MotionSection'
 import DocumentsRequired from '../documents-required/DocumentsRequired'
 import './Documents.scss'
-import DocumentsHeading from './DocumentsHeading'
+import { convertToLabel } from '@/helpers'
+import { StateCategoryProps } from '@/types'
 
-const Documents = () => {
+const Documents = ({ state, category }: StateCategoryProps) => {
   return (
     <MotionSection className="documents-section wrapper">
-      <DocumentsHeading />
+      <h2>
+        Ride.Rent is getting you the best {convertToLabel(category)} for rental
+        in {convertToLabel(state)}
+      </h2>
       <div className="description">
         <p>
           As the fastest-growing vehicle rental portal, we pride ourselves on

@@ -6,6 +6,7 @@ import { FetchBrandsResponse } from '@/types'
 import Link from 'next/link'
 import Pagination from '@/components/general/pagination/Pagination'
 import { singularizeType } from '@/helpers'
+import BackButton from '@/components/common/back-btn/BackButton'
 
 type ParamsProps = {
   params: { state: string; category: string }
@@ -37,10 +38,13 @@ export default async function Brands({
   return (
     <section className="brands-section wrapper">
       <MotionDiv className="top">
-        <h1 className="text-2xl lg:text-4xl font-semibold mb-4 uppercase">
-          <span className="text-yellow"> {singularizeType(category)}</span>{' '}
-          Brands
-        </h1>
+        <div className="flex items-center  justify-start gap-x-4">
+          <BackButton />
+          <h1 className="text-2xl lg:text-4xl font-semibold mb-4 uppercase">
+            <span className="text-yellow"> {singularizeType(category)}</span>{' '}
+            Brands
+          </h1>
+        </div>
 
         {/* brands search */}
         <Suspense fallback={<div>Search...</div>}>

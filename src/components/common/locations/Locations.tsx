@@ -2,7 +2,6 @@
 
 import './Locations.scss'
 import { useState, useEffect } from 'react'
-import { useAppContext } from '@/context/AppContext'
 import { useQuery } from '@tanstack/react-query'
 import { fetchAllCities, fetchStates } from '@/lib/next-api/next-api'
 import { StateType, CityType, StateCategoryProps } from '@/types'
@@ -14,8 +13,6 @@ const Locations = ({ state, category }: StateCategoryProps) => {
   const [selectedState, setSelectedState] = useState<StateType | null>(null)
   const [cities, setCities] = useState<CityType[]>([])
   const [showAllCities, setShowAllCities] = useState<boolean>(false)
-
-  const { selectedCategory } = useAppContext()
 
   // Fetch states using useQuery
   const { data: statesData, isLoading: isStatesLoading } = useQuery({
@@ -70,7 +67,7 @@ const Locations = ({ state, category }: StateCategoryProps) => {
   return (
     <section className="wrapper locations-section">
       <h3>Available Locations</h3>
-      <p>Choose your state/city to rent {selectedCategory.name}</p>
+      <p>Choose your state/city to rent</p>
 
       {/* Display States */}
       <div className="countries">

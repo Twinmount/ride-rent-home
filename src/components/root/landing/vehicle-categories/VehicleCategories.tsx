@@ -33,7 +33,7 @@ const VehicleCategories = ({ state, category }: VehicleCategoriesProps) => {
   }, [data])
 
   return (
-    <div className="category-container">
+    <div className="category-container" id="categories">
       <Carousel
         plugins={[plugin.current]}
         className="w-full"

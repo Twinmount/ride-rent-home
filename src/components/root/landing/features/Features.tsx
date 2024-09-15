@@ -1,13 +1,19 @@
 import './Features.scss'
 import { featureCards } from './index'
 import FeaturesCard from '@/components/card/features-card/FeaturesCard'
-import FeatureLocation from './FeatureLocation'
-import MotionSection from '@/components/general/framer-motion/MotionSection'
 
-const Features = () => {
+import MotionSection from '@/components/general/framer-motion/MotionSection'
+import { StateCategoryProps } from '@/types'
+import { convertToLabel, singularizeType } from '@/helpers'
+
+const Features = ({ state, category }: StateCategoryProps) => {
   return (
     <MotionSection className="features_section wrapper">
-      <FeatureLocation />
+      <h2>
+        Enjoy ease and peace of mind when renting a{' '}
+        {convertToLabel(singularizeType(category)).toLowerCase()} in{' '}
+        {convertToLabel(state)}
+      </h2>
       <div className="description">
         <p>
           Discover the best of Dubai with our affordable and reliable car rental

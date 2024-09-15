@@ -7,6 +7,7 @@ import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrappe
 import MotionSection from '@/components/general/framer-motion/MotionSection'
 import { StateCategoryProps, VehicleHomeFilter } from '@/types'
 import { FetchVehicleCardsResponse } from '@/types/vehicle-types'
+import { convertToLabel } from '@/helpers'
 
 const MostPopular = async ({ state, category }: StateCategoryProps) => {
   const baseUrl = process.env.API_URL
@@ -27,10 +28,12 @@ const MostPopular = async ({ state, category }: StateCategoryProps) => {
     <MotionSection className="popular-section wrapper">
       <h2 className="heading ">
         Explore the most popular{' '}
-        <span className="yellow-gradient px-1 rounded-xl">{category}</span> for
-        rent in{' '}
+        <span className="yellow-gradient px-1 rounded-xl">
+          {convertToLabel(category)}
+        </span>{' '}
+        for rent in{' '}
         <span className="capitalize yellow-gradient px-2 rounded-xl">
-          {state}
+          {convertToLabel(state)}
         </span>
       </h2>
       <CarouselWrapper>

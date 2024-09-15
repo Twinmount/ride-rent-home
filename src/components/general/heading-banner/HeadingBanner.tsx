@@ -1,7 +1,5 @@
 import './HeadingBanner.scss'
-import BreadCrumb from '../breadcrump/BreadCrump'
 import { MotionH1 } from '../framer-motion/MotionElm'
-import MotionDiv from '../framer-motion/MotionDiv'
 
 export default function HeadingBanner({ heading }: { heading: string }) {
   return (
@@ -24,10 +22,6 @@ export default function HeadingBanner({ heading }: { heading: string }) {
       >
         {heading}
       </MotionH1>
-
-      {/* <MotionDiv>
-        <BreadCrumb />
-      </MotionDiv> */}
     </div>
   )
 }

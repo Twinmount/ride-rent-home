@@ -2,17 +2,17 @@
 
 import { useQuery } from '@tanstack/react-query'
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu'
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
 import { FaLink } from 'react-icons/fa6'
 import { fetchQuickLinksByValue } from '@/lib/next-api/next-api'
 import { LinkType } from '@/types'
 import { useParams, usePathname } from 'next/navigation'
+import { ChevronDown } from 'lucide-react'
 
 export default function QuickLinksDropdown() {
   const pathname = usePathname()
@@ -42,35 +42,34 @@ export default function QuickLinksDropdown() {
   }
 
   return (
-    <NavigationMenu className="-ml-2">
-      <NavigationMenuList>
-        <NavigationMenuItem className="!rounded-xl ">
-          <NavigationMenuTrigger className={''} disabled={isLoading}>
-            <FaLink className={`text-orange mr-1 text-lg `} />
-            <span>Quick Links</span>
-          </NavigationMenuTrigger>
-          <NavigationMenuContent className="!w-64 flex flex-col p-1 shadow-md !bg-white gap-1">
-            {linksData.length > 0 ? (
-              linksData.map((item) => (
-                <Link
-                  key={item.linkId}
-                  href={item.link}
-                  className={`cursor-pointer p-1 px-2 !rounded-xl flex items-center gap-x-1 hover:text-orange `}
-                >
-                  <FaLink className={`mr-1 text-base`} />
-                  <span
-                    className={`!text-sm whitespace-nowrap hover:text-orange truncate`}
-                  >
-                    {item.label}
-                  </span>
-                </Link>
-              ))
-            ) : (
-              <div className="rounded-md p-1">Oops! No Links found</div>
-            )}
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        className="flex items-center !rounded-xl"
+        disabled={isLoading}
+      >
+        <FaLink className="text-orange mr-1 text-lg font-semibold" />
+        <span>Quick Links</span>
+        <ChevronDown className="text-yellow" width={20} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="!w-64 flex flex-col p-1 shadow-md !bg-white gap-1">
+        {linksData.length > 0 ? (
+          linksData.map((item) => (
+            <DropdownMenuItem asChild key={item.linkId}>
+              <Link
+                href={item.link}
+                className="cursor-pointer p-1 px-2 !rounded-xl flex items-center gap-x-1 hover:text-orange"
+              >
+                <FaLink className="mr-1 text-base" />
+                <span className="!text-sm whitespace-nowrap hover:text-orange truncate">
+                  {item.label}
+                </span>
+              </Link>
+            </DropdownMenuItem>
+          ))
+        ) : (
+          <div className="rounded-md p-1">Oops! No Links found</div>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

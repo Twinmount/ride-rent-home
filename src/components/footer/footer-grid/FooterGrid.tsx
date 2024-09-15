@@ -6,6 +6,7 @@ import FooterLocations from './locations/FooterLocations'
 import FooterVehicleCategories from './vehicle-categories/FooterVehicleCategories'
 import FooterQuickLinks from './quick-links/FooterQuickLinks'
 import Link from 'next/link'
+import { CompanyLinks } from './company-links/CompanyLinks'
 
 const FooterGrid = () => {
   return (
@@ -13,18 +14,11 @@ const FooterGrid = () => {
       <FooterLocations />
 
       {/* links for the company */}
-      <div className="footer-section">
-        <h3 className="footer-grid-headings">Company</h3>
-        <div className="footer-links">
-          {company.map((item) => (
-            <Link href={item.link} className="link-wrapper" key={item.id}>
-              &sdot; <span className="link">{item.title}</span>
-            </Link>
-          ))}
-        </div>
-      </div>
+      <Suspense fallback={<div>Loading..</div>}>
+        <CompanyLinks />
+      </Suspense>
 
-      {/* links related to vehicles */}
+      {/* links related toW vehicles */}
       <FooterVehicleCategories />
 
       {/* quick links */}

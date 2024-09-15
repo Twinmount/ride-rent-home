@@ -9,8 +9,12 @@
     height: 75vh;
     position: relative;
     width: 100%;
-    margin-bottom: 2rem;
+    margin-bottom: 3.4rem;
 
+    #categories {
+      scroll-margin-top: 100px;
+      /* Adjust the value as needed */
+    }
 
     // mobile view button
     .mobile-list-btn {
@@ -51,23 +55,28 @@
           padding-right: 0.6rem;
           border-radius: 0.8rem;
           width: fit-content;
+          max-width: 95%;
           font-weight: 600;
+          font-size: 0.95rem;
           display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
           align-items: center;
           column-gap: 0.3rem;
         }
 
-        div {
+        .best-price {
           display: flex;
           flex-direction: column;
           text-align: center;
         }
 
-        div>p {
+        .best-price-p {
           color: white;
           margin: 0;
           padding: 0;
         }
+
 
         button {
           width: fit-content;
@@ -94,7 +103,7 @@
       }
     }
 
-    div {
+    .near-car {
       display: flex;
       justify-content: center;
       margin-top: 1.2rem;
@@ -115,6 +124,7 @@
   .landing-section {
     .landing-top {
       height: 65vh;
+      margin-bottom: 2rem;
 
       .landing-bg {
         background-size: auto 105%;
@@ -128,6 +138,13 @@
           margin-left: 2rem;
           width: fit-content;
           align-items: start;
+
+          .trust {
+            font-size: 1.05rem;
+            justify-content: start;
+            flex-wrap: nowrap;
+            max-width: fit-content;
+          }
 
           div {
             align-items: start;

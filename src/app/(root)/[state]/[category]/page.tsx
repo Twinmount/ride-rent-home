@@ -51,11 +51,11 @@ export default function Home({ params: { state, category } }: PageProps) {
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
-        <RideRentFeatures />
+        <RideRentFeatures state={state} category={category} />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
-        <Documents />
+        <Documents state={state} category={category} />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
@@ -63,7 +63,7 @@ export default function Home({ params: { state, category } }: PageProps) {
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
-        <WhyOpt />
+        <WhyOpt state={state} category={category} />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>

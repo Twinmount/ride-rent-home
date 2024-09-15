@@ -5,6 +5,7 @@ import MotionDiv from '@/components/general/framer-motion/MotionDiv'
 import Link from 'next/link'
 import VehicleCategories from '../vehicle-categories/VehicleCategories'
 import { StateCategoryProps } from '@/types'
+import { convertToLabel } from '@/helpers'
 
 const Landing = ({ state, category }: StateCategoryProps) => {
   return (
@@ -24,18 +25,26 @@ const Landing = ({ state, category }: StateCategoryProps) => {
         {/* wrapping with custom child component div for bg image */}
         <BackgroundDiv category={category}>
           <MotionDiv className={`landing-text-container`}>
-            <p className="trust">
+            <div className="trust">
               <FaRegThumbsUp />
-              Most Trusted <span className="capitalize">{category}</span> Rental
-              Services In <span className="capitalize">{state}</span> !
-            </p>
-            <div>
-              <p>Best Prices & No Commission</p>
-              <p>More than 1000+ options to choose from...</p>
+              Most Trusted Vehicle Renting Platform In
+              <span className="capitalize">{convertToLabel(state)}</span> !
             </div>
-            <button id="view-all-cars" className="default-btn yellow-gradient">
-              View all cars
-            </button>
+            <div className="best-price">
+              <p className="best-price-p">Explore thousands of vehicles</p>
+              <p className="best-price-p">
+                Get unbeatable deals & pay{' '}
+                <span className="text-yellow font-semibold">Zero</span>{' '}
+                commission!
+              </p>
+            </div>
+            <a
+              href="#categories"
+              id="view-all-cars"
+              className="default-btn yellow-gradient"
+            >
+              View all offers
+            </a>
           </MotionDiv>
         </BackgroundDiv>
 
@@ -47,8 +56,8 @@ const Landing = ({ state, category }: StateCategoryProps) => {
           <span>Ride.Rent</span> ensures that you have access to the best and
           <span>
             {' '}
-            most affordable {category} rental services in{' '}
-            <span className="capitalize">{state}</span>&nbsp;!.
+            most affordable {convertToLabel(category)} rental services in{' '}
+            <span className="capitalize">{convertToLabel(state)}</span>&nbsp;!.
           </span>
           Take advantage of our exceptional offers on car rentals throughout
           Dubai, with Ride On Rent, each car is well maintained and pre-serviced
@@ -58,8 +67,8 @@ const Landing = ({ state, category }: StateCategoryProps) => {
         </p>
 
         <div className="near-car">
-          <p>Find {category} near you in</p>
-          <span>{state}</span>
+          <p>Find {convertToLabel(category)} near you in</p>
+          <span>{convertToLabel(state)}</span>
         </div>
       </div>
     </section>

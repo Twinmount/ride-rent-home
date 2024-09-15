@@ -85,7 +85,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
                 className="spec-icon "
               />
 
-              {spec.value || 'N/A'}
+              <div className="each-spec-value">{spec.name || 'N/A'}</div>
             </div>
           ))}
         </Link>

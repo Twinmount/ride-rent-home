@@ -50,19 +50,22 @@ const Images = ({ photos }: ImagesProps) => {
         }}
       >
         <CarouselContent className="gap-2 -mx-1 w-full h-full max-w-full sub-container">
-          {photos.map((src, index) => (
-            <CarouselItem
-              key={index}
-              className="w-full min-w-[100%] rounded-[1rem] relative p-0  overflow-hidden"
-            >
-              <Image
-                src={src}
-                alt={`Vehicle image ${index + 1}`}
-                className="w-full h-full object-contain rounded-[1rem]"
-                fill
-              />
-            </CarouselItem>
-          ))}
+          {photos.map((src, index) => {
+            console.log(src)
+            return (
+              <CarouselItem
+                key={index}
+                className="w-full min-w-[100%] rounded-[1rem] relative p-0  overflow-hidden"
+              >
+                <Image
+                  src={src}
+                  alt={`Vehicle image ${index + 1}`}
+                  className="w-full h-full object-contain rounded-[1rem]"
+                  fill
+                />
+              </CarouselItem>
+            )
+          })}
         </CarouselContent>
         <CarouselPrevious className="max-md:hidden ml-[2.8rem]" />
         <CarouselNext className="max-md:hidden mr-[2.8rem]" />

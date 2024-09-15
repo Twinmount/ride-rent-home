@@ -2,28 +2,31 @@
 
 import styles from '../navbar/Navbar.module.scss'
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu'
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+
 import { FaLocationDot } from 'react-icons/fa6'
 import { useQuery } from '@tanstack/react-query'
 import { fetchStates } from '@/lib/next-api/next-api'
 import { StateType } from '@/types'
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { useParams, usePathname } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
+import { ChevronDown } from 'lucide-react'
 
 export default function StatesDropdown() {
+  const router = useRouter()
+  const pathname = usePathname()
+
   // State to hold the selected state
   const [selectedState, setSelectedState] = useState<StateType | undefined>(
     undefined
   )
   const { state, category } = useParams<{ state: string; category: string }>()
-  const pathname = usePathname()
 
+  // Query to fetch states
   const { data, isLoading } = useQuery({
     queryKey: ['states'],
     queryFn: fetchStates,
@@ -39,8 +42,13 @@ export default function StatesDropdown() {
       if (foundState) {
         setSelectedState(foundState)
       } else {
-        // If no specific state is found, set the first state as default
-        setSelectedState(states[0])
+        // Set default state to "Dubai"
+        const defaultState = states.find((data) => data.stateValue === 'dubai')
+        if (defaultState) {
+          setSelectedState(defaultState)
+          // Navigate to the "Dubai" state if the state is not found
+          router.push(`/dubai/${category}`)
+        }
       }
     }
   }, [state, states])
@@ -58,45 +66,46 @@ export default function StatesDropdown() {
     return null
   }
 
+  // Function to handle state selection
+  const handleStateSelect = (stateValue: string) => {
+    router.push(`/${stateValue}/${category}`) // Navigate to the selected state
+  }
+
   return (
-    <NavigationMenu className="-mr-10 max-lg:-mr-5">
-      <NavigationMenuList>
-        <NavigationMenuItem className="!rounded-xl">
-          <NavigationMenuTrigger
-            className={`${styles['nav-item']} ${styles['nav-items-icon']} border-none outline-none !w-auto truncate flex justify-end`}
-            disabled={isLoading}
-          >
-            <FaLocationDot
-              width={20}
-              height={20}
-              className={`${styles['nav-items-icon']}`}
-            />
-            <span>
-              {selectedState ? selectedState.stateName : 'Select Location'}
-            </span>
-          </NavigationMenuTrigger>
-          <NavigationMenuContent className="!w-44 flex flex-col p-1 bg-white shadow-md !rounded-xl gap-1">
-            {states.length > 0 ? (
-              states.map((data) => (
-                <Link
-                  key={data.stateId}
-                  href={`/${data.stateValue}/${category}`}
-                  className={`cursor-pointer p-1 px-2 flex gap-x-1 items-center !rounded-xl hover:text-orange ${
-                    data.stateValue === state ? 'text-yellow' : ''
-                  }`}
-                >
-                  <FaLocationDot
-                    className={`${styles['nav-items-icon']} scale-90`}
-                  />
-                  <span className="text-base">{data.stateName}</span>
-                </Link>
-              ))
-            ) : (
-              <div>No states Found</div>
-            )}
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        className={`${styles['nav-item']} ${styles['nav-items-icon']} border-none outline-none !w-auto truncate flex justify-end`}
+      >
+        <FaLocationDot
+          width={20}
+          height={20}
+          className={`${styles['nav-items-icon']}`}
+        />
+        <span>
+          {selectedState ? selectedState.stateName : 'Select Location'}
+        </span>
+        <ChevronDown className="text-yellow relative right-1" width={20} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="!w-44 flex flex-col p-1 bg-white shadow-md !rounded-xl gap-1">
+        {states.length > 0 ? (
+          states.map((data) => (
+            <DropdownMenuItem
+              key={data.stateId}
+              onClick={() => handleStateSelect(data.stateValue)}
+              className={`cursor-pointer p-1 px-2 flex gap-x-1 items-center !rounded-xl hover:text-orange ${
+                data.stateValue === state ? 'text-yellow' : ''
+              }`}
+            >
+              <FaLocationDot
+                className={`${styles['nav-items-icon']} scale-90`}
+              />
+              <span className="text-base">{data.stateName}</span>
+            </DropdownMenuItem>
+          ))
+        ) : (
+          <DropdownMenuItem disabled>No states found</DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

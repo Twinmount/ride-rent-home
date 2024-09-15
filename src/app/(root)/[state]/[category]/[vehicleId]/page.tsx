@@ -85,11 +85,13 @@ export default async function VehicleDetails({
             <div className="details">
               {/* Images */}
               <Images photos={vehicle?.vehiclePhotos} />
+
               {/* Specification */}
               <Specification
                 specifications={vehicle?.specs}
                 vehicleCategory={category}
               />
+
               {/* Features */}
               <VehicleFeatures
                 features={vehicle?.features}
@@ -123,7 +125,7 @@ export default async function VehicleDetails({
       </Suspense>
 
       {/* Why Opt Ride.Rent and Available Locations */}
-      <WhyOpt />
+      <WhyOpt state={state} category={category} />
 
       {/* available locations */}
       <Suspense fallback={<SectionLoading />}>

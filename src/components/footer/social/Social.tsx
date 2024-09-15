@@ -3,7 +3,6 @@ import { socials } from '.'
 import './Social.scss'
 import { FaPhoneVolume } from 'react-icons/fa6'
 import MotionDiv from '../../general/framer-motion/MotionDiv'
-import { Send } from 'lucide-react'
 
 const Social = () => {
   return (
@@ -32,14 +31,6 @@ const Social = () => {
             </a>
           </div>
         </div>
-
-        {/* email */}
-        {/* <div className="mail-box">
-          <input type="mail" placeholder="Subscribe for offers and alerts" />
-          <button className="mail-btn" aria-label="send-mail">
-            <Send className="text-yellow" />
-          </button>
-        </div> */}
       </div>
 
       {/* social */}
