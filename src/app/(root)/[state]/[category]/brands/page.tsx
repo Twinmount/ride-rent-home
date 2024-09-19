@@ -62,7 +62,7 @@ export default async function Brands({
               >
                 <div className="flex-center w-auto h-[6.5rem] p-2 ">
                   <img
-                    src={`${baseAssetsUrl}/icons/brands/bugatti.png`}
+                    src={`${baseAssetsUrl}/icons/brands/${data.brandValue}.png`}
                     alt={data.brandName}
                     className="object-contain w-[95%] h-full max-w-28"
                   />

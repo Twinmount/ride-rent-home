@@ -50,8 +50,8 @@ export default async function TopBrands({
             className="brand-card slide-visible"
           >
             <div className="image-box">
-              <Image
-                src={`${baseAssetsUrl}/icons/brands/bugatti.png`}
+              <img
+                src={`${baseAssetsUrl}/icons/brands/${brand.brandValue}.png`}
                 width={80}
                 height={80}
                 alt={brand.brandName}

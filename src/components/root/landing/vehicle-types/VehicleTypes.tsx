@@ -21,11 +21,13 @@ const VehicleTypes = ({
   const [isSmallScreen, setIsSmallScreen] = useState(false)
   const [showAllTypes, setShowAllTypes] = useState(false)
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['vehicleTypes', category],
     queryFn: () => fetchVehicleTypesByValue(category),
     enabled: !!category,
   })
+
+  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,10 +47,6 @@ const VehicleTypes = ({
       }
     }
   }, [])
-
-  if (['buses', 'vans', 'yachts', 'buggies'].includes(category)) {
-    return null
-  }
 
   const vehicleTypes: VehicleTypeType[] = data?.result?.list || []
 
@@ -82,10 +80,10 @@ const VehicleTypes = ({
               className="vehicle-types-card"
             >
               <div className="top">
-                <Image
+                <img
                   width={100}
                   height={100}
-                  src={`/assets/icons/vehicle-types/${category}/${type.value}.webp`}
+                  src={`${baseAssetsUrl}/icons/vehicle-types/${category}/${type.value}.webp`}
                   alt={`${type.name} Icon`}
                 />
               </div>

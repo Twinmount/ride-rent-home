@@ -16,20 +16,72 @@ import Locations from '@/components/common/locations/Locations'
 import FAQ from '@/components/common/FAQ/FAQ'
 import RelatedResults from '@/components/root/vehicle details/related-results/RelatedResults'
 import { VehicleDetailsResponse } from '@/types/vehicle-details-types'
-import { VehicleHomeFilter } from '@/types'
+import { PageProps, VehicleHomeFilter } from '@/types'
 import QuickLinks from '@/components/root/vehicle details/quick-links/QuickLinks'
 import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
 
 type ParamsProps = {
   params: { state: string; category: string; vehicleId: string }
   searchParams: { [key: string]: string | undefined }
 }
 
+export async function generateMetadata({
+  params: { vehicleId },
+}: ParamsProps): Promise<Metadata> {
+  const baseUrl = process.env.API_URL
+  // Fetch brand data from your API endpoint
+  const response = await fetch(
+    `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
+    {
+      method: 'GET',
+    }
+  )
+
+  // Parse the JSON response
+  const data: VehicleDetailsResponse = await response.json()
+
+  // Determine the seat part of the title
+  let seatPart = ''
+  const seats = data.result.specs['Seating Capacity']?.value
+
+  if (seats) {
+    seatPart = seats === '1' ? 'Single Seater' : `${seats} Seater`
+  }
+
+  // Construct the title
+  const title = `Affordable premium ${data.result.brand.label} ${
+    data.result.modelName
+  } ${data.result.subTitle} | Hire for rent in ${data.result.state.label}${
+    seatPart ? `, ${seatPart}` : ''
+  }`
+
+  // Construct the description using dynamic values from the response
+  const description = `Looking to hire a premium ${data.result.brand.label} ${
+    data.result.modelName
+  } ${data.result.subTitle} in ${
+    data.result.state.label
+  }? Ride.Rent offers the ${
+    seats === '1' ? 'single' : seats
+  } seater luxury vehicle for rent at affordable rates. Perfect for business trips, city tours, or personal travel, this stylish and comfortable car provides a top-notch driving experience. Enjoy flexible rental terms, daily, weekly, or monthly, with no hidden fees. Book your ${
+    data.result.brand.label
+  } ${
+    data.result.modelName
+  } today with Ride.Rent and enjoy a smooth ride through ${
+    data.result.state.label
+  }'s vibrant cityscape!`
+
+  return {
+    title,
+    description,
+  }
+}
+
 export default async function VehicleDetails({
   params: { state, category, vehicleId },
   searchParams,
 }: ParamsProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL
+  const baseUrl = process.env.API_URL
   const filter = searchParams.filter || VehicleHomeFilter.POPULAR_MODELS
   // Fetch the vehicle data from the API
   const response = await fetch(
@@ -49,14 +101,25 @@ export default async function VehicleDetails({
       {/* Details heading */}
       <MotionDiv className="heading-box">
         <h1 className="custom-heading">{vehicle?.modelName}</h1>
-        <p>{vehicle?.subTitle ? vehicle?.subTitle : 'Sample subTitle'}</p>
+        <p>
+          Rent {vehicle?.brand.label} {vehicle?.modelName}{' '}
+          {new Date().getFullYear()} model in {vehicle?.state.label}. Enjoy
+          flexible rental terms with no hidden fees.
+          {vehicle?.company.companySpecs.isCryptoAccepted
+            ? 'Crypto payments are accepted.'
+            : 'Crypto payments are not accepted.'}
+          Available for {vehicle?.rentalDetails.day.enabled ? 'Daily' : ''}
+          {vehicle?.rentalDetails.week.enabled ? ', Weekly' : ''}
+          {vehicle?.rentalDetails.month.enabled ? ', Monthly' : ''}
+          Rentals.
+        </p>
 
         {/* state and first 5 cities */}
         <div className="location-container">
           <div className="location">
             <IoLocationOutline
               size={20}
-              className="text-yellow relative bottom-1"
+              className="text-yellow relative bottom-[2px]"
               strokeWidth={3}
               fill="yellow"
             />
@@ -78,6 +141,7 @@ export default async function VehicleDetails({
       <DetailsSectionClient
         company={vehicle?.company}
         rentalDetails={vehicle?.rentalDetails}
+        vehicleId={vehicleId}
       >
         <section className="details-section">
           <div className="details-container">
@@ -105,6 +169,7 @@ export default async function VehicleDetails({
               <ProfileCard
                 company={vehicle?.company}
                 rentalDetails={vehicle?.rentalDetails}
+                vehicleId={vehicleId}
               />
 
               <QuickLinks state={state} />
@@ -114,7 +179,7 @@ export default async function VehicleDetails({
       </DetailsSectionClient>
 
       {/* Description */}
-      <Description />
+      <Description description={vehicle.description} />
 
       {/* related result */}
       <RelatedResults state={state} category={category} filter={filter} />

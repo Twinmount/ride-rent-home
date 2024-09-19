@@ -5,11 +5,11 @@ import MotionDiv from '@/components/general/framer-motion/MotionDiv'
 import Link from 'next/link'
 import VehicleCategories from '../vehicle-categories/VehicleCategories'
 import { StateCategoryProps } from '@/types'
-import { convertToLabel } from '@/helpers'
+import { convertToLabel, singularizeType } from '@/helpers'
 
 const Landing = ({ state, category }: StateCategoryProps) => {
   return (
-    <section className="landing-section  ">
+    <section className="landing-section">
       <div className="landing-top">
         {/* mobile visible button */}
         <Link
@@ -56,7 +56,9 @@ const Landing = ({ state, category }: StateCategoryProps) => {
           <span>Ride.Rent</span> ensures that you have access to the best and
           <span>
             {' '}
-            most affordable {convertToLabel(category)} rental services in{' '}
+            most affordable{' '}
+            {convertToLabel(singularizeType(category)).toLowerCase()} rental
+            services in{' '}
             <span className="capitalize">{convertToLabel(state)}</span>&nbsp;!.
           </span>
           Take advantage of our exceptional offers on car rentals throughout
@@ -67,7 +69,7 @@ const Landing = ({ state, category }: StateCategoryProps) => {
         </p>
 
         <div className="near-car">
-          <p>Find {convertToLabel(category)} near you in</p>
+          <p>Find {convertToLabel(category).toLowerCase()} near you in</p>
           <span>{convertToLabel(state)}</span>
         </div>
       </div>

@@ -15,9 +15,9 @@ const Footer = () => {
         <div className="header-logo">
           <figure>
             <Image
-              src={'/assets/logo/riderent-logo-white.webp'}
-              width={100}
-              height={40}
+              src={'/assets/logo/footer-icon.png'}
+              width={200}
+              height={120}
               className="header-img"
               alt="Ride Rent Logo"
             />

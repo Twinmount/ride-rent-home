@@ -1,5 +1,5 @@
+import type { Metadata } from 'next'
 import FAQ from '@/components/common/FAQ/FAQ'
-import WhyOpt from '@/components/common/why-opt/WhyOpt'
 import SectionLoading from '@/components/general/section-loading/SectionLoading'
 import Affordable from '@/components/root/landing/affordable/Affordable'
 import Documents from '@/components/root/landing/documents/Documents'
@@ -14,7 +14,25 @@ import Promotions from '@/components/root/landing/promotion/Promotions'
 import TopBrands from '@/components/root/landing/top-brands/TopBrands'
 import VehicleTypes from '@/components/root/landing/vehicle-types/VehicleTypes'
 import { Suspense } from 'react'
-import { PageProps } from '@/types'
+import { HomePageMetaResponse, PageProps } from '@/types'
+
+export async function generateMetadata({
+  params: { state },
+}: PageProps): Promise<Metadata> {
+  const baseUrl = process.env.API_URL
+  // Fetch brand data from your API endpoint
+  const response = await fetch(`${baseUrl}/metadata/homepage?state=${state}`, {
+    method: 'GET',
+  })
+
+  // Parse the JSON response
+  const data: HomePageMetaResponse = await response.json()
+
+  return {
+    title: data.result.metaTitle,
+    description: data.result.metaDescription,
+  }
+}
 
 export default function Home({ params: { state, category } }: PageProps) {
   return (
@@ -60,10 +78,6 @@ export default function Home({ params: { state, category } }: PageProps) {
 
       <Suspense fallback={<SectionLoading />}>
         <FAQ stateValue={state || 'dubai'} />
-      </Suspense>
-
-      <Suspense fallback={<SectionLoading />}>
-        <WhyOpt state={state} category={category} />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>

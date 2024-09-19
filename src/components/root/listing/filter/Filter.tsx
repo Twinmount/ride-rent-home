@@ -274,7 +274,6 @@ export default function Filter({
           className="apply"
           onClick={() => {
             applyFilters()
-            console.log(selectedFilters)
           }}
         >
           Apply Filters <RiListSettingsFill />

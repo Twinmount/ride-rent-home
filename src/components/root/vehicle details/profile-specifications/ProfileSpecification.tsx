@@ -13,9 +13,9 @@ const ProfileSpecification = ({
 }: ProfileSpecificationProps) => {
   // Helper function to determine which rental option to display
   const getRentalAvailability = () => {
-    if (specs.isMonthlyRentalAvailable) return 'Monthly Rentals Available'
-    if (specs.isWeeklyRentalAvailable) return 'Weekly Rentals Available'
-    if (specs.isDailyRentalAvailable) return 'Daily Rentals Available'
+    if (rentalDetails.month.enabled) return 'Monthly Rentals Available'
+    if (rentalDetails.week.enabled) return 'Weekly Rentals Available'
+    if (rentalDetails.day.enabled) return 'Daily Rentals Available'
     return 'No Rentals Available'
   }
 

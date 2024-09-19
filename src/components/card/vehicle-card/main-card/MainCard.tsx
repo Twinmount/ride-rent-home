@@ -1,26 +1,27 @@
 import './MainCard.scss'
-import { FaWhatsappSquare } from 'react-icons/fa'
-import { ImMail } from 'react-icons/im'
 import Link from 'next/link'
 import Image from 'next/image'
 import { VehicleCardType } from '@/types/vehicle-types'
 import { StateCategoryProps } from '@/types'
 import { IoLocationOutline } from 'react-icons/io5'
-import Phone from '@/components/common/phone/Phone'
 import { formatKeyForIcon, formatPhoneNumber } from '@/helpers'
+import ContactIcons from '@/components/common/contact-icons/ContactIcons'
 
 type MainCardProps = {
   vehicle: VehicleCardType
 } & StateCategoryProps
 
 const MainCard = ({ vehicle, state, category }: MainCardProps) => {
-  const formattedPhoneNumber = formatPhoneNumber(
-    vehicle.countryCode,
-    vehicle.phoneNumber
-  )
+  const formattedPhoneNumber =
+    vehicle.phoneNumber && vehicle.countryCode
+      ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
+      : null // if null phone number
+
   const message = `Hello, I am interested in the ${vehicle.model}. Could you please provide more details?`
   const encodedMessage = encodeURIComponent(message)
-  const whatsappUrl = `https://wa.me/${vehicle.countryCode}${vehicle.phoneNumber}?text=${encodedMessage}`
+  const whatsappUrl = vehicle.whatsappPhone
+    ? `https://wa.me/${vehicle.whatsappCountryCode}${vehicle.whatsappPhone}?text=${encodedMessage}`
+    : null //if null WhatsApp details
 
   // Base URL for fetching icons
   const baseAssetsUrl = process.env.ASSETS_URL
@@ -42,21 +43,40 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
         className="card-top"
       >
         <div className="image-box">
-          <Image
-            width={300}
-            height={300}
-            src={vehicle.thumbnail}
-            alt={vehicle.model}
-            className="car-image"
-          />
-
-          <Image
-            width={40}
-            height={40}
-            src={vehicle.companyLogo}
-            alt="profile"
-            className="profile-icon"
-          />
+          {/* Thumbnail Image */}
+          {vehicle.thumbnail ? (
+            <Image
+              src={vehicle.thumbnail}
+              alt={vehicle.model || 'Vehicle Image'}
+              width={400}
+              height={400}
+              className="vehicle-image"
+            />
+          ) : (
+            <img
+              src={vehicle.thumbnail} // Fallback or invalid URL handling
+              alt="Vehicle Image"
+              className="vehicle-image"
+            />
+          )}
+          {/* profile */}
+          {vehicle.companyLogo ? (
+            <Image
+              width={40}
+              height={40}
+              src={vehicle.companyLogo}
+              alt="Company Logo"
+              className="profile-icon"
+            />
+          ) : (
+            <img
+              src={vehicle.companyLogo} // Fallback for logo
+              alt="Company Logo"
+              width={40}
+              height={40}
+              className="profile-icon"
+            />
+          )}
           <span>{vehicle.brandName}</span>
         </div>
       </Link>
@@ -108,26 +128,12 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
             RENT NOW
             <span>Available now for chat</span>
           </Link>
-          <div className="icons">
-            <a
-              href={whatsappUrl}
-              aria-label="whatsapp"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaWhatsappSquare className="icon whatsapp" />
-            </a>
-            <a
-              href={`mailto:${vehicle.email}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ImMail className="icon mail" />
-            </a>
-
-            {/* Pass the formatted phone number to the Phone component */}
-            <Phone phoneNumber={formattedPhoneNumber} />
-          </div>
+          <ContactIcons
+            vehicleId={vehicle.vehicleId}
+            whatsappUrl={whatsappUrl}
+            email={vehicle.email}
+            phoneNumber={formattedPhoneNumber}
+          />
         </div>
       </div>
     </div>

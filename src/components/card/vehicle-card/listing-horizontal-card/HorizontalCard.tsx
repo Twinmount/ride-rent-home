@@ -1,15 +1,13 @@
 import './HorizontalCard.scss'
-import { FaWhatsappSquare } from 'react-icons/fa'
-import { ImMail } from 'react-icons/im'
 import { IoLocationOutline } from 'react-icons/io5'
 import Specifications from '../../../root/listing/specifications/Specifications'
 import { FC } from 'react'
 import { MotionDivElm } from '@/components/general/framer-motion/MotionElm'
-import Phone from '@/components/common/phone/Phone'
 import Image from 'next/image'
 import { VehicleCardType } from '@/types/vehicle-types'
-import { formatKeyForIcon } from '@/helpers'
+import { formatKeyForIcon, formatPhoneNumber } from '@/helpers'
 import Link from 'next/link'
+import ContactIcons from '@/components/common/contact-icons/ContactIcons'
 
 type HorizontalCardProps = {
   vehicle: VehicleCardType
@@ -22,10 +20,15 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
   category,
   state,
 }) => {
-  const formattedPhoneNumber = `${vehicle.countryCode}${vehicle.phoneNumber}`
+  const formattedPhoneNumber = vehicle.phoneNumber && vehicle.countryCode
+    ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
+    : null
+
   const message = `Hello, I am interested in the ${vehicle.model}. Could you please provide more details?`
   const encodedMessage = encodeURIComponent(message)
-  const whatsappUrl = `https://wa.me/${formattedPhoneNumber}?text=${encodedMessage}`
+  const whatsappUrl = vehicle.whatsappPhone
+    ? `https://wa.me/${vehicle.whatsappCountryCode}${vehicle.whatsappPhone}?text=${encodedMessage}`
+    : null
 
   // Determine which rental period to display
   const rentalPeriod = vehicle.rentalDetails.day?.enabled
@@ -53,13 +56,22 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
       {/* card left */}
       <div className="card-left">
         <Link href={vehicleDetailsLink} className="image-box">
-          <Image
-            width={400}
-            height={400}
-            src={vehicle.thumbnail}
-            alt={vehicle.model}
-            className="vehicle-image"
-          />
+          {/* Thumbnail Image */}
+          {vehicle.thumbnail ? (
+            <Image
+              src={vehicle.thumbnail}
+              alt={vehicle.model || 'Vehicle Image'}
+              width={400}
+              height={400}
+              className="vehicle-image"
+            />
+          ) : (
+            <img
+              src={vehicle.thumbnail} // Fallback or invalid URL handling
+              alt="Vehicle Image"
+              className="vehicle-image"
+            />
+          )}
           <span className="brand">{vehicle.brandName}</span>
         </Link>
       </div>
@@ -98,12 +110,22 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
         <div className="bottom-box">
           <div className="bottom-left">
             <Link href={vehicleDetailsLink} className="profile">
-              <Image
-                width={60}
-                height={60}
-                src={vehicle.companyLogo}
-                alt="profile"
-              />
+              {/* Company Logo */}
+              {vehicle.companyLogo ? (
+                <Image
+                  width={40}
+                  height={40}
+                  src={vehicle.companyLogo}
+                  alt="Company Logo"
+                  className="profile-icon"
+                />
+              ) : (
+                <img
+                  src={vehicle.companyLogo} // Fallback for logo
+                  alt="Company Logo"
+                  className="profile-icon"
+                />
+              )}
             </Link>
 
             <Link href={vehicleDetailsLink} className="location">
@@ -128,24 +150,12 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
             </Link>
 
             {/* Icons for WhatsApp and email */}
-            <div className="icons">
-              <a
-                href={whatsappUrl}
-                aria-label="whatsapp"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaWhatsappSquare className="icon whatsapp" />
-              </a>
-              <a
-                href={`mailto:${vehicle.email}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ImMail className="icon mail" />
-              </a>
-              <Phone phoneNumber={formattedPhoneNumber} />
-            </div>
+            <ContactIcons
+              vehicleId={vehicle.vehicleId}
+              whatsappUrl={whatsappUrl}
+              email={vehicle.email}
+              phoneNumber={formattedPhoneNumber}
+            />
           </div>
         </div>
       </div>

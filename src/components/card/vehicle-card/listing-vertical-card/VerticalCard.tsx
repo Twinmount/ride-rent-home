@@ -1,14 +1,12 @@
 import './VerticalCard.scss'
-import { FaWhatsappSquare } from 'react-icons/fa'
-import { ImMail } from 'react-icons/im'
 import { IoLocationOutline } from 'react-icons/io5'
 import { FC } from 'react'
 import { MotionDivElm } from '@/components/general/framer-motion/MotionElm'
-import Phone from '@/components/common/phone/Phone'
 import { VehicleCardType } from '@/types/vehicle-types'
-import { formatKeyForIcon } from '@/helpers'
+import { formatKeyForIcon, formatPhoneNumber } from '@/helpers'
 import Link from 'next/link'
 import Image from 'next/image'
+import ContactIcons from '@/components/common/contact-icons/ContactIcons'
 
 type VerticalCardProps = {
   vehicle: VehicleCardType
@@ -17,10 +15,16 @@ type VerticalCardProps = {
 }
 
 const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
-  const formattedPhoneNumber = `${vehicle.countryCode}${vehicle.phoneNumber}`
+  const formattedPhoneNumber =
+    vehicle.phoneNumber && vehicle.countryCode
+      ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
+      : null
+
   const message = `Hello, I am interested in the ${vehicle.model}. Could you please provide more details?`
   const encodedMessage = encodeURIComponent(message)
-  const whatsappUrl = `https://wa.me/${formattedPhoneNumber}?text=${encodedMessage}`
+  const whatsappUrl = vehicle.whatsappPhone
+    ? `https://wa.me/${vehicle.whatsappCountryCode}${vehicle.whatsappPhone}?text=${encodedMessage}`
+    : null // Handle null WhatsApp details
 
   // Determine which rental period to display
   const rentalPeriod = vehicle.rentalDetails.day?.enabled
@@ -49,20 +53,41 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
       <Link href={vehicleDetailsLink}>
         <div className="card-top">
           <div className="image-box">
-            <Image
-              src={vehicle.thumbnail}
-              alt={vehicle.model}
-              width={400}
-              height={400}
-              className="car-image"
-            />
-            <Image
-              width={40}
-              height={40}
-              src={vehicle.companyLogo}
-              alt="profile"
-              className="profile-icon"
-            />
+            {/* Thumbnail Image */}
+            {vehicle.thumbnail ? (
+              <Image
+                src={vehicle.thumbnail}
+                alt={vehicle.model || 'Vehicle Image'}
+                width={400}
+                height={400}
+                className="vehicle-image"
+              />
+            ) : (
+              <img
+                src={vehicle.thumbnail} // Fallback or invalid URL handling
+                alt="Vehicle Image"
+                className="vehicle-image"
+              />
+            )}
+
+            {/* Company Logo */}
+            {vehicle.companyLogo ? (
+              <Image
+                width={40}
+                height={40}
+                src={vehicle.companyLogo}
+                alt="Company Logo"
+                className="profile-icon"
+              />
+            ) : (
+              <img
+                src={vehicle.companyLogo} // Fallback for logo
+                alt="Company Logo"
+                width={40}
+                height={40}
+                className="profile-icon"
+              />
+            )}
             <span className="brand">{vehicle.brandName}</span>
           </div>
         </div>
@@ -116,27 +141,12 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
             </div>
           </Link>
 
-          {/* Icons section, excluded from the Link */}
-          <div className="icons">
-            <a
-              href={whatsappUrl}
-              aria-label="whatsapp"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaWhatsappSquare className="icon whatsapp" />
-            </a>
-            <a
-              href={`mailto:${vehicle.email}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ImMail className="icon mail" />
-            </a>
-
-            {/* Pass the formatted phone number to the Phone component */}
-            <Phone phoneNumber={formattedPhoneNumber} />
-          </div>
+          <ContactIcons
+            vehicleId={vehicle.vehicleId}
+            whatsappUrl={whatsappUrl}
+            email={vehicle.email}
+            phoneNumber={formattedPhoneNumber}
+          />
         </div>
       </div>
     </MotionDivElm>

@@ -22,6 +22,7 @@ export type Spec = {
   name: string
   value: string
   selected: boolean
+  hoverInfo?: string
 }
 
 export type Specs = Record<string, Spec>
@@ -57,18 +58,13 @@ export type ContactDetails = {
 export type CompanySpecs = {
   isCryptoAccepted: boolean
   isSpotDeliverySupported: boolean
-  isMonthlyRentalAvailable: boolean
-  isDailyRentalAvailable: boolean
-  isWeeklyRentalAvailable: boolean
-  isCardAccepted: boolean
-  isFiatCurrencyAccepted: boolean
 }
 
 export type Company = {
   companyProfile: string
   companyName: string
   companySpecs: CompanySpecs
-  contactDetails: ContactDetails
+  contactDetails: ContactDetails | null
 }
 
 export type VehicleDetailsResponse = {
@@ -84,6 +80,7 @@ export type VehicleDetailsResponse = {
     features: Features
     rentalDetails: RentalDetails
     company: Company
+    description: string
   }
   statusCode: number
 }

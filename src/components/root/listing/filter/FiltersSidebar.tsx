@@ -292,7 +292,6 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
             className="flex-center w-[93%] h-10 bg-yellow gap-x-2 rounded-xl mx-auto text-white text-lg hover:bg-yellow hover:shadow-md"
             onClick={() => {
               applyFilters()
-              console.log(selectedFilters)
             }}
           >
             Apply Filters <RiListSettingsFill />

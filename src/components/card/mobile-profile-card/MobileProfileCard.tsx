@@ -1,22 +1,22 @@
 import './MobileProfileCard.scss'
 
 import { MdOutlineExpandCircleDown, MdVerifiedUser } from 'react-icons/md'
-import { FaWhatsappSquare } from 'react-icons/fa'
-import { ImMail } from 'react-icons/im'
 import { SiTicktick } from 'react-icons/si'
 import { useState } from 'react'
 import ProfileSpecification from '@/components/root/vehicle details/profile-specifications/ProfileSpecification'
-import Phone from '@/components/common/phone/Phone'
 import { Company, RentalDetails } from '@/types/vehicle-details-types'
+import ContactIcons from '@/components/common/contact-icons/ContactIcons'
 
 type MobileProfileCardProps = {
   company: Company
   rentalDetails: RentalDetails
+  vehicleId: string
 }
 
 const MobileProfileCard = ({
   company,
   rentalDetails,
+  vehicleId,
 }: MobileProfileCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -31,10 +31,14 @@ const MobileProfileCard = ({
     setIsExpanded(false)
   }
 
+  // Handle case where contactDetails is null
+  const contactDetails = company?.contactDetails
   const message =
     'Hello, I would like to connect with you regarding the vehicle listed on Ride.Rent.'
   const encodedMessage = encodeURIComponent(message)
-  const whatsappUrl = `https://wa.me/${company?.contactDetails?.whatsappCountryCode}${company.contactDetails.whatsappPhone}?text=${encodedMessage}`
+  const whatsappUrl = contactDetails
+    ? `https://wa.me/${contactDetails.whatsappCountryCode}${contactDetails.whatsappPhone}?text=${encodedMessage}`
+    : null // Handle null WhatsApp details
 
   return (
     <div
@@ -79,26 +83,12 @@ const MobileProfileCard = ({
               RENT NOW
               <span>Available now for chat</span>
             </div>
-            <div className="icons">
-              <a
-                href={whatsappUrl}
-                aria-label="whatsapp"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaWhatsappSquare className="icon whatsapp" />
-              </a>
-              <a
-                href={`mailto:${company.contactDetails.email}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ImMail className="icon mail" />
-              </a>
-
-              {/* phone icon */}
-              <Phone phoneNumber={company.contactDetails.phone} />
-            </div>
+            <ContactIcons
+              vehicleId={vehicleId}
+              whatsappUrl={whatsappUrl}
+              email={contactDetails?.email || null} // Handle null email
+              phoneNumber={contactDetails?.phone || null} // Handle null phone number
+            />
           </div>
         </div>
       </div>

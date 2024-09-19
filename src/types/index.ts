@@ -217,6 +217,38 @@ export interface FetchLinksResponse {
   statusCode: number
 }
 
+// home page meta
+export interface HomePageMeta {
+  metaDataId: string
+  stateId: string
+  state: string
+  metaTitle: string
+  metaDescription: string
+}
+
+//  Home page meta response
+export interface HomePageMetaResponse {
+  status: string
+  result: HomePageMeta
+  statusCode: number
+}
+
+// listing page meta
+export interface ListingPageMeta {
+  metaDataId: string
+  stateId: string
+  state: string
+  metaTitle: string
+  metaDescription: string
+}
+
+//  listing page meta response
+export interface ListingPageMetaResponse {
+  status: string
+  result: ListingPageMeta
+  statusCode: number
+}
+
 export enum VehicleHomeFilter {
   AFFORDABLE_VEHICLE = 'affordable-vehicle',
   POPULAR_MODELS = 'popular-models',

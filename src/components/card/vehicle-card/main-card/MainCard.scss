@@ -33,7 +33,7 @@
       border-radius: 1rem;
       overflow: hidden;
 
-      .car-image {
+      .vehicle-image {
         width: 100%;
         height: 100%;
         object-position: center;
@@ -121,8 +121,8 @@
           &:hover {
             white-space: wrap;
             overflow: visible;
-            background-color: $yellow;
-            color: rgb(255, 255, 255);
+            background-color: white;
+            color: black;
             position: absolute;
             z-index: 10; // Ensure it is on top
             padding: 0.3rem;
@@ -190,33 +190,6 @@
         }
       }
 
-      .icons {
-        display: flex;
-        column-gap: 1.5rem;
-
-        .icon {
-          scale: 2;
-        }
-
-        .whatsapp {
-          color: rgb(0, 219, 0);
-          scale: 2.3;
-        }
-
-        .mail {
-          color: gray;
-        }
-
-        .phone {
-          scale: 2.3;
-        }
-      }
     }
   }
 }
-
-/*  (min-width: 768px) and above */
-@media (min-width: 768px) {}
-
-/* (min-width: 1024px) and above */
-@media (min-width: 1024px) {}

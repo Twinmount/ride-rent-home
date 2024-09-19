@@ -16,6 +16,7 @@ interface SpecificationItem {
   name: string
   value: string
   selected: boolean
+  hoverInfo?: string
 }
 
 // Update the SpecificationsProps type to match the Specs type
@@ -31,8 +32,7 @@ const Specification: FC<SpecificationsProps> = ({
   // Base URL for fetching icons
   const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL
 
-  console.log('specifications', specifications)
-  console.log(vehicleCategory, vehicleCategory)
+  console.log('specifications :', specifications)
 
   return (
     <MotionDiv className="specification-container">
@@ -40,16 +40,11 @@ const Specification: FC<SpecificationsProps> = ({
       <div className="specifications">
         {/* Iterate through specifications and display each one */}
         {Object.entries(specifications).map(([key, spec]) => {
-          console.log(
-            `iconnn :  ${baseAssetsUrl}/icons/vehicle-specifications/${vehicleCategory}/${formatKeyForIcon(
-              key
-            )}.svg`
-          )
           return (
             <div className="specification" key={key}>
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
-                  <TooltipTrigger className="flex gap-1">
+                  <TooltipTrigger className="flex  gap-1 w-full">
                     <div className="spec-icon-box">
                       {/* Using the formatted spec name to dynamically fetch the icon */}
                       <img
@@ -66,7 +61,7 @@ const Specification: FC<SpecificationsProps> = ({
                     </div>
                   </TooltipTrigger>
                   <TooltipContent className="bg-slate-800 text-white rounded-xl shadow-md">
-                    <p>{`Details about ${spec.name}`}</p>
+                    <p>{`${spec?.hoverInfo || key}`}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

@@ -19,6 +19,8 @@ type VehicleCategoriesProps = {
 const VehicleCategories = ({ state, category }: VehicleCategoriesProps) => {
   const [selectedCard, setSelectedCard] = useState<string | null>(null)
 
+  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL
+
   const plugin = useRef(Autoplay({ delay: 1600, stopOnInteraction: false }))
 
   // Fetch categories using useQuery
@@ -55,8 +57,8 @@ const VehicleCategories = ({ state, category }: VehicleCategoriesProps) => {
                   category === cat.value ? 'yellow-gradient' : ''
                 }`}
               >
-                <Image
-                  src={`/assets/icons/vehicle-categories/${cat.value}.png`}
+                <img
+                  src={`${baseAssetsUrl}/icons/vehicle-categories/${cat.value}.png`}
                   width={21}
                   height={10}
                   alt={`${cat.name} Icon`}

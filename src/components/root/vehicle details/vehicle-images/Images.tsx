@@ -51,7 +51,6 @@ const Images = ({ photos }: ImagesProps) => {
       >
         <CarouselContent className="gap-2 -mx-1 w-full h-full max-w-full sub-container">
           {photos.map((src, index) => {
-            console.log(src)
             return (
               <CarouselItem
                 key={index}

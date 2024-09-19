@@ -67,3 +67,61 @@ export const FetchVehicleByFilters = async (
 
   return data // The data now adheres to the FetchVehicleCardsResponse type
 }
+
+// send portfolio count post
+export const sendPortfolioVisit = async (vehicleId: string) => {
+  try {
+    // Send a POST request to the API with the vehicleId in the request body
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/portfolio`, // Assuming '/portfolio' is the correct endpoint
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ vehicleId }), // Wrapping vehicleId in an object
+      }
+    )
+
+    // Check if the response was successful
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(
+        `Failed to send portfolio visit. Status: ${response.status}, Message: ${
+          errorData.message || 'Unknown error'
+        }`
+      )
+    }
+
+    // Optionally handle the success response, such as logging or triggering any side effect
+    const responseData = await response.json()
+    console.log('Portfolio visit recorded successfully:', responseData)
+
+    return responseData // Return the response data if needed
+  } catch (error) {
+    console.error('Error sending portfolio visit:', error)
+  }
+}
+
+// Function to send POST request for queries
+export const sendQuery = async (
+  vehicleId: string,
+  medium: 'EMAIL' | 'WHATSAPP' | 'OTHER'
+) => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/queries`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ vehicleId, medium }),
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to send query')
+    }
+    console.log('Query sent successfully')
+  } catch (error) {
+    console.error('Error sending query:', error)
+  }
+}
