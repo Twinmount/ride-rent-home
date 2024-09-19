@@ -67,12 +67,11 @@ const MobileProfileCard = ({
           <div className="info">
             <p>{company.companyName}</p>
             {/* Assuming verification logic based on specs */}
-            {company.companySpecs.isFiatCurrencyAccepted && (
-              <div className="verified">
-                <MdVerifiedUser className="icon" />
-                <span>Verified Vendor</span>
-              </div>
-            )}
+
+            <div className="verified">
+              <MdVerifiedUser className="icon" />
+              <span>Verified Vendor</span>
+            </div>
           </div>
         </div>
 
