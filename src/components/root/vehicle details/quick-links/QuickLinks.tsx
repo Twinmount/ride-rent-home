@@ -26,9 +26,10 @@ export default async function QuickLinks({ state }: { state: string }) {
         {linksData.length > 0 ? (
           linksData.map((link) => (
             <Link
-              href={`/${link.link}`}
+              href={`${link.link}`}
               className="link truncate"
               key={link.linkId}
+              target="_blank"
             >
               <LinkIcon width={15} height={15} className="link-icon" />
               <span className="link">{link.label}</span>

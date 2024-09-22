@@ -42,7 +42,7 @@ export default function Phone({ phoneNumber, onClick, loading }: PhoneProps) {
             }`}
             style={loading ? { cursor: 'wait' } : {}}
           >
-            +{phoneNumber}
+            {phoneNumber}
             <FaSquarePhoneFlip className="text-white text-2xl md:text-3xl" />
           </div>
         </PopoverContent>

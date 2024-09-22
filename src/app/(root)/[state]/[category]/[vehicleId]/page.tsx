@@ -16,7 +16,7 @@ import Locations from '@/components/common/locations/Locations'
 import FAQ from '@/components/common/FAQ/FAQ'
 import RelatedResults from '@/components/root/vehicle details/related-results/RelatedResults'
 import { VehicleDetailsResponse } from '@/types/vehicle-details-types'
-import { PageProps, VehicleHomeFilter } from '@/types'
+import { VehicleHomeFilter } from '@/types'
 import QuickLinks from '@/components/root/vehicle details/quick-links/QuickLinks'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
@@ -91,7 +91,7 @@ export default async function VehicleDetails({
   const data: VehicleDetailsResponse = await response.json()
 
   if (data?.status === 'NOT_SUCCESS' || response.status === 400) {
-    return notFound() // This will trigger the Next.js 404 page
+    return notFound()
   }
 
   const vehicle = data.result
@@ -100,11 +100,11 @@ export default async function VehicleDetails({
     <section className="vehicle-details-section wrapper">
       {/* Details heading */}
       <MotionDiv className="heading-box">
-        <h1 className="custom-heading">{vehicle?.modelName}</h1>
-        <p>
-          Rent {vehicle?.brand.label} {vehicle?.modelName}{' '}
-          {new Date().getFullYear()} model in {vehicle?.state.label}. Enjoy
-          flexible rental terms with no hidden fees.
+        <h1 className="custom-heading model-name">{vehicle?.modelName}</h1>
+        <p className="custom-sub-heading">
+          Rent {vehicle?.brand.label} {vehicle?.modelName} model in{' '}
+          {vehicle?.state.label}. Enjoy flexible rental terms with no hidden
+          fees.
           {vehicle?.company.companySpecs.isCryptoAccepted
             ? 'Crypto payments are accepted.'
             : 'Crypto payments are not accepted.'}
@@ -116,24 +116,26 @@ export default async function VehicleDetails({
 
         {/* state and first 5 cities */}
         <div className="location-container">
-          <div className="location">
+          <span className="location">
             <IoLocationOutline
               size={20}
               className="text-yellow relative bottom-[2px]"
               strokeWidth={3}
               fill="yellow"
             />
-          </div>
+          </span>
           <span className="state">{vehicle?.state.label} : </span>
-          {vehicle?.cities.slice(0, 5).map((city, index) => (
-            <span className="city" key={city.id}>
-              {city.label}
-              {index < vehicle.cities.length - 1 && index < 4 ? ', ' : ''}
-            </span>
-          ))}
-          {vehicle?.cities.length > 3 && (
-            <span className="city"> and more...</span>
-          )}
+          <span className="city-list-subheading">
+            {vehicle?.cities.slice(0, 5).map((city, index) => (
+              <span className="city" key={city.id}>
+                {city.label}
+                {index < vehicle.cities.length - 1 && index < 4 ? ', ' : ''}
+              </span>
+            ))}
+            {vehicle?.cities.length > 3 && (
+              <span className="city"> and more...</span>
+            )}
+          </span>
         </div>
       </MotionDiv>
 

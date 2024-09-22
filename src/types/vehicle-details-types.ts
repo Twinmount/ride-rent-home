@@ -61,8 +61,8 @@ export type CompanySpecs = {
 }
 
 export type Company = {
-  companyProfile: string
-  companyName: string
+  companyProfile: string | null
+  companyName: string | null
   companySpecs: CompanySpecs
   contactDetails: ContactDetails | null
 }

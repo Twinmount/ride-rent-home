@@ -22,16 +22,24 @@ const ProfileSpecification = ({
   // Determine which rental period data to display based on priority
   const getRentalPeriodDetails = () => {
     if (rentalDetails.day.enabled) {
-      return rentalDetails.day
+      return { period: 'Day', details: rentalDetails.day }
     } else if (rentalDetails.week.enabled) {
-      return rentalDetails.week
+      return { period: 'Week', details: rentalDetails.week }
     } else if (rentalDetails.month.enabled) {
-      return rentalDetails.month
+      return { period: 'Month', details: rentalDetails.month }
     }
     return null
   }
 
   const rentalPeriod = getRentalPeriodDetails()
+
+  // Function to dynamically determine the rent price label
+  const getRentPriceLabel = () => {
+    if (rentalPeriod?.period === 'Day') return 'Daily Rental Rate'
+    if (rentalPeriod?.period === 'Week') return 'Weekly Rental Rate'
+    if (rentalPeriod?.period === 'Month') return 'Monthly Rental Rate'
+    return 'Rental Rate'
+  }
 
   return (
     <div className="profile-specifications">
@@ -80,17 +88,17 @@ const ProfileSpecification = ({
 
       {rentalPeriod && (
         <div className="mileage">
-          {/* included mileage */}
+          {/* Included mileage */}
           <div className="mileage-box">
             <IoSpeedometer />
             <span className="label">{'Included mileage limit'}</span>
-            <span className="value">{rentalPeriod.mileageLimit}</span>
+            <span className="value">{rentalPeriod.details.mileageLimit}</span>
           </div>
-          {/* additional mileage */}
+          {/* Rent Price with dynamic label */}
           <div className="mileage-box">
             <IoSpeedometer />
-            <span className="label">{'Rent Price'}</span>
-            <span className="value">{`AED ${rentalPeriod.rentInAED}`}</span>
+            <span className="label">{getRentPriceLabel()}</span>
+            <span className="value">{`AED ${rentalPeriod.details.rentInAED}`}</span>
           </div>
         </div>
       )}

@@ -7,7 +7,7 @@
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 1rem;
+  bottom: 0.7rem;
   z-index: 10;
   gap: 0.7rem;
   width: 98%;
@@ -17,7 +17,7 @@
   border-radius: 1rem;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) 100ms;
-  height: 8rem;
+  height: 9rem;
   max-height: auto;
   overflow: hidden;
 
@@ -38,12 +38,25 @@
   .top-heading {
     display: flex;
     justify-content: space-between;
-
     position: relative;
 
-    h2 {
+    .mobile-profile-heading {
       width: 100%;
       font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: left;
+
+      .disabled-text {
+        font-size: 16px;
+        font-weight: 500;
+        color: rgb(244, 41, 41);
+        margin-top: 4px;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+        margin-left: 1rem;
+      }
     }
 
     .expand {
@@ -85,7 +98,7 @@
         border-radius: 100%;
         overflow: hidden;
 
-        img {
+        .company-profile {
           width: 100%;
           height: 100%;
           object-fit: cover;
@@ -93,12 +106,27 @@
         }
       }
 
+      .blurred-profile {
+        filter: blur(13px); //for blurring the profile
+      }
+
       // name label
-      p {
+      .company-name {
         font-weight: 500;
         font-size: 0.9rem;
         color: rgb(61, 61, 61);
         margin-bottom: 0.4rem;
+      }
+
+
+      // for blurring the text
+      .blurred-text {
+        color: transparent;
+        text-shadow: 0 0 8px #000;
+        width: fit-content;
+        user-select: none;
+        pointer-events: none;
+        cursor: not-allowed;
       }
 
       // verified label

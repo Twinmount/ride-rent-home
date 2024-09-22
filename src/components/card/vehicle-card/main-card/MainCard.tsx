@@ -70,8 +70,8 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
             />
           ) : (
             <img
-              src={vehicle.companyLogo} // Fallback for logo
-              alt="Company Logo"
+              src={'/assets/img/blur-profile.webp'}
+              alt="Disabled Company Logo"
               width={40}
               height={40}
               className="profile-icon"

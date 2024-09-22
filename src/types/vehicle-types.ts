@@ -177,15 +177,15 @@ export type VehicleCardType = {
   model: string
   registredYear: string
   brandName: string
-  countryCode: string | null // Now nullable
-  phoneNumber: string | null // Now nullable
-  email: string | null // Now nullable
+  countryCode: string | null
+  phoneNumber: string | null
+  email: string | null
   rentalDetails: RentalDetails
   vehicleSpecs: VehicleSpecs
-  companyLogo: string
+  companyLogo: string | null
   state: string
-  whatsappPhone: string | null // Now nullable
-  whatsappCountryCode: string | null // Now nullable
+  whatsappPhone: string | null
+  whatsappCountryCode: string | null
 }
 
 // API response type for fetching vehicle cards

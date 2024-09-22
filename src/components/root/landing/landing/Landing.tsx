@@ -27,7 +27,7 @@ const Landing = ({ state, category }: StateCategoryProps) => {
           <MotionDiv className={`landing-text-container`}>
             <div className="trust">
               <FaRegThumbsUp />
-              Most Trusted Vehicle Renting Platform In
+              Most Trusted Vehicle Renting Platform In{' '}
               <span className="capitalize">{convertToLabel(state)}</span> !
             </div>
             <div className="best-price">

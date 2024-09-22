@@ -13,18 +13,24 @@
     border-radius: 1rem;
     margin-bottom: 1rem;
 
-    p {
+    .model-name {
+      font-weight: 500;
+      font-size: 1.2rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .custom-sub-heading {
       color: rgb(83, 83, 83);
-      width: 80%;
+      width: 100%;
       font-size: 15px;
     }
 
     .location-container {
-      display: flex;
-      column-gap: 0.1rem;
       font-size: 15px;
       color: rgb(91, 91, 91);
       margin-top: 0.8rem;
+      display: flex;
+      align-items: start;
 
       .location {
         display: flex;
@@ -32,6 +38,7 @@
         align-items: center;
         font-size: 1rem;
         column-gap: 0.3rem;
+        margin-top: 0.1rem;
 
       }
 
@@ -39,12 +46,20 @@
         font-weight: 500;
         color: rgb(37, 37, 37);
         margin-right: 0.3rem;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
       }
 
-      .city {
-        font-weight: 400;
-        color: rgb(45, 45, 45);
-        margin-right: 0.3rem;
+      .city-list-subheading {
+
+
+        .city {
+          font-weight: 400;
+          color: rgb(45, 45, 45);
+          margin-right: 0.3rem;
+          font-size: 0.95rem;
+        }
       }
     }
 
@@ -91,6 +106,51 @@
 /*  (min-width: 768px) and above */
 @media (min-width: 768px) {
   .vehicle-details-section {
+
+    // heading container
+    .heading-box {
+
+      .model-name {
+        max-width: 80%;
+        width: 80%
+      }
+
+      .custom-sub-heading {
+        color: rgb(83, 83, 83);
+        width: 85%;
+        font-size: 15px;
+      }
+
+      .location-container {
+        display: flex;
+        column-gap: 0.1rem;
+        font-size: 15px;
+        color: rgb(91, 91, 91);
+        margin-top: 0.8rem;
+
+        .location {
+          display: flex;
+          justify-content: start;
+          align-items: center;
+          font-size: 1rem;
+          column-gap: 0.3rem;
+
+        }
+
+        .state {
+          font-weight: 500;
+          color: rgb(37, 37, 37);
+          margin-right: 0.3rem;
+        }
+
+        .city {
+          font-weight: 400;
+          color: rgb(45, 45, 45);
+          margin-right: 0.3rem;
+        }
+      }
+
+    }
 
     // Details Container
     .details-section {

@@ -17,9 +17,13 @@ export async function generateMetadata({
   const category = searchParams.category || 'cars'
 
   // Get vehicleTypes and use 'other' if not provided
-  const vehicleType = searchParams.vehicleTypes
-    ? searchParams.vehicleTypes.split(',')[0] // Split by comma and take the first one
-    : 'other' // Use 'other' as the default value if vehicleType is not available
+  let vehicleTypesParam = searchParams.vehicleTypes // Access vehicleTypes from searchParams
+
+  console.log('vehicle types params', vehicleTypesParam)
+  // If there are multiple values, split and get the first one
+  const vehicleType = vehicleTypesParam
+    ? vehicleTypesParam.split(',')[0]
+    : 'other'
 
   // Construct the API URL with state, category, and vehicleType
   let url = `${baseUrl}/metadata/listing?state=${state}`
@@ -32,13 +36,15 @@ export async function generateMetadata({
     url += `&vehicleType=${vehicleType}`
   }
 
+  console.log('category and type :', category, vehicleType)
+
   try {
     // Fetch brand data from your API endpoint
     const response = await fetch(url, {
       method: 'GET',
     })
 
-    // Parse the JSON response
+    // response from backend
     const data: ListingPageMetaResponse = await response.json()
 
     // Check if the API returned valid meta data

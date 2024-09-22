@@ -20,9 +20,10 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
   category,
   state,
 }) => {
-  const formattedPhoneNumber = vehicle.phoneNumber && vehicle.countryCode
-    ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
-    : null
+  const formattedPhoneNumber =
+    vehicle.phoneNumber && vehicle.countryCode
+      ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
+      : null
 
   const message = `Hello, I am interested in the ${vehicle.model}. Could you please provide more details?`
   const encodedMessage = encodeURIComponent(message)
@@ -61,8 +62,8 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
             <Image
               src={vehicle.thumbnail}
               alt={vehicle.model || 'Vehicle Image'}
-              width={400}
-              height={400}
+              width={350}
+              height={350}
               className="vehicle-image"
             />
           ) : (
@@ -87,8 +88,6 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
         <Link href={vehicleDetailsLink} className="vehicle-specs">
           {Object.entries(vehicle.vehicleSpecs).map(([key, spec]) => (
             <div key={key} className="spec">
-              {/* Using the formatted spec name to dynamically fetch the icon */}
-
               <img
                 src={`${baseAssetsUrl}/icons/vehicle-specifications/${category}/${formatKeyForIcon(
                   key
@@ -121,7 +120,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
                 />
               ) : (
                 <img
-                  src={vehicle.companyLogo} // Fallback for logo
+                  src={'/assets/img/blur-profile.webp'} //
                   alt="Company Logo"
                   className="profile-icon"
                 />

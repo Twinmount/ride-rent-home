@@ -6,6 +6,7 @@ import ProfileSpecification from '@/components/root/vehicle details/profile-spec
 import MotionDiv from '@/components/general/framer-motion/MotionDiv'
 import { Company, RentalDetails } from '@/types/vehicle-details-types'
 import ContactIcons from '@/components/common/contact-icons/ContactIcons'
+import { formatPhoneNumber } from '@/helpers'
 
 type ProfileCardProps = {
   company: Company
@@ -19,6 +20,14 @@ const ProfileCard = ({
   vehicleId,
 }: ProfileCardProps) => {
   const contactDetails = company?.contactDetails
+
+  console.log('contact details: ', contactDetails)
+
+  const formattedPhoneNumber =
+    contactDetails?.countryCode && contactDetails.phone
+      ? formatPhoneNumber(contactDetails?.countryCode, contactDetails.phone)
+      : null
+
   const message =
     'Hello, I would like to connect with you regarding the vehicle listed on Ride.Rent.'
   const encodedMessage = encodeURIComponent(message)
@@ -32,19 +41,38 @@ const ProfileCard = ({
         <h2 className="custom-heading">Listing Owner Details</h2>
       </div>
 
+      {(!company.companyName || !company.companyProfile) && (
+        <p className="disabled-text">Profile Disabled.</p>
+      )}
+
       {/* profile */}
       <div className="top">
         <div className="profile-details">
-          <div className="profile">
-            {/* Placeholder image as companyLogo is not available in Company type */}
+          <div
+            className={`${
+              company.companyProfile ? '' : 'blurred-profile'
+            }  profile`}
+          >
             <img
-              src={company.companyProfile}
-              alt={`${company.companyName} logo`}
+              src={company.companyProfile || '/assets/img/blur-profile.webp'}
+              alt={
+                company?.companyName
+                  ? `${company.companyName} logo`
+                  : 'Company logo'
+              }
               loading="lazy"
+              className={`company-profile `}
+              draggable={false}
             />
           </div>
           <div>
-            <p>{company.companyName}</p>
+            <p
+              className={`${
+                company.companyName ? '' : 'blurred-text'
+              } company-name`}
+            >
+              {company.companyName || 'Company Disabled'}
+            </p>
 
             <div className="verified">
               <MdVerifiedUser className="icon" />
@@ -71,7 +99,7 @@ const ProfileCard = ({
             vehicleId={vehicleId}
             whatsappUrl={whatsappUrl}
             email={contactDetails?.email || null} //  null email
-            phoneNumber={contactDetails?.phone || null} //  null phone number
+            phoneNumber={formattedPhoneNumber}
           />
         </div>
       </div>

@@ -81,7 +81,7 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
               />
             ) : (
               <img
-                src={vehicle.companyLogo} // Fallback for logo
+                src={'/assets/img/blur-profile.webp'} // Fallback for logo
                 alt="Company Logo"
                 width={40}
                 height={40}

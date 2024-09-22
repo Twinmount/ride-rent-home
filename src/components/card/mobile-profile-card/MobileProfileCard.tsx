@@ -6,6 +6,7 @@ import { useState } from 'react'
 import ProfileSpecification from '@/components/root/vehicle details/profile-specifications/ProfileSpecification'
 import { Company, RentalDetails } from '@/types/vehicle-details-types'
 import ContactIcons from '@/components/common/contact-icons/ContactIcons'
+import { formatPhoneNumber } from '@/helpers'
 
 type MobileProfileCardProps = {
   company: Company
@@ -33,6 +34,12 @@ const MobileProfileCard = ({
 
   // Handle case where contactDetails is null
   const contactDetails = company?.contactDetails
+
+  const formattedPhoneNumber =
+    contactDetails?.countryCode && contactDetails.phone
+      ? formatPhoneNumber(contactDetails?.countryCode, contactDetails.phone)
+      : null
+
   const message =
     'Hello, I would like to connect with you regarding the vehicle listed on Ride.Rent.'
   const encodedMessage = encodeURIComponent(message)
@@ -46,7 +53,12 @@ const MobileProfileCard = ({
       className={`mobile-profile-card ${isExpanded ? 'expanded-view' : ''}`}
     >
       <div className="profile-heading top-heading">
-        <h2 className="custom-heading">Listing Owner Details</h2>
+        <h2 className="custom-heading mobile-profile-heading">
+          Listing Owner Details{' '}
+          {(!company.companyName || !company.companyProfile) && (
+            <span className="disabled-text">&#40;Profile Disabled&#41;</span>
+          )}
+        </h2>
         <button className="expand" onClick={handleToggle}>
           {isExpanded ? 'show less' : 'show more'}{' '}
           <MdOutlineExpandCircleDown className="icon" />
@@ -56,16 +68,32 @@ const MobileProfileCard = ({
       <div className="top">
         {/* left */}
         <div className="profile-details">
-          <div className="profile">
+          <div
+            className={` ${
+              company.companyProfile ? '' : 'blurred-profile'
+            } profile`}
+          >
             {/* Placeholder image or replace with actual company logo if available */}
             <img
-              src={company.companyProfile}
-              alt={`${company.companyName} logo`}
+              src={company.companyProfile || '/assets/img/blur-profile.webp'}
+              alt={
+                company?.companyName
+                  ? `${company.companyName} logo`
+                  : 'Company logo'
+              }
               loading="lazy"
+              className={'company-profile'}
+              draggable={false}
             />
           </div>
           <div className="info">
-            <p>{company.companyName}</p>
+            <p
+              className={`${
+                company.companyName ? '' : 'blurred-text'
+              } company-name`}
+            >
+              {company.companyName || 'Company Disabled'}
+            </p>
             {/* Assuming verification logic based on specs */}
 
             <div className="verified">
@@ -86,7 +114,7 @@ const MobileProfileCard = ({
               vehicleId={vehicleId}
               whatsappUrl={whatsappUrl}
               email={contactDetails?.email || null} // Handle null email
-              phoneNumber={contactDetails?.phone || null} // Handle null phone number
+              phoneNumber={formattedPhoneNumber} // Handle null phone number
             />
           </div>
         </div>
