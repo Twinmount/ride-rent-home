@@ -29,6 +29,7 @@ const UmmAlQuwainFAQ = [
     answer:
       'Yes, tourists are welcome to rent vehicles from Ride.Rent in Umm Al Quwain. Required documents include a valid international driving permit, your passport, and a valid tourist visa. Our services cater to both residents and visitors, offering convenient vehicle rentals across Umm Al Quwain’s popular locations, such as Umm Al Quwain Beach, Al Sinniyah Island, and Dreamland Aqua Park.',
   },
+
   {
     question:
       'How can I book a vehicle rental on the Ride.Rent platform for Umm Al Quwain?',
@@ -142,7 +143,7 @@ const UmmAlQuwainFAQ = [
   {
     question: 'How can I contact Ride.Rent customer support in Umm Al Quwain?',
     answer:
-      'You can reach Ride.Rent customer support via phone, email, or the live chat feature on our WhatsApp Channel. Our support team is available 24/7 to assist with bookings, inquiries, and any issues you may have during your rental experience.',
+      'You can reach Ride.Rent customer support via phone at +971-502972335, via email at hello@ride.rent, or through live chat on our WhatsApp Support Line at +971-502972335. Our team is available 24/7 to assist you with bookings, inquiries, and any issues',
   },
   {
     question:

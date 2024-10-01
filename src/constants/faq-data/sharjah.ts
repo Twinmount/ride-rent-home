@@ -52,6 +52,11 @@ const SharjahFAQ = [
       'Yes, you can cancel or modify your booking by contacting the vehicle supplier. Cancellation and modification policies vary depending on the specific rental terms, so please review them during the booking process to understand any applicable fees with the supplier.',
   },
   {
+    question: 'How can I contact Ride.Rent customer support in Sharjah?',
+    answer:
+      'You can reach Ride.Rent customer support via phone at +971-502972335, via email at hello@ride.rent, or through live chat on our WhatsApp Support Line at +971-502972335. Our team is available 24/7 to assist you with bookings, inquiries, and any issues',
+  },
+  {
     question: 'What types of cars can I rent through Ride.Rent in Sharjah?',
     answer:
       'Ride.Rent offers a wide range of cars, including economy models, luxury sedans, sports cars, SUVs, and convertibles. We feature top brands like Audi, Mercedes-Benz, BMW, Ferrari, and Lamborghini, providing options for everyday use, special occasions, and luxury experiences.',

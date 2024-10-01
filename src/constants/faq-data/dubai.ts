@@ -140,7 +140,7 @@ const DubaiFAQ = [
   {
     question: 'How can I contact Ride.Rent customer support in Dubai?',
     answer:
-      'You can reach Ride.Rent customer support via phone, email, or live chat on our WhatsApp Support Line. Our team is available 24/7 to assist you with bookings, inquiries, and any issues.',
+      'You can reach Ride.Rent customer support via phone at +971-502972335, via email at hello@ride.rent, or through live chat on our WhatsApp Support Line at +971-502972335. Our team is available 24/7 to assist you with bookings, inquiries, and any issues',
   },
   {
     question:
