@@ -143,7 +143,7 @@ export interface FetchAllVehiclesResponse {
 }
 
 // Type for rental details in different periods (day, week, month)
-type RentalDetails = {
+export type CardRentalDetails = {
   day?: {
     enabled: boolean
     rentInAED: string
@@ -180,12 +180,15 @@ export type VehicleCardType = {
   countryCode: string | null
   phoneNumber: string | null
   email: string | null
-  rentalDetails: RentalDetails
+  rentalDetails: CardRentalDetails
   vehicleSpecs: VehicleSpecs
   companyLogo: string | null
   state: string
   whatsappPhone: string | null
   whatsappCountryCode: string | null
+  isDisabled: boolean
+  isCryptoAccepted: boolean
+  isSpotDeliverySupported: boolean
 }
 
 // API response type for fetching vehicle cards

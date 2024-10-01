@@ -3,9 +3,22 @@ import { IoLocationOutline } from 'react-icons/io5'
 import Specifications from '../../../root/listing/specifications/Specifications'
 import { FC } from 'react'
 import { MotionDivElm } from '@/components/general/framer-motion/MotionElm'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+
 import Image from 'next/image'
 import { VehicleCardType } from '@/types/vehicle-types'
-import { formatKeyForIcon, formatPhoneNumber } from '@/helpers'
+import {
+  convertToLabel,
+  formatKeyForIcon,
+  formatPhoneNumber,
+  generateModelDetailsUrl,
+  getRentalPeriodDetails,
+} from '@/helpers'
 import Link from 'next/link'
 import ContactIcons from '@/components/common/contact-icons/ContactIcons'
 
@@ -32,19 +45,16 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
     : null
 
   // Determine which rental period to display
-  const rentalPeriod = vehicle.rentalDetails.day?.enabled
-    ? { label: 'Day', details: vehicle.rentalDetails.day }
-    : vehicle.rentalDetails.week?.enabled
-    ? { label: 'Week', details: vehicle.rentalDetails.week }
-    : vehicle.rentalDetails.month?.enabled
-    ? { label: 'Month', details: vehicle.rentalDetails.month }
-    : null
+  const rentalPeriod = getRentalPeriodDetails(vehicle.rentalDetails)
 
   // Base URL for fetching icons
   const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL
 
-  // Link for the vehicle details page
-  const vehicleDetailsLink = `/${state}/${category}/${vehicle.vehicleId}`
+  // generating dynamic url for the vehicle details page
+  const modelDetails = generateModelDetailsUrl(vehicle)
+
+  // link for the vehicle details page
+  const vehicleDetailsLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`
 
   return (
     <MotionDivElm
@@ -87,23 +97,33 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
         {/* Dynamic Vehicle specs */}
         <Link href={vehicleDetailsLink} className="vehicle-specs">
           {Object.entries(vehicle.vehicleSpecs).map(([key, spec]) => (
-            <div key={key} className="spec">
-              <img
-                src={`${baseAssetsUrl}/icons/vehicle-specifications/${category}/${formatKeyForIcon(
-                  key
-                )}.svg`}
-                alt={`${spec.name} icon`}
-                className="spec-icon "
-              />
-
-              <div className="each-spec-value">{spec.name || 'N/A'}</div>
-            </div>
+            <TooltipProvider delayDuration={200} key={key}>
+              <Tooltip>
+                <TooltipTrigger className="spec">
+                  <img
+                    src={`${baseAssetsUrl}/icons/vehicle-specifications/${category}/${formatKeyForIcon(
+                      key
+                    )}.svg`}
+                    alt={`${spec.name} icon`}
+                    className="spec-icon"
+                  />
+                  <div className="each-spec-value">{spec.name || 'N/A'}</div>
+                </TooltipTrigger>
+                <TooltipContent className="bg-slate-800 text-white rounded-xl shadow-md">
+                  <p>{spec.name}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           ))}
         </Link>
 
         {/* Specifications */}
         <Link href={vehicleDetailsLink}>
-          <Specifications />
+          <Specifications
+            isCryptoAccepted={vehicle.isCryptoAccepted}
+            isSpotDeliverySupported={vehicle.isSpotDeliverySupported}
+            rentalDetails={vehicle.rentalDetails}
+          />
         </Link>
 
         <div className="bottom-box">
@@ -128,19 +148,33 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
             </Link>
 
             <Link href={vehicleDetailsLink} className="location">
-              <IoLocationOutline size={17} />{' '}
-              <span className="state">{vehicle.state || 'N/A'}</span>
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger className="each-location">
+                    <IoLocationOutline size={17} />{' '}
+                    <span className="state">
+                      {convertToLabel(vehicle.state) || 'N/A'}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-slate-800 text-white rounded-xl shadow-md">
+                    <p>{convertToLabel(vehicle.state) || 'Not Available'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </Link>
           </div>
 
           {/* price */}
-          {rentalPeriod && (
+          {rentalPeriod ? (
             <div className="price">
-              <span>{rentalPeriod.details.rentInAED || 'N/A'} AED</span> /{' '}
-              {rentalPeriod.label}
+              <span className="rental-price">
+                {rentalPeriod.rentInAED || 'N/A'} AED
+              </span>
+              <span className="rental-period">&nbsp;{rentalPeriod.label}</span>
             </div>
+          ) : (
+            <div className="price">Rental Details N/A</div>
           )}
-
           <div className="bottom-right">
             {/* Rent Now button */}
             <Link href={vehicleDetailsLink} className="rent-now-btn">

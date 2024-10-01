@@ -44,11 +44,11 @@ export default function QuickLinksDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="flex items-center !rounded-xl"
+        className="flex items-center !rounded-xl border-none outline-none"
         disabled={isLoading}
       >
         <FaLink className="text-orange mr-1 text-lg font-semibold" />
-        <span>Quick Links</span>
+        <span className="font-semibold">Quick Links</span>
         <ChevronDown className="text-yellow" width={20} />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="!w-64 flex flex-col p-1 shadow-md !bg-white gap-1">

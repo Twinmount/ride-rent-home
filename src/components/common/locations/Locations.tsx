@@ -97,7 +97,7 @@ const Locations = ({ state, category }: StateCategoryProps) => {
             <div className="flex justify-center flex-wrap gap-2">
               {citiesToDisplay.map((city) => (
                 <Link
-                  href={`/${selectedState?.stateValue}/listing?category=${category}`}
+                  href={`/${selectedState?.stateValue}/listing?category=${category}&city=${city.cityValue}`}
                   className="city"
                   key={city.cityId}
                 >

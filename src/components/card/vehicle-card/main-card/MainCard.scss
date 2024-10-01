@@ -4,8 +4,8 @@
 .car-card-container {
   height: fit-content;
   max-height: fit-content;
-  padding: 0.8rem;
-  border-radius: 0.8rem;
+  padding: 0.3rem;
+  border-radius: 1rem;
   background-color: white;
   min-width: 18rem;
   width: 20rem;
@@ -79,6 +79,7 @@
     flex-direction: column;
     align-content: space-around;
     row-gap: 1rem;
+    padding: 0.3rem;
 
     .model-name {
       font-weight: 500;
@@ -165,10 +166,14 @@
         font-size: 0.7rem;
         color: gray;
 
-        span {
+        .rent-amount {
           font-weight: bolder;
           font-size: medium;
           color: red;
+        }
+
+        .rent-period {
+          font-size: 0.9rem;
         }
       }
     }

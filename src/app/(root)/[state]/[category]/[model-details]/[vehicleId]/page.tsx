@@ -3,7 +3,6 @@ import './VehicleDetailsPage.scss'
 import ProfileCard from '@/components/card/owner-profile-card/ProfileCard'
 import WhyOpt from '@/components/common/why-opt/WhyOpt'
 import Description from '@/components/root/vehicle details/description/Description'
-
 import Specification from '@/components/root/vehicle details/specifications/Specification'
 import { IoLocationOutline } from 'react-icons/io5'
 import DetailsSectionClient from '@/components/root/vehicle details/DetailsSectionClient'
@@ -20,14 +19,17 @@ import { VehicleHomeFilter } from '@/types'
 import QuickLinks from '@/components/root/vehicle details/quick-links/QuickLinks'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
+import { formatVehicleSpecification } from '@/helpers'
+import DynamicFAQ from '@/components/common/FAQ/DynamicFAQ'
 
 type ParamsProps = {
   params: { state: string; category: string; vehicleId: string }
   searchParams: { [key: string]: string | undefined }
 }
 
+// dynamic meta data generate
 export async function generateMetadata({
-  params: { vehicleId },
+  params: { state, category, vehicleId },
 }: ParamsProps): Promise<Metadata> {
   const baseUrl = process.env.API_URL
   // Fetch brand data from your API endpoint
@@ -71,9 +73,63 @@ export async function generateMetadata({
     data.result.state.label
   }'s vibrant cityscape!`
 
+  // Shortened versions for social media (optional)
+  const shortTitle = title.length > 60 ? `${title.substring(0, 57)}...` : title
+  const shortDescription =
+    description.length > 155
+      ? `${description.substring(0, 152)}...`
+      : description
+
+  // Construct the canonical URL dynamically
+  const canonicalUrl = `https://ride.rent/${state}/${category}/${vehicleId}`
+
+  const ogImage =
+    data?.result?.vehiclePhotos?.[0] || '/assets/icons/ride-rent.png'
+
   return {
     title,
     description,
+    keywords: `${data.result.brand.label}, ${data.result.modelName}, ${category} rental in ${state}, ${data.result.state.label} ${category} rental near me`,
+    openGraph: {
+      title: shortTitle,
+      description: shortDescription,
+      url: canonicalUrl,
+      type: 'website',
+      images: [
+        {
+          url: ogImage,
+          alt: `${data.result.modelName}`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+
+    twitter: {
+      card: 'summary_large_image',
+      title: shortTitle, // Shorter title for Twitter
+      description: shortDescription, // Shorter description for Twitter
+      images: [ogImage],
+    },
+    manifest: '/manifest/webmanifest',
+
+    robots: {
+      index: true, // Index the page
+      follow: true, // Follow links on the page
+      nocache: true, // Don't cache the page
+      googleBot: {
+        index: true, // Google should index the page
+        follow: true, // Google should follow links
+        noimageindex: true, // Prevent images from being indexed
+        'max-video-preview': -1, // No limit on video preview length
+        'max-image-preview': 'large', // Allow large image previews
+        'max-snippet': -1, // No limit on snippet length
+      },
+    },
+
+    alternates: {
+      canonical: canonicalUrl,
+    },
   }
 }
 
@@ -96,6 +152,8 @@ export default async function VehicleDetails({
 
   const vehicle = data.result
 
+  // vehicle specification
+
   return (
     <section className="vehicle-details-section wrapper">
       {/* Details heading */}
@@ -104,15 +162,21 @@ export default async function VehicleDetails({
         <p className="custom-sub-heading">
           Rent {vehicle?.brand.label} {vehicle?.modelName} model in{' '}
           {vehicle?.state.label}. Enjoy flexible rental terms with no hidden
-          fees.
+          fees.{'  '}
           {vehicle?.company.companySpecs.isCryptoAccepted
             ? 'Crypto payments are accepted.'
             : 'Crypto payments are not accepted.'}
+          {'  '}
           Available for {vehicle?.rentalDetails.day.enabled ? 'Daily' : ''}
           {vehicle?.rentalDetails.week.enabled ? ', Weekly' : ''}
           {vehicle?.rentalDetails.month.enabled ? ', Monthly' : ''}
           Rentals.
         </p>
+
+        <div className="specification-info">
+          Specification:{' '}
+          {formatVehicleSpecification(vehicle.vehicleSpecification)}
+        </div>
 
         {/* state and first 5 cities */}
         <div className="location-container">
@@ -144,6 +208,7 @@ export default async function VehicleDetails({
         company={vehicle?.company}
         rentalDetails={vehicle?.rentalDetails}
         vehicleId={vehicleId}
+        isLease={vehicle.isAvailableForLease}
       >
         <section className="details-section">
           <div className="details-container">
@@ -172,6 +237,7 @@ export default async function VehicleDetails({
                 company={vehicle?.company}
                 rentalDetails={vehicle?.rentalDetails}
                 vehicleId={vehicleId}
+                isLease={vehicle.isAvailableForLease}
               />
 
               <QuickLinks state={state} />
@@ -184,12 +250,10 @@ export default async function VehicleDetails({
       <Description description={vehicle.description} />
 
       {/* related result */}
-      <RelatedResults state={state} category={category} filter={filter} />
+      <RelatedResults state={state} category={category} vehicleId={vehicleId} />
 
       {/* FAQ */}
-      <Suspense fallback={<SectionLoading />}>
-        <FAQ stateValue={state || 'dubai'} />
-      </Suspense>
+      <DynamicFAQ vehicle={vehicle} />
 
       {/* Why Opt Ride.Rent and Available Locations */}
       <WhyOpt state={state} category={category} />

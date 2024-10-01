@@ -22,7 +22,7 @@ export default function NotFound() {
             <Link href={'/'} className="header-logo">
               <figure>
                 <img
-                  src={'/assets/img/logo/riderent-logo.webp'}
+                  src={'/assets/logo/riderent-logo.webp'}
                   className="header-img"
                   alt="Ride Rent Logo"
                 />

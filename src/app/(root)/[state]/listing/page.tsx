@@ -17,9 +17,8 @@ export async function generateMetadata({
   const category = searchParams.category || 'cars'
 
   // Get vehicleTypes and use 'other' if not provided
-  let vehicleTypesParam = searchParams.vehicleTypes // Access vehicleTypes from searchParams
+  let vehicleTypesParam = searchParams.vehicleTypes
 
-  console.log('vehicle types params', vehicleTypesParam)
   // If there are multiple values, split and get the first one
   const vehicleType = vehicleTypesParam
     ? vehicleTypesParam.split(',')[0]
@@ -36,38 +35,77 @@ export async function generateMetadata({
     url += `&vehicleType=${vehicleType}`
   }
 
-  console.log('category and type :', category, vehicleType)
+  // Fetch metadata from your API endpoint
+  const response = await fetch(url, {
+    method: 'GET',
+  })
 
-  try {
-    // Fetch brand data from your API endpoint
-    const response = await fetch(url, {
-      method: 'GET',
-    })
+  // Parse the JSON response
+  const data: ListingPageMetaResponse = await response.json()
 
-    // response from backend
-    const data: ListingPageMetaResponse = await response.json()
+  // Check if the API returned valid metadata
+  const metaTitle =
+    data?.result?.metaTitle ||
+    `Explore the best ${category} for rent in ${state}`
+  const metaDescription =
+    data?.result?.metaDescription ||
+    'Find and rent top-quality vehicles including cars, bikes, and more across various locations in UAE.'
 
-    // Check if the API returned valid meta data
-    if (data?.result?.metaTitle && data?.result?.metaDescription) {
-      return {
-        title: data.result.metaTitle,
-        description: data.result.metaDescription,
-      }
-    } else {
-      // If metadata is not found or incomplete, fall back to default meta information
-      return {
-        title: `Explore the best ${category} for rent in ${state}`,
-        description:
-          'Find and rent top-quality vehicles including cars, bikes, and more across various locations.',
-      }
-    }
-  } catch (error) {
-    // If there is an error with the API call, return fallback metadata
-    return {
-      title: `Explore the best ${category} for rent in ${state}`,
-      description:
-        'Find and rent top-quality vehicles including cars, bikes, and more across various locations.',
-    }
+  // Construct the canonical URL dynamically based on state, category, and search parameters
+  const canonicalUrl = `https://ride.rent/${state}/listing?category=${category}`
+
+  // Fallback OpenGraph image or use the one from the API
+  const ogImage = '/assets/icons/ride-rent.png'
+
+  // Shortened versions for social media (optional)
+  const shortTitle =
+    metaTitle.length > 60 ? `${metaTitle.substring(0, 57)}...` : metaTitle
+  const shortDescription =
+    metaDescription.length > 155
+      ? `${metaDescription.substring(0, 152)}...`
+      : metaDescription
+
+  return {
+    title: metaTitle,
+    description: metaDescription,
+    keywords: `${category}, ${vehicleType}, rental in ${state}, vehicle rental near me`,
+    openGraph: {
+      title: shortTitle,
+      description: shortDescription,
+      url: canonicalUrl,
+      type: 'website',
+      images: [
+        {
+          url: ogImage,
+          alt: `${category} listings for rent`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: shortTitle,
+      description: shortDescription,
+      images: [ogImage],
+    },
+    manifest: '/manifest/webmanifest',
+    robots: {
+      index: true,
+      follow: true,
+      nocache: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        noimageindex: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+    },
   }
 }
 

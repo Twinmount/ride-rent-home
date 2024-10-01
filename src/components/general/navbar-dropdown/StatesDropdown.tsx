@@ -1,6 +1,5 @@
 'use client'
 
-import styles from '../navbar/Navbar.module.scss'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,9 +34,16 @@ export default function StatesDropdown() {
 
   const states: StateType[] = data?.result || []
 
-  // Find the current state object based on the URL
+  // List of paths where the component should not render
+  const excludePaths = ['/terms-condition', '/about-us', '/privacy-policy']
+
+  // Use startsWith to exclude dynamic paths like /faq and /faq/{state}
+  const shouldExclude =
+    pathname.startsWith('/faq') || excludePaths.includes(pathname)
+
+  // Only run the useEffect if the current path is NOT in the excludePaths
   useEffect(() => {
-    if (states.length > 0) {
+    if (!shouldExclude && states.length > 0) {
       const foundState = states.find((data) => data.stateValue === state)
       if (foundState) {
         setSelectedState(foundState)
@@ -51,18 +57,10 @@ export default function StatesDropdown() {
         }
       }
     }
-  }, [state, states])
+  }, [state, states, shouldExclude])
 
-  // List of paths where the component should not render
-  const excludePaths = [
-    '/terms-condition',
-    '/faq',
-    '/about-us',
-    '/privacy-policy',
-  ]
-
-  // Check if the current path is in the excludePaths list
-  if (excludePaths.includes(pathname)) {
+  // If the current path is in the excludePaths list, return null and don't render the component
+  if (shouldExclude) {
     return null
   }
 
@@ -74,17 +72,17 @@ export default function StatesDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className={`${styles['nav-item']} ${styles['nav-items-icon']} border-none outline-none !w-auto truncate flex justify-end`}
+        className={`flex items-center !rounded-xl border-none outline-none`}
       >
         <FaLocationDot
           width={20}
           height={20}
-          className={`${styles['nav-items-icon']}`}
+          className={`text-orange mr-1 text-lg`}
         />
-        <span>
+        <span className="font-semibold">
           {selectedState ? selectedState.stateName : 'Select Location'}
         </span>
-        <ChevronDown className="text-yellow relative right-1" width={20} />
+        <ChevronDown className="text-yellow " width={20} />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="!w-44 flex flex-col p-1 bg-white shadow-md !rounded-xl gap-1">
         {states.length > 0 ? (
@@ -93,12 +91,10 @@ export default function StatesDropdown() {
               key={data.stateId}
               onClick={() => handleStateSelect(data.stateValue)}
               className={`cursor-pointer p-1 px-2 flex gap-x-1 items-center !rounded-xl hover:text-orange ${
-                data.stateValue === state ? 'text-yellow' : ''
+                data.stateValue === state ? 'text-orange' : ''
               }`}
             >
-              <FaLocationDot
-                className={`${styles['nav-items-icon']} scale-90`}
-              />
+              <FaLocationDot className={`text-orange scale-90`} />
               <span className="text-base">{data.stateName}</span>
             </DropdownMenuItem>
           ))

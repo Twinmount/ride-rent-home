@@ -6,13 +6,14 @@ import { sendPortfolioVisit } from '@/lib/api/general-api'
 import { Company, RentalDetails } from '@/types/vehicle-details-types'
 import { useQuery } from '@tanstack/react-query'
 
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 type DetailsSectionClientProps = {
   children: React.ReactNode
   company: Company
   rentalDetails: RentalDetails
   vehicleId: string
+  isLease: boolean
 }
 
 const DetailsSectionClient = ({
@@ -20,6 +21,7 @@ const DetailsSectionClient = ({
   company,
   rentalDetails,
   vehicleId,
+  isLease,
 }: DetailsSectionClientProps) => {
   const detailsSectionRef = useRef(null)
   const isInViewPort = useIntersectionObserver(detailsSectionRef)
@@ -39,6 +41,7 @@ const DetailsSectionClient = ({
           company={company}
           rentalDetails={rentalDetails}
           vehicleId={vehicleId}
+          isLease={isLease}
         />
       )}
     </div>

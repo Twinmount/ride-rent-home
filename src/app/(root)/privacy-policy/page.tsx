@@ -2,6 +2,32 @@ import './PrivacyPolicy.scss'
 import MotionDiv from '@/components/general/framer-motion/MotionDiv'
 import HeadingBanner from '@/components/general/heading-banner/HeadingBanner'
 
+export async function generateMetadata() {
+  const canonicalUrl = `https://ride.rent/privacy-policy`
+  const title = `Privacy Policy - Ride Rent`
+  const description = `Read our privacy policy to learn how RideRent Automobile Aggregators L.L.C collects, uses, and protects your personal information.`
+
+  return {
+    title,
+    description,
+    keywords: `privacy policy, data protection, personal information, Ride Rent`,
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: canonicalUrl,
+    },
+  }
+}
+
 export default function PrivacyPolicy() {
   return (
     <section className="privacy-section">

@@ -5,11 +5,11 @@
   height: auto;
   min-height: 15rem;
   max-height: 17rem;
-  padding: 0.8rem;
+  padding: 0.5rem;
   border-radius: 0.8rem;
   background-color: white;
   display: flex;
-  gap: 1rem;
+  gap: 0.7rem;
   width: 100%;
   min-width: 50rem;
   max-width: 52rem;
@@ -128,7 +128,7 @@
         font-size: 0.8rem;
         line-height: 1.2;
         color: gray;
-        position: relative;
+
 
         .spec-icon {
           flex-shrink: 0;
@@ -141,21 +141,7 @@
           white-space: nowrap; // Prevent wrapping
           text-overflow: ellipsis; // Add ellipsis for truncation
           word-wrap: break-word;
-          position: relative;
 
-          // On hover, show full text
-          &:hover {
-            white-space: wrap;
-            overflow: visible;
-            background-color: white;
-            color: black;
-            position: absolute;
-            z-index: 10; // Ensure it is on top
-            padding: 0.3rem;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); //
-            max-width: 100%;
-            border-radius: 5px;
-          }
         }
       }
     }
@@ -169,23 +155,29 @@
     .bottom-box {
       display: flex;
       justify-content: space-between;
+      column-gap: 0.2rem;
       align-items: center;
       margin-top: auto;
-      padding-left: 0.5rem;
+      padding-left: 0rem;
       padding-right: 0.5rem;
+      width: 100%;
+      max-width: 100%;
 
 
       // bottom left
       .bottom-left {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.3rem;
+        background: rgb(239, 239, 239);
+        border-radius: 1rem;
+        padding-right: 0.6rem;
 
         // profile image
         .profile {
-          width: 3rem;
-          height: 3rem;
-          border-radius: 100%;
+          width: 2.7rem;
+          height: 2.7rem;
+          border-radius: 1rem;
           overflow: hidden;
 
           img {
@@ -197,19 +189,28 @@
 
         .location {
           display: flex;
-          justify-content: space-between;
           align-items: center;
           height: 2rem;
-          background: rgb(239, 239, 239);
-          padding: 0.4rem;
-          border-radius: 0.5rem;
           font-size: 0.8rem;
-          column-gap: 0.3rem;
-          color: gray;
+          column-gap: 0.1rem;
+          color: rgb(79, 79, 79);
 
-          .state {
-            text-transform: capitalize;
-            font-size: 1rem;
+          .each-location {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+
+
+            .state {
+              text-transform: capitalize;
+              font-size: 0.95rem;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              width: fit-content;
+              max-width: 5rem;
+              text-align: left;
+            }
           }
         }
       }
@@ -224,12 +225,21 @@
         width: 20%;
         min-width: fit-content;
         white-space: nowrap;
+        padding: 0.4rem 0.6rem;
+        border-radius: 1rem;
+        background: rgb(239, 239, 239);
 
-        span {
+        .rental-price {
           font-weight: bolder;
           font-size: medium;
           color: red;
-          font-size: 1.4rem;
+          font-size: 1.2rem;
+        }
+
+        .rental-period {
+          font-weight: bolder;
+          font-size: medium;
+          font-size: 0.7rem;
         }
       }
 

@@ -28,10 +28,10 @@ export default function FeaturesSidebar({
 
   return (
     <Sheet>
-      <SheetTrigger className="bg-orange p-1 rounded-2xl text-white mb-2 px-4 shadow-sm hover:shadow-lg transition-transform ease-in-out hover:scale-[1.01] active:scale-[0.99] flex items-center gap-x-2">
+      <SheetTrigger className="bg-orange p-1 rounded-2xl text-white mb-2 px-4 shadow-sm hover:shadow-lg transition-transform  ease-in-out hover:scale-[1.01] active:scale-[0.99] flex items-center gap-x-2">
         Show All <BsEyeFill />
       </SheetTrigger>
-      <SheetContent className="bg-white overflow-auto">
+      <SheetContent className="bg-white overflow-auto !z-[61]">
         <SheetHeader>
           <SheetTitle className="custom-heading feature-sidebar-heading text-2xl">
             Features

@@ -44,8 +44,10 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
     setLoading(false)
   }
 
+  const isDisabled = !whatsappUrl || !email || !phoneNumber
+
   return (
-    <div className="card-contact-icons">
+    <div className={`card-contact-icons ${isDisabled ? 'container-disabled': ""}`}>
       {/* WhatsApp Icon */}
       <div
         aria-label="whatsapp"

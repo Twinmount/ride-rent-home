@@ -34,9 +34,15 @@ export default function CategoryDropdown() {
 
   const categories: CategoryType[] = data?.result?.list || []
 
-  // Set the selected category based on the provided prop or default to the first category
+  // Define paths to exclude
+  const excludePaths = ['/terms-condition', '/about-us', '/privacy-policy']
+
+  // Use startsWith to exclude dynamic paths like /faq and /faq/{state}
+  const shouldExclude =
+    pathname.startsWith('/faq') || excludePaths.includes(pathname)
+
   useEffect(() => {
-    if (categories.length > 0) {
+    if (!shouldExclude && categories.length > 0) {
       if (pathname.includes('/listing')) {
         return
       }
@@ -53,31 +59,23 @@ export default function CategoryDropdown() {
         }
       }
     }
-  }, [category, categories])
+  }, [category, categories, shouldExclude])
 
-  // List of paths where the component should not render
-  const excludePaths = [
-    '/terms-condition',
-    '/faq',
-    '/about-us',
-    '/privacy-policy',
-  ]
-
-  // Check if the current path is in the excludePaths list
-  if (excludePaths.includes(pathname)) {
+  // If the current path is excluded, return null and don't render the component
+  if (shouldExclude) {
     return null
   }
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center !rounded-xl">
+      <DropdownMenuTrigger className="flex items-center !rounded-xl border-none outline-none">
         <MdManageSearch className="text-orange mr-1 text-lg " width={20} />
         <span className="font-semibold">
           {selectedCategory ? selectedCategory.name : 'Select Category'}
         </span>
         <ChevronDown className="text-yellow" width={20} />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="!w-32 flex flex-col p-1 shadow-md !bg-white gap-1">
+      <DropdownMenuContent className="!w-32 flex flex-col p-1 shadow-md bg-white  !rounded-xl  gap-1">
         {categories.map((cat) => (
           <DropdownMenuItem asChild key={cat.categoryId}>
             <Link

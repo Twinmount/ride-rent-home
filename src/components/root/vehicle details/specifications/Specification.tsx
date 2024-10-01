@@ -32,8 +32,6 @@ const Specification: FC<SpecificationsProps> = ({
   // Base URL for fetching icons
   const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL
 
-  console.log('specifications :', specifications)
-
   return (
     <MotionDiv className="specification-container">
       <h2 className="custom-heading">Specifications</h2>

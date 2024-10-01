@@ -14,7 +14,8 @@ export const CompanyLinks = () => {
       <div className="footer-links">
         {company.map((item) => {
           // Handle FAQ link dynamically
-          const link = item.title === 'FAQ' ? `/faq/${state}` : item.link
+          const link =
+            item.title === 'FAQ' ? `/faq/${state || 'dubai'}` : item.link
 
           return item.link.includes('http') ? (
             // Open external links in a new tab for the 'List Vehicles' link

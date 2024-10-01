@@ -1,22 +1,25 @@
 import './ProfileSpecification.scss'
 import { IoSpeedometer } from 'react-icons/io5'
 import { CompanySpecs, RentalDetails } from '@/types/vehicle-details-types'
+import { HeartHandshake, ThumbsUp } from 'lucide-react'
 
 type ProfileSpecificationProps = {
   specs: CompanySpecs
   rentalDetails: RentalDetails
+  isLease: boolean
 }
 
 const ProfileSpecification = ({
   specs,
   rentalDetails,
+  isLease,
 }: ProfileSpecificationProps) => {
   // Helper function to determine which rental option to display
   const getRentalAvailability = () => {
     if (rentalDetails.month.enabled) return 'Monthly Rentals Available'
     if (rentalDetails.week.enabled) return 'Weekly Rentals Available'
     if (rentalDetails.day.enabled) return 'Daily Rentals Available'
-    return 'No Rentals Available'
+    return 'Rental Details N/A'
   }
 
   // Determine which rental period data to display based on priority
@@ -88,18 +91,27 @@ const ProfileSpecification = ({
 
       {rentalPeriod && (
         <div className="mileage">
-          {/* Included mileage */}
-          <div className="mileage-box">
-            <IoSpeedometer />
-            <span className="label">{'Included mileage limit'}</span>
-            <span className="value">{rentalPeriod.details.mileageLimit}</span>
-          </div>
           {/* Rent Price with dynamic label */}
           <div className="mileage-box">
             <IoSpeedometer />
             <span className="label">{getRentPriceLabel()}</span>
             <span className="value">{`AED ${rentalPeriod.details.rentInAED}`}</span>
           </div>
+          {/* Included mileage */}
+          <div className="mileage-box">
+            <IoSpeedometer />
+            <span className="label">{'Included mileage limit'}</span>
+            <span className="value">{rentalPeriod.details.mileageLimit}</span>
+          </div>
+        </div>
+      )}
+
+      {isLease && (
+        <div className="lease-box">
+          <ThumbsUp className="lease-icon" width={20} />
+          <span className="label">
+            {'This vehicle is also available for lease'}
+          </span>
         </div>
       )}
     </div>

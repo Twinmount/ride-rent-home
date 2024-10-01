@@ -24,8 +24,13 @@ const nextConfig = {
       },
       {
         source:
-          '/:state(dubai|sharjah|abudhabi|alain|fujairah|rasalkhaima|ajman|ummalquwain)',
+          '/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)',
         destination: '/:state/cars',
+        permanent: true,
+      },
+      {
+        source: '/faq',
+        destination: '/faq/dubai',
         permanent: true,
       },
     ]

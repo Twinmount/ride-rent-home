@@ -15,7 +15,7 @@
 
     .model-name {
       font-weight: 500;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       margin-bottom: 1.4rem;
     }
 
@@ -25,10 +25,19 @@
       font-size: 15px;
     }
 
+    .specification-info {
+      margin-top: 0.6rem;
+      font-weight: 500;
+      background-color: rgb(242, 242, 242);
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.3rem;
+      width: fit-content;
+    }
+
     .location-container {
       font-size: 15px;
       color: rgb(91, 91, 91);
-      margin-top: 0.8rem;
+      margin-top: 0.6rem;
       display: flex;
       align-items: start;
 

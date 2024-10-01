@@ -74,6 +74,7 @@ export type VehicleDetailsResponse = {
     modelName: string
     subTitle: string
     state: State
+    isLease: boolean //isLease
     cities: City[]
     vehiclePhotos: VehiclePhoto[]
     specs: Specs
@@ -81,6 +82,8 @@ export type VehicleDetailsResponse = {
     rentalDetails: RentalDetails
     company: Company
     description: string
+    isAvailableForLease: boolean
+    vehicleSpecification: string
   }
   statusCode: number
 }

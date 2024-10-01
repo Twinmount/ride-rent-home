@@ -4,7 +4,13 @@ import Image from 'next/image'
 import { VehicleCardType } from '@/types/vehicle-types'
 import { StateCategoryProps } from '@/types'
 import { IoLocationOutline } from 'react-icons/io5'
-import { formatKeyForIcon, formatPhoneNumber } from '@/helpers'
+import {
+  convertToLabel,
+  formatKeyForIcon,
+  formatPhoneNumber,
+  generateModelDetailsUrl,
+  getRentalPeriodDetails,
+} from '@/helpers'
 import ContactIcons from '@/components/common/contact-icons/ContactIcons'
 
 type MainCardProps = {
@@ -26,22 +32,19 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
   // Base URL for fetching icons
   const baseAssetsUrl = process.env.ASSETS_URL
 
-  // Determine which rental period to display
-  const rentalPeriod = vehicle.rentalDetails.day?.enabled
-    ? { label: 'Day', details: vehicle.rentalDetails.day }
-    : vehicle.rentalDetails.week?.enabled
-    ? { label: 'Week', details: vehicle.rentalDetails.week }
-    : vehicle.rentalDetails.month?.enabled
-    ? { label: 'Month', details: vehicle.rentalDetails.month }
-    : null
+  // Use the helper function to get rental period details
+  const rentalPeriod = getRentalPeriodDetails(vehicle.rentalDetails)
+
+  // generating dynamic url for the vehicle details page
+  const modelDetails = generateModelDetailsUrl(vehicle)
+
+  // dynamic link to navigate to vehicle details page
+  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`
 
   return (
     <div className="car-card-container slide-visible">
       {/* card top */}
-      <Link
-        href={`/${state}/${category}/${vehicle.vehicleId}`}
-        className="card-top"
-      >
+      <Link href={vehicleDetailsPageLink} className="card-top">
         <div className="image-box">
           {/* Thumbnail Image */}
           {vehicle.thumbnail ? (
@@ -83,7 +86,7 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
 
       {/* card bottom */}
       <div className="card-bottom">
-        <Link href={`/${state}/${category}/${vehicle.vehicleId}`}>
+        <Link href={vehicleDetailsPageLink}>
           {/* title */}
           <div className="model-name">{vehicle.model}</div>
 
@@ -110,21 +113,24 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
           <div className="location-box">
             <div className="location">
               <IoLocationOutline size={18} />{' '}
-              <span className="state">{vehicle.state || 'N/A'}</span>
+              <span className="state">
+                {convertToLabel(vehicle.state) || 'N/A'}
+              </span>
             </div>
-            {rentalPeriod && (
+            {rentalPeriod ? (
               <div className="price">
-                <span>{rentalPeriod.details.rentInAED || 'N/A'} AED</span> /{' '}
-                {rentalPeriod.label}
+                <span className="rent-amount">
+                  {rentalPeriod.rentInAED || 'N/A'} AED
+                </span>
+                <span className="rent-period">&nbsp;{rentalPeriod.label}</span>
               </div>
+            ) : (
+              <div className="price">Rental Details N/A</div>
             )}
           </div>
         </Link>
         <div className="bottom-box">
-          <Link
-            href={`/${state}/${category}/${vehicle.vehicleId}`}
-            className="rent-now-btn"
-          >
+          <Link href={vehicleDetailsPageLink} className="rent-now-btn">
             RENT NOW
             <span>Available now for chat</span>
           </Link>

@@ -11,6 +11,7 @@ import {
 import Image from 'next/image'
 
 import './FAQ.scss'
+import { Skeleton } from '@/components/ui/skeleton'
 
 type FAQStateProps = {
   stateValue: string
@@ -25,7 +26,7 @@ export default function FAQ({ stateValue }: FAQStateProps) {
   useEffect(() => {
     async function loadFaqData() {
       try {
-        const faqModule = await import(`@/constants/faq-data/${stateValue}FAQ`)
+        const faqModule = await import(`@/constants/faq-data/${stateValue}`)
         setFaqData(faqModule.default || [])
       } catch (error) {
         console.error('Failed to load FAQ data:', error)
@@ -54,7 +55,7 @@ export default function FAQ({ stateValue }: FAQStateProps) {
       </div>
 
       {isLoading ? (
-        <div className="loading-text">Loading FAQs skelton...</div>
+        <Skeleton className="w-full bg-gray-300 rounded-lg h-36" />
       ) : (
         <Accordion
           type="single"

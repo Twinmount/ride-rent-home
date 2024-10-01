@@ -62,12 +62,14 @@ const Navbar = () => {
               <StatesDropdown />
             </li>
 
-            <li className={styles.links}>
-              <QuickLinksDropdown />
-            </li>
             <li className={styles.vehicles}>
               <CategoryDropdown />
             </li>
+
+            <li className={styles.links}>
+              <QuickLinksDropdown />
+            </li>
+
             <li className={styles['list-btn']}>
               <Link
                 href={`${process.env.NEXT_PUBLIC_AGENT_REGISTER_URL}`}

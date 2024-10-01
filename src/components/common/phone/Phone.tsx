@@ -24,7 +24,7 @@ export default function Phone({ phoneNumber, onClick, loading }: PhoneProps) {
       <PopoverTrigger>
         <FaSquarePhoneFlip
           className={`icon phone ${
-            loading || !phoneNumber ? 'disabled' : 'cursor-pointer'
+            loading || !phoneNumber ? 'disabled ' : 'cursor-pointer'
           }`}
           style={loading ? { cursor: 'wait' } : {}}
         />

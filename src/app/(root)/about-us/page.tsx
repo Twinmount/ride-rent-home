@@ -1,43 +1,39 @@
 import MotionDiv from '@/components/general/framer-motion/MotionDiv'
-import './AboutUs.scss'
+import AboutMain from '@/components/root/about/AboutMain'
+import AboutBottom from '@/components/root/about/AboutBottom'
 
-import HeadingBanner from '@/components/general/heading-banner/HeadingBanner'
+export async function generateMetadata() {
+  const canonicalUrl = `https://ride.rent/about-us`
+  const title = `About Us - Ride Rent`
+  const description = `Learn more about RideRent Automobile Aggregators L.L.C, our mission, and how we are simplifying vehicle rentals across the UAE.`
+
+  return {
+    title,
+    description,
+    keywords: `about us, Ride Rent, vehicle rentals, company information`,
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: canonicalUrl,
+    },
+  }
+}
 
 export default function AboutUs() {
   return (
-    <section className="privacy-section">
-      <HeadingBanner heading="About Us" />
-      <MotionDiv className="bottom">
-        <p>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Suscipit
-          dolorem atque ab perferendis dolores rerum maxime possimus? Repellat
-          voluptatum molestiae delectus! Quia, itaque explicabo commodi
-          doloremque autem deleniti sapiente quibusdam?
-        </p>
-
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore,
-          cumque. Beatae, debitis impedit consequatur tempore voluptas expedita
-          unde corporis architecto ab nesciunt assumenda, magni non iste est
-          soluta nulla sed.
-        </p>
-
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Provident
-          incidunt dicta aperiam quas eum officia magnam impedit perspiciatis
-          veritatis est. Lorem ipsum dolor sit amet, consectetur adipisicing
-          elit. Provident incidunt dicta aperiam quas eum officia magnam impedit
-          perspiciatis veritatis est.
-        </p>
-
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore,
-          cumque. Beatae, debitis impedit consequatur tempore voluptas expedita
-          unde corporis architecto ab nesciunt assumenda, magni non iste est
-          soluta nulla sed. Lorem ipsum dolor sit amet consectetur adipisicing
-          elit. Tempora perspiciatis rerum corporis, ipsa nisi iure dolor modi
-          consectetur nihil quisquam!
-        </p>
+    <section className="pb-12 ">
+      <MotionDiv className="about-content">
+        <AboutMain />
+        <AboutBottom />
       </MotionDiv>
     </section>
   )

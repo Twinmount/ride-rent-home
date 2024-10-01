@@ -12,16 +12,16 @@ type ProfileCardProps = {
   company: Company
   rentalDetails: RentalDetails
   vehicleId: string
+  isLease: boolean
 }
 
 const ProfileCard = ({
   company,
   rentalDetails,
   vehicleId,
+  isLease,
 }: ProfileCardProps) => {
   const contactDetails = company?.contactDetails
-
-  console.log('contact details: ', contactDetails)
 
   const formattedPhoneNumber =
     contactDetails?.countryCode && contactDetails.phone
@@ -42,7 +42,7 @@ const ProfileCard = ({
       </div>
 
       {(!company.companyName || !company.companyProfile) && (
-        <p className="disabled-text">Profile Disabled.</p>
+        <p className="disabled-text">This person is currently unavailable.</p>
       )}
 
       {/* profile */}
@@ -86,6 +86,7 @@ const ProfileCard = ({
       <ProfileSpecification
         specs={company.companySpecs}
         rentalDetails={rentalDetails}
+        isLease={isLease}
       />
 
       {/* Contact and action buttons */}

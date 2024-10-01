@@ -2,7 +2,8 @@ import { FetchVehicleCardsResponse } from '@/types/vehicle-types'
 
 // Function to fetch vehicles based on filters using a POST request
 export const FetchVehicleByFilters = async (
-  query: string
+  query: string,
+  state: string = 'dubai'
 ): Promise<FetchVehicleCardsResponse> => {
   // Parse the query string to get filter values
   const params = new URLSearchParams(query)
@@ -23,7 +24,7 @@ export const FetchVehicleByFilters = async (
     page: getParamValue('page', '1'), // Ensure it's a string
     limit: getParamValue('limit', '10'), // Ensure it's a string
     sortOrder: 'DESC', // You can dynamically set this if needed
-    state: getParamValue('state', 'dubai'), // Default state if not specified
+    state: getParamValue('state', state), // Default state if not specified
   }
 
   // Add optional fields only if they are non-empty
@@ -37,6 +38,7 @@ export const FetchVehicleByFilters = async (
     transmission: getParamArray('transmission'),
     vehicleTypes: getParamArray('vehicleTypes'),
     filter: getParamValue('filter'),
+    city: getParamValue('city'),
   }
 
   Object.entries(optionalFields).forEach(([key, value]) => {
@@ -95,7 +97,6 @@ export const sendPortfolioVisit = async (vehicleId: string) => {
 
     // Optionally handle the success response, such as logging or triggering any side effect
     const responseData = await response.json()
-    console.log('Portfolio visit recorded successfully:', responseData)
 
     return responseData // Return the response data if needed
   } catch (error) {
@@ -120,7 +121,6 @@ export const sendQuery = async (
     if (!response.ok) {
       throw new Error('Failed to send query')
     }
-    console.log('Query sent successfully')
   } catch (error) {
     console.error('Error sending query:', error)
   }

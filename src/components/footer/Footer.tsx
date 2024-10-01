@@ -49,7 +49,7 @@ const Footer = () => {
           <span className="copyright">
             <FaRegCopyright />
 
-            <span className="bold"> Ride.Rent LLC</span>
+            <span className="bold">RideRent Automobile Aggregators L.L.C</span>
           </span>
         </p>
       </MotionDiv>

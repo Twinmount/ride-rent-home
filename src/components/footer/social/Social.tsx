@@ -14,20 +14,20 @@ const Social = () => {
           <div className="contact-box">
             <FaPhoneVolume className="icon" />
             <a
-              href={`tel:${process.env.NEXT_PUBLIC_FOOTER_PH_NUMBER}`}
+              href="tel:+971502972335"
               className="p-0 max-h-fit max-w-fit w-fit h-fit"
             >
-              {process.env.NEXT_PUBLIC_FOOTER_PH_NUMBER}
+              +971 - 502972335
             </a>
           </div>
           {/* mail */}
           <div className="contact-box">
             <MdEmail className="icon" />
             <a
-              href="mailto:Hello@ride.rent"
+              href="mailto:hello@ride.rent"
               className="hover:tracking-widest transition-all"
             >
-              Hello@ride.rent
+              hello@ride.rent
             </a>
           </div>
         </div>
