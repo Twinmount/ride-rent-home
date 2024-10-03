@@ -4,9 +4,11 @@ import FeaturesCard from '@/components/card/features-card/FeaturesCard'
 
 import MotionSection from '@/components/general/framer-motion/MotionSection'
 import { StateCategoryProps } from '@/types'
-import { convertToLabel, singularizeType } from '@/helpers'
+import { convertToLabel, createFeatureCards, singularizeType } from '@/helpers'
 
 const Features = ({ state, category }: StateCategoryProps) => {
+  const dynamicFeatureCards = createFeatureCards(convertToLabel(state))
+
   return (
     <MotionSection className="features_section wrapper">
       <h2>
@@ -33,7 +35,7 @@ const Features = ({ state, category }: StateCategoryProps) => {
       </div>
 
       <div className="feature_card_container">
-        {featureCards.map((feature) => (
+        {dynamicFeatureCards.map((feature) => (
           <FeaturesCard key={feature.key} data={feature} />
         ))}
       </div>

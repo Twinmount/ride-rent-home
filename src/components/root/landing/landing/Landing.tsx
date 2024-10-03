@@ -33,8 +33,7 @@ const Landing = ({ state, category }: StateCategoryProps) => {
             <div className="best-price">
               <p className="best-price-p">Explore thousands of vehicles</p>
               <p className="best-price-p">
-                Get unbeatable deals & pay{' '}
-                <span className="text-yellow font-semibold">Zero</span>{' '}
+                Get unbeatable deals & pay <span className="zero">Zero</span>{' '}
                 commission!
               </p>
             </div>
@@ -53,17 +52,20 @@ const Landing = ({ state, category }: StateCategoryProps) => {
       </div>
       <div className="landing-bottom">
         <p>
-          <span>Ride.Rent</span> ensures that you have access to the best and
-          <span>
+          <strong>Ride.Rent</strong> ensures that you have access to the best
+          and
+          <strong>
             {' '}
             most affordable{' '}
             {convertToLabel(singularizeType(category)).toLowerCase()} rental
             services in{' '}
-            <span className="capitalize">{convertToLabel(state)}</span>&nbsp;!.
-          </span>
-          Take advantage of our exceptional offers on car rentals throughout
-          Dubai, with Ride On Rent, each car is well maintained and pre-serviced
-          for efficient performance. <br />
+            <span className="bold-text">{convertToLabel(state)}</span>
+            &nbsp;!.
+          </strong>
+          Take advantage of our exceptional offers on car rentals throughout{' '}
+          <span className="bold-text">{convertToLabel(state)}</span>, with Ride
+          On Rent, each car is well maintained and pre-serviced for efficient
+          performance. <br />
           For your peace of mind, all vehicles are insured and come with
           dedicated agent assistance.
         </p>
