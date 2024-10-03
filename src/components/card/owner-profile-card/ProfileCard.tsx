@@ -42,7 +42,7 @@ const ProfileCard = ({
       </div>
 
       {(!company.companyName || !company.companyProfile) && (
-        <p className="disabled-text">This person is currently unavailable.</p>
+        <p className="disabled-text">This vehicle is currently unavailable.</p>
       )}
 
       {/* profile */}

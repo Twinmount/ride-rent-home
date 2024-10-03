@@ -22,6 +22,8 @@ const MostPopular = async ({ state, category }: StateCategoryProps) => {
 
   const vehicleData = data?.result?.list || []
 
+  console.log('most popular : ', vehicleData)
+
   if (vehicleData.length === 0) return null
 
   return (
