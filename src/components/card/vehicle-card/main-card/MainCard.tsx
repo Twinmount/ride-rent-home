@@ -41,7 +41,6 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
   // dynamic link to navigate to vehicle details page
   const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`
 
-  console.log('vehicle specs :', vehicle.vehicleSpecs)
   return (
     <div className="car-card-container slide-visible">
       {/* card top */}

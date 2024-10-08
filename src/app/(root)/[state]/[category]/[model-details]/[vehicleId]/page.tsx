@@ -42,7 +42,7 @@ export async function generateMetadata({
 
   // Parse the JSON response
   const data: VehicleDetailsResponse = await response.json()
-  console.log('data recieved in details page :', data)
+
   if (
     data?.status === 'NOT_SUCCESS' ||
     response.status === 400 ||
