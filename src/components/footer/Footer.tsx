@@ -4,6 +4,7 @@ import './Footer.scss'
 import Social from './social/Social'
 import { FaRegCopyright } from 'react-icons/fa6'
 import MotionDiv from '../general/framer-motion/MotionDiv'
+
 const Footer = () => {
   return (
     <footer>

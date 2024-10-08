@@ -42,6 +42,14 @@ export async function generateMetadata({
 
   // Parse the JSON response
   const data: VehicleDetailsResponse = await response.json()
+  console.log('data recieved in details page :', data)
+  if (
+    data?.status === 'NOT_SUCCESS' ||
+    response.status === 400 ||
+    !data.result
+  ) {
+    return notFound()
+  }
 
   // Determine the seat part of the title
   let seatPart = ''
@@ -146,7 +154,11 @@ export default async function VehicleDetails({
   )
   const data: VehicleDetailsResponse = await response.json()
 
-  if (data?.status === 'NOT_SUCCESS' || response.status === 400) {
+  if (
+    data?.status === 'NOT_SUCCESS' ||
+    response.status === 400 ||
+    !data.result
+  ) {
     return notFound()
   }
 
