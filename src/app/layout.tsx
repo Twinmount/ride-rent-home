@@ -6,7 +6,7 @@ import Script from 'next/script'
 
 export const metadata: Metadata = {
   title: 'Ride.Rent',
-  description: 'The ultimate vehicle rental platform',
+  description: 'The ultimate vehicle rental platform in UAE',
 }
 
 const firaSans = Fira_Sans({
