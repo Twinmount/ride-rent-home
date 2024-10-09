@@ -89,7 +89,7 @@ export async function generateMetadata({
       description: shortDescription,
       images: [ogImage],
     },
-    manifest: '/manifest/webmanifest',
+    manifest: '/manifest.webmanifest',
     robots: {
       index: true,
       follow: true,

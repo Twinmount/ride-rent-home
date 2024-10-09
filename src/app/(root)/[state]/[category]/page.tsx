@@ -74,7 +74,7 @@ export async function generateMetadata({
       description: shortDescription, // Shortened description for Twitter
       images: [ogImage], // Twitter image
     },
-    manifest: '/manifest/webmanifest', // PWA manifest
+    manifest: '/manifest.webmanifest', // PWA manifest
     robots: {
       index: true, // Allow page to be indexed
       follow: true, // Allow search engines to follow links

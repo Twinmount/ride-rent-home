@@ -119,7 +119,7 @@ export async function generateMetadata({
       description: shortDescription, // Shorter description for Twitter
       images: [ogImage],
     },
-    manifest: '/manifest/webmanifest',
+    manifest: '/manifest.webmanifest',
 
     robots: {
       index: true, // Index the page
