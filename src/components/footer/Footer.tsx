@@ -36,21 +36,21 @@ const Footer = () => {
           to premium rentals, in cars, bicycles, motorbikes, speed boats,
           yachts, and charter planes. Operating from Dubai, our services extend
           to selected cities worldwide. Experience convenience and luxury with
-          Ride.Rent.com
+          ride.rent
           <br />
           <br />
           All trademarks utilized within this portal for representation are the
           property fo their respective owners
           <br />
           <br />
-          Ride.Rent is a product from the{' '}
-          <span className="bold">Zomy Group</span>
+          ride.rent is a product from{' '}
+          <span className="bold">FleetOrbita Group</span>
           <br />
           <br />
           <span className="copyright">
             <FaRegCopyright />
 
-            <span className="bold">RideRent Automobile Aggregators L.L.C</span>
+            <span className="bold">FleetOrbita Internet Services</span>
           </span>
         </p>
       </MotionDiv>

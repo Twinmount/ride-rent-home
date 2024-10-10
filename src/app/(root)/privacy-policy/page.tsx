@@ -5,7 +5,7 @@ import HeadingBanner from '@/components/general/heading-banner/HeadingBanner'
 export async function generateMetadata() {
   const canonicalUrl = `https://ride.rent/privacy-policy`
   const title = `Privacy Policy - Ride Rent`
-  const description = `Read our privacy policy to learn how RideRent Automobile Aggregators L.L.C collects, uses, and protects your personal information.`
+  const description = `Read our privacy policy to learn how FleetOrbita Internet Services collects, uses, and protects your personal information.`
 
   return {
     title,
@@ -34,40 +34,33 @@ export default function PrivacyPolicy() {
       <HeadingBanner heading="Privacy Policy" />
       <MotionDiv className="container">
         <h2 className="text-lg font-semibold text-center">
-          Privacy Policy for{' '}
-          <span className="highlight">
-            RideRent Automobile Aggregators L.L.C
-          </span>{' '}
-          doing business as{' '}
-          <a className="highlight" target="_blank" href="https://ride.rent.com">
-            https://ride.rent.com
-          </a>{' '}
-          and{' '}
-          <a className="highlight" target="_blank" href="https://ride.rent.com">
-            https://myfleet.rent.com
-          </a>
+          Privacy Policy for Ride.Rent & Myfleet.rent
         </h2>
 
         <h3 className="text-2xl font-semibold">Introduction</h3>
+
+        <h4 className="text-lg font-semibold -my-2">
+          <a href="https://ride.rent" target="_blank">
+            Ride.Rent
+          </a>{' '}
+          & it&apos;s sister portal,{' '}
+          <a href="https://myfleet.rent">MyFleet.rent</a>, are brands owned &
+          operated by FleetOrbita Internet Services.
+        </h4>
+
         <p className="text-center">
-          <span className="highlight">
-            RideRent Automobile Aggregators L.L.C
-          </span>{' '}
-          is dedicated to safeguarding your privacy and is committed to
-          protecting the personal information collected from you through our
-          website (hereinafter collectively referred to as the “Platform”). This
-          Privacy Policy outlines the manner in which we gather and use
-          information. By utilizing the services offered on our Platform
-          (“Services”), you consent to the terms of this policy. References to
-          &apos;we&apos;, &apos;us&apos;, or &apos;our&apos; within this policy
-          pertain to{' '}
-          <span className="highlight">
-            RideRent Automobile Aggregators L.L.C.
-          </span>{' '}
-          This Privacy Policy complements any other terms and conditions
-          applicable to the Platform. Specific privacy terms provided in any
-          documents by us should be read in conjunction with this Privacy
-          Policy.
+          <span className="highlight">FleetOrbita Internet Services</span> is
+          dedicated to safeguarding your privacy and is committed to protecting
+          the personal information collected from you through our website
+          (hereinafter collectively referred to as the “Platform”). This Privacy
+          Policy outlines the manner in which we gather and use information. By
+          utilizing the services offered on our Platform (“Services”), you
+          consent to the terms of this policy. References to &apos;we&apos;,
+          &apos;us&apos;, or &apos;our&apos; within this policy pertain to{' '}
+          <span className="highlight">FleetOrbita Internet Services.</span> This
+          Privacy Policy complements any other terms and conditions applicable
+          to the Platform. Specific privacy terms provided in any documents by
+          us should be read in conjunction with this Privacy Policy.
         </p>
 
         {/* external links section */}
@@ -76,12 +69,8 @@ export default function PrivacyPolicy() {
           <p>
             {' '}
             The website{' '}
-            <a
-              className="highlight"
-              target="_blank"
-              href="https://ride.rent.com"
-            >
-              https://ride.rent.com
+            <a target="_blank" href="https://ride.rent">
+              ride.rent
             </a>{' '}
             is not responsible for the privacy policies of websites it links to.
             If you provide information to such third parties, different rules
@@ -277,10 +266,8 @@ export default function PrivacyPolicy() {
           <h2 className="font-bold text-lg mb-2">Verification and Review</h2>
           <p>
             To verify or update the details you submitted to{' '}
-            <span className="highlight">
-              RideRent Automobile Aggregators L.L.C
-            </span>
-            , contact us via the provided email address. We may request proof of
+            <span className="highlight">FleetOrbita Internet Services</span>,
+            contact us via the provided email address. We may request proof of
             identity for security purposes.
           </p>
         </div>
@@ -314,8 +301,10 @@ export default function PrivacyPolicy() {
           <h2 className="font-bold text-lg mb-2">Contact Us</h2>
           <p>
             For queries, complaints, or recommendations about this Policy, or to
-            correct or update your personal information, contact us at
-            info@ride.rent.
+            correct or update your personal information, contact us at{' '}
+            <a href="mailto:hello@ride.rent" className="">
+              hello@ride.rent
+            </a>
           </p>
         </div>
       </MotionDiv>

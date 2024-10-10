@@ -1,11 +1,9 @@
-import React, { Suspense } from 'react'
 import './FooterGrid.scss'
-import { company, quick_links } from './index'
+import React, { Suspense } from 'react'
 import MotionDiv from '../../general/framer-motion/MotionDiv'
 import FooterLocations from './locations/FooterLocations'
 import FooterVehicleCategories from './vehicle-categories/FooterVehicleCategories'
 import FooterQuickLinks from './quick-links/FooterQuickLinks'
-import Link from 'next/link'
 import { CompanyLinks } from './company-links/CompanyLinks'
 
 const FooterGrid = () => {

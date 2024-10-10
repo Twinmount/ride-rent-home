@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build:dev": "NODE_ENV=development next build",
     "build:prod": "NODE_ENV=production next build",
+    "build:prod-windows": "SET NODE_ENV=production && next build",
     "start:dev": "npm run build:dev && next start",
     "start:prod": "npm run build:prod && next start",
     "start": "next start"
@@ -26,6 +27,7 @@
     "clsx": "^2.1.1",
     "embla-carousel-autoplay": "^8.1.5",
     "embla-carousel-react": "^8.1.5",
+    "env-cmd": "^10.1.0",
     "framer-motion": "^11.2.13",
     "lucide-react": "^0.396.0",
     "next": "14.2.4",

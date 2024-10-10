@@ -13,7 +13,7 @@ export const company = [
   { id: 1, title: 'About Us', link: '/about-us' },
   { id: 2, title: 'List Vehicles', link: 'https://agent.ride.rent/register' },
   { id: 3, title: 'Privacy Policy', link: '/privacy-policy' },
-  { id: 4, title: 'Terms Of Service', link: '/terms-condition' },
+  { id: 4, title: 'Terms & Conditions', link: '/terms-condition' },
   { id: 5, title: 'FAQ', link: '/faq' },
 ]
 

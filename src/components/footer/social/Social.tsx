@@ -17,16 +17,13 @@ const Social = () => {
               href="tel:+971502972335"
               className="p-0 max-h-fit max-w-fit w-fit h-fit"
             >
-              +971 - 502972335
+              +971 - 50-297-2335
             </a>
           </div>
           {/* mail */}
           <div className="contact-box">
             <MdEmail className="icon" />
-            <a
-              href="mailto:hello@ride.rent"
-              className="hover:tracking-widest transition-all"
-            >
+            <a href="mailto:hello@ride.rent" className="">
               hello@ride.rent
             </a>
           </div>
@@ -35,7 +32,7 @@ const Social = () => {
 
       {/* social */}
       <div className="social-media">
-        <div className="title">We are Social</div>
+        <div className="title">We are Social!</div>
         <div className="icons">
           {socials.map((social) => {
             const Icon = social.icon

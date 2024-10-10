@@ -1,19 +1,20 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { LinkType } from '@/types'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { fetchQuickLinksByValue } from '@/lib/next-api/next-api'
 
 export default function FooterQuickLinks() {
-  const searchParams = useSearchParams()
+  const params = useParams()
 
-  const state = searchParams.get('state') || ''
+  const state = params.state
 
+  // Fetch quick links based on the current state
   const { data, isLoading } = useQuery({
     queryKey: ['quick-links', state],
-    queryFn: () => fetchQuickLinksByValue(state),
+    queryFn: () => fetchQuickLinksByValue(state as string),
     enabled: !!state,
     staleTime: 0,
   })

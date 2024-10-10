@@ -36,6 +36,13 @@
           font-style: normal;
           font-weight: lighter;
           color: $footer_gray;
+
+        }
+
+        &:hover {
+          a {
+            color: $yellow;
+          }
         }
       }
     }
@@ -98,11 +105,13 @@
       font-style: normal;
       text-align: center;
       margin-bottom: 0.4rem;
+      color: $yellow;
     }
 
     .icons {
       display: flex;
       column-gap: 0.3rem;
+      margin-left: -0.5rem;
 
       .icon-container {
         display: flex;
@@ -111,11 +120,16 @@
         aspect-ratio: square;
         width: 1.9rem;
         height: 1.9rem;
-        background-color: $yellow;
         border-radius: 100%;
 
         .icon {
           scale: 1.2;
+        }
+
+        &:hover {
+          .icon {
+            color: $yellow;
+          }
         }
       }
     }

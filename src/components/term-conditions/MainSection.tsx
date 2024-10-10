@@ -3,15 +3,12 @@ export default function MainSection() {
     <div>
       <div>
         <p>
-          www.Ride.Rent, the website and the partner site www.myfleet.rent for
-          accessing the services (including all media, contents/materials
+          https://ride.Rent, the website and the partner site www.myfleet.rent
+          for accessing the services (including all media, contents/materials
           hosted, design elements and electronic documentations), are owned and
           operated by{' '}
-          <span className="highlight">
-            {' '}
-            RideRent Automobile Aggregators L.L.C
-          </span>
-          , with its registered{' '}
+          <span className="highlight"> FleetOrbita Internet Services</span>,
+          with its registered{' '}
           <span className="highlight">
             office currently located at Office No. 9, Hela Abdulla No-03, Al
             Karama, Dubai, United Arab Emirates.
@@ -39,9 +36,7 @@ export default function MainSection() {
       <div>
         <div className="flex items-center gap-x-1 mt-4">
           <h2 className="">COPYRIGHT OF</h2>
-          <span className="highlight">
-            RideRent Automobile Aggregators L.L.C
-          </span>
+          <span className="highlight">FleetOrbita Internet Services</span>
         </div>
 
         <p className="mt-2">
@@ -62,11 +57,8 @@ export default function MainSection() {
           graphics, logos, and brand name &quot;Ride.Rent,&quot; are trademarks
           of Twinmount Digital LLP(India). These trademarks are extended for
           commercial use to{' '}
-          <span className="highlight">
-            {' '}
-            RideRent Automobile Aggregators L.L.C
-          </span>
-          . Except as specifically permitted herein, these trademarks may not be
+          <span className="highlight"> FleetOrbita Internet Services</span>.
+          Except as specifically permitted herein, these trademarks may not be
           used without prior permission from Twinmount Digital LLP.
         </p>
         <br />
@@ -75,10 +67,7 @@ export default function MainSection() {
           appear on this website are the property of their respective owners,
           who may or may not be affiliated with, connected to, or sponsored by
           Twinmount Digital LLP or{' '}
-          <span className="highlight">
-            {' '}
-            RideRent Automobile Aggregators L.L.C
-          </span>
+          <span className="highlight"> FleetOrbita Internet Services</span>
         </p>
       </div>
     </div>

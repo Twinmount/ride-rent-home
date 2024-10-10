@@ -6,8 +6,8 @@ export default function GuestUser1() {
         {' '}
         Our Platform is based in the UAE and owns and operates the Internet
         website at{' '}
-        <a href="https://www.ride.rent.com" target="_blank">
-          www.ride.rent.com
+        <a href="https://ride.rent" target="_blank" rel="noopener noreferrer">
+          ride.rent
         </a>
       </p>
 
