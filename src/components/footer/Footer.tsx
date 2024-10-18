@@ -1,9 +1,9 @@
-import Image from 'next/image'
-import FooterGrid from './footer-grid/FooterGrid'
-import './Footer.scss'
-import Social from './social/Social'
-import { FaRegCopyright } from 'react-icons/fa6'
-import MotionDiv from '../general/framer-motion/MotionDiv'
+import Image from "next/image";
+import FooterGrid from "./footer-grid/FooterGrid";
+import "./Footer.scss";
+import Social from "./social/Social";
+import { FaRegCopyright } from "react-icons/fa6";
+import MotionDiv from "../general/framer-motion/MotionDiv";
 
 const Footer = () => {
   return (
@@ -16,7 +16,7 @@ const Footer = () => {
         <div className="header-logo">
           <figure>
             <Image
-              src={'/assets/logo/footer-icon.png'}
+              src={"/assets/logo/footer-icon.png"}
               width={200}
               height={120}
               className="header-img"
@@ -43,18 +43,21 @@ const Footer = () => {
           property fo their respective owners
           <br />
           <br />
-          ride.rent is a product from{' '}
+          ride.rent is a brand owned and operated by{" "}
           <span className="bold">FleetOrbita Group</span>
           <br />
           <br />
           <span className="copyright">
             <FaRegCopyright />
 
-            <span className="bold">FleetOrbita Internet Services</span>
+            <span className="bold">
+              2024 FleetOrbita Internet Services LLP | ACJ-9769. All Rights
+              Reserved.
+            </span>
           </span>
         </p>
       </MotionDiv>
     </footer>
-  )
-}
-export default Footer
+  );
+};
+export default Footer;

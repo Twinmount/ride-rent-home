@@ -14,6 +14,7 @@
   bottom: -2rem;
   margin-left: auto;
   margin-right: auto;
+  z-index: 5;
 
   .slider-container {
     display: flex;
@@ -66,7 +67,7 @@
   }
 
   .sports-car {
-    scale: 2.4
+    scale: 2.4;
   }
 }
 

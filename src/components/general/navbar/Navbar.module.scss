@@ -1,4 +1,4 @@
-@import '@/styles/_variables.scss';
+@import "@/styles/_variables.scss";
 
 /* Default styles for mobile devices and above */
 .header {
@@ -6,7 +6,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4.84rem;
+  height: 4.1rem;
   background-color: white;
   z-index: 50;
   transition: all 0.2s ease-in-out;
@@ -14,16 +14,11 @@
   align-items: center;
   justify-content: center;
 
-
-
-
   .nav-container {
     width: 99%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-
   }
 
   .nav-left {
@@ -31,9 +26,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
   }
-
 
   .logo-container {
     width: fit-content;
@@ -63,7 +56,6 @@
         color: black;
         font-style: italic;
         font-weight: bolder;
-
       }
     }
   }
@@ -72,7 +64,6 @@
     width: fit-content;
     display: flex;
     align-items: center;
-
 
     ul {
       width: 100%;
@@ -155,8 +146,6 @@
     }
   }
 
-
-
   .black-overlay {
     position: fixed;
     top: 0;
@@ -167,9 +156,6 @@
     z-index: 100;
     transition: all 3s ease;
   }
-
-
-
 }
 
 /*  (min-width: 768px) and above */
@@ -177,7 +163,6 @@
   .header {
     .logo-container {
       .header-logo {
-
         figure {
           figcaption {
             font-size: 0.7rem;
@@ -202,7 +187,6 @@
 /* (min-width: 1024px) and above */
 @media (min-width: 1024px) {
   .header {
-
     .nav-items-container {
       ul {
         .language {
@@ -226,7 +210,5 @@
         display: none;
       }
     }
-
-
   }
 }

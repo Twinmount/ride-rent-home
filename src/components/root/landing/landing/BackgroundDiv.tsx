@@ -1,20 +1,19 @@
-import Image from 'next/image'
+import Image from "next/image";
 
 interface CustomDivProps {
-  children: React.ReactNode
-  category: string
+  children: React.ReactNode;
+  category: string;
 }
 
 export default function BackgroundDiv({ children, category }: CustomDivProps) {
-  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL
+  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
 
   return (
     <div className={`landing-bg `}>
       <Image
         src={`${baseAssetsUrl}/img/bg/${category}.webp`}
-        alt="Picture of the author"
+        alt={`${category} banner`}
         fill
-        className="object-cover"
         quality={100}
         priority={true}
         placeholder="blur"
@@ -23,5 +22,5 @@ export default function BackgroundDiv({ children, category }: CustomDivProps) {
       />
       {children}
     </div>
-  )
+  );
 }
