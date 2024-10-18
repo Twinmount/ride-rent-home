@@ -50,7 +50,7 @@ const Footer = () => {
           <span className="copyright">
             <FaRegCopyright />
 
-            <span className="bold">
+            <span>
               2024 FleetOrbita Internet Services LLP | ACJ-9769. All Rights
               Reserved.
             </span>
