@@ -1,20 +1,24 @@
-import './States.scss'
-import Image from 'next/image'
-import MotionSection from '@/components/general/framer-motion/MotionSection'
-import { FetchStatesResponse, StateType } from '@/types' // Import your types
-import Link from 'next/link'
+import "./States.scss";
+import Image from "next/image";
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { FetchStatesResponse, StateType } from "@/types"; // Import your types
+import Link from "next/link";
+import { rearrangeStates } from "@/helpers";
 
 export default async function States({ category }: { category: string }) {
-  const baseUrl = process.env.API_URL
+  const baseUrl = process.env.API_URL;
 
   // Fetch the states data from the API
-  const response = await fetch(`${baseUrl}/states/list`, { cache: 'no-store' })
-  const data: FetchStatesResponse = await response.json()
+  const response = await fetch(`${baseUrl}/states/list`, { cache: "no-store" });
+  const data: FetchStatesResponse = await response.json();
 
   // Extract the states list from the response
-  const states = data.result
+  let states = data.result;
 
-  if (states.length === 0) return null
+  // Call the rearrangeStates function to reorder the states array
+  states = rearrangeStates(states);
+
+  if (states.length === 0) return null;
 
   return (
     <MotionSection className="location-section wrapper">
@@ -43,5 +47,5 @@ export default async function States({ category }: { category: string }) {
         )}
       </div>
     </MotionSection>
-  )
+  );
 }

@@ -43,7 +43,7 @@ const Footer = () => {
           property fo their respective owners
           <br />
           <br />
-          ride.rent is a brand owned and operated by{" "}
+          Ride.Rent is a brand owned and operated by{" "}
           <span className="bold">FleetOrbita Group</span>
           <br />
           <br />

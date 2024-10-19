@@ -1,17 +1,20 @@
-import { FetchCategoriesResponse } from '@/types'
-import Link from 'next/link'
+import { sortCategories } from "@/helpers";
+import { FetchCategoriesResponse } from "@/types";
+import Link from "next/link";
 
 export default async function FooterVehicleCategories() {
-  const baseUrl = process.env.API_URL
+  const baseUrl = process.env.API_URL;
 
   // Fetch the states data from the API
   const response = await fetch(
     `${baseUrl}/vehicle-category/list?page=1&limit=20&sortOrder=ASC`
-  )
-  const data: FetchCategoriesResponse = await response.json()
+  );
+  const data: FetchCategoriesResponse = await response.json();
 
   // Extract the states list from the response
-  const categories = data.result.list
+  let categories = data.result.list;
+
+  categories = sortCategories(categories);
 
   return (
     <div className="footer-section">
@@ -29,5 +32,5 @@ export default async function FooterVehicleCategories() {
         ))}
       </div>
     </div>
-  )
+  );
 }

@@ -1,15 +1,19 @@
-import { FetchStatesResponse } from '@/types'
-import Link from 'next/link'
+import { rearrangeStates } from "@/helpers";
+import { FetchStatesResponse } from "@/types";
+import Link from "next/link";
 
 export default async function FooterLocations() {
-  const baseUrl = process.env.API_URL
+  const baseUrl = process.env.API_URL;
 
   // Fetch the states data from the API
-  const response = await fetch(`${baseUrl}/states/list`, { cache: 'no-store' })
-  const data: FetchStatesResponse = await response.json()
+  const response = await fetch(`${baseUrl}/states/list`, { cache: "no-store" });
+  const data: FetchStatesResponse = await response.json();
 
   // Extract the states list from the response
-  const states = data.result
+  let states = data.result;
+
+  // Call the rearrangeStates function to reorder the states array
+  states = rearrangeStates(states);
 
   return (
     <div className="footer-section">
@@ -27,5 +31,5 @@ export default async function FooterLocations() {
         ))}
       </div>
     </div>
-  )
+  );
 }

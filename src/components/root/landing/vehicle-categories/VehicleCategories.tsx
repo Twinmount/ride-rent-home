@@ -1,38 +1,38 @@
-'use client'
+"use client";
 
-import './VehicleCategories.scss'
-import { useMemo, useRef, useState } from 'react'
-import Image from 'next/image'
-import Autoplay from 'embla-carousel-autoplay'
-import { Carousel, CarouselContent } from '@/components/ui/carousel'
-import { useQuery } from '@tanstack/react-query'
-import { fetchCategories } from '@/lib/next-api/next-api'
-import { sortCategories } from '@/helpers'
-import { CategoryType } from '@/types/contextTypes'
-import Link from 'next/link'
+import "./VehicleCategories.scss";
+import { useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import Autoplay from "embla-carousel-autoplay";
+import { Carousel, CarouselContent } from "@/components/ui/carousel";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCategories } from "@/lib/next-api/next-api";
+import { sortCategories } from "@/helpers";
+import { CategoryType } from "@/types/contextTypes";
+import Link from "next/link";
 
 type VehicleCategoriesProps = {
-  state: string
-  category: string
-}
+  state: string;
+  category: string;
+};
 
 const VehicleCategories = ({ state, category }: VehicleCategoriesProps) => {
-  const [selectedCard, setSelectedCard] = useState<string | null>(null)
+  const [selectedCard, setSelectedCard] = useState<string | null>(null);
 
-  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL
+  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
 
-  const plugin = useRef(Autoplay({ delay: 1600, stopOnInteraction: false }))
+  const plugin = useRef(Autoplay({ delay: 1600, stopOnInteraction: false }));
 
   // Fetch categories using useQuery
   const { data, isLoading } = useQuery({
-    queryKey: ['categories'],
+    queryKey: ["categories"],
     queryFn: fetchCategories,
-  })
+  });
 
   // Check if data is defined and then sort categories
   const sortedCategories = useMemo(() => {
-    return data?.result?.list ? sortCategories(data.result.list) : []
-  }, [data])
+    return data?.result?.list ? sortCategories(data.result.list) : [];
+  }, [data]);
 
   return (
     <div className="category-container" id="categories">
@@ -48,13 +48,13 @@ const VehicleCategories = ({ state, category }: VehicleCategoriesProps) => {
               href={`/${state}/${cat.value}`}
               key={cat.categoryId}
               className={`vehicle_category_card ${
-                selectedCard === cat.categoryId ? 'selected' : ''
+                selectedCard === cat.categoryId ? "selected" : ""
               }`}
               onClick={() => setSelectedCard(cat.categoryId)}
             >
               <div
                 className={`category_icon_container ${
-                  category === cat.value ? 'yellow-gradient' : ''
+                  category === cat.value ? "yellow-gradient" : ""
                 }`}
               >
                 <img
@@ -63,7 +63,7 @@ const VehicleCategories = ({ state, category }: VehicleCategoriesProps) => {
                   height={10}
                   alt={`${cat.name} Icon`}
                   className={`vehicle_category_logo ${
-                    cat.value === 'sports_car' ? 'scale-125' : ''
+                    cat.value === "sports_car" ? "scale-125" : ""
                   } `}
                 />
               </div>
@@ -73,7 +73,7 @@ const VehicleCategories = ({ state, category }: VehicleCategoriesProps) => {
         </CarouselContent>
       </Carousel>
     </div>
-  )
-}
+  );
+};
 
-export default VehicleCategories
+export default VehicleCategories;

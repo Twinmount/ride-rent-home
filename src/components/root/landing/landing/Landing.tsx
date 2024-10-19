@@ -1,11 +1,11 @@
-import './Landing.scss'
-import { FaRegThumbsUp } from 'react-icons/fa'
-import BackgroundDiv from './BackgroundDiv'
-import MotionDiv from '@/components/general/framer-motion/MotionDiv'
-import Link from 'next/link'
-import VehicleCategories from '../vehicle-categories/VehicleCategories'
-import { StateCategoryProps } from '@/types'
-import { convertToLabel, singularizeType } from '@/helpers'
+import "./Landing.scss";
+import { FaRegThumbsUp } from "react-icons/fa";
+import BackgroundDiv from "./BackgroundDiv";
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import Link from "next/link";
+import VehicleCategories from "../vehicle-categories/VehicleCategories";
+import { StateCategoryProps } from "@/types";
+import { convertToLabel, singularizeType } from "@/helpers";
 
 const Landing = ({ state, category }: StateCategoryProps) => {
   return (
@@ -27,13 +27,13 @@ const Landing = ({ state, category }: StateCategoryProps) => {
           <MotionDiv className={`landing-text-container`}>
             <div className="trust">
               <FaRegThumbsUp />
-              Most Trusted Vehicle Renting Platform In{' '}
+              Most Trusted Vehicle Renting Platform In{" "}
               <span className="capitalize">{convertToLabel(state)}</span> !
             </div>
             <div className="best-price">
               <p className="best-price-p">Explore thousands of vehicles</p>
               <p className="best-price-p">
-                Get unbeatable deals & pay <span className="zero">Zero</span>{' '}
+                Get unbeatable deals & pay <span className="zero">Zero</span>{" "}
                 commission!
               </p>
             </div>
@@ -42,7 +42,7 @@ const Landing = ({ state, category }: StateCategoryProps) => {
               id="view-all-cars"
               className="default-btn yellow-gradient"
             >
-              View all offers
+              View all deals
             </a>
           </MotionDiv>
         </BackgroundDiv>
@@ -55,14 +55,14 @@ const Landing = ({ state, category }: StateCategoryProps) => {
           <strong>Ride.Rent</strong> ensures that you have access to the best
           and
           <strong>
-            {' '}
-            most affordable{' '}
+            {" "}
+            most affordable{" "}
             {convertToLabel(singularizeType(category)).toLowerCase()} rental
-            services in{' '}
+            services in{" "}
             <span className="bold-text">{convertToLabel(state)}</span>
             &nbsp;!.
           </strong>
-          Take advantage of our exceptional offers on car rentals throughout{' '}
+          Take advantage of our exceptional offers on car rentals throughout{" "}
           <span className="bold-text">{convertToLabel(state)}</span>, with Ride
           On Rent, each car is well maintained and pre-serviced for efficient
           performance. <br />
@@ -76,6 +76,6 @@ const Landing = ({ state, category }: StateCategoryProps) => {
         </div>
       </div>
     </section>
-  )
-}
-export default Landing
+  );
+};
+export default Landing;

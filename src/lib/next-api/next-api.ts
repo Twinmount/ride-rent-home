@@ -5,68 +5,68 @@ import {
   FetchLinksResponse,
   FetchStatesResponse,
   FetchTypesResponse,
-} from '@/types'
-import { handleError } from '../utils'
+} from "@/types";
+import { handleError } from "../utils";
 
 export const fetchStates = async (): Promise<
   FetchStatesResponse | undefined
 > => {
   try {
     const response = await fetch(`/api/states`, {
-      method: 'GET',
-      cache: 'no-store',
-    })
+      method: "GET",
+      cache: "no-store",
+    });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch states data')
+      throw new Error("Failed to fetch states data");
     }
-    const { data } = await response.json()
+    const { data } = await response.json();
 
-    return data
+    return data;
   } catch (error) {
-    handleError(error)
-    return undefined
+    handleError(error);
+    return undefined;
   }
-}
+};
 
 export const fetchCategories = async (): Promise<
   FetchCategoriesResponse | undefined
 > => {
   try {
     const response = await fetch(`/api/categories`, {
-      method: 'GET',
-    })
+      method: "GET",
+    });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch categories data')
+      throw new Error("Failed to fetch categories data");
     }
-    const { data } = await response.json()
+    const { data } = await response.json();
 
-    return data
+    return data;
   } catch (error) {
-    handleError(error)
-    return undefined
+    handleError(error);
+    return undefined;
   }
-}
+};
 
 // fetch all cities
 export const fetchAllCities = async (
   stateId: string
 ): Promise<FetchCitiesResponse> => {
   try {
-    const response = await fetch(`/api/cities/${stateId}`)
+    const response = await fetch(`/api/cities/${stateId}`);
 
     if (!response.ok) {
-      throw new Error('Failed to fetch cities')
+      throw new Error("Failed to fetch cities");
     }
-    const { data } = await response.json()
+    const { data } = await response.json();
 
-    return data
+    return data;
   } catch (error) {
-    console.error('Error fetching cities:', error)
-    throw error
+    console.error("Error fetching cities:", error);
+    throw error;
   }
-}
+};
 
 // fetch vehicle types (e.g., Luxury, SUVs) by vehicle category id
 export const fetchVehicleTypesById = async (
@@ -74,25 +74,25 @@ export const fetchVehicleTypesById = async (
 ): Promise<FetchTypesResponse | undefined> => {
   try {
     const response = await fetch(`/api/vehicle-types/id/${vehicleCategoryId}`, {
-      method: 'GET',
-    })
+      method: "GET",
+    });
 
     // Check if the response is OK
     if (!response.ok) {
       throw new Error(
         `Failed to fetch vehicle types. Status: ${response.status}`
-      )
+      );
     }
 
-    const { data } = await response.json()
+    const { data } = await response.json();
 
-    return data
+    return data;
   } catch (error) {
-    console.error('Error in fetchVehicleTypes:', error)
-    handleError(error)
-    return undefined
+    console.error("Error in fetchVehicleTypes:", error);
+    handleError(error);
+    return undefined;
   }
-}
+};
 // fetch vehicle types (e.g., Luxury, SUVs) by vehicle category value
 export const fetchVehicleTypesByValue = async (
   vehicleCategoryValue: string
@@ -101,26 +101,26 @@ export const fetchVehicleTypesByValue = async (
     const response = await fetch(
       `/api/vehicle-types/value/${vehicleCategoryValue}`,
       {
-        method: 'GET',
+        method: "GET",
       }
-    )
+    );
 
     // Check if the response is OK
     if (!response.ok) {
       throw new Error(
         `Failed to fetch vehicle types. Status: ${response.status}`
-      )
+      );
     }
 
-    const { data } = await response.json()
+    const { data } = await response.json();
 
-    return data
+    return data;
   } catch (error) {
-    console.error('Error in fetchVehicleTypes:', error)
-    handleError(error)
-    return undefined
+    console.error("Error in fetchVehicleTypes:", error);
+    handleError(error);
+    return undefined;
   }
-}
+};
 
 // fetch vehicle brand by vehicle category id and search term
 export const fetchVehicleBrandsById = async (
@@ -131,26 +131,26 @@ export const fetchVehicleBrandsById = async (
     const response = await fetch(
       `/api/vehicle-brands/id/${vehicleCategoryId}/${searchTerm}`,
       {
-        method: 'GET',
+        method: "GET",
       }
-    )
+    );
 
     // Check if the response is OK
     if (!response.ok) {
       throw new Error(
         `Failed to fetch vehicle types. Status: ${response.status}`
-      )
+      );
     }
 
-    const { data } = await response.json()
+    const { data } = await response.json();
 
-    return data
+    return data;
   } catch (error) {
-    console.error('Error in fetchVehicleTypes:', error)
-    handleError(error)
-    return undefined
+    console.error("Error in fetchVehicleTypes:", error);
+    handleError(error);
+    return undefined;
   }
-}
+};
 // fetch vehicle brand by vehicle category value and search term
 export const fetchVehicleBrandsByValue = async (
   vehicleCategory: string,
@@ -160,26 +160,26 @@ export const fetchVehicleBrandsByValue = async (
     const response = await fetch(
       `/api/vehicle-brands/value/${vehicleCategory}/${searchTerm}`,
       {
-        method: 'GET',
+        method: "GET",
       }
-    )
+    );
 
     // Check if the response is OK
     if (!response.ok) {
       throw new Error(
         `Failed to fetch vehicle types. Status: ${response.status}`
-      )
+      );
     }
 
-    const { data } = await response.json()
+    const { data } = await response.json();
 
-    return data
+    return data;
   } catch (error) {
-    console.error('Error in fetchVehicleTypes:', error)
-    handleError(error)
-    return undefined
+    console.error("Error in fetchVehicleTypes:", error);
+    handleError(error);
+    return undefined;
   }
-}
+};
 
 // fetch quick links by state value
 export const fetchQuickLinksByValue = async (
@@ -187,23 +187,23 @@ export const fetchQuickLinksByValue = async (
 ): Promise<FetchLinksResponse | undefined> => {
   try {
     const response = await fetch(`/api/quick-links/value/${stateValue}`, {
-      method: 'GET',
-      cache: 'no-store',
-    })
+      method: "GET",
+      cache: "no-store",
+    });
 
     // Check if the response is OK
     if (!response.ok) {
       throw new Error(
         `Failed to fetch vehicle types. Status: ${response.status}`
-      )
+      );
     }
 
-    const { data } = await response.json()
+    const { data } = await response.json();
 
-    return data
+    return data;
   } catch (error) {
-    console.error('Error in fetchVehicleTypes:', error)
-    handleError(error)
-    return undefined
+    console.error("Error in fetchVehicleTypes:", error);
+    handleError(error);
+    return undefined;
   }
-}
+};
