@@ -1,42 +1,42 @@
-import './TopBrands.scss'
-import MotionSection from '@/components/general/framer-motion/MotionSection'
-import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper'
-import ViewAllButton from '@/components/general/button/ViewAllButton'
-import { BrandType, FetchTopBrandsResponse } from '@/types'
-import Image from 'next/image'
-import Link from 'next/link'
-import { convertToLabel } from '@/helpers'
+import "./TopBrands.scss";
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
+import ViewAllButton from "@/components/general/button/ViewAllButton";
+import { BrandType, FetchTopBrandsResponse } from "@/types";
+import Image from "next/image";
+import Link from "next/link";
+import { convertToLabel } from "@/helpers";
 
-export const fetchCache = 'default-cache'
+export const fetchCache = "default-cache";
 
 export default async function TopBrands({
   category,
   state,
 }: {
-  category: string | undefined
-  state: string | undefined
+  category: string | undefined;
+  state: string | undefined;
 }) {
-  const baseUrl = process.env.API_URL
+  const baseUrl = process.env.API_URL;
   // Fetch brand data from your API endpoint
   const response = await fetch(
     `${baseUrl}/vehicle-brand/top-brands?categoryValue=${category}`,
-    { method: 'GET' }
-  )
+    { method: "GET" }
+  );
 
   // Parse the JSON response
-  const data: FetchTopBrandsResponse = await response.json()
+  const data: FetchTopBrandsResponse = await response.json();
 
   // Extract the list of brands from the response
-  const brands = data?.result || []
+  const brands = data?.result || [];
 
-  const baseAssetsUrl = process.env.ASSETS_URL
+  const baseAssetsUrl = process.env.ASSETS_URL;
 
-  if (brands.length === 0) return null
+  if (brands.length === 0) return null;
 
   return (
     <MotionSection className="top-brands-section wrapper">
       <h2 className="common-heading">
-        Rent from top brands in{' '}
+        Rent from top brands in{" "}
         <span className="capitalize yellow-gradient px-2 rounded-xl">
           {convertToLabel(state as string)}
         </span>
@@ -51,7 +51,7 @@ export default async function TopBrands({
           >
             <div className="image-box">
               <img
-                src={`${baseAssetsUrl}/icons/brands/${brand.brandValue}.png`}
+                src={`${baseAssetsUrl}/icons/brands/${category}/${brand.brandValue}.png`}
                 width={80}
                 height={80}
                 alt={brand.brandName}
@@ -64,5 +64,5 @@ export default async function TopBrands({
 
       <ViewAllButton link={`/${state}/${category}/brands`} />
     </MotionSection>
-  )
+  );
 }
