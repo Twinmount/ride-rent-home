@@ -1,25 +1,25 @@
-'use client'
+"use client";
 
-import { useParams } from 'next/navigation'
-import { LinkType } from '@/types'
-import Link from 'next/link'
-import { useQuery } from '@tanstack/react-query'
-import { fetchQuickLinksByValue } from '@/lib/next-api/next-api'
+import { useParams } from "next/navigation";
+import { LinkType } from "@/types";
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { fetchQuickLinksByValue } from "@/lib/next-api/next-api";
 
 export default function FooterQuickLinks() {
-  const params = useParams()
+  const params = useParams();
 
-  const state = params.state
+  const state = params.state;
 
   // Fetch quick links based on the current state
   const { data, isLoading } = useQuery({
-    queryKey: ['quick-links', state],
+    queryKey: ["quick-links", state],
     queryFn: () => fetchQuickLinksByValue(state as string),
     enabled: !!state,
     staleTime: 0,
-  })
+  });
 
-  const linksData: LinkType[] = data?.result?.list || []
+  const linksData: LinkType[] = data?.result?.list || [];
 
   return (
     <div className="footer-section">
@@ -32,9 +32,10 @@ export default function FooterQuickLinks() {
           {linksData.length > 0 ? (
             linksData.map((link) => (
               <Link
-                href={`/${link.link}`}
+                href={`${link.link}`}
                 className="link-wrapper"
                 key={link.linkId}
+                target="_blank"
               >
                 &sdot; <span className="link">{link.label}</span>
               </Link>
@@ -45,5 +46,5 @@ export default function FooterQuickLinks() {
         </div>
       )}
     </div>
-  )
+  );
 }

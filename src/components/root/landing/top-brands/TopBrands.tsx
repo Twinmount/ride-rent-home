@@ -3,7 +3,6 @@ import MotionSection from "@/components/general/framer-motion/MotionSection";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import ViewAllButton from "@/components/general/button/ViewAllButton";
 import { BrandType, FetchTopBrandsResponse } from "@/types";
-import Image from "next/image";
 import Link from "next/link";
 import { convertToLabel } from "@/helpers";
 
@@ -20,7 +19,7 @@ export default async function TopBrands({
   // Fetch brand data from your API endpoint
   const response = await fetch(
     `${baseUrl}/vehicle-brand/top-brands?categoryValue=${category}`,
-    { method: "GET" }
+    { method: "GET", cache: "no-cache" }
   );
 
   // Parse the JSON response
