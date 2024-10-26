@@ -1,51 +1,59 @@
-'use client'
+"use client";
 
-import styles from './Navbar.module.scss'
+import styles from "./Navbar.module.scss";
 
-import { GiHamburgerMenu } from 'react-icons/gi'
-import React, { useEffect, useState } from 'react'
-import Sidebar from '../sidebar/Sidebar'
-import Link from 'next/link'
-import Image from 'next/image'
-import StatesDropdown from '../navbar-dropdown/StatesDropdown'
-import QuickLinksDropdown from '../navbar-dropdown/QuickLinksDropdown'
-import CategoryDropdown from '../navbar-dropdown/CategoryDropdown'
+import { GiHamburgerMenu } from "react-icons/gi";
+import React, { useEffect, useState } from "react";
+import Sidebar from "../sidebar/Sidebar";
+import Link from "next/link";
+import Image from "next/image";
+import StatesDropdown from "../navbar-dropdown/StatesDropdown";
+import QuickLinksDropdown from "../navbar-dropdown/QuickLinksDropdown";
+import CategoryDropdown from "../navbar-dropdown/CategoryDropdown";
+import { useParams } from "next/navigation";
 
 const Navbar = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const params = useParams<{ state: string; category: string }>();
+
+  const state = params.state || "dubai";
+  const category = params.category || "cars";
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSidebarOpen(false)
-    }
+      setIsSidebarOpen(false);
+    };
 
-    if (typeof window !== 'undefined')
-      window.addEventListener('resize', handleResize)
+    if (typeof window !== "undefined")
+      window.addEventListener("resize", handleResize);
 
     return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('resize', handleResize)
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   return (
     <header className={`${styles.header} padding main-wrapper`}>
-      <nav className={styles['nav-container']}>
-        <div className={styles['nav-left']}>
-          <div className={styles['logo-container']}>
-            <Link href={'/'} className={styles['header-logo']}>
+      <nav className={styles["nav-container"]}>
+        <div className={styles["nav-left"]}>
+          <div className={styles["logo-container"]}>
+            <Link
+              href={`/${state}/${category}`}
+              className={styles["header-logo"]}
+            >
               <figure>
                 <Image
                   src="/assets/logo/riderent-logo.webp"
                   alt="ride.rent logo"
                   width={130}
                   height={25}
-                  className={styles['logo-img']}
+                  className={styles["logo-img"]}
                   quality={100}
                 />
                 <figcaption>
@@ -55,7 +63,7 @@ const Navbar = () => {
             </Link>
           </div>
         </div>
-        <div className={styles['nav-items-container']}>
+        <div className={styles["nav-items-container"]}>
           <ul>
             {/* location */}
             <li className={styles.locations}>
@@ -70,7 +78,7 @@ const Navbar = () => {
               <QuickLinksDropdown />
             </li>
 
-            <li className={styles['list-btn']}>
+            <li className={styles["list-btn"]}>
               <Link
                 href={`${process.env.NEXT_PUBLIC_AGENT_REGISTER_URL}`}
                 target="_blank"
@@ -85,18 +93,18 @@ const Navbar = () => {
           {/* hamburger */}
           <button
             aria-label="Hamburger"
-            className={styles['hamburger-btn']}
+            className={styles["hamburger-btn"]}
             onClick={toggleSidebar}
           >
-            <GiHamburgerMenu className={`${styles['hamburger-icon']}`} />
+            <GiHamburgerMenu className={`${styles["hamburger-icon"]}`} />
           </button>
         </div>
 
         {/* sidebar */}
         {isSidebarOpen && (
           <div
-            className={`${styles['black-overlay']} ${
-              isSidebarOpen ? styles['black-overlay-visible'] : ''
+            className={`${styles["black-overlay"]} ${
+              isSidebarOpen ? styles["black-overlay-visible"] : ""
             }`}
             onClick={toggleSidebar}
           />
@@ -104,7 +112,7 @@ const Navbar = () => {
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       </nav>
     </header>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

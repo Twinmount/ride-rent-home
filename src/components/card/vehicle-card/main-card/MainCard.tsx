@@ -1,45 +1,45 @@
-import './MainCard.scss'
-import Link from 'next/link'
-import Image from 'next/image'
-import { VehicleCardType } from '@/types/vehicle-types'
-import { StateCategoryProps } from '@/types'
-import { IoLocationOutline } from 'react-icons/io5'
+import "./MainCard.scss";
+import Link from "next/link";
+import Image from "next/image";
+import { VehicleCardType } from "@/types/vehicle-types";
+import { StateCategoryProps } from "@/types";
+import { IoLocationOutline } from "react-icons/io5";
 import {
   convertToLabel,
   formatKeyForIcon,
   formatPhoneNumber,
   generateModelDetailsUrl,
   getRentalPeriodDetails,
-} from '@/helpers'
-import ContactIcons from '@/components/common/contact-icons/ContactIcons'
+} from "@/helpers";
+import ContactIcons from "@/components/common/contact-icons/ContactIcons";
 
 type MainCardProps = {
-  vehicle: VehicleCardType
-} & StateCategoryProps
+  vehicle: VehicleCardType;
+} & StateCategoryProps;
 
 const MainCard = ({ vehicle, state, category }: MainCardProps) => {
   const formattedPhoneNumber =
     vehicle.phoneNumber && vehicle.countryCode
       ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
-      : null // if null phone number
+      : null; // if null phone number
 
-  const message = `Hello, I am interested in the ${vehicle.model}. Could you please provide more details?`
-  const encodedMessage = encodeURIComponent(message)
+  const message = `Hello, I am interested in the ${vehicle.model}. Could you please provide more details?`;
+  const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = vehicle.whatsappPhone
     ? `https://wa.me/${vehicle.whatsappCountryCode}${vehicle.whatsappPhone}?text=${encodedMessage}`
-    : null //if null WhatsApp details
+    : null; //if null WhatsApp details
 
   // Base URL for fetching icons
-  const baseAssetsUrl = process.env.ASSETS_URL
+  const baseAssetsUrl = process.env.ASSETS_URL;
 
   // Use the helper function to get rental period details
-  const rentalPeriod = getRentalPeriodDetails(vehicle.rentalDetails)
+  const rentalPeriod = getRentalPeriodDetails(vehicle.rentalDetails);
 
   // generating dynamic url for the vehicle details page
-  const modelDetails = generateModelDetailsUrl(vehicle)
+  const modelDetails = generateModelDetailsUrl(vehicle);
 
   // dynamic link to navigate to vehicle details page
-  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`
+  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
 
   return (
     <div className="car-card-container slide-visible">
@@ -50,7 +50,7 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
           {vehicle.thumbnail ? (
             <Image
               src={vehicle.thumbnail}
-              alt={vehicle.model || 'Vehicle Image'}
+              alt={vehicle.model || "Vehicle Image"}
               width={400}
               height={400}
               className="vehicle-image"
@@ -73,7 +73,7 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
             />
           ) : (
             <img
-              src={'/assets/img/blur-profile.webp'}
+              src={"/assets/img/blur-profile.webp"}
               alt="Disabled Company Logo"
               width={40}
               height={40}
@@ -103,24 +103,29 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
                     alt={`${spec.name} icon`}
                     className="spec-icon"
                   />
-                  <div className="each-spec-value">{spec.name || 'N/A'}</div>
+                  <div className="each-spec-value">
+                    {" "}
+                    {key === "Mileage" && spec.value
+                      ? `${spec.value} mileage range`
+                      : spec.name || "N/A"}
+                  </div>
                 </div>
-              )
+              );
             })}
           </div>
 
           {/* location and price */}
           <div className="location-box">
             <div className="location">
-              <IoLocationOutline size={18} />{' '}
+              <IoLocationOutline size={18} />{" "}
               <span className="state">
-                {convertToLabel(vehicle.state) || 'N/A'}
+                {convertToLabel(vehicle.state) || "N/A"}
               </span>
             </div>
             {rentalPeriod ? (
               <div className="price">
                 <span className="rent-amount">
-                  {rentalPeriod.rentInAED || 'N/A'} AED
+                  {rentalPeriod.rentInAED || "N/A"} AED
                 </span>
                 <span className="rent-period">&nbsp;{rentalPeriod.label}</span>
               </div>
@@ -143,7 +148,7 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MainCard
+export default MainCard;

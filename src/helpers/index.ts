@@ -92,7 +92,7 @@ export const singularizeType = (type: string) => {
  * @param value - The value string in lowercase with hyphens.
  * @returns The formatted label string.
  */
-export function convertToLabel(value: string): string {
+export function convertToLabel(value: string | undefined): string {
   if (!value) {
     return ""; // Return an empty string if value is undefined, null, or an empty string
   }

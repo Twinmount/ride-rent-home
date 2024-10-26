@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import '../styles/_variables.scss';
-
-
+@import "../styles/_variables.scss";
 
 *,
 *::before,
@@ -25,7 +23,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'FiraSans', sans-serif;
+  font-family: "FiraSans", sans-serif;
   font-weight: normal;
   background-color: #f2f7f6;
   overflow-x: hidden !important;
@@ -101,15 +99,17 @@ body {
   margin-bottom: 1rem;
 
   &:after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -0.9rem;
     left: 0;
     width: 100%;
     height: 0.2rem;
-    background: linear-gradient(to right,
-        $yellow 3rem,
-        rgb(225, 225, 225) 3rem);
+    background: linear-gradient(
+      to right,
+      $yellow 3rem,
+      rgb(225, 225, 225) 3rem
+    );
   }
 }
 
@@ -118,6 +118,7 @@ body {
   padding-left: 1rem;
   padding-right: 1rem;
   border-radius: 0.5rem;
+  width: fit-content;
   color: black;
   font-style: normal;
   font-weight: 700;
@@ -157,7 +158,6 @@ body {
     padding-left: 4rem !important;
     padding-right: 4rem !important;
   }
-
 }
 
 .wrapper {
@@ -169,8 +169,6 @@ body {
 }
 
 @layer utilities {
-
-
   .flex-center {
     @apply flex items-center justify-center;
   }
@@ -178,5 +176,4 @@ body {
   .flex-between {
     @apply flex items-center justify-between;
   }
-
 }

@@ -1,9 +1,9 @@
-import Image from "next/image";
 import FooterGrid from "./footer-grid/FooterGrid";
 import "./Footer.scss";
 import Social from "./social/Social";
 import { FaRegCopyright } from "react-icons/fa6";
 import MotionDiv from "../general/framer-motion/MotionDiv";
+import RideRentLogo from "./RideRentLogo";
 
 const Footer = () => {
   return (
@@ -13,20 +13,7 @@ const Footer = () => {
 
       {/* logo */}
       <MotionDiv className="footer-logo-container">
-        <div className="header-logo">
-          <figure>
-            <Image
-              src={"/assets/logo/footer-icon.png"}
-              width={200}
-              height={120}
-              className="header-img"
-              alt="Ride Rent Logo"
-            />
-            <figcaption>
-              Quick way to get a <span>Ride On Rent</span>
-            </figcaption>
-          </figure>
-        </div>
+        <RideRentLogo />
       </MotionDiv>
       <MotionDiv className="bottom-container">
         <p>

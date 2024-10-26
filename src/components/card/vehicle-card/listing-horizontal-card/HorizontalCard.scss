@@ -1,4 +1,4 @@
-@import '../../../../styles/variables';
+@import "../../../../styles/variables";
 
 /* Default styles for mobile devices and above */
 .horizontal-card-container {
@@ -116,7 +116,6 @@
       width: 100%;
       max-width: 100%;
 
-
       .spec {
         width: 16.67%;
         max-width: 16.7%;
@@ -129,7 +128,6 @@
         line-height: 1.2;
         color: gray;
 
-
         .spec-icon {
           flex-shrink: 0;
         }
@@ -141,16 +139,10 @@
           white-space: nowrap; // Prevent wrapping
           text-overflow: ellipsis; // Add ellipsis for truncation
           word-wrap: break-word;
-
+          text-align: left;
         }
       }
     }
-
-
-
-
-
-
 
     .bottom-box {
       display: flex;
@@ -162,7 +154,6 @@
       padding-right: 0.5rem;
       width: 100%;
       max-width: 100%;
-
 
       // bottom left
       .bottom-left {
@@ -199,7 +190,6 @@
             display: flex;
             justify-content: start;
             align-items: center;
-
 
             .state {
               text-transform: capitalize;
@@ -266,9 +256,6 @@
             white-space: nowrap;
           }
         }
-
-
-
       }
     }
   }

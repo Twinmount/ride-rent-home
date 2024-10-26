@@ -1,69 +1,73 @@
-import './ListingPage.scss'
-import Filter from '@/components/root/listing/filter/Filter'
-import GridSwitch from '@/components/root/listing/grid-switch/GridSwitch'
-import LimitDropdown from '@/components/root/listing/limit-dropdown/LimitDropdown'
-import VehicleGrid from '@/components/root/listing/vehicle-grids/VehicleGrid'
-import { ListingPageMetaResponse, PageProps } from '@/types'
-import { Metadata } from 'next'
-import { FC } from 'react'
+import "./ListingPage.scss";
+import Filter from "@/components/root/listing/filter/Filter";
+import GridSwitch from "@/components/root/listing/grid-switch/GridSwitch";
+import LimitDropdown from "@/components/root/listing/limit-dropdown/LimitDropdown";
+import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
+import { convertToLabel } from "@/helpers";
+import { ListingPageMetaResponse, PageProps } from "@/types";
+import { Metadata } from "next";
+import { FC } from "react";
 
 export async function generateMetadata({
   params: { state },
   searchParams,
 }: PageProps): Promise<Metadata> {
-  const baseUrl = process.env.API_URL
+  const baseUrl = process.env.API_URL;
 
   // Default to 'cars' if category is undefined, otherwise use the value from searchParams
-  const category = searchParams.category || 'cars'
+  const category = searchParams.category || "cars";
 
   // Get vehicleTypes and use 'other' if not provided
-  let vehicleTypesParam = searchParams.vehicleTypes
+  let vehicleTypesParam = searchParams.vehicleTypes;
 
   // If there are multiple values, split and get the first one
   const vehicleType = vehicleTypesParam
-    ? vehicleTypesParam.split(',')[0]
-    : 'other'
+    ? vehicleTypesParam.split(",")[0]
+    : "other";
 
   // Construct the API URL with state, category, and vehicleType
-  let url = `${baseUrl}/metadata/listing?state=${state}`
+  let url = `${baseUrl}/metadata/listing?state=${state}`;
 
   if (category) {
-    url += `&category=${category}`
+    url += `&category=${category}`;
   }
 
   if (vehicleType) {
-    url += `&vehicleType=${vehicleType}`
+    url += `&type=${vehicleType}`;
   }
+
 
   // Fetch metadata from your API endpoint
   const response = await fetch(url, {
-    method: 'GET',
-  })
+    method: "GET",
+    cache: "no-cache",
+  });
 
   // Parse the JSON response
-  const data: ListingPageMetaResponse = await response.json()
+  const data: ListingPageMetaResponse = await response.json();
+
 
   // Check if the API returned valid metadata
   const metaTitle =
     data?.result?.metaTitle ||
-    `Explore the best ${category} for rent in ${state}`
+    `Explore the best ${category} for rent in ${state}`;
   const metaDescription =
     data?.result?.metaDescription ||
-    'Find and rent top-quality vehicles including cars, bikes, and more across various locations in UAE.'
+    "Find and rent top-quality vehicles including cars, bikes, and more across various locations in UAE.";
 
   // Construct the canonical URL dynamically based on state, category, and search parameters
-  const canonicalUrl = `https://ride.rent/${state}/listing?category=${category}`
+  const canonicalUrl = `https://ride.rent/${state}/listing?category=${category}`;
 
   // Fallback OpenGraph image or use the one from the API
-  const ogImage = '/assets/icons/ride-rent.png'
+  const ogImage = "/assets/icons/ride-rent.png";
 
   // Shortened versions for social media (optional)
   const shortTitle =
-    metaTitle.length > 60 ? `${metaTitle.substring(0, 57)}...` : metaTitle
+    metaTitle.length > 60 ? `${metaTitle.substring(0, 57)}...` : metaTitle;
   const shortDescription =
     metaDescription.length > 155
       ? `${metaDescription.substring(0, 152)}...`
-      : metaDescription
+      : metaDescription;
 
   return {
     title: metaTitle,
@@ -73,7 +77,7 @@ export async function generateMetadata({
       title: shortTitle,
       description: shortDescription,
       url: canonicalUrl,
-      type: 'website',
+      type: "website",
       images: [
         {
           url: ogImage,
@@ -84,12 +88,12 @@ export async function generateMetadata({
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: shortTitle,
       description: shortDescription,
       images: [ogImage],
     },
-    manifest: '/manifest.webmanifest',
+    manifest: "/manifest.webmanifest",
     robots: {
       index: true,
       follow: true,
@@ -98,25 +102,37 @@ export async function generateMetadata({
         index: true,
         follow: true,
         noimageindex: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
       },
     },
     alternates: {
       canonical: canonicalUrl,
     },
-  }
+  };
 }
 
 const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
   // Determine the initial view based on URL parameters
-  const isGridView = searchParams.view === 'grid'
-  const page = parseInt(searchParams.page || '1', 10)
+  const isGridView = searchParams.view === "grid";
+  const page = parseInt(searchParams.page || "1", 10);
+
+  const category = searchParams.category;
+  const brand = searchParams.brand;
+
+  const formattedCategory = convertToLabel(category);
+  const formattedState = convertToLabel(state);
+  const formattedBrand = convertToLabel(brand);
 
   return (
     <div className="listing-section wrapper">
       <div className="listing-navbar">
+        <h1 className="listing-heading">
+          Rent or Lease&nbsp;
+          {formattedBrand && <span>{formattedBrand}&nbsp;</span>}
+          <span>{formattedCategory} </span>in <span>{formattedState}</span>
+        </h1>
         <div className="list-navbar-right">
           {/* Limit dropdown */}
           <LimitDropdown />
@@ -133,7 +149,7 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
         <VehicleGrid isGridView={isGridView} page={page} state={state} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ListingPage
+export default ListingPage;

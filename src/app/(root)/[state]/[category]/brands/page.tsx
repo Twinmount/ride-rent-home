@@ -1,6 +1,4 @@
-import "./Brands.scss";
 import { Suspense } from "react";
-import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import BrandSearch from "@/components/root/brand/BrandSearch";
 import { FetchBrandsResponse } from "@/types";
 import Link from "next/link";
@@ -70,9 +68,9 @@ export default async function Brands({
   const baseAssetsUrl = process.env.ASSETS_URL;
 
   return (
-    <section className="brands-section wrapper">
-      <MotionDiv className="top">
-        <div className="flex items-center  justify-start gap-x-4">
+    <section className=" wrapper">
+      <div>
+        <div className="flex items-center mt-24 justify-start gap-x-4">
           <BackButton />
           <h1 className="text-2xl lg:text-4xl font-semibold mb-4 uppercase">
             <span className="text-yellow"> {singularizeType(category)}</span>{" "}
@@ -87,7 +85,7 @@ export default async function Brands({
 
         {/* brands data */}
         {brands.length > 0 ? (
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 place-items-center gap-y-4 pb-20">
+          <div className="!grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-y-4 pb-20">
             {brands.map((data) => (
               <Link
                 href={`/${state}/listing?category=${category}&brand=${data.brandValue}`}
@@ -109,7 +107,7 @@ export default async function Brands({
           </div>
         ) : (
           <div className="flex-center my-32">
-            No Brands found{" "}
+            No Brands found&nbsp;
             {search.length > 0 && (
               <span>
                 for <span className="italic">&quot;{search}&quot;</span>
@@ -117,7 +115,7 @@ export default async function Brands({
             )}
           </div>
         )}
-      </MotionDiv>
+      </div>
 
       <Suspense fallback={<div>Loading Pagination...</div>}>
         <Pagination page={page} totalPages={totalPages} />

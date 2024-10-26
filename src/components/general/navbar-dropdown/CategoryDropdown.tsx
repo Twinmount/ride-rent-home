@@ -32,10 +32,6 @@ export default function CategoryDropdown() {
     queryFn: fetchCategories,
   });
 
-  useEffect(() => {
-    console.log(data?.result.list);
-  }, [isLoading]);
-
   const categories: CategoryType[] = data?.result?.list || [];
 
   // Define paths to exclude
