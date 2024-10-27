@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@import "../../../styles/variables";
 
 /* Default styles for mobile devices and above */
 .profile-card {
@@ -13,11 +13,9 @@
   border-radius: 1rem;
   box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.3);
 
-
   .profile-heading {
     h2 {
       font-weight: 500;
-
     }
   }
 
@@ -51,6 +49,7 @@
         max-height: 5rem;
         aspect-ratio: 1;
         border-radius: 100%;
+        border: solid 1px rgba(0, 0, 0, 0.099);
         overflow: hidden;
 
         .company-profile {
@@ -105,7 +104,6 @@
         }
       }
     }
-
   }
 
   // availability
@@ -177,16 +175,13 @@
           color: gray;
         }
       }
-
     }
   }
-
 }
 
-
-
 /*  (min-width: 768px) and above */
-@media (min-width: 768px) {}
+@media (min-width: 768px) {
+}
 
 /* (min-width: 1200px) and above */
 @media (min-width: 1200px) {

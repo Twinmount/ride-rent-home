@@ -1,19 +1,19 @@
-'use client'
+"use client";
 
-import './ProfileCard.scss'
-import { MdVerifiedUser } from 'react-icons/md'
-import ProfileSpecification from '@/components/root/vehicle details/profile-specifications/ProfileSpecification'
-import MotionDiv from '@/components/general/framer-motion/MotionDiv'
-import { Company, RentalDetails } from '@/types/vehicle-details-types'
-import ContactIcons from '@/components/common/contact-icons/ContactIcons'
-import { formatPhoneNumber } from '@/helpers'
+import "./ProfileCard.scss";
+import { MdVerifiedUser } from "react-icons/md";
+import ProfileSpecification from "@/components/root/vehicle details/profile-specifications/ProfileSpecification";
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import { Company, RentalDetails } from "@/types/vehicle-details-types";
+import ContactIcons from "@/components/common/contact-icons/ContactIcons";
+import { formatPhoneNumber } from "@/helpers";
 
 type ProfileCardProps = {
-  company: Company
-  rentalDetails: RentalDetails
-  vehicleId: string
-  isLease: boolean
-}
+  company: Company;
+  rentalDetails: RentalDetails;
+  vehicleId: string;
+  isLease: boolean;
+};
 
 const ProfileCard = ({
   company,
@@ -21,19 +21,19 @@ const ProfileCard = ({
   vehicleId,
   isLease,
 }: ProfileCardProps) => {
-  const contactDetails = company?.contactDetails
+  const contactDetails = company?.contactDetails;
 
   const formattedPhoneNumber =
     contactDetails?.countryCode && contactDetails.phone
       ? formatPhoneNumber(contactDetails?.countryCode, contactDetails.phone)
-      : null
+      : null;
 
   const message =
-    'Hello, I would like to connect with you regarding the vehicle listed on Ride.Rent.'
-  const encodedMessage = encodeURIComponent(message)
+    "Hello, I would like to connect with you regarding the vehicle listed on Ride.Rent.";
+  const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = contactDetails
     ? `https://wa.me/${contactDetails.whatsappCountryCode}${contactDetails.whatsappPhone}?text=${encodedMessage}`
-    : null
+    : null;
 
   return (
     <MotionDiv className="profile-card">
@@ -50,15 +50,15 @@ const ProfileCard = ({
         <div className="profile-details">
           <div
             className={`${
-              company.companyProfile ? '' : 'blurred-profile'
+              company.companyProfile ? "" : "blurred-profile"
             }  profile`}
           >
             <img
-              src={company.companyProfile || '/assets/img/blur-profile.webp'}
+              src={company.companyProfile || "/assets/img/blur-profile.webp"}
               alt={
                 company?.companyName
                   ? `${company.companyName} logo`
-                  : 'Company logo'
+                  : "Company logo"
               }
               loading="lazy"
               className={`company-profile `}
@@ -68,10 +68,10 @@ const ProfileCard = ({
           <div>
             <p
               className={`${
-                company.companyName ? '' : 'blurred-text'
+                company.companyName ? "" : "blurred-text"
               } company-name`}
             >
-              {company.companyName || 'Company Disabled'}
+              {company.companyName || "Company Disabled"}
             </p>
 
             <div className="verified">
@@ -105,7 +105,7 @@ const ProfileCard = ({
         </div>
       </div>
     </MotionDiv>
-  )
-}
+  );
+};
 
-export default ProfileCard
+export default ProfileCard;

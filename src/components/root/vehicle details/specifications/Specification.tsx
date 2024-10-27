@@ -1,36 +1,36 @@
-'use client'
+"use client";
 
-import { FC } from 'react'
+import { FC } from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip'
-import MotionDiv from '@/components/general/framer-motion/MotionDiv'
-import './Specification.scss'
-import { formatKeyForIcon } from '@/helpers'
+} from "@/components/ui/tooltip";
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import "./Specification.scss";
+import { formatKeyForIcon } from "@/helpers";
 
 // Update the SpecificationItem type based on the current Specs structure
 interface SpecificationItem {
-  name: string
-  value: string
-  selected: boolean
-  hoverInfo?: string
+  name: string;
+  value: string;
+  selected: boolean;
+  hoverInfo?: string;
 }
 
 // Update the SpecificationsProps type to match the Specs type
 type SpecificationsProps = {
-  specifications: Record<string, SpecificationItem>
-  vehicleCategory?: string
-}
+  specifications: Record<string, SpecificationItem>;
+  vehicleCategory?: string;
+};
 
 const Specification: FC<SpecificationsProps> = ({
   specifications,
   vehicleCategory,
 }) => {
   // Base URL for fetching icons
-  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL
+  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
 
   return (
     <MotionDiv className="specification-container">
@@ -49,7 +49,7 @@ const Specification: FC<SpecificationsProps> = ({
                         src={`${baseAssetsUrl}/icons/vehicle-specifications/${vehicleCategory}/${formatKeyForIcon(
                           key
                         )}.svg`}
-                        alt={`${spec.name} icon`}
+                        alt={`${key} icon`}
                         className="spec-icon"
                       />
                     </div>
@@ -64,11 +64,11 @@ const Specification: FC<SpecificationsProps> = ({
                 </Tooltip>
               </TooltipProvider>
             </div>
-          )
+          );
         })}
       </div>
     </MotionDiv>
-  )
-}
+  );
+};
 
-export default Specification
+export default Specification;

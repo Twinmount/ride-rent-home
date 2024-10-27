@@ -28,7 +28,7 @@ const Landing = ({ state, category }: StateCategoryProps) => {
             <div className="trust">
               <FaRegThumbsUp />
               Most Trusted Vehicle Renting Platform In{" "}
-              <span className="capitalize">{convertToLabel(state)}</span> !
+              <span className="capitalize">{convertToLabel(state)}!</span>
             </div>
             <div className="best-price">
               <p className="best-price-p">Explore thousands of vehicles</p>

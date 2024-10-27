@@ -34,14 +34,14 @@ const Footer = () => {
           <span className="bold">FleetOrbita Group</span>
           <br />
           <br />
-          <span className="copyright">
-            <FaRegCopyright />
+          <div className="copyright">
+            <FaRegCopyright className="copyright-icon" width={15} height={15} />
 
             <span>
               2024 FleetOrbita Internet Services LLP | ACJ-9769. All Rights
               Reserved.
             </span>
-          </span>
+          </div>
         </p>
       </MotionDiv>
     </footer>

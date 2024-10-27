@@ -1,13 +1,13 @@
-import './ProfileSpecification.scss'
-import { IoSpeedometer } from 'react-icons/io5'
-import { CompanySpecs, RentalDetails } from '@/types/vehicle-details-types'
-import { HeartHandshake, ThumbsUp } from 'lucide-react'
+import "./ProfileSpecification.scss";
+import { IoSpeedometer } from "react-icons/io5";
+import { CompanySpecs, RentalDetails } from "@/types/vehicle-details-types";
+import { HeartHandshake, ThumbsUp } from "lucide-react";
 
 type ProfileSpecificationProps = {
-  specs: CompanySpecs
-  rentalDetails: RentalDetails
-  isLease: boolean
-}
+  specs: CompanySpecs;
+  rentalDetails: RentalDetails;
+  isLease: boolean;
+};
 
 const ProfileSpecification = ({
   specs,
@@ -16,33 +16,33 @@ const ProfileSpecification = ({
 }: ProfileSpecificationProps) => {
   // Helper function to determine which rental option to display
   const getRentalAvailability = () => {
-    if (rentalDetails.month.enabled) return 'Monthly Rentals Available'
-    if (rentalDetails.week.enabled) return 'Weekly Rentals Available'
-    if (rentalDetails.day.enabled) return 'Daily Rentals Available'
-    return 'Rental Details N/A'
-  }
+    if (rentalDetails.month.enabled) return "Monthly Rentals Available";
+    if (rentalDetails.week.enabled) return "Weekly Rentals Available";
+    if (rentalDetails.day.enabled) return "Daily Rentals Available";
+    return "Rental Details N/A";
+  };
 
   // Determine which rental period data to display based on priority
   const getRentalPeriodDetails = () => {
     if (rentalDetails.day.enabled) {
-      return { period: 'Day', details: rentalDetails.day }
+      return { period: "Day", details: rentalDetails.day };
     } else if (rentalDetails.week.enabled) {
-      return { period: 'Week', details: rentalDetails.week }
+      return { period: "Week", details: rentalDetails.week };
     } else if (rentalDetails.month.enabled) {
-      return { period: 'Month', details: rentalDetails.month }
+      return { period: "Month", details: rentalDetails.month };
     }
-    return null
-  }
+    return null;
+  };
 
-  const rentalPeriod = getRentalPeriodDetails()
+  const rentalPeriod = getRentalPeriodDetails();
 
   // Function to dynamically determine the rent price label
   const getRentPriceLabel = () => {
-    if (rentalPeriod?.period === 'Day') return 'Daily Rental Rate'
-    if (rentalPeriod?.period === 'Week') return 'Weekly Rental Rate'
-    if (rentalPeriod?.period === 'Month') return 'Monthly Rental Rate'
-    return 'Rental Rate'
-  }
+    if (rentalPeriod?.period === "Day") return "Daily Rental Rate";
+    if (rentalPeriod?.period === "Week") return "Weekly Rental Rate";
+    if (rentalPeriod?.period === "Month") return "Monthly Rental Rate";
+    return "Rental Rate";
+  };
 
   return (
     <div className="profile-specifications">
@@ -57,8 +57,8 @@ const ProfileSpecification = ({
           </div>
           <span className="label">
             {specs.isCryptoAccepted
-              ? 'Crypto Accepted'
-              : 'Accepts Fiat Currencies'}
+              ? "Crypto Accepted"
+              : "Accepts Fiat Currencies"}
           </span>
         </div>
 
@@ -72,8 +72,8 @@ const ProfileSpecification = ({
           </div>
           <span className="label">
             {specs.isSpotDeliverySupported
-              ? 'Free Spot Delivery'
-              : 'Collect at Point'}
+              ? "Free Spot Delivery"
+              : "Collect at Point"}
           </span>
         </div>
 
@@ -100,7 +100,7 @@ const ProfileSpecification = ({
           {/* Included mileage */}
           <div className="mileage-box">
             <IoSpeedometer />
-            <span className="label">{'Included mileage limit'}</span>
+            <span className="label">{"Included mileage limit"}</span>
             <span className="value">{rentalPeriod.details.mileageLimit}</span>
           </div>
         </div>
@@ -110,12 +110,12 @@ const ProfileSpecification = ({
         <div className="lease-box">
           <ThumbsUp className="lease-icon" width={20} />
           <span className="label">
-            {'This vehicle is also available for lease'}
+            {"This vehicle is also available for lease"}
           </span>
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ProfileSpecification
+export default ProfileSpecification;
