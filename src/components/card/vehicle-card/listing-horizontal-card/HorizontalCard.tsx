@@ -90,7 +90,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
       {/* card right */}
       <div className="card-right">
         {/* title and features */}
-        <Link href={vehicleDetailsLink} className="right-top-container">
+        <Link href={vehicleDetailsLink} className="right-top-container ">
           {vehicle.model}
         </Link>
 
