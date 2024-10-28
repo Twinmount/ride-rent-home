@@ -27,7 +27,7 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
   const modelDetails = generateModelDetailsUrl(vehicle);
 
   // dynamic link to navigate to vehicle details page
-  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
+  const vehicleDetailsPageLink = `${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
 
   // page link required for whatsapp share
   const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;

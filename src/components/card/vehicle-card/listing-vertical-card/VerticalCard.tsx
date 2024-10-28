@@ -37,7 +37,7 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
   const modelDetails = generateModelDetailsUrl(vehicle);
 
   // link for the vehicle details page
-  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
+  const vehicleDetailsPageLink = `${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
 
   // page link required for whatsapp share
   const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;

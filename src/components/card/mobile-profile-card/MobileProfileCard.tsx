@@ -69,7 +69,7 @@ const MobileProfileCard = ({
   const { state, model, category } = vehicleData;
 
   // link for the vehicle details page
-  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicleId}`;
+  const vehicleDetailsPageLink = `${state}/${category}/${modelDetails}/${vehicleId}`;
   // page link required for whatsapp share
   const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
 
