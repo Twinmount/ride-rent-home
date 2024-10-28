@@ -6,13 +6,19 @@ import ProfileSpecification from "@/components/root/vehicle details/profile-spec
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import { Company, RentalDetails } from "@/types/vehicle-details-types";
 import ContactIcons from "@/components/common/contact-icons/ContactIcons";
-import { formatPhoneNumber } from "@/helpers";
+import { formatPhoneNumber, generateModelDetailsUrl } from "@/helpers";
 
 type ProfileCardProps = {
   company: Company;
   rentalDetails: RentalDetails;
   vehicleId: string;
   isLease: boolean;
+  vehicleData: {
+    brandName: string;
+    model: string;
+    state: string;
+    category: string;
+  };
 };
 
 const ProfileCard = ({
@@ -20,6 +26,7 @@ const ProfileCard = ({
   rentalDetails,
   vehicleId,
   isLease,
+  vehicleData,
 }: ProfileCardProps) => {
   const contactDetails = company?.contactDetails;
 
@@ -28,9 +35,22 @@ const ProfileCard = ({
       ? formatPhoneNumber(contactDetails?.countryCode, contactDetails.phone)
       : null;
 
-  const message =
-    "Hello, I would like to connect with you regarding the vehicle listed on Ride.Rent.";
+  // generating dynamic url for the vehicle details page
+  const modelDetails = generateModelDetailsUrl(vehicleData);
+
+  const { state, model, category } = vehicleData;
+
+  // link for the vehicle details page
+  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicleId}`;
+
+  // page link required for whatsapp share
+  const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
+
+  // Compose the message with the page link included
+  const message = `${whatsappPageLink}\n\nHello, I am interested in the *_${model}_* model. Could you please provide more details?`;
   const encodedMessage = encodeURIComponent(message);
+
+  // whatsapp url
   const whatsappUrl = contactDetails
     ? `https://wa.me/${contactDetails.whatsappCountryCode}${contactDetails.whatsappPhone}?text=${encodedMessage}`
     : null;

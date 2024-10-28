@@ -38,8 +38,20 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
       ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
       : null;
 
-  const message = `Hello, I am interested in the ${vehicle.model}. Could you please provide more details?`;
+  // generating dynamic url for the vehicle details page
+  const modelDetails = generateModelDetailsUrl(vehicle);
+
+  // link for the vehicle details page
+  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
+
+  // page link required for whatsapp share
+  const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
+
+  // Compose the message with the page link included
+  const message = `${whatsappPageLink}\n\nHello, I am interested in the *_${vehicle.model}_* model. Could you please provide more details?`;
   const encodedMessage = encodeURIComponent(message);
+
+  // whatsapp url
   const whatsappUrl = vehicle.whatsappPhone
     ? `https://wa.me/${vehicle.whatsappCountryCode}${vehicle.whatsappPhone}?text=${encodedMessage}`
     : null;
@@ -49,12 +61,6 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
 
   // Base URL for fetching icons
   const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
-
-  // generating dynamic url for the vehicle details page
-  const modelDetails = generateModelDetailsUrl(vehicle);
-
-  // link for the vehicle details page
-  const vehicleDetailsLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
 
   return (
     <MotionDivElm
@@ -66,7 +72,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
     >
       {/* card left */}
       <div className="card-left">
-        <Link href={vehicleDetailsLink} className="image-box">
+        <Link href={vehicleDetailsPageLink} className="image-box">
           {/* Thumbnail Image */}
           {vehicle.thumbnail ? (
             <Image
@@ -90,12 +96,12 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
       {/* card right */}
       <div className="card-right">
         {/* title and features */}
-        <Link href={vehicleDetailsLink} className="right-top-container ">
+        <Link href={vehicleDetailsPageLink} className="right-top-container ">
           {vehicle.model}
         </Link>
 
         {/* Dynamic Vehicle specs */}
-        <Link href={vehicleDetailsLink} className="vehicle-specs">
+        <Link href={vehicleDetailsPageLink} className="vehicle-specs">
           {Object.entries(vehicle.vehicleSpecs).map(([key, spec]) => (
             <TooltipProvider delayDuration={200} key={key}>
               <Tooltip>
@@ -129,7 +135,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
         </Link>
 
         {/* Specifications */}
-        <Link href={vehicleDetailsLink}>
+        <Link href={vehicleDetailsPageLink}>
           <Specifications
             isCryptoAccepted={vehicle.isCryptoAccepted}
             isSpotDeliverySupported={vehicle.isSpotDeliverySupported}
@@ -139,7 +145,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
 
         <div className="bottom-box">
           <div className="bottom-left">
-            <Link href={vehicleDetailsLink} className="profile">
+            <Link href={vehicleDetailsPageLink} className="profile">
               {/* Company Logo */}
               {vehicle.companyLogo ? (
                 <Image
@@ -158,7 +164,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
               )}
             </Link>
 
-            <Link href={vehicleDetailsLink} className="location">
+            <Link href={vehicleDetailsPageLink} className="location">
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
                   <TooltipTrigger className="each-location">
@@ -188,7 +194,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
           )}
           <div className="bottom-right">
             {/* Rent Now button */}
-            <Link href={vehicleDetailsLink} className="rent-now-btn">
+            <Link href={vehicleDetailsPageLink} className="rent-now-btn">
               RENT NOW
               <span>Available now for chat</span>
             </Link>

@@ -1,20 +1,26 @@
-'use client'
+"use client";
 
-import MobileProfileCard from '@/components/card/mobile-profile-card/MobileProfileCard'
-import useIntersectionObserver from '@/hooks/useIntersectionObserver'
-import { sendPortfolioVisit } from '@/lib/api/general-api'
-import { Company, RentalDetails } from '@/types/vehicle-details-types'
-import { useQuery } from '@tanstack/react-query'
+import MobileProfileCard from "@/components/card/mobile-profile-card/MobileProfileCard";
+import useIntersectionObserver from "@/hooks/useIntersectionObserver";
+import { sendPortfolioVisit } from "@/lib/api/general-api";
+import { Company, RentalDetails } from "@/types/vehicle-details-types";
+import { useQuery } from "@tanstack/react-query";
 
-import { useRef } from 'react'
+import { useRef } from "react";
 
 type DetailsSectionClientProps = {
-  children: React.ReactNode
-  company: Company
-  rentalDetails: RentalDetails
-  vehicleId: string
-  isLease: boolean
-}
+  children: React.ReactNode;
+  company: Company;
+  rentalDetails: RentalDetails;
+  vehicleId: string;
+  isLease: boolean;
+  vehicleData: {
+    brandName: string;
+    model: string;
+    state: string;
+    category: string;
+  };
+};
 
 const DetailsSectionClient = ({
   children,
@@ -22,16 +28,17 @@ const DetailsSectionClient = ({
   rentalDetails,
   vehicleId,
   isLease,
+  vehicleData,
 }: DetailsSectionClientProps) => {
-  const detailsSectionRef = useRef(null)
-  const isInViewPort = useIntersectionObserver(detailsSectionRef)
+  const detailsSectionRef = useRef(null);
+  const isInViewPort = useIntersectionObserver(detailsSectionRef);
 
   useQuery({
-    queryKey: ['portfolioVisit', vehicleId],
+    queryKey: ["portfolioVisit", vehicleId],
     queryFn: () => sendPortfolioVisit(vehicleId),
     staleTime: 600000, // 10 minutes in milliseconds
     enabled: !!vehicleId, // Ensures the query runs only when vehicleId is available
-  })
+  });
 
   return (
     <div ref={detailsSectionRef}>
@@ -42,10 +49,11 @@ const DetailsSectionClient = ({
           rentalDetails={rentalDetails}
           vehicleId={vehicleId}
           isLease={isLease}
+          vehicleData={vehicleData}
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default DetailsSectionClient
+export default DetailsSectionClient;

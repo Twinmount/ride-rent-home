@@ -23,8 +23,20 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
       ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
       : null; // if null phone number
 
-  const message = `Hello, I am interested in the ${vehicle.model}. Could you please provide more details?`;
+  // generating dynamic url for the vehicle details page
+  const modelDetails = generateModelDetailsUrl(vehicle);
+
+  // dynamic link to navigate to vehicle details page
+  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
+
+  // page link required for whatsapp share
+  const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
+
+  // Compose the message with the page link included
+  const message = `${whatsappPageLink}\n\nHello, I am interested in the *_${vehicle.model}_* model. Could you please provide more details?`;
   const encodedMessage = encodeURIComponent(message);
+
+  // whatsapp url
   const whatsappUrl = vehicle.whatsappPhone
     ? `https://wa.me/${vehicle.whatsappCountryCode}${vehicle.whatsappPhone}?text=${encodedMessage}`
     : null; //if null WhatsApp details
@@ -34,12 +46,6 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
 
   // Use the helper function to get rental period details
   const rentalPeriod = getRentalPeriodDetails(vehicle.rentalDetails);
-
-  // generating dynamic url for the vehicle details page
-  const modelDetails = generateModelDetailsUrl(vehicle);
-
-  // dynamic link to navigate to vehicle details page
-  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
 
   return (
     <div className="car-card-container slide-visible">

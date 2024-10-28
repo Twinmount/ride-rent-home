@@ -12,6 +12,12 @@
     color: rgb(29, 29, 29);
     margin-bottom: 2rem;
   }
+
+  div {
+    word-wrap: break-word; /* Breaks long words at the edge of the container */
+    overflow-wrap: break-word; /* Ensures words break in all major browsers */
+    white-space: pre-wrap; /* Preserves whitespace and line breaks */
+  }
 }
 
 /*  (min-width: 768px) and above */

@@ -165,7 +165,13 @@ export default async function VehicleDetails({
 
   const vehicle = data.result;
 
-  // vehicle specification
+  //profile card prop
+  const profileProp = {
+    brandName: vehicle.brand.value,
+    model: vehicle.modelName,
+    state: state,
+    category: category,
+  };
 
   return (
     <section className="vehicle-details-section wrapper">
@@ -227,6 +233,7 @@ export default async function VehicleDetails({
         rentalDetails={vehicle?.rentalDetails}
         vehicleId={vehicleId}
         isLease={vehicle.isAvailableForLease}
+        vehicleData={profileProp}
       >
         <section className="details-section">
           <div className="details-container">
@@ -256,6 +263,7 @@ export default async function VehicleDetails({
                 rentalDetails={vehicle?.rentalDetails}
                 vehicleId={vehicleId}
                 isLease={vehicle.isAvailableForLease}
+                vehicleData={profileProp}
               />
 
               <QuickLinks state={state} />

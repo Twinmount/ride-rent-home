@@ -198,9 +198,15 @@ export const generateDynamicFAQ = (
 
   return faqArray;
 };
+type GenerateModelDetailsUrlType = {
+  brandName?: string; // Optional string
+  model?: string; // Optional string
+  state?: string; // Optional string
+};
 
-// helper function to generate dynamic url for vehicle details page
-export function generateModelDetailsUrl(vehicle: VehicleCardType): string {
+export function generateModelDetailsUrl(
+  data: GenerateModelDetailsUrlType
+): string {
   // Fallback values if vehicle details are missing
   const fallbackBrand = "brand";
   const fallbackModel = "model";
@@ -214,9 +220,9 @@ export function generateModelDetailsUrl(vehicle: VehicleCardType): string {
       .replace(/^-+|-+$/g, ""); // Remove any leading or trailing hyphens
   };
 
-  const brand = cleanText(vehicle?.brandName || fallbackBrand);
-  const model = cleanText(vehicle?.model || fallbackModel);
-  const state = cleanText(vehicle?.state || fallbackState);
+  const brand = cleanText(data.brandName || fallbackBrand);
+  const model = cleanText(data.model || fallbackModel);
+  const state = cleanText(data.state || fallbackState);
 
   return `rent-${brand}-${model}-model-in-${state}`;
 }

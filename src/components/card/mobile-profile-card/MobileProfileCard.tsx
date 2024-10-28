@@ -1,82 +1,101 @@
-import './MobileProfileCard.scss'
+import "./MobileProfileCard.scss";
 
-import { MdOutlineExpandCircleDown, MdVerifiedUser } from 'react-icons/md'
-import { SiTicktick } from 'react-icons/si'
-import { useEffect, useRef, useState } from 'react'
-import ProfileSpecification from '@/components/root/vehicle details/profile-specifications/ProfileSpecification'
-import { Company, RentalDetails } from '@/types/vehicle-details-types'
-import ContactIcons from '@/components/common/contact-icons/ContactIcons'
-import { formatPhoneNumber } from '@/helpers'
+import { MdOutlineExpandCircleDown, MdVerifiedUser } from "react-icons/md";
+import { SiTicktick } from "react-icons/si";
+import { useEffect, useRef, useState } from "react";
+import ProfileSpecification from "@/components/root/vehicle details/profile-specifications/ProfileSpecification";
+import { Company, RentalDetails } from "@/types/vehicle-details-types";
+import ContactIcons from "@/components/common/contact-icons/ContactIcons";
+import { formatPhoneNumber, generateModelDetailsUrl } from "@/helpers";
 
 type MobileProfileCardProps = {
-  company: Company
-  rentalDetails: RentalDetails
-  vehicleId: string
-  isLease: boolean
-}
+  company: Company;
+  rentalDetails: RentalDetails;
+  vehicleId: string;
+  isLease: boolean;
+  vehicleData: {
+    brandName: string;
+    model: string;
+    state: string;
+    category: string;
+  };
+};
 
 const MobileProfileCard = ({
   company,
   rentalDetails,
   vehicleId,
   isLease,
+  vehicleData,
 }: MobileProfileCardProps) => {
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [height, setHeight] = useState('9rem') //
-  const contentRef = useRef<HTMLDivElement>(null)
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [height, setHeight] = useState("9rem"); //
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Toggle function
   const handleToggle = () => {
-    setIsExpanded((prev) => !prev)
-  }
+    setIsExpanded((prev) => !prev);
+  };
 
   // Mouse leave toggle function
   const handleMouseLeave = () => {
-    if (!isExpanded) return
-    setIsExpanded(false)
-  }
+    if (!isExpanded) return;
+    setIsExpanded(false);
+  };
 
   useEffect(() => {
-    const content = contentRef.current
+    const content = contentRef.current;
     if (content) {
       if (isExpanded) {
-        const expandedHeight = content.scrollHeight // Get the full height when expanded
-        setHeight(`${expandedHeight}px`) // Set the height explicitly
+        const expandedHeight = content.scrollHeight; // Get the full height when expanded
+        setHeight(`${expandedHeight}px`); // Set the height explicitly
       } else {
-        setHeight('9rem') // Set the height back to the initial height
+        setHeight("9rem"); // Set the height back to the initial height
       }
     }
-  }, [isExpanded])
+  }, [isExpanded]);
 
   // Handle case where contactDetails is null
-  const contactDetails = company?.contactDetails
+  const contactDetails = company?.contactDetails;
 
   const formattedPhoneNumber =
     contactDetails?.countryCode && contactDetails.phone
       ? formatPhoneNumber(contactDetails?.countryCode, contactDetails.phone)
-      : null
+      : null;
 
-  const message =
-    'Hello, I would like to connect with you regarding the vehicle listed on Ride.Rent.'
-  const encodedMessage = encodeURIComponent(message)
+  // generating dynamic url for the vehicle details page
+  const modelDetails = generateModelDetailsUrl(vehicleData);
+
+  const { state, model, category } = vehicleData;
+
+  // link for the vehicle details page
+  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicleId}`;
+  // page link required for whatsapp share
+  const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
+
+  // Compose the message with the page link included
+  const message = `${whatsappPageLink}\n\nHello, I am interested in the *_${model}_* model. Could you please provide more details?`;
+  const encodedMessage = encodeURIComponent(message);
+
+  // whatsapp url
   const whatsappUrl = contactDetails
     ? `https://wa.me/${contactDetails.whatsappCountryCode}${contactDetails.whatsappPhone}?text=${encodedMessage}`
-    : null // Handle null WhatsApp details
+    : null; // Handle null WhatsApp details
 
   return (
     <>
       {/* Overlay */}
-      <div className={`black-overlay ${isExpanded ? 'visible' : 'hidden'}`} />
+      <div className={`black-overlay ${isExpanded ? "visible" : "hidden"}`} />
 
       <div
         ref={contentRef}
         onMouseLeave={handleMouseLeave}
-        className={`mobile-profile-card ${isExpanded ? 'expanded-view' : ''}`}
+        className={`mobile-profile-card ${isExpanded ? "expanded-view" : ""}`}
         style={{ height: height }}
       >
         <div className="profile-heading top-heading">
           <h2 className="custom-heading mobile-profile-heading">
-            Listing Owner Details{' '}
+            Listing Owner Details{" "}
             {(!company.companyName || !company.companyProfile) && (
               <span className="disabled-text">
                 &#40;Currently unavailable&#41;
@@ -84,7 +103,7 @@ const MobileProfileCard = ({
             )}
           </h2>
           <button className="expand" onClick={handleToggle}>
-            {isExpanded ? 'show less' : 'show more'}{' '}
+            {isExpanded ? "show less" : "show more"}{" "}
             <MdOutlineExpandCircleDown className="icon" />
           </button>
         </div>
@@ -94,29 +113,29 @@ const MobileProfileCard = ({
           <div className="profile-details">
             <div
               className={` ${
-                company.companyProfile ? '' : 'blurred-profile'
+                company.companyProfile ? "" : "blurred-profile"
               } profile`}
             >
               {/* Placeholder image or replace with actual company logo if available */}
               <img
-                src={company.companyProfile || '/assets/img/blur-profile.webp'}
+                src={company.companyProfile || "/assets/img/blur-profile.webp"}
                 alt={
                   company?.companyName
                     ? `${company.companyName} logo`
-                    : 'Company logo'
+                    : "Company logo"
                 }
                 loading="lazy"
-                className={'company-profile'}
+                className={"company-profile"}
                 draggable={false}
               />
             </div>
             <div className="info">
               <p
                 className={`${
-                  company.companyName ? '' : 'blurred-text'
+                  company.companyName ? "" : "blurred-text"
                 } company-name`}
               >
-                {company.companyName || 'Company Disabled'}
+                {company.companyName || "Company Disabled"}
               </p>
               {/* Assuming verification logic based on specs */}
 
@@ -152,7 +171,7 @@ const MobileProfileCard = ({
         />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default MobileProfileCard
+export default MobileProfileCard;

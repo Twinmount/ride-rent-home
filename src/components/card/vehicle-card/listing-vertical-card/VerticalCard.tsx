@@ -33,8 +33,20 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
       ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
       : null;
 
-  const message = `Hello, I am interested in the ${vehicle.model}. Could you please provide more details?`;
+  // generating dynamic url for the vehicle details page
+  const modelDetails = generateModelDetailsUrl(vehicle);
+
+  // link for the vehicle details page
+  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
+
+  // page link required for whatsapp share
+  const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
+
+  // Compose the message with the page link included
+  const message = `${whatsappPageLink}\n\nHello, I am interested in the *_${vehicle.model}_* model. Could you please provide more details?`;
   const encodedMessage = encodeURIComponent(message);
+
+  // whatsapp url
   const whatsappUrl = vehicle.whatsappPhone
     ? `https://wa.me/${vehicle.whatsappCountryCode}${vehicle.whatsappPhone}?text=${encodedMessage}`
     : null; // Handle null WhatsApp details
@@ -45,12 +57,6 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
   // Base URL for fetching icons
   const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
 
-  // generating dynamic url for the vehicle details page
-  const modelDetails = generateModelDetailsUrl(vehicle);
-
-  // link for the vehicle details page
-  const vehicleDetailsLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
-
   return (
     <MotionDivElm
       initial={{ opacity: 0, y: 15 }}
@@ -60,7 +66,7 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
       className="vertical-card-container slide-visible"
     >
       {/* card top */}
-      <Link href={vehicleDetailsLink}>
+      <Link href={vehicleDetailsPageLink}>
         <div className="card-top">
           <div className="image-box">
             {/* Thumbnail Image */}
@@ -105,12 +111,12 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
 
       {/* card bottom */}
       <div className="card-bottom">
-        <Link href={vehicleDetailsLink}>
+        <Link href={vehicleDetailsPageLink}>
           <div className="model-name">{vehicle.model}</div>
         </Link>
 
         {/* vehicle specs grid */}
-        <Link href={vehicleDetailsLink}>
+        <Link href={vehicleDetailsPageLink}>
           <div className="specs-grid">
             {Object.entries(vehicle.vehicleSpecs).map(([key, spec]) => (
               <TooltipProvider delayDuration={200} key={key}>
@@ -143,7 +149,7 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
             ))}
           </div>
         </Link>
-        <Link href={vehicleDetailsLink}>
+        <Link href={vehicleDetailsPageLink}>
           <Specifications
             isCryptoAccepted={vehicle.isCryptoAccepted}
             isSpotDeliverySupported={vehicle.isSpotDeliverySupported}
@@ -151,7 +157,7 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
           />
         </Link>
         {/* location and price */}
-        <Link href={vehicleDetailsLink}>
+        <Link href={vehicleDetailsPageLink}>
           <div className="location-box">
             <div className="location">
               <IoLocationOutline size={17} />{" "}
@@ -175,7 +181,7 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
         </Link>
 
         <div className="bottom-box">
-          <Link href={vehicleDetailsLink}>
+          <Link href={vehicleDetailsPageLink}>
             <div className="rent-now-btn">
               RENT NOW
               <span>Available now for chat</span>
