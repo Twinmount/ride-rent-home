@@ -1,8 +1,8 @@
-import { Skeleton } from '../ui/skeleton'
+import { Skeleton } from "../ui/skeleton";
 
 export default function GridSkelton({ count = 6 }: { count: number }) {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <div className="!grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {Array(count)
         .fill(null)
         .map((_, index) => (
@@ -14,5 +14,5 @@ export default function GridSkelton({ count = 6 }: { count: number }) {
           </div>
         ))}
     </div>
-  )
+  );
 }

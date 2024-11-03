@@ -1,18 +1,26 @@
 import "./ProfileSpecification.scss";
 import { IoSpeedometer } from "react-icons/io5";
 import { CompanySpecs, RentalDetails } from "@/types/vehicle-details-types";
-import { HeartHandshake, ThumbsUp } from "lucide-react";
+import { HandCoins, ThumbsUp, Zap } from "lucide-react";
+import CardPayments from "./CardPayments";
 
 type ProfileSpecificationProps = {
   specs: CompanySpecs;
   rentalDetails: RentalDetails;
   isLease: boolean;
+  securityDeposit: {
+    enabled: boolean;
+    amountInAED: string;
+  };
+  isHourlyRental: boolean;
 };
 
 const ProfileSpecification = ({
   specs,
   rentalDetails,
   isLease,
+  securityDeposit,
+  isHourlyRental = false,
 }: ProfileSpecificationProps) => {
   // Helper function to determine which rental option to display
   const getRentalAvailability = () => {
@@ -24,7 +32,9 @@ const ProfileSpecification = ({
 
   // Determine which rental period data to display based on priority
   const getRentalPeriodDetails = () => {
-    if (rentalDetails.day.enabled) {
+    if (isHourlyRental && rentalDetails.hour.enabled) {
+      return { period: "Hour", details: rentalDetails.hour };
+    } else if (rentalDetails.day.enabled) {
       return { period: "Day", details: rentalDetails.day };
     } else if (rentalDetails.week.enabled) {
       return { period: "Week", details: rentalDetails.week };
@@ -38,6 +48,7 @@ const ProfileSpecification = ({
 
   // Function to dynamically determine the rent price label
   const getRentPriceLabel = () => {
+    if (rentalPeriod?.period === "Hour") return "Hourly Rental Rate";
     if (rentalPeriod?.period === "Day") return "Daily Rental Rate";
     if (rentalPeriod?.period === "Week") return "Weekly Rental Rate";
     if (rentalPeriod?.period === "Month") return "Monthly Rental Rate";
@@ -89,20 +100,57 @@ const ProfileSpecification = ({
         </div>
       </div>
 
+      {/* card payments */}
+      <CardPayments
+        creditDebitCards={specs.isCreditOrDebitCardsSupported}
+        tabby={specs.isTabbySupported}
+      />
+
       {rentalPeriod && (
         <div className="mileage">
           {/* Rent Price with dynamic label */}
           <div className="mileage-box">
             <IoSpeedometer />
             <span className="label">{getRentPriceLabel()}</span>
-            <span className="value">{`AED ${rentalPeriod.details.rentInAED}`}</span>
+            <span className="value">
+              {rentalPeriod.period === "Hour"
+                ? `AED ${rentalPeriod.details.rentInAED} / ${rentalDetails.hour.minBookingHours} Hrs`
+                : `AED ${rentalPeriod.details.rentInAED}`}
+            </span>
           </div>
           {/* Included mileage */}
           <div className="mileage-box">
             <IoSpeedometer />
             <span className="label">{"Included mileage limit"}</span>
-            <span className="value">{rentalPeriod.details.mileageLimit}</span>
+            <span className="value">
+              {rentalPeriod.details.mileageLimit} Km
+            </span>
           </div>
+        </div>
+      )}
+
+      {/* Hourly rental */}
+      {rentalDetails.hour.enabled && !isHourlyRental && (
+        <div className="hourly-rental-box">
+          <Zap className="icon" />
+          <span className="label">
+            Get this for{" "}
+            <span className="highlight">
+              {rentalDetails.hour.rentInAED} AED/
+              {rentalDetails.hour.minBookingHours} Hrs
+            </span>
+          </span>{" "}
+          <span className="hourly-mileage">
+            &nbsp; &#40;{rentalDetails.hour.mileageLimit} km limit&#41;
+          </span>
+        </div>
+      )}
+
+      {/* security deposits */}
+      {securityDeposit && securityDeposit?.enabled && (
+        <div className="deposit-box">
+          <HandCoins className="icon" />
+          <span className="label">{`${securityDeposit?.amountInAED} AED deposit applies`}</span>
         </div>
       )}
 

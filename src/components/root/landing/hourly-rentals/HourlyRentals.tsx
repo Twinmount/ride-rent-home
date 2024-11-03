@@ -1,19 +1,20 @@
-import "./MostPopular.scss";
-
-import ViewAllButton from "@/components/general/button/ViewAllButton";
+import "./HourlyRentals.scss";
 import MainCard from "@/components/card/vehicle-card/main-card/MainCard";
-
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
+import ViewAllButton from "@/components/general/button/ViewAllButton";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { convertToLabel } from "@/helpers";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
-import { convertToLabel } from "@/helpers";
 
-const MostPopular = async ({ state, category }: StateCategoryProps) => {
+export default async function HourlyRentals({
+  state,
+  category,
+}: StateCategoryProps) {
   const baseUrl = process.env.API_URL;
   // Fetch brand data from your API endpoint
   const response = await fetch(
-    `${baseUrl}/vehicle/home-page/list?page=1&limit=10&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.POPULAR_MODELS}`,
+    `${baseUrl}/vehicle/home-page/list?page=1&limit=10&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.HOURLY_RENTAL_VEHICLE}`,
     { method: "GET", cache: "no-cache" }
   );
 
@@ -25,31 +26,31 @@ const MostPopular = async ({ state, category }: StateCategoryProps) => {
   if (vehicleData.length === 0) return null;
 
   return (
-    <MotionSection className="popular-section wrapper">
-      <h2 className="heading ">
-        Explore the most popular{" "}
+    <MotionSection className="affordable-section wrapper">
+      <h2 className="heading">
+        Hourly Rentals Deals For{" "}
         <span className="yellow-gradient px-1 rounded-xl">
           {convertToLabel(category)}
         </span>{" "}
-        for rent in{" "}
+        in{" "}
         <span className="capitalize yellow-gradient px-2 rounded-xl">
           {convertToLabel(state)}
         </span>
       </h2>
-      <CarouselWrapper>
+      <CarouselWrapper isButtonVisible>
         {vehicleData.map((vehicle) => (
           <MainCard
             key={vehicle.vehicleId}
             vehicle={vehicle}
             state={state}
             category={category}
+            isHourlyRental={true}
           />
         ))}
       </CarouselWrapper>
       <ViewAllButton
-        link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.POPULAR_MODELS}`}
+        link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.AFFORDABLE_VEHICLE}`}
       />
     </MotionSection>
   );
-};
-export default MostPopular;
+}

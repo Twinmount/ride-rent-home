@@ -105,9 +105,16 @@ export function convertToLabel(value: string | undefined): string {
 
 // Helper function to determine which rental period is available
 export const getRentalPeriodDetails = (
-  rentalDetails: CardRentalDetails | undefined
+  rentalDetails: CardRentalDetails | undefined,
+  isHourlyRental: boolean = false
 ) => {
-  if (rentalDetails?.day?.enabled) {
+  if (isHourlyRental && rentalDetails?.hour?.enabled) {
+    return {
+      period: "Hour",
+      rentInAED: rentalDetails.hour.rentInAED,
+      label: `/ ${rentalDetails.hour.minBookingHours}Hrs`,
+    };
+  } else if (rentalDetails?.day?.enabled) {
     return {
       period: "Day",
       rentInAED: rentalDetails.day.rentInAED,
@@ -268,3 +275,12 @@ export function rearrangeStates(states: StateType[]): StateType[] {
     return order.indexOf(a.stateValue) - order.indexOf(b.stateValue);
   });
 }
+
+// formatter to format the name of additional types in vehicleDetailsPage
+export const formatAdditionalTypeName = (name: string) => {
+  return name
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};

@@ -19,6 +19,11 @@ type ProfileCardProps = {
     state: string;
     category: string;
   };
+  securityDeposit: {
+    enabled: boolean;
+    amountInAED: string;
+  };
+  isHourlyRental: boolean;
 };
 
 const ProfileCard = ({
@@ -27,6 +32,8 @@ const ProfileCard = ({
   vehicleId,
   isLease,
   vehicleData,
+  securityDeposit,
+  isHourlyRental = false,
 }: ProfileCardProps) => {
   const contactDetails = company?.contactDetails;
 
@@ -107,6 +114,8 @@ const ProfileCard = ({
         specs={company.companySpecs}
         rentalDetails={rentalDetails}
         isLease={isLease}
+        securityDeposit={securityDeposit}
+        isHourlyRental={isHourlyRental}
       />
 
       {/* Contact and action buttons */}

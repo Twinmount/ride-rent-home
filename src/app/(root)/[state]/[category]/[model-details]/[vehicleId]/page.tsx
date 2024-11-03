@@ -19,7 +19,10 @@ import { VehicleHomeFilter } from "@/types";
 import QuickLinks from "@/components/root/vehicle details/quick-links/QuickLinks";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { formatVehicleSpecification } from "@/helpers";
+import {
+  formatAdditionalTypeName,
+  formatVehicleSpecification,
+} from "@/helpers";
 import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
 
 type ParamsProps = {
@@ -147,12 +150,14 @@ export default async function VehicleDetails({
   searchParams,
 }: ParamsProps) {
   const baseUrl = process.env.API_URL;
-  const filter = searchParams.filter || VehicleHomeFilter.POPULAR_MODELS;
+  const isHourlyRental = searchParams.isHourlyRental === "true";
+
   // Fetch the vehicle data from the API
   const response = await fetch(
     `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
     { cache: "no-cache" }
   );
+
   const data: VehicleDetailsResponse = await response.json();
 
   if (
@@ -166,7 +171,7 @@ export default async function VehicleDetails({
   const vehicle = data.result;
 
   //profile card prop
-  const profileProp = {
+  const vehicleData = {
     brandName: vehicle.brand.value,
     model: vehicle.modelName,
     state: state,
@@ -197,11 +202,36 @@ export default async function VehicleDetails({
           Rentals.
         </p>
 
-        <div className="specification-info">
-          Specification:{" "}
-          {formatVehicleSpecification(vehicle.vehicleSpecification)}
-        </div>
+        <div className="important-features">
+          <div className="spec-deposit-container">
+            {vehicle.securityDeposit.enabled && (
+              <div className="inline-flex py-[0.3rem] animate-shimmer items-center justify-center rounded-[0.3rem] border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#707070,55%,#000103)] bg-[length:200%_100%] px-2 font-medium text-yellow transition-colors focus:outline-none text-sm md:text-base">
+                No Deposit Required
+              </div>
+            )}
 
+            <div className="specification-info">
+              Specification:{" "}
+              {formatVehicleSpecification(vehicle.vehicleSpecification)}
+            </div>
+
+            <div className="add-ons">
+              <div className="add-ons-heading">
+                Add-on Services <span className="colon">:</span>
+              </div>
+              <div className="add-ons-services">
+                {vehicle.additionalVehicleTypes &&
+                  vehicle.additionalVehicleTypes.length > 0 &&
+                  vehicle.additionalVehicleTypes.map((type, index) => (
+                    <span key={index} className="add-ons-item">
+                      {formatAdditionalTypeName(type.name)}
+                      {index < 2 && ", "}
+                    </span>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </div>
         {/* state and first 5 cities */}
         <div className="location-container">
           <span className="location">
@@ -233,7 +263,9 @@ export default async function VehicleDetails({
         rentalDetails={vehicle?.rentalDetails}
         vehicleId={vehicleId}
         isLease={vehicle.isAvailableForLease}
-        vehicleData={profileProp}
+        vehicleData={vehicleData}
+        securityDeposit={vehicle.securityDeposit}
+        isHourlyRental={isHourlyRental}
       >
         <section className="details-section">
           <div className="details-container">
@@ -263,7 +295,9 @@ export default async function VehicleDetails({
                 rentalDetails={vehicle?.rentalDetails}
                 vehicleId={vehicleId}
                 isLease={vehicle.isAvailableForLease}
-                vehicleData={profileProp}
+                vehicleData={vehicleData}
+                securityDeposit={vehicle.securityDeposit}
+                isHourlyRental={isHourlyRental}
               />
 
               <QuickLinks state={state} />

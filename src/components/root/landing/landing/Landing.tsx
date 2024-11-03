@@ -41,9 +41,9 @@ const Landing = ({ state, category }: StateCategoryProps) => {
               href={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.LATEST_MODELS}`}
               id="view-all-cars"
               target="_blank"
-              className="relative w-28 h-10 px-4 py-2 rounded-[0.7rem] yellow-gradient flex-center whitespace-nowrap font-bold  overflow-hidden"
+              className="relative w-28 h-10 px-4 py-2 rounded-[0.7rem]  flex-center whitespace-nowrap font-bold  overflow-hidden"
             >
-              <span className=" absolute text-center flex-center w-full h-full top-0 right-0 px-1 text-[0.85rem] leading-[1rem] text-black rounded-lg bg-[linear-gradient(110deg,#b78628,35%,#ffd700,45%,#fffacd,55%,#b78628)] bg-[length:200%_100%] animate-shimmer">
+              <span className=" absolute text-center flex-center w-full h-full top-0 right-0 px-1 text-[0.85rem] leading-[1rem] text-black rounded-lg bg-[linear-gradient(110deg,#b78628,35%,#ffd700,45%,#fffacd,55%,#b78628)] bg-[length:200%_100%] animate-shimmer ">
                 View all deals
               </span>
             </Link>

@@ -19,6 +19,11 @@ type MobileProfileCardProps = {
     state: string;
     category: string;
   };
+  securityDeposit: {
+    enabled: boolean;
+    amountInAED: string;
+  };
+  isHourlyRental: boolean;
 };
 
 const MobileProfileCard = ({
@@ -27,6 +32,8 @@ const MobileProfileCard = ({
   vehicleId,
   isLease,
   vehicleData,
+  securityDeposit,
+  isHourlyRental,
 }: MobileProfileCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [height, setHeight] = useState("9rem"); //
@@ -95,7 +102,7 @@ const MobileProfileCard = ({
       >
         <div className="profile-heading top-heading">
           <h2 className="custom-heading mobile-profile-heading">
-            Listing Owner Details{" "}
+            Owner Details
             {(!company.companyName || !company.companyProfile) && (
               <span className="disabled-text">
                 &#40;Currently unavailable&#41;
@@ -168,6 +175,8 @@ const MobileProfileCard = ({
           specs={company.companySpecs}
           rentalDetails={rentalDetails}
           isLease={isLease}
+          securityDeposit={securityDeposit}
+          isHourlyRental={isHourlyRental}
         />
       </div>
     </>

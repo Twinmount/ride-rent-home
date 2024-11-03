@@ -20,6 +20,11 @@ type DetailsSectionClientProps = {
     state: string;
     category: string;
   };
+  securityDeposit: {
+    enabled: boolean;
+    amountInAED: string;
+  };
+  isHourlyRental: boolean;
 };
 
 const DetailsSectionClient = ({
@@ -29,6 +34,8 @@ const DetailsSectionClient = ({
   vehicleId,
   isLease,
   vehicleData,
+  securityDeposit,
+  isHourlyRental,
 }: DetailsSectionClientProps) => {
   const detailsSectionRef = useRef(null);
   const isInViewPort = useIntersectionObserver(detailsSectionRef);
@@ -50,6 +57,8 @@ const DetailsSectionClient = ({
           vehicleId={vehicleId}
           isLease={isLease}
           vehicleData={vehicleData}
+          securityDeposit={securityDeposit}
+          isHourlyRental={isHourlyRental}
         />
       )}
     </div>

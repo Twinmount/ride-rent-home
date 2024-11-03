@@ -1,127 +1,127 @@
-import { FC } from 'react'
+import { FC } from "react";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet'
+} from "@/components/ui/sheet";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from '@/components/ui/accordion'
-import useFilters from '@/hooks/useFilters'
-import { RiListSettingsFill } from 'react-icons/ri'
-import { useEffect, useState } from 'react'
-import FiltersButton from '../filter-toggle/FiltersButton'
-import { BrandType, CategoryType, VehicleTypeType } from '@/types'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { formUrlQuery } from '@/helpers'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/accordion";
+import useFilters from "@/hooks/useFilters";
+import { RiListSettingsFill } from "react-icons/ri";
+import { useEffect, useState } from "react";
+import FiltersButton from "../filter-toggle/FiltersButton";
+import { BrandType, CategoryType, VehicleTypeType } from "@/types";
+import { useRouter, useSearchParams } from "next/navigation";
+import { formUrlQuery } from "@/helpers";
+import { Input } from "@/components/ui/input";
 import {
   fetchCategories,
   fetchVehicleBrandsByValue,
   fetchVehicleTypesByValue,
-} from '@/lib/next-api/next-api'
+} from "@/lib/next-api/next-api";
 import {
   modelYears,
   colors,
   fuelTypes,
   seats,
   transmissions,
-} from '@/constants'
-import { useQuery } from '@tanstack/react-query'
-import FilterAccordionContent from '../accordion/FilterAccordionContent'
+} from "@/constants";
+import { useQuery } from "@tanstack/react-query";
+import FilterAccordionContent from "../accordion/FilterAccordionContent";
 
 interface FiltersSidebarProps {
-  category: string | undefined
+  category: string | undefined;
 }
 
 const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
   const { selectedFilters, handleFilterChange, applyFilters, resetFilters } =
-    useFilters()
-  const router = useRouter()
-  const searchParams = useSearchParams()
+    useFilters();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   // State for searching brands
-  const [brandSearchTerm, setBrandSearchTerm] = useState('')
-  const [debouncedBrandSearchTerm, setDebouncedBrandSearchTerm] = useState('')
+  const [brandSearchTerm, setBrandSearchTerm] = useState("");
+  const [debouncedBrandSearchTerm, setDebouncedBrandSearchTerm] = useState("");
 
   // Fetch categories using react-query
   const { data: categoriesData, isLoading: categoriesLoading } = useQuery({
-    queryKey: ['categories'],
+    queryKey: ["categories"],
     queryFn: fetchCategories,
-  })
+  });
 
   // Fetch vehicle types based on the selected category
   const { data: vehicleTypesData, isLoading: vehicleTypesLoading } = useQuery({
-    queryKey: ['vehicle-types', selectedFilters.category],
+    queryKey: ["vehicle-types", selectedFilters.category],
     queryFn: () => fetchVehicleTypesByValue(selectedFilters.category),
     enabled: !!selectedFilters.category,
-  })
+  });
 
   // Fetch brands only after typing at least 3 characters
   const { data: brandsData, isLoading: brandsLoading } = useQuery({
-    queryKey: ['brands', selectedFilters.category, debouncedBrandSearchTerm],
+    queryKey: ["brands", selectedFilters.category, debouncedBrandSearchTerm],
     queryFn: () =>
       fetchVehicleBrandsByValue(
         selectedFilters.category,
         debouncedBrandSearchTerm
       ),
-    enabled: !!selectedFilters.category && debouncedBrandSearchTerm.length >= 3,
+    enabled: !!selectedFilters.category && debouncedBrandSearchTerm.length >= 1,
     staleTime: 0,
-  })
+  });
 
   // Debounce the search input
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedBrandSearchTerm(brandSearchTerm)
-    }, 300) // 300ms delay
+      setDebouncedBrandSearchTerm(brandSearchTerm);
+    }, 300); // 300ms delay
     return () => {
-      clearTimeout(handler)
-    }
-  }, [brandSearchTerm])
+      clearTimeout(handler);
+    };
+  }, [brandSearchTerm]);
 
   // Set category from URL or default to the first available category
   useEffect(() => {
     if (categoriesData && categoriesData.result.list.length > 0) {
       const fetchedCategories = categoriesData.result.list.map(
         (category: CategoryType) => category.value
-      )
+      );
 
       if (!category || !fetchedCategories.includes(category)) {
-        handleFilterChange('category', 'cars')
+        handleFilterChange("category", "cars");
 
         const newUrl = formUrlQuery({
           params: searchParams.toString(),
-          key: 'category',
-          value: 'cars',
-        })
-        router.push(newUrl, { scroll: false })
+          key: "category",
+          value: "cars",
+        });
+        router.push(newUrl, { scroll: false });
       }
     }
-  }, [searchParams, categoriesData])
+  }, [searchParams, categoriesData]);
 
   const categoryOptions =
     categoriesData?.result.list.map((category: CategoryType) => ({
       label: category.name,
       value: category.value,
-    })) || []
+    })) || [];
 
   const vehicleTypeOptions =
     vehicleTypesData?.result.list.map((type: VehicleTypeType) => ({
       label: type.name,
       value: type.value,
-    })) || []
+    })) || [];
 
   // Combine already selected brands with the fetched brands
-  const selectedBrands = selectedFilters.brand
+  const selectedBrands = selectedFilters.brand;
   const fetchedBrands =
     brandsData?.result.list.map((brand: BrandType) => ({
       label: brand.brandName,
       value: brand.brandValue,
-    })) || []
+    })) || [];
 
   // Merge selected brands with fetched brands, ensuring no duplicates
   const combinedBrands = [
@@ -135,20 +135,20 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
           !fetchedBrands.some((option) => option.value === selectedBrand.value)
       ),
     ...fetchedBrands,
-  ]
+  ];
   return (
     <Sheet>
       <SheetTrigger>
         <FiltersButton />
       </SheetTrigger>
-      <SheetContent side={'left'} className="bg-white bg w-72">
+      <SheetContent side={"left"} className="bg-white bg w-72">
         <SheetHeader>
           <SheetTitle className="custom-heading feature-heading text-2xl">
             Filter
           </SheetTitle>
         </SheetHeader>
         <div className="overflow-y-scroll absolute top-20 right-0 left-4 pr-1 bottom-24">
-          <Accordion type="single" collapsible defaultValue="vehicle-category">
+          <Accordion type="single" collapsible>
             {/* Model Year */}
             <AccordionItem value="model-year">
               <AccordionTrigger>Model Year</AccordionTrigger>
@@ -159,7 +159,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
                     value: year.toString(),
                   }))}
                   selected={selectedFilters.modelYear}
-                  onChange={(value) => handleFilterChange('modelYear', value)}
+                  onChange={(value) => handleFilterChange("modelYear", value)}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -174,7 +174,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
                   <FilterAccordionContent
                     options={categoryOptions}
                     selected={selectedFilters.category}
-                    onChange={(value) => handleFilterChange('category', value)} // Ensure it updates selectedFilters
+                    onChange={(value) => handleFilterChange("category", value)} // Ensure it updates selectedFilters
                     isMultipleChoice={false} // Single choice
                   />
                 )}
@@ -192,7 +192,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
                     options={vehicleTypeOptions}
                     selected={selectedFilters.vehicleTypes}
                     onChange={(value) =>
-                      handleFilterChange('vehicleTypes', value)
+                      handleFilterChange("vehicleTypes", value)
                     }
                   />
                 )}
@@ -205,18 +205,16 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
               <AccordionContent className="max-h-72 overflow-y-auto">
                 <Input
                   type="text"
-                  placeholder="Search brands (min 3 letters)"
+                  placeholder="Search brands "
                   value={brandSearchTerm}
                   onChange={(e) => setBrandSearchTerm(e.target.value)}
                   className="bg-grey-100 w-full h-10 focus-visible:ring-offset-0 placeholder:text-grey-500 rounded-full px-2 py-1 border-none focus-visible:ring-transparent ring-0"
                 />
-                {debouncedBrandSearchTerm.length < 3 &&
+                {debouncedBrandSearchTerm.length === 0 &&
                 selectedBrands.length === 0 ? (
-                  <div>
-                    Please enter at least 3 characters to search for brands.
-                  </div>
+                  <div>Please search for brands.</div>
                 ) : brandsLoading ? (
-                  <div>Loading brands...</div>
+                  <div>fetching brands...</div>
                 ) : combinedBrands.length === 0 ? (
                   <div>
                     No brands found for &quot;{debouncedBrandSearchTerm}&quot;.
@@ -225,7 +223,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
                   <FilterAccordionContent
                     options={combinedBrands}
                     selected={selectedFilters.brand}
-                    onChange={(value) => handleFilterChange('brand', value)}
+                    onChange={(value) => handleFilterChange("brand", value)}
                     isMultipleChoice={true}
                   />
                 )}
@@ -242,7 +240,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
                     value: seat.toString(),
                   }))}
                   selected={selectedFilters.seats}
-                  onChange={(value) => handleFilterChange('seats', value)}
+                  onChange={(value) => handleFilterChange("seats", value)}
                   isMultipleChoice={false} // Single choice now
                 />
               </AccordionContent>
@@ -256,7 +254,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
                   options={transmissions}
                   selected={selectedFilters.transmission}
                   onChange={(value) =>
-                    handleFilterChange('transmission', value)
+                    handleFilterChange("transmission", value)
                   }
                 />
               </AccordionContent>
@@ -269,7 +267,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
                 <FilterAccordionContent
                   options={fuelTypes}
                   selected={selectedFilters.fuelType}
-                  onChange={(value) => handleFilterChange('fuelType', value)}
+                  onChange={(value) => handleFilterChange("fuelType", value)}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -281,7 +279,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
                 <FilterAccordionContent
                   options={colors}
                   selected={selectedFilters.color}
-                  onChange={(value) => handleFilterChange('color', value)}
+                  onChange={(value) => handleFilterChange("color", value)}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -291,7 +289,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
           <button
             className="flex-center w-[93%] h-10 bg-yellow gap-x-2 rounded-xl mx-auto text-white text-lg hover:bg-yellow hover:shadow-md"
             onClick={() => {
-              applyFilters()
+              applyFilters();
             }}
           >
             Apply Filters <RiListSettingsFill />
@@ -305,7 +303,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
         </div>
       </SheetContent>
     </Sheet>
-  )
-}
+  );
+};
 
-export default FiltersSidebar
+export default FiltersSidebar;

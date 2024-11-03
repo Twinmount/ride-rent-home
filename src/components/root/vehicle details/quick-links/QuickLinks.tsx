@@ -2,12 +2,13 @@ import "./QuickLinks.scss";
 import { LinkType } from "@/types";
 import Link from "next/link";
 import { Link as LinkIcon } from "lucide-react";
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 
 export default async function QuickLinks({ state }: { state: string }) {
   const baseUrl = process.env.API_URL;
 
   // generating api URL
-  const apiUrl = `${baseUrl}/recomented-links/list?page=1&limit=20&sortOrder=ASC&stateValue=${state}`;
+  const apiUrl = `${baseUrl}/recomented-links/list?page=1&limit=10&sortOrder=ASC&stateValue=${state}`;
 
   const res = await fetch(apiUrl, {
     method: "GET",
@@ -19,7 +20,7 @@ export default async function QuickLinks({ state }: { state: string }) {
   const linksData: LinkType[] = data?.result?.list || [];
 
   return (
-    <div className="quick-links-container">
+    <MotionDiv className="quick-links-container">
       <div className="links-heading">
         <h2 className="custom-heading">Related links</h2>
       </div>
@@ -40,6 +41,6 @@ export default async function QuickLinks({ state }: { state: string }) {
           <div>No Links available</div>
         )}
       </div>
-    </div>
+    </MotionDiv>
   );
 }

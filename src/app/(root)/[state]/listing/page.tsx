@@ -36,7 +36,6 @@ export async function generateMetadata({
     url += `&type=${vehicleType}`;
   }
 
-
   // Fetch metadata from your API endpoint
   const response = await fetch(url, {
     method: "GET",
@@ -45,7 +44,6 @@ export async function generateMetadata({
 
   // Parse the JSON response
   const data: ListingPageMetaResponse = await response.json();
-
 
   // Check if the API returned valid metadata
   const metaTitle =

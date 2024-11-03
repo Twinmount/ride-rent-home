@@ -159,6 +159,12 @@ export type CardRentalDetails = {
     rentInAED: string;
     mileageLimit: string;
   };
+  hour?: {
+    enabled: boolean;
+    rentInAED: string;
+    mileageLimit: string;
+    minBookingHours: string;
+  };
 };
 
 // Type for vehicle specifications
@@ -189,6 +195,13 @@ export type VehicleCardType = {
   isDisabled: boolean;
   isCryptoAccepted: boolean;
   isSpotDeliverySupported: boolean;
+  additionalVehicleTypes?: { typeId: string; label: string; value: string }[];
+  securityDeposit: {
+    enabled: boolean;
+    amountInAED?: string;
+  };
+  isCreditOrDebitCardsSupported: boolean;
+  isTabbySupported: boolean;
 };
 
 // API response type for fetching vehicle cards

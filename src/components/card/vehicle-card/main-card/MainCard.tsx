@@ -15,9 +15,15 @@ import ContactIcons from "@/components/common/contact-icons/ContactIcons";
 
 type MainCardProps = {
   vehicle: VehicleCardType;
+  isHourlyRental?: boolean;
 } & StateCategoryProps;
 
-const MainCard = ({ vehicle, state, category }: MainCardProps) => {
+const MainCard = ({
+  vehicle,
+  state,
+  category,
+  isHourlyRental = false,
+}: MainCardProps) => {
   const formattedPhoneNumber =
     vehicle.phoneNumber && vehicle.countryCode
       ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
@@ -27,7 +33,7 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
   const modelDetails = generateModelDetailsUrl(vehicle);
 
   // dynamic link to navigate to vehicle details page
-  const vehicleDetailsPageLink = `${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
+  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}?isHourlyRental=${isHourlyRental}`;
 
   // page link required for whatsapp share
   const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
@@ -45,7 +51,10 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
   const baseAssetsUrl = process.env.ASSETS_URL;
 
   // Use the helper function to get rental period details
-  const rentalPeriod = getRentalPeriodDetails(vehicle.rentalDetails);
+  const rentalPeriod = getRentalPeriodDetails(
+    vehicle.rentalDetails,
+    isHourlyRental
+  );
 
   return (
     <div className="car-card-container slide-visible">
@@ -86,7 +95,21 @@ const MainCard = ({ vehicle, state, category }: MainCardProps) => {
               className="profile-icon"
             />
           )}
-          <span>{vehicle.brandName}</span>
+          <span className="brand">{vehicle.brandName}</span>
+
+          {/* zero deposit */}
+          {!vehicle?.securityDeposit?.enabled && (
+            <div className="absolute left-2 bottom-2 inline-flex py-[0.3rem] animate-shimmer border border-slate-500 items-center justify-center rounded-[0.5rem] shadow bg-[linear-gradient(110deg,#c59330,35%,#ffd700,45%,#fffacd,55%,#d4a33a)] bg-[length:200%_100%] px-2 font-medium text-yellow-300 transition-colors focus:outline-none text-xs">
+              Zero Deposit
+            </div>
+          )}
+
+          {/* Hourly Rentals Slanted Badge */}
+          {vehicle?.rentalDetails?.hour?.enabled && (
+            <div className="hourly-rental badge-top-right">
+              <span>Hourly Rental</span>
+            </div>
+          )}
         </div>
       </Link>
 

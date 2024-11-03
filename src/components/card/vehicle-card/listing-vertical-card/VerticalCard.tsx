@@ -37,7 +37,7 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
   const modelDetails = generateModelDetailsUrl(vehicle);
 
   // link for the vehicle details page
-  const vehicleDetailsPageLink = `${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
+  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
 
   // page link required for whatsapp share
   const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
@@ -105,6 +105,20 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
               />
             )}
             <span className="brand">{vehicle.brandName}</span>
+
+            {/* zero deposit */}
+            {!vehicle?.securityDeposit?.enabled && (
+              <div className="absolute left-2 bottom-2 inline-flex py-[0.3rem] animate-shimmer border border-slate-500 items-center justify-center rounded-[0.5rem] shadow bg-[linear-gradient(110deg,#b78628,35%,#ffd700,45%,#fffacd,55%,#b78628)] bg-[length:200%_100%] px-2 font-medium text-yellow-300 transition-colors focus:outline-none text-xs">
+                Zero Deposit
+              </div>
+            )}
+
+            {/* Hourly Rental */}
+            {vehicle?.rentalDetails.hour?.enabled && (
+              <div className="absolute right-2 top-2 inline-flex py-[0.3rem] border border-slate-700 items-center justify-center rounded-[0.5rem] shadow bg-slate-900 bg-[length:200%_100%] px-2 font-medium text-yellow-300 transition-colors focus:outline-none text-xs text-yellow">
+                Hourly Rental
+              </div>
+            )}
           </div>
         </div>
       </Link>

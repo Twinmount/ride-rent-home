@@ -25,13 +25,65 @@
       font-size: 15px;
     }
 
-    .specification-info {
-      margin-top: 0.6rem;
-      font-weight: 500;
-      background-color: rgb(242, 242, 242);
-      padding: 0.3rem 0.6rem;
-      border-radius: 0.3rem;
-      width: fit-content;
+    .important-features {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: start;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+
+      .spec-deposit-container {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        justify-content: start;
+      }
+
+      .specification-info {
+        font-weight: 500;
+        background-color: rgb(232, 232, 232);
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.3rem;
+        width: fit-content;
+        font-size: 0.875rem /* 14px */;
+        line-height: 1.25rem /* 20px */;
+      }
+
+      .add-ons {
+        display: flex;
+        align-items: start;
+        flex-direction: column;
+        background-color: rgb(232, 232, 232);
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.3rem;
+        width: fit-content;
+
+        .add-ons-heading {
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+
+          .colon {
+            display: none;
+            margin-left: 0.3rem;
+            margin-right: 0.3rem;
+          }
+        }
+
+        .add-ons-services {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          column-gap: 0.3rem;
+
+          .add-ons-item {
+            white-space: nowrap;
+            font-size: 0.95rem;
+          }
+        }
+      }
     }
 
     .location-container {
@@ -48,7 +100,6 @@
         font-size: 1rem;
         column-gap: 0.3rem;
         margin-top: 0.1rem;
-
       }
 
       .state {
@@ -61,8 +112,6 @@
       }
 
       .city-list-subheading {
-
-
         .city {
           font-weight: 400;
           color: rgb(45, 45, 45);
@@ -71,9 +120,7 @@
         }
       }
     }
-
   }
-
 
   // Details Container
   .details-section {
@@ -82,7 +129,6 @@
     align-items: start;
     width: 100% !important;
     max-width: 100% !important;
-
 
     .details-container {
       display: flex;
@@ -97,7 +143,6 @@
         max-width: 100%;
       }
 
-
       // right
       .right {
         display: flex;
@@ -110,24 +155,47 @@
   }
 }
 
-
-
 /*  (min-width: 768px) and above */
 @media (min-width: 768px) {
   .vehicle-details-section {
-
     // heading container
     .heading-box {
-
       .model-name {
         max-width: 80%;
-        width: 80%
+        width: 80%;
       }
 
       .custom-sub-heading {
         color: rgb(83, 83, 83);
         width: 85%;
         font-size: 15px;
+      }
+
+      .important-features {
+        .specification-info {
+          font-weight: 500;
+          background-color: rgb(232, 232, 232);
+          padding: 0.3rem 0.6rem;
+          border-radius: 0.3rem;
+          width: fit-content;
+          font-size: 1rem /* 16px */;
+          line-height: 1.5rem /* 24px */;
+        }
+
+        .add-ons {
+          display: flex;
+          align-items: start;
+          flex-direction: row;
+          background-color: rgb(232, 232, 232);
+          padding: 0.3rem 0.6rem;
+          border-radius: 0.3rem;
+
+          .add-ons-heading {
+            .colon {
+              display: block;
+            }
+          }
+        }
       }
 
       .location-container {
@@ -143,7 +211,6 @@
           align-items: center;
           font-size: 1rem;
           column-gap: 0.3rem;
-
         }
 
         .state {
@@ -158,7 +225,6 @@
           margin-right: 0.3rem;
         }
       }
-
     }
 
     // Details Container
@@ -169,7 +235,6 @@
           min-width: auto;
           max-width: 100%;
         }
-
       }
     }
   }
@@ -178,14 +243,12 @@
 /* (min-width: 1024px) and above */
 @media (min-width: 1024px) {
   .vehicle-details-section {
-
     // Details Container
     .details-section {
       .details-container {
         display: flex;
         gap: 1rem;
 
-
         .details {
           width: auto;
           min-width: auto;
@@ -196,11 +259,9 @@
   }
 }
 
-
 /* (min-width: 1200px) and above */
 @media (min-width: 1200px) {
   .vehicle-details-section {
-
     // Details Container
     .details-section {
       .details-container {

@@ -10,12 +10,13 @@
   background-color: white;
   display: flex;
   gap: 0.7rem;
-  width: 100%;
+  width: 51rem;
   min-width: 50rem;
   max-width: 52rem;
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition: all 0.2s ease-out;
+  overflow: hidden;
 
   &:hover {
     .card-left {
@@ -29,8 +30,9 @@
 
   // card top
   .card-left {
-    width: 30%;
+    width: 30% !important;
     min-width: 30%;
+    max-width: 30%;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -77,7 +79,7 @@
         background-color: white;
         padding: 0.3rem;
         border-radius: 0.4rem;
-        color: gray;
+        color: rgb(66, 66, 66);
         box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
         font-size: 0.8rem;
       }
@@ -90,7 +92,8 @@
     flex-direction: column;
     align-content: space-between;
     row-gap: 0.7rem;
-    width: 75%;
+    width: 70% !important;
+    max-width: 70% !important;
     height: auto;
 
     .right-top-container {
@@ -100,8 +103,8 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      width: 100%;
-      max-width: 100%;
+      width: 95%;
+      max-width: 95% !important;
 
       overflow: hidden;
       display: -webkit-box;
@@ -120,8 +123,8 @@
       height: 2rem;
       background-color: rgb(239, 239, 239);
       border-radius: 0.5rem;
-      width: 100%;
-      max-width: 100%;
+      width: 98%;
+      max-width: 98%;
 
       .spec {
         width: 16.67%;
@@ -159,8 +162,8 @@
       margin-top: auto;
       padding-left: 0rem;
       padding-right: 0.5rem;
-      width: 100%;
-      max-width: 100%;
+      width: 98%;
+      max-width: 98%;
 
       // bottom left
       .bottom-left {
