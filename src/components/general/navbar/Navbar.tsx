@@ -80,7 +80,7 @@ const Navbar = () => {
 
             <li className={styles["list-btn"]}>
               <Link
-                href={`${process.env.NEXT_PUBLIC_AGENT_REGISTER_URL}`}
+                href={`https://agent.ride.rent/register`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`yellow-gradient default-btn`}

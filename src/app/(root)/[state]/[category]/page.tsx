@@ -96,6 +96,9 @@ export async function generateMetadata({
 }
 
 export default function Home({ params: { state, category } }: PageProps) {
+  console.log("API_URL:", process.env.API_URL);
+  console.log("NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
+
   return (
     <>
       <Landing state={state} category={category} />

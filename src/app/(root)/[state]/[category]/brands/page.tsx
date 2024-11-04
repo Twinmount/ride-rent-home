@@ -49,7 +49,7 @@ export default async function Brands({
   params: { state, category },
   searchParams,
 }: ParamsProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.API_URL;
   const page = parseInt(searchParams.page || "1", 10);
   const search = searchParams.search || "";
 
@@ -65,7 +65,8 @@ export default async function Brands({
   const brands = data?.result?.list || [];
   const totalPages = data?.result?.totalNumberOfPages || 1;
 
-  const baseAssetsUrl = process.env.ASSETS_URL;
+  const baseAssetsUrl =
+    process.env.ASSETS_URL || process.env.NEXT_PUBLIC_ASSETS_URL;
 
   return (
     <section className=" wrapper">

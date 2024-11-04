@@ -1,38 +1,38 @@
-import './Affordable.scss'
-import MainCard from '@/components/card/vehicle-card/main-card/MainCard'
-import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper'
-import ViewAllButton from '@/components/general/button/ViewAllButton'
-import MotionSection from '@/components/general/framer-motion/MotionSection'
-import { convertToLabel } from '@/helpers'
-import { StateCategoryProps, VehicleHomeFilter } from '@/types'
-import { FetchVehicleCardsResponse } from '@/types/vehicle-types'
+import "./Affordable.scss";
+import MainCard from "@/components/card/vehicle-card/main-card/MainCard";
+import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
+import ViewAllButton from "@/components/general/button/ViewAllButton";
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { convertToLabel } from "@/helpers";
+import { StateCategoryProps, VehicleHomeFilter } from "@/types";
+import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 
 export default async function Affordable({
   state,
   category,
 }: StateCategoryProps) {
-  const baseUrl = process.env.API_URL
+  const baseUrl = process.env.API_URL;
   // Fetch brand data from your API endpoint
   const response = await fetch(
     `${baseUrl}/vehicle/home-page/list?page=1&limit=10&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.AFFORDABLE_VEHICLE}`,
-    { method: 'GET', cache: 'no-cache' }
-  )
+    { method: "GET", cache: "no-cache" }
+  );
 
   // Parse the JSON response
-  const data: FetchVehicleCardsResponse = await response.json()
+  const data: FetchVehicleCardsResponse = await response.json();
 
-  const vehicleData = data?.result?.list || []
+  const vehicleData = data?.result?.list || [];
 
-  if (vehicleData.length === 0) return null
+  if (vehicleData.length === 0) return null;
 
   return (
     <MotionSection className="affordable-section wrapper">
       <h2 className="heading">
-        Affordable{' '}
+        Affordable{" "}
         <span className="yellow-gradient px-1 rounded-xl">
           {convertToLabel(category)}
-        </span>{' '}
-        for rent in{' '}
+        </span>{" "}
+        for rent in{" "}
         <span className="capitalize yellow-gradient px-2 rounded-xl">
           {convertToLabel(state)}
         </span>
@@ -51,5 +51,5 @@ export default async function Affordable({
         link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.AFFORDABLE_VEHICLE}`}
       />
     </MotionSection>
-  )
+  );
 }

@@ -1,24 +1,26 @@
-import './Promotions.scss'
-import PromotionCard from '@/components/card/vehicle-card/promotion-card/PromotionCard'
-import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper'
-import MotionSection from '@/components/general/framer-motion/MotionSection'
-import { FetchPromotionsResponse } from '@/types'
+import "./Promotions.scss";
+import PromotionCard from "@/components/card/vehicle-card/promotion-card/PromotionCard";
+import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { FetchPromotionsResponse } from "@/types";
 
 export default async function Recommended({
   state,
 }: {
-  state: string | undefined
+  state: string | undefined;
 }) {
-  const baseUrl = process.env.API_URL
+  const baseUrl = process.env.API_URL;
 
   // Fetch the vehicle data from the API
-  const response = await fetch(`${baseUrl}/promotions/list?stateValue=${state}`)
-  const data: FetchPromotionsResponse = await response.json()
+  const response = await fetch(
+    `${baseUrl}/promotions/list?stateValue=${state}`
+  );
+  const data: FetchPromotionsResponse = await response.json();
 
-  const promotions = data.result.list || []
+  const promotions = data.result.list || [];
 
   if (promotions.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -34,5 +36,5 @@ export default async function Recommended({
         ))}
       </CarouselWrapper>
     </MotionSection>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import { BsEyeFill } from 'react-icons/bs'
-import './FeaturesSidebar.scss'
+import { BsEyeFill } from "react-icons/bs";
+import "./FeaturesSidebar.scss";
 
 import {
   Sheet,
@@ -7,24 +7,25 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet'
-import { FeatureType } from '@/types/vehicle-types'
-import { formatKeyForIcon } from '@/helpers'
+} from "@/components/ui/sheet";
+import { FeatureType } from "@/types/vehicle-types";
+import { formatKeyForIcon } from "@/helpers";
 
 type FeaturesSidebarProps = {
-  features: Record<string, FeatureType[]>
-  vehicleCategory: string
-}
+  features: Record<string, FeatureType[]>;
+  vehicleCategory: string;
+};
 
 export default function FeaturesSidebar({
   features,
   vehicleCategory,
 }: FeaturesSidebarProps) {
   // Base URL for fetching icons
-  const baseAssetsUrl = process.env.ASSETS_URL
+  const baseAssetsUrl =
+    process.env.ASSETS_URL || process.env.NEXT_PUBLIC_ASSETS_URL;
 
   // Convert features object to an array for easier mapping
-  const featureEntries = Object.entries(features)
+  const featureEntries = Object.entries(features);
 
   return (
     <Sheet>
@@ -65,5 +66,5 @@ export default function FeaturesSidebar({
         </SheetHeader>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
