@@ -28,8 +28,7 @@ export default async function TopBrands({
   // Extract the list of brands from the response
   const brands = data?.result || [];
 
-  const baseAssetsUrl =
-    process.env.ASSETS_URL || process.env.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = process.env.ASSETS_URL;
 
   if (brands.length === 0) return null;
 

@@ -65,8 +65,7 @@ export default async function Brands({
   const brands = data?.result?.list || [];
   const totalPages = data?.result?.totalNumberOfPages || 1;
 
-  const baseAssetsUrl =
-    process.env.ASSETS_URL || process.env.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = process.env.ASSETS_URL;
 
   return (
     <section className=" wrapper">

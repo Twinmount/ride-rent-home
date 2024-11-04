@@ -48,8 +48,7 @@ const MainCard = ({
     : null; //if null WhatsApp details
 
   // Base URL for fetching icons
-  const baseAssetsUrl =
-    process.env.ASSETS_URL || process.env.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = process.env.ASSETS_URL;
 
   // Use the helper function to get rental period details
   const rentalPeriod = getRentalPeriodDetails(

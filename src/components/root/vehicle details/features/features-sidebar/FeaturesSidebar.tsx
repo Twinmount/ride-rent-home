@@ -21,8 +21,7 @@ export default function FeaturesSidebar({
   vehicleCategory,
 }: FeaturesSidebarProps) {
   // Base URL for fetching icons
-  const baseAssetsUrl =
-    process.env.ASSETS_URL || process.env.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = process.env.ASSETS_URL;
 
   // Convert features object to an array for easier mapping
   const featureEntries = Object.entries(features);
