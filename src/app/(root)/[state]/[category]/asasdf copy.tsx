@@ -20,7 +20,7 @@ import HourlyRentals from "@/components/root/landing/hourly-rentals/HourlyRental
 export async function generateMetadata({
   params: { state, category },
 }: PageProps): Promise<Metadata> {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   // Fetch brand data from your API endpoint
   const response = await fetch(`${baseUrl}/metadata/homepage?state=${state}`, {
     method: "GET",

@@ -12,7 +12,7 @@ export async function generateMetadata({
   params: { state },
   searchParams,
 }: PageProps): Promise<Metadata> {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
   // Default to 'cars' if category is undefined, otherwise use the value from searchParams
   const category = searchParams.category || "cars";

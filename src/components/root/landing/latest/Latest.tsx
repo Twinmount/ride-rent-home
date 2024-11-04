@@ -1,35 +1,35 @@
-import './Latest.scss'
-import MainCard from '@/components/card/vehicle-card/main-card/MainCard'
-import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper'
-import ViewAllButton from '@/components/general/button/ViewAllButton'
-import MotionSection from '@/components/general/framer-motion/MotionSection'
-import { convertToLabel } from '@/helpers'
-import { StateCategoryProps, VehicleHomeFilter } from '@/types'
-import { FetchVehicleCardsResponse } from '@/types/vehicle-types'
+import "./Latest.scss";
+import MainCard from "@/components/card/vehicle-card/main-card/MainCard";
+import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
+import ViewAllButton from "@/components/general/button/ViewAllButton";
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { convertToLabel } from "@/helpers";
+import { StateCategoryProps, VehicleHomeFilter } from "@/types";
+import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 
 export default async function Latest({ state, category }: StateCategoryProps) {
-  const baseUrl = process.env.API_URL
+  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
   // Fetch latest vehicle data from your API endpoint
   const response = await fetch(
     `${baseUrl}/vehicle/home-page/list?page=1&limit=10&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.LATEST_MODELS}`,
-    { method: 'GET', cache: 'no-cache' }
-  )
+    { method: "GET", cache: "no-cache" }
+  );
 
   // Parse the JSON response
-  const data: FetchVehicleCardsResponse = await response.json()
-  const vehicleData = data?.result?.list || []
+  const data: FetchVehicleCardsResponse = await response.json();
+  const vehicleData = data?.result?.list || [];
 
-  if (vehicleData.length === 0) return null
+  if (vehicleData.length === 0) return null;
 
   return (
     <MotionSection className="latest-section wrapper">
       <h2 className="heading">
-        Latest{' '}
+        Latest{" "}
         <span className="yellow-gradient px-1 rounded-xl">
           {convertToLabel(category)}
-        </span>{' '}
-        for rent in{' '}
+        </span>{" "}
+        for rent in{" "}
         <span className="capitalize yellow-gradient px-2 rounded-xl">
           {convertToLabel(state)}
         </span>
@@ -48,5 +48,5 @@ export default async function Latest({ state, category }: StateCategoryProps) {
         link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.LATEST_MODELS}`}
       />
     </MotionSection>
-  )
+  );
 }

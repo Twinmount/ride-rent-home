@@ -15,7 +15,7 @@ export default async function TopBrands({
   category: string | undefined;
   state: string | undefined;
 }) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   // Fetch brand data from your API endpoint
   const response = await fetch(
     `${baseUrl}/vehicle-brand/top-brands?categoryValue=${category}`,
