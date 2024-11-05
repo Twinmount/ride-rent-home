@@ -72,6 +72,7 @@
         height: 100px; /* Smaller height */
         overflow: hidden;
         position: absolute;
+        color: black;
       }
 
       .hourly-rental::before,
@@ -96,7 +97,7 @@
         ); /* Gradient background */
         background-size: 200% 200%; /* Animate gradient */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        color: #fff;
+        color: #000000;
         font: 700 14px/1 "Lato", sans-serif; /* Smaller font size */
         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
         text-transform: uppercase;

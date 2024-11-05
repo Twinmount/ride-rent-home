@@ -204,7 +204,7 @@ export default async function VehicleDetails({
 
         <div className="important-features">
           <div className="spec-deposit-container">
-            {vehicle.securityDeposit.enabled && (
+            {!vehicle.securityDeposit.enabled && (
               <div className="inline-flex py-[0.3rem] animate-shimmer items-center justify-center rounded-[0.3rem] border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#707070,55%,#000103)] bg-[length:200%_100%] px-2 font-medium text-yellow transition-colors focus:outline-none text-sm md:text-base">
                 No Deposit Required
               </div>
