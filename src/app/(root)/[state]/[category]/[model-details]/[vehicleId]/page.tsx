@@ -34,7 +34,7 @@ type ParamsProps = {
 export async function generateMetadata({
   params: { state, category, vehicleId },
 }: ParamsProps): Promise<Metadata> {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   // Fetch brand data from your API endpoint
   const response = await fetch(
     `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
@@ -149,7 +149,7 @@ export default async function VehicleDetails({
   params: { state, category, vehicleId },
   searchParams,
 }: ParamsProps) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const isHourlyRental = searchParams.isHourlyRental === "true";
 
   // Fetch the vehicle data from the API
@@ -215,21 +215,22 @@ export default async function VehicleDetails({
               {formatVehicleSpecification(vehicle.vehicleSpecification)}
             </div>
 
-            <div className="add-ons">
-              <div className="add-ons-heading">
-                Add-on Services <span className="colon">:</span>
-              </div>
-              <div className="add-ons-services">
-                {vehicle.additionalVehicleTypes &&
-                  vehicle.additionalVehicleTypes.length > 0 &&
-                  vehicle.additionalVehicleTypes.map((type, index) => (
-                    <span key={index} className="add-ons-item">
-                      {formatAdditionalTypeName(type.name)}
-                      {index < 2 && ", "}
-                    </span>
-                  ))}
-              </div>
-            </div>
+            {vehicle.additionalVehicleTypes &&
+              vehicle.additionalVehicleTypes.length > 0 && (
+                <div className="add-ons">
+                  <div className="add-ons-heading">
+                    Add-on Services <span className="colon">:</span>
+                  </div>
+                  <div className="add-ons-services">
+                    {vehicle.additionalVehicleTypes.map((type, index) => (
+                      <span key={index} className="add-ons-item">
+                        {formatAdditionalTypeName(type.name)}
+                        {index < 2 && ", "}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
           </div>
         </div>
         {/* state and first 5 cities */}

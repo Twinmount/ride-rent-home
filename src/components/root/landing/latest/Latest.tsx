@@ -8,7 +8,7 @@ import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 
 export default async function Latest({ state, category }: StateCategoryProps) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
   // Fetch latest vehicle data from your API endpoint
   const response = await fetch(

@@ -15,7 +15,7 @@ export default async function RelatedResults({
   category,
   vehicleId,
 }: RelatedResultsType) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   // Fetch brand data from your API endpoint
   const response = await fetch(`${baseUrl}/vehicle/filter`, {
     method: "POST",

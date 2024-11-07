@@ -5,7 +5,7 @@ import { Link as LinkIcon } from "lucide-react";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 
 export default async function QuickLinks({ state }: { state: string }) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
   // generating api URL
   const apiUrl = `${baseUrl}/recomented-links/list?page=1&limit=10&sortOrder=ASC&stateValue=${state}`;

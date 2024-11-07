@@ -9,7 +9,7 @@ export default async function Recommended({
 }: {
   state: string | undefined;
 }) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
   // Fetch the vehicle data from the API
   const response = await fetch(
