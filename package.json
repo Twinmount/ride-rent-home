@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build:dev": "NODE_ENV=development next build",
+    "build:dev": "next build",
     "build:prod": "NODE_ENV=production next build",
     "build:prod-windows": "SET NODE_ENV=production && next build",
     "start:dev": "npm run build:dev && next start",
