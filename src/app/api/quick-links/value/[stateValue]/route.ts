@@ -5,7 +5,7 @@ export async function GET(
   { params }: { params: { stateValue: string } } //extracting the params for vehicleCategoryId
 ) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+    const baseUrl = process.env.API_URL;
 
     // generating api URL
     const apiUrl = `${baseUrl}/links/list?page=1&limit=20&sortOrder=ASC&stateValue=${params.stateValue}`;

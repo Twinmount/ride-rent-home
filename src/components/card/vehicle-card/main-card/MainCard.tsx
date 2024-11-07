@@ -56,6 +56,8 @@ const MainCard = ({
     isHourlyRental
   );
 
+  console.log(vehicle?.securityDeposit);
+
   return (
     <div className="car-card-container slide-visible">
       {/* card top */}
@@ -99,7 +101,7 @@ const MainCard = ({
 
           {/* zero deposit */}
           {!vehicle?.securityDeposit?.enabled && (
-            <div className="absolute left-2 bottom-2 inline-flex py-[0.3rem] animate-shimmer border border-slate-500 items-center justify-center rounded-[0.5rem] shadow bg-[linear-gradient(110deg,#c59330,35%,#ffd700,45%,#fffacd,55%,#d4a33a)] bg-[length:200%_100%] px-2 font-medium text-yellow-300 transition-colors focus:outline-none text-xs">
+            <div className="absolute left-2 bottom-2 inline-flex py-[0.3rem] animate-shimmer border border-slate-500 items-center justify-center rounded-[0.5rem] shadow bg-[linear-gradient(110deg,#c59330,35%,#ffd700,45%,#fffacd,55%,#d4a33a)] bg-[length:200%_100%] px-2 font-medium text-yellow-300 transition-colors focus:outline-none z-10 text-xs">
               Zero Deposit
             </div>
           )}

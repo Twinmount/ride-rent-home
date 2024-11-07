@@ -13,7 +13,7 @@ const Landing = ({ state, category }: StateCategoryProps) => {
       <div className="landing-top">
         {/* mobile visible button */}
         <Link
-          href={`${process.env.NEXT_PUBLIC_AGENT_REGISTER_URL}`}
+          href={`https://agent.ride.rent/register`}
           target="_blank"
           rel="noopener noreferrer"
           id="mobile-list-btn"

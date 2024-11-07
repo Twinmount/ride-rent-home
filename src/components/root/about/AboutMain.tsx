@@ -1,6 +1,6 @@
-import Image from 'next/image'
-import { aboutGridData } from '.'
-import Link from 'next/link'
+import Image from "next/image";
+import { aboutGridData } from ".";
+import Link from "next/link";
 
 export default function AboutMain() {
   return (
@@ -43,7 +43,7 @@ export default function AboutMain() {
         </div>
 
         <Link
-          href={`${process.env.AGENT_REGISTER_URL}`}
+          href={`https://agent.ride.rent/register`}
           target="_blank"
           rel="noopener noreferrer"
           className={`yellow-gradient w-fit text-xl leading-relaxed font-bold text-black px-2 md:px-4 py-2 rounded-xl mx-auto mb-10`}
@@ -52,5 +52,5 @@ export default function AboutMain() {
         </Link>
       </div>
     </div>
-  )
+  );
 }
