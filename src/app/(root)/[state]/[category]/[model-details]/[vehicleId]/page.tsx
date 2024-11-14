@@ -307,11 +307,11 @@ export default async function VehicleDetails({
         </section>
       </DetailsSectionClient>
 
-      {/* Description */}
-      <Description description={vehicle.description} />
-
       {/* related result */}
       <RelatedResults state={state} category={category} vehicleId={vehicleId} />
+
+      {/* Description */}
+      <Description description={vehicle.description} />
 
       {/* FAQ */}
       <DynamicFAQ vehicle={vehicle} />

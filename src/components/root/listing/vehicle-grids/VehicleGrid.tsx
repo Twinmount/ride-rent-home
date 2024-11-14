@@ -1,48 +1,48 @@
-'use client'
+"use client";
 
-import './VehicleGrid.scss'
-import { useRef, Suspense } from 'react'
-import HorizontalCard from '../../../card/vehicle-card/listing-horizontal-card/HorizontalCard'
-import VerticalCard from '../../../card/vehicle-card/listing-vertical-card/VerticalCard'
-import useIsSmallScreen from '@/hooks/useIsSmallScreen'
-import useIntersectionObserver from '@/hooks/useIntersectionObserver'
-import Pagination from '@/components/general/pagination/Pagination'
-import { useQuery } from '@tanstack/react-query'
-import { useSearchParams } from 'next/navigation'
-import { FetchVehicleByFilters } from '@/lib/api/general-api'
-import ListingSkelton from '@/components/skelton/ListingsSkelton'
-import NoResultsFound from './NoResultsFound'
-import FiltersSidebar from '../filter/FiltersSidebar'
+import "./VehicleGrid.scss";
+import { useRef, Suspense } from "react";
+import HorizontalCard from "../../../card/vehicle-card/listing-horizontal-card/HorizontalCard";
+import VerticalCard from "../../../card/vehicle-card/listing-vertical-card/VerticalCard";
+import useIsSmallScreen from "@/hooks/useIsSmallScreen";
+import useIntersectionObserver from "@/hooks/useIntersectionObserver";
+import Pagination from "@/components/general/pagination/Pagination";
+import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
+import { FetchVehicleByFilters } from "@/lib/api/general-api";
+import ListingSkelton from "@/components/skelton/ListingsSkelton";
+import NoResultsFound from "./NoResultsFound";
+import FiltersSidebar from "../filter/FiltersSidebar";
 
 type VehicleGridProps = {
-  isGridView: boolean
-  page: number
-  state: string
-}
+  isGridView: boolean;
+  page: number;
+  state: string;
+};
 
 const VehicleGrid: React.FC<VehicleGridProps> = ({
   isGridView,
   page,
   state,
 }) => {
-  const isSmallScreen = useIsSmallScreen(850)
-  const isFiltersButtonVisible = useIsSmallScreen(1200)
-  const vehicleGridRef = useRef<HTMLDivElement | null>(null)
-  const isVehicleGridVisible = useIntersectionObserver(vehicleGridRef)
-  const searchParams = useSearchParams()
+  const isSmallScreen = useIsSmallScreen(850);
+  const isFiltersButtonVisible = useIsSmallScreen(1200);
+  const vehicleGridRef = useRef<HTMLDivElement | null>(null);
+  const isVehicleGridVisible = useIntersectionObserver(vehicleGridRef);
+  const searchParams = useSearchParams();
 
   // Fetch data using react-query
   const { data, isLoading } = useQuery({
-    queryKey: ['vehicles', state, searchParams.toString()],
+    queryKey: ["vehicles", state, searchParams.toString()],
     queryFn: () => FetchVehicleByFilters(searchParams.toString(), state),
     enabled: !!searchParams.toString(),
     staleTime: 0,
-  })
+  });
 
-  const category = searchParams.get('category') || 'cars'
+  const category = searchParams.get("category") || "cars";
 
   // Explicitly typing vehicleData to avoid undefined errors
-  const vehicleData = data?.result?.list || []
+  const vehicleData = data?.result?.list || [];
 
   return (
     <div className="w-full flex flex-col">
@@ -54,9 +54,9 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
             ref={vehicleGridRef}
             className={`${
               vehicleData.length === 0
-                ? 'w-full'
-                : `grid ${isGridView ? 'multi-grid' : ''} ${
-                    isSmallScreen ? 'two-column-vertical' : ''
+                ? "w-full"
+                : `grid ${isGridView ? "multi-grid" : ""} ${
+                    isSmallScreen ? "two-column-vertical" : ""
                   }`
             }`}
           >
@@ -96,7 +96,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
         <FiltersSidebar category={category} />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default VehicleGrid
+export default VehicleGrid;

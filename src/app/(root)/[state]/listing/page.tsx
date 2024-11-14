@@ -6,7 +6,7 @@ import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
 import { convertToLabel } from "@/helpers";
 import { ListingPageMetaResponse, PageProps } from "@/types";
 import { Metadata } from "next";
-import { FC } from "react";
+import { FC, Suspense } from "react";
 
 export async function generateMetadata({
   params: { state },
@@ -135,7 +135,9 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
           {/* Limit dropdown */}
           <LimitDropdown />
           {/* grid vs list switch button */}
-          <GridSwitch isGridView={isGridView} />
+          <Suspense fallback={<div>...</div>}>
+            <GridSwitch isGridView={isGridView} />
+          </Suspense>
         </div>
       </div>
 
