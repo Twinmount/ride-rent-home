@@ -56,8 +56,6 @@ const MainCard = ({
     isHourlyRental
   );
 
-  console.log(vehicle?.securityDeposit);
-
   return (
     <div className="car-card-container slide-visible">
       {/* card top */}

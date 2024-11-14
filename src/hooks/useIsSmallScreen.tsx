@@ -1,29 +1,35 @@
-'use client'
-import { useState, useEffect } from 'react'
+"use client";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 const useIsSmallScreen = (breakpoint = 768) => {
-  const [isSmallScreen, setIsSmallScreen] = useState(false)
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const pathname = usePathname();
+
+  const checkScreenSize = () => {
+    setIsSmallScreen(window.innerWidth < breakpoint);
+  };
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < breakpoint)
+    // Initial check for screen size
+    if (typeof window !== "undefined") {
+      checkScreenSize();
+      window.addEventListener("resize", checkScreenSize);
     }
 
-    // Check if window is defined to handle server-side rendering
-    if (typeof window !== 'undefined') {
-      setIsSmallScreen(window.innerWidth < breakpoint)
-      window.addEventListener('resize', handleResize)
-    }
+    // Re-check screen size on pathname change
+    checkScreenSize();
+
+    console.log("is small screen hook running");
 
     return () => {
-      // Clean up the event listener
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('resize', handleResize)
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", checkScreenSize);
       }
-    }
-  }, [breakpoint])
+    };
+  }, [breakpoint, pathname]);
 
-  return isSmallScreen
-}
+  return isSmallScreen;
+};
 
-export default useIsSmallScreen
+export default useIsSmallScreen;
