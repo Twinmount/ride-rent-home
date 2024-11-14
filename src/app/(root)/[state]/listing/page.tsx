@@ -123,6 +123,11 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
   const formattedState = convertToLabel(state);
   const formattedBrand = convertToLabel(brand);
 
+  // Parse and format the vehicleTypes from searchParams
+  const vehicleTypes = searchParams.vehicleTypes
+    ? searchParams.vehicleTypes.split(",").map((type) => convertToLabel(type))
+    : [];
+
   return (
     <div className="listing-section wrapper">
       <div className="listing-navbar">
@@ -130,7 +135,27 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
           Rent or Lease&nbsp;
           {formattedBrand && <span>{formattedBrand}&nbsp;</span>}
           <span>{formattedCategory} </span>in <span>{formattedState}</span>
+          {/*rendering vehicle types, if there are any */}
+          {vehicleTypes.length > 0 && (
+            <span className="vehicle-types-heading">
+              <span className="separator"> | </span>
+              {vehicleTypes.length > 3 ? (
+                <span className="vehicle-types">
+                  {vehicleTypes[0]}, {vehicleTypes[1]}, {vehicleTypes[2]} and
+                  more...
+                </span>
+              ) : (
+                vehicleTypes.map((type, index) => (
+                  <span key={index} className="vehicle-types">
+                    {type}
+                    {index < vehicleTypes.length - 1 && ", "}
+                  </span>
+                ))
+              )}
+            </span>
+          )}
         </h1>
+
         <div className="list-navbar-right">
           {/* Limit dropdown */}
           <LimitDropdown />

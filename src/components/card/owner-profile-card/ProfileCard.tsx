@@ -23,7 +23,6 @@ type ProfileCardProps = {
     enabled: boolean;
     amountInAED: string;
   };
-  isHourlyRental: boolean;
 };
 
 const ProfileCard = ({
@@ -33,7 +32,6 @@ const ProfileCard = ({
   isLease,
   vehicleData,
   securityDeposit,
-  isHourlyRental = false,
 }: ProfileCardProps) => {
   const contactDetails = company?.contactDetails;
 
@@ -115,7 +113,6 @@ const ProfileCard = ({
         rentalDetails={rentalDetails}
         isLease={isLease}
         securityDeposit={securityDeposit}
-        isHourlyRental={isHourlyRental}
       />
 
       {/* Contact and action buttons */}

@@ -20,8 +20,6 @@ const useIsSmallScreen = (breakpoint = 768) => {
     // Re-check screen size on pathname change
     checkScreenSize();
 
-    console.log("is small screen hook running");
-
     return () => {
       if (typeof window !== "undefined") {
         window.removeEventListener("resize", checkScreenSize);

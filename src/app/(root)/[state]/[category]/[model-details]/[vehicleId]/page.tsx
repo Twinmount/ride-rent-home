@@ -27,7 +27,6 @@ import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
 
 type ParamsProps = {
   params: { state: string; category: string; vehicleId: string };
-  searchParams: { [key: string]: string | undefined };
 };
 
 // dynamic meta data generate
@@ -147,10 +146,8 @@ export async function generateMetadata({
 
 export default async function VehicleDetails({
   params: { state, category, vehicleId },
-  searchParams,
 }: ParamsProps) {
   const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
-  const isHourlyRental = searchParams.isHourlyRental === "true";
 
   // Fetch the vehicle data from the API
   const response = await fetch(
@@ -266,7 +263,6 @@ export default async function VehicleDetails({
         isLease={vehicle.isAvailableForLease}
         vehicleData={vehicleData}
         securityDeposit={vehicle.securityDeposit}
-        isHourlyRental={isHourlyRental}
       >
         <section className="details-section">
           <div className="details-container">
@@ -298,7 +294,6 @@ export default async function VehicleDetails({
                 isLease={vehicle.isAvailableForLease}
                 vehicleData={vehicleData}
                 securityDeposit={vehicle.securityDeposit}
-                isHourlyRental={isHourlyRental}
               />
 
               <QuickLinks state={state} />

@@ -33,7 +33,7 @@ const MainCard = ({
   const modelDetails = generateModelDetailsUrl(vehicle);
 
   // dynamic link to navigate to vehicle details page
-  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}?isHourlyRental=${isHourlyRental}`;
+  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
 
   // page link required for whatsapp share
   const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
