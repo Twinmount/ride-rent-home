@@ -49,7 +49,7 @@ export default async function HourlyRentals({
         ))}
       </CarouselWrapper>
       <ViewAllButton
-        link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.AFFORDABLE_VEHICLE}`}
+        link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.HOURLY_RENTAL_VEHICLE}&isHourlyRental=true`}
       />
     </MotionSection>
   );

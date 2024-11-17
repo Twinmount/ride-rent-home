@@ -26,12 +26,14 @@ type HorizontalCardProps = {
   vehicle: VehicleCardType;
   category: string;
   state: string;
+  isHourlyRental?: boolean;
 };
 
 const HorizontalCard: FC<HorizontalCardProps> = ({
   vehicle,
   category,
   state,
+  isHourlyRental = false,
 }) => {
   const formattedPhoneNumber =
     vehicle.phoneNumber && vehicle.countryCode
@@ -57,7 +59,10 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
     : null;
 
   // Determine which rental period to display
-  const rentalPeriod = getRentalPeriodDetails(vehicle.rentalDetails);
+  const rentalPeriod = getRentalPeriodDetails(
+    vehicle.rentalDetails,
+    isHourlyRental
+  );
 
   // Base URL for fetching icons
   const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;

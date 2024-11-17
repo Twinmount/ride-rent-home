@@ -115,9 +115,12 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
   // Determine the initial view based on URL parameters
   const isGridView = searchParams.view === "grid";
   const page = parseInt(searchParams.page || "1", 10);
+  const limit = parseInt(searchParams.limit || "5", 10);
 
   const category = searchParams.category;
   const brand = searchParams.brand;
+
+  const isHourlyRental = searchParams.isHourlyRental === "true";
 
   const formattedCategory = convertToLabel(category);
   const formattedState = convertToLabel(state);
@@ -171,7 +174,13 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
         <Filter category={searchParams.category} isMobile={false} />
 
         {/* vehicle grid */}
-        <VehicleGrid isGridView={isGridView} page={page} state={state} />
+        <VehicleGrid
+          isGridView={isGridView}
+          page={page}
+          limit={limit}
+          state={state}
+          isHourlyRental={isHourlyRental}
+        />
       </div>
     </div>
   );
