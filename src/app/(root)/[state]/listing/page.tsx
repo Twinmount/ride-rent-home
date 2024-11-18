@@ -115,13 +115,21 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
   // Determine the initial view based on URL parameters
   const isGridView = searchParams.view === "grid";
   const page = parseInt(searchParams.page || "1", 10);
+  const limit = parseInt(searchParams.limit || "5", 10);
 
   const category = searchParams.category;
   const brand = searchParams.brand;
 
+  const isHourlyRental = searchParams.isHourlyRental === "true";
+
   const formattedCategory = convertToLabel(category);
   const formattedState = convertToLabel(state);
   const formattedBrand = convertToLabel(brand);
+
+  // Parse and format the vehicleTypes from searchParams
+  const vehicleTypes = searchParams.vehicleTypes
+    ? searchParams.vehicleTypes.split(",").map((type) => convertToLabel(type))
+    : [];
 
   return (
     <div className="listing-section wrapper">
@@ -130,7 +138,27 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
           Rent or Lease&nbsp;
           {formattedBrand && <span>{formattedBrand}&nbsp;</span>}
           <span>{formattedCategory} </span>in <span>{formattedState}</span>
+          {/*rendering vehicle types, if there are any */}
+          {vehicleTypes.length > 0 && (
+            <span className="vehicle-types-heading">
+              <span className="separator"> | </span>
+              {vehicleTypes.length > 3 ? (
+                <span className="vehicle-types">
+                  {vehicleTypes[0]}, {vehicleTypes[1]}, {vehicleTypes[2]} and
+                  more...
+                </span>
+              ) : (
+                vehicleTypes.map((type, index) => (
+                  <span key={index} className="vehicle-types">
+                    {type}
+                    {index < vehicleTypes.length - 1 && ", "}
+                  </span>
+                ))
+              )}
+            </span>
+          )}
         </h1>
+
         <div className="list-navbar-right">
           {/* Limit dropdown */}
           <LimitDropdown />
@@ -146,7 +174,13 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
         <Filter category={searchParams.category} isMobile={false} />
 
         {/* vehicle grid */}
-        <VehicleGrid isGridView={isGridView} page={page} state={state} />
+        <VehicleGrid
+          isGridView={isGridView}
+          page={page}
+          limit={limit}
+          state={state}
+          isHourlyRental={isHourlyRental}
+        />
       </div>
     </div>
   );

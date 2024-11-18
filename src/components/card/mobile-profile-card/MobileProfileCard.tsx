@@ -23,7 +23,6 @@ type MobileProfileCardProps = {
     enabled: boolean;
     amountInAED: string;
   };
-  isHourlyRental: boolean;
 };
 
 const MobileProfileCard = ({
@@ -33,7 +32,6 @@ const MobileProfileCard = ({
   isLease,
   vehicleData,
   securityDeposit,
-  isHourlyRental,
 }: MobileProfileCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [height, setHeight] = useState("9rem"); //
@@ -176,7 +174,6 @@ const MobileProfileCard = ({
           rentalDetails={rentalDetails}
           isLease={isLease}
           securityDeposit={securityDeposit}
-          isHourlyRental={isHourlyRental}
         />
       </div>
     </>

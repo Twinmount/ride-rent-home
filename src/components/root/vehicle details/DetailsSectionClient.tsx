@@ -24,7 +24,6 @@ type DetailsSectionClientProps = {
     enabled: boolean;
     amountInAED: string;
   };
-  isHourlyRental: boolean;
 };
 
 const DetailsSectionClient = ({
@@ -35,7 +34,6 @@ const DetailsSectionClient = ({
   isLease,
   vehicleData,
   securityDeposit,
-  isHourlyRental,
 }: DetailsSectionClientProps) => {
   const detailsSectionRef = useRef(null);
   const isInViewPort = useIntersectionObserver(detailsSectionRef);
@@ -58,7 +56,6 @@ const DetailsSectionClient = ({
           isLease={isLease}
           vehicleData={vehicleData}
           securityDeposit={securityDeposit}
-          isHourlyRental={isHourlyRental}
         />
       )}
     </div>

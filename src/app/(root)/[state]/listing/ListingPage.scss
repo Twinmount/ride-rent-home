@@ -6,21 +6,36 @@
 
   // top navbar
   .listing-navbar {
-    height: 5rem;
+    height: fit-content;
     display: flex;
     flex-direction: column;
-    align-items: start;
-    justify-content: center;
+    align-items: center;
+    justify-content: start;
     padding-right: 5%;
 
     .listing-heading {
-      margin-top: 2.5rem;
       font-size: 1.5rem;
       font-weight: normal;
+      word-wrap: break-word;
       margin-left: 2rem;
+      margin-top: 1.5rem;
 
       span {
         font-weight: bolder;
+      }
+
+      .vehicle-types-heading {
+        .separator {
+          font-weight: 600;
+          font-size: 1.4rem;
+          margin-left: 0.5rem;
+          margin-right: 0.5rem;
+        }
+
+        .vehicle-types {
+          font-size: 1.1rem;
+          font-weight: 400;
+        }
       }
     }
 
@@ -74,14 +89,16 @@
       align-items: center;
       justify-content: space-between;
 
-      .listing-heading {
-        font-size: 1.6rem;
-        font-weight: normal;
+      .heading-left {
         margin-left: 2rem;
         margin-top: 0rem;
+        .listing-heading {
+          font-size: 1.6rem;
+          font-weight: normal;
 
-        span {
-          font-weight: bolder;
+          span {
+            font-weight: bolder;
+          }
         }
       }
     }

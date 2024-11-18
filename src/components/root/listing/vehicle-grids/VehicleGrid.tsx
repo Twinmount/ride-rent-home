@@ -17,13 +17,17 @@ import FiltersSidebar from "../filter/FiltersSidebar";
 type VehicleGridProps = {
   isGridView: boolean;
   page: number;
+  limit: number;
   state: string;
+  isHourlyRental?: boolean;
 };
 
 const VehicleGrid: React.FC<VehicleGridProps> = ({
   isGridView,
   page,
+  limit = 5,
   state,
+  isHourlyRental = false,
 }) => {
   const isSmallScreen = useIsSmallScreen(850);
   const isFiltersButtonVisible = useIsSmallScreen(1200);
@@ -34,7 +38,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
   // Fetch data using react-query
   const { data, isLoading } = useQuery({
     queryKey: ["vehicles", state, searchParams.toString()],
-    queryFn: () => FetchVehicleByFilters(searchParams.toString(), state),
+    queryFn: () => FetchVehicleByFilters(searchParams.toString(), state, limit),
     enabled: !!searchParams.toString(),
     staleTime: 0,
   });
@@ -70,6 +74,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
                     vehicle={vehicle}
                     category={category as string}
                     state={state as string}
+                    isHourlyRental={isHourlyRental}
                   />
                 ) : (
                   <HorizontalCard
@@ -77,6 +82,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
                     vehicle={vehicle}
                     category={category as string}
                     state={state as string}
+                    isHourlyRental={isHourlyRental}
                   />
                 )
               )

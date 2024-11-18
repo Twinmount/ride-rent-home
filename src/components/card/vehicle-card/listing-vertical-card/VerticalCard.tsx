@@ -25,9 +25,15 @@ type VerticalCardProps = {
   vehicle: VehicleCardType;
   category: string;
   state: string;
+  isHourlyRental?: boolean;
 };
 
-const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
+const VerticalCard: FC<VerticalCardProps> = ({
+  vehicle,
+  category,
+  state,
+  isHourlyRental = false,
+}) => {
   const formattedPhoneNumber =
     vehicle.phoneNumber && vehicle.countryCode
       ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
@@ -52,7 +58,10 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle, category, state }) => {
     : null; // Handle null WhatsApp details
 
   // Determine which rental period to display
-  const rentalPeriod = getRentalPeriodDetails(vehicle.rentalDetails);
+  const rentalPeriod = getRentalPeriodDetails(
+    vehicle.rentalDetails,
+    isHourlyRental
+  );
 
   // Base URL for fetching icons
   const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
