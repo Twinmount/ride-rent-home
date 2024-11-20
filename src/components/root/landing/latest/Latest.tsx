@@ -12,7 +12,7 @@ export default async function Latest({ state, category }: StateCategoryProps) {
 
   // Fetch latest vehicle data from your API endpoint
   const response = await fetch(
-    `${baseUrl}/vehicle/home-page/list?page=1&limit=10&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.LATEST_MODELS}`,
+    `${baseUrl}/vehicle/home-page/list?page=1&limit=5&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.LATEST_MODELS}`,
     { method: "GET", cache: "no-cache" }
   );
 

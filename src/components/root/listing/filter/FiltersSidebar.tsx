@@ -42,6 +42,8 @@ interface FiltersSidebarProps {
 const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
   const { selectedFilters, handleFilterChange, applyFilters, resetFilters } =
     useFilters();
+  const [open, setOpen] = useState(false);
+
   const router = useRouter();
   const searchParams = useSearchParams();
   // State for searching brands
@@ -103,6 +105,22 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
     }
   }, [searchParams, categoriesData]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (open) {
+        // Scroll to the top immediately when the sheet opens
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        // Add a delay before scrolling to the top when the sheet closes
+        const timer = setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }, 360); // Adjust delay as needed to match the closing animation
+
+        return () => clearTimeout(timer); // Cleanup the timer
+      }
+    }
+  }, [open]);
+
   const categoryOptions =
     categoriesData?.result.list.map((category: CategoryType) => ({
       label: category.name,
@@ -137,7 +155,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
     ...fetchedBrands,
   ];
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
         <FiltersButton />
       </SheetTrigger>
@@ -290,13 +308,21 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
             className="flex-center w-[93%] h-10 bg-yellow gap-x-2 rounded-xl mx-auto text-white text-lg hover:bg-yellow hover:shadow-md"
             onClick={() => {
               applyFilters();
+              if (typeof window !== "undefined") {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
             }}
           >
             Apply Filters <RiListSettingsFill />
           </button>
           <button
             className="flex-center w-[93%] h-10 bg-white border border-red-400 gap-x-2 rounded-xl mx-auto text-red-500 hover:bg-red-500 text-lg hover:text-white transition-colors hover:shadow-md"
-            onClick={resetFilters}
+            onClick={() => {
+              resetFilters();
+              if (typeof window !== "undefined") {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
           >
             Reset Filters
           </button>
