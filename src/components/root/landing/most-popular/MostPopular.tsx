@@ -13,7 +13,7 @@ const MostPopular = async ({ state, category }: StateCategoryProps) => {
   const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   // Fetch brand data from your API endpoint
   const response = await fetch(
-    `${baseUrl}/vehicle/home-page/list?page=1&limit=10&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.POPULAR_MODELS}`,
+    `${baseUrl}/vehicle/home-page/list?page=1&limit=6&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.POPULAR_MODELS}`,
     { method: "GET", cache: "no-cache" }
   );
 
