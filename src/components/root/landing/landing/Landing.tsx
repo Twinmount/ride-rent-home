@@ -63,7 +63,7 @@ const Landing = ({ state, category }: StateCategoryProps) => {
             {convertToLabel(singularizeType(category)).toLowerCase()} rental
             services in{" "}
             <span className="bold-text">{convertToLabel(state)}</span>
-            &nbsp;!.
+            &nbsp;!
           </strong>
           Take advantage of our exceptional offers on car rentals throughout{" "}
           <span className="bold-text">{convertToLabel(state)}</span>, with Ride
