@@ -1,43 +1,47 @@
-'use client'
+"use client";
 
-import ReactPaginate from 'react-paginate'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { formUrlQuery } from '@/helpers'
-import { useEffect } from 'react'
+import ReactPaginate from "react-paginate";
+import { useRouter, useSearchParams } from "next/navigation";
+import { formUrlQuery } from "@/helpers";
+import { useEffect } from "react";
 
 type PaginationProps = {
-  page: number
-  totalPages: number
-}
+  page: number;
+  totalPages: number;
+};
 
 export default function Pagination({ page, totalPages }: PaginationProps) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     // Initialize the `page` param in the URL if it's not already set
-    if (!searchParams.get('page')) {
+    if (!searchParams.get("page")) {
       const newUrl = formUrlQuery({
         params: searchParams.toString(),
-        key: 'page',
-        value: '1', // Set to the first page by default
-      })
-      router.replace(newUrl, { scroll: false })
+        key: "page",
+        value: "1", // Set to the first page by default
+      });
+      router.replace(newUrl, { scroll: false });
     }
-  }, [searchParams, router])
+  }, [searchParams, router]);
 
   const handlePageChange = (event: { selected: number }) => {
-    const selectedPage = event.selected + 1 // ReactPaginate is zero-indexed, add 1 for URL
+    const selectedPage = event.selected + 1; // ReactPaginate is zero-indexed, add 1 for URL
 
     // Update the URL with the new page parameter
     const newUrl = formUrlQuery({
       params: searchParams.toString(),
-      key: 'page',
+      key: "page",
       value: selectedPage.toString(),
-    })
+    });
 
-    router.push(newUrl, { scroll: false })
-  }
+    router.push(newUrl, { scroll: false });
+
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <ReactPaginate
@@ -58,5 +62,5 @@ export default function Pagination({ page, totalPages }: PaginationProps) {
       disabledClassName="hover:bg-transparent cursor-default"
       disabledLinkClassName="text-gray-500 group-hover:text-gray-500 cursor-default"
     />
-  )
+  );
 }
