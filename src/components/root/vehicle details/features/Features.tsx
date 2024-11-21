@@ -1,38 +1,53 @@
-import './Features.scss'
-import FeaturesSidebar from './features-sidebar/FeaturesSidebar'
-import MotionDiv from '@/components/general/framer-motion/MotionDiv'
-import { MotionH2 } from '@/components/general/framer-motion/MotionElm'
-import { FeatureType } from '@/types/vehicle-types'
+import "./Features.scss";
+import FeaturesSidebar from "./features-sidebar/FeaturesSidebar";
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import { MotionH2 } from "@/components/general/framer-motion/MotionElm";
+import { FeatureType } from "@/types/vehicle-types";
 
 type VehicleFeaturesProps = {
-  features: Record<string, FeatureType[]>
-  vehicleCategory: string
-}
+  features: Record<string, FeatureType[]>;
+  vehicleCategory: string;
+};
 
 const VehicleFeatures = ({
   features,
   vehicleCategory,
 }: VehicleFeaturesProps) => {
-  // Flatten the features object to get a limited number of features
-  const featureEntries = Object.entries(features)
-  const limitedFeatures: { category: string; features: FeatureType[] }[] = []
+  const getLimitedFeatures = (
+    features: Record<string, FeatureType[]>,
+    maxCategories: number,
+    maxFeaturesPerCategory: number
+  ) => {
+    const limited: { category: string; features: FeatureType[] }[] = [];
 
-  // Loop over the categories and features to pick up to 2 categories
-  for (let [category, featureList] of featureEntries) {
-    if (limitedFeatures.length >= 2) break
+    // Loop over the entries in the features object
+    for (let [category, featureList] of Object.entries(features)) {
+      if (limited.length >= maxCategories) break;
 
-    limitedFeatures.push({
-      category,
-      features: featureList,
-    })
-  }
+      // Select a limited number of features per category
+      const filteredFeatures = featureList
+        .filter((f) => f.selected)
+        .slice(0, maxFeaturesPerCategory);
+
+      if (filteredFeatures.length > 0) {
+        limited.push({
+          category,
+          features: filteredFeatures,
+        });
+      }
+    }
+
+    return limited;
+  };
+
+  const limitedFeatures = getLimitedFeatures(features, 2, 8);
 
   return (
     <div className="features-section">
       <MotionH2
         initial={{ opacity: 0.1, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ type: 'tween', duration: 0.5, delay: 0.1 }}
+        transition={{ type: "tween", duration: 0.5, delay: 0.1 }}
         viewport={{ once: true }}
         className="custom-heading"
       >
@@ -47,8 +62,6 @@ const VehicleFeatures = ({
                 <span className="entity">&raquo;</span>
                 <div className="feature-details">
                   <span className="feature-label">{feature.name}</span>
-                  {/* Optionally display the feature value */}
-                  <span className="feature-value">{feature.value}</span>
                 </div>
               </div>
             ))}
@@ -64,7 +77,7 @@ const VehicleFeatures = ({
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default VehicleFeatures
+export default VehicleFeatures;

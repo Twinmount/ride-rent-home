@@ -12,10 +12,8 @@ import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import { Suspense } from "react";
 import SectionLoading from "@/components/general/section-loading/SectionLoading";
 import Locations from "@/components/common/locations/Locations";
-import FAQ from "@/components/common/FAQ/FAQ";
 import RelatedResults from "@/components/root/vehicle details/related-results/RelatedResults";
 import { VehicleDetailsResponse } from "@/types/vehicle-details-types";
-import { VehicleHomeFilter } from "@/types";
 import QuickLinks from "@/components/root/vehicle details/quick-links/QuickLinks";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
@@ -39,7 +37,7 @@ export async function generateMetadata({
     `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
     {
       method: "GET",
-      cache: "no-cache",
+      next: { revalidate: 60 },
     }
   );
 

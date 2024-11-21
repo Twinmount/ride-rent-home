@@ -1,4 +1,4 @@
-@import '../../../../styles/variables';
+@import "../../../../styles/variables";
 
 /* Default styles for mobile devices and above */
 .features-section {
@@ -24,20 +24,24 @@
     height: auto;
     max-height: 20rem;
 
-    .feature {
-      display: flex;
-      column-gap: 0.3rem;
-      align-items: center;
+    .feature-category {
+      min-width: 12rem;
 
-      .entity {
-        color: $yellow;
-        font-size: large;
-      }
+      .feature {
+        display: flex;
+        column-gap: 0.3rem;
+        align-items: center;
 
-      .feature-details {
-        white-space: nowrap;
-        font-weight: 400;
-        font-size: 0.8rem;
+        .entity {
+          color: $yellow;
+          font-size: large;
+        }
+
+        .feature-details {
+          white-space: nowrap;
+          font-weight: 400;
+          font-size: 0.8rem;
+        }
       }
     }
   }
@@ -49,15 +53,17 @@
     left: 0;
     right: 0;
     height: 6rem;
-    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.9));
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(255, 255, 255, 0.9)
+    );
     z-index: 1;
     display: flex;
     justify-content: center;
     align-items: end;
   }
 }
-
-
 
 /*  (min-width: 768px) and above */
 @media (min-width: 768px) {
@@ -78,7 +84,7 @@
 @media (min-width: 1024px) {
   .features-section {
     .features {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
 
       .feature {
         .feature-details {
