@@ -11,9 +11,10 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCategories } from "@/lib/next-api/next-api";
 import { CategoryType } from "@/types";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
+import { sortCategories } from "@/helpers";
 
 export default function CategoryDropdown() {
   const pathname = usePathname();
@@ -32,7 +33,11 @@ export default function CategoryDropdown() {
     queryFn: fetchCategories,
   });
 
-  const categories: CategoryType[] = data?.result?.list || [];
+  // Memoize the categories and sort them
+  const categories: CategoryType[] = useMemo(() => {
+    const fetchedCategories = data?.result?.list || [];
+    return sortCategories(fetchedCategories);
+  }, [data]);
 
   // Define paths to exclude
   const excludePaths = ["/terms-condition", "/about-us", "/privacy-policy"];
@@ -59,7 +64,7 @@ export default function CategoryDropdown() {
         }
       }
     }
-  }, [category, categories, shouldExclude]);
+  }, [category, categories, pathname, shouldExclude, state, router]);
 
   // If the current path is excluded, return null and don't render the component
   if (shouldExclude) {

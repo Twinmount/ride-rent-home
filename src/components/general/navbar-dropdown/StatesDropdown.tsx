@@ -16,6 +16,8 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { rearrangeStates } from "@/helpers";
 
+import { useMemo } from "react";
+
 export default function StatesDropdown() {
   const router = useRouter();
   const pathname = usePathname();
@@ -35,9 +37,11 @@ export default function StatesDropdown() {
     staleTime: 0,
   });
 
-  let states: StateType[] = data?.result || [];
-
-  states = rearrangeStates(states);
+  // Memoize the rearranged states to avoid recalculating on every render
+  const states: StateType[] = useMemo(() => {
+    const fetchedStates = data?.result || [];
+    return rearrangeStates(fetchedStates);
+  }, [data]);
 
   // List of paths where the component should not render
   const excludePaths = ["/terms-condition", "/about-us", "/privacy-policy"];
@@ -62,7 +66,7 @@ export default function StatesDropdown() {
         }
       }
     }
-  }, [state, states, shouldExclude]);
+  }, [state, states, shouldExclude, router, selectedCategory]);
 
   // If the current path is in the excludePaths list, return null and don't render the component
   if (shouldExclude) {

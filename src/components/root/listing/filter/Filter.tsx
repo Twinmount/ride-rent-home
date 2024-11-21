@@ -97,7 +97,7 @@ export default function Filter({
         router.push(newUrl, { scroll: false });
       }
     }
-  }, [searchParams, categoriesData]);
+  }, [searchParams, categoriesData, category, handleFilterChange, router]);
 
   const categoryOptions =
     categoriesData?.result.list.map((category: CategoryType) => ({
