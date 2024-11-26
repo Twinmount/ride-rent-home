@@ -24,6 +24,7 @@ import {
   formatVehicleSpecification,
 } from "@/helpers";
 import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
+import CityListSubheading from "@/components/root/vehicle details/CityListSubheading";
 
 type ParamsProps = {
   params: { state: string; category: string; vehicleId: string };
@@ -241,17 +242,7 @@ export default async function VehicleDetails({
             />
           </span>
           <span className="state">{vehicle?.state.label} : </span>
-          <span className="city-list-subheading">
-            {vehicle?.cities.slice(0, 5).map((city, index) => (
-              <span className="city" key={city.id}>
-                {city.label}
-                {index < vehicle.cities.length - 1 && index < 4 ? ", " : ""}
-              </span>
-            ))}
-            {vehicle?.cities.length > 3 && (
-              <span className="city"> and more...</span>
-            )}
-          </span>
+          <CityListSubheading cities={vehicle?.cities || []} />
         </div>
       </MotionDiv>
 
