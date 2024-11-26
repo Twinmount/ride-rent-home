@@ -4,7 +4,7 @@ import "./GridSwitch.scss";
 import { IoGridOutline, IoList } from "react-icons/io5";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formUrlQuery } from "@/helpers";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import useIsSmallScreen from "@/hooks/useIsSmallScreen"; // import your custom hook
 
 type GridSwitchProps = {
@@ -16,15 +16,18 @@ const GridSwitch = ({ isGridView }: GridSwitchProps) => {
   const searchParams = useSearchParams();
   const isSmallScreen = useIsSmallScreen(850); // adjust the breakpoint as needed
 
-  // Function to update the view in the URL
-  const updateUrlView = (view: "grid" | "list") => {
-    const newUrl = formUrlQuery({
-      params: searchParams.toString(),
-      key: "view",
-      value: view,
-    });
-    router.push(newUrl, { scroll: false });
-  };
+  // Memoize the updateUrlView function to prevent redefinition on each render
+  const updateUrlView = useCallback(
+    (view: "grid" | "list") => {
+      const newUrl = formUrlQuery({
+        params: searchParams.toString(),
+        key: "view",
+        value: view,
+      });
+      router.push(newUrl, { scroll: false });
+    },
+    [searchParams, router]
+  );
 
   useEffect(() => {
     const currentView = searchParams.get("view");
@@ -37,7 +40,7 @@ const GridSwitch = ({ isGridView }: GridSwitchProps) => {
     else if (!isSmallScreen && currentView !== (isGridView ? "grid" : "list")) {
       updateUrlView(isGridView ? "grid" : "list");
     }
-  }, [isGridView, searchParams, router, isSmallScreen]);
+  }, [isGridView, searchParams, router, isSmallScreen, updateUrlView]);
 
   // Handle view change when button is clicked, only if screen is not small
   const handleViewChange = (view: "grid" | "list") => {

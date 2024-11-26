@@ -103,7 +103,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
         router.push(newUrl, { scroll: false });
       }
     }
-  }, [searchParams, categoriesData]);
+  }, [searchParams, categoriesData, category, router, handleFilterChange]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

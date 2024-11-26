@@ -4,7 +4,6 @@
   min-height: 100vh;
   padding-top: 1rem;
   width: 100% !important;
-  max-width: 100% !important;
 
   // heading container
   .heading-box {
@@ -268,6 +267,7 @@
         flex-direction: row;
 
         .details {
+          width: 70%;
           max-width: 70%;
         }
       }

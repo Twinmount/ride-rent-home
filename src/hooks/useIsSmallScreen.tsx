@@ -1,14 +1,15 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 
 const useIsSmallScreen = (breakpoint = 768) => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const pathname = usePathname();
 
-  const checkScreenSize = () => {
+  // Wrap the checkScreenSize function in useCallback to ensure stability
+  const checkScreenSize = useCallback(() => {
     setIsSmallScreen(window.innerWidth < breakpoint);
-  };
+  }, [breakpoint]);
 
   useEffect(() => {
     // Initial check for screen size
@@ -25,7 +26,7 @@ const useIsSmallScreen = (breakpoint = 768) => {
         window.removeEventListener("resize", checkScreenSize);
       }
     };
-  }, [breakpoint, pathname]);
+  }, [breakpoint, pathname, checkScreenSize]);
 
   return isSmallScreen;
 };
