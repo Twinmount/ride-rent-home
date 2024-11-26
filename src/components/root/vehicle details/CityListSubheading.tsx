@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -21,16 +21,22 @@ interface CityListSubheadingProps {
 }
 
 const CityListSubheading: React.FC<CityListSubheadingProps> = ({ cities }) => {
+  // Memoize and sort cities alphabetically by their "value" property
+  const sortedCities = useMemo(
+    () => [...cities].sort((a, b) => a.value.localeCompare(b.value)),
+    [cities]
+  );
+
   return (
     <div>
       <span>
-        {cities.slice(0, 5).map((city, index) => (
+        {sortedCities.slice(0, 5).map((city, index) => (
           <span className="city" key={city.id}>
             {city.label}
             {index < cities.length - 1 && index < 4 ? ", " : ""}
           </span>
         ))}
-        {cities.length > 5 && (
+        {sortedCities.length > 5 && (
           <span>
             and&nbsp;
             <Dialog>
@@ -41,11 +47,13 @@ const CityListSubheading: React.FC<CityListSubheadingProps> = ({ cities }) => {
               </DialogTrigger>
               <DialogContent className="bg-white !rounded-xl overflow-hidden h-fit ">
                 <DialogHeader>
-                  <DialogTitle className="text-center">All Cities</DialogTitle>
+                  <DialogTitle className="text-center">
+                    Available Cities
+                  </DialogTitle>
                 </DialogHeader>
                 <DialogDescription>
                   <ul className="list-disc grid grid-cols-2 gap-x-3 pl-5 max-h-[80vh] overflow-y-auto ">
-                    {cities.map((city, i) => (
+                    {sortedCities.map((city, i) => (
                       <li key={city.id}>
                         {city.label} {i === 10 && "as of now a big city"}
                       </li>
