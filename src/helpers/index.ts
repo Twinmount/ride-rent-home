@@ -96,6 +96,9 @@ export function convertToLabel(value: string | undefined): string {
   if (!value) {
     return ""; // Return an empty string if value is undefined, null, or an empty string
   }
+  if (value.toLowerCase() === "suvs") {
+    return "SUV's";
+  }
 
   if (value.toLowerCase() === "suvs") {
     return "SUV's";
