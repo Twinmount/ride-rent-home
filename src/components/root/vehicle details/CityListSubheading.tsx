@@ -52,7 +52,7 @@ const CityListSubheading: React.FC<CityListSubheadingProps> = ({ cities }) => {
                   </DialogTitle>
                 </DialogHeader>
                 <DialogDescription>
-                  <ul className="list-disc grid grid-cols-2 gap-x-3 pl-5 max-h-[80vh] overflow-y-auto ">
+                  <ul className="list-disc grid !grid-cols-2 gap-x-3 !gap-y-1 pl-5 max-h-[80vh] overflow-y-auto ">
                     {sortedCities.map((city, i) => (
                       <li key={city.id}>
                         {city.label} {i === 10 && "as of now a big city"}
