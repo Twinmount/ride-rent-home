@@ -1,7 +1,6 @@
 import "./MobileProfileCard.scss";
 
 import { MdOutlineExpandCircleDown, MdVerifiedUser } from "react-icons/md";
-import { SiTicktick } from "react-icons/si";
 import { useEffect, useRef, useState } from "react";
 import ProfileSpecification from "@/components/root/vehicle details/profile-specifications/ProfileSpecification";
 import { Company, RentalDetails } from "@/types/vehicle-details-types";
@@ -134,6 +133,7 @@ const MobileProfileCard = ({
                 draggable={false}
               />
             </div>
+
             <div className="info">
               <p
                 className={`${
