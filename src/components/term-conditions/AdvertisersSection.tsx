@@ -5,6 +5,8 @@ import AdvertisersSection3 from "./Advertisers/AdvertisersSection3"
 import AdvertisersSection4 from "./Advertisers/AdvertisersSection4"
 import AdvertisersSection5 from "./Advertisers/AdvertisersSection5"
 import AdvertisersSection6 from "./Advertisers/AdvertisersSection6"
+import AdvertisersSection7 from "./Advertisers/AdvertisersSection7"
+import AdvertisersSectionNew from "./Advertisers/AdvertisersSection5"
 
 export default function AdvertisersSection() {
     return (
@@ -17,6 +19,7 @@ export default function AdvertisersSection() {
         <AdvertisersSection4 />
         <AdvertisersSection5 />
         <AdvertisersSection6 />
+        <AdvertisersSection7 />
         </section>
     )
 }
