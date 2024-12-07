@@ -14,7 +14,7 @@
 
     .model-name {
       font-weight: 500;
-      font-size: 1.4rem;
+      font-size: 1.18rem;
       margin-bottom: 1.4rem;
     }
 
@@ -161,6 +161,7 @@
     .heading-box {
       .model-name {
         max-width: 80%;
+        font-size: 1.45rem;
         width: 80%;
       }
 
@@ -242,6 +243,11 @@
 /* (min-width: 1024px) and above */
 @media (min-width: 1024px) {
   .vehicle-details-section {
+    .heading-box {
+      .model-name {
+        font-size: 1.7rem;
+      }
+    }
     // Details Container
     .details-section {
       .details-container {

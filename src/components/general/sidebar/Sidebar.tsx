@@ -25,7 +25,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
               height={25}
             />
             <figcaption>
-              Quick way to get a <span>Ride On Rent</span>
+              Vehicles for <span>Every Journey</span>
             </figcaption>
           </figure>
         </Link>
