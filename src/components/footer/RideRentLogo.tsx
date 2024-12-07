@@ -19,7 +19,7 @@ export default function RideRentLogo() {
           alt="Ride Rent Logo"
         />
         <figcaption>
-          Quick way to get a <span>Ride On Rent</span>
+        Vehicles for <span>Every Journey</span>
         </figcaption>
       </figure>
     </Link>

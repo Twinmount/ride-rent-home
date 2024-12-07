@@ -57,7 +57,7 @@ const Navbar = () => {
                   quality={100}
                 />
                 <figcaption>
-                  Quick way to get a <span>Ride On Rent</span>
+                Vehicles for <span>Every Journey</span>
                 </figcaption>
               </figure>
             </Link>

@@ -62,7 +62,7 @@ export async function generateMetadata({
   }
 
   // Construct the title
-  const title = `Affordable premium ${data.result.brand.label} ${
+  const title = `Affordable premium ${
     data.result.modelName
   } ${data.result.subTitle} | Hire for rent in ${data.result.state.label}${
     seatPart ? `, ${seatPart}` : ""
@@ -170,9 +170,13 @@ export default async function VehicleDetails({
   const vehicleData = {
     brandName: vehicle.brand.value,
     model: vehicle.modelName,
-    state: state,
+    state: state, 
     category: category,
   };
+
+  const addOnServiceLength =
+    (vehicle.additionalVehicleTypes && vehicle.additionalVehicleTypes.length) ||
+    0;
 
   return (
     <section className="vehicle-details-section wrapper">
@@ -221,7 +225,7 @@ export default async function VehicleDetails({
                     {vehicle.additionalVehicleTypes.map((type, index) => (
                       <span key={index} className="add-ons-item">
                         {formatAdditionalTypeName(type.name)}
-                        {index < 2 && ", "}
+                        {index === addOnServiceLength - 1 ? "." : ", "}
                       </span>
                     ))}
                   </div>
