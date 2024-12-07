@@ -30,10 +30,7 @@ export default async function Recommended({
     <MotionSection className="promotion-section wrapper">
       <h2>Recommended Car Rental deals</h2>
 
-      <CarouselWrapper
-        isButtonVisible={false}
-        customClass="max-w-fit w-full !overflow-hidden"
-      >
+      <CarouselWrapper isButtonVisible={true}>
         {promotions.map((promotion) => (
           <PromotionCard key={promotion.promotionId} {...promotion} />
         ))}
