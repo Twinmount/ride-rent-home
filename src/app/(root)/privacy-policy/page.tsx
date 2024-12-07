@@ -5,7 +5,8 @@ import HeadingBanner from '@/components/general/heading-banner/HeadingBanner'
 export async function generateMetadata() {
   const canonicalUrl = `https://ride.rent/privacy-policy`
   const title = `Privacy Policy - Ride Rent`
-  const description = `Read our privacy policy to learn how FleetOrbita Internet Services collects, uses, and protects your personal information.`
+  const description = `Read our privacy policy to learn how  FleetOrbita
+ Internet Services/Ride Rent LLC collects, uses, and protects your personal information.`
 
   return {
     title,
@@ -45,11 +46,13 @@ export default function PrivacyPolicy() {
           </a>{' '}
           & it&apos;s sister portal,{' '}
           <a href="https://myfleet.rent">MyFleet.rent</a>, are brands owned &
-          operated by FleetOrbita Internet Services.
+          operated by  FleetOrbita
+          Internet Services/Ride Rent LLC.
         </h4>
 
         <p className="text-center">
-          <span className="highlight">FleetOrbita Internet Services</span> is
+          <span className="highlight"> FleetOrbita
+          Internet Services/Ride Rent LLC</span> is
           dedicated to safeguarding your privacy and is committed to protecting
           the personal information collected from you through our website
           (hereinafter collectively referred to as the “Platform”). This Privacy
@@ -57,7 +60,8 @@ export default function PrivacyPolicy() {
           utilizing the services offered on our Platform (“Services”), you
           consent to the terms of this policy. References to &apos;we&apos;,
           &apos;us&apos;, or &apos;our&apos; within this policy pertain to{' '}
-          <span className="highlight">FleetOrbita Internet Services.</span> This
+          <span className="highlight"> FleetOrbita
+          Internet Services/Ride Rent LLC.</span> This
           Privacy Policy complements any other terms and conditions applicable
           to the Platform. Specific privacy terms provided in any documents by
           us should be read in conjunction with this Privacy Policy.
@@ -266,7 +270,8 @@ export default function PrivacyPolicy() {
           <h2 className="font-bold text-lg mb-2">Verification and Review</h2>
           <p>
             To verify or update the details you submitted to{' '}
-            <span className="highlight">FleetOrbita Internet Services</span>,
+            <span className="highlight"> FleetOrbita
+            Internet Services/Ride Rent LLC</span>,
             contact us via the provided email address. We may request proof of
             identity for security purposes.
           </p>

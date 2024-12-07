@@ -5,7 +5,8 @@ import AboutBottom from '@/components/root/about/AboutBottom'
 export async function generateMetadata() {
   const canonicalUrl = `https://ride.rent/about-us`
   const title = `About Us - Ride Rent`
-  const description = `Learn more about FleetOrbita Internet Services, our mission, and how we are simplifying vehicle rentals across the UAE.`
+  const description = `Learn more about  FleetOrbita
+ Internet Services/Ride Rent LLC, our mission, and how we are simplifying vehicle rentals across the UAE.`
 
   return {
     title,

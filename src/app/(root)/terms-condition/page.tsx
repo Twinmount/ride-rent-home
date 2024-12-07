@@ -9,7 +9,8 @@ import AdvertisersSection from '@/components/term-conditions/AdvertisersSection'
 export async function generateMetadata() {
   const canonicalUrl = `https://ride.rent/terms-condition`
   const title = `Terms & Conditions - Ride Rent`
-  const description = `Review the terms and conditions for using FleetOrbita Internet Services services, including policies for users, agents, and advertisers.`
+  const description = `Review the terms and conditions for using  FleetOrbita
+ Internet Services/Ride Rent LLC, including policies for users, agents, and advertisers.`
 
   return {
     title,
