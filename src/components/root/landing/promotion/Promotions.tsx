@@ -13,8 +13,9 @@ export default async function Recommended({
 
   // Fetch the vehicle data from the API
   const response = await fetch(
-    `${baseUrl}/promotions/list?stateValue=${state}`,
+    `${baseUrl}/promotions/list?stateValue=${state}&page=1&limit=5`,
     {
+      method: "GET",
       next: { revalidate: 300 },
     }
   );
