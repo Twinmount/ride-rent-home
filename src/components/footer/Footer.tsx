@@ -23,11 +23,11 @@ const Footer = () => {
           to premium rentals, in cars, bicycles, motorbikes, speed boats,
           yachts, and charter planes. Operating from Dubai, our services extend
           to selected cities worldwide. Experience convenience and luxury with
-          ride.rent
+          ride.rent.
           <br />
           <br />
           All trademarks utilized within this portal for representation are the
-          property fo their respective owners
+          property fo their respective owners.
           <br />
           <br />
           <div className="bottom-container">
@@ -35,7 +35,7 @@ const Footer = () => {
         <span className="bold ">FleetOrbita Group</span>       
           <p className="mt-3">
             <span>Operating as Ride Rent LLC in the UAE, licensed under Sharjah Media City,     Sharjah, UAE, License Number:
-            2434340
+            2434340.
             </span>
           </p>
       </div>
@@ -43,7 +43,7 @@ const Footer = () => {
       <span className="bold flex justify-center items-start gap-x-1">
           <FaRegCopyright className="mt-[.17rem]"/>
           <FaRegRegistered className="mt-[.17rem]"/>
-          FleetOrbitan Internet Services/Ride Rent LLC</span>
+          FleetOrbita Internet Services/Ride Rent LLC</span>
           <span className="max-sm:hidden">|</span> ACJ-9769 | Ride Rent LLC (UAE) License Version: 2434340.01 | All Rights
           Reserved    
       </div>
