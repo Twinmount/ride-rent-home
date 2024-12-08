@@ -222,7 +222,6 @@ export function generateModelDetailsUrl(
   data: GenerateModelDetailsUrlType
 ): string {
   // Fallback values if vehicle details are missing
-  const fallbackBrand = "brand";
   const fallbackModel = "model";
   const fallbackState = "state";
 
@@ -234,11 +233,11 @@ export function generateModelDetailsUrl(
       .replace(/^-+|-+$/g, ""); // Remove any leading or trailing hyphens
   };
 
-  const brand = cleanText(data.brandName || fallbackBrand);
+
   const model = cleanText(data.model || fallbackModel);
   const state = cleanText(data.state || fallbackState);
 
-  return `rent-${brand}-${model}-model-in-${state}`;
+  return `rent-${model}-model-in-${state}`;
 }
 
 // helper function to dynamically generate riderent features based on state
