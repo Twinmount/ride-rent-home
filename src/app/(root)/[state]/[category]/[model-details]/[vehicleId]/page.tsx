@@ -62,7 +62,7 @@ export async function generateMetadata({
   }
 
   // Construct the title
-  const title = `Affordable premium ${
+  const title = `Affordable Premium ${
     data.result.modelName
   } ${data.result.subTitle} | Hire for rent in ${data.result.state.label}${
     seatPart ? `, ${seatPart}` : ""

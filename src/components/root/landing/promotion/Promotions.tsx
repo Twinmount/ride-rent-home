@@ -13,8 +13,9 @@ export default async function Recommended({
 
   // Fetch the vehicle data from the API
   const response = await fetch(
-    `${baseUrl}/promotions/list?stateValue=${state}`,
+    `${baseUrl}/promotions/list?stateValue=${state}&page=1&limit=5`,
     {
+      method: "GET",
       next: { revalidate: 300 },
     }
   );
@@ -30,10 +31,7 @@ export default async function Recommended({
     <MotionSection className="promotion-section wrapper">
       <h2>Recommended Car Rental deals</h2>
 
-      <CarouselWrapper
-        isButtonVisible={false}
-        customClass="max-w-fit w-full !overflow-hidden"
-      >
+      <CarouselWrapper isButtonVisible={true}>
         {promotions.map((promotion) => (
           <PromotionCard key={promotion.promotionId} {...promotion} />
         ))}

@@ -3,16 +3,18 @@ export default function MainSection() {
     <div>
       <div>
         <p>
-          https://ride.Rent, the website and the partner site www.myfleet.rent
-          for accessing the services (including all media, contents/materials
-          hosted, design elements and electronic documentations), are owned and
-          operated by{' '}
-          <span className="highlight"> FleetOrbita Internet Services</span>,
-          with its registered{' '}
-          <span className="highlight">
-            office currently located at Office No. 9, Hela Abdulla No-03, Al
-            Karama, Dubai, United Arab Emirates.
-          </span>
+          https://ride.rent and its partner site, www.myfleet.rent, including all trademarks, hosted
+          media, content/materials, design elements, and electronic documentation, are owned
+          and operated by{' '}
+          <span className="highlight">  FleetOrbita
+          Internet Services/Ride Rent LLC</span>.
+            The operational office (for
+            UAE) is currently located at Office No. 9, Hela Abdulla No-03, Al Karama, Dubai, United
+            Arab Emirates. The registered office is at Shams Business Center, Sharjah Media City
+            Free Zone, Al Messaned, Sharjah, UAE, under license number 2434340.
+            <br />
+            <br />
+          <span className="bg-[#8fb0c4]">Grievances officer/Middle East: ameen@ride.rent</span>
           <br />
           <br />
           The website and our partner sites are hereinafter collectively
@@ -36,7 +38,8 @@ export default function MainSection() {
       <div>
         <div className="flex items-center gap-x-1 mt-4">
           <h2 className="">COPYRIGHT OF</h2>
-          <span className="highlight">FleetOrbita Internet Services</span>
+          <span className="highlight"> FleetOrbita
+          Internet Services/Ride Rent LLC</span>
         </div>
 
         <p className="mt-2">
@@ -57,7 +60,8 @@ export default function MainSection() {
           graphics, logos, and brand name &quot;Ride.Rent,&quot; are trademarks
           of Twinmount Digital LLP(India). These trademarks are extended for
           commercial use to{' '}
-          <span className="highlight"> FleetOrbita Internet Services</span>.
+          <span className="highlight">  FleetOrbita
+          Internet Services/Ride Rent LLC</span>.
           Except as specifically permitted herein, these trademarks may not be
           used without prior permission from Twinmount Digital LLP.
         </p>
@@ -67,7 +71,8 @@ export default function MainSection() {
           appear on this website are the property of their respective owners,
           who may or may not be affiliated with, connected to, or sponsored by
           Twinmount Digital LLP or{' '}
-          <span className="highlight"> FleetOrbita Internet Services</span>
+          <span className="highlight">  FleetOrbita
+          Internet Services/Ride Rent LLC</span>
         </p>
       </div>
     </div>
