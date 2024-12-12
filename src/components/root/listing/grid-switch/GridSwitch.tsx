@@ -32,19 +32,21 @@ const GridSwitch = ({ isGridView }: GridSwitchProps) => {
   useEffect(() => {
     const currentView = searchParams.get("view");
 
-    // If on a small screen, set view to "grid" if not already set
+    // If no view is defined, set the default to "grid"
+    if (!currentView) {
+      updateUrlView("grid");
+      return;
+    }
+
+    // Ensure view is "grid" on small screens if not already set
     if (isSmallScreen && currentView !== "grid") {
       updateUrlView("grid");
     }
-    // Otherwise, set to the initial view (grid or list based on isGridView)
-    else if (!isSmallScreen && currentView !== (isGridView ? "grid" : "list")) {
-      updateUrlView(isGridView ? "grid" : "list");
-    }
-  }, [isGridView, searchParams, router, isSmallScreen, updateUrlView]);
+  }, [searchParams, router, isSmallScreen, updateUrlView]);
 
-  // Handle view change when button is clicked, only if screen is not small
+  // Handle view change when button is clicked
   const handleViewChange = (view: "grid" | "list") => {
-    if (!isSmallScreen) {
+    if (!isSmallScreen || view === "grid") {
       updateUrlView(view);
     }
   };

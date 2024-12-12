@@ -4,11 +4,13 @@
     justify-content: space-evenly;
     column-gap: 1rem;
     width: 100%;
+    padding: .3rem;
   
 
   
     .rent-now-btn {
       display: flex;
+      flex-direction: row ;
       align-items: center;
       font-weight: bold;
       font-size: larger;
@@ -34,6 +36,13 @@
         display: none;
       }
     }
+
+    .not-available-div {
+      display: none;
+      font-size: .8rem;
+      font-weight: 600;
+      color: rgb(112, 112, 112);
+    }
   
     .icons {
       display: flex;
@@ -57,26 +66,22 @@
         font-size: 2.2rem;
       }
     }
-  
-    @keyframes glow {
-      from {
-        text-shadow: 0 0 5px limegreen;
-      }
-      to {
-        text-shadow: 0 0 20px rgb(80, 224, 106),
-                      0 0 30px rgb(107, 231, 107),
-                      0 0 40px rgb(194, 238, 194);
-      }
-    }
-  }
+}
 
   @media (min-width: 768px) {
     .rent-now-section {
-    
+      
       .rent-now-btn {
         .rent-now-hidden{
           display: flex;
-        }
+        }  
+      }
+      .not-available-div{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: none;
+        color: rgb(198, 51, 51)
       }
     }
 }
