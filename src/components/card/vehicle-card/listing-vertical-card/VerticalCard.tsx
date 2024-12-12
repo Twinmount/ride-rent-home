@@ -20,6 +20,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
 
 type VerticalCardProps = {
   vehicle: VehicleCardType;
@@ -203,20 +204,17 @@ const VerticalCard: FC<VerticalCardProps> = ({
           </div>
         </Link>
 
-        <div className="bottom-box">
-          <Link href={vehicleDetailsPageLink}>
-            <div className="rent-now-btn">
-              RENT NOW
-              <span>Available now for chat</span>
-            </div>
-          </Link>
-
-          <ContactIcons
-            vehicleId={vehicle.vehicleId}
-            whatsappUrl={whatsappUrl}
-            email={vehicle.email}
-            phoneNumber={formattedPhoneNumber}
-          />
+        <div className="bottom-rent-box">
+        <RentNowButton 
+          vehicleDetailsPageLink={vehicleDetailsPageLink} 
+          companyLogo={vehicle.companyLogo} 
+        />
+        <ContactIcons
+          vehicleId={vehicle.vehicleId}
+          whatsappUrl={whatsappUrl}
+          email={vehicle.email}
+          phoneNumber={formattedPhoneNumber}
+        />
         </div>
       </div>
     </MotionDivElm>

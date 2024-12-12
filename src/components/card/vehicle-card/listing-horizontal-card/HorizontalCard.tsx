@@ -214,8 +214,13 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
           <div className="bottom-right">
             {/* Rent Now button */}
             <Link href={vehicleDetailsPageLink} className="rent-now-btn">
-              RENT NOW
-              <span>Available now for chat</span>
+              <span className="rent-now-text">RENT NOW</span>
+              <span className="display:flex mr-1">
+              {vehicle.companyLogo && (
+                  <span className="green-round"></span>
+                )}              
+              <span className={vehicle.companyLogo ? "" : "margin-for-span"}>Available now for chat</span>
+              </span>
             </Link>
 
             {/* Icons for WhatsApp and email */}

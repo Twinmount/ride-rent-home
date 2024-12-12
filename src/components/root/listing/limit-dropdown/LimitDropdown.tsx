@@ -9,8 +9,8 @@ const LimitDropdown = () => {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  // Get the current limit from URL parameters or default to 5
-  const currentLimit = searchParams.get('limit') || '5'
+  // Get the current limit from URL parameters or default to 6
+  const currentLimit = searchParams.get('limit') || '6'
 
   const handleLimitChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newLimit = event.target.value
@@ -26,7 +26,7 @@ const LimitDropdown = () => {
 
   // Set initial state to URL on component mount
   useEffect(() => {
-    const initialLimit = searchParams.get('limit') || '5'
+    const initialLimit = searchParams.get('limit') || '6'
     if (!searchParams.get('limit')) {
       const newUrl = formUrlQuery({
         params: searchParams.toString(),
@@ -41,8 +41,8 @@ const LimitDropdown = () => {
     <div className="dropdown">
       Show :&nbsp;
       <select value={currentLimit} onChange={handleLimitChange}>
-        <option value="5">5</option>
-        <option value="10">10</option>
+        <option value="6">6</option>
+        <option value="12">12</option>
       </select>
     </div>
   )

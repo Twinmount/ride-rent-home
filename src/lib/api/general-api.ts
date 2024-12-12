@@ -4,7 +4,7 @@ import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 export const FetchVehicleByFilters = async (
   query: string,
   state: string = "dubai",
-  limit: number = 5
+  limit: number = 6
 ): Promise<FetchVehicleCardsResponse> => {
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);

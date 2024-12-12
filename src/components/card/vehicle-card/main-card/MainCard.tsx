@@ -12,6 +12,7 @@ import {
   getRentalPeriodDetails,
 } from "@/helpers";
 import ContactIcons from "@/components/common/contact-icons/ContactIcons";
+import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
 
 type MainCardProps = {
   vehicle: VehicleCardType;
@@ -164,16 +165,16 @@ const MainCard = ({
           </div>
         </Link>
         <div className="bottom-box">
-          <Link href={vehicleDetailsPageLink} className="rent-now-btn">
-            RENT NOW
-            <span>Available now for chat</span>
-          </Link>
-          <ContactIcons
-            vehicleId={vehicle.vehicleId}
-            whatsappUrl={whatsappUrl}
-            email={vehicle.email}
-            phoneNumber={formattedPhoneNumber}
-          />
+        <RentNowButton 
+          vehicleDetailsPageLink={vehicleDetailsPageLink} 
+          companyLogo={vehicle.companyLogo} 
+        />
+        <ContactIcons
+          vehicleId={vehicle.vehicleId}
+          whatsappUrl={whatsappUrl}
+          email={vehicle.email}
+          phoneNumber={formattedPhoneNumber}
+        />
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import ProfileSpecification from "@/components/root/vehicle details/profile-spec
 import { Company, RentalDetails } from "@/types/vehicle-details-types";
 import ContactIcons from "@/components/common/contact-icons/ContactIcons";
 import { formatPhoneNumber, generateModelDetailsUrl } from "@/helpers";
+import RentNowSection from "@/components/common/rent-now/RentNowSection";
 
 type MobileProfileCardProps = {
   company: Company;
@@ -58,6 +59,9 @@ const MobileProfileCard = ({
       }
     }
   }, [isExpanded]);
+
+  // Handle case where company is null
+  const isCompanyValid = !!company.companyName && !!company.companyProfile;
 
   // Handle case where contactDetails is null
   const contactDetails = company?.contactDetails;
@@ -154,16 +158,14 @@ const MobileProfileCard = ({
           {/* rent now button */}
           <div className="profile-right">
             <div className="contact-container">
-              <div className="rent-now-btn">
-                RENT NOW
-                <span>Available now for chat</span>
-              </div>
-              <ContactIcons
-                vehicleId={vehicleId}
-                whatsappUrl={whatsappUrl}
-                email={contactDetails?.email || null} // Handle null email
-                phoneNumber={formattedPhoneNumber} // Handle null phone number
-              />
+            <RentNowSection
+              vehicleId={vehicleId}
+              whatsappUrl={whatsappUrl}
+              email={contactDetails?.email}
+              formattedPhoneNumber={formattedPhoneNumber}
+              isPing={true}
+              isMobileProfileCard={true}
+            />
             </div>
           </div>
         </div>
