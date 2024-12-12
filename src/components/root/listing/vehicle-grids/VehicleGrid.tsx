@@ -25,7 +25,7 @@ type VehicleGridProps = {
 const VehicleGrid: React.FC<VehicleGridProps> = ({
   isGridView,
   page,
-  limit = 5,
+  limit,
   state,
   isHourlyRental = false,
 }) => {
