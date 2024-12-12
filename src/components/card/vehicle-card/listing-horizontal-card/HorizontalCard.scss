@@ -284,6 +284,16 @@
             white-space: nowrap;
           }
         }
+        
+        .not-available-div {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: none;
+          font-size: .8rem;
+          font-weight: 600;
+          color: rgb(198, 51, 51);
+        }
       }
     }
   }
