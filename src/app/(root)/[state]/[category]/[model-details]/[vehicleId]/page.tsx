@@ -62,7 +62,7 @@ export async function generateMetadata({
   }
 
   // Construct the title
-  const title = `Affordable Premium ${
+  const title = `Rent Premium ${
     data.result.modelName
   } ${data.result.subTitle} | Hire for rent in ${data.result.state.label}${
     seatPart ? `, ${seatPart}` : ""
@@ -184,7 +184,7 @@ export default async function VehicleDetails({
       <MotionDiv className="heading-box">
         <h1 className="custom-heading model-name">{vehicle?.modelName}</h1>
         <p className="custom-sub-heading">
-          Rent {vehicle?.brand.label} {vehicle?.modelName} model in{" "}
+          Rent {vehicle?.modelName} model in{" "}
           {vehicle?.state.label}. Enjoy flexible rental terms with no hidden
           fees.{"  "}
           {vehicle?.company.companySpecs.isCryptoAccepted

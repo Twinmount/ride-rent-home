@@ -3,6 +3,7 @@ import Filter from "@/components/root/listing/filter/Filter";
 import GridSwitch from "@/components/root/listing/grid-switch/GridSwitch";
 import LimitDropdown from "@/components/root/listing/limit-dropdown/LimitDropdown";
 import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
+
 import { convertToLabel } from "@/helpers";
 import { ListingPageMetaResponse, PageProps } from "@/types";
 import { Metadata } from "next";
@@ -115,7 +116,7 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
   // Determine the initial view based on URL parameters
   const isGridView = searchParams.view === "grid";
   const page = parseInt(searchParams.page || "1", 10);
-  const limit = parseInt(searchParams.limit || "5", 10);
+  const limit = parseInt(searchParams.limit || "6", 10);
 
   const category = searchParams.category;
   const brand = searchParams.brand;

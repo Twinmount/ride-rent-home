@@ -253,11 +253,28 @@
         padding-right: 0.3rem;
 
         .rent-now-btn {
-          font-weight: bold;
-          font-size: 1.3rem;
           display: flex;
           flex-direction: column;
-          gap: 0;
+
+          .rent-now-text{
+            font-weight: bold;
+            color: black;
+            font-size: larger;
+            margin-left: .56rem;
+          }
+
+          .green-round {
+            position: relative;
+            display: inline-flex;
+            width: 0.35rem;
+            height: 0.35rem;
+            background-color: rgb(88, 221, 88);
+            border-radius: 50%;
+            margin-right: 0.3rem;
+          }
+          .margin-for-span {
+            margin-left: .67rem;
+          }
 
           span {
             font-size: 0.7rem;
@@ -266,6 +283,16 @@
             color: gray;
             white-space: nowrap;
           }
+        }
+        
+        .not-available-div {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: none;
+          font-size: .8rem;
+          font-weight: 600;
+          color: rgb(198, 51, 51);
         }
       }
     }

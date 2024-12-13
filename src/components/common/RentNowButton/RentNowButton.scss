@@ -1,0 +1,43 @@
+.not-available-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: none;
+  font-size: .8rem;
+  font-weight: 600;
+  color: rgb(198, 51, 51);
+  margin: .3rem;
+}
+
+.rent-now-btn {
+    display: flex;
+    flex-direction: column;
+
+    span {
+      font-size: 0.75rem;
+      font-weight: lighter;
+      line-height: none;
+      color: gray;
+    }
+
+    .rent-now-text {
+      font-weight: bold;
+      color: black;
+      font-size: larger;
+      margin-left: 0.7rem;
+    }
+
+    .green-round {
+      position: relative;
+      display: inline-flex;
+      width: 0.35rem;
+      height: 0.35rem;
+      background-color: rgb(88, 221, 88);
+      border-radius: 50%;
+      margin-right: 0.3rem;
+    }
+
+    .margin-for-span {
+      margin-left: 0.8rem;
+    }
+  }
