@@ -15,7 +15,6 @@ import { useEffect, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { rearrangeStates } from "@/helpers";
-
 import { useMemo } from "react";
 
 export default function StatesDropdown() {
@@ -44,7 +43,7 @@ export default function StatesDropdown() {
   }, [data]);
 
   // List of paths where the component should not render
-  const excludePaths = ["/terms-condition", "/about-us", "/privacy-policy"];
+  const excludePaths = ["/terms-condition", "/about-us", "/privacy-policy","/agent-profile-page"];
 
   // Use startsWith to exclude dynamic paths like /faq and /faq/{state}
   const shouldExclude =

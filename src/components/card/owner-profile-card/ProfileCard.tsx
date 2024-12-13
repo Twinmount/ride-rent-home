@@ -7,6 +7,7 @@ import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import RentNowSection from "@/components/common/rent-now/RentNowSection";
 import { Company, RentalDetails } from "@/types/vehicle-details-types";
 import { formatPhoneNumber, generateModelDetailsUrl } from "@/helpers";
+import Link from "next/link";
 
 type ProfileCardProps = {
   company: Company;
@@ -71,6 +72,7 @@ const ProfileCard = ({
       <div className="top">
         <div className="profile-details">
           <div className={`${company.companyProfile ? "" : "blurred-profile"} profile`}>
+            <Link href="/agent-profile-page">
             <img
               src={company.companyProfile || "/assets/img/blur-profile.webp"}
               alt={company?.companyName ? `${company.companyName} logo` : "Company logo"}
@@ -78,6 +80,7 @@ const ProfileCard = ({
               className="company-profile"
               draggable={false}
             />
+            </Link>
           </div>
           <div>
             <p className={`${company.companyName ? "" : "blurred-text"} company-name`}>
