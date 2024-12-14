@@ -47,7 +47,9 @@ export default function StatesDropdown() {
 
   // Use startsWith to exclude dynamic paths like /faq and /faq/{state}
   const shouldExclude =
-    pathname.startsWith("/faq") || excludePaths.includes(pathname);
+    pathname.startsWith("/faq") ||
+    pathname.startsWith("/profile") ||
+    excludePaths.includes(pathname);
 
   // Only run the useEffect if the current path is NOT in the excludePaths
   useEffect(() => {

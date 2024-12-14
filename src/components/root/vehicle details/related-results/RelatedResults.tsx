@@ -44,7 +44,7 @@ export default async function RelatedResults({
   // If there are no vehicles left after filtering, return null
   if (vehicleData.length === 0) return null;
 
-  if (vehicleData.length === 0) return null;
+
 
   return (
     <MotionSection className="wrapper">

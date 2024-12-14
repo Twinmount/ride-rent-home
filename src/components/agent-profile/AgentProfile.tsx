@@ -3,32 +3,55 @@ import { MdVerifiedUser } from "react-icons/md";
 import { Languages } from "lucide-react";
 import ContactIcons from "../common/contact-icons/ContactIcons";
 
-// Define the interface for props
-interface AgentProfileProps {
-  companyName: string;
-  agentAddress: string;
-  state: string;
-  languages: string[];
+interface ContactDetails {
+  email: string;
+  phone: string;
+  countryCode: string;
+  whatsappPhone: string;
+  whatsappCountryCode: string;
 }
 
-const AgentProfile: React.FC = () => {
-  // Variables to store text
-  const companyName = "AL SAQR AL GHAWI";
-  const agentAddress =
-    "AL SAQR AL GHAWI, Office No. 9, Hela Abdulla No-03, Al Karama, Dubai,";
-  const state = "United Arab Emirates";
-  const languages = ["English", "Hindi", "Arabic"];
+interface CompanyDetails {
+  companyName: string | null;
+  companyLogo: string | null;
+  companyAddress: string | null;
+  state: string | null;
+  languages: string[];
+  contactDetails: ContactDetails | null;
+}
+
+interface AgentProfileProps {
+  companyDetails: CompanyDetails;
+}
+
+const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
+  const {
+    companyName,
+    companyLogo,
+    companyAddress,
+    state,
+    languages,
+    contactDetails,
+  } = companyDetails;
 
   return (
-    <div className="flex flex-col sm:flex-row sm:justify-start lg:justify-between lg:items-center p-4 bg-white rounded-lg border-b">
+    <div className="flex flex-col sm:flex-row sm:justify-start lg:justify-between lg:items-center p-4 bg-white rounded-lg border-b-2 border-gray-200">
       {/* Left side profile image */}
-      <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden flex-center border-[.36rem] border-amber-400  mx-auto sm:mx-0">
+      <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden flex-center border-[.36rem] border-amber-400 mx-auto sm:mx-0">
         <div className="w-[85%] h-[85%] rounded-full overflow-hidden">
-          <img
-            src="/assets/img/blur-profile.webp"
-            alt="profile-icon"
-            className="w-full h-full object-cover"
-          />
+          {companyLogo ? (
+            <img
+              src={companyLogo}
+              alt={`${companyName || "Company"} Logo`}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <img
+              src="/assets/img/blur-profile.webp"
+              alt="profile-icon"
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
       </div>
 
@@ -37,7 +60,7 @@ const AgentProfile: React.FC = () => {
         {/* Agent name and verified badge */}
         <div className="flex flex-col items-center sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
           <h1 className="text-base sm:text-2xl font-bold text-gray-800 text-center sm:text-left">
-            {companyName}
+            {companyName || "Company Name Not Available"}
           </h1>
 
           {/* Verified badge */}
@@ -51,39 +74,47 @@ const AgentProfile: React.FC = () => {
 
         {/* Location */}
         <p className="text-sm sm:text-sm font-extralight text-center sm:text-left">
-          {agentAddress}
+          {companyAddress || "Address Not Available"}
         </p>
         <p className="text-sm sm:text-base font-light text-center sm:text-left">
-          {state}
-          <a
-            href="https://www.google.com/maps/search/(add the location here)"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-2 bg-transparent text-xs sm:text-xs hover:bg-yellow font-light hover:text-white py-[0.15rem] px-1 border border-gray-700 hover:border-transparent rounded"
-          >
-            Locate in map
-          </a>
+          {state || "State Not Available"}
+          {companyAddress && (
+            <a
+              href={`https://www.google.com/maps/search/${encodeURIComponent(
+                companyAddress
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-2 bg-transparent text-xs sm:text-xs hover:bg-yellow font-light hover:text-white py-[0.15rem] px-1 border border-gray-700 hover:border-transparent rounded"
+            >
+              Locate in map
+            </a>
+          )}
         </p>
 
         {/* Multilingual support */}
         <div className="flex items-center space-x-2">
           <Languages className="text-yellow w-4 h-4 sm:w-5 sm:h-5" />
           <span className="text-sm sm:text-base text-gray-700">
-            Multilingual Support: {languages.join(", ")}
+            Multilingual Support: {languages && languages.length > 0 ? languages.join(", ") : "Not Available"}
           </span>
         </div>
       </div>
 
       {/* Right side contact options */}
-      <div className="flex flex-col items-center mt-6 sm:mt-0 sm:ml-6  lg:items-center">
-        <ContactIcons
-          vehicleId="test-vehicle-id"
-          whatsappUrl="https://wa.me/1234567890"
-          email="test@example.com"
-          phoneNumber="123-456-7890"
-        />
+      <div className="flex flex-col items-center mt-6 sm:mt-0 sm:ml-6 lg:items-center">
+        {contactDetails ? (
+          <ContactIcons
+            vehicleId="test-vehicle-id" // Optional, can be dynamic if required
+            whatsappUrl={contactDetails.whatsappPhone}
+            email={contactDetails.email}
+            phoneNumber={contactDetails.phone}
+          />
+        ) : (
+          <p className="text-sm text-gray-500">Contact details not available</p>
+        )}
         <span className="mt-3 text-xs sm:text-xs text-gray-700 text-center lg:text-right">
-          Available now for chat
+          {contactDetails ? "Available now for chat" : "Contact not available"}
         </span>
       </div>
     </div>

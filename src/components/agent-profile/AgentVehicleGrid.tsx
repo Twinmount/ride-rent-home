@@ -1,251 +1,66 @@
-import {
-  FetchVehicleCardsResponse,
-  VehicleCardType,
-} from "@/types/vehicle-types";
-import VerticalCard from "../card/vehicle-card/listing-vertical-card/VerticalCard";
+import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 import MainCard from "../card/vehicle-card/main-card/MainCard";
+import { VehicleCardType } from "@/types";
+import { Suspense } from "react";
+import Pagination from "../general/pagination/Pagination";
 
 type Props = {
   filter: string;
   page: number;
+  companyId: string;
 };
 
 interface RequestBody {
   page: string;
   limit: string;
   sortOrder: "ASC" | "DESC";
-  filter?: string;
+  category: string;
 }
 
-const vehicleCards: VehicleCardType[] = [
-  {
-    vehicleId: "V12345",
-    thumbnail: "/cars.webp",
-    model: "Toyota Corolla",
-    registredYear: "2022",
-    brandName: "Toyota",
-    countryCode: "AE",
-    phoneNumber: "+971555555555",
-    email: "contact@toyotacars.ae",
-    rentalDetails: {
-      day: {
-        enabled: true,
-        rentInAED: "150",
-        mileageLimit: "100km",
-      },
-      week: {
-        enabled: true,
-        rentInAED: "1000",
-        mileageLimit: "700km",
-      },
-      month: {
-        enabled: true,
-        rentInAED: "3500",
-        mileageLimit: "3000km",
-      },
-    },
-    vehicleSpecs: {
-      engine: {
-        name: "Engine",
-        value: "1.8L 4-cylinder",
-        selected: true,
-      },
-      transmission: {
-        name: "Transmission",
-        value: "Automatic",
-        selected: true,
-      },
-      fuelType: {
-        name: "Fuel Type",
-        value: "Petrol",
-        selected: true,
-      },
-    },
-    companyLogo: "/cars.webp",
-    state: "dubai",
-    category: "cars",
-    whatsappPhone: "+971555555555",
-    whatsappCountryCode: "AE",
-    isDisabled: false,
-    isCryptoAccepted: true,
-    isSpotDeliverySupported: true,
-    additionalVehicleTypes: [
-      { typeId: "1", label: "Luxury", value: "Luxury Sedan" },
-    ],
-    securityDeposit: {
-      enabled: true,
-      amountInAED: "500",
-    },
-    isCreditOrDebitCardsSupported: true,
-    isTabbySupported: false,
-  },
-  {
-    vehicleId: "V12345",
-    thumbnail: "/cars.webp",
-    model: "Toyota Corolla",
-    registredYear: "2022",
-    brandName: "Toyota",
-    countryCode: "AE",
-    phoneNumber: "+971555555555",
-    email: "contact@toyotacars.ae",
-    rentalDetails: {
-      day: {
-        enabled: true,
-        rentInAED: "150",
-        mileageLimit: "100km",
-      },
-      week: {
-        enabled: true,
-        rentInAED: "1000",
-        mileageLimit: "700km",
-      },
-      month: {
-        enabled: true,
-        rentInAED: "3500",
-        mileageLimit: "3000km",
-      },
-    },
-    vehicleSpecs: {
-      engine: {
-        name: "Engine",
-        value: "1.8L 4-cylinder",
-        selected: true,
-      },
-      transmission: {
-        name: "Transmission",
-        value: "Automatic",
-        selected: true,
-      },
-      fuelType: {
-        name: "Fuel Type",
-        value: "Petrol",
-        selected: true,
-      },
-    },
-    companyLogo: "/cars.webp",
-    state: "dubai",
-    category: "cars",
-    whatsappPhone: "+971555555555",
-    whatsappCountryCode: "AE",
-    isDisabled: false,
-    isCryptoAccepted: true,
-    isSpotDeliverySupported: true,
-    additionalVehicleTypes: [
-      { typeId: "1", label: "Luxury", value: "Luxury Sedan" },
-    ],
-    securityDeposit: {
-      enabled: true,
-      amountInAED: "500",
-    },
-    isCreditOrDebitCardsSupported: true,
-    isTabbySupported: false,
-  },
-  {
-    vehicleId: "V12345",
-    thumbnail: "/cars.webp",
-    model: "Toyota Corolla",
-    registredYear: "2022",
-    brandName: "Toyota",
-    countryCode: "AE",
-    phoneNumber: "+971555555555",
-    email: "contact@toyotacars.ae",
-    rentalDetails: {
-      day: {
-        enabled: true,
-        rentInAED: "150",
-        mileageLimit: "100km",
-      },
-      week: {
-        enabled: true,
-        rentInAED: "1000",
-        mileageLimit: "700km",
-      },
-      month: {
-        enabled: true,
-        rentInAED: "3500",
-        mileageLimit: "3000km",
-      },
-    },
-    vehicleSpecs: {
-      engine: {
-        name: "Engine",
-        value: "1.8L 4-cylinder",
-        selected: true,
-      },
-      transmission: {
-        name: "Transmission",
-        value: "Automatic",
-        selected: true,
-      },
-      fuelType: {
-        name: "Fuel Type",
-        value: "Petrol",
-        selected: true,
-      },
-    },
-    companyLogo: "/cars.webp",
-    state: "dubai",
-    category: "cars",
-    whatsappPhone: "+971555555555",
-    whatsappCountryCode: "AE",
-    isDisabled: false,
-    isCryptoAccepted: true,
-    isSpotDeliverySupported: true,
-    additionalVehicleTypes: [
-      { typeId: "1", label: "Luxury", value: "Luxury Sedan" },
-    ],
-    securityDeposit: {
-      enabled: true,
-      amountInAED: "500",
-    },
-    isCreditOrDebitCardsSupported: true,
-    isTabbySupported: false,
-  },
-];
+export default async function AgentVehicleGrid({ filter, page, companyId }: Props) {
 
-export default async function AgentVehicleGrid({ page, filter }: Props) {
-  // Fetch the blogs data
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.API_URL;
+  
 
-  // Prepare the request body
   const requestBody: RequestBody = {
     page: page.toString(),
-    limit: "10",
+    limit: "9",
     sortOrder: "DESC",
+    category: filter, 
   };
 
-  // Conditionally add blogCategory if selectedTag is valid
-  if (filter && filter.toLowerCase() !== "all") {
-    requestBody.filter = filter;
-  }
-
-  // Fetch brand data from your API endpoint
-  const response = await fetch(`${baseUrl}/company-vehicles/list`, {
-    method: "POST",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
+  // Fetch vehicles from the backend
+  const response = await fetch(`${baseUrl}/vehicle/company/?page=1&companyId=${companyId}&limit=6&sortOrder=DESC&category=${filter}`, {
+    method: "GET",
+    next: { revalidate: 600 },
   });
 
+  // Parse the JSON response
   const data: FetchVehicleCardsResponse = await response.json();
 
-  const vehicles = data.result.list || vehicleCards || [];
+  const totalPages = data?.result?.totalNumberOfPages || 1;
+  const vehicles = data.result.list || [];
 
   return (
-    <div className="wrapper">
+    <div>
       {vehicles.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {vehicles.map((vehicle, index) => (
-            <MainCard key={vehicle.vehicleId || index} vehicle={vehicle} />
+            <MainCard key={index} vehicle={vehicle} />
           ))}
         </div>
       ) : (
         <div className="flex-center h-72 font-thin text-lg">
-          No Vehicles Found &nbsp; :/
+          No Vehicles Found for category&nbsp;
+          <span className="capitalize bg-slate-200 px-1 rounded-lg italic text-slate-800">
+            {filter}
+          </span>
+          &nbsp; :/
         </div>
       )}
+      <Suspense fallback={<div>Loading Pagination...</div>}>
+        <Pagination page={page} totalPages={totalPages} />
+      </Suspense>
     </div>
   );
 }

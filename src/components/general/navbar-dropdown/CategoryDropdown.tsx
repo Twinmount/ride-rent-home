@@ -44,7 +44,9 @@ export default function CategoryDropdown() {
 
   // Use startsWith to exclude dynamic paths like /faq and /faq/{state}
   const shouldExclude =
-    pathname.startsWith("/faq") || excludePaths.includes(pathname);
+    pathname.startsWith("/faq") ||
+    pathname.startsWith("/profile") ||
+    excludePaths.includes(pathname);
 
   useEffect(() => {
     if (!shouldExclude && categories.length > 0) {
