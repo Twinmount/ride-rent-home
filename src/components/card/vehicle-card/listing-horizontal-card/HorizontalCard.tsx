@@ -40,7 +40,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
   const modelDetails = generateModelDetailsUrl(vehicle);
 
   // link for the vehicle details page
-  const vehicleDetailsPageLink = `/${vehicle.state}/${vehicle.category}/${modelDetails}/${vehicle.vehicleId}`;
+  const vehicleDetailsPageLink = `/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}/${vehicle.vehicleId}`;
 
   // page link required for whatsapp share
   const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
@@ -123,7 +123,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
                 <TooltipTrigger className="spec">
                   <img
                     src={`${baseAssetsUrl}/icons/vehicle-specifications/${
-                      vehicle.category
+                      vehicle.vehicleCategory
                     }/${formatKeyForIcon(key)}.svg`}
                     alt={`${spec.name} icon`}
                     className="spec-icon"

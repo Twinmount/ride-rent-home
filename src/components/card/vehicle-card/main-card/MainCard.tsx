@@ -28,7 +28,7 @@ const MainCard = ({ vehicle, isHourlyRental = false }: MainCardProps) => {
   const modelDetails = generateModelDetailsUrl(vehicle);
 
   // dynamic link to navigate to vehicle details page
-  const vehicleDetailsPageLink = `/${vehicle.state}/${vehicle.category}/${modelDetails}/${vehicle.vehicleId}`;
+  const vehicleDetailsPageLink = `/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}/${vehicle.vehicleId}`;
 
   // page link required for whatsapp share
   const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
@@ -122,7 +122,7 @@ const MainCard = ({ vehicle, isHourlyRental = false }: MainCardProps) => {
                   {/* Using the formatted spec name to dynamically fetch the icon */}
                   <img
                     src={`${baseAssetsUrl}/icons/vehicle-specifications/${
-                      vehicle.category
+                      vehicle.vehicleCategory
                     }/${formatKeyForIcon(key)}.svg`}
                     alt={`${spec.name} icon`}
                     className="spec-icon"

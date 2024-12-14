@@ -15,8 +15,7 @@ interface CompanyDetails {
   companyName: string | null;
   companyLogo: string | null;
   companyAddress: string | null;
-  state: string | null;
-  languages: string[];
+  companyLanguages: string[];
   contactDetails: ContactDetails | null;
 }
 
@@ -29,8 +28,7 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
     companyName,
     companyLogo,
     companyAddress,
-    state,
-    languages,
+    companyLanguages,
     contactDetails,
   } = companyDetails;
 
@@ -77,7 +75,6 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
           {companyAddress || "Address Not Available"}
         </p>
         <p className="text-sm sm:text-base font-light text-center sm:text-left">
-          {state || "State Not Available"}
           {companyAddress && (
             <a
               href={`https://www.google.com/maps/search/${encodeURIComponent(
@@ -96,7 +93,11 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
         <div className="flex items-center space-x-2">
           <Languages className="text-yellow w-4 h-4 sm:w-5 sm:h-5" />
           <span className="text-sm sm:text-base text-gray-700">
-            Multilingual Support: {languages && languages.length > 0 ? languages.join(", ") : "Not Available"}
+            {!companyLanguages || companyLanguages.length === 0
+              ? "Language Information Not Available"
+              : companyLanguages && companyLanguages.length === 1
+              ? `Language Support: ${companyLanguages[0]}`
+              : `Multilingual Support: ${companyLanguages.join(", ")}`}
           </span>
         </div>
       </div>

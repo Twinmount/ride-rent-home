@@ -1,6 +1,5 @@
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 import MainCard from "../card/vehicle-card/main-card/MainCard";
-import { VehicleCardType } from "@/types";
 import { Suspense } from "react";
 import Pagination from "../general/pagination/Pagination";
 
@@ -10,30 +9,21 @@ type Props = {
   companyId: string;
 };
 
-interface RequestBody {
-  page: string;
-  limit: string;
-  sortOrder: "ASC" | "DESC";
-  category: string;
-}
-
-export default async function AgentVehicleGrid({ filter, page, companyId }: Props) {
-
+export default async function AgentVehicleGrid({
+  filter,
+  page,
+  companyId,
+}: Props) {
   const baseUrl = process.env.API_URL;
-  
-
-  const requestBody: RequestBody = {
-    page: page.toString(),
-    limit: "9",
-    sortOrder: "DESC",
-    category: filter, 
-  };
 
   // Fetch vehicles from the backend
-  const response = await fetch(`${baseUrl}/vehicle/company/?page=1&companyId=${companyId}&limit=6&sortOrder=DESC&category=${filter}`, {
-    method: "GET",
-    next: { revalidate: 600 },
-  });
+  const response = await fetch(
+    `${baseUrl}/vehicle/vehicle/company/list?page=1&companyId=${companyId}&limit=9&sortOrder=DESC&vehicleCategory=${filter}`,
+    {
+      method: "GET",
+      next: { revalidate: 600 },
+    }
+  );
 
   // Parse the JSON response
   const data: FetchVehicleCardsResponse = await response.json();
@@ -44,7 +34,7 @@ export default async function AgentVehicleGrid({ filter, page, companyId }: Prop
   return (
     <div>
       {vehicles.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="flex justify-center flex-wrap items-start  gap-4">
           {vehicles.map((vehicle, index) => (
             <MainCard key={index} vehicle={vehicle} />
           ))}
