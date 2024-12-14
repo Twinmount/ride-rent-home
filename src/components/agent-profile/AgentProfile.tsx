@@ -1,25 +1,26 @@
-import React from 'react'
-import { MdVerifiedUser } from 'react-icons/md'
-import { Languages } from 'lucide-react'
-import ContactIcons from '../common/contact-icons/ContactIcons'
+import React from "react";
+import { MdVerifiedUser } from "react-icons/md";
+import { Languages } from "lucide-react";
+import ContactIcons from "../common/contact-icons/ContactIcons";
 
 // Define the interface for props
 interface AgentProfileProps {
-  companyName: string
-  agentAddress: string
-  state: string
-  languages: string[]
+  companyName: string;
+  agentAddress: string;
+  state: string;
+  languages: string[];
 }
 
-const AgentProfile: React.FC<AgentProfileProps> = () => {
+const AgentProfile: React.FC = () => {
   // Variables to store text
-  const companyName = 'AL SAQR AL GHAWI'
-  const agentAddress = 'AL SAQR AL GHAWI, Office No. 9, Hela Abdulla No-03, Al Karama, Dubai,'
-  const state = 'United Arab Emirates'
-  const languages = ['English', 'Hindi', 'Arabic']
+  const companyName = "AL SAQR AL GHAWI";
+  const agentAddress =
+    "AL SAQR AL GHAWI, Office No. 9, Hela Abdulla No-03, Al Karama, Dubai,";
+  const state = "United Arab Emirates";
+  const languages = ["English", "Hindi", "Arabic"];
 
   return (
-    <div className="wrapper flex flex-col sm:flex-row sm:justify-start lg:justify-between lg:items-center p-4 bg-white shadow-lg rounded-lg">
+    <div className="flex flex-col sm:flex-row sm:justify-start lg:justify-between lg:items-center p-4 bg-white rounded-lg border-b">
       {/* Left side profile image */}
       <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden flex-center border-[.36rem] border-amber-400  mx-auto sm:mx-0">
         <div className="w-[85%] h-[85%] rounded-full overflow-hidden">
@@ -68,7 +69,7 @@ const AgentProfile: React.FC<AgentProfileProps> = () => {
         <div className="flex items-center space-x-2">
           <Languages className="text-yellow w-4 h-4 sm:w-5 sm:h-5" />
           <span className="text-sm sm:text-base text-gray-700">
-            Multilingual Support: {languages.join(', ')}
+            Multilingual Support: {languages.join(", ")}
           </span>
         </div>
       </div>
@@ -86,7 +87,7 @@ const AgentProfile: React.FC<AgentProfileProps> = () => {
         </span>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AgentProfile
+export default AgentProfile;

@@ -24,15 +24,11 @@ import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
 
 type VerticalCardProps = {
   vehicle: VehicleCardType;
-  category: string;
-  state: string;
   isHourlyRental?: boolean;
 };
 
 const VerticalCard: FC<VerticalCardProps> = ({
   vehicle,
-  category,
-  state,
   isHourlyRental = false,
 }) => {
   const formattedPhoneNumber =
@@ -44,7 +40,7 @@ const VerticalCard: FC<VerticalCardProps> = ({
   const modelDetails = generateModelDetailsUrl(vehicle);
 
   // link for the vehicle details page
-  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
+  const vehicleDetailsPageLink = `/${vehicle.state}/${vehicle.category}/${modelDetails}/${vehicle.vehicleId}`;
 
   // page link required for whatsapp share
   const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
@@ -147,9 +143,9 @@ const VerticalCard: FC<VerticalCardProps> = ({
                 <Tooltip>
                   <TooltipTrigger className="spec">
                     <img
-                      src={`${baseAssetsUrl}/icons/vehicle-specifications/${category}/${formatKeyForIcon(
-                        key
-                      )}.svg`}
+                      src={`${baseAssetsUrl}/icons/vehicle-specifications/${
+                        vehicle.category
+                      }/${formatKeyForIcon(key)}.svg`}
                       alt={`${spec.name} icon`}
                       className="spec-icon"
                     />
@@ -205,16 +201,16 @@ const VerticalCard: FC<VerticalCardProps> = ({
         </Link>
 
         <div className="bottom-rent-box">
-        <RentNowButton 
-          vehicleDetailsPageLink={vehicleDetailsPageLink} 
-          companyLogo={vehicle.companyLogo} 
-        />
-        <ContactIcons
-          vehicleId={vehicle.vehicleId}
-          whatsappUrl={whatsappUrl}
-          email={vehicle.email}
-          phoneNumber={formattedPhoneNumber}
-        />
+          <RentNowButton
+            vehicleDetailsPageLink={vehicleDetailsPageLink}
+            companyLogo={vehicle.companyLogo}
+          />
+          <ContactIcons
+            vehicleId={vehicle.vehicleId}
+            whatsappUrl={whatsappUrl}
+            email={vehicle.email}
+            phoneNumber={formattedPhoneNumber}
+          />
         </div>
       </div>
     </MotionDivElm>

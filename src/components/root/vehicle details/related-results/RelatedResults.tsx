@@ -51,12 +51,7 @@ export default async function RelatedResults({
       <h2 className="heading ">Related Recommendations</h2>
       <CarouselWrapper>
         {vehicleData.map((vehicle) => (
-          <MainCard
-            key={vehicle.vehicleId}
-            vehicle={vehicle}
-            state={state}
-            category={category}
-          />
+          <MainCard key={vehicle.vehicleId} vehicle={vehicle} />
         ))}
       </CarouselWrapper>
     </MotionSection>

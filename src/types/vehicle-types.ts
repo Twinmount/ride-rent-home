@@ -190,6 +190,7 @@ export type VehicleCardType = {
   vehicleSpecs: VehicleSpecs;
   companyLogo: string | null;
   state: string;
+  category: string;
   whatsappPhone: string | null;
   whatsappCountryCode: string | null;
   isDisabled: boolean;

@@ -39,8 +39,6 @@ export default async function Latest({ state, category }: StateCategoryProps) {
           <MainCard
             key={vehicle.vehicleId}
             vehicle={vehicle}
-            state={state}
-            category={category}
           />
         ))}
       </CarouselWrapper>
