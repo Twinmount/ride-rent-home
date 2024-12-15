@@ -2,6 +2,9 @@ import React from "react";
 import { MdVerifiedUser } from "react-icons/md";
 import { Languages, MapPin } from "lucide-react";
 import ContactIcons from "../common/contact-icons/ContactIcons";
+import AgentContactIcons from "../common/agent-contact-icons/AgentContactIcons";
+import { formatPhoneNumber } from "@/helpers";
+import GreenNotificationPing from "../common/GreenNotificationPing";
 
 interface ContactDetails {
   email: string;
@@ -32,6 +35,20 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
     contactDetails,
   } = companyDetails;
 
+  const message = `Hello, I am interested in renting a vehicle from *_${companyName}_*. Could you provide more information?`;
+  const encodedMessage = encodeURIComponent(message);
+
+  // whatsapp url
+  const whatsappUrl = contactDetails
+    ? `https://wa.me/${contactDetails.whatsappCountryCode}${contactDetails.whatsappPhone}?text=${encodedMessage}`
+    : null;
+
+  // formatted phone number
+  const formattedPhoneNumber =
+    contactDetails?.countryCode && contactDetails.phone
+      ? formatPhoneNumber(contactDetails?.countryCode, contactDetails.phone)
+      : null;
+
   const isCompanyValid = !!companyName || !!companyLogo;
 
   return (
@@ -39,7 +56,7 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
       {/* left box logo and company details*/}
       <div className="flex flex-col items-center sm:flex-row">
         {/* Left side profile image */}
-        <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden flex-center border-[.36rem] border-amber-400 mx-auto sm:mx-0">
+        <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden flex-center border-[.36rem] border-amber-400 mx-auto sm:mx-0 ">
           <div className="w-[85%] h-[85%] rounded-full overflow-hidden">
             {companyLogo ? (
               <img
@@ -88,7 +105,7 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-transparent text-sm sm:text-base text-gray-700  flex-center gap-x-2  hover:underline py-[0.15rem] px-1 hover:border-transparent rounded group"
+                className="bg-transparent text-sm sm:text-base text-gray-700  flex-center gap-x-2  hover:underline font-normal py-[0.15rem] px-1 hover:border-transparent rounded group"
               >
                 <MapPin
                   width={16}
@@ -101,9 +118,9 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
           </p>
 
           {/* Multilingual support */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-start space-x-2">
             <Languages className="text-yellow w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="text-sm sm:text-base text-gray-700">
+            <span className="text-sm sm:text-base text-gray-700 max-sm:text-center">
               {!companyLanguages || companyLanguages.length === 0
                 ? "Language Information Not Available"
                 : companyLanguages && companyLanguages.length === 1
@@ -115,17 +132,21 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
       </div>
 
       {/* Right side contact options */}
-      <div className="flex flex-col items-center lg:items-center">
-        <ContactIcons
-          vehicleId="test-vehicle-id" // Optional, can be dynamic if required
-          whatsappUrl={contactDetails?.whatsappPhone || null}
-          email={contactDetails?.email || null}
-          phoneNumber={contactDetails?.phone || null}
-        />
+      <div className="flex items-center w-fit justify-center  h-fit">
+        {isCompanyValid && <GreenNotificationPing classes="mb-6 !mr-2" />}
+        <div className="flex flex-col items-center lg:items-center">
+          <AgentContactIcons
+            whatsappUrl={whatsappUrl}
+            email={contactDetails?.email || null}
+            phoneNumber={formattedPhoneNumber}
+          />
 
-        <span className="mt-3 text-xs sm:text-xs text-gray-700 text-center lg:text-right">
-          {contactDetails ? "Available now for chat" : "Contact not available"}
-        </span>
+          <span className="mt-3 text-xs sm:text-xs text-gray-700 text-center lg:text-right">
+            {contactDetails
+              ? "Available now for chat"
+              : "Contact not available"}
+          </span>
+        </div>
       </div>
     </div>
   );
