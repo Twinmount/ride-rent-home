@@ -1,10 +1,16 @@
 import React from "react";
 import { MdVerifiedUser } from "react-icons/md";
-import { Languages, MapPin } from "lucide-react";
-import ContactIcons from "../common/contact-icons/ContactIcons";
+import { Info, Languages, MapPin } from "lucide-react";
 import AgentContactIcons from "../common/agent-contact-icons/AgentContactIcons";
 import { formatPhoneNumber } from "@/helpers";
 import GreenNotificationPing from "../common/GreenNotificationPing";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import SharePortfolio from "./SharePortfolio";
 
 interface ContactDetails {
   email: string;
@@ -35,7 +41,9 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
     contactDetails,
   } = companyDetails;
 
-  const message = `Hello, I am interested in renting a vehicle from *_${companyName}_*. Could you provide more information?`;
+  const message = `Hi *_${companyName}_*.\n\nI am interested in renting/leasing a vehicle from your fleet. 
+Kindly let me know the next steps or any additional information required to proceed. 
+I look forward to your prompt response.\n\nSent via Ride.Rent`;
   const encodedMessage = encodeURIComponent(message);
 
   // whatsapp url
@@ -97,7 +105,7 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
           <p className="text-sm sm:text-sm font-extralight text-center sm:text-left">
             {companyAddress || "Address Not Available"}
           </p>
-          <p className="text-sm sm:text-base -ml-1 font-light text-center sm:text-left">
+          <div className="text-sm sm:text-base -ml-1 font-light text-center sm:text-left flex-center gap-x-3">
             {companyName && (
               <a
                 href={`https://www.google.com/maps/search/${encodeURIComponent(
@@ -105,7 +113,7 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-transparent text-sm sm:text-base text-gray-700  flex-center gap-x-2  hover:underline font-normal py-[0.15rem] px-1 hover:border-transparent rounded group"
+                className="bg-transparent text-sm sm:text-base text-gray-700  flex-center gap-x-2 hover:underline px-2 rounded-lg font-normal py-[0.15rem] hover:border-transparent  group"
               >
                 <MapPin
                   width={16}
@@ -115,17 +123,33 @@ const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
                 Locate in map
               </a>
             )}
-          </p>
+
+            <SharePortfolio />
+          </div>
 
           {/* Multilingual support */}
           <div className="flex items-start space-x-2">
-            <Languages className="text-yellow w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="text-sm sm:text-base text-gray-700 max-sm:text-center">
+            <Languages className="text-yellow w-4 h-4 sm:w-5 sm:h-5 -mr-1 mt-1" />
+            <span className="text-sm sm:text-base text-gray-700 max-sm:text-center flex items-center">
               {!companyLanguages || companyLanguages.length === 0
                 ? "Language Information Not Available"
                 : companyLanguages && companyLanguages.length === 1
                 ? `Language Support: ${companyLanguages[0]}`
                 : `Multilingual Support: ${companyLanguages.join(", ")}`}
+
+              <TooltipProvider delayDuration={10}>
+                <Tooltip>
+                  <TooltipTrigger className="mb-1 ml-2">
+                    <Info width={15} className="text-blue-500" />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-slate-900 text-white max-w-56">
+                    <p>
+                      Languages the staff can speak or understand, ensuring
+                      customer communication comfort
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </span>
           </div>
         </div>

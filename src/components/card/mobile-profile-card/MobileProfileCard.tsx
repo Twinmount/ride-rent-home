@@ -124,42 +124,48 @@ const MobileProfileCard = ({
         {/* profile */}
         <div className="top">
           {/* left */}
-          <Link href={companyProfilePageLink} className="profile-details">
-            <div
-              className={` ${
-                company.companyProfile ? "" : "blurred-profile"
-              } profile`}
-            >
-              {/* Placeholder image or replace with actual company logo if available */}
-              <img
-                src={company.companyProfile || "/assets/img/blur-profile.webp"}
-                alt={
-                  company?.companyName
-                    ? `${company.companyName} logo`
-                    : "Company logo"
-                }
-                loading="lazy"
-                className={"company-profile"}
-                draggable={false}
-              />
-            </div>
-
-            <div className="info">
-              <p
-                className={`${
-                  company.companyName ? "" : "blurred-text"
-                } company-name`}
+          <div className="border-wrapper">
+            {/* animated border */}
+            <div className="animate-rotate absolute inset-0 z-0 h-full w-full rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
+            <Link href={companyProfilePageLink} className="profile-details">
+              <div
+                className={` ${
+                  company.companyProfile ? "" : "blurred-profile"
+                } profile`}
               >
-                {company.companyName || "Company Disabled"}
-              </p>
-              {/* Assuming verification logic based on specs */}
-
-              <div className="verified">
-                <MdVerifiedUser className="icon" />
-                <span>Verified Vendor</span>
+                {/* Placeholder image or replace with actual company logo if available */}
+                <img
+                  src={
+                    company.companyProfile || "/assets/img/blur-profile.webp"
+                  }
+                  alt={
+                    company?.companyName
+                      ? `${company.companyName} logo`
+                      : "Company logo"
+                  }
+                  loading="lazy"
+                  className={"company-profile"}
+                  draggable={false}
+                />
               </div>
-            </div>
-          </Link>
+
+              <div className="info">
+                <p
+                  className={`${
+                    company.companyName ? "" : "blurred-text"
+                  } company-name`}
+                >
+                  {company.companyName || "Company Disabled"}
+                </p>
+                {/* Assuming verification logic based on specs */}
+
+                <div className="verified">
+                  <MdVerifiedUser className="icon" />
+                  <span>Verified Vendor</span>
+                </div>
+              </div>
+            </Link>
+          </div>
 
           {/* rent now button */}
           <div className="profile-right">

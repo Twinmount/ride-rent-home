@@ -54,7 +54,7 @@ const MainCard = ({ vehicle, isHourlyRental = false }: MainCardProps) => {
   return (
     <div className="car-card-container slide-visible">
       {/* card top */}
-      <Link href={vehicleDetailsPageLink} className="card-top">
+      <Link href={vehicleDetailsPageLink} target="_blank" className="card-top">
         <div className="image-box">
           {/* Thumbnail Image */}
           {vehicle.thumbnail ? (
@@ -110,7 +110,7 @@ const MainCard = ({ vehicle, isHourlyRental = false }: MainCardProps) => {
 
       {/* card bottom */}
       <div className="card-bottom">
-        <Link href={vehicleDetailsPageLink}>
+        <Link href={vehicleDetailsPageLink} target="_blank">
           {/* title */}
           <div className="model-name">{vehicle.model}</div>
 

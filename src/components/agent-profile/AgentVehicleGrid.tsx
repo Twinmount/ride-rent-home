@@ -41,16 +41,14 @@ export default async function AgentVehicleGrid({
         </div>
       ) : (
         <div className="flex-center h-72 font-thin text-lg">
-          No Vehicles Found for category&nbsp;
-          <span className="capitalize bg-slate-200 px-1 rounded-lg italic text-slate-800">
-            {filter}
-          </span>
-          &nbsp; :/
+          No Vehicles Found&nbsp; :/
         </div>
       )}
-      <Suspense fallback={<div>Loading Pagination...</div>}>
-        <Pagination page={page} totalPages={totalPages} />
-      </Suspense>
+      {vehicles.length > 0 && (
+        <Suspense fallback={<div>Loading Pagination...</div>}>
+          <Pagination page={page} totalPages={totalPages} />
+        </Suspense>
+      )}
     </div>
   );
 }
