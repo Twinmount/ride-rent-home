@@ -73,7 +73,11 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
     >
       {/* card left */}
       <div className="card-left">
-        <Link href={vehicleDetailsPageLink} className="image-box">
+        <Link
+          href={vehicleDetailsPageLink}
+          target="_blank"
+          className="image-box"
+        >
           {/* Thumbnail Image */}
           {vehicle.thumbnail ? (
             <Image
@@ -111,12 +115,20 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
       {/* card right */}
       <div className="card-right">
         {/* title and features */}
-        <Link href={vehicleDetailsPageLink} className="right-top-container ">
+        <Link
+          href={vehicleDetailsPageLink}
+          target="_blank"
+          className="right-top-container "
+        >
           <div className="truncate">{vehicle.model}</div>
         </Link>
 
         {/* Dynamic Vehicle specs */}
-        <Link href={vehicleDetailsPageLink} className="vehicle-specs">
+        <Link
+          href={vehicleDetailsPageLink}
+          target="_blank"
+          className="vehicle-specs"
+        >
           {Object.entries(vehicle.vehicleSpecs).map(([key, spec]) => (
             <TooltipProvider delayDuration={200} key={key}>
               <Tooltip>
@@ -150,7 +162,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
         </Link>
 
         {/* Specifications */}
-        <Link href={vehicleDetailsPageLink}>
+        <Link href={vehicleDetailsPageLink} target="_blank">
           <Specifications
             isCryptoAccepted={vehicle.isCryptoAccepted}
             isSpotDeliverySupported={vehicle.isSpotDeliverySupported}
@@ -160,7 +172,11 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
 
         <div className="bottom-box">
           <div className="bottom-left">
-            <Link href={vehicleDetailsPageLink} className="profile">
+            <Link
+              href={vehicleDetailsPageLink}
+              target="_blank"
+              className="profile"
+            >
               {/* Company Logo */}
               {vehicle.companyLogo ? (
                 <Image
@@ -179,7 +195,11 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
               )}
             </Link>
 
-            <Link href={vehicleDetailsPageLink} className="location">
+            <Link
+              href={vehicleDetailsPageLink}
+              target="_blank"
+              className="location"
+            >
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
                   <TooltipTrigger className="each-location">
@@ -210,7 +230,11 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
           <div className="bottom-right">
             {/* Rent Now button */}
             {vehicle.companyLogo ? (
-              <Link href={vehicleDetailsPageLink} className="rent-now-btn">
+              <Link
+                href={vehicleDetailsPageLink}
+                target="_blank"
+                className="rent-now-btn"
+              >
                 <span className="rent-now-text">RENT NOW</span>
                 <span className="flex mr-1">
                   <span className="green-round"></span>

@@ -34,23 +34,21 @@ export default async function AgentVehicleGrid({
   return (
     <div>
       {vehicles.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 w-fit max-w-fit mx-auto gap-4">
+        <div className="!grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 w-fit max-w-fit mx-auto gap-4">
           {vehicles.map((vehicle, index) => (
             <MainCard key={index} vehicle={vehicle} />
           ))}
         </div>
       ) : (
         <div className="flex-center h-72 font-thin text-lg">
-          No Vehicles Found for category&nbsp;
-          <span className="capitalize bg-slate-200 px-1 rounded-lg italic text-slate-800">
-            {filter}
-          </span>
-          &nbsp; :/
+          No Vehicles Found&nbsp; :/
         </div>
       )}
-      <Suspense fallback={<div>Loading Pagination...</div>}>
-        <Pagination page={page} totalPages={totalPages} />
-      </Suspense>
+      {vehicles.length > 0 && (
+        <Suspense fallback={<div>Loading Pagination...</div>}>
+          <Pagination page={page} totalPages={totalPages} />
+        </Suspense>
+      )}
     </div>
   );
 }

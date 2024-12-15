@@ -12,6 +12,7 @@ import {
   generateModelDetailsUrl,
 } from "@/helpers";
 import Link from "next/link";
+import { SquareArrowOutUpRight } from "lucide-react";
 
 type ProfileCardProps = {
   company: Company;
@@ -75,8 +76,17 @@ const ProfileCard = ({
         <p className="disabled-text">This vehicle is currently unavailable.</p>
       )}
 
-      <div className="top">
-        <Link href={companyProfilePageLink} className="profile-details">
+      <div className="top ">
+        {/* animated border */}
+        <div className="animate-rotate absolute inset-0 z-0 h-full w-full rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
+
+        {/* black overlay with text */}
+        <Link href={companyProfilePageLink} className="company-black-overlay">
+          Visit Company
+          <SquareArrowOutUpRight />
+        </Link>
+
+        <Link href={companyProfilePageLink} className="profile-details ">
           <div
             className={`${
               company.companyProfile ? "" : "blurred-profile"

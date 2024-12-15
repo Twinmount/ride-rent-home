@@ -72,7 +72,7 @@ const VerticalCard: FC<VerticalCardProps> = ({
       className="vertical-card-container slide-visible"
     >
       {/* card top */}
-      <Link href={vehicleDetailsPageLink}>
+      <Link href={vehicleDetailsPageLink} target="_blank">
         <div className="card-top">
           <div className="image-box">
             {/* Thumbnail Image */}
@@ -131,12 +131,12 @@ const VerticalCard: FC<VerticalCardProps> = ({
 
       {/* card bottom */}
       <div className="card-bottom">
-        <Link href={vehicleDetailsPageLink}>
+        <Link href={vehicleDetailsPageLink} target="_blank">
           <div className="model-name">{vehicle.model}</div>
         </Link>
 
         {/* vehicle specs grid */}
-        <Link href={vehicleDetailsPageLink}>
+        <Link href={vehicleDetailsPageLink} target="_blank">
           <div className="specs-grid">
             {Object.entries(vehicle.vehicleSpecs).map(([key, spec]) => (
               <TooltipProvider delayDuration={200} key={key}>
@@ -169,7 +169,7 @@ const VerticalCard: FC<VerticalCardProps> = ({
             ))}
           </div>
         </Link>
-        <Link href={vehicleDetailsPageLink}>
+        <Link href={vehicleDetailsPageLink} target="_blank">
           <Specifications
             isCryptoAccepted={vehicle.isCryptoAccepted}
             isSpotDeliverySupported={vehicle.isSpotDeliverySupported}
@@ -177,7 +177,7 @@ const VerticalCard: FC<VerticalCardProps> = ({
           />
         </Link>
         {/* location and price */}
-        <Link href={vehicleDetailsPageLink}>
+        <Link href={vehicleDetailsPageLink} target="_blank">
           <div className="location-box">
             <div className="location">
               <IoLocationOutline size={17} />{" "}

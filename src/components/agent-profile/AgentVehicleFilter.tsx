@@ -48,6 +48,10 @@ export default function AgentVehicleFilter({ filters }: Props) {
 
   //sorting the filters
 
+  if (sortedFilters.length === 0) {
+    return null;
+  }
+
   return (
     <div className="flex-center flex-wrap gap-2 my-4">
       {sortedFilters.map((filter) => (

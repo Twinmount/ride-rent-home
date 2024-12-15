@@ -24,7 +24,7 @@ export async function generateMetadata({
     `${baseUrl}/company/public?companyId=${companyId}`,
     {
       method: "GET",
-      next: { revalidate: 600 },
+      next: { revalidate: 180 },
     }
   );
 
@@ -37,12 +37,16 @@ export async function generateMetadata({
   const companyDetails = data.result;
 
   const companyName = companyDetails.companyName || "Ride.Rent";
+  const companyAddress = companyDetails.companyAddress || "UAE";
 
   // Construct meta title
-  const title = `${companyName} | Rent cars, bikes, sport cars, bicycles, buses, vans, buggies, and charters from Ride.Rent | Most trusted vehicle renting platform.`;
+  const title = `${companyName}, Affordable Vehicle Renting & Leasing Company in ${companyAddress} | A Ride.Rent Partner.`;
 
   // Construct meta description
-  const description = `Rent cars, bikes, sports cars, bicycles, buses, vans, buggies, and charters effortlessly with ${companyDetails.companyName}. Partnering with the best rental agencies, Ride.Rent is your trusted vehicle rental platform for seamless bookings, unbeatable prices, and top-quality service.`;
+  const description = `Rent or Lease cars, bikes, sports cars, bicycles, buses, vans, buggies, and
+charters effortlessly with ${companyName}. Partnering with the best rental agencies, Ride.Rent
+is your trusted vehicle rental platform for seamless bookings, unbeatable prices, and top-quality
+service when it comes to vehicle renting and leasing.`;
 
   // Construct canonical URL
   const formattedCompanyName = formatToUrlFriendly(companyName);
@@ -104,7 +108,7 @@ export default async function AgentProfilePage({
   const baseUrl = process.env.API_URL;
 
   // Default filter category set to "car"
-  const filter = searchParams.filter || "cars";
+  const filter = searchParams.filter;
   const page = parseInt(searchParams.page || "1", 10);
 
   // Fetch Data from API
@@ -112,7 +116,7 @@ export default async function AgentProfilePage({
     `${baseUrl}/company/public?companyId=${companyId}`,
     {
       method: "GET",
-      next: { revalidate: 600 },
+      next: { revalidate: 180 },
     }
   );
 
@@ -131,6 +135,9 @@ export default async function AgentProfilePage({
   return (
     <section className="wrapper bg-white">
       <AgentProfile companyDetails={companyDetails} />
+      <h1 className="text-2xl lg:text-3xl font-semibold mt-6 text-center">
+        Our Vehicles Available For Rent / Lease
+      </h1>
       <AgentVehicleFilter filters={filters} />
       <Suspense
         fallback={
@@ -139,7 +146,11 @@ export default async function AgentProfilePage({
           </div>
         }
       >
-        <AgentVehicleGrid filter={filter} page={page} companyId={companyId} />
+        <AgentVehicleGrid
+          filter={filter as string}
+          page={page}
+          companyId={companyId}
+        />
       </Suspense>
     </section>
   );
