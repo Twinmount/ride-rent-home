@@ -41,8 +41,6 @@ const MostPopular = async ({ state, category }: StateCategoryProps) => {
           <MainCard
             key={vehicle.vehicleId}
             vehicle={vehicle}
-            state={state}
-            category={category}
           />
         ))}
       </CarouselWrapper>

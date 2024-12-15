@@ -66,6 +66,30 @@ export const sortCategories = (categories: CategoryType[]): CategoryType[] => {
   });
 };
 
+// helpers/sortFilters.ts
+export const sortFilters = (
+  filters: { name: string; value: string }[]
+): { name: string; value: string }[] => {
+  // Define the order of categories
+  const order = [
+    "cars",
+    "sports-cars",
+    "motorcycles",
+    "sports-bikes",
+    "bicycles",
+    "buses",
+    "leisure-boats",
+    "yachts",
+    "vans",
+    "buggies",
+    "charters",
+  ];
+
+  return filters
+    .filter((filter) => order.includes(filter.value))
+    .sort((a, b) => order.indexOf(a.value) - order.indexOf(b.value));
+};
+
 // Helper function to format the key to match icon naming convention
 export const formatKeyForIcon = (key: string) => {
   return key.toLowerCase().replace(/\s+/g, "-");
@@ -233,7 +257,6 @@ export function generateModelDetailsUrl(
       .replace(/^-+|-+$/g, ""); // Remove any leading or trailing hyphens
   };
 
-
   const model = cleanText(data.model || fallbackModel);
   const state = cleanText(data.state || fallbackState);
 
@@ -290,3 +313,12 @@ export const formatAdditionalTypeName = (name: string) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 };
+
+export function formatToUrlFriendly(word: string | null): string {
+  if (!word) return "company-disabled";
+  return word
+    .toLowerCase() // Convert to lowercase
+    .replace(/[^a-z0-9\s]/g, "-") // Replace non-alphanumeric characters (except spaces) with hyphens
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/^-+|-+$/g, ""); // Remove leading and trailing hyphens
+}

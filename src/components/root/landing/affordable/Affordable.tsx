@@ -39,12 +39,7 @@ export default async function Affordable({
       </h2>
       <CarouselWrapper isButtonVisible>
         {vehicleData.map((vehicle) => (
-          <MainCard
-            key={vehicle.vehicleId}
-            vehicle={vehicle}
-            state={state}
-            category={category}
-          />
+          <MainCard key={vehicle.vehicleId} vehicle={vehicle} />
         ))}
       </CarouselWrapper>
       <ViewAllButton

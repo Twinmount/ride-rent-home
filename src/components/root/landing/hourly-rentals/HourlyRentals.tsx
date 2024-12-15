@@ -42,8 +42,6 @@ export default async function HourlyRentals({
           <MainCard
             key={vehicle.vehicleId}
             vehicle={vehicle}
-            state={state}
-            category={category}
             isHourlyRental={true}
           />
         ))}

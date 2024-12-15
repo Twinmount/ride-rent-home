@@ -1,3 +1,4 @@
+import { ContactDetails } from "./vehicle-details-types";
 import {
   FeatureType,
   RentalDetailsType,
@@ -255,4 +256,24 @@ export enum VehicleHomeFilter {
   TOP_BRANDS = "top-brands",
   LATEST_MODELS = "latest-models",
   HOURLY_RENTAL_VEHICLE = "hourly-rental-vehicle",
+}
+
+export type CompanyProfileDataType = {
+  companyName: string | null;
+  companyLogo: string | null;
+  companyAddress: string | null;
+  companyLanguages: string[];
+  state: string | null; 
+  languages: string[];
+  contactDetails: ContactDetails | null;
+  categories: {
+    name: string;
+    value: string;
+  }[];
+};
+
+export interface FetchCompanyDetailsResponse {
+  result: CompanyProfileDataType;
+  status: string;
+  statusCode: number;
 }

@@ -40,11 +40,13 @@ export default function CategoryDropdown() {
   }, [data]);
 
   // Define paths to exclude
-  const excludePaths = ["/terms-condition", "/about-us", "/privacy-policy"];
+  const excludePaths = ["/terms-condition", "/about-us", "/privacy-policy","/agent-profile-page"];
 
   // Use startsWith to exclude dynamic paths like /faq and /faq/{state}
   const shouldExclude =
-    pathname.startsWith("/faq") || excludePaths.includes(pathname);
+    pathname.startsWith("/faq") ||
+    pathname.startsWith("/profile") ||
+    excludePaths.includes(pathname);
 
   useEffect(() => {
     if (!shouldExclude && categories.length > 0) {

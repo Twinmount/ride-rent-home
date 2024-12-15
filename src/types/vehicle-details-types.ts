@@ -70,6 +70,7 @@ export type CompanySpecs = {
 };
 
 export type Company = {
+  companyId: string;
   companyProfile: string | null;
   companyName: string | null;
   companySpecs: CompanySpecs;

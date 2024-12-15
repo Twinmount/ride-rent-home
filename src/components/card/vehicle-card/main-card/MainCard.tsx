@@ -2,7 +2,6 @@ import "./MainCard.scss";
 import Link from "next/link";
 import Image from "next/image";
 import { VehicleCardType } from "@/types/vehicle-types";
-import { StateCategoryProps } from "@/types";
 import { IoLocationOutline } from "react-icons/io5";
 import {
   convertToLabel,
@@ -17,14 +16,9 @@ import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
 type MainCardProps = {
   vehicle: VehicleCardType;
   isHourlyRental?: boolean;
-} & StateCategoryProps;
+};
 
-const MainCard = ({
-  vehicle,
-  state,
-  category,
-  isHourlyRental = false,
-}: MainCardProps) => {
+const MainCard = ({ vehicle, isHourlyRental = false }: MainCardProps) => {
   const formattedPhoneNumber =
     vehicle.phoneNumber && vehicle.countryCode
       ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
@@ -34,7 +28,7 @@ const MainCard = ({
   const modelDetails = generateModelDetailsUrl(vehicle);
 
   // dynamic link to navigate to vehicle details page
-  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
+  const vehicleDetailsPageLink = `/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}/${vehicle.vehicleId}`;
 
   // page link required for whatsapp share
   const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
@@ -127,9 +121,9 @@ const MainCard = ({
                 <div key={key} className="spec">
                   {/* Using the formatted spec name to dynamically fetch the icon */}
                   <img
-                    src={`${baseAssetsUrl}/icons/vehicle-specifications/${category}/${formatKeyForIcon(
-                      key
-                    )}.svg`}
+                    src={`${baseAssetsUrl}/icons/vehicle-specifications/${
+                      vehicle.vehicleCategory
+                    }/${formatKeyForIcon(key)}.svg`}
                     alt={`${spec.name} icon`}
                     className="spec-icon"
                   />
@@ -165,16 +159,16 @@ const MainCard = ({
           </div>
         </Link>
         <div className="bottom-box">
-        <RentNowButton 
-          vehicleDetailsPageLink={vehicleDetailsPageLink} 
-          companyLogo={vehicle.companyLogo} 
-        />
-        <ContactIcons
-          vehicleId={vehicle.vehicleId}
-          whatsappUrl={whatsappUrl}
-          email={vehicle.email}
-          phoneNumber={formattedPhoneNumber}
-        />
+          <RentNowButton
+            vehicleDetailsPageLink={vehicleDetailsPageLink}
+            companyLogo={vehicle.companyLogo}
+          />
+          <ContactIcons
+            vehicleId={vehicle.vehicleId}
+            whatsappUrl={whatsappUrl}
+            email={vehicle.email}
+            phoneNumber={formattedPhoneNumber}
+          />
         </div>
       </div>
     </div>

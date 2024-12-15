@@ -6,7 +6,12 @@ import ProfileSpecification from "@/components/root/vehicle details/profile-spec
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import RentNowSection from "@/components/common/rent-now/RentNowSection";
 import { Company, RentalDetails } from "@/types/vehicle-details-types";
-import { formatPhoneNumber, generateModelDetailsUrl } from "@/helpers";
+import {
+  formatPhoneNumber,
+  formatToUrlFriendly,
+  generateModelDetailsUrl,
+} from "@/helpers";
+import Link from "next/link";
 
 type ProfileCardProps = {
   company: Company;
@@ -24,8 +29,6 @@ type ProfileCardProps = {
     amountInAED: string;
   };
 };
-
-
 
 const ProfileCard = ({
   company,
@@ -58,6 +61,10 @@ const ProfileCard = ({
 
   const isCompanyValid = !!company.companyName && !!company.companyProfile;
 
+  // generating dynamic url for the company profile page
+  const formattedCompanyName = formatToUrlFriendly(company.companyName);
+  const companyProfilePageLink = `/profile/${formattedCompanyName}/${company.companyId}`;
+
   return (
     <MotionDiv className="profile-card">
       <div className="profile-heading">
@@ -69,18 +76,30 @@ const ProfileCard = ({
       )}
 
       <div className="top">
-        <div className="profile-details">
-          <div className={`${company.companyProfile ? "" : "blurred-profile"} profile`}>
+        <Link href={companyProfilePageLink} className="profile-details">
+          <div
+            className={`${
+              company.companyProfile ? "" : "blurred-profile"
+            } profile-logo`}
+          >
             <img
               src={company.companyProfile || "/assets/img/blur-profile.webp"}
-              alt={company?.companyName ? `${company.companyName} logo` : "Company logo"}
+              alt={
+                company?.companyName
+                  ? `${company.companyName} logo`
+                  : "Company logo"
+              }
               loading="lazy"
-              className="company-profile"
+              className="company-profile-logo"
               draggable={false}
             />
           </div>
           <div>
-            <p className={`${company.companyName ? "" : "blurred-text"} company-name`}>
+            <p
+              className={`${
+                company.companyName ? "" : "blurred-text"
+              } company-name`}
+            >
               {company.companyName || "Company Disabled"}
             </p>
             <div className="verified">
@@ -88,7 +107,7 @@ const ProfileCard = ({
               <span>Verified Vendor</span>
             </div>
           </div>
-        </div>
+        </Link>
       </div>
 
       <ProfileSpecification

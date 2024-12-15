@@ -44,19 +44,14 @@ export default async function RelatedResults({
   // If there are no vehicles left after filtering, return null
   if (vehicleData.length === 0) return null;
 
-  if (vehicleData.length === 0) return null;
+
 
   return (
     <MotionSection className="wrapper">
       <h2 className="heading ">Related Recommendations</h2>
       <CarouselWrapper>
         {vehicleData.map((vehicle) => (
-          <MainCard
-            key={vehicle.vehicleId}
-            vehicle={vehicle}
-            state={state}
-            category={category}
-          />
+          <MainCard key={vehicle.vehicleId} vehicle={vehicle} />
         ))}
       </CarouselWrapper>
     </MotionSection>
