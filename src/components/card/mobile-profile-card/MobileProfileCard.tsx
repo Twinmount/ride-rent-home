@@ -5,8 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import ProfileSpecification from "@/components/root/vehicle details/profile-specifications/ProfileSpecification";
 import { Company, RentalDetails } from "@/types/vehicle-details-types";
 import ContactIcons from "@/components/common/contact-icons/ContactIcons";
-import { formatPhoneNumber, generateModelDetailsUrl } from "@/helpers";
+import {
+  formatPhoneNumber,
+  formatToUrlFriendly,
+  generateModelDetailsUrl,
+} from "@/helpers";
 import RentNowSection from "@/components/common/rent-now/RentNowSection";
+import Link from "next/link";
 
 type MobileProfileCardProps = {
   company: Company;
@@ -60,9 +65,6 @@ const MobileProfileCard = ({
     }
   }, [isExpanded]);
 
-  // Handle case where company is null
-  const isCompanyValid = !!company.companyName && !!company.companyProfile;
-
   // Handle case where contactDetails is null
   const contactDetails = company?.contactDetails;
 
@@ -89,6 +91,10 @@ const MobileProfileCard = ({
   const whatsappUrl = contactDetails
     ? `https://wa.me/${contactDetails.whatsappCountryCode}${contactDetails.whatsappPhone}?text=${encodedMessage}`
     : null; // Handle null WhatsApp details
+
+  // generating dynamic url for the company profile page
+  const formattedCompanyName = formatToUrlFriendly(company.companyName);
+  const companyProfilePageLink = `/profile/${formattedCompanyName}/${company.companyId}`;
 
   return (
     <>
@@ -118,7 +124,7 @@ const MobileProfileCard = ({
         {/* profile */}
         <div className="top">
           {/* left */}
-          <div className="profile-details">
+          <Link href={companyProfilePageLink} className="profile-details">
             <div
               className={` ${
                 company.companyProfile ? "" : "blurred-profile"
@@ -153,19 +159,19 @@ const MobileProfileCard = ({
                 <span>Verified Vendor</span>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* rent now button */}
           <div className="profile-right">
             <div className="contact-container">
-            <RentNowSection
-              vehicleId={vehicleId}
-              whatsappUrl={whatsappUrl}
-              email={contactDetails?.email}
-              formattedPhoneNumber={formattedPhoneNumber}
-              isPing={true}
-              isMobileProfileCard={true}
-            />
+              <RentNowSection
+                vehicleId={vehicleId}
+                whatsappUrl={whatsappUrl}
+                email={contactDetails?.email}
+                formattedPhoneNumber={formattedPhoneNumber}
+                isPing={true}
+                isMobileProfileCard={true}
+              />
             </div>
           </div>
         </div>

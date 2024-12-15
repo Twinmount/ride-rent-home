@@ -38,7 +38,7 @@ export async function generateMetadata({
     `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
     {
       method: "GET",
-      cache: "no-cache",
+      next: { revalidate: 300 },
     }
   );
 

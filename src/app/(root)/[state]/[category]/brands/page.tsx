@@ -55,7 +55,7 @@ export default async function Brands({
 
   const response = await fetch(
     `${baseUrl}/vehicle-brand/list?page=${page}&limit=20&sortOrder=ASC&categoryValue=${category}&search=${search}`,
-    { method: "GET", cache: "no-cache" }
+    { method: "GET", next: { revalidate: 600 }, }
   );
 
   // Parse the JSON response

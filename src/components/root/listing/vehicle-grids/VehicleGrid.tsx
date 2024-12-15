@@ -72,16 +72,12 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
                   <VerticalCard
                     key={vehicle.vehicleId || index}
                     vehicle={vehicle}
-                    category={category as string}
-                    state={state as string}
                     isHourlyRental={isHourlyRental}
                   />
                 ) : (
                   <HorizontalCard
                     key={vehicle.vehicleId || index}
                     vehicle={vehicle}
-                    category={category as string}
-                    state={state as string}
                     isHourlyRental={isHourlyRental}
                   />
                 )

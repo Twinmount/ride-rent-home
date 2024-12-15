@@ -24,15 +24,11 @@ import ContactIcons from "@/components/common/contact-icons/ContactIcons";
 
 type HorizontalCardProps = {
   vehicle: VehicleCardType;
-  category: string;
-  state: string;
   isHourlyRental?: boolean;
 };
 
 const HorizontalCard: FC<HorizontalCardProps> = ({
   vehicle,
-  category,
-  state,
   isHourlyRental = false,
 }) => {
   const formattedPhoneNumber =
@@ -44,7 +40,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
   const modelDetails = generateModelDetailsUrl(vehicle);
 
   // link for the vehicle details page
-  const vehicleDetailsPageLink = `/${state}/${category}/${modelDetails}/${vehicle.vehicleId}`;
+  const vehicleDetailsPageLink = `/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}/${vehicle.vehicleId}`;
 
   // page link required for whatsapp share
   const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
@@ -126,9 +122,9 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
               <Tooltip>
                 <TooltipTrigger className="spec">
                   <img
-                    src={`${baseAssetsUrl}/icons/vehicle-specifications/${category}/${formatKeyForIcon(
-                      key
-                    )}.svg`}
+                    src={`${baseAssetsUrl}/icons/vehicle-specifications/${
+                      vehicle.vehicleCategory
+                    }/${formatKeyForIcon(key)}.svg`}
                     alt={`${spec.name} icon`}
                     className="spec-icon"
                   />
@@ -217,18 +213,22 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
               <Link href={vehicleDetailsPageLink} className="rent-now-btn">
                 <span className="rent-now-text">RENT NOW</span>
                 <span className="flex mr-1">
-                  <span className="green-round"></span>       
-                  <span className={vehicle.companyLogo ? "" : "margin-for-span"}>Available now for chat</span>
+                  <span className="green-round"></span>
+                  <span
+                    className={vehicle.companyLogo ? "" : "margin-for-span"}
+                  >
+                    Available now for chat
+                  </span>
                 </span>
               </Link>
-            ) : ( 
+            ) : (
               <div className="not-available-div">
                 <div>Currently Unavailable/</div>
                 {/* <div>Or</div> */}
                 <span>Vehicle On Trip</span>
               </div>
             )}
-            
+
             {/* Icons for WhatsApp and email */}
             <ContactIcons
               vehicleId={vehicle.vehicleId}
