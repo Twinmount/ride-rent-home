@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect } from "react";
-import { formUrlQuery } from "@/helpers";
+import { formUrlQuery, sortFilters } from "@/helpers";
 
 type Props = {
   filters: {
@@ -15,6 +15,8 @@ export default function AgentVehicleFilter({ filters }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const sortedFilters = sortFilters(filters);
+
   // Memoized function to update the filter in the URL
   const updateFilterInUrl = useCallback(
     (filterValue: string) => {
@@ -22,30 +24,37 @@ export default function AgentVehicleFilter({ filters }: Props) {
       const newUrl = formUrlQuery({
         params: searchParams.toString(),
         key: "filter",
-        value: filterValue,
+        value: filterValue || sortedFilters[0].value,
       });
       router.push(newUrl, { scroll: false });
     },
     [searchParams, router]
   );
 
-  // Extract the current filter directly from the URL (query params)
-  const currentFilter = searchParams.get("filter") || "";
-
-  // Ensure the first filter is applied if no filter is set
   useEffect(() => {
-    if (!currentFilter && filters.length > 0) {
-      updateFilterInUrl(filters[0].value); // Set the first filter value if no filter is set
+    // Initialize the `page` param in the URL if it's not already set
+    if (!searchParams.get("filter")) {
+      const newUrl = formUrlQuery({
+        params: searchParams.toString(),
+        key: "filter",
+        value: sortedFilters[0].value, // Set to the first filter by default
+      });
+      router.replace(newUrl, { scroll: false });
     }
-  }, [currentFilter, filters, updateFilterInUrl]);
+  }, [searchParams, router]);
+
+  // Extract the current filter directly from the URL (query params)
+  const currentFilter = searchParams.get("filter") || sortedFilters[0].value;
+
+  //sorting the filters
 
   return (
     <div className="flex-center flex-wrap gap-2 my-4">
-      {filters.map((filter) => (
+      {sortedFilters.map((filter) => (
         <div
           key={filter.value}
           onClick={() => updateFilterInUrl(filter.value)} // Update the filter when clicked
-          className={`font-medium shadow-md border hover:bg-yellow cursor-pointer bg-gray-200 hover:text-white rounded-xl px-2 ${
+          className={`font-medium shadow-md border h-6 md:h-8 flex-center hover:bg-yellow cursor-pointer bg-gray-200 hover:text-white rounded-[0.5rem] px-2 ${
             currentFilter === filter.value
               ? "selected bg-yellow text-white"
               : ""

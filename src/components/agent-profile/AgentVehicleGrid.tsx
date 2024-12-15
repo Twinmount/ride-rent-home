@@ -34,7 +34,7 @@ export default async function AgentVehicleGrid({
   return (
     <div>
       {vehicles.length > 0 ? (
-        <div className="flex justify-center flex-wrap items-start  gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 w-fit max-w-fit mx-auto gap-4">
           {vehicles.map((vehicle, index) => (
             <MainCard key={index} vehicle={vehicle} />
           ))}

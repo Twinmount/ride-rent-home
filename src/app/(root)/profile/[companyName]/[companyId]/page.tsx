@@ -30,20 +30,22 @@ export async function generateMetadata({
 
   const data: FetchCompanyDetailsResponse = await response.json();
 
-  if (!response.ok || !data.result || !data.result.companyName) {
+  if (!response.ok || !data.result) {
     return notFound();
   }
 
   const companyDetails = data.result;
 
+  const companyName = companyDetails.companyName || "Ride.Rent";
+
   // Construct meta title
-  const title = `${companyDetails.companyName} | Rent cars, bikes, sport cars, bicycles, buses, vans, buggies, and charters from Ride.Rent | Most trusted vehicle renting platform.`;
+  const title = `${companyName} | Rent cars, bikes, sport cars, bicycles, buses, vans, buggies, and charters from Ride.Rent | Most trusted vehicle renting platform.`;
 
   // Construct meta description
   const description = `Rent cars, bikes, sports cars, bicycles, buses, vans, buggies, and charters effortlessly with ${companyDetails.companyName}. Partnering with the best rental agencies, Ride.Rent is your trusted vehicle rental platform for seamless bookings, unbeatable prices, and top-quality service.`;
 
   // Construct canonical URL
-  const formattedCompanyName = formatToUrlFriendly(companyDetails.companyName);
+  const formattedCompanyName = formatToUrlFriendly(companyName);
   const companyProfilePageLink = `/profile/${formattedCompanyName}/${companyId}`;
 
   const canonicalUrl = `https://ride.rent/${companyProfilePageLink}`;
@@ -54,7 +56,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    keywords: `rent vehicles, ${companyDetails.companyName}, cars, bikes, charters, vehicle rental platform`,
+    keywords: `rent vehicles, ${companyName}, cars, bikes, charters, vehicle rental platform`,
     openGraph: {
       title,
       description,
@@ -63,7 +65,7 @@ export async function generateMetadata({
       images: [
         {
           url: ogImage,
-          alt: `${companyDetails.companyName} logo`,
+          alt: `${companyName} logo`,
           width: 1200,
           height: 630,
         },
@@ -126,15 +128,13 @@ export default async function AgentProfilePage({
   const companyDetails = data.result;
   const filters = data.result.categories || [];
 
-  // Render Components
-
   return (
     <section className="wrapper bg-white">
       <AgentProfile companyDetails={companyDetails} />
       <AgentVehicleFilter filters={filters} />
       <Suspense
         fallback={
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <VehicleCardSkeleton />
           </div>
         }

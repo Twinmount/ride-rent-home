@@ -76,27 +76,25 @@ const ProfileCard = ({
       )}
 
       <div className="top">
-        <div className="profile-details">
+        <Link href={companyProfilePageLink} className="profile-details">
           <div
             className={`${
               company.companyProfile ? "" : "blurred-profile"
-            } profile`}
+            } profile-logo`}
           >
-            <Link href={companyProfilePageLink}>
-              <img
-                src={company.companyProfile || "/assets/img/blur-profile.webp"}
-                alt={
-                  company?.companyName
-                    ? `${company.companyName} logo`
-                    : "Company logo"
-                }
-                loading="lazy"
-                className="company-profile"
-                draggable={false}
-              />
-            </Link>
+            <img
+              src={company.companyProfile || "/assets/img/blur-profile.webp"}
+              alt={
+                company?.companyName
+                  ? `${company.companyName} logo`
+                  : "Company logo"
+              }
+              loading="lazy"
+              className="company-profile-logo"
+              draggable={false}
+            />
           </div>
-          <Link href={companyProfilePageLink}>
+          <div>
             <p
               className={`${
                 company.companyName ? "" : "blurred-text"
@@ -108,8 +106,8 @@ const ProfileCard = ({
               <MdVerifiedUser className="icon" />
               <span>Verified Vendor</span>
             </div>
-          </Link>
-        </div>
+          </div>
+        </Link>
       </div>
 
       <ProfileSpecification

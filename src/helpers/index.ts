@@ -66,6 +66,30 @@ export const sortCategories = (categories: CategoryType[]): CategoryType[] => {
   });
 };
 
+// helpers/sortFilters.ts
+export const sortFilters = (
+  filters: { name: string; value: string }[]
+): { name: string; value: string }[] => {
+  // Define the order of categories
+  const order = [
+    "cars",
+    "sports-cars",
+    "motorcycles",
+    "sports-bikes",
+    "bicycles",
+    "buses",
+    "leisure-boats",
+    "yachts",
+    "vans",
+    "buggies",
+    "charters",
+  ];
+
+  return filters
+    .filter((filter) => order.includes(filter.value))
+    .sort((a, b) => order.indexOf(a.value) - order.indexOf(b.value));
+};
+
 // Helper function to format the key to match icon naming convention
 export const formatKeyForIcon = (key: string) => {
   return key.toLowerCase().replace(/\s+/g, "-");
