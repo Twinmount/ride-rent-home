@@ -19,9 +19,12 @@ export default function SharePortfolio() {
   };
 
   return (
-    <button onClick={handleShare} className="flex-center ">
-      <Share2 className="text-yellow w-4 h-4  mr-1 mb-1 group hover:bg-gray-100" />
-      <span className="group-hover:underline font-light">Share Portfolio</span>
+    <button
+      onClick={handleShare}
+      className="flex-center text-sm sm:text-base bg-gray-200 px-1 rounded-[0.5rem] font-light group"
+    >
+      <Share2 className="text-yellow w-4 h-4  mr-1 mb-1 " />
+      Share Portfolio
     </button>
   );
 }
