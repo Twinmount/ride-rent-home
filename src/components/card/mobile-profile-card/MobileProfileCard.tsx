@@ -149,7 +149,7 @@ const MobileProfileCard = ({
                 />
               </div>
 
-              <div className="info">
+              <div className="company-info">
                 <p
                   className={`${
                     company.companyName ? "" : "blurred-text"
@@ -159,7 +159,7 @@ const MobileProfileCard = ({
                 </p>
                 {/* Assuming verification logic based on specs */}
 
-                <div className="verified">
+                <div className="verified-vendor">
                   <MdVerifiedUser className="icon" />
                   <span>Verified Vendor</span>
                 </div>

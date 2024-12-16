@@ -4,13 +4,9 @@ import { Info, Languages, MapPin } from "lucide-react";
 import AgentContactIcons from "../common/agent-contact-icons/AgentContactIcons";
 import { formatPhoneNumber } from "@/helpers";
 import GreenNotificationPing from "../common/GreenNotificationPing";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import SharePortfolio from "./SharePortfolio";
+import LanguageSupport from "./LanguageSupport";
 
 interface ContactDetails {
   email: string;
@@ -32,14 +28,11 @@ interface AgentProfileProps {
   companyDetails: CompanyDetails;
 }
 
-const AgentProfile: React.FC<AgentProfileProps> = ({ companyDetails }) => {
-  const {
-    companyName,
-    companyLogo,
-    companyAddress,
-    companyLanguages,
-    contactDetails,
-  } = companyDetails;
+export default function AgentProfile({ companyDetails }: AgentProfileProps) {
+  const { companyName, companyLogo, contactDetails, companyAddress } =
+    companyDetails;
+
+  const companyLanguages = companyDetails.companyLanguages || [];
 
   const message = `Hi *_${companyName}_*.\n\nI am interested in renting/leasing a vehicle from your fleet. 
 Kindly let me know the next steps or any additional information required to proceed. 
@@ -82,7 +75,7 @@ I look forward to your prompt response.\n\nSent via Ride.Rent`;
           </div>
         </div>
 
-        {/* Text content */}
+        {/* Company Details */}
         <div className="flex flex-col items-center sm:items-start sm:ml-4 lg:ml-6 space-y-2 mt-4 sm:mt-0 lg:flex-1">
           {/* Agent name and verified badge */}
           <div className="flex flex-col items-center sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
@@ -102,10 +95,10 @@ I look forward to your prompt response.\n\nSent via Ride.Rent`;
           </div>
 
           {/* Location */}
-          <p className="text-sm sm:text-sm font-extralight text-center sm:text-left">
+          <p className="text-sm  font-extralight text-center sm:text-left">
             {companyAddress || "Address Not Available"}
           </p>
-          <div className="text-sm sm:text-base -ml-1 font-light text-center sm:text-left flex-center gap-x-3">
+          <div className="text-sm sm:text-base -ml-1  text-center sm:text-left flex-center gap-x-3">
             {companyName && (
               <a
                 href={`https://www.google.com/maps/search/${encodeURIComponent(
@@ -113,7 +106,7 @@ I look forward to your prompt response.\n\nSent via Ride.Rent`;
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-transparent text-sm sm:text-base text-gray-700  flex-center gap-x-2 hover:underline px-2 rounded-lg font-normal py-[0.15rem] hover:border-transparent  group"
+                className="text-sm sm:text-base text-gray-700  flex-center gap-x-2  px-1 rounded-[0.5rem]  hover:border-transparent  bg-gray-200 cursor-pointer"
               >
                 <MapPin
                   width={16}
@@ -124,34 +117,12 @@ I look forward to your prompt response.\n\nSent via Ride.Rent`;
               </a>
             )}
 
+            {/* Share portfolio button */}
             <SharePortfolio />
           </div>
 
           {/* Multilingual support */}
-          <div className="flex items-start space-x-2">
-            <Languages className="text-yellow w-4 h-4 sm:w-5 sm:h-5 -mr-1 mt-1" />
-            <span className="text-sm sm:text-base text-gray-700 max-sm:text-center flex items-center">
-              {!companyLanguages || companyLanguages.length === 0
-                ? "Language Information Not Available"
-                : companyLanguages && companyLanguages.length === 1
-                ? `Language Support: ${companyLanguages[0]}`
-                : `Multilingual Support: ${companyLanguages.join(", ")}`}
-
-              <TooltipProvider delayDuration={10}>
-                <Tooltip>
-                  <TooltipTrigger className="mb-1 ml-2">
-                    <Info width={15} className="text-blue-500" />
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-slate-900 text-white max-w-56">
-                    <p>
-                      Languages the staff can speak or understand, ensuring
-                      customer communication comfort
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </span>
-          </div>
+          <LanguageSupport companyLanguages={companyLanguages} />
         </div>
       </div>
 
@@ -174,6 +145,4 @@ I look forward to your prompt response.\n\nSent via Ride.Rent`;
       </div>
     </div>
   );
-};
-
-export default AgentProfile;
+}
