@@ -12,14 +12,13 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchStates } from "@/lib/next-api/next-api";
 import { StateType } from "@/types";
 import { useEffect, useState } from "react";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { rearrangeStates } from "@/helpers";
 import { useMemo } from "react";
 
 export default function StatesDropdown() {
   const router = useRouter();
-  const pathname = usePathname();
 
   // State to hold the selected state
   const [selectedState, setSelectedState] = useState<StateType | undefined>(
@@ -33,7 +32,6 @@ export default function StatesDropdown() {
   const { data, isLoading } = useQuery({
     queryKey: ["states"],
     queryFn: fetchStates,
-    staleTime: 0,
   });
 
   // Memoize the rearranged states to avoid recalculating on every render
@@ -42,37 +40,17 @@ export default function StatesDropdown() {
     return rearrangeStates(fetchedStates);
   }, [data]);
 
-  // List of paths where the component should not render
-  const excludePaths = ["/terms-condition", "/about-us", "/privacy-policy","/agent-profile-page"];
-
-  // Use startsWith to exclude dynamic paths like /faq and /faq/{state}
-  const shouldExclude =
-    pathname.startsWith("/faq") ||
-    pathname.startsWith("/profile") ||
-    excludePaths.includes(pathname);
-
-  // Only run the useEffect if the current path is NOT in the excludePaths
   useEffect(() => {
-    if (!shouldExclude && states.length > 0) {
+    if (states.length > 0) {
       const foundState = states.find((data) => data.stateValue === state);
       if (foundState) {
         setSelectedState(foundState);
       } else {
-        // Set default state to "Dubai"
-        const defaultState = states.find((data) => data.stateValue === "dubai");
-        if (defaultState) {
-          setSelectedState(defaultState);
-          // Navigate to the "Dubai" state if the state is not found
-          router.push(`/dubai/${selectedCategory}`);
-        }
+        // If the state is not found, render the notFound page
+        notFound(); // This will trigger the 404 page
       }
     }
-  }, [state, states, shouldExclude, router, selectedCategory]);
-
-  // If the current path is in the excludePaths list, return null and don't render the component
-  if (shouldExclude) {
-    return null;
-  }
+  }, [state, states, router, selectedCategory]);
 
   // Function to handle state selection
   const handleStateSelect = (stateValue: string) => {

@@ -11,11 +11,10 @@ import Link from "next/link";
 import { FaLink } from "react-icons/fa6";
 import { fetchQuickLinksByValue } from "@/lib/next-api/next-api";
 import { LinkType } from "@/types";
-import { useParams, usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 
 export default function QuickLinksDropdown() {
-  const pathname = usePathname();
   const { state } = useParams<{ state: string; category: string }>();
 
   // Fetch quick links based on the current state
@@ -23,23 +22,10 @@ export default function QuickLinksDropdown() {
     queryKey: ["quick-links", state],
     queryFn: () => fetchQuickLinksByValue(state),
     enabled: !!state,
-    staleTime: 0,
+    staleTime: 1000 * 60 * 3,
   });
 
   const linksData: LinkType[] = data?.result?.list || [];
-
-  // List of paths where the component should not render
-  const excludePaths = [
-    "/terms-condition",
-    "/faq",
-    "/about-us",
-    "/privacy-policy",
-  ];
-
-  // Check if the current path is in the excludePaths list
-  if (excludePaths.includes(pathname)) {
-    return null;
-  }
 
   return (
     <DropdownMenu>
