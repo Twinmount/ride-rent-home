@@ -18,7 +18,7 @@ export default async function AgentVehicleGrid({
 
   // Fetch vehicles from the backend
   const response = await fetch(
-    `${baseUrl}/vehicle/vehicle/company/list?page=${page}&companyId=${companyId}&limit=2&sortOrder=DESC&vehicleCategory=${filter}`,
+    `${baseUrl}/vehicle/vehicle/company/list?page=${page}&companyId=${companyId}&limit=9&sortOrder=DESC&vehicleCategory=${filter}`,
     {
       method: "GET",
       next: { revalidate: 300 },
