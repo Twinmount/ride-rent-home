@@ -127,7 +127,11 @@ const MobileProfileCard = ({
           <div className="border-wrapper">
             {/* animated border */}
             <div className="animate-rotate absolute inset-0 z-0 h-full w-full rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
-            <Link href={companyProfilePageLink} className="profile-details">
+            <Link
+              href={companyProfilePageLink}
+              target="_blank"
+              className="profile-details"
+            >
               <div
                 className={` ${
                   company.companyProfile ? "" : "blurred-profile"

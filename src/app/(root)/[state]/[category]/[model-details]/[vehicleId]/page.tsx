@@ -38,7 +38,7 @@ export async function generateMetadata({
     `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
     {
       method: "GET",
-      next: { revalidate: 300 },
+      next: { revalidate: 60 },
     }
   );
 
@@ -62,9 +62,9 @@ export async function generateMetadata({
   }
 
   // Construct the title
-  const title = `Rent Premium ${
-    data.result.modelName
-  } ${data.result.subTitle} | Hire for rent in ${data.result.state.label}${
+  const title = `Rent Premium ${data.result.modelName} ${
+    data.result.subTitle
+  } | Hire for rent in ${data.result.state.label}${
     seatPart ? `, ${seatPart}` : ""
   }`;
 
@@ -151,7 +151,10 @@ export default async function VehicleDetails({
   // Fetch the vehicle data from the API
   const response = await fetch(
     `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
-    { cache: "no-cache" }
+    {
+      method: "GET",
+      next: { revalidate: 60 },
+    }
   );
 
   const data: VehicleDetailsResponse = await response.json();
@@ -170,7 +173,7 @@ export default async function VehicleDetails({
   const vehicleData = {
     brandName: vehicle.brand.value,
     model: vehicle.modelName,
-    state: state, 
+    state: state,
     category: category,
   };
 
@@ -184,9 +187,8 @@ export default async function VehicleDetails({
       <MotionDiv className="heading-box">
         <h1 className="custom-heading model-name">{vehicle?.modelName}</h1>
         <p className="custom-sub-heading">
-          Rent {vehicle?.modelName} model in{" "}
-          {vehicle?.state.label}. Enjoy flexible rental terms with no hidden
-          fees.{"  "}
+          Rent {vehicle?.modelName} model in {vehicle?.state.label}. Enjoy
+          flexible rental terms with no hidden fees.{"  "}
           {vehicle?.company.companySpecs.isCryptoAccepted
             ? "Crypto payments are accepted."
             : "Crypto payments are not accepted."}
