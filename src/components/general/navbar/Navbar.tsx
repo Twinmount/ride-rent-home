@@ -40,7 +40,8 @@ const Navbar = () => {
   }, []);
 
   // should state/category/quicklinks dropdowns render
-  const shouldRenderDropdowns = useShouldExclude();
+  const shouldRenderDropdowns = useShouldExclude({ isCategory: false });
+  const shouldCategoryRender = useShouldExclude({ isCategory: true });
 
   return (
     <header className={`${styles.header} padding main-wrapper`}>
@@ -77,7 +78,7 @@ const Navbar = () => {
               </li>
             )}
 
-            {!shouldRenderDropdowns && (
+            {!shouldCategoryRender && (
               <li className={styles.vehicles}>
                 <CategoryDropdown />
               </li>
