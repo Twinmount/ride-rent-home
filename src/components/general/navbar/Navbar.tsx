@@ -11,6 +11,7 @@ import StatesDropdown from "../navbar-dropdown/StatesDropdown";
 import QuickLinksDropdown from "../navbar-dropdown/QuickLinksDropdown";
 import CategoryDropdown from "../navbar-dropdown/CategoryDropdown";
 import { useParams } from "next/navigation";
+import { useShouldExclude } from "@/hooks/useShouldExclude";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -38,6 +39,9 @@ const Navbar = () => {
     };
   }, []);
 
+  // should state/category/quicklinks dropdowns render
+  const shouldRenderDropdowns = useShouldExclude();
+
   return (
     <header className={`${styles.header} padding main-wrapper`}>
       <nav className={styles["nav-container"]}>
@@ -57,7 +61,7 @@ const Navbar = () => {
                   quality={100}
                 />
                 <figcaption>
-                Vehicles for <span>Every Journey</span>
+                  Vehicles for <span>Every Journey</span>
                 </figcaption>
               </figure>
             </Link>
@@ -66,17 +70,24 @@ const Navbar = () => {
         <div className={styles["nav-items-container"]}>
           <ul>
             {/* location */}
-            <li className={styles.locations}>
-              <StatesDropdown />
-            </li>
 
-            <li className={styles.vehicles}>
-              <CategoryDropdown />
-            </li>
+            {!shouldRenderDropdowns && (
+              <li className={styles.locations}>
+                <StatesDropdown />
+              </li>
+            )}
 
-            <li className={styles.links}>
-              <QuickLinksDropdown />
-            </li>
+            {!shouldRenderDropdowns && (
+              <li className={styles.vehicles}>
+                <CategoryDropdown />
+              </li>
+            )}
+
+            {!shouldRenderDropdowns && (
+              <li className={styles.links}>
+                <QuickLinksDropdown />
+              </li>
+            )}
 
             <li className={styles["list-btn"]}>
               <Link
