@@ -28,9 +28,6 @@ type ParamsProps = {
   params: { state: string; category: string; vehicleId: string };
 };
 
-// revalidate after 1 minute
-export const revalidate = 60;
-
 // dynamic meta data generate
 export async function generateMetadata({
   params: { state, category, vehicleId },
@@ -41,6 +38,7 @@ export async function generateMetadata({
     `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
     {
       method: "GET",
+      cache: "no-cache",
     }
   );
 
@@ -155,6 +153,7 @@ export default async function VehicleDetails({
     `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
     {
       method: "GET",
+      cache: "no-cache",
     }
   );
 
