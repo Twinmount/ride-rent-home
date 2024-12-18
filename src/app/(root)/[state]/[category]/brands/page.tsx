@@ -11,6 +11,10 @@ type ParamsProps = {
   searchParams: { [key: string]: string | undefined };
 };
 
+// revalidate after 10 minutes
+export const revalidate = 600;
+
+// generate meta data
 export async function generateMetadata({
   params: { state, category },
 }: ParamsProps) {
@@ -54,8 +58,7 @@ export default async function Brands({
   const search = searchParams.search || "";
 
   const response = await fetch(
-    `${baseUrl}/vehicle-brand/list?page=${page}&limit=20&sortOrder=ASC&categoryValue=${category}&search=${search}`,
-    { method: "GET", next: { revalidate: 600 }, }
+    `${baseUrl}/vehicle-brand/list?page=${page}&limit=20&sortOrder=ASC&categoryValue=${category}&search=${search}`
   );
 
   // Parse the JSON response

@@ -24,7 +24,7 @@ The Ride Rent Client (Next.Js) Platform is a web application designed to allow a
 
 3. **Install the dependencies:**
    ```
-   npm install
+   pnpm install
    ```
 
 ## Running the Project locally
@@ -32,7 +32,7 @@ The Ride Rent Client (Next.Js) Platform is a web application designed to allow a
 To run the project locally, use the following command:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ## Building the Project in Development
@@ -40,7 +40,7 @@ npm run dev
 To build the project, use the following command:
 
 ```bash
-npm run build:dev
+pnpm run build:dev
 ```
 
 ## Building the Project in Production
@@ -48,7 +48,7 @@ npm run build:dev
 To build the project, use the following command:
 
 ```bash
-npm run build:dev
+pnpm run build:dev
 ```
 
 ## Run the build version
@@ -56,5 +56,23 @@ npm run build:dev
 To run/preview the build version, use the following command:
 
 ```bash
-npm run start
+pnpm run start
 ```
+
+## Redirection Logic
+
+This project includes custom redirection logic implemented in both the `next.config.js` file and specific components.
+
+1. **Global Redirection in `next.config.js`:**
+
+   - The redirection logic in the `next.config.mjs` file handles the redirection from "ride.rent" to "ride.rent/${state}/${category}.
+   - Example of use case:
+   - "ride.rent" -> "ride.rent/dubai/cars".
+   - "ride.rent/dubai" -> "ride.rent/dubai/cars".
+   - "ride.rent/abu-dhabi" -> "ride.rent/abu-dhabi/cars".
+   - "ride.rent/abu-dhabi/yachts" -> "ride.rent/abu-dhabi/yachts".
+
+2. **Component-Specific Redirection:**
+   - In the Navbar.tsx, the two dropdown components StatesDropdown.tsx and CategoryDropdown.tsx handles the "404 not found" redirection if the current state/category is invalid.
+
+If any changes to redirection behavior are needed, be sure to update both the configuration file and any affected components.

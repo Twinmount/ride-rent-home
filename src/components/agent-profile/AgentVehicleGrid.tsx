@@ -21,7 +21,7 @@ export default async function AgentVehicleGrid({
     `${baseUrl}/vehicle/vehicle/company/list?page=${page}&companyId=${companyId}&limit=9&sortOrder=DESC&vehicleCategory=${filter}`,
     {
       method: "GET",
-      next: { revalidate: 300 },
+      cache: "no-store",
     }
   );
 
