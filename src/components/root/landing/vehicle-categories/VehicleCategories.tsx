@@ -2,7 +2,6 @@
 
 import "./VehicleCategories.scss";
 import { useMemo, useRef, useState } from "react";
-import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { useQuery } from "@tanstack/react-query";
@@ -21,10 +20,10 @@ const VehicleCategories = ({ state, category }: VehicleCategoriesProps) => {
 
   const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
 
-  const plugin = useRef(Autoplay({ delay: 1600, stopOnInteraction: false }));
+  const plugin = useRef(Autoplay({ delay: 1600, stopOnInteraction: true }));
 
   // Fetch categories using useQuery
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });
