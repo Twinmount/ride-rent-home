@@ -13,9 +13,6 @@ type PropsType = {
   params: { companyId: string };
 };
 
-// revalidate after 1 minute
-export const revalidate = 60;
-
 // // Generate Meta Data
 export async function generateMetadata({
   params: { companyId },
@@ -27,6 +24,7 @@ export async function generateMetadata({
     `${baseUrl}/company/public?companyId=${companyId}`,
     {
       method: "GET",
+      cache: "no-cache",
     }
   );
 
@@ -118,6 +116,7 @@ export default async function AgentProfilePage({
     `${baseUrl}/company/public?companyId=${companyId}`,
     {
       method: "GET",
+      cache: "no-cache",
     }
   );
 
