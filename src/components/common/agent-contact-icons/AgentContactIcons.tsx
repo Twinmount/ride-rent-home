@@ -16,14 +16,71 @@ const AgentContactIcons: React.FC<AgentContactIconsProps> = ({
   email,
   phoneNumber,
 }) => {
-  const handleWhatsAppClick = async () => {
+  const handleWhatsAppClick = () => {
     if (!whatsappUrl) return;
-    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+
+    // Open WhatsApp in a new tab immediately
+    const newTab = window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+
+    const gtag_report_conversion = (url: string | null) => {
+      if (typeof window !== "undefined" && typeof window.gtag === "function") {
+        const callback = () => {
+          if (url && !newTab) {
+            // If the new tab wasn’t successfully opened earlier, fallback
+            window.open(url, "_blank", "noopener,noreferrer");
+          }
+        };
+
+        window.gtag("event", "conversion", {
+          send_to: "AW-11504082547/EsCKCMuEyvkZEPO8ye0q",
+          value: 1.0,
+          currency: "INR",
+          event_callback: callback,
+        });
+      } else {
+        console.warn("gtag is not defined");
+        if (url && !newTab) {
+          // Fallback to open WhatsApp in a new tab
+          window.open(url, "_blank", "noopener,noreferrer");
+        }
+      }
+    };
+
+    gtag_report_conversion(whatsappUrl);
   };
 
-  const handleEmailClick = async () => {
+  const handleEmailClick = () => {
     if (!email) return;
-    window.location.href = `mailto:${email}`;
+
+    // Open Email in a new tab immediately
+    const emailLink = `mailto:${email}`;
+    const newTab = window.open(emailLink, "_blank", "noopener,noreferrer");
+
+    const gtag_report_conversion = (url: string | null) => {
+      if (typeof window !== "undefined" && typeof window.gtag === "function") {
+        const callback = () => {
+          if (url && !newTab) {
+            // If the new tab wasn’t successfully opened earlier, fallback
+            window.open(url, "_blank", "noopener,noreferrer");
+          }
+        };
+
+        window.gtag("event", "conversion", {
+          send_to: "AW-11504082547/LqEKCJfvv_kZEPO8ye0q",
+          value: 1.0,
+          currency: "INR",
+          event_callback: callback,
+        });
+      } else {
+        console.warn("gtag is not defined");
+        if (url && !newTab) {
+          // Fallback to open Email in a new tab
+          window.open(url, "_blank", "noopener,noreferrer");
+        }
+      }
+    };
+
+    gtag_report_conversion(emailLink);
   };
 
   const isDisabled = !whatsappUrl || !email || !phoneNumber;

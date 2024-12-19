@@ -1,24 +1,24 @@
-import './globals.scss'
-import { ReactQueryProvider } from '@/utils/ReactQueryProvider'
-import type { Metadata } from 'next'
-import { Fira_Sans } from 'next/font/google'
-import Script from 'next/script'
+import "./globals.scss";
+import { ReactQueryProvider } from "@/utils/ReactQueryProvider";
+import type { Metadata } from "next";
+import { Fira_Sans } from "next/font/google";
+import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: 'Ride.Rent',
-  description: 'The ultimate vehicle rental platform in UAE',
-}
+  title: "Ride.Rent",
+  description: "The ultimate vehicle rental platform in UAE",
+};
 
 const firaSans = Fira_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
-  style: ['normal', 'italic'],
-})
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+});
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
@@ -33,6 +33,22 @@ export default function RootLayout({
             })(window,document,'script','dataLayer','GTM-PKCR43SJ');
           `}
         </Script>
+
+        {/* Additional Google Tag */}
+        <Script id="google-tag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-11504082547');
+          `}
+        </Script>
+
+        {/* Additional Google Tag Manager Script */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-11504082547"
+          strategy="beforeInteractive"
+        />
 
         {/* Meta Pixel Code */}
         <Script id="meta-pixel" strategy="afterInteractive">
@@ -82,7 +98,7 @@ export default function RootLayout({
             src="https://www.googletagmanager.com/ns.html?id=GTM-PKCR43SJ"
             height="0"
             width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
+            style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
 
@@ -91,11 +107,12 @@ export default function RootLayout({
           <img
             height="1"
             width="1"
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
             src="https://www.facebook.com/tr?id=555373380252698&ev=PageView&noscript=1"
           />
         </noscript>
 
+        {/* react query provider */}
         <ReactQueryProvider>{children}</ReactQueryProvider>
 
         {/* LinkedIn Insight Tag */}
@@ -123,12 +140,12 @@ export default function RootLayout({
           <img
             height="1"
             width="1"
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
             alt=""
             src="https://px.ads.linkedin.com/collect/?pid=6480588&fmt=gif"
           />
         </noscript>
       </body>
     </html>
-  )
+  );
 }

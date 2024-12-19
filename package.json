@@ -41,8 +41,7 @@
     "react-paginate": "^8.2.0",
     "react-tooltip": "^5.28.0",
     "server-only": "^0.0.1",
-    "sharp": "^0.33.4",
-    "swiffy-slider": "^1.6.0",
+    "sharp": "^0.33.5",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7"
   },

@@ -134,7 +134,9 @@ export default async function AgentProfilePage({
 
   return (
     <section className="wrapper bg-white">
+      {/* agent details */}
       <AgentProfile companyDetails={companyDetails} />
+
       <h1 className="text-2xl lg:text-3xl font-semibold mt-6 text-center">
         Our Vehicles Available For Rent / Lease
       </h1>
