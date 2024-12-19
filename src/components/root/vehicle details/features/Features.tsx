@@ -42,9 +42,6 @@ const VehicleFeatures = ({
 
   const limitedFeatures = getLimitedFeatures(features, 2, 8);
 
-  // console.log("features : ", features);
-  // console.log("limited features : ", limitedFeatures);
-
   return (
     <div className="features-section">
       <MotionH2

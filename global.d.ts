@@ -1,7 +1,7 @@
-declare module 'swiffy-slider'
+export {};
 
 declare global {
   interface Window {
-    swiffyslider: any
+    gtag?: (...args: any[]) => void;
   }
 }
