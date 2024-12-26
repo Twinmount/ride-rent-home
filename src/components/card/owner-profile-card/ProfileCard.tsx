@@ -76,52 +76,57 @@ const ProfileCard = ({
         <p className="disabled-text">This vehicle is currently unavailable.</p>
       )}
 
-      <div className="top ">
-        {/* animated border */}
-        <div className="animate-rotate absolute inset-0 z-0 h-full w-full rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
+      <div className="top-container">
+        {" "}
+        <div className="top ">
+          {/* animated border */}
+          <div className="animate-rotate absolute inset-0 z-0 h-full w-full rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
 
-        {/* black overlay with text */}
-        <Link
-          href={companyProfilePageLink}
-          target="_blank"
-          className="company-black-overlay"
-        >
-          Visit Company
-          <SquareArrowOutUpRight />
-        </Link>
-
-        <Link href={companyProfilePageLink} className="profile-details ">
-          <div
-            className={`${
-              company.companyProfile ? "" : "blurred-profile"
-            } profile-logo`}
+          {/* black overlay with text */}
+          <Link
+            href={companyProfilePageLink}
+            target="_blank"
+            className="company-black-overlay"
           >
-            <img
-              src={company.companyProfile || "/assets/img/blur-profile.webp"}
-              alt={
-                company?.companyName
-                  ? `${company.companyName} logo`
-                  : "Company logo"
-              }
-              loading="lazy"
-              className="company-profile-logo"
-              draggable={false}
-            />
-          </div>
-          <div>
-            <p
+            Visit Company
+            <SquareArrowOutUpRight />
+          </Link>
+
+          <Link href={companyProfilePageLink} className="profile-details ">
+            <div
               className={`${
-                company.companyName ? "" : "blurred-text"
-              } company-name`}
+                company.companyProfile ? "" : "blurred-profile"
+              } profile-logo`}
             >
-              {company.companyName || "Company Disabled"}
-            </p>
-            <div className="verified">
-              <MdVerifiedUser className="icon" />
-              <span>Verified Vendor</span>
+              <img
+                src={company.companyProfile || "/assets/img/blur-profile.webp"}
+                alt={
+                  company?.companyName
+                    ? `${company.companyName} logo`
+                    : "Company logo"
+                }
+                loading="lazy"
+                className="company-profile-logo"
+                draggable={false}
+              />
             </div>
-          </div>
-        </Link>
+            <div>
+              <p
+                className={`${
+                  company.companyName ? "" : "blurred-text"
+                } company-name`}
+              >
+                {company.companyName || "Company Disabled"}
+              </p>
+              <div className="verified">
+                <MdVerifiedUser className="icon" />
+                <span>Verified Vendor</span>
+              </div>
+            </div>
+          </Link>
+        </div>
+        {/* View portfolio */}
+        <div className="view-portfolio">View Portfolio</div>
       </div>
 
       <ProfileSpecification
