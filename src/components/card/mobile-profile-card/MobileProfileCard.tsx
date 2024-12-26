@@ -1,10 +1,10 @@
 import "./MobileProfileCard.scss";
-
+import { Link as LinkIcon } from "lucide-react";
 import { MdOutlineExpandCircleDown, MdVerifiedUser } from "react-icons/md";
 import { useEffect, useRef, useState } from "react";
 import ProfileSpecification from "@/components/root/vehicle details/profile-specifications/ProfileSpecification";
 import { Company, RentalDetails } from "@/types/vehicle-details-types";
-import ContactIcons from "@/components/common/contact-icons/ContactIcons";
+
 import {
   formatPhoneNumber,
   formatToUrlFriendly,
@@ -124,6 +124,7 @@ const MobileProfileCard = ({
         {/* profile */}
         <div className="top">
           {/* left */}
+
           <div className="border-wrapper">
             {/* animated border */}
             <div className="animate-rotate absolute inset-0 z-0 h-full w-full rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
