@@ -125,13 +125,6 @@ export default function TrackingScripts() {
             snaptr('track', 'PAGE_VIEW');
           `}
       </Script>
-
-      {/* TrustBox Script */}
-      <Script
-        id="trustbox-script"
-        src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js"
-        async
-      ></Script>
     </>
   );
 }
