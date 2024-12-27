@@ -16,7 +16,7 @@ const Footer = () => {
         <RideRentLogo />
       </MotionDiv>
       <MotionDiv className="bottom-container">
-        <p>
+        <div>
           Get unbeatable deals on car rentals, chauffeur services, and car with
           driver, alongside bike, yacht, and private Charter/ helicopter
           rentals. Our offerings span a range of options, from budget-friendly
@@ -31,23 +31,25 @@ const Footer = () => {
           <br />
           <br />
           <div className="bottom-container">
-          Ride.Rent is a brand owned and operated by {" "}
-        <span className="bold ">FleetOrbita Group</span>       
-          <p className="mt-3">
-            <span>Operating as Ride Rent LLC in the UAE, licensed under Sharjah Media City,     Sharjah, UAE, License Number:
-            2434340.
+            Ride.Rent is a brand owned and operated by{" "}
+            <span className="bold ">FleetOrbita Group</span>
+            <p className="mt-3">
+              <span>
+                Operating as Ride Rent LLC in the UAE, licensed under Sharjah
+                Media City, Sharjah, UAE, License Number: 2434340.
+              </span>
+            </p>
+          </div>
+          <div className="flex-center gap-x-1 sm:text-sm flex-wrap text-center mt-3">
+            <span className="bold flex justify-center items-start gap-x-1">
+              <FaRegCopyright className="mt-[.17rem]" />
+              <FaRegRegistered className="mt-[.17rem]" />
+              FleetOrbita Internet Services/Ride Rent LLC
             </span>
-          </p>
-      </div>
-      <div className="flex-center gap-x-1 sm:text-sm flex-wrap text-center mt-3">
-      <span className="bold flex justify-center items-start gap-x-1">
-          <FaRegCopyright className="mt-[.17rem]"/>
-          <FaRegRegistered className="mt-[.17rem]"/>
-          FleetOrbita Internet Services/Ride Rent LLC</span>
-          <span className="max-sm:hidden">|</span> ACJ-9769 | Ride Rent LLC (UAE) License Version: 2434340.01 | All Rights
-          Reserved    
-      </div>
-        </p>
+            <span className="max-sm:hidden">|</span> ACJ-9769 | Ride Rent LLC
+            (UAE) License Version: 2434340.01 | All Rights Reserved
+          </div>
+        </div>
       </MotionDiv>
     </footer>
   );
