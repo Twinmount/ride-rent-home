@@ -50,7 +50,7 @@ export default function StatesDropdown() {
         notFound(); // This will trigger the 404 page
       }
     }
-  }, [state, states, router, selectedCategory]);
+  }, [state, states, router, selectedCategory, isLoading]);
 
   // Function to handle state selection
   const handleStateSelect = (stateValue: string) => {

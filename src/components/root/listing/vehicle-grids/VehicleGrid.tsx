@@ -19,7 +19,6 @@ type VehicleGridProps = {
   page: number;
   limit: number;
   state: string;
-  isHourlyRental?: boolean;
 };
 
 const VehicleGrid: React.FC<VehicleGridProps> = ({
@@ -27,7 +26,6 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
   page,
   limit,
   state,
-  isHourlyRental = false,
 }) => {
   const isSmallScreen = useIsSmallScreen(850);
   const isFiltersButtonVisible = useIsSmallScreen(1200);
@@ -72,13 +70,11 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
                   <VerticalCard
                     key={vehicle.vehicleId || index}
                     vehicle={vehicle}
-                    isHourlyRental={isHourlyRental}
                   />
                 ) : (
                   <HorizontalCard
                     key={vehicle.vehicleId || index}
                     vehicle={vehicle}
-                    isHourlyRental={isHourlyRental}
                   />
                 )
               )

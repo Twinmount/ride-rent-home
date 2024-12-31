@@ -136,10 +136,9 @@ export function convertToLabel(value: string | undefined): string {
 
 // Helper function to determine which rental period is available
 export const getRentalPeriodDetails = (
-  rentalDetails: CardRentalDetails | undefined,
-  isHourlyRental: boolean = false
+  rentalDetails: CardRentalDetails | undefined
 ) => {
-  if (isHourlyRental && rentalDetails?.hour?.enabled) {
+  if (rentalDetails?.hour?.enabled) {
     return {
       period: "Hour",
       rentInAED: rentalDetails.hour.rentInAED,
@@ -171,15 +170,6 @@ export const getRentalPeriodDetails = (
 export function formatVehicleSpecification(spec: string) {
   if (!spec) return "N/A";
   return spec.replace("_SPEC", "").replace("_", " ");
-}
-
-// dynamic faq function props
-interface VehicleDetails {
-  model: string;
-  brand: string;
-  seats: number;
-  vehicleType: string;
-  mileage: string;
 }
 
 // Helper function to format seating capacity
@@ -322,3 +312,89 @@ export function formatToUrlFriendly(word: string | null): string {
     .replace(/\s+/g, "-") // Replace spaces with hyphens
     .replace(/^-+|-+$/g, ""); // Remove leading and trailing hyphens
 }
+
+/**
+ * Generates a whatsapp url to send a message to the vehicle owner.
+ *
+ * @param vehicle - The vehicle object with the whatsapp phone number and country code.
+ * @param vehicleDetailsPageLink - The link to the vehicle details page.
+ * @returns The url to open whatsapp with the message pre-filled or null if no whatsapp phone number is available.
+ */
+export const generateWhatsappUrl = (
+  vehicle: VehicleCardType,
+  vehicleDetailsPageLink: string
+): string | null => {
+  if (!vehicle.whatsappPhone || !vehicle.whatsappCountryCode) {
+    return null;
+  }
+
+  const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
+  const message = `${whatsappPageLink}\n\nHello, I am interested in the *_${vehicle.model}_* model. Could you please provide more details?`;
+  const encodedMessage = encodeURIComponent(message);
+
+  return `https://wa.me/${vehicle.whatsappCountryCode}${vehicle.whatsappPhone}?text=${encodedMessage}`;
+};
+
+/**
+ * Generates a WhatsApp URL to send a message to an agent profile.
+ *
+ * @param companyName - The name of the company to include in the message.
+ * @param whatsappCountryCode - The country code for the WhatsApp number.
+ * @param whatsappPhone - The WhatsApp phone number to contact.
+ * @returns The URL to open WhatsApp with the message pre-filled, or null if no WhatsApp number is available.
+ */
+export const generateAgentProfileWhatsappUrl = (
+  companyName: string | null,
+  whatsappCountryCode: string | null,
+  whatsappPhone: string | null
+): string | null => {
+  if (!whatsappCountryCode || !whatsappPhone) {
+    return null;
+  }
+
+  const message = `Hi *_${
+    companyName || "the company"
+  }_*.\n\nI am interested in renting/leasing a vehicle from your fleet. 
+Kindly let me know the next steps or any additional information required to proceed. 
+I look forward to your prompt response.\n\nSent via Ride.Rent`;
+
+  const encodedMessage = encodeURIComponent(message);
+
+  return `https://wa.me/${whatsappCountryCode}${whatsappPhone}?text=${encodedMessage}`;
+};
+
+export const getAgentFormattedPhoneNumber = (
+  countryCode: string | null,
+  phone: string | null
+): string | null => {
+  if (!countryCode || !phone) {
+    return null;
+  }
+  return formatPhoneNumber(countryCode, phone);
+};
+
+/**
+ * Generates a URL redirecting to the vehicle details page
+ *
+ * @param {VehicleCardType} vehicle - Vehicle object
+ * @returns {string} URL redirecting to the vehicle details page
+ */
+export const generateVehicleDetailsUrl = (vehicle: VehicleCardType): string => {
+  const modelDetails = generateModelDetailsUrl(vehicle);
+  return `/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}/${vehicle.vehicleId}`;
+};
+
+/**
+ * Formats a phone number with the given country code
+ *
+ * @param {string | null} countryCode - Country code
+ * @param {string | null} phoneNumber - Phone number
+ * @returns {string | null} Formatted phone number or null if either param is null
+ */
+export const getFormattedPhoneNumber = (
+  countryCode: string | null,
+  phoneNumber: string | null
+): string | null => {
+  if (!countryCode || !phoneNumber) return null;
+  return formatPhoneNumber(countryCode, phoneNumber);
+};

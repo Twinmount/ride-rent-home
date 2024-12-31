@@ -1,63 +1,62 @@
-import { FC, useEffect, useRef } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { CategoryType } from '@/types/contextTypes'
-import { fetchCategories } from '@/lib/next-api/next-api'
-import useFilters from '@/hooks/useFilters'
-import FilterAccordionContent from './FilterAccordionContent'
-import { useSearchParams } from 'next/navigation'
-import qs from 'query-string'
+import { FC, useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { CategoryType } from "@/types/contextTypes";
+import { fetchCategories } from "@/lib/next-api/next-api";
+import useFilters from "@/hooks/useFilters";
+import FilterAccordionContent from "./FilterAccordionContent";
+import { useSearchParams } from "next/navigation";
+import qs from "query-string";
 
 const VehicleCategoryAccordion: FC = () => {
-  const { appliedFilters, selectedFilters, handleFilterChange, applyFilters } =
-    useFilters()
-  const searchParams = useSearchParams()
-  const isInitialLoad = useRef(true)
+  const { selectedFilters, handleFilterChange } = useFilters();
+  const searchParams = useSearchParams();
+  const isInitialLoad = useRef(true);
 
   // Fetch categories using react-query
   const { data, isLoading } = useQuery({
-    queryKey: ['categories'],
+    queryKey: ["categories"],
     queryFn: fetchCategories,
-  })
+  });
 
   useEffect(() => {
-    if (!isInitialLoad.current) return // Only run on initial load
+    if (!isInitialLoad.current) return; // Only run on initial load
 
-    const params = qs.parse(searchParams.toString())
+    const params = qs.parse(searchParams.toString());
     const initialCategory =
-      typeof params.category === 'string' ? params.category : ''
+      typeof params.category === "string" ? params.category : "";
 
     if (data && data.result.list.length > 0) {
       const fetchedCategories = data.result.list.map(
         (category: CategoryType) => category.value
-      )
+      );
 
       // If there is no category in the URL or the selected one is invalid, set the first category as default
       if (!initialCategory || !fetchedCategories.includes(initialCategory)) {
-        handleFilterChange('category', data.result.list[0].value)
+        handleFilterChange("category", data.result.list[0].value);
       }
     }
 
-    isInitialLoad.current = false // Mark initial load as complete
-  }, [data, searchParams, handleFilterChange])
+    isInitialLoad.current = false; // Mark initial load as complete
+  }, [data, searchParams, handleFilterChange]);
 
   if (isLoading) {
-    return <div>Fetching categories...</div>
+    return <div>Fetching categories...</div>;
   }
 
   const categoryOptions =
     data?.result.list.map((category: CategoryType) => ({
       label: category.name,
       value: category.value,
-    })) || []
+    })) || [];
 
   return (
     <FilterAccordionContent
       options={categoryOptions}
       selected={selectedFilters.category}
-      onChange={(value) => handleFilterChange('category', value)} // Ensure it updates selectedFilters
+      onChange={(value) => handleFilterChange("category", value)} // Ensure it updates selectedFilters
       isMultipleChoice={false} // Single choice
     />
-  )
-}
+  );
+};
 
-export default VehicleCategoryAccordion
+export default VehicleCategoryAccordion;

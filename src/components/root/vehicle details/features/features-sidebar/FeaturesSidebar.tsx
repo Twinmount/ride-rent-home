@@ -16,10 +16,7 @@ type FeaturesSidebarProps = {
   vehicleCategory: string;
 };
 
-export default function FeaturesSidebar({
-  features,
-  vehicleCategory,
-}: FeaturesSidebarProps) {
+export default function FeaturesSidebar({ features }: FeaturesSidebarProps) {
   // Base URL for fetching icons
   const baseAssetsUrl = process.env.ASSETS_URL;
 

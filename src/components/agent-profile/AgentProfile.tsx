@@ -1,8 +1,11 @@
 import React from "react";
 import { MdVerifiedUser } from "react-icons/md";
-import { Info, Languages, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import AgentContactIcons from "../common/agent-contact-icons/AgentContactIcons";
-import { formatPhoneNumber } from "@/helpers";
+import {
+  generateAgentProfileWhatsappUrl,
+  getAgentFormattedPhoneNumber,
+} from "@/helpers";
 import GreenNotificationPing from "../common/GreenNotificationPing";
 
 import SharePortfolio from "./SharePortfolio";
@@ -34,21 +37,22 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
 
   const companyLanguages = companyDetails.companyLanguages || [];
 
-  const message = `Hi *_${companyName}_*.\n\nI am interested in renting/leasing a vehicle from your fleet. 
-Kindly let me know the next steps or any additional information required to proceed. 
-I look forward to your prompt response.\n\nSent via Ride.Rent`;
-  const encodedMessage = encodeURIComponent(message);
-
   // whatsapp url
   const whatsappUrl = contactDetails
-    ? `https://wa.me/${contactDetails.whatsappCountryCode}${contactDetails.whatsappPhone}?text=${encodedMessage}`
+    ? generateAgentProfileWhatsappUrl(
+        companyName,
+        contactDetails.whatsappCountryCode,
+        contactDetails.whatsappPhone
+      )
     : null;
 
   // formatted phone number
-  const formattedPhoneNumber =
-    contactDetails?.countryCode && contactDetails.phone
-      ? formatPhoneNumber(contactDetails?.countryCode, contactDetails.phone)
-      : null;
+  const formattedPhoneNumber = contactDetails
+    ? getAgentFormattedPhoneNumber(
+        contactDetails.countryCode,
+        contactDetails.phone
+      )
+    : null;
 
   const isCompanyValid = !!companyName || !!companyLogo;
 

@@ -78,73 +78,6 @@
         box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
         font-size: 0.8rem;
       }
-
-      // hourly rental
-      .hourly-rental {
-        width: 100px; /* Smaller width */
-        height: 100px; /* Smaller height */
-        overflow: hidden;
-        position: absolute;
-        color: black;
-      }
-
-      .hourly-rental::before,
-      .hourly-rental::after {
-        position: absolute;
-        z-index: -1;
-        content: "";
-        display: block;
-        border: 4px solid #b78628; /* Reduced border size for smaller badge */
-      }
-
-      .hourly-rental span {
-        position: absolute;
-        display: block;
-        width: 160px; /* Smaller width for span */
-        padding: 8px 0; /* Reduced padding */
-        background: linear-gradient(
-          45deg,
-          #ffd700,
-          #ffa500,
-          #ff8c00
-        ); /* Gradient background */
-        background-size: 200% 200%; /* Animate gradient */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        color: #000000;
-        font: 700 14px/1 "Lato", sans-serif; /* Smaller font size */
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-        text-transform: uppercase;
-        text-align: center;
-        font-size: 0.6rem;
-      }
-
-      /* Position in the top-right corner with slanted effect */
-      .badge-top-right {
-        top: -8px; /* Adjusted for smaller size */
-        right: -8px;
-      }
-
-      .badge-top-right::before,
-      .badge-top-right::after {
-        border-top-color: transparent;
-        border-right-color: transparent;
-      }
-
-      .badge-top-right::before {
-        top: 0;
-        left: 0.6rem;
-      }
-
-      .badge-top-right::after {
-        bottom: 0.6rem;
-        right: 0;
-      }
-
-      .badge-top-right span {
-        left: -15px; /* Adjusted for smaller span */
-        top: 25px;
-        transform: rotate(45deg);
-      }
     }
   }
 
@@ -164,55 +97,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-
-    // specs grid
-    .specs-grid {
-      display: flex;
-      flex-wrap: wrap;
-      row-gap: 0.6rem;
-      column-gap: 0.1rem;
-      margin-bottom: 0.3rem;
-
-      .spec {
-        width: 6rem;
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        column-gap: 0.3rem;
-        font-size: 0.8rem;
-        line-height: 1.2;
-        color: gray;
-        position: relative;
-
-        .spec-icon {
-          flex-shrink: 0;
-        }
-
-        .each-spec-value {
-          width: 100%;
-          height: auto;
-          overflow: hidden;
-          white-space: nowrap; // Prevent wrapping
-          text-overflow: ellipsis; // Add ellipsis for truncation
-          word-wrap: break-word;
-          position: relative;
-
-          // On hover, show full text
-          &:hover {
-            white-space: wrap;
-            overflow: visible;
-            background-color: white;
-            color: black;
-            position: absolute;
-            z-index: 10; // Ensure it is on top
-            padding: 0.3rem;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); //
-            max-width: 100%;
-            border-radius: 5px;
-          }
-        }
-      }
     }
 
     .location-box {
@@ -235,21 +119,6 @@
         .state {
           text-transform: capitalize;
           font-size: 1rem;
-        }
-      }
-
-      .price {
-        font-size: 0.7rem;
-        color: gray;
-
-        .rent-amount {
-          font-weight: bolder;
-          font-size: medium;
-          color: red;
-        }
-
-        .rent-period {
-          font-size: 0.9rem;
         }
       }
     }

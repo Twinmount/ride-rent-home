@@ -1,5 +1,4 @@
 import "./MobileProfileCard.scss";
-import { Link as LinkIcon } from "lucide-react";
 import { MdOutlineExpandCircleDown, MdVerifiedUser } from "react-icons/md";
 import { useEffect, useRef, useState } from "react";
 import ProfileSpecification from "@/components/root/vehicle details/profile-specifications/ProfileSpecification";

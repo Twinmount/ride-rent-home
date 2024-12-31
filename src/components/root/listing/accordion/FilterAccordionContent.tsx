@@ -1,17 +1,17 @@
-import { FC } from 'react'
-import { Checkbox } from '@/components/ui/checkbox'
+import { FC } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type Option = {
-  label: string
-  value: string
-}
+  label: string;
+  value: string;
+};
 
 type FilterAccordionContentProps = {
-  options: Option[]
-  selected: string[] | string
-  onChange: (value: string) => void
-  isMultipleChoice?: boolean
-}
+  options: Option[];
+  selected: string[] | string;
+  onChange: (value: string) => void;
+  isMultipleChoice?: boolean;
+};
 
 const FilterAccordionContent: FC<FilterAccordionContentProps> = ({
   options,
@@ -19,20 +19,20 @@ const FilterAccordionContent: FC<FilterAccordionContentProps> = ({
   onChange,
   isMultipleChoice = true,
 }) => {
-  const handleCheckboxChange = (value: string, checked: boolean) => {
+  const handleCheckboxChange = (value: string) => {
     if (isMultipleChoice) {
       // Toggle the value in the selected array for multiple choice
-      onChange(value)
+      onChange(value);
     } else {
       // Replace the selected value for single choice
       if (selected !== value) {
-        onChange(value)
+        onChange(value);
       }
     }
-  }
+  };
 
   if (options.length === 0) {
-    return <div>No data found</div>
+    return <div>No data found</div>;
   }
 
   return (
@@ -49,9 +49,7 @@ const FilterAccordionContent: FC<FilterAccordionContentProps> = ({
                 ? (selected as string[]).includes(option.value)
                 : selected === option.value
             }
-            onCheckedChange={(checked: boolean) =>
-              handleCheckboxChange(option.value, checked)
-            }
+            onCheckedChange={() => handleCheckboxChange(option.value)}
             className="bg-white data-[state=checked]:bg-yellow data-[state=checked]:border-none !rounded-sm data-[state=checked]:!text-white"
           />
           <label htmlFor={option.value} className="">
@@ -60,7 +58,7 @@ const FilterAccordionContent: FC<FilterAccordionContentProps> = ({
         </div>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default FilterAccordionContent
+export default FilterAccordionContent;
