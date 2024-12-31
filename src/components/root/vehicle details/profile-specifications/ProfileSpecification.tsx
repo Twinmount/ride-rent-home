@@ -1,8 +1,7 @@
 import "./ProfileSpecification.scss";
 import { CompanySpecs, RentalDetails } from "@/types/vehicle-details-types";
-import { HandCoins, ThumbsUp, Zap } from "lucide-react";
+import { HandCoins, ThumbsUp } from "lucide-react";
 import CardPayments from "./CardPayments";
-import RentalDetailsCarousel from "./RentalDetailsCarousel";
 import RentalDetailsTab from "./RentalDetailsTab";
 
 type ProfileSpecificationProps = {

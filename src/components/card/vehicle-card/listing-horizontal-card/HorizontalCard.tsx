@@ -1,67 +1,38 @@
 import "./HorizontalCard.scss";
-import { IoLocationOutline } from "react-icons/io5";
 import Specifications from "../../../root/listing/specifications/Specifications";
 import { FC } from "react";
 import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-
-import Image from "next/image";
 import { VehicleCardType } from "@/types/vehicle-types";
 import {
-  convertToLabel,
-  formatKeyForIcon,
-  formatPhoneNumber,
-  generateModelDetailsUrl,
-  getRentalPeriodDetails,
+  generateVehicleDetailsUrl,
+  generateWhatsappUrl,
+  getFormattedPhoneNumber,
 } from "@/helpers";
 import Link from "next/link";
 import ContactIcons from "@/components/common/contact-icons/ContactIcons";
+import ZeroDeposit from "../ZeroDeposit";
+import HourlyRental from "../HourlyRental";
+import VehicleThumbnail from "../VehicleThumbnail";
+import CompanyLogo from "../CompanyLogo";
+import RentalDetails from "../RentalDetails";
+import VehicleSpecs from "./VehicleSpecs";
+import VehicleLocation from "./VehicleLocation";
+import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
 
 type HorizontalCardProps = {
   vehicle: VehicleCardType;
-  isHourlyRental?: boolean;
 };
 
-const HorizontalCard: FC<HorizontalCardProps> = ({
-  vehicle,
-  isHourlyRental = false,
-}) => {
-  const formattedPhoneNumber =
-    vehicle.phoneNumber && vehicle.countryCode
-      ? formatPhoneNumber(vehicle.countryCode, vehicle.phoneNumber)
-      : null;
-
-  // generating dynamic url for the vehicle details page
-  const modelDetails = generateModelDetailsUrl(vehicle);
-
-  // link for the vehicle details page
-  const vehicleDetailsPageLink = `/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}/${vehicle.vehicleId}`;
-
-  // page link required for whatsapp share
-  const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
-
-  // Compose the message with the page link included
-  const message = `${whatsappPageLink}\n\nHello, I am interested in the *_${vehicle.model}_* model. Could you please provide more details?`;
-  const encodedMessage = encodeURIComponent(message);
-
-  // whatsapp url
-  const whatsappUrl = vehicle.whatsappPhone
-    ? `https://wa.me/${vehicle.whatsappCountryCode}${vehicle.whatsappPhone}?text=${encodedMessage}`
-    : null;
-
-  // Determine which rental period to display
-  const rentalPeriod = getRentalPeriodDetails(
-    vehicle.rentalDetails,
-    isHourlyRental
+const HorizontalCard: FC<HorizontalCardProps> = ({ vehicle }) => {
+  // Inside HorizontalCard
+  const formattedPhoneNumber = getFormattedPhoneNumber(
+    vehicle.countryCode,
+    vehicle.phoneNumber
   );
 
-  // Base URL for fetching icons
-  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
+  const vehicleDetailsPageLink = generateVehicleDetailsUrl(vehicle);
+
+  const whatsappUrl = generateWhatsappUrl(vehicle, vehicleDetailsPageLink);
 
   return (
     <MotionDivElm
@@ -79,36 +50,21 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
           className="image-box"
         >
           {/* Thumbnail Image */}
-          {vehicle.thumbnail ? (
-            <Image
-              src={vehicle.thumbnail}
-              alt={vehicle.model || "Vehicle Image"}
-              width={400}
-              height={400}
-              className="vehicle-image"
-            />
-          ) : (
-            <img
-              src={vehicle.thumbnail} // Fallback or invalid URL handling
-              alt="Vehicle Image"
-              className="vehicle-image"
-            />
-          )}
+          <VehicleThumbnail
+            src={vehicle.thumbnail}
+            alt={vehicle.model || "Vehicle Image"}
+            width={400}
+            height={400}
+            className="vehicle-image"
+          />
+
           <span className="brand">{vehicle.brandName}</span>
 
           {/* zero deposit */}
-          {!vehicle?.securityDeposit?.enabled && (
-            <div className="absolute left-2 bottom-2 inline-flex py-[0.3rem] animate-shimmer border border-slate-500 items-center justify-center rounded-[0.5rem] shadow bg-[linear-gradient(110deg,#b78628,35%,#ffd700,45%,#fffacd,55%,#b78628)] bg-[length:200%_100%] px-2 font-medium text-yellow-300 transition-colors focus:outline-none text-xs">
-              Zero Deposit
-            </div>
-          )}
+          <ZeroDeposit enabled={vehicle?.securityDeposit.enabled} />
 
           {/* Hourly Rental */}
-          {vehicle?.rentalDetails?.hour?.enabled && (
-            <div className="absolute right-2 top-2 inline-flex py-[0.3rem] border border-slate-700 items-center justify-center rounded-[0.5rem] shadow bg-slate-900 bg-[length:200%_100%] px-2 font-medium text-yellow-300 transition-colors focus:outline-none text-xs text-yellow">
-              Hourly Rental
-            </div>
-          )}
+          <HourlyRental enabled={vehicle?.rentalDetails?.hour?.enabled} />
         </Link>
       </div>
 
@@ -124,41 +80,11 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
         </Link>
 
         {/* Dynamic Vehicle specs */}
-        <Link
-          href={vehicleDetailsPageLink}
-          target="_blank"
-          className="vehicle-specs"
-        >
-          {Object.entries(vehicle.vehicleSpecs).map(([key, spec]) => (
-            <TooltipProvider delayDuration={200} key={key}>
-              <Tooltip>
-                <TooltipTrigger className="spec">
-                  <img
-                    src={`${baseAssetsUrl}/icons/vehicle-specifications/${
-                      vehicle.vehicleCategory
-                    }/${formatKeyForIcon(key)}.svg`}
-                    alt={`${spec.name} icon`}
-                    className="spec-icon"
-                  />
-                  <div className="each-spec-value">
-                    {" "}
-                    {/* Check if the key is "Mileage" and format accordingly */}
-                    {key === "Mileage" && spec.value
-                      ? `${spec.value} mileage range`
-                      : spec.name || "N/A"}
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="bg-slate-800 text-white rounded-xl shadow-md">
-                  <p>
-                    {" "}
-                    {key === "Mileage" && spec.value
-                      ? `${spec.value} mileage range`
-                      : spec.name || "N/A"}
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          ))}
+        <Link href={vehicleDetailsPageLink} target="_blank">
+          <VehicleSpecs
+            vehicleSpecs={vehicle.vehicleSpecs}
+            vehicleCategory={vehicle.vehicleCategory}
+          />
         </Link>
 
         {/* Specifications */}
@@ -178,80 +104,28 @@ const HorizontalCard: FC<HorizontalCardProps> = ({
               className="profile"
             >
               {/* Company Logo */}
-              {vehicle.companyLogo ? (
-                <Image
-                  width={40}
-                  height={40}
-                  src={vehicle.companyLogo}
-                  alt="Company Logo"
-                  className="profile-icon"
-                />
-              ) : (
-                <img
-                  src={"/assets/img/blur-profile.webp"} //
-                  alt="Company Logo"
-                  className="profile-icon"
-                />
-              )}
+              <CompanyLogo
+                src={vehicle.companyLogo}
+                width={40}
+                height={40}
+                className="profile-icon"
+              />
             </Link>
 
-            <Link
-              href={vehicleDetailsPageLink}
-              target="_blank"
-              className="location"
-            >
-              <TooltipProvider delayDuration={200}>
-                <Tooltip>
-                  <TooltipTrigger className="each-location">
-                    <IoLocationOutline size={17} />{" "}
-                    <span className="state">
-                      {convertToLabel(vehicle.state) || "N/A"}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-slate-800 text-white rounded-xl shadow-md">
-                    <p>{convertToLabel(vehicle.state) || "Not Available"}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </Link>
+            <VehicleLocation
+              state={vehicle.state}
+              vehicleDetailsPageLink={vehicleDetailsPageLink}
+            />
           </div>
 
-          {/* price */}
-          {rentalPeriod ? (
-            <div className="price">
-              <span className="rental-price">
-                {rentalPeriod.rentInAED || "N/A"} AED
-              </span>
-              <span className="rental-period">&nbsp;{rentalPeriod.label}</span>
-            </div>
-          ) : (
-            <div className="price">Rental Details N/A</div>
-          )}
+          {/* rental details */}
+          <RentalDetails rentalDetails={vehicle.rentalDetails} />
           <div className="bottom-right">
             {/* Rent Now button */}
-            {vehicle.companyLogo ? (
-              <Link
-                href={vehicleDetailsPageLink}
-                target="_blank"
-                className="rent-now-btn"
-              >
-                <span className="rent-now-text">RENT NOW</span>
-                <span className="flex mr-1">
-                  <span className="green-round"></span>
-                  <span
-                    className={vehicle.companyLogo ? "" : "margin-for-span"}
-                  >
-                    Available now for chat
-                  </span>
-                </span>
-              </Link>
-            ) : (
-              <div className="not-available-div">
-                <div>Currently Unavailable/</div>
-                {/* <div>Or</div> */}
-                <span>Vehicle On Trip</span>
-              </div>
-            )}
+            <RentNowButton
+              vehicleDetailsPageLink={vehicleDetailsPageLink}
+              companyLogo={vehicle.companyLogo}
+            />
 
             {/* Icons for WhatsApp and email */}
             <ContactIcons

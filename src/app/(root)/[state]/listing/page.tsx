@@ -121,8 +121,6 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
   const category = searchParams.category;
   const brand = searchParams.brand;
 
-  const isHourlyRental = searchParams.isHourlyRental === "true";
-
   const formattedCategory = convertToLabel(category);
   const formattedState = convertToLabel(state);
   const formattedBrand = convertToLabel(brand);
@@ -180,7 +178,6 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
           page={page}
           limit={limit}
           state={state}
-          isHourlyRental={isHourlyRental}
         />
       </div>
     </div>

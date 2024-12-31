@@ -16,6 +16,7 @@ import VehicleTypes from "@/components/root/landing/vehicle-types/VehicleTypes";
 import { Suspense } from "react";
 import { HomePageMetaResponse, PageProps } from "@/types";
 import HourlyRentals from "@/components/root/landing/hourly-rentals/HourlyRentals";
+import TrustedReviewsSection from "@/components/root/landing/trusted-reviews/TrustedReviewsSection";
 
 export async function generateMetadata({
   params: { state, category },
@@ -147,6 +148,7 @@ export default function Home({ params: { state, category } }: PageProps) {
 
       <Suspense fallback={<SectionLoading />}>
         <Locations state={state} category={category} />
+        <TrustedReviewsSection />
       </Suspense>
     </>
   );

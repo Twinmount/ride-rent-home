@@ -1,19 +1,17 @@
-import './Features.scss'
-import { featureCards } from './index'
-import FeaturesCard from '@/components/card/features-card/FeaturesCard'
-
-import MotionSection from '@/components/general/framer-motion/MotionSection'
-import { StateCategoryProps } from '@/types'
-import { convertToLabel, createFeatureCards, singularizeType } from '@/helpers'
+import "./Features.scss";
+import FeaturesCard from "@/components/card/features-card/FeaturesCard";
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { StateCategoryProps } from "@/types";
+import { convertToLabel, createFeatureCards, singularizeType } from "@/helpers";
 
 const Features = ({ state, category }: StateCategoryProps) => {
-  const dynamicFeatureCards = createFeatureCards(convertToLabel(state))
+  const dynamicFeatureCards = createFeatureCards(convertToLabel(state));
 
   return (
     <MotionSection className="features_section wrapper">
       <h2>
-        Enjoy ease and peace of mind when renting a{' '}
-        {convertToLabel(singularizeType(category)).toLowerCase()} in{' '}
+        Enjoy ease and peace of mind when renting a{" "}
+        {convertToLabel(singularizeType(category)).toLowerCase()} in{" "}
         {convertToLabel(state)}
       </h2>
       <div className="description">
@@ -40,6 +38,6 @@ const Features = ({ state, category }: StateCategoryProps) => {
         ))}
       </div>
     </MotionSection>
-  )
-}
-export default Features
+  );
+};
+export default Features;

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import PropTypes, { string } from "prop-types";
 import ContactIcons from "../contact-icons/ContactIcons";
 import "./RentNowSection.scss"; // Ensure the correct relative path
 import GreenNotificationPing from "../GreenNotificationPing";

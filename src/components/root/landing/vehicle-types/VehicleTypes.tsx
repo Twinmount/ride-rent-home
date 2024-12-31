@@ -1,72 +1,71 @@
-'use client'
+"use client";
 
-import './VehicleTypes.scss'
-import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
-import { MdExpandMore } from 'react-icons/md'
-import { useQuery } from '@tanstack/react-query'
-import { fetchVehicleTypesByValue } from '@/lib/next-api/next-api'
-import { VehicleTypeType } from '@/types'
-import GridSkelton from '@/components/skelton/GridSkelton'
-import Link from 'next/link'
-import { convertToLabel, singularizeType } from '@/helpers'
+import "./VehicleTypes.scss";
+import React, { useState, useEffect } from "react";
+import { MdExpandMore } from "react-icons/md";
+import { useQuery } from "@tanstack/react-query";
+import { fetchVehicleTypesByValue } from "@/lib/next-api/next-api";
+import { VehicleTypeType } from "@/types";
+import GridSkelton from "@/components/skelton/GridSkelton";
+import Link from "next/link";
+import { convertToLabel, singularizeType } from "@/helpers";
 
 const VehicleTypes = ({
   category,
   state,
 }: {
-  category: string
-  state: string
+  category: string;
+  state: string;
 }) => {
-  const [isSmallScreen, setIsSmallScreen] = useState(false)
-  const [showAllTypes, setShowAllTypes] = useState(false)
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [showAllTypes, setShowAllTypes] = useState(false);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['vehicleTypes', category],
+    queryKey: ["vehicleTypes", category],
     queryFn: () => fetchVehicleTypesByValue(category),
     enabled: !!category,
-  })
+  });
 
-  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL
+  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
 
   useEffect(() => {
     const handleResize = () => {
-      if (typeof window !== 'undefined') {
-        setIsSmallScreen(window.innerWidth < 768)
+      if (typeof window !== "undefined") {
+        setIsSmallScreen(window.innerWidth < 768);
       }
-    }
+    };
 
-    if (typeof window !== 'undefined') {
-      handleResize()
-      window.addEventListener('resize', handleResize)
+    if (typeof window !== "undefined") {
+      handleResize();
+      window.addEventListener("resize", handleResize);
     }
 
     return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('resize', handleResize)
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
       }
-    }
-  }, [])
+    };
+  }, []);
 
-  const vehicleTypes: VehicleTypeType[] = data?.result?.list || []
+  const vehicleTypes: VehicleTypeType[] = data?.result?.list || [];
 
   const visibleVehicleTypes = isSmallScreen
     ? showAllTypes
       ? vehicleTypes
       : vehicleTypes.slice(0, 6)
-    : vehicleTypes
+    : vehicleTypes;
 
   const handleToggleShowTypes = () => {
-    setShowAllTypes(!showAllTypes)
-  }
+    setShowAllTypes(!showAllTypes);
+  };
 
   return (
     <section className="vehicle-types-section wrapper">
       <h1>
-        Choose the{' '}
+        Choose the{" "}
         <span className="yellow-gradient selected-type">
           {convertToLabel(singularizeType(category))}
-        </span>{' '}
+        </span>{" "}
         type that is convenient for you
       </h1>
       {isLoading ? (
@@ -94,15 +93,15 @@ const VehicleTypes = ({
       )}
       {vehicleTypes.length > 6 && isSmallScreen && !isLoading && (
         <button
-          className={`show-more-button ${showAllTypes ? 'expanded' : ''}`}
+          className={`show-more-button ${showAllTypes ? "expanded" : ""}`}
           onClick={handleToggleShowTypes}
         >
-          {showAllTypes ? 'Show less' : 'Show more'}{' '}
+          {showAllTypes ? "Show less" : "Show more"}{" "}
           <MdExpandMore className="icon" />
         </button>
       )}
     </section>
-  )
-}
+  );
+};
 
-export default VehicleTypes
+export default VehicleTypes;

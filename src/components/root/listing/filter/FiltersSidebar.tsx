@@ -110,6 +110,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
       if (open) {
         // Scroll to the top immediately when the sheet opens
         window.scrollTo({ top: 0, behavior: "smooth" });
+        return; // Return undefined explicitly
       } else {
         // Add a delay before scrolling to the top when the sheet closes
         const timer = setTimeout(() => {
@@ -119,6 +120,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
         return () => clearTimeout(timer); // Cleanup the timer
       }
     }
+    return undefined; // Ensure consistent return value
   }, [open]);
 
   const categoryOptions =

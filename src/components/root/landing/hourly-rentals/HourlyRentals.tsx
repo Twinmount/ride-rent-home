@@ -39,15 +39,11 @@ export default async function HourlyRentals({
       </h2>
       <CarouselWrapper isButtonVisible>
         {vehicleData.map((vehicle) => (
-          <MainCard
-            key={vehicle.vehicleId}
-            vehicle={vehicle}
-            isHourlyRental={true}
-          />
+          <MainCard key={vehicle.vehicleId} vehicle={vehicle} />
         ))}
       </CarouselWrapper>
       <ViewAllButton
-        link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.HOURLY_RENTAL_VEHICLE}&isHourlyRental=true`}
+        link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.HOURLY_RENTAL_VEHICLE}`}
       />
     </MotionSection>
   );

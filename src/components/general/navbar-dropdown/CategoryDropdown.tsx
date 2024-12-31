@@ -48,7 +48,7 @@ export default function CategoryDropdown() {
         notFound(); // This will trigger the 404 page
       }
     }
-  }, [category, categories, state, router]);
+  }, [category, categories, state, router, isLoading]);
 
   return (
     <DropdownMenu>
