@@ -196,6 +196,7 @@ export type VehicleCardType = {
   isDisabled: boolean;
   isCryptoAccepted: boolean;
   isSpotDeliverySupported: boolean;
+  vehicleTitle?: string;
   additionalVehicleTypes?: { typeId: string; label: string; value: string }[];
   securityDeposit: {
     enabled: boolean;

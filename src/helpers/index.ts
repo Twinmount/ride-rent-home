@@ -5,7 +5,7 @@ import {
   StateType,
   UrlQueryParams,
 } from "@/types";
-import { CardRentalDetails, VehicleCardType } from "@/types/vehicle-types";
+import { CardRentalDetails } from "@/types/vehicle-types";
 import { VehicleDetailsResponse } from "@/types/vehicle-details-types";
 import { IoIosSpeedometer } from "react-icons/io";
 import { FaCrown } from "react-icons/fa6";
@@ -22,7 +22,7 @@ export function formUrlQuery({ params, key, value }: UrlQueryParams) {
       url: window.location.pathname,
       query: currentUrl,
     },
-    { skipNull: true }
+    { skipNull: true },
   );
 }
 
@@ -42,7 +42,7 @@ export function removeKeysFromQuery({
       url: window.location.pathname,
       query: currentUrl,
     },
-    { skipNull: true }
+    { skipNull: true },
   );
 }
 
@@ -68,7 +68,7 @@ export const sortCategories = (categories: CategoryType[]): CategoryType[] => {
 
 // helpers/sortFilters.ts
 export const sortFilters = (
-  filters: { name: string; value: string }[]
+  filters: { name: string; value: string }[],
 ): { name: string; value: string }[] => {
   // Define the order of categories
   const order = [
@@ -136,7 +136,7 @@ export function convertToLabel(value: string | undefined): string {
 
 // Helper function to determine which rental period is available
 export const getRentalPeriodDetails = (
-  rentalDetails: CardRentalDetails | undefined
+  rentalDetails: CardRentalDetails | undefined,
 ) => {
   if (rentalDetails?.hour?.enabled) {
     return {
@@ -185,7 +185,7 @@ const formatSeatingCapacity = (seatingCapacity: string): string => {
 
 // Helper function to generate dynamic FAQs for the vehicle details page
 export const generateDynamicFAQ = (
-  vehicle: VehicleDetailsResponse["result"]
+  vehicle: VehicleDetailsResponse["result"],
 ) => {
   const seatingCapacitySpec = vehicle.specs["Seating Capacity"];
   const availableCities = vehicle.cities.map((city) => city.label).join(", ");
@@ -226,32 +226,6 @@ export const generateDynamicFAQ = (
 
   return faqArray;
 };
-type GenerateModelDetailsUrlType = {
-  brandName?: string; // Optional string
-  model?: string; // Optional string
-  state?: string; // Optional string
-};
-
-export function generateModelDetailsUrl(
-  data: GenerateModelDetailsUrlType
-): string {
-  // Fallback values if vehicle details are missing
-  const fallbackModel = "model";
-  const fallbackState = "state";
-
-  const cleanText = (text: string): string => {
-    return text
-      .toLowerCase() // Convert to lowercase
-      .replace(/ - /g, "-") // Handle hyphens within the string
-      .replace(/[^a-z0-9-]+/g, "-") // Replace non-alphanumeric characters and spaces with hyphen
-      .replace(/^-+|-+$/g, ""); // Remove any leading or trailing hyphens
-  };
-
-  const model = cleanText(data.model || fallbackModel);
-  const state = cleanText(data.state || fallbackState);
-
-  return `rent-${model}-model-in-${state}`;
-}
 
 // helper function to dynamically generate riderent features based on state
 export const createFeatureCards = (state: string) => [
@@ -320,19 +294,29 @@ export function formatToUrlFriendly(word: string | null): string {
  * @param vehicleDetailsPageLink - The link to the vehicle details page.
  * @returns The url to open whatsapp with the message pre-filled or null if no whatsapp phone number is available.
  */
-export const generateWhatsappUrl = (
-  vehicle: VehicleCardType,
-  vehicleDetailsPageLink: string
-): string | null => {
+export const generateWhatsappUrl = (vehicle: {
+  whatsappPhone: string | undefined | null;
+  whatsappCountryCode: string | undefined | null;
+  model: string;
+  vehicleDetailsPageLink: string;
+}): string | null => {
   if (!vehicle.whatsappPhone || !vehicle.whatsappCountryCode) {
     return null;
   }
 
-  const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
+  const whatsappPageLink = `https://ride.rent/${vehicle.vehicleDetailsPageLink}`;
   const message = `${whatsappPageLink}\n\nHello, I am interested in the *_${vehicle.model}_* model. Could you please provide more details?`;
   const encodedMessage = encodeURIComponent(message);
 
   return `https://wa.me/${vehicle.whatsappCountryCode}${vehicle.whatsappPhone}?text=${encodedMessage}`;
+};
+
+export const generateCompanyProfilePageLink = (
+  companyName: string | null,
+  companyId: string,
+): string => {
+  const formattedCompanyName = formatToUrlFriendly(companyName);
+  return `/profile/${formattedCompanyName}/${companyId}`;
 };
 
 /**
@@ -346,7 +330,7 @@ export const generateWhatsappUrl = (
 export const generateAgentProfileWhatsappUrl = (
   companyName: string | null,
   whatsappCountryCode: string | null,
-  whatsappPhone: string | null
+  whatsappPhone: string | null,
 ): string | null => {
   if (!whatsappCountryCode || !whatsappPhone) {
     return null;
@@ -365,7 +349,7 @@ I look forward to your prompt response.\n\nSent via Ride.Rent`;
 
 export const getAgentFormattedPhoneNumber = (
   countryCode: string | null,
-  phone: string | null
+  phone: string | null,
 ): string | null => {
   if (!countryCode || !phone) {
     return null;
@@ -373,15 +357,38 @@ export const getAgentFormattedPhoneNumber = (
   return formatPhoneNumber(countryCode, phone);
 };
 
+export function generateModelDetailsUrl(vehicleTitle?: string): string {
+  // Fallback value for vehicleTitle
+  const fallbackVehicleTitle = "vehicle";
+
+  const cleanText = (text: string): string => {
+    return text
+      .toLowerCase() // Convert to lowercase
+      .replace(/ - /g, "-") // Handle hyphens within the string
+      .replace(/[^a-z0-9-]+/g, "-") // Replace non-alphanumeric characters and spaces with hyphen
+      .replace(/^-+|-+$/g, ""); // Remove any leading or trailing hyphens
+  };
+
+  // Use vehicleTitle if it exists, otherwise use fallbackVehicleTitle
+  const title = cleanText(vehicleTitle || fallbackVehicleTitle);
+
+  return title; // Return the cleaned version of the title
+}
+
 /**
  * Generates a URL redirecting to the vehicle details page
  *
  * @param {VehicleCardType} vehicle - Vehicle object
  * @returns {string} URL redirecting to the vehicle details page
  */
-export const generateVehicleDetailsUrl = (vehicle: VehicleCardType): string => {
-  const modelDetails = generateModelDetailsUrl(vehicle);
-  return `/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}/${vehicle.vehicleId}`;
+export const generateVehicleDetailsUrl = (vehicle: {
+  vehicleTitle?: string;
+  state: string;
+  vehicleCategory: string;
+  vehicleId: string;
+}): string => {
+  const modelDetails = generateModelDetailsUrl(vehicle.vehicleTitle);
+  return `/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}-for-rent/${vehicle.vehicleId}`;
 };
 
 /**
@@ -392,8 +399,8 @@ export const generateVehicleDetailsUrl = (vehicle: VehicleCardType): string => {
  * @returns {string | null} Formatted phone number or null if either param is null
  */
 export const getFormattedPhoneNumber = (
-  countryCode: string | null,
-  phoneNumber: string | null
+  countryCode: string | null | undefined,
+  phoneNumber: string | null | undefined,
 ): string | null => {
   if (!countryCode || !phoneNumber) return null;
   return formatPhoneNumber(countryCode, phoneNumber);

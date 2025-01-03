@@ -2,11 +2,11 @@ import AgentProfile from "@/components/agent-profile/AgentProfile";
 import AgentVehicleFilter from "@/components/agent-profile/AgentVehicleFilter";
 import AgentVehicleGrid from "@/components/agent-profile/AgentVehicleGrid";
 import VehicleCardSkeleton from "@/components/skelton/VehicleCardSkeleton";
-import { formatToUrlFriendly } from "@/helpers";
 import { FetchCompanyDetailsResponse } from "@/types";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import React, { Suspense } from "react";
+import { fetchCompanyDetails, generateCompanyMetadata } from "./profile-metadata";
 
 type PropsType = {
   searchParams: { [key: string]: string | undefined };
@@ -17,88 +17,13 @@ type PropsType = {
 export async function generateMetadata({
   params: { companyId },
 }: PropsType): Promise<Metadata> {
-  const baseUrl = process.env.API_URL;
+  const data = await fetchCompanyDetails(companyId);
 
-  // Fetch company details from your API
-  const response = await fetch(
-    `${baseUrl}/company/public?companyId=${companyId}`,
-    {
-      method: "GET",
-      cache: "no-cache",
-    }
-  );
-
-  const data: FetchCompanyDetailsResponse = await response.json();
-
-  if (!response.ok || !data.result) {
+  if (!data || !data.result) {
     return notFound();
   }
 
-  const companyDetails = data.result;
-
-  const companyName = companyDetails.companyName || "Ride.Rent";
-  const companyAddress = companyDetails.companyAddress || "UAE";
-
-  // Construct meta title
-  const title = `${companyName}, Affordable Vehicle Renting & Leasing Company in ${companyAddress} | A Ride.Rent Partner.`;
-
-  // Construct meta description
-  const description = `Rent or Lease cars, bikes, sports cars, bicycles, buses, vans, buggies, and
-charters effortlessly with ${companyName}. Partnering with the best rental agencies, Ride.Rent
-is your trusted vehicle rental platform for seamless bookings, unbeatable prices, and top-quality
-service when it comes to vehicle renting and leasing.`;
-
-  // Construct canonical URL
-  const formattedCompanyName = formatToUrlFriendly(companyName);
-  const companyProfilePageLink = `/profile/${formattedCompanyName}/${companyId}`;
-
-  const canonicalUrl = `https://ride.rent/${companyProfilePageLink}`;
-
-  // Use the company logo as the Open Graph image, fallback to a default image if no logo is provided
-  const ogImage = companyDetails.companyLogo || "/assets/icons/ride-rent.png";
-
-  return {
-    title,
-    description,
-    keywords: `rent vehicles, ${companyName}, cars, bikes, charters, vehicle rental platform`,
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      type: "website",
-      images: [
-        {
-          url: ogImage,
-          alt: `${companyName} logo`,
-          width: 1200,
-          height: 630,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [ogImage],
-    },
-    manifest: "/manifest.webmanifest",
-    robots: {
-      index: true,
-      follow: true,
-      nocache: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        noimageindex: false,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
-    },
-    alternates: {
-      canonical: canonicalUrl,
-    },
-  };
+  return generateCompanyMetadata(data.result, companyId);
 }
 
 export default async function AgentProfilePage({

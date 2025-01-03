@@ -30,9 +30,21 @@ const HorizontalCard: FC<HorizontalCardProps> = ({ vehicle }) => {
     vehicle.phoneNumber
   );
 
-  const vehicleDetailsPageLink = generateVehicleDetailsUrl(vehicle);
+  // dynamic link to navigate to vehicle details page
+  const vehicleDetailsPageLink = generateVehicleDetailsUrl({
+    vehicleTitle: vehicle.vehicleTitle,
+    state: vehicle.state,
+    vehicleCategory: vehicle.vehicleCategory,
+    vehicleId: vehicle.vehicleId,
+  });
 
-  const whatsappUrl = generateWhatsappUrl(vehicle, vehicleDetailsPageLink);
+  // whatsapp url
+  const whatsappUrl = generateWhatsappUrl({
+    whatsappPhone: vehicle.whatsappPhone,
+    whatsappCountryCode: vehicle.whatsappCountryCode,
+    model: vehicle.model,
+    vehicleDetailsPageLink,
+  });
 
   return (
     <MotionDivElm

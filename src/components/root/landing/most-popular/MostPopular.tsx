@@ -26,7 +26,7 @@ const MostPopular = async ({ state, category }: StateCategoryProps) => {
 
   return (
     <MotionSection className="popular-section wrapper">
-      <h2 className="heading ">
+      <h2 className="heading">
         Explore the most popular{" "}
         <span className="yellow-gradient px-1 rounded-xl">
           {convertToLabel(category)}

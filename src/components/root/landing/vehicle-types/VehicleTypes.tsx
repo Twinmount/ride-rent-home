@@ -77,6 +77,7 @@ const VehicleTypes = ({
               href={`/${state}/listing?category=${category}&vehicleTypes=${type.value}`}
               key={type.typeId}
               className="vehicle-types-card"
+              target="_blank"
             >
               <div className="top">
                 <img

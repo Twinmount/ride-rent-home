@@ -2,44 +2,38 @@ import "./MobileProfileCard.scss";
 import { MdOutlineExpandCircleDown, MdVerifiedUser } from "react-icons/md";
 import { useEffect, useRef, useState } from "react";
 import ProfileSpecification from "@/components/root/vehicle details/profile-specifications/ProfileSpecification";
-import { Company, RentalDetails } from "@/types/vehicle-details-types";
+import { ProfileCardDataType } from "@/types/vehicle-details-types";
 
 import {
-  formatPhoneNumber,
-  formatToUrlFriendly,
-  generateModelDetailsUrl,
+  generateCompanyProfilePageLink,
+  generateVehicleDetailsUrl,
+  generateWhatsappUrl,
+  getFormattedPhoneNumber,
 } from "@/helpers";
 import RentNowSection from "@/components/common/rent-now/RentNowSection";
 import Link from "next/link";
 
 type MobileProfileCardProps = {
-  company: Company;
-  rentalDetails: RentalDetails;
-  vehicleId: string;
-  isLease: boolean;
-  vehicleData: {
-    brandName: string;
-    model: string;
-    state: string;
-    category: string;
-  };
-  securityDeposit: {
-    enabled: boolean;
-    amountInAED: string;
-  };
+  profileData: ProfileCardDataType;
 };
 
-const MobileProfileCard = ({
-  company,
-  rentalDetails,
-  vehicleId,
-  isLease,
-  vehicleData,
-  securityDeposit,
-}: MobileProfileCardProps) => {
+const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [height, setHeight] = useState("9rem"); //
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const {
+    company,
+    rentalDetails,
+    vehicleId,
+    isLease,
+    vehicleData,
+    securityDeposit,
+    vehicleTitle,
+  } = profileData;
+
+  const contactDetails = company?.contactDetails;
+  const { state, model, category } = vehicleData;
 
   // Toggle function
   const handleToggle = () => {
@@ -65,35 +59,33 @@ const MobileProfileCard = ({
   }, [isExpanded]);
 
   // Handle case where contactDetails is null
-  const contactDetails = company?.contactDetails;
 
-  const formattedPhoneNumber =
-    contactDetails?.countryCode && contactDetails.phone
-      ? formatPhoneNumber(contactDetails?.countryCode, contactDetails.phone)
-      : null;
-
-  // generating dynamic url for the vehicle details page
-  const modelDetails = generateModelDetailsUrl(vehicleData);
-
-  const { state, model, category } = vehicleData;
+  const formattedPhoneNumber = getFormattedPhoneNumber(
+    contactDetails?.countryCode,
+    contactDetails?.phone
+  );
 
   // link for the vehicle details page
-  const vehicleDetailsPageLink = `${state}/${category}/${modelDetails}/${vehicleId}`;
-  // page link required for whatsapp share
-  const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
-
-  // Compose the message with the page link included
-  const message = `${whatsappPageLink}\n\nHello, I am interested in the *_${model}_* model. Could you please provide more details?`;
-  const encodedMessage = encodeURIComponent(message);
+  const vehicleDetailsPageLink = generateVehicleDetailsUrl({
+    vehicleTitle: vehicleTitle,
+    state: state,
+    vehicleCategory: category,
+    vehicleId: vehicleId,
+  });
 
   // whatsapp url
-  const whatsappUrl = contactDetails
-    ? `https://wa.me/${contactDetails.whatsappCountryCode}${contactDetails.whatsappPhone}?text=${encodedMessage}`
-    : null; // Handle null WhatsApp details
+  const whatsappUrl = generateWhatsappUrl({
+    whatsappPhone: contactDetails?.whatsappPhone,
+    whatsappCountryCode: contactDetails?.whatsappCountryCode,
+    model: model,
+    vehicleDetailsPageLink,
+  });
 
-  // generating dynamic url for the company profile page
-  const formattedCompanyName = formatToUrlFriendly(company.companyName);
-  const companyProfilePageLink = `/profile/${formattedCompanyName}/${company.companyId}`;
+  // company profile page link
+  const companyProfilePageLink = generateCompanyProfilePageLink(
+    company.companyName,
+    company.companyId
+  );
 
   return (
     <>
