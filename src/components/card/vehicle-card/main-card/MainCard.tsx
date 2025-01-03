@@ -17,6 +17,7 @@ import CompanyLogo from "../CompanyLogo";
 import VehicleThumbnail from "../VehicleThumbnail";
 import HourlyRentalBadge from "./hourly-rental-badge/HourlyRentalBadge";
 import RentalDetails from "../RentalDetails";
+import MotionCardDiv from "@/components/general/framer-motion/MotionCardDiv";
 
 type MainCardProps = {
   vehicle: VehicleCardType;
@@ -25,17 +26,27 @@ type MainCardProps = {
 const MainCard = ({ vehicle }: MainCardProps) => {
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,
-    vehicle.phoneNumber
+    vehicle.phoneNumber,
   );
 
   // dynamic link to navigate to vehicle details page
-  const vehicleDetailsPageLink = generateVehicleDetailsUrl(vehicle);
+  const vehicleDetailsPageLink = generateVehicleDetailsUrl({
+    vehicleTitle: vehicle.vehicleTitle,
+    state: vehicle.state,
+    vehicleCategory: vehicle.vehicleCategory,
+    vehicleId: vehicle.vehicleId,
+  });
 
   // whatsapp url
-  const whatsappUrl = generateWhatsappUrl(vehicle, vehicleDetailsPageLink);
+  const whatsappUrl = generateWhatsappUrl({
+    whatsappPhone: vehicle.whatsappPhone,
+    whatsappCountryCode: vehicle.whatsappCountryCode,
+    model: vehicle.model,
+    vehicleDetailsPageLink,
+  });
 
   return (
-    <div className="car-card-container slide-visible">
+    <MotionCardDiv className="car-card-container slide-visible">
       {/* card top */}
       <Link href={vehicleDetailsPageLink} target="_blank" className="card-top">
         <div className="image-box">
@@ -103,7 +114,7 @@ const MainCard = ({ vehicle }: MainCardProps) => {
           />
         </div>
       </div>
-    </div>
+    </MotionCardDiv>
   );
 };
 

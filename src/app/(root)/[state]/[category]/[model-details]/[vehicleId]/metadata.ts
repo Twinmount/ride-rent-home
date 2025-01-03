@@ -1,9 +1,10 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { VehicleDetailsResponse } from "@/types/vehicle-details-types";
+import { convertToLabel, generateVehicleDetailsUrl } from "@/helpers";
 
 export async function fetchVehicleData(
-  vehicleId: string
+  vehicleId: string,
 ): Promise<VehicleDetailsResponse | null> {
   const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
@@ -13,7 +14,7 @@ export async function fetchVehicleData(
       {
         method: "GET",
         cache: "no-cache",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -31,7 +32,7 @@ export function generateVehicleMetadata(
   data: VehicleDetailsResponse,
   state: string,
   category: string,
-  vehicleId: string
+  vehicleId: string,
 ): Metadata {
   if (!data?.result) {
     notFound();
@@ -39,31 +40,13 @@ export function generateVehicleMetadata(
 
   const vehicle = data.result;
 
-  // Determine the seat part of the title
-  const seats = vehicle.specs["Seating Capacity"]?.value;
-  const seatPart = seats
-    ? seats === "1"
-      ? "Single Seater"
-      : `${seats} Seater`
-    : "";
-
   // Construct the title
-  const title = `Rent Premium ${vehicle.modelName} ${
-    vehicle.subTitle
-  } | Hire for rent in ${vehicle.state.label}${
-    seatPart ? `, ${seatPart}` : ""
-  }`;
+  const title = `Rent ${vehicle.vehicleTitle || category} in ${convertToLabel(state)} | Ride.Rent ${convertToLabel(category)} Rentals in  ${convertToLabel(state)}`;
 
   // Construct the description
-  const description = `Looking to hire a premium ${vehicle.brand.label} ${
-    vehicle.modelName
-  } ${vehicle.subTitle} in ${vehicle.state.label}? Ride.Rent offers the ${
-    seats === "1" ? "single" : seats
-  } seater luxury vehicle for rent at affordable rates. Perfect for business trips, city tours, or personal travel, this stylish and comfortable car provides a top-notch driving experience. Enjoy flexible rental terms, daily, weekly, or monthly, with no hidden fees. Book your ${
-    vehicle.brand.label
-  } ${vehicle.modelName} today with Ride.Rent and enjoy a smooth ride through ${
-    vehicle.state.label
-  }'s vibrant cityscape!`;
+  const description = `${vehicle.vehicleTitle || category} For Rent in ${convertToLabel(
+    state,
+  )} at cheap rates, free spot delivery available. Daily, monthly, and lease options.`;
 
   // Shortened versions for social media
   const shortTitle = title.length > 60 ? `${title.substring(0, 57)}...` : title;
@@ -72,7 +55,15 @@ export function generateVehicleMetadata(
       ? `${description.substring(0, 152)}...`
       : description;
 
-  const canonicalUrl = `https://ride.rent/${state}/${category}/${vehicleId}`;
+  // dynamic link to  vehicle details page
+  const vehicleDetailsPageLink = generateVehicleDetailsUrl({
+    vehicleTitle: vehicle.vehicleTitle,
+    state: state,
+    vehicleCategory: category,
+    vehicleId: vehicleId,
+  });
+
+  const canonicalUrl = `https://ride.rent${vehicleDetailsPageLink}`;
   const ogImage = vehicle.vehiclePhotos?.[0] || "/assets/icons/ride-rent.png";
 
   return {

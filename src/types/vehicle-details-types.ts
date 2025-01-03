@@ -101,6 +101,25 @@ export type VehicleDetailsResponse = {
     vehicleSpecification: string;
     additionalVehicleTypes?: AdditionalVehicleTypes[];
     securityDeposit: { enabled: boolean; amountInAED: string };
+    vehicleTitle?: string;
   };
   statusCode: number;
+};
+
+export type ProfileCardDataType = {
+  company: Company;
+  rentalDetails: RentalDetails;
+  vehicleId: string;
+  isLease: boolean;
+  vehicleData: {
+    brandName: string;
+    model: string;
+    state: string;
+    category: string;
+  };
+  securityDeposit: {
+    enabled: boolean;
+    amountInAED: string;
+  };
+  vehicleTitle?: string;
 };

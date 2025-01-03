@@ -4,7 +4,6 @@ import ProfileCard from "@/components/card/owner-profile-card/ProfileCard";
 import WhyOpt from "@/components/common/why-opt/WhyOpt";
 import Description from "@/components/root/vehicle details/description/Description";
 import Specification from "@/components/root/vehicle details/specifications/Specification";
-import { IoLocationOutline } from "react-icons/io5";
 import DetailsSectionClient from "@/components/root/vehicle details/DetailsSectionClient";
 import Images from "@/components/root/vehicle details/vehicle-images/Images";
 import VehicleFeatures from "@/components/root/vehicle details/features/Features";
@@ -13,20 +12,21 @@ import { Suspense } from "react";
 import SectionLoading from "@/components/general/section-loading/SectionLoading";
 import Locations from "@/components/common/locations/Locations";
 import RelatedResults from "@/components/root/vehicle details/related-results/RelatedResults";
-import { VehicleDetailsResponse } from "@/types/vehicle-details-types";
+import {
+  ProfileCardDataType,
+  VehicleDetailsResponse,
+} from "@/types/vehicle-details-types";
 import QuickLinks from "@/components/root/vehicle details/quick-links/QuickLinks";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { formatVehicleSpecification } from "@/helpers";
 import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
-import CityListSubheading from "@/components/root/vehicle details/CityListSubheading";
-import {
-  fetchVehicleData,
-  generateVehicleMetadata,
-} from "./vehicle-details-metadata";
+import { fetchVehicleData, generateVehicleMetadata } from "./metadata";
 import RentalInfo from "@/components/root/vehicle details/RentalInfo";
 import NoDeposit from "@/components/root/vehicle details/NoDeposit";
-import AddOnServices from "@/components/root/vehicle details/AddOnServices";
+import AddOnServices from "@/components/root/vehicle details/add-on-services/AddOnServices";
+import Location from "@/components/root/vehicle details/locations/Location";
+import CurrentPageBreadcrumb from "@/components/root/vehicle details/CurrentPageBreadcrumb";
 
 type ParamsProps = {
   params: { state: string; category: string; vehicleId: string };
@@ -48,7 +48,7 @@ export async function generateMetadata({
 export default async function VehicleDetails({
   params: { state, category, vehicleId },
 }: ParamsProps) {
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.API_URL;
 
   // Fetch the vehicle data from the API
   const response = await fetch(
@@ -56,7 +56,7 @@ export default async function VehicleDetails({
     {
       method: "GET",
       cache: "no-cache",
-    }
+    },
   );
 
   const data: VehicleDetailsResponse = await response.json();
@@ -71,19 +71,29 @@ export default async function VehicleDetails({
 
   const vehicle = data.result;
 
-  //profile card prop
-  const vehicleData = {
-    brandName: vehicle.brand.value,
-    model: vehicle.modelName,
-    state: state,
-    category: category,
+  // data for profile card and mobile profile card
+  const ProfileCardData: ProfileCardDataType = {
+    company: vehicle?.company,
+    rentalDetails: vehicle?.rentalDetails,
+    vehicleId: vehicleId,
+    isLease: vehicle.isAvailableForLease,
+    vehicleData: {
+      brandName: vehicle.brand.value,
+      model: vehicle.modelName,
+      state: state,
+      category: category,
+    },
+    securityDeposit: vehicle.securityDeposit,
+    vehicleTitle: vehicle.vehicleTitle,
   };
 
   return (
     <section className="vehicle-details-section wrapper">
       {/* Details heading */}
       <MotionDiv className="heading-box">
-        <h1 className="custom-heading model-name">{vehicle?.modelName}</h1>
+        <h1 className="custom-heading model-name">
+          {vehicle?.vehicleTitle || vehicle.modelName}
+        </h1>
         {/* sub heading */}
         <RentalInfo
           modelName={vehicle?.modelName}
@@ -109,62 +119,49 @@ export default async function VehicleDetails({
           </div>
         </div>
 
-        {/* state and first 5 cities */}
-        <div className="location-container">
-          <span className="location">
-            <IoLocationOutline
-              size={20}
-              className="text-yellow relative bottom-[2px]"
-              strokeWidth={3}
-              fill="yellow"
-            />
-          </span>
-          <span className="state">{vehicle?.state.label} : </span>
-          <CityListSubheading cities={vehicle?.cities || []} />
-        </div>
+        {/* state and cities */}
+        <Location
+          stateLabel={vehicle?.state.label}
+          cities={vehicle?.cities || []}
+        />
       </MotionDiv>
 
-      {/* Vehicle Details */}
-      <DetailsSectionClient
-        company={vehicle?.company}
-        rentalDetails={vehicle?.rentalDetails}
-        vehicleId={vehicleId}
-        isLease={vehicle.isAvailableForLease}
-        vehicleData={vehicleData}
-        securityDeposit={vehicle.securityDeposit}
-      >
+      {/* breadcrumb for current page path*/}
+      <CurrentPageBreadcrumb
+        category={category}
+        state={state}
+        vehicleTitle={vehicle?.vehicleTitle || vehicle.modelName}
+      />
+
+      {/* Wrapper to handle client side logic regarding mobile profile card */}
+      <DetailsSectionClient profileData={ProfileCardData}>
+        {/* Vehicle Details Section */}
         <section className="details-section">
           <div className="details-container">
             {/* container left */}
             <div className="details">
-              {/* Images */}
+              {/* Vehicle Images Slider */}
               <Images photos={vehicle?.vehiclePhotos} />
 
-              {/* Specification */}
+              {/* Vehicle Specifications */}
               <Specification
                 specifications={vehicle?.specs}
                 vehicleCategory={category}
               />
 
-              {/* Features */}
+              {/* Vehicle Features */}
               <VehicleFeatures
                 features={vehicle?.features}
                 vehicleCategory={category}
               />
             </div>
 
-            {/* container right */}
+            {/* container right side */}
             <div className="right">
-              {/* Profile */}
-              <ProfileCard
-                company={vehicle?.company}
-                rentalDetails={vehicle?.rentalDetails}
-                vehicleId={vehicleId}
-                isLease={vehicle.isAvailableForLease}
-                vehicleData={vehicleData}
-                securityDeposit={vehicle.securityDeposit}
-              />
+              {/* Right Side Profile Card */}
+              <ProfileCard profileData={ProfileCardData} />
 
+              {/* Right Side Quick Links */}
               <QuickLinks state={state} />
             </div>
           </div>

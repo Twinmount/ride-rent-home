@@ -26,7 +26,7 @@ const RentalInfo: React.FC<RentalInfoProps> = ({
     .join(", ");
 
   return (
-    <p className="custom-sub-heading">
+    <p className="text-gray-600 w-full text-sm md:w-[85%]">
       Rent {modelName} model in {stateLabel}. Enjoy flexible rental terms with
       no hidden fees.{" "}
       {isCryptoAccepted

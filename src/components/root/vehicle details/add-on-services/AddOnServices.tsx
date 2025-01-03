@@ -1,3 +1,4 @@
+import styles from "./AddOnServices.module.scss";
 import { formatAdditionalTypeName } from "@/helpers";
 import { AdditionalVehicleTypes } from "@/types/vehicle-details-types";
 import React from "react";
@@ -14,13 +15,13 @@ const AddOnServices: React.FC<AddOnServicesProps> = ({
   }
 
   return (
-    <div className="add-ons">
-      <div className="add-ons-heading">
-        Add-on Services <span className="colon">:</span>
+    <div className={styles.addOns}>
+      <div className={styles.addOnsHeading}>
+        Add-on Services <span className={styles.colon}>:</span>
       </div>
-      <div className="add-ons-services">
+      <div className={styles.addOnsServices}>
         {additionalVehicleTypes.map((type, index) => (
-          <span key={index} className="add-ons-item">
+          <span key={index} className={styles.addOnsItem}>
             {formatAdditionalTypeName(type.name)}
             {index === additionalVehicleTypes.length - 1 ? "." : ", "}
           </span>
