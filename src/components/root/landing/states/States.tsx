@@ -6,7 +6,7 @@ import Link from "next/link";
 import { rearrangeStates } from "@/helpers";
 
 export default async function States({ category }: { category: string }) {
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.API_URL;
 
   // Fetch the states data from the API
   const response = await fetch(`${baseUrl}/states/list`, { cache: "no-store" });
@@ -33,7 +33,7 @@ export default async function States({ category }: { category: string }) {
             <Link
               href={`/${state.stateValue}/${category}`}
               key={state.stateId}
-              className="location-card "
+              className="location-card"
               target="_blank"
             >
               <Image
@@ -43,7 +43,7 @@ export default async function States({ category }: { category: string }) {
               />
               <figcaption>{state.stateName}</figcaption>
             </Link>
-          ) : null
+          ) : null,
         )}
       </div>
     </MotionSection>

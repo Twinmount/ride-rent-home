@@ -8,8 +8,7 @@ import Sidebar from "../sidebar/Sidebar";
 import Link from "next/link";
 import Image from "next/image";
 import StatesDropdown from "../navbar-dropdown/StatesDropdown";
-import QuickLinksDropdown from "../navbar-dropdown/QuickLinksDropdown";
-import CategoryDropdown from "../navbar-dropdown/CategoryDropdown";
+
 import { useParams } from "next/navigation";
 import { useShouldExclude } from "@/hooks/useShouldExclude";
 
@@ -39,9 +38,8 @@ const Navbar = () => {
     };
   }, []);
 
-  // should state/category/quicklinks dropdowns render
+  // should state/category/quickLinks dropdowns render
   const shouldRenderDropdowns = useShouldExclude({ isCategory: false });
-  const shouldCategoryRender = useShouldExclude({ isCategory: true });
 
   return (
     <header className={`${styles.header} padding main-wrapper`}>
@@ -75,18 +73,6 @@ const Navbar = () => {
             {!shouldRenderDropdowns && (
               <li className={styles.locations}>
                 <StatesDropdown />
-              </li>
-            )}
-
-            {!shouldCategoryRender && (
-              <li className={styles.vehicles}>
-                <CategoryDropdown />
-              </li>
-            )}
-
-            {!shouldRenderDropdowns && (
-              <li className={styles.links}>
-                <QuickLinksDropdown />
               </li>
             )}
 

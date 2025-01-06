@@ -126,18 +126,6 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
         <FaWhatsappSquare className="icon whatsapp" />
       </div>
 
-      {/* Email Icon */}
-      <div
-        aria-label="email"
-        onClick={handleEmailClick}
-        className={`icon mail ${
-          loading || !email ? "disabled" : "cursor-pointer"
-        }`}
-        style={loading ? { cursor: "wait" } : {}}
-      >
-        <ImMail className="icon mail" />
-      </div>
-
       {/* Phone Icon */}
       <Phone
         phoneNumber={phoneNumber}
