@@ -46,7 +46,7 @@ const MainCard = ({ vehicle }: MainCardProps) => {
   });
 
   return (
-    <MotionCardDiv className="car-card-container slide-visible">
+    <MotionCardDiv className="main-card-container slide-visible">
       {/* card top */}
       <Link href={vehicleDetailsPageLink} target="_blank" className="card-top">
         <div className="image-box">

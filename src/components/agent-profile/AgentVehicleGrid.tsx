@@ -9,6 +9,8 @@ type Props = {
   companyId: string;
 };
 
+export const revalidate = 600;
+
 export default async function AgentVehicleGrid({
   filter,
   page,
@@ -16,14 +18,18 @@ export default async function AgentVehicleGrid({
 }: Props) {
   const baseUrl = process.env.API_URL;
 
+  const params = new URLSearchParams({
+    page: page.toString(),
+    companyId,
+    limit: "9",
+    sortOrder: "DESC",
+    vehicleCategory: filter,
+  }).toString();
+
+  const url = `${baseUrl}/vehicle/vehicle/company/list?${params}`;
+
   // Fetch vehicles from the backend
-  const response = await fetch(
-    `${baseUrl}/vehicle/vehicle/company/list?page=${page}&companyId=${companyId}&limit=9&sortOrder=DESC&vehicleCategory=${filter}`,
-    {
-      method: "GET",
-      cache: "no-store",
-    }
-  );
+  const response = await fetch(url);
 
   // Parse the JSON response
   const data: FetchVehicleCardsResponse = await response.json();
@@ -34,13 +40,13 @@ export default async function AgentVehicleGrid({
   return (
     <div>
       {vehicles.length > 0 ? (
-        <div className="!grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 w-fit max-w-fit mx-auto gap-4">
+        <div className="mx-auto !grid w-fit max-w-fit grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {vehicles.map((vehicle, index) => (
             <MainCard key={index} vehicle={vehicle} />
           ))}
         </div>
       ) : (
-        <div className="flex-center h-72 font-thin text-lg">
+        <div className="flex-center h-72 text-lg font-thin">
           No Vehicles Found&nbsp; :/
         </div>
       )}

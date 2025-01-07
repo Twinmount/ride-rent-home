@@ -1,22 +1,35 @@
 import { Skeleton } from "../ui/skeleton";
 
-export default function VehicleCardSkeleton({ count = 6 }: { count?: number }) {
-  return Array.from({ length: count }).map((_, index) => (
-    <div
-      key={index}
-      className="bg-white shadow-lg rounded-lg overflow-hidden max-w-sm mx-auto w-full min-w-56 flex flex-col"
-    >
+export function VehicleCardSkeleton() {
+  return (
+    <div className="mx-auto flex !w-full min-w-[17rem] max-w-80 flex-col overflow-hidden rounded-2xl bg-white p-[0.3rem] shadow-lg">
       {/* Image Skeleton */}
-      <Skeleton className="w-full h-48 bg-gray-300" />
+      <Skeleton className="h-48 w-full rounded-2xl bg-gray-300" />
 
-      <div className="p-4 h-36 flex-grow">
+      <div className="flex h-44 flex-grow flex-col p-2">
         {/* Title Skeleton */}
-        <Skeleton className="h-6 w-2/3 bg-gray-300 mb-4" />
+        <Skeleton className="mb-4 h-5 w-11/12 rounded-xl bg-gray-300" />
 
         {/* Description Skeleton */}
-        <Skeleton className="h-4 w-full bg-gray-300 mb-2" />
-        <Skeleton className="h-4 w-5/6 bg-gray-300" />
+        <Skeleton className="mb-2 mt-3 h-4 w-3/4 rounded-xl bg-gray-300" />
+        <Skeleton className="h-4 w-2/4 rounded-xl bg-gray-300" />
+
+        <Skeleton className="mt-auto h-12 w-full rounded-xl bg-gray-300" />
       </div>
     </div>
-  ));
+  );
+}
+
+export default function VehicleCardSkeletonGrid({
+  count = 8,
+}: {
+  count?: number;
+}) {
+  return (
+    <div className="wrapper mx-auto grid w-full grid-cols-1 gap-4  sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
+      {Array.from({ length: count }).map((_, index) => (
+        <VehicleCardSkeleton key={index} />
+      ))}
+    </div>
+  );
 }

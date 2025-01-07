@@ -4,6 +4,8 @@ import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrappe
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { FetchPromotionsResponse } from "@/types";
 
+export const revalidate = 900;
+
 export default async function Recommended({
   state,
 }: {
@@ -14,10 +16,6 @@ export default async function Recommended({
   // Fetch the vehicle data from the API
   const response = await fetch(
     `${baseUrl}/promotions/list?stateValue=${state}&page=1&limit=5`,
-    {
-      method: "GET",
-      next: { revalidate: 300 },
-    }
   );
   const data: FetchPromotionsResponse = await response.json();
 
@@ -28,8 +26,8 @@ export default async function Recommended({
   }
 
   return (
-    <MotionSection className="promotion-section wrapper">
-      <h2>Recommended Car Rental deals</h2>
+    <MotionSection className="section-container wrapper">
+      <h2 className="section-heading">Recommended Car Rental deals</h2>
 
       <CarouselWrapper isButtonVisible={true}>
         {promotions.map((promotion) => (

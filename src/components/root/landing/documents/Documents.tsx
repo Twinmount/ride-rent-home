@@ -1,8 +1,8 @@
-import MotionSection from '@/components/general/framer-motion/MotionSection'
-import DocumentsRequired from '../documents-required/DocumentsRequired'
-import './Documents.scss'
-import { convertToLabel } from '@/helpers'
-import { StateCategoryProps } from '@/types'
+import "./Documents.scss";
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import DocumentsRequired from "../documents-required/DocumentsRequired";
+import { convertToLabel } from "@/helpers";
+import { StateCategoryProps } from "@/types";
 
 const Documents = ({ state, category }: StateCategoryProps) => {
   return (
@@ -38,6 +38,6 @@ const Documents = ({ state, category }: StateCategoryProps) => {
       {/* Documents Required */}
       <DocumentsRequired />
     </MotionSection>
-  )
-}
-export default Documents
+  );
+};
+export default Documents;

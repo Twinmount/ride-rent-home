@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import FAQ from "@/components/common/FAQ/FAQ";
-import SectionLoading from "@/components/general/section-loading/SectionLoading";
-
+import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
 import Documents from "@/components/root/landing/documents/Documents";
 import RideRentFeatures from "@/components/root/landing/features/Features";
 import Locations from "@/components/common/locations/Locations";
 import States from "@/components/root/landing/states/States";
-import MostPopular from "@/components/root/landing/most-popular/MostPopular";
+import MainGrid from "@/components/root/landing/MainGrid";
 import Promotions from "@/components/root/landing/promotion/Promotions";
 import TopBrands from "@/components/root/landing/top-brands/TopBrands";
-import VehicleTypes from "@/components/root/landing/vehicle-types/VehicleTypes";
 import { Suspense } from "react";
 import { PageProps } from "@/types";
 import TrustedReviewsSection from "@/components/root/landing/trusted-reviews/TrustedReviewsSection";
@@ -18,7 +16,13 @@ import {
   generateHomePageMetadata,
 } from "./landing-metadata";
 import { notFound } from "next/navigation";
-import VehicleCategories from "@/components/root/landing/vehicle-categories/VehicleCategories";
+import VehicleCardSkeletonGrid from "@/components/skelton/VehicleCardSkeleton";
+import BrandsCarouselSkeleton from "@/components/skelton/BrandsCarouselSkeleton";
+import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
+import NewlyArrived from "@/components/root/landing/newly-arrived/NewlyArrived";
+import VehicleCategoryAndFilter from "@/components/root/landing/VehicleCategoryAndFilter";
+import HeroSection from "@/components/root/landing/HeroSection";
+import VehicleCardCarouselSkeleton from "@/components/skelton/VehicleCardCarouselSkeleton";
 
 export async function generateMetadata({
   params: { state, category },
@@ -35,20 +39,23 @@ export async function generateMetadata({
 export default function Home({ params: { state, category } }: PageProps) {
   return (
     <>
-      <VehicleCategories category={category} state={state} />
-
-      {/* <Landing state={state} category={category} /> */}
       {/* <VehicleTypes state={state} category={category} /> */}
+      <HeroSection state={state} category={category} />
+      <VehicleCategoryAndFilter />
 
-      <Suspense fallback={<SectionLoading />}>
-        <MostPopular state={state} category={category} />
+      <Suspense fallback={<VehicleCardSkeletonGrid />}>
+        <MainGrid state={state} category={category} />
       </Suspense>
 
-      <Suspense fallback={<SectionLoading />}>
+      <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
         <TopBrands state={state} category={category} />
       </Suspense>
 
-      <Suspense fallback={<SectionLoading />}>
+      <Suspense fallback={<VehicleCardCarouselSkeleton />}>
+        <NewlyArrived state={state} category={category} />
+      </Suspense>
+
+      <Suspense fallback={<StatesGridSkeleton />}>
         <States category={category} />
       </Suspense>
 
@@ -58,9 +65,7 @@ export default function Home({ params: { state, category } }: PageProps) {
 
       <Suspense fallback={<SectionLoading />}>
         <RideRentFeatures state={state} category={category} />
-      </Suspense>
 
-      <Suspense fallback={<SectionLoading />}>
         <Documents state={state} category={category} />
       </Suspense>
 

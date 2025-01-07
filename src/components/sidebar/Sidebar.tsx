@@ -1,22 +1,22 @@
-import Link from 'next/link'
-import styles from './Sidebar.module.scss'
+import Link from "next/link";
+import styles from "./Sidebar.module.scss";
 
-import { IoClose } from 'react-icons/io5'
-import Image from 'next/image'
-import { SidebarAccordion } from '../sidebar-accordion/SidebarAccordion'
+import { IoClose } from "react-icons/io5";
+import Image from "next/image";
+import { SidebarAccordion } from "../general/sidebar-accordion/SidebarAccordion";
 
 type SidebarProps = {
-  isOpen: boolean
-  toggleSidebar: () => void
-}
+  isOpen: boolean;
+  toggleSidebar: () => void;
+};
 
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   return (
     <aside
       className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}
     >
-      <div className={styles['logo-container']}>
-        <Link href="/" className={styles['header-logo']}>
+      <div className={styles["logo-container"]}>
+        <Link href="/" className={styles["header-logo"]}>
           <figure>
             <Image
               src="/assets/logo/riderent-logo.webp"
@@ -32,17 +32,17 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
 
         <button
           aria-label="Sidebar Toggle"
-          className={styles['hamburger-close-btn']}
+          className={styles["hamburger-close-btn"]}
           onClick={toggleSidebar}
         >
-          <IoClose className={styles['hamburger-icon']} />
+          <IoClose className={styles["hamburger-icon"]} />
         </button>
       </div>
 
       {/* sidebar items */}
       <SidebarAccordion toggleSidebar={toggleSidebar} />
     </aside>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;

@@ -1,10 +1,11 @@
-@import '../../../styles/variables';
+@import "../../../styles/variables";
 
 /* Default styles for mobile devices and above */
 .footer-grid {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(2, 1fr);
+  padding-bottom: 2rem;
 
   .footer-section {
     .footer-grid-headings {
@@ -13,7 +14,7 @@
       font-size: 1.1rem;
 
       &:after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: 0;
         bottom: -0.2rem;

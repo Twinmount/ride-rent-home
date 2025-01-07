@@ -20,17 +20,17 @@ export async function generateMetadata({
 }: ParamsProps) {
   const canonicalUrl = `https://ride.rent/${state}/${category}/brands`;
   const title = `Explore Vehicle Brands - ${singularizeType(
-    category
+    category,
   )} in ${state}`;
   const description = `Browse and explore top vehicle brands for ${singularizeType(
-    category
+    category,
   )} rentals in ${state}. Find the perfect brand to suit your needs.`;
 
   return {
     title,
     description,
     keywords: `vehicle brands, ${singularizeType(
-      category
+      category,
     )}, ${state}, vehicle rental brands`,
     openGraph: {
       title,
@@ -58,7 +58,7 @@ export default async function Brands({
   const search = searchParams.search || "";
 
   const response = await fetch(
-    `${baseUrl}/vehicle-brand/list?page=${page}&limit=20&sortOrder=ASC&categoryValue=${category}&search=${search}`
+    `${baseUrl}/vehicle-brand/list?page=${page}&limit=20&sortOrder=ASC&categoryValue=${category}&search=${search}`,
   );
 
   // Parse the JSON response
@@ -71,11 +71,11 @@ export default async function Brands({
   const baseAssetsUrl = process.env.ASSETS_URL;
 
   return (
-    <section className=" wrapper">
+    <section className="wrapper pb-8">
       <div>
-        <div className="flex items-center mt-24 justify-start gap-x-4">
+        <div className="mt-24 flex items-center justify-start gap-x-4">
           <BackButton />
-          <h1 className="text-2xl lg:text-4xl font-semibold mb-4 uppercase">
+          <h1 className="mb-4 text-2xl font-semibold uppercase lg:text-4xl">
             <span className="text-yellow"> {singularizeType(category)}</span>{" "}
             Brands
           </h1>
@@ -88,21 +88,21 @@ export default async function Brands({
 
         {/* brands data */}
         {brands.length > 0 ? (
-          <div className="!grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-y-4 pb-20">
+          <div className="!grid grid-cols-2 gap-2 gap-y-4 pb-20 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
             {brands.map((data) => (
               <Link
                 href={`/${state}/listing?category=${category}&brand=${data.brandValue}`}
                 key={data.id}
-                className="w-full bg-white border min-w-32 h-36 rounded-xl"
+                className="h-36 w-full min-w-32 rounded-xl border bg-white"
               >
-                <div className="flex-center w-auto h-[6.5rem] p-2 ">
+                <div className="flex-center h-[6.5rem] w-auto p-2">
                   <img
                     src={`${baseAssetsUrl}/icons/brands/${category}/${data.brandValue}.png`}
                     alt={data.brandName}
-                    className="object-contain w-[95%] h-full max-w-28"
+                    className="h-full w-[95%] max-w-28 object-contain"
                   />
                 </div>
-                <div className="max-w-full text-sm font-semibold text-center">
+                <div className="max-w-full text-center text-sm font-semibold">
                   {data.brandName}
                 </div>
               </Link>

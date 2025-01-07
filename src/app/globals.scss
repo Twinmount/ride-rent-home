@@ -131,7 +131,7 @@ body {
   background: $gradient;
 }
 
-.padding {
+.global__padding {
   padding-left: 1rem !important;
   padding-right: 1rem !important;
 
@@ -161,8 +161,7 @@ body {
 }
 
 .wrapper {
-  @extend .padding;
-  padding-bottom: 2rem;
+  @extend .global__padding;
   max-width: 100rem !important;
   margin-left: auto !important;
   margin-right: auto !important;
@@ -175,5 +174,13 @@ body {
 
   .flex-between {
     @apply flex items-center justify-between;
+  }
+
+  .section-container {
+    @apply wrapper flex h-auto min-h-fit flex-col items-center rounded-[1rem] pb-8;
+  }
+
+  .section-heading {
+    @apply mb-7 mt-7 text-center text-2xl font-bold;
   }
 }

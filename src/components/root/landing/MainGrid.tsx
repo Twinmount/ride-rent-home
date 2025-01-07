@@ -1,21 +1,27 @@
-import "./MostPopular.scss";
-
 import ViewAllButton from "@/components/general/button/ViewAllButton";
 import MainCard from "@/components/card/vehicle-card/main-card/MainCard";
 
-import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
-import { convertToLabel } from "@/helpers";
 
-const MostPopular = async ({ state, category }: StateCategoryProps) => {
+const MainGrid = async ({ state, category }: StateCategoryProps) => {
   const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+
+  const params = new URLSearchParams({
+    page: "1",
+    limit: "12",
+    state,
+    sortOrder: "DESC",
+    category,
+    filter: VehicleHomeFilter.POPULAR_MODELS,
+  });
+
+  // Construct the full URL with the query string
+  const url = `${baseUrl}/vehicle/home-page/list?${params.toString()}`;
+
   // Fetch brand data from your API endpoint
-  const response = await fetch(
-    `${baseUrl}/vehicle/home-page/list?page=1&limit=12&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.POPULAR_MODELS}`,
-    { method: "GET", cache: "no-cache" },
-  );
+  const response = await fetch(url, { method: "GET", cache: "no-cache" });
 
   // Parse the JSON response
   const data: FetchVehicleCardsResponse = await response.json();
@@ -25,8 +31,8 @@ const MostPopular = async ({ state, category }: StateCategoryProps) => {
   if (vehicleData.length === 0) return null;
 
   return (
-    <MotionSection className="popular-section wrapper">
-      <section className="flex flex-wrap justify-center gap-x-4 gap-y-8">
+    <MotionSection className="wrapper h-auto min-h-fit w-full pb-8">
+      <section className="mx-auto grid w-fit max-w-fit grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
         {vehicleData.map((vehicle) => (
           <MainCard key={vehicle.vehicleId} vehicle={vehicle} />
         ))}
@@ -37,4 +43,4 @@ const MostPopular = async ({ state, category }: StateCategoryProps) => {
     </MotionSection>
   );
 };
-export default MostPopular;
+export default MainGrid;

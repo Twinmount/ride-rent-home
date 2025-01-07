@@ -9,7 +9,7 @@ import Images from "@/components/root/vehicle details/vehicle-images/Images";
 import VehicleFeatures from "@/components/root/vehicle details/features/Features";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import { Suspense } from "react";
-import SectionLoading from "@/components/general/section-loading/SectionLoading";
+import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
 import Locations from "@/components/common/locations/Locations";
 import RelatedResults from "@/components/root/vehicle details/related-results/RelatedResults";
 import {

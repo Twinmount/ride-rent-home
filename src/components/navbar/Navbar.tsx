@@ -1,19 +1,19 @@
 "use client";
 
-import styles from "./Navbar.module.scss";
-
 import { GiHamburgerMenu } from "react-icons/gi";
 import React, { useEffect, useState } from "react";
 import Sidebar from "../sidebar/Sidebar";
 import Link from "next/link";
 import Image from "next/image";
-import StatesDropdown from "../navbar-dropdown/StatesDropdown";
-
+import StatesDropdown from "../general/navbar-dropdown/StatesDropdown";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldExclude } from "@/hooks/useShouldExclude";
+import { useNavbar } from "@/context/NavbarContext";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { isHidden, setIsHidden } = useNavbar();
   const params = useParams<{ state: string; category: string }>();
 
   const state = params.state || "dubai";
@@ -41,75 +41,96 @@ const Navbar = () => {
   // should state/category/quickLinks dropdowns render
   const shouldRenderDropdowns = useShouldExclude({ isCategory: false });
 
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    if (latest > previous && latest > 150) {
+      setIsHidden(true);
+    } else {
+      setIsHidden(false);
+    }
+  });
+
   return (
-    <header className={`${styles.header} padding main-wrapper`}>
-      <nav className={styles["nav-container"]}>
-        <div className={styles["nav-left"]}>
-          <div className={styles["logo-container"]}>
+    <motion.header
+      variants={{
+        visible: { y: 0 },
+        hidden: { y: "-100%" },
+      }}
+      animate={isHidden ? "hidden" : "visible"}
+      transition={{ duration: 0, ease: "easeInOut" }}
+      className={`global__padding bg-bgGray fixed left-0 right-0 top-0 z-50 flex h-[4.4rem] flex-col items-center justify-center gap-y-5 border-b transition-all duration-200 ease-in-out`}
+    >
+      <nav className={`flex-between w-full`}>
+        <div className="flex w-fit items-center justify-center">
+          <div className="w-fit p-0">
             <Link
               href={`/${state}/${category}`}
-              className={styles["header-logo"]}
+              className="max-w-fit p-0 text-right text-xs font-normal text-gray-500"
             >
-              <figure>
+              <figure className="m-0">
                 <Image
                   src="/assets/logo/riderent-logo.webp"
                   alt="ride.rent logo"
                   width={130}
                   height={25}
-                  className={styles["logo-img"]}
+                  className="w-[8.5rem] md:w-40"
                   quality={100}
                 />
-                <figcaption>
-                  Vehicles for <span>Every Journey</span>
+                <figcaption className="text-[0.7rem]">
+                  Vehicles for{" "}
+                  <span className="font-bold italic text-black">
+                    Every Journey
+                  </span>
                 </figcaption>
               </figure>
             </Link>
           </div>
         </div>
-        <div className={styles["nav-items-container"]}>
-          <ul>
-            {/* location */}
 
+        <div className="flex w-fit items-center">
+          <ul className="flex w-full items-center justify-between gap-4">
+            {/* Location */}
             {!shouldRenderDropdowns && (
-              <li className={styles.locations}>
+              <li className="mr-2">
                 <StatesDropdown />
               </li>
             )}
 
-            <li className={styles["list-btn"]}>
+            {/* List Button */}
+            <li className="hidden lg:block">
               <Link
                 href={`https://agent.ride.rent/register`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`yellow-gradient default-btn`}
+                className="yellow-gradient default-btn"
               >
                 List your vehicle for FREE
               </Link>
             </li>
           </ul>
 
-          {/* hamburger */}
+          {/* Hamburger */}
           <button
             aria-label="Hamburger"
-            className={styles["hamburger-btn"]}
+            className="m-0 inline-flex cursor-pointer items-center justify-center border-none bg-transparent p-0 outline-none lg:hidden"
             onClick={toggleSidebar}
           >
-            <GiHamburgerMenu className={`${styles["hamburger-icon"]}`} />
+            <GiHamburgerMenu className="hover:text-yellow-400 mb-1 h-6 w-6 text-current transition-colors duration-100 ease-in" />
           </button>
         </div>
 
         {/* sidebar */}
         {isSidebarOpen && (
           <div
-            className={`${styles["black-overlay"]} ${
-              isSidebarOpen ? styles["black-overlay-visible"] : ""
-            }`}
+            className={`duration-[3000ms] transition-al fixed left-0 top-0 z-[100] h-full w-full bg-black bg-opacity-60 ease-in-out`}
             onClick={toggleSidebar}
           />
         )}
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       </nav>
-    </header>
+    </motion.header>
   );
 };
 

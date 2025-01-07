@@ -6,7 +6,7 @@ import { MdExpandMore } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
 import { fetchVehicleTypesByValue } from "@/lib/next-api/next-api";
 import { VehicleTypeType } from "@/types";
-import GridSkelton from "@/components/skelton/GridSkelton";
+import VehicleTypesGridSkelton from "@/components/skelton/VehicleTypesGridSkelton";
 import Link from "next/link";
 import { convertToLabel, singularizeType } from "@/helpers";
 
@@ -69,7 +69,7 @@ const VehicleTypes = ({
         type that is convenient for you
       </h1>
       {isLoading ? (
-        <GridSkelton count={4} />
+        <VehicleTypesGridSkelton count={4} />
       ) : (
         <div className="vehicle-types-container">
           {visibleVehicleTypes.map((type) => (
