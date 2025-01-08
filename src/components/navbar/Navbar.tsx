@@ -5,11 +5,12 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../sidebar/Sidebar";
 import Link from "next/link";
 import Image from "next/image";
-import StatesDropdown from "../general/navbar-dropdown/StatesDropdown";
+import StatesDropdown from "./StatesDropdown";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldExclude } from "@/hooks/useShouldExclude";
 import { useNavbar } from "@/context/NavbarContext";
+import { SearchDialog } from "./SearchDialog";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -60,7 +61,7 @@ const Navbar = () => {
       }}
       animate={isHidden ? "hidden" : "visible"}
       transition={{ duration: 0, ease: "easeInOut" }}
-      className={`global__padding bg-bgGray fixed left-0 right-0 top-0 z-50 flex h-[4.4rem] flex-col items-center justify-center gap-y-5 border-b transition-all duration-200 ease-in-out`}
+      className={`global__padding fixed left-0 right-0 top-0 z-50 flex h-[4.4rem] flex-col items-center justify-center gap-y-5 border-b bg-bgGray transition-all duration-200 ease-in-out`}
     >
       <nav className={`flex-between w-full`}>
         <div className="flex w-fit items-center justify-center">
@@ -91,6 +92,9 @@ const Navbar = () => {
 
         <div className="flex w-fit items-center">
           <ul className="flex w-full items-center justify-between gap-4">
+            {/* Search Dialog */}
+            <SearchDialog />
+
             {/* Location */}
             {!shouldRenderDropdowns && (
               <li className="mr-2">

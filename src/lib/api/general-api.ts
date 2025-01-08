@@ -1,10 +1,12 @@
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
+import { handleError } from "../utils";
+import { FetchTypesResponse } from "@/types";
 
 // Function to fetch vehicles based on filters using a POST request
 export const FetchVehicleByFilters = async (
   query: string,
   state: string = "dubai",
-  limit: number = 6
+  limit: number = 6,
 ): Promise<FetchVehicleCardsResponse> => {
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);
@@ -59,7 +61,7 @@ export const FetchVehicleByFilters = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
-    }
+    },
   );
 
   if (!response.ok) {
@@ -83,7 +85,7 @@ export const sendPortfolioVisit = async (vehicleId: string) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ vehicleId }), // Wrapping vehicleId in an object
-      }
+      },
     );
 
     // Check if the response was successful
@@ -92,7 +94,7 @@ export const sendPortfolioVisit = async (vehicleId: string) => {
       throw new Error(
         `Failed to send portfolio visit. Status: ${response.status}, Message: ${
           errorData.message || "Unknown error"
-        }`
+        }`,
       );
     }
 
@@ -108,7 +110,7 @@ export const sendPortfolioVisit = async (vehicleId: string) => {
 // Function to send POST request for queries
 export const sendQuery = async (
   vehicleId: string,
-  medium: "EMAIL" | "WHATSAPP" | "OTHER"
+  medium: "EMAIL" | "WHATSAPP" | "OTHER",
 ) => {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/queries`, {
@@ -124,5 +126,98 @@ export const sendQuery = async (
     }
   } catch (error) {
     console.error("Error sending query:", error);
+  }
+};
+
+// fetch vehicle types (e.g., Luxury, SUVs) by vehicle category value
+export const fetchVehicleTypesByValue = async (
+  vehicleCategoryValue: string,
+): Promise<FetchTypesResponse | undefined> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    // generating api URL
+    const apiUrl = `${baseUrl}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}`;
+
+    const response = await fetch(apiUrl);
+
+    // Check if the response is OK
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch vehicle types. Status: ${response.status}`,
+      );
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error in fetchVehicleTypes:", error);
+    handleError(error);
+    return undefined;
+  }
+};
+
+type FetchPriceRangeResponse = {
+  all: { min: number; max: number };
+  hour: { min: number; max: number };
+  day: { min: number; max: number };
+  week: { min: number; max: number };
+  month: { min: number; max: number };
+};
+
+// fetchPriceRange function to mimic API response with all periods
+export const fetchPriceRange = async (
+  state: string,
+  category: string,
+): Promise<FetchPriceRangeResponse | undefined> => {
+  try {
+    // Mock data for price ranges by period
+    const mockResponse = {
+      all: { min: 0, max: 100000 },
+      hour: { min: 10, max: 900 },
+      day: { min: 50, max: 5000 },
+      week: { min: 300, max: 20000 },
+      month: { min: 1000, max: 100000 },
+    };
+
+    // Simulating network latency
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    return mockResponse;
+  } catch (error) {
+    console.error("Error in fetchPriceRange:", error);
+    return undefined;
+  }
+};
+
+export const fetchSearchResults = async (search: string): Promise<string[]> => {
+  try {
+    // Simulate a backend response based on search input
+    const mockData: { [key: string]: string[] } = {
+      car: [
+        "Car Rentals",
+        "Car Wash",
+        "Car Repair",
+        "Car Sales",
+        "Car Accessories",
+      ],
+      bike: ["Bike Rentals", "Bike Sales", "Bike Repair"],
+      luxury: ["Luxury Cars", "Luxury Rentals"],
+    };
+
+    // Filter results matching the search input (case-insensitive)
+    const results = Object.entries(mockData)
+      .filter(([key]) => key.toLowerCase().includes(search.toLowerCase()))
+      .flatMap(([, values]) => values)
+      .slice(0, 6); // Return only 5-6 results for now
+
+    // Simulate network latency
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    return results;
+  } catch (error) {
+    console.error("Error in fetchSearchResults:", error);
+    return [];
   }
 };

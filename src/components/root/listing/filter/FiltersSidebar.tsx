@@ -23,7 +23,6 @@ import { Input } from "@/components/ui/input";
 import {
   fetchCategories,
   fetchVehicleBrandsByValue,
-  fetchVehicleTypesByValue,
 } from "@/lib/next-api/next-api";
 import {
   modelYears,
@@ -34,6 +33,7 @@ import {
 } from "@/constants";
 import { useQuery } from "@tanstack/react-query";
 import FilterAccordionContent from "../accordion/FilterAccordionContent";
+import { fetchVehicleTypesByValue } from "@/lib/api/general-api";
 
 interface FiltersSidebarProps {
   category: string | undefined;
@@ -69,7 +69,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
     queryFn: () =>
       fetchVehicleBrandsByValue(
         selectedFilters.category,
-        debouncedBrandSearchTerm
+        debouncedBrandSearchTerm,
       ),
     enabled: !!selectedFilters.category && debouncedBrandSearchTerm.length >= 1,
     staleTime: 0,
@@ -89,7 +89,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
   useEffect(() => {
     if (categoriesData && categoriesData.result.list.length > 0) {
       const fetchedCategories = categoriesData.result.list.map(
-        (category: CategoryType) => category.value
+        (category: CategoryType) => category.value,
       );
 
       if (!category || !fetchedCategories.includes(category)) {
@@ -152,7 +152,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
       }))
       .filter(
         (selectedBrand) =>
-          !fetchedBrands.some((option) => option.value === selectedBrand.value)
+          !fetchedBrands.some((option) => option.value === selectedBrand.value),
       ),
     ...fetchedBrands,
   ];
@@ -161,13 +161,13 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
       <SheetTrigger>
         <FiltersButton />
       </SheetTrigger>
-      <SheetContent side={"left"} className="bg-white bg w-72">
+      <SheetContent side={"left"} className="bg w-72 bg-white">
         <SheetHeader>
           <SheetTitle className="custom-heading feature-heading text-2xl">
             Filter
           </SheetTitle>
         </SheetHeader>
-        <div className="overflow-y-scroll absolute top-20 right-0 left-4 pr-1 bottom-24">
+        <div className="absolute bottom-24 left-4 right-0 top-20 overflow-y-scroll pr-1">
           <Accordion type="single" collapsible>
             {/* Model Year */}
             <AccordionItem value="model-year">
@@ -228,7 +228,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
                   placeholder="Search brands "
                   value={brandSearchTerm}
                   onChange={(e) => setBrandSearchTerm(e.target.value)}
-                  className="bg-grey-100 w-full h-10 focus-visible:ring-offset-0 placeholder:text-grey-500 rounded-full px-2 py-1 border-none focus-visible:ring-transparent ring-0"
+                  className="bg-grey-100 placeholder:text-grey-500 h-10 w-full rounded-full border-none px-2 py-1 ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
                 />
                 {debouncedBrandSearchTerm.length === 0 &&
                 selectedBrands.length === 0 ? (
@@ -305,9 +305,9 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
             </AccordionItem>
           </Accordion>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-28 flex flex-col gap-3 pb-4 pt-2 justify-center items-center border-t bg-slate-100">
+        <div className="absolute bottom-0 left-0 right-0 flex h-28 flex-col items-center justify-center gap-3 border-t bg-slate-100 pb-4 pt-2">
           <button
-            className="flex-center w-[93%] h-10 bg-yellow gap-x-2 rounded-xl mx-auto text-white text-lg hover:bg-yellow hover:shadow-md"
+            className="flex-center mx-auto h-10 w-[93%] gap-x-2 rounded-xl bg-yellow text-lg text-white hover:bg-yellow hover:shadow-md"
             onClick={() => {
               applyFilters();
               if (typeof window !== "undefined") {
@@ -318,7 +318,7 @@ const FiltersSidebar: FC<FiltersSidebarProps> = ({ category }) => {
             Apply Filters <RiListSettingsFill />
           </button>
           <button
-            className="flex-center w-[93%] h-10 bg-white border border-red-400 gap-x-2 rounded-xl mx-auto text-red-500 hover:bg-red-500 text-lg hover:text-white transition-colors hover:shadow-md"
+            className="flex-center mx-auto h-10 w-[93%] gap-x-2 rounded-xl border border-red-400 bg-white text-lg text-red-500 transition-colors hover:bg-red-500 hover:text-white hover:shadow-md"
             onClick={() => {
               resetFilters();
               if (typeof window !== "undefined") {

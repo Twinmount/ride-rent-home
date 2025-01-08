@@ -17,13 +17,16 @@ import CompanyLogo from "../CompanyLogo";
 import VehicleThumbnail from "../VehicleThumbnail";
 import HourlyRentalBadge from "./hourly-rental-badge/HourlyRentalBadge";
 import RentalDetails from "../RentalDetails";
-import MotionCardDiv from "@/components/general/framer-motion/MotionCardDiv";
+
+import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
+import MotionMainCardDiv from "@/components/general/framer-motion/MotionMainCardDiv";
 
 type MainCardProps = {
   vehicle: VehicleCardType;
+  index: number;
 };
 
-const MainCard = ({ vehicle }: MainCardProps) => {
+const MainCard = ({ vehicle, index }: MainCardProps) => {
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,
     vehicle.phoneNumber,
@@ -46,7 +49,10 @@ const MainCard = ({ vehicle }: MainCardProps) => {
   });
 
   return (
-    <MotionCardDiv className="main-card-container slide-visible">
+    <MotionMainCardDiv
+      index={index}
+      className="main-card-container slide-visible"
+    >
       {/* card top */}
       <Link href={vehicleDetailsPageLink} target="_blank" className="card-top">
         <div className="image-box">
@@ -114,7 +120,7 @@ const MainCard = ({ vehicle }: MainCardProps) => {
           />
         </div>
       </div>
-    </MotionCardDiv>
+    </MotionMainCardDiv>
   );
 };
 

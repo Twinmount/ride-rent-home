@@ -1,3 +1,4 @@
+import { TypewriterEffect } from "@/components/ui/typewriter-effect";
 import { convertToLabel } from "@/helpers";
 
 type HeroSectionProps = {
@@ -6,8 +7,31 @@ type HeroSectionProps = {
 };
 
 export default function HeroSection({ state, category }: HeroSectionProps) {
+  const words = [
+    {
+      text: "Rent",
+      className: "text-slate-800",
+    },
+
+    {
+      text: convertToLabel(category),
+      className: "text-slate-850",
+    },
+    {
+      text: "In",
+      className: "text-slate-800",
+    },
+    {
+      text: convertToLabel(state),
+      className: "text-slate-850",
+    },
+  ];
+
   return (
-    <div className="relative overflow-hidden border-b pb-5">
+    <div className="bg-grid-small-black/[0.2] relative overflow-hidden border-b pb-5">
+      {/* radial gradient for the faded look over the edges */}
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-bgGray [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black" />
+
       <div className="relative z-10">
         <div className="container py-5">
           <div className="mx-auto max-w-2xl text-center">
@@ -16,17 +40,13 @@ export default function HeroSection({ state, category }: HeroSectionProps) {
             </p>
 
             <div className="mt-4 max-w-2xl">
-              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                Rent Premium{" "}
-                <span className="">{convertToLabel(category)}</span> In{" "}
-                <span className="">{convertToLabel(state)}</span>
-              </h1>
+              <TypewriterEffect words={words} />
             </div>
             <div className="mt-5 max-w-3xl">
               <p className="text-xl text-muted-foreground">
                 Whether you're in {convertToLabel(state)} or exploring beyond,
                 find the perfect {convertToLabel(category)} that fits your
-                journey. Fully responsive and ready for every occasion.
+                journey.
               </p>
             </div>
           </div>

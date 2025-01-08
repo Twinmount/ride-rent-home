@@ -22,12 +22,12 @@ import { useQuery } from "@tanstack/react-query";
 import {
   fetchCategories,
   fetchVehicleBrandsByValue,
-  fetchVehicleTypesByValue,
 } from "@/lib/next-api/next-api";
 import { BrandType, CategoryType, VehicleTypeType } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formUrlQuery } from "@/helpers";
 import { Input } from "@/components/ui/input";
+import { fetchVehicleTypesByValue } from "@/lib/api/general-api";
 
 export default function Filter({
   category,
@@ -63,7 +63,7 @@ export default function Filter({
     queryFn: () =>
       fetchVehicleBrandsByValue(
         selectedFilters.category,
-        debouncedBrandSearchTerm
+        debouncedBrandSearchTerm,
       ),
     enabled: !!selectedFilters.category && debouncedBrandSearchTerm.length >= 1,
     staleTime: 0,
@@ -83,7 +83,7 @@ export default function Filter({
   useEffect(() => {
     if (categoriesData && categoriesData.result.list.length > 0) {
       const fetchedCategories = categoriesData.result.list.map(
-        (category: CategoryType) => category.value
+        (category: CategoryType) => category.value,
       );
 
       if (!category || !fetchedCategories.includes(category)) {
@@ -128,7 +128,7 @@ export default function Filter({
       }))
       .filter(
         (selectedBrand) =>
-          !fetchedBrands.some((option) => option.value === selectedBrand.value)
+          !fetchedBrands.some((option) => option.value === selectedBrand.value),
       ),
     ...fetchedBrands,
   ];
@@ -192,7 +192,7 @@ export default function Filter({
               placeholder="Search brands "
               value={brandSearchTerm}
               onChange={(e) => setBrandSearchTerm(e.target.value)}
-              className="bg-grey-100 w-full h-10 focus-visible:ring-offset-0 placeholder:text-grey-500 rounded-full px-2 py-1 border-none focus-visible:ring-transparent ring-0"
+              className="bg-grey-100 placeholder:text-grey-500 h-10 w-full rounded-full border-none px-2 py-1 ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
             />
             {debouncedBrandSearchTerm.length === 0 &&
             selectedBrands.length === 0 ? (

@@ -10,13 +10,21 @@ export default function VehicleTypesGridSkelton({
       {Array(count)
         .fill(null)
         .map((_, index) => (
-          <div key={index} className={`flex h-32 w-32 flex-col space-y-3`}>
-            <Skeleton className={`h-28 w-full rounded-xl bg-gray-200`} />
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-full bg-gray-200" />
-            </div>
-          </div>
+          <VehicleTypeSkelton key={index} />
         ))}
+    </div>
+  );
+}
+
+export function VehicleTypeSkelton() {
+  return (
+    <div
+      className={`bottom-1 flex aspect-square h-[70%] w-[4rem] min-w-[4rem] cursor-pointer flex-col justify-center gap-[0.2rem] overflow-hidden rounded-[0.4rem] lg:w-[5.2rem] lg:min-w-[5.2rem]`}
+    >
+      <Skeleton
+        className={`flex h-[60%] w-full items-center justify-center rounded-[0.4rem] bg-gray-200`}
+      />
+      <Skeleton className={`mx-auto h-2 w-3/4 rounded-[0.3rem] bg-gray-200`} />
     </div>
   );
 }

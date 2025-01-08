@@ -17,7 +17,7 @@ import VehicleCategorySkelton from "@/components/skelton/VehicleCategorySkelton"
 import { useParams } from "next/navigation";
 import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
 
-const VehicleCategories = () => {
+export default function VehicleCategories() {
   // const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
 
   // Fetch categories using useQuery
@@ -35,29 +35,22 @@ const VehicleCategories = () => {
 
   return (
     <div
-      className="mr-2 h-fit w-fit max-w-[70%] rounded-xl py-0 max-lg:mr-10 max-md:mr-5 md:ml-6 lg:max-w-[80%]"
+      className="mx-auto mr-2 h-fit w-[86%] rounded-xl py-0 max-lg:mr-10 max-md:mr-5 sm:w-[70%] sm:max-w-[70%] md:ml-6 lg:max-w-[75%]"
       id="categories"
     >
-      <Carousel
-        // plugins={[plugin.current]}
-        className="w-full p-0"
-        // onMouseEnter={plugin.current.stop}
-        // onMouseLeave={() => plugin.current.play()}
-      >
+      <Carousel className="w-full p-0">
         <CarouselContent className="flex h-fit gap-x-2 px-1 py-0 md:gap-x-3 lg:gap-x-4">
           {sortedCategories.map((cat: CategoryType, index) => (
             <VehicleCategoryCard key={cat.categoryId} cat={cat} index={index} />
           ))}
         </CarouselContent>
 
-        <CarouselPrevious className="max-md:hidden" />
-        <CarouselNext className="max-md:hidden" />
+        <CarouselPrevious />
+        <CarouselNext />
       </Carousel>
     </div>
   );
-};
-
-export default VehicleCategories;
+}
 
 function VehicleCategoryCard({
   cat,
@@ -127,3 +120,5 @@ function VehicleCategoryCard({
     </MotionDivElm>
   );
 }
+
+<div className="mx-auto grid w-fit grid-cols-2 place-items-center gap-2 py-4 md:grid-cols-3"></div>;

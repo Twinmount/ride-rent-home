@@ -405,3 +405,43 @@ export const getFormattedPhoneNumber = (
   if (!countryCode || !phoneNumber) return null;
   return formatPhoneNumber(countryCode, phoneNumber);
 };
+
+/**
+ * Generates a URL for the listing page with the given filters
+ *
+ * @param {number[]} values - Array with 2 elements: minPrice and maxPrice
+ * @param {string} state - State to filter by
+ * @param {string} category - Category to filter by
+ * @returns {string} URL for the listing page with the given filters
+ */
+
+export const generateListingUrl = (
+  values: number[],
+  state: string,
+  category: string,
+): string => {
+  const [minPrice, maxPrice] = values;
+
+  return `/${state}/listing?category=${category}&price=${minPrice}-${maxPrice}`;
+};
+
+/**
+ * Returns a debounced version of the given function. The function will only be called
+ * once the debounce timer has expired. The timer is reset every time the function is
+ * called.
+ *
+ * @param {Function} callback - Function to debounce
+ * @param {number} delay - Debounce delay in milliseconds
+ * @returns {Function} Debounced function
+ */
+
+export const debounce = <T extends any[]>(
+  callback: (...args: T) => void,
+  delay: number,
+) => {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: T) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback(...args), delay);
+  };
+};

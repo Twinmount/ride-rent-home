@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { categoryValue: string } } //extracting the params for vehicleCategoryId
+  { params }: { params: { categoryValue: string } }, //extracting the params for vehicleCategoryId
 ) {
   try {
     const baseUrl = process.env.API_URL;
@@ -10,9 +10,7 @@ export async function GET(
     // generating api URL
     const apiUrl = `${baseUrl}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${params.categoryValue}`;
 
-    const res = await fetch(apiUrl, {
-      method: "GET",
-    });
+    const res = await fetch(apiUrl);
 
     if (!res.ok) {
       throw new Error(`Failed to fetch vehicle types: ${res.statusText}`);
@@ -26,7 +24,7 @@ export async function GET(
       { error: "An error occurred while fetching vehicle types." },
       {
         status: 500,
-      }
+      },
     );
   }
 }

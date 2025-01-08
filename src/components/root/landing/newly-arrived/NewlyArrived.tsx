@@ -1,7 +1,7 @@
 import "./NewlyArrived.scss";
 import MainCard from "@/components/card/vehicle-card/main-card/MainCard";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
-import ViewAllButton from "@/components/general/button/ViewAllButton";
+import ViewAllButton from "@/components/common/ViewAllButton";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { convertToLabel } from "@/helpers";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
@@ -16,7 +16,7 @@ export default async function NewlyArrived({
   // Fetch brand data from your API endpoint
   const response = await fetch(
     `${baseUrl}/vehicle/home-page/list?page=1&limit=5&state=${state}&sortOrder=DESC&category=${category}&filter=${VehicleHomeFilter.POPULAR_MODELS}`,
-    { method: "GET", cache: "no-cache" }
+    { method: "GET", cache: "no-cache" },
   );
 
   // Parse the JSON response
@@ -30,17 +30,17 @@ export default async function NewlyArrived({
     <MotionSection className="newly-arrived-section wrapper">
       <h2 className="heading">
         Newly arrived{" "}
-        <span className="yellow-gradient px-1 rounded-xl">
+        <span className="yellow-gradient rounded-xl px-1">
           {convertToLabel(category)}
         </span>{" "}
         for rent in{" "}
-        <span className="capitalize yellow-gradient px-2 rounded-xl">
+        <span className="yellow-gradient rounded-xl px-2 capitalize">
           {convertToLabel(state)}
         </span>
       </h2>
       <CarouselWrapper isButtonVisible>
-        {vehicleData.map((vehicle) => (
-          <MainCard key={vehicle.vehicleId} vehicle={vehicle} />
+        {vehicleData.map((vehicle, index) => (
+          <MainCard key={vehicle.vehicleId} vehicle={vehicle} index={index} />
         ))}
       </CarouselWrapper>
       <ViewAllButton

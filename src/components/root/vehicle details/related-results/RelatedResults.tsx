@@ -38,20 +38,18 @@ export default async function RelatedResults({
 
   // Filter out the vehicle with the passed vehicleId prop
   vehicleData = vehicleData.filter(
-    (vehicle) => vehicle.vehicleId !== vehicleId
+    (vehicle) => vehicle.vehicleId !== vehicleId,
   );
 
   // If there are no vehicles left after filtering, return null
   if (vehicleData.length === 0) return null;
 
-
-
   return (
     <MotionSection className="wrapper">
-      <h2 className="heading ">Related Recommendations</h2>
+      <h2 className="heading">Related Recommendations</h2>
       <CarouselWrapper>
-        {vehicleData.map((vehicle) => (
-          <MainCard key={vehicle.vehicleId} vehicle={vehicle} />
+        {vehicleData.map((vehicle, index) => (
+          <MainCard key={vehicle.vehicleId} vehicle={vehicle} index={index} />
         ))}
       </CarouselWrapper>
     </MotionSection>

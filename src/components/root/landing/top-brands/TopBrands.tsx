@@ -1,6 +1,6 @@
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
-import ViewAllButton from "@/components/general/button/ViewAllButton";
+import ViewAllButton from "@/components/common/ViewAllButton";
 import { BrandType, FetchTopBrandsResponse } from "@/types";
 import Link from "next/link";
 import { convertToLabel } from "@/helpers";

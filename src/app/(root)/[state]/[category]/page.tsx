@@ -65,7 +65,6 @@ export default function Home({ params: { state, category } }: PageProps) {
 
       <Suspense fallback={<SectionLoading />}>
         <RideRentFeatures state={state} category={category} />
-
         <Documents state={state} category={category} />
       </Suspense>
 
