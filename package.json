@@ -9,7 +9,7 @@
     "build:prod-windows": "SET NODE_ENV=production && next build",
     "start:dev": "npm run build:dev && next start",
     "start:prod": "npm run build:prod && next start",
-    "start": "next start -p 8000"
+    "start": "next start"
   },
   "dependencies": {
     "@lottiefiles/dotlottie-react": "^0.9.3",
