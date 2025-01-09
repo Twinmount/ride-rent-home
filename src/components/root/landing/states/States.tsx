@@ -32,7 +32,7 @@ export default async function States({ category }: { category: string }) {
             <Link
               href={`/${state.stateValue}/${category}`}
               key={state.stateId}
-              className="duration-[700ms] group relative flex h-[7rem] w-full min-w-[10rem] max-w-[12rem] cursor-pointer items-center justify-center overflow-hidden rounded-[2rem] text-center shadow-[2px_2px_4px_rgba(0,0,0,0.5)] transition-all ease-in"
+              className="group relative flex h-[7rem] w-full min-w-[10rem] max-w-[12rem] cursor-pointer items-center justify-center overflow-hidden rounded-[2rem] text-center shadow-[2px_2px_4px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in"
               target="_blank"
             >
               <div className="absolute bottom-0 left-0 h-1/4 w-full bg-gradient-to-t from-black/80 to-transparent" />

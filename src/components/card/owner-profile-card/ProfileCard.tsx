@@ -24,6 +24,7 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
     company,
     rentalDetails,
     vehicleId,
+    vehicleCode,
     isLease,
     vehicleData,
     securityDeposit,
@@ -36,14 +37,14 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
 
   const formattedPhoneNumber = getFormattedPhoneNumber(
     contactDetails?.countryCode,
-    contactDetails?.phone
+    contactDetails?.phone,
   );
 
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
     vehicleTitle: vehicleTitle,
     state: state,
     vehicleCategory: category,
-    vehicleId: vehicleId,
+    vehicleCode: vehicleCode,
   });
 
   const whatsappUrl = generateWhatsappUrl({
@@ -58,7 +59,7 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
   // company profile page link
   const companyProfilePageLink = generateCompanyProfilePageLink(
     company.companyName,
-    company.companyId
+    company.companyId,
   );
 
   return (
@@ -73,9 +74,9 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
 
       <div className="top-container">
         {" "}
-        <div className="top ">
+        <div className="top">
           {/* animated border */}
-          <div className="animate-rotate absolute inset-0 z-0 h-full w-full rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
+          <div className="absolute inset-0 z-0 h-full w-full animate-rotate rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
 
           {/* black overlay with text */}
           <Link
@@ -87,7 +88,7 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
             <SquareArrowOutUpRight />
           </Link>
 
-          <Link href={companyProfilePageLink} className="profile-details ">
+          <Link href={companyProfilePageLink} className="profile-details">
             <div
               className={`${
                 company.companyProfile ? "" : "blurred-profile"

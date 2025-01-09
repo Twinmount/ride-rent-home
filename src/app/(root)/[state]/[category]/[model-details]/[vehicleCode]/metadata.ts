@@ -2,15 +2,16 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { VehicleDetailsResponse } from "@/types/vehicle-details-types";
 import { convertToLabel, generateVehicleDetailsUrl } from "@/helpers";
+import { restoreVehicleCodeFormat } from ".";
 
 export async function fetchVehicleData(
-  vehicleId: string,
+  vehicleCode: string,
 ): Promise<VehicleDetailsResponse | null> {
   const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
-
+  const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
   try {
     const response = await fetch(
-      `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
+      `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}`,
       {
         method: "GET",
         cache: "no-cache",
@@ -32,7 +33,7 @@ export function generateVehicleMetadata(
   data: VehicleDetailsResponse,
   state: string,
   category: string,
-  vehicleId: string,
+  vehicleCode: string,
 ): Metadata {
   if (!data?.result) {
     notFound();
@@ -60,7 +61,7 @@ export function generateVehicleMetadata(
     vehicleTitle: vehicle.vehicleTitle,
     state: state,
     vehicleCategory: category,
-    vehicleId: vehicleId,
+    vehicleCode: vehicleCode,
   });
 
   const canonicalUrl = `https://ride.rent${vehicleDetailsPageLink}`;

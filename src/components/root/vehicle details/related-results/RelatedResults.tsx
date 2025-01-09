@@ -7,13 +7,13 @@ import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 type RelatedResultsType = {
   state: string;
   category: string;
-  vehicleId: string;
+  vehicleCode: string;
 };
 
 export default async function RelatedResults({
   state,
   category,
-  vehicleId,
+  vehicleCode,
 }: RelatedResultsType) {
   const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   // Fetch brand data from your API endpoint
@@ -36,9 +36,9 @@ export default async function RelatedResults({
 
   let vehicleData = data?.result?.list || [];
 
-  // Filter out the vehicle with the passed vehicleId prop
+  // Filter out the vehicle with the passed vehicleCode prop
   vehicleData = vehicleData.filter(
-    (vehicle) => vehicle.vehicleId !== vehicleId,
+    (vehicle) => vehicle.vehicleCode !== vehicleCode,
   );
 
   // If there are no vehicles left after filtering, return null

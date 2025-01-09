@@ -28,14 +28,14 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle }) => {
   // Helper function calls
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,
-    vehicle.phoneNumber
+    vehicle.phoneNumber,
   );
 
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
     vehicleTitle: vehicle.vehicleTitle,
     state: vehicle.state,
     vehicleCategory: vehicle.vehicleCategory,
-    vehicleId: vehicle.vehicleId,
+    vehicleCode: vehicle.vehicleCode,
   });
 
   // whatsapp url

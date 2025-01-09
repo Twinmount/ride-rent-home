@@ -27,32 +27,35 @@ import NoDeposit from "@/components/root/vehicle details/NoDeposit";
 import AddOnServices from "@/components/root/vehicle details/add-on-services/AddOnServices";
 import Location from "@/components/root/vehicle details/locations/Location";
 import CurrentPageBreadcrumb from "@/components/root/vehicle details/CurrentPageBreadcrumb";
+import { restoreVehicleCodeFormat } from ".";
 
 type ParamsProps = {
-  params: { state: string; category: string; vehicleId: string };
+  params: { state: string; category: string; vehicleCode: string };
 };
 
 // dynamic meta data generate
 export async function generateMetadata({
-  params: { state, category, vehicleId },
+  params: { state, category, vehicleCode },
 }: ParamsProps): Promise<Metadata> {
-  const data = await fetchVehicleData(vehicleId);
+  const data = await fetchVehicleData(vehicleCode);
 
   if (!data || data.status === "NOT_SUCCESS" || !data.result) {
     return notFound();
   }
 
-  return generateVehicleMetadata(data, state, category, vehicleId);
+  return generateVehicleMetadata(data, state, category, vehicleCode);
 }
 
 export default async function VehicleDetails({
-  params: { state, category, vehicleId },
+  params: { state, category, vehicleCode },
 }: ParamsProps) {
   const baseUrl = process.env.API_URL;
 
+  const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
+
   // Fetch the vehicle data from the API
   const response = await fetch(
-    `${baseUrl}/vehicle/details?vehicleId=${vehicleId}`,
+    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}`,
     {
       method: "GET",
       cache: "no-cache",
@@ -75,7 +78,8 @@ export default async function VehicleDetails({
   const ProfileCardData: ProfileCardDataType = {
     company: vehicle?.company,
     rentalDetails: vehicle?.rentalDetails,
-    vehicleId: vehicleId,
+    vehicleId: vehicle.vehicleId,
+    vehicleCode: vehicle.vehicleCode,
     isLease: vehicle.isAvailableForLease,
     vehicleData: {
       brandName: vehicle.brand.value,
@@ -169,7 +173,11 @@ export default async function VehicleDetails({
       </DetailsSectionClient>
 
       {/* related result */}
-      <RelatedResults state={state} category={category} vehicleId={vehicleId} />
+      <RelatedResults
+        state={state}
+        category={category}
+        vehicleCode={vehicleCode}
+      />
 
       {/* Description */}
       <Description description={vehicle.description} />

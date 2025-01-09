@@ -18,7 +18,6 @@ import VehicleThumbnail from "../VehicleThumbnail";
 import HourlyRentalBadge from "./hourly-rental-badge/HourlyRentalBadge";
 import RentalDetails from "../RentalDetails";
 
-import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
 import MotionMainCardDiv from "@/components/general/framer-motion/MotionMainCardDiv";
 
 type MainCardProps = {
@@ -37,7 +36,7 @@ const MainCard = ({ vehicle, index }: MainCardProps) => {
     vehicleTitle: vehicle.vehicleTitle,
     state: vehicle.state,
     vehicleCategory: vehicle.vehicleCategory,
-    vehicleId: vehicle.vehicleId,
+    vehicleCode: vehicle.vehicleCode,
   });
 
   // whatsapp url

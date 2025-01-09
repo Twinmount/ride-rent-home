@@ -26,6 +26,7 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
     company,
     rentalDetails,
     vehicleId,
+    vehicleCode,
     isLease,
     vehicleData,
     securityDeposit,
@@ -62,7 +63,7 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
 
   const formattedPhoneNumber = getFormattedPhoneNumber(
     contactDetails?.countryCode,
-    contactDetails?.phone
+    contactDetails?.phone,
   );
 
   // link for the vehicle details page
@@ -70,7 +71,7 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
     vehicleTitle: vehicleTitle,
     state: state,
     vehicleCategory: category,
-    vehicleId: vehicleId,
+    vehicleCode: vehicleCode,
   });
 
   // whatsapp url
@@ -84,7 +85,7 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
   // company profile page link
   const companyProfilePageLink = generateCompanyProfilePageLink(
     company.companyName,
-    company.companyId
+    company.companyId,
   );
 
   return (
@@ -118,7 +119,7 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
 
           <div className="border-wrapper">
             {/* animated border */}
-            <div className="animate-rotate absolute inset-0 z-0 h-full w-full rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
+            <div className="absolute inset-0 z-0 h-full w-full animate-rotate rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
             <Link
               href={companyProfilePageLink}
               target="_blank"

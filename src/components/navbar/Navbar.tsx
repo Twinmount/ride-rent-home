@@ -128,7 +128,7 @@ const Navbar = () => {
         {/* sidebar */}
         {isSidebarOpen && (
           <div
-            className={`duration-[3000ms] transition-al fixed left-0 top-0 z-[100] h-full w-full bg-black bg-opacity-60 ease-in-out`}
+            className={`transition-al fixed left-0 top-0 z-[100] h-full w-full bg-black bg-opacity-60 duration-1000 ease-in-out`}
             onClick={toggleSidebar}
           />
         )}

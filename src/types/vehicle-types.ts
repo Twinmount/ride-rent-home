@@ -179,6 +179,7 @@ type VehicleSpecs = {
 // Type representing a vehicle card data structure
 export type VehicleCardType = {
   vehicleId: string;
+  vehicleCode: string;
   thumbnail: string;
   model: string;
   registredYear: string;

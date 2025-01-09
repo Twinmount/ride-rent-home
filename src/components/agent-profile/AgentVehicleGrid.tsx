@@ -42,7 +42,7 @@ export default async function AgentVehicleGrid({
       {vehicles.length > 0 ? (
         <div className="mx-auto !grid w-fit max-w-fit grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {vehicles.map((vehicle, index) => (
-            <MainCard key={index} vehicle={vehicle} />
+            <MainCard key={vehicle.vehicleId} index={index} vehicle={vehicle} />
           ))}
         </div>
       ) : (
