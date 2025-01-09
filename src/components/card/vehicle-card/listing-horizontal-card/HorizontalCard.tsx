@@ -27,7 +27,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({ vehicle }) => {
   // Inside HorizontalCard
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,
-    vehicle.phoneNumber
+    vehicle.phoneNumber,
   );
 
   // dynamic link to navigate to vehicle details page
@@ -35,7 +35,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({ vehicle }) => {
     vehicleTitle: vehicle.vehicleTitle,
     state: vehicle.state,
     vehicleCategory: vehicle.vehicleCategory,
-    vehicleId: vehicle.vehicleId,
+    vehicleCode: vehicle.vehicleCode,
   });
 
   // whatsapp url
@@ -86,7 +86,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({ vehicle }) => {
         <Link
           href={vehicleDetailsPageLink}
           target="_blank"
-          className="right-top-container "
+          className="right-top-container"
         >
           <div className="truncate">{vehicle.model}</div>
         </Link>

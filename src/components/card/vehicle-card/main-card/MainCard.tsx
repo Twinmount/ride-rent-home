@@ -34,7 +34,7 @@ const MainCard = ({ vehicle }: MainCardProps) => {
     vehicleTitle: vehicle.vehicleTitle,
     state: vehicle.state,
     vehicleCategory: vehicle.vehicleCategory,
-    vehicleId: vehicle.vehicleId,
+    vehicleCode: vehicle.vehicleCode,
   });
 
   // whatsapp url

@@ -385,10 +385,10 @@ export const generateVehicleDetailsUrl = (vehicle: {
   vehicleTitle?: string;
   state: string;
   vehicleCategory: string;
-  vehicleId: string;
+  vehicleCode: string;
 }): string => {
   const modelDetails = generateModelDetailsUrl(vehicle.vehicleTitle);
-  return `/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}-for-rent/${vehicle.vehicleId}`;
+  return `/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}-for-rent/${vehicle.vehicleCode.toLowerCase()}`;
 };
 
 /**

@@ -85,6 +85,8 @@ export type AdditionalVehicleTypes = {
 export type VehicleDetailsResponse = {
   status: string;
   result: {
+    vehicleId: string;
+    vehicleCOde: string;
     brand: Brand;
     modelName: string;
     subTitle: string;
@@ -110,6 +112,7 @@ export type ProfileCardDataType = {
   company: Company;
   rentalDetails: RentalDetails;
   vehicleId: string;
+  vehicleCode: string;
   isLease: boolean;
   vehicleData: {
     brandName: string;
