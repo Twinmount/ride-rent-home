@@ -4,7 +4,7 @@ import { FetchBrandsResponse } from "@/types";
 import Link from "next/link";
 import Pagination from "@/components/general/pagination/Pagination";
 import { singularizeType } from "@/helpers";
-import BackButton from "@/components/common/back-btn/BackButton";
+import BackButton from "@/components/common/BackButton";
 
 type ParamsProps = {
   params: { state: string; category: string };

@@ -1,11 +1,11 @@
 import { FC, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CategoryType } from "@/types/contextTypes";
-import { fetchCategories } from "@/lib/next-api/next-api";
 import useFilters from "@/hooks/useFilters";
 import FilterAccordionContent from "./FilterAccordionContent";
 import { useSearchParams } from "next/navigation";
 import qs from "query-string";
+import { fetchCategories } from "@/lib/api/general-api";
 
 const VehicleCategoryAccordion: FC = () => {
   const { selectedFilters, handleFilterChange } = useFilters();
@@ -27,7 +27,7 @@ const VehicleCategoryAccordion: FC = () => {
 
     if (data && data.result.list.length > 0) {
       const fetchedCategories = data.result.list.map(
-        (category: CategoryType) => category.value
+        (category: CategoryType) => category.value,
       );
 
       // If there is no category in the URL or the selected one is invalid, set the first category as default

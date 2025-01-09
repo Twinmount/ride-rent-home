@@ -20,10 +20,7 @@ import { BrandType, CategoryType, VehicleTypeType } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formUrlQuery } from "@/helpers";
 import { Input } from "@/components/ui/input";
-import {
-  fetchCategories,
-  fetchVehicleBrandsByValue,
-} from "@/lib/next-api/next-api";
+
 import {
   modelYears,
   colors,
@@ -33,7 +30,11 @@ import {
 } from "@/constants";
 import { useQuery } from "@tanstack/react-query";
 import FilterAccordionContent from "../accordion/FilterAccordionContent";
-import { fetchVehicleTypesByValue } from "@/lib/api/general-api";
+import {
+  fetchCategories,
+  fetchVehicleBrandsByValue,
+  fetchVehicleTypesByValue,
+} from "@/lib/api/general-api";
 
 interface FiltersSidebarProps {
   category: string | undefined;

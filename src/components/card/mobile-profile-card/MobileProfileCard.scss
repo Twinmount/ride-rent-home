@@ -9,7 +9,9 @@
   background-color: rgba(0, 0, 0, 0.5);
   /* Semi-transparent black */
   z-index: 9;
-  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  transition:
+    opacity 0.3s ease-in-out,
+    visibility 0.3s ease-in-out;
   opacity: 0;
   /* Initially hidden */
   visibility: hidden;
@@ -48,7 +50,8 @@
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
   height: 10.5rem;
   min-height: 10.5rem;
-  transition: height 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
+  transition:
+    height 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
     max-height 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
   max-height: auto;
   overflow: hidden;
@@ -374,29 +377,6 @@
 
           .rent-now-btn {
             display: flex;
-          }
-
-          .icons {
-            display: flex;
-            align-items: center;
-            column-gap: 1rem;
-
-            .icon {
-              font-size: 2rem;
-            }
-
-            .whatsapp {
-              color: rgb(0, 219, 0);
-              font-size: 2.2rem;
-            }
-
-            .mail {
-              color: gray;
-            }
-
-            .phone {
-              font-size: 2.2rem;
-            }
           }
         }
       }

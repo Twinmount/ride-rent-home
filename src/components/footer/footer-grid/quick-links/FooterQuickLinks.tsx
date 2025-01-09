@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { LinkType } from "@/types";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { fetchQuickLinksByValue } from "@/lib/next-api/next-api";
+import { fetchQuickLinksByValue } from "@/lib/api/general-api";
 
 export default function FooterQuickLinks() {
   const params = useParams();

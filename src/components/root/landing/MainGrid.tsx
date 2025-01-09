@@ -1,5 +1,5 @@
 import ViewAllButton from "@/components/common/ViewAllButton";
-import MainCard from "@/components/card/vehicle-card/main-card/MainCard";
+import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
 
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
@@ -34,7 +34,11 @@ const MainGrid = async ({ state, category }: StateCategoryProps) => {
     <MotionSection className="wrapper h-auto min-h-fit w-full pb-8">
       <section className="mx-auto grid w-fit max-w-fit grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
         {vehicleData.map((vehicle, index) => (
-          <MainCard key={vehicle.vehicleId} vehicle={vehicle} index={index} />
+          <VehicleMainCard
+            key={vehicle.vehicleId}
+            vehicle={vehicle}
+            index={index}
+          />
         ))}
       </section>
       <ViewAllButton

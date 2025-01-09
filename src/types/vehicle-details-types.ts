@@ -82,29 +82,32 @@ export type AdditionalVehicleTypes = {
   value: string;
 };
 
-export type VehicleDetailsResponse = {
+// Vehicle Details Type
+export type VehicleDetailsPageType = {
+  vehicleId: string;
+  vehicleCode: string;
+  brand: Brand;
+  modelName: string;
+  subTitle: string;
+  state: State;
+  isLease: boolean; //isLease
+  cities: City[];
+  vehiclePhotos: VehiclePhoto[];
+  specs: Specs;
+  features: Features;
+  rentalDetails: RentalDetails;
+  company: Company;
+  description: string;
+  isAvailableForLease: boolean;
+  vehicleSpecification: string;
+  additionalVehicleTypes?: AdditionalVehicleTypes[];
+  securityDeposit: { enabled: boolean; amountInAED: string };
+  vehicleTitle?: string;
+};
+
+export type VehicleDetailsPageResponse = {
   status: string;
-  result: {
-    vehicleId: string;
-    vehicleCode: string;
-    brand: Brand;
-    modelName: string;
-    subTitle: string;
-    state: State;
-    isLease: boolean; //isLease
-    cities: City[];
-    vehiclePhotos: VehiclePhoto[];
-    specs: Specs;
-    features: Features;
-    rentalDetails: RentalDetails;
-    company: Company;
-    description: string;
-    isAvailableForLease: boolean;
-    vehicleSpecification: string;
-    additionalVehicleTypes?: AdditionalVehicleTypes[];
-    securityDeposit: { enabled: boolean; amountInAED: string };
-    vehicleTitle?: string;
-  };
+  result: VehicleDetailsPageType;
   statusCode: number;
 };
 

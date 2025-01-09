@@ -1,5 +1,3 @@
-import "./FAQ.scss";
-
 import {
   Accordion,
   AccordionContent,
@@ -35,15 +33,15 @@ export default async function FAQ({ stateValue }: FAQStateProps) {
   }
 
   return (
-    <div className="faq-section wrapper">
-      <div className="heading-container">
-        <h2 className="frequently-asked">Frequently Asked Questions</h2>
+    <div className="section-container wrapper">
+      <div className="relative mb-8 text-xl">
+        <h2 className="section-heading">Frequently Asked Questions</h2>
         <Image
           width={50}
           height={50}
           src={"/assets/img/general/title-head.png"}
           alt="Custom Underline Image"
-          className="custom-underline"
+          className="absolute bottom-[0.8rem] left-1/2 h-auto w-16 -translate-x-1/2 transform"
         />
       </div>
 

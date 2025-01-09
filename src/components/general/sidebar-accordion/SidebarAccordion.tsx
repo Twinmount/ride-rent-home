@@ -7,10 +7,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  fetchCategories,
-  fetchQuickLinksByValue,
-} from "@/lib/next-api/next-api";
+import { fetchCategories, fetchQuickLinksByValue } from "@/lib/api/general-api";
+
 import { CategoryType, LinkType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";

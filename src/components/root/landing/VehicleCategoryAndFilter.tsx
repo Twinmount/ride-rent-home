@@ -1,6 +1,6 @@
 "use client";
 
-import VehicleCategories from "./vehicle-categories/VehicleCategories";
+import VehicleCategories from "./VehicleCategories";
 import { useNavbar } from "@/context/NavbarContext";
 import VehicleTypesDialog from "./VehicleTypesDialog";
 import PriceFilterDialog from "./PriceFilterDialog";

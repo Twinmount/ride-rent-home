@@ -1,16 +1,16 @@
-import './TermsCondition.scss'
-import HeadingBanner from '@/components/general/heading-banner/HeadingBanner'
-import MotionDiv from '@/components/general/framer-motion/MotionDiv'
-import MainSection from '@/components/term-conditions/MainSection'
-import GuestUsersSection from '@/components/term-conditions/GuestUsersSection'
-import AgentSubSection from '@/components/term-conditions/AgentSubSection'
-import AdvertisersSection from '@/components/term-conditions/AdvertisersSection'
+import "./TermsCondition.scss";
+import HeadingBanner from "@/components/general/heading-banner/HeadingBanner";
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import MainSection from "@/components/root/term-conditions/MainSection";
+import GuestUsersSection from "@/components/root/term-conditions/GuestUsersSection";
+import AgentSubSection from "@/components/root/term-conditions/AgentSubSection";
+import AdvertisersSection from "@/components/root/term-conditions/AdvertisersSection";
 
 export async function generateMetadata() {
-  const canonicalUrl = `https://ride.rent/terms-condition`
-  const title = `Terms & Conditions - Ride Rent`
+  const canonicalUrl = `https://ride.rent/terms-condition`;
+  const title = `Terms & Conditions - Ride Rent`;
   const description = `Review the terms and conditions for using  FleetOrbita
- Internet Services/Ride Rent LLC, including policies for users, agents, and advertisers.`
+ Internet Services/Ride Rent LLC, including policies for users, agents, and advertisers.`;
 
   return {
     title,
@@ -20,17 +20,17 @@ export async function generateMetadata() {
       title,
       description,
       url: canonicalUrl,
-      type: 'website',
+      type: "website",
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title,
       description,
     },
     alternates: {
       canonical: canonicalUrl,
     },
-  }
+  };
 }
 
 export default function TermsAndCondition() {
@@ -46,5 +46,5 @@ export default function TermsAndCondition() {
         <AdvertisersSection />
       </MotionDiv>
     </section>
-  )
+  );
 }

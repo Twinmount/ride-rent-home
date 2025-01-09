@@ -4,10 +4,10 @@ import SectionLoading from "@/components/skelton/section-loading/SectionLoading"
 import Documents from "@/components/root/landing/documents/Documents";
 import RideRentFeatures from "@/components/root/landing/features/Features";
 import Locations from "@/components/common/locations/Locations";
-import States from "@/components/root/landing/states/States";
+import States from "@/components/root/landing/States";
 import MainGrid from "@/components/root/landing/MainGrid";
-import Promotions from "@/components/root/landing/promotion/Promotions";
-import TopBrands from "@/components/root/landing/top-brands/TopBrands";
+import Promotions from "@/components/root/landing/Promotions";
+import TopBrands from "@/components/root/landing/TopBrands";
 import { Suspense } from "react";
 import { PageProps } from "@/types";
 import TrustedReviewsSection from "@/components/root/landing/trusted-reviews/TrustedReviewsSection";
@@ -19,7 +19,7 @@ import { notFound } from "next/navigation";
 import VehicleCardSkeletonGrid from "@/components/skelton/VehicleCardSkeleton";
 import BrandsCarouselSkeleton from "@/components/skelton/BrandsCarouselSkeleton";
 import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
-import NewlyArrived from "@/components/root/landing/newly-arrived/NewlyArrived";
+import NewlyArrived from "@/components/root/landing/NewlyArrived";
 import VehicleCategoryAndFilter from "@/components/root/landing/VehicleCategoryAndFilter";
 import HeroSection from "@/components/root/landing/HeroSection";
 import VehicleCardCarouselSkeleton from "@/components/skelton/VehicleCardCarouselSkeleton";
@@ -39,7 +39,6 @@ export async function generateMetadata({
 export default function Home({ params: { state, category } }: PageProps) {
   return (
     <>
-      {/* <VehicleTypes state={state} category={category} /> */}
       <HeroSection state={state} category={category} />
       <VehicleCategoryAndFilter />
 

@@ -1,5 +1,5 @@
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
-import MainCard from "../card/vehicle-card/main-card/MainCard";
+import MainCard from "../card/vehicle-card/main-card/VehicleMainCard";
 import { Suspense } from "react";
 import Pagination from "../general/pagination/Pagination";
 

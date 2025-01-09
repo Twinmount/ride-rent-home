@@ -1,4 +1,4 @@
-import MainCard from "@/components/card/vehicle-card/main-card/MainCard";
+import MainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
 import "./RelatedResults.scss";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import MotionSection from "@/components/general/framer-motion/MotionSection";

@@ -1,7 +1,7 @@
 import React from "react";
 import { MdVerifiedUser } from "react-icons/md";
 import { MapPin } from "lucide-react";
-import AgentContactIcons from "../common/agent-contact-icons/AgentContactIcons";
+import AgentContactIcons from "../common/AgentContactIcons";
 import {
   generateAgentProfileWhatsappUrl,
   getAgentFormattedPhoneNumber,
@@ -42,7 +42,7 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
     ? generateAgentProfileWhatsappUrl(
         companyName,
         contactDetails.whatsappCountryCode,
-        contactDetails.whatsappPhone
+        contactDetails.whatsappPhone,
       )
     : null;
 
@@ -50,48 +50,48 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
   const formattedPhoneNumber = contactDetails
     ? getAgentFormattedPhoneNumber(
         contactDetails.countryCode,
-        contactDetails.phone
+        contactDetails.phone,
       )
     : null;
 
   const isCompanyValid = !!companyName || !!companyLogo;
 
   return (
-    <div className="flex flex-col md:flex-row  justify-center lg:justify-between items-center p-4 bg-white rounded-lg border-b-2 max-md:gap-y-6 border-gray-200 lg:max-w-[90%] xl:max-w-[80%] mx-auto">
+    <div className="mx-auto flex flex-col items-center justify-center rounded-lg border-b-2 border-gray-200 bg-white p-4 max-md:gap-y-6 md:flex-row lg:max-w-[90%] lg:justify-between xl:max-w-[80%]">
       {/* left box logo and company details*/}
       <div className="flex flex-col items-center sm:flex-row">
         {/* Left side profile image */}
-        <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden flex-center border-[.36rem] border-amber-400 mx-auto sm:mx-0 ">
-          <div className="w-[85%] h-[85%] rounded-full overflow-hidden">
+        <div className="flex-center mx-auto h-24 w-24 overflow-hidden rounded-full border-[.36rem] border-amber-400 sm:mx-0 sm:h-32 sm:w-32">
+          <div className="h-[85%] w-[85%] overflow-hidden rounded-full">
             {companyLogo ? (
               <img
                 src={companyLogo}
                 alt={`${companyName || "Company"} Logo`}
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             ) : (
               <img
                 src="/assets/img/blur-profile.webp"
                 alt="profile-icon"
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             )}
           </div>
         </div>
 
         {/* Company Details */}
-        <div className="flex flex-col items-center sm:items-start sm:ml-4 lg:ml-6 space-y-2 mt-4 sm:mt-0 lg:flex-1">
+        <div className="mt-4 flex flex-col items-center space-y-2 sm:ml-4 sm:mt-0 sm:items-start lg:ml-6 lg:flex-1">
           {/* Agent name and verified badge */}
-          <div className="flex flex-col items-center sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
-            <h1 className="text-base sm:text-2xl font-bold text-gray-800 text-center sm:text-left">
+          <div className="flex flex-col items-center space-y-1 sm:flex-row sm:items-center sm:space-x-2 sm:space-y-0">
+            <h1 className="text-center text-base font-bold text-gray-800 sm:text-left sm:text-2xl">
               {companyName || "Company Not Available"}
             </h1>
 
             {/* Verified badge */}
             {isCompanyValid && (
-              <div className="flex items-center gap-1 relative">
-                <MdVerifiedUser className="text-yellow scale-125 sm:scale-150 absolute" />
-                <span className="bg-gray-300 rounded-[0.56rem] py-[0.22rem] text-sm font-medium ml-3 px-2 pl-[0.65rem]">
+              <div className="relative flex items-center gap-1">
+                <MdVerifiedUser className="absolute scale-125 text-yellow sm:scale-150" />
+                <span className="ml-3 rounded-[0.56rem] bg-gray-300 px-2 py-[0.22rem] pl-[0.65rem] text-sm font-medium">
                   Verified Vendor
                 </span>
               </div>
@@ -99,23 +99,23 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
           </div>
 
           {/* Location */}
-          <p className="text-sm  font-extralight text-center sm:text-left">
+          <p className="text-center text-sm font-extralight sm:text-left">
             {companyAddress || "Address Not Available"}
           </p>
-          <div className="text-sm sm:text-base -ml-1  text-center sm:text-left flex-center gap-x-3">
+          <div className="flex-center -ml-1 gap-x-3 text-center text-sm sm:text-left sm:text-base">
             {companyName && (
               <a
                 href={`https://www.google.com/maps/search/${encodeURIComponent(
-                  companyName
+                  companyName,
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm sm:text-base text-gray-700  flex-center gap-x-2  px-1 rounded-[0.5rem]  hover:border-transparent  bg-gray-200 cursor-pointer"
+                className="flex-center cursor-pointer gap-x-2 rounded-[0.5rem] bg-gray-200 px-1 text-sm text-gray-700 hover:border-transparent sm:text-base"
               >
                 <MapPin
                   width={16}
                   height={16}
-                  className="text-yellow w-4 h-4 "
+                  className="h-4 w-4 text-yellow"
                 />
                 Locate in map
               </a>
@@ -131,7 +131,7 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
       </div>
 
       {/* Right side contact options */}
-      <div className="flex items-center w-fit justify-center  h-fit">
+      <div className="flex h-fit w-fit items-center justify-center">
         {isCompanyValid && <GreenNotificationPing classes="mb-6 !mr-2" />}
         <div className="flex flex-col items-center lg:items-center">
           <AgentContactIcons
@@ -140,7 +140,7 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
             phoneNumber={formattedPhoneNumber}
           />
 
-          <span className="mt-3 text-xs sm:text-xs text-gray-700 text-center lg:text-right">
+          <span className="mt-3 text-center text-xs text-gray-700 sm:text-xs lg:text-right">
             {contactDetails
               ? "Available now for chat"
               : "Contact not available"}

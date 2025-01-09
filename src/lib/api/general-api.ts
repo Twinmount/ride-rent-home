@@ -1,6 +1,13 @@
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 import { handleError } from "../utils";
-import { FetchTypesResponse } from "@/types";
+import {
+  FetchBrandsResponse,
+  FetchCategoriesResponse,
+  FetchCitiesResponse,
+  FetchLinksResponse,
+  FetchStatesResponse,
+  FetchTypesResponse,
+} from "@/types";
 
 // Function to fetch vehicles based on filters using a POST request
 export const FetchVehicleByFilters = async (
@@ -113,7 +120,9 @@ export const sendQuery = async (
   medium: "EMAIL" | "WHATSAPP" | "OTHER",
 ) => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/queries`, {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/queries`;
+
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -219,5 +228,136 @@ export const fetchSearchResults = async (search: string): Promise<string[]> => {
   } catch (error) {
     console.error("Error in fetchSearchResults:", error);
     return [];
+  }
+};
+
+export const fetchStates = async (): Promise<
+  FetchStatesResponse | undefined
+> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    const res = await fetch(`${baseUrl}/states/list`, {
+      method: "GET",
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch states`);
+    }
+
+    const data = await res.json();
+
+    return data;
+  } catch (error) {
+    handleError(error);
+    return undefined;
+  }
+};
+
+// fetch all cities
+export const fetchAllCities = async (
+  stateId: string,
+): Promise<FetchCitiesResponse> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    const response = await fetch(`${baseUrl}/city/list?stateId=${stateId}`);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch cities");
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching cities:", error);
+    throw error;
+  }
+};
+
+export const fetchCategories = async (): Promise<
+  FetchCategoriesResponse | undefined
+> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    const response = await fetch(
+      `${baseUrl}/vehicle-category/list?limit=15&page=1`,
+      {
+        method: "GET",
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch categories data");
+    }
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    handleError(error);
+    return undefined;
+  }
+};
+
+// fetch quick links by state value
+export const fetchQuickLinksByValue = async (
+  stateValue: string,
+): Promise<FetchLinksResponse | undefined> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    const apiUrl = `${baseUrl}/links/list?page=1&limit=20&sortOrder=ASC&stateValue=${stateValue}`;
+
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      cache: "no-store",
+    });
+
+    // Check if the response is OK
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch vehicle types. Status: ${response.status}`,
+      );
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error in fetchVehicleTypes:", error);
+    handleError(error);
+    return undefined;
+  }
+};
+
+// fetch vehicle brand by vehicle category value and search term
+export const fetchVehicleBrandsByValue = async (
+  vehicleCategory: string,
+  searchTerm: string,
+): Promise<FetchBrandsResponse | undefined> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    // generating api URL
+    const apiUrl = `${baseUrl}/vehicle-brand/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategory}&search=${searchTerm}`;
+
+    const response = await fetch(apiUrl, {
+      method: "GET",
+    });
+
+    // Check if the response is OK
+    if (!response.ok) {
+      throw new Error(`Failed to fetch vehicle brands`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error in fetchVehicleTypes:", error);
+    handleError(error);
+    return undefined;
   }
 };

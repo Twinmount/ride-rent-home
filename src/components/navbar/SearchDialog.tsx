@@ -3,12 +3,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
+  BlurDialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/blur-dialog";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { fetchSearchResults } from "@/lib/api/general-api";
 import { debounce } from "@/helpers";
 
-export function SearchDialog() {
+export function SearchDialog({ isHero = false }: { isHero?: boolean }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -48,12 +48,25 @@ export function SearchDialog() {
   };
 
   return (
-    <Dialog>
+    <BlurDialog>
       <DialogTrigger asChild>
-        <Button className="flex-center gap-x-2 rounded-xl border border-gray-300 text-black">
-          <Search className="h-4 w-4 text-orange" />{" "}
-          <span className="relative mt-1">Search</span>
-        </Button>
+        {isHero ? (
+          <button className="flex-center relative mx-auto mt-4 w-full max-w-[500px] cursor-pointer">
+            <Search className="absolute left-2 top-3 z-10 transform text-slate-600 md:left-4" />
+            <span
+              className={
+                "relative flex h-12 w-full items-center rounded-xl border border-slate-500 bg-white/80 pl-6 pr-20 text-xs text-slate-600 focus:ring-0 sm:pl-10 sm:text-base md:pl-12"
+              }
+            >
+              BMW S series
+            </span>
+          </button>
+        ) : (
+          <Button className="flex-center gap-x-2 rounded-xl border border-gray-300 text-black">
+            <Search className="h-4 w-4 text-orange" />{" "}
+            <span className="relative mt-1">Search</span>
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent
         className={`bg-white py-6 sm:max-w-md ${results?.length ? "h-auto" : "h-fit"}`}
@@ -72,7 +85,7 @@ export function SearchDialog() {
           />
         </div>
       </DialogContent>
-    </Dialog>
+    </BlurDialog>
   );
 }
 

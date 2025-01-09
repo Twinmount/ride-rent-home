@@ -1,4 +1,3 @@
-import "./Features.scss";
 import FeaturesCard from "@/components/card/features-card/FeaturesCard";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps } from "@/types";
