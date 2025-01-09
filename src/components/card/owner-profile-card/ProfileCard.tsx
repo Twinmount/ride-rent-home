@@ -5,66 +5,62 @@ import { MdVerifiedUser } from "react-icons/md";
 import ProfileSpecification from "@/components/root/vehicle details/profile-specifications/ProfileSpecification";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import RentNowSection from "@/components/common/rent-now/RentNowSection";
-import { Company, RentalDetails } from "@/types/vehicle-details-types";
+import { ProfileCardDataType } from "@/types/vehicle-details-types";
 import {
-  formatPhoneNumber,
-  formatToUrlFriendly,
-  generateModelDetailsUrl,
+  generateCompanyProfilePageLink,
+  generateVehicleDetailsUrl,
+  generateWhatsappUrl,
+  getFormattedPhoneNumber,
 } from "@/helpers";
 import Link from "next/link";
 import { SquareArrowOutUpRight } from "lucide-react";
 
 type ProfileCardProps = {
-  company: Company;
-  rentalDetails: RentalDetails;
-  vehicleId: string;
-  isLease: boolean;
-  vehicleData: {
-    brandName: string;
-    model: string;
-    state: string;
-    category: string;
-  };
-  securityDeposit: {
-    enabled: boolean;
-    amountInAED: string;
-  };
+  profileData: ProfileCardDataType;
 };
 
-const ProfileCard = ({
-  company,
-  rentalDetails,
-  vehicleId,
-  isLease,
-  vehicleData,
-  securityDeposit,
-}: ProfileCardProps) => {
-  const contactDetails = company?.contactDetails;
-
-  const formattedPhoneNumber =
-    contactDetails?.countryCode && contactDetails.phone
-      ? formatPhoneNumber(contactDetails?.countryCode, contactDetails.phone)
-      : null;
-
-  const modelDetails = generateModelDetailsUrl(vehicleData);
+const ProfileCard = ({ profileData }: ProfileCardProps) => {
+  const {
+    company,
+    rentalDetails,
+    vehicleId,
+    vehicleCode,
+    isLease,
+    vehicleData,
+    securityDeposit,
+    vehicleTitle,
+  } = profileData;
 
   const { state, model, category } = vehicleData;
 
-  const vehicleDetailsPageLink = `${state}/${category}/${modelDetails}/${vehicleId}`;
-  const whatsappPageLink = `https://ride.rent/${vehicleDetailsPageLink}`;
+  const contactDetails = company?.contactDetails;
 
-  const message = `${whatsappPageLink}\n\nHello, I am interested in the *_${model}_* model. Could you please provide more details?`;
-  const encodedMessage = encodeURIComponent(message);
+  const formattedPhoneNumber = getFormattedPhoneNumber(
+    contactDetails?.countryCode,
+    contactDetails?.phone,
+  );
 
-  const whatsappUrl = contactDetails
-    ? `https://wa.me/${contactDetails.whatsappCountryCode}${contactDetails.whatsappPhone}?text=${encodedMessage}`
-    : null;
+  const vehicleDetailsPageLink = generateVehicleDetailsUrl({
+    vehicleTitle: vehicleTitle,
+    state: state,
+    vehicleCategory: category,
+    vehicleCode: vehicleCode,
+  });
+
+  const whatsappUrl = generateWhatsappUrl({
+    whatsappPhone: contactDetails?.whatsappPhone,
+    whatsappCountryCode: contactDetails?.whatsappCountryCode,
+    model: model,
+    vehicleDetailsPageLink,
+  });
 
   const isCompanyValid = !!company.companyName && !!company.companyProfile;
 
-  // generating dynamic url for the company profile page
-  const formattedCompanyName = formatToUrlFriendly(company.companyName);
-  const companyProfilePageLink = `/profile/${formattedCompanyName}/${company.companyId}`;
+  // company profile page link
+  const companyProfilePageLink = generateCompanyProfilePageLink(
+    company.companyName,
+    company.companyId,
+  );
 
   return (
     <MotionDiv className="profile-card">
@@ -78,9 +74,9 @@ const ProfileCard = ({
 
       <div className="top-container">
         {" "}
-        <div className="top ">
+        <div className="top">
           {/* animated border */}
-          <div className="animate-rotate absolute inset-0 z-0 h-full w-full rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
+          <div className="absolute inset-0 z-0 h-full w-full animate-rotate rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
 
           {/* black overlay with text */}
           <Link
@@ -92,7 +88,7 @@ const ProfileCard = ({
             <SquareArrowOutUpRight />
           </Link>
 
-          <Link href={companyProfilePageLink} className="profile-details ">
+          <Link href={companyProfilePageLink} className="profile-details">
             <div
               className={`${
                 company.companyProfile ? "" : "blurred-profile"

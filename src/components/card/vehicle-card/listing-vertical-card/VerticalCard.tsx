@@ -28,13 +28,23 @@ const VerticalCard: FC<VerticalCardProps> = ({ vehicle }) => {
   // Helper function calls
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,
-    vehicle.phoneNumber
+    vehicle.phoneNumber,
   );
 
-  const vehicleDetailsPageLink = generateVehicleDetailsUrl(vehicle);
+  const vehicleDetailsPageLink = generateVehicleDetailsUrl({
+    vehicleTitle: vehicle.vehicleTitle,
+    state: vehicle.state,
+    vehicleCategory: vehicle.vehicleCategory,
+    vehicleCode: vehicle.vehicleCode,
+  });
 
-  const whatsappUrl = generateWhatsappUrl(vehicle, vehicleDetailsPageLink);
-
+  // whatsapp url
+  const whatsappUrl = generateWhatsappUrl({
+    whatsappPhone: vehicle.whatsappPhone,
+    whatsappCountryCode: vehicle.whatsappCountryCode,
+    model: vehicle.model,
+    vehicleDetailsPageLink,
+  });
   return (
     <MotionDivElm
       initial={{ opacity: 0, y: 15 }}

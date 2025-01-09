@@ -179,6 +179,7 @@ type VehicleSpecs = {
 // Type representing a vehicle card data structure
 export type VehicleCardType = {
   vehicleId: string;
+  vehicleCode: string;
   thumbnail: string;
   model: string;
   registredYear: string;
@@ -196,6 +197,7 @@ export type VehicleCardType = {
   isDisabled: boolean;
   isCryptoAccepted: boolean;
   isSpotDeliverySupported: boolean;
+  vehicleTitle?: string;
   additionalVehicleTypes?: { typeId: string; label: string; value: string }[];
   securityDeposit: {
     enabled: boolean;

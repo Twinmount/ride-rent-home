@@ -27,12 +27,24 @@ const HorizontalCard: FC<HorizontalCardProps> = ({ vehicle }) => {
   // Inside HorizontalCard
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,
-    vehicle.phoneNumber
+    vehicle.phoneNumber,
   );
 
-  const vehicleDetailsPageLink = generateVehicleDetailsUrl(vehicle);
+  // dynamic link to navigate to vehicle details page
+  const vehicleDetailsPageLink = generateVehicleDetailsUrl({
+    vehicleTitle: vehicle.vehicleTitle,
+    state: vehicle.state,
+    vehicleCategory: vehicle.vehicleCategory,
+    vehicleCode: vehicle.vehicleCode,
+  });
 
-  const whatsappUrl = generateWhatsappUrl(vehicle, vehicleDetailsPageLink);
+  // whatsapp url
+  const whatsappUrl = generateWhatsappUrl({
+    whatsappPhone: vehicle.whatsappPhone,
+    whatsappCountryCode: vehicle.whatsappCountryCode,
+    model: vehicle.model,
+    vehicleDetailsPageLink,
+  });
 
   return (
     <MotionDivElm
@@ -74,7 +86,7 @@ const HorizontalCard: FC<HorizontalCardProps> = ({ vehicle }) => {
         <Link
           href={vehicleDetailsPageLink}
           target="_blank"
-          className="right-top-container "
+          className="right-top-container"
         >
           <div className="truncate">{vehicle.model}</div>
         </Link>

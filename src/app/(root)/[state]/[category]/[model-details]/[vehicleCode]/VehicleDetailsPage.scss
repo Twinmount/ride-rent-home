@@ -10,18 +10,11 @@
     background-color: white;
     padding: 1rem;
     border-radius: 1rem;
-    margin-bottom: 1rem;
 
     .model-name {
       font-weight: 500;
       font-size: 1.18rem;
       margin-bottom: 1.4rem;
-    }
-
-    .custom-sub-heading {
-      color: rgb(83, 83, 83);
-      width: 100%;
-      font-size: 15px;
     }
 
     .important-features {
@@ -48,75 +41,6 @@
         width: fit-content;
         font-size: 0.875rem /* 14px */;
         line-height: 1.25rem /* 20px */;
-      }
-
-      .add-ons {
-        display: flex;
-        align-items: start;
-        flex-direction: column;
-        background-color: rgb(232, 232, 232);
-        padding: 0.3rem 0.6rem;
-        border-radius: 0.3rem;
-        width: fit-content;
-
-        .add-ons-heading {
-          font-weight: 500;
-          display: flex;
-          align-items: center;
-
-          .colon {
-            display: none;
-            margin-left: 0.3rem;
-            margin-right: 0.3rem;
-          }
-        }
-
-        .add-ons-services {
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-          column-gap: 0.3rem;
-
-          .add-ons-item {
-            white-space: nowrap;
-            font-size: 0.95rem;
-          }
-        }
-      }
-    }
-
-    .location-container {
-      font-size: 15px;
-      color: rgb(91, 91, 91);
-      margin-top: 0.6rem;
-      display: flex;
-      align-items: start;
-
-      .location {
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        font-size: 1rem;
-        column-gap: 0.3rem;
-        margin-top: 0.1rem;
-      }
-
-      .state {
-        font-weight: 500;
-        color: rgb(37, 37, 37);
-        margin-right: 0.3rem;
-        display: flex;
-        align-items: center;
-        white-space: nowrap;
-      }
-
-      .city-list-subheading {
-        .city {
-          font-weight: 400;
-          color: rgb(45, 45, 45);
-          margin-right: 0.3rem;
-          font-size: 0.95rem;
-        }
       }
     }
   }
@@ -165,12 +89,6 @@
         width: 80%;
       }
 
-      .custom-sub-heading {
-        color: rgb(83, 83, 83);
-        width: 85%;
-        font-size: 15px;
-      }
-
       .important-features {
         .specification-info {
           font-weight: 500;
@@ -180,49 +98,6 @@
           width: fit-content;
           font-size: 1rem /* 16px */;
           line-height: 1.5rem /* 24px */;
-        }
-
-        .add-ons {
-          display: flex;
-          align-items: start;
-          flex-direction: row;
-          background-color: rgb(232, 232, 232);
-          padding: 0.3rem 0.6rem;
-          border-radius: 0.3rem;
-
-          .add-ons-heading {
-            .colon {
-              display: block;
-            }
-          }
-        }
-      }
-
-      .location-container {
-        display: flex;
-        column-gap: 0.1rem;
-        font-size: 15px;
-        color: rgb(91, 91, 91);
-        margin-top: 0.8rem;
-
-        .location {
-          display: flex;
-          justify-content: start;
-          align-items: center;
-          font-size: 1rem;
-          column-gap: 0.3rem;
-        }
-
-        .state {
-          font-weight: 500;
-          color: rgb(37, 37, 37);
-          margin-right: 0.3rem;
-        }
-
-        .city {
-          font-weight: 400;
-          color: rgb(45, 45, 45);
-          margin-right: 0.3rem;
         }
       }
     }
