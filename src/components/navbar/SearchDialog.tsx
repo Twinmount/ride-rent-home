@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 
 import { fetchSearchResults } from "@/lib/api/general-api";
 import { debounce } from "@/helpers";
+import { PlaceholderTypewriter } from "./PlaceholderTypewriter";
 
 export function SearchDialog({ isHero = false }: { isHero?: boolean }) {
   const router = useRouter();
@@ -51,15 +52,9 @@ export function SearchDialog({ isHero = false }: { isHero?: boolean }) {
     <BlurDialog>
       <DialogTrigger asChild>
         {isHero ? (
-          <button className="flex-center relative mx-auto mt-4 w-full max-w-[500px] cursor-pointer">
+          <button className="flex-center relative mx-auto mt-4 h-[3rem] w-full max-w-[500px] cursor-pointer rounded-xl border border-slate-500/70 bg-white/80">
             <Search className="absolute left-2 top-3 z-10 transform text-slate-600 md:left-4" />
-            <span
-              className={
-                "relative flex h-12 w-full items-center rounded-xl border border-slate-500 bg-white/80 pl-6 pr-20 text-xs text-slate-600 focus:ring-0 sm:pl-10 sm:text-base md:pl-12"
-              }
-            >
-              BMW S series
-            </span>
+            <PlaceholderTypewriter />
           </button>
         ) : (
           <Button className="flex-center gap-x-2 rounded-xl border border-gray-300 text-black">
