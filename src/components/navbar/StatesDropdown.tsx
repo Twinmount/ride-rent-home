@@ -13,7 +13,7 @@ import { StateType } from "@/types";
 import { useEffect, useState } from "react";
 import { notFound, useParams, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
-import { rearrangeStates } from "@/helpers";
+import { capitalizeFirstLetter, rearrangeStates } from "@/helpers";
 import { useMemo } from "react";
 import { fetchStates } from "@/lib/api/general-api";
 
@@ -62,13 +62,11 @@ export default function StatesDropdown() {
       <DropdownMenuTrigger
         className={`flex items-center !rounded-xl border-none outline-none`}
       >
-        <FaLocationDot
-          width={20}
-          height={20}
-          className={`mr-1 text-lg text-orange`}
-        />
+        <FaLocationDot width={20} height={20} className={`mr-1 text-orange`} />
         <span className="font-semibold">
-          {selectedState ? selectedState.stateName : "Select Location"}
+          {selectedState
+            ? capitalizeFirstLetter(selectedState.stateName)
+            : "Select Location"}
         </span>
         <ChevronDown className="text-yellow" width={20} />
       </DropdownMenuTrigger>
@@ -83,7 +81,9 @@ export default function StatesDropdown() {
               }`}
             >
               <FaLocationDot className={`scale-90 text-orange`} />
-              <span className="text-base">{data.stateName}</span>
+              <span className="text-base">
+                {capitalizeFirstLetter(data.stateName)}
+              </span>
             </DropdownMenuItem>
           ))
         ) : (

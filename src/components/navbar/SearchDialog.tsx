@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Button } from "@/components/ui/button";
+import { BlurDialog } from "@/components/ui/blur-dialog";
 import {
-  BlurDialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/blur-dialog";
+} from "@/components/ui/dialog";
+
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
@@ -18,7 +18,15 @@ import { fetchSearchResults } from "@/lib/api/general-api";
 import { debounce } from "@/helpers";
 import { PlaceholderTypewriter } from "./PlaceholderTypewriter";
 
-export function SearchDialog({ isHero = false }: { isHero?: boolean }) {
+type SearchDialogProps = {
+  isHero?: boolean;
+  isMobileNav?: boolean;
+};
+
+export function SearchDialog({
+  isHero = false,
+  isMobileNav = false,
+}: SearchDialogProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -52,19 +60,23 @@ export function SearchDialog({ isHero = false }: { isHero?: boolean }) {
     <BlurDialog>
       <DialogTrigger asChild>
         {isHero ? (
-          <button className="flex-center relative mx-auto mt-4 h-[3rem] w-full max-w-[500px] cursor-pointer rounded-xl border border-slate-500/70 bg-white/80">
+          <span className="flex-center relative mx-auto mt-4 h-[3rem] w-full max-w-[400px] cursor-pointer rounded-xl border border-slate-500/70 bg-white/80">
             <Search className="absolute left-2 top-3 z-10 transform text-slate-600 md:left-4" />
             <PlaceholderTypewriter />
-          </button>
+          </span>
+        ) : isMobileNav ? (
+          <span>
+            <Search className="" />
+          </span>
         ) : (
-          <Button className="flex-center gap-x-2 rounded-xl border border-gray-300 text-black">
-            <Search className="h-4 w-4 text-orange" />{" "}
+          <span className="flex-center gap-x-2 rounded-xl border border-gray-300 px-4 text-black">
+            <Search className="h-4 w-4 text-orange" strokeWidth={2} />{" "}
             <span className="relative mt-1">Search</span>
-          </Button>
+          </span>
         )}
       </DialogTrigger>
       <DialogContent
-        className={`bg-white py-6 sm:max-w-md ${results?.length ? "h-auto" : "h-fit"}`}
+        className={`rounded-xl bg-white py-6 max-md:w-[95%] sm:max-w-md ${results?.length ? "h-auto" : "h-fit"}`}
       >
         <DialogHeader className="sr-only">
           <DialogTitle className="sr-only">Search Vehicle</DialogTitle>

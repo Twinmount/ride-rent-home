@@ -445,3 +445,15 @@ export const debounce = <T extends any[]>(
     timeoutId = setTimeout(() => callback(...args), delay);
   };
 };
+
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * Capitalizes the first letter of a string and lowercases the rest.
+ *
+ * @param {string} input - String to capitalize
+ * @returns {string} Capitalized string
+ */
+/******  0150f7f5-2c9b-44ba-8f86-bcbf9330e37e  *******/export function capitalizeFirstLetter(input: string): string {
+  if (!input) return ""; // Handle empty or undefined input
+  return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
+}

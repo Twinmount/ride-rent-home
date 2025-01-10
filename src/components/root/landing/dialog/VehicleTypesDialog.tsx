@@ -52,26 +52,14 @@ export default function VehicleTypesDialog() {
           </DialogTitle>
         </DialogHeader>
         <div className="flex-center mx-auto flex-wrap gap-3 pb-6">
-          {vehicleTypes.map((type) => (
-            <Link
-              href={`/${state}/listing?category=${category}&vehicleTypes=${type.value}`}
+          {vehicleTypes.map((type, index) => (
+            <VehicleTypeCard
               key={type.typeId}
-              className="mx-auto flex h-[6rem] w-[8rem] cursor-pointer flex-col items-center justify-start rounded-[1rem] border p-[0.2rem] shadow transition-all duration-200 ease-out hover:scale-105"
-              target="_blank"
-            >
-              <div className="mt-[0.7rem] flex h-[60%] w-[80%] max-w-[80%] flex-col items-center justify-center text-center">
-                <img
-                  width={100}
-                  height={100}
-                  src={`${baseAssetsUrl}/icons/vehicle-types/${category}/${type.value}.webp`}
-                  alt={`${type.name} Icon`}
-                  className="h-[90%] max-h-[90%] w-[90%] max-w-[90%] object-contain object-center"
-                />
-              </div>
-              <span className="m-0 line-clamp-1 w-[7.5rem] max-w-[7.5rem] p-0 text-center text-[0.8rem]">
-                {type.name}
-              </span>
-            </Link>
+              type={type}
+              category={category}
+              state={state}
+              index={index}
+            />
           ))}
         </div>
       </DialogContent>
@@ -79,6 +67,65 @@ export default function VehicleTypesDialog() {
   );
 }
 
+// individual vehicle type card
+function VehicleTypeCard({
+  type,
+  category,
+  state,
+  index,
+}: {
+  type: VehicleTypeType;
+  category: string;
+  state: string;
+  index: number;
+}) {
+  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
+
+  // Animation variants for staggered effect
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (index: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: index * 0.05, // Stagger delay based on index
+        duration: 0.5,
+        ease: "easeOut",
+      },
+    }),
+  };
+
+  return (
+    <motion.div
+      custom={index} // Pass index for delay
+      initial="hidden"
+      animate="visible"
+      variants={cardVariants}
+      className="mx-auto flex h-[6rem] w-[8rem] cursor-pointer flex-col items-center justify-start rounded-[1rem] border p-[0.2rem] shadow transition-all duration-200 ease-out hover:scale-105"
+    >
+      <Link
+        href={`/${state}/listing?category=${category}&vehicleTypes=${type.value}`}
+        key={type.typeId}
+        target="_blank"
+      >
+        <div className="mt-[0.7rem] flex h-[60%] w-[80%] max-w-[80%] flex-col items-center justify-center text-center">
+          <img
+            width={100}
+            height={100}
+            src={`${baseAssetsUrl}/icons/vehicle-types/${category}/${type.value}.webp`}
+            alt={`${type.name} Icon`}
+            className="h-[90%] max-h-[90%] w-[90%] max-w-[90%] object-contain object-center"
+          />
+        </div>
+        <span className="m-0 line-clamp-1 w-[7.5rem] max-w-[7.5rem] p-0 text-center text-[0.8rem]">
+          {type.name}
+        </span>
+      </Link>
+    </motion.div>
+  );
+}
+
+// trigger component which changes type every 4 seconds
 function VehicleTypeTrigger({
   category,
   vehicleTypes,

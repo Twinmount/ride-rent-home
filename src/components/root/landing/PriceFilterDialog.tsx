@@ -17,6 +17,7 @@ import { PriceRangeSlider } from "@/components/ui/prince-range-slider";
 import Link from "next/link";
 import { convertToLabel, generateListingUrl } from "@/helpers";
 import { SlidersHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const rentalPeriods = [
   { label: "All", value: "all" },
@@ -28,7 +29,11 @@ const rentalPeriods = [
 
 type PeriodType = "all" | "hour" | "day" | "week" | "month";
 
-export default function PriceFilterDialog() {
+export default function PriceFilterDialog({
+  isMobileNav = false,
+}: {
+  isMobileNav?: boolean;
+}) {
   const { state, category } = useStateAndCategory();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("all");
@@ -63,12 +68,19 @@ export default function PriceFilterDialog() {
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger
-        disabled={isLoading || !data}
-        className={`flex-center relative bottom-2 h-12 gap-2 rounded-[0.5em] border border-gray-300 px-3 py-1 text-sm font-semibold ${isLoading && "cursor-default text-gray-500"}`}
-      >
-        <SlidersHorizontal width={15} />
-        Price
+      <DialogTrigger disabled={isLoading || !data}>
+        {isMobileNav ? (
+          <span>
+            <SlidersHorizontal width={isMobileNav ? 20 : 15} />
+          </span>
+        ) : (
+          <span
+            className={`flex-center relative bottom-2 h-12 gap-2 rounded-[0.5em] border border-gray-300 px-3 py-1 text-sm font-semibold ${isLoading && "cursor-default text-gray-500"}`}
+          >
+            <SlidersHorizontal width={15} />
+            Price
+          </span>
+        )}
       </DialogTrigger>
       <DialogContent className="!max-h-fit !w-[80vw] overflow-hidden rounded-2xl bg-white !px-2 py-4">
         <DialogHeader>

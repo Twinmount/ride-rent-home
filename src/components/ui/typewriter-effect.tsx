@@ -1,21 +1,43 @@
 "use client";
 
+import { convertToLabel } from "@/helpers";
 import { cn } from "@/lib/utils";
 import { motion, stagger, useAnimate, useInView } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+
+// Helper function to generate the words array
+const generateWordsArray = (state: string, category: string) => {
+  const splitIntoWords = (text: string, className: string) => {
+    return text.split(" ").map((word) => ({
+      text: word,
+      className,
+    }));
+  };
+
+  return [
+    { text: "Rent", className: "text-slate-800" },
+    ...splitIntoWords(convertToLabel(category), "text-slate-850"),
+    { text: "In", className: "text-slate-800" },
+    ...splitIntoWords(convertToLabel(state), "text-slate-850"),
+  ];
+};
 
 export const TypewriterEffect = ({
-  words,
+  state,
+  category,
   className,
   cursorClassName,
 }: {
-  words: {
-    text: string;
-    className?: string;
-  }[];
+  state: string;
+  category: string;
   className?: string;
   cursorClassName?: string;
 }) => {
+  const words = useMemo(
+    () => generateWordsArray(state, category),
+    [state, category],
+  );
+
   // split text inside of words into array of characters
   const wordsArray = words.map((word) => {
     return {
@@ -72,7 +94,7 @@ export const TypewriterEffect = ({
   return (
     <div
       className={cn(
-        "text-center text-xl font-bold md:text-3xl lg:text-5xl",
+        "text-center text-3xl font-bold md:text-4xl lg:text-5xl",
         className,
       )}
     >
@@ -90,7 +112,7 @@ export const TypewriterEffect = ({
           repeatType: "reverse",
         }}
         className={cn(
-          "inline-block h-4 w-[4px] rounded-sm bg-yellow md:h-6 lg:h-10",
+          "inline-block h-6 w-[4px] rounded-sm bg-yellow md:h-8 lg:h-10",
           cursorClassName,
         )}
       ></motion.span>

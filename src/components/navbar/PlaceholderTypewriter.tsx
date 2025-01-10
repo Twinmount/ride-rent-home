@@ -51,7 +51,7 @@ export const PlaceholderTypewriter = () => {
 
   return (
     <motion.span
-      className=" relative flex h-12 w-full items-center border-none pl-6 pr-20 text-xs text-slate-600 focus:ring-0 sm:pl-10 sm:text-base md:pl-12"
+      className="relative mt-1 flex h-12 w-full items-center border-none pl-12 pr-20 text-slate-600 focus:ring-0 sm:text-base lg:pl-14"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

@@ -1,4 +1,4 @@
-import "./MainCard.scss";
+import "./VehicleMainCard.scss";
 import Link from "next/link";
 import { VehicleCardType } from "@/types/vehicle-types";
 import { IoLocationOutline } from "react-icons/io5";
@@ -9,7 +9,6 @@ import {
   getFormattedPhoneNumber,
 } from "@/helpers";
 import ContactIcons from "@/components/common/contact-icons/ContactIcons";
-import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
 import SpecsGrid from "./specs-grid/SpecsGrid";
 import ZeroDeposit from "../ZeroDeposit";
 
@@ -19,6 +18,7 @@ import HourlyRentalBadge from "./hourly-rental-badge/HourlyRentalBadge";
 import RentalDetails from "../RentalDetails";
 
 import MotionMainCardDiv from "@/components/general/framer-motion/MotionMainCardDiv";
+import EnquireBestPrice from "../EnquireBestPrice";
 
 type VehicleMainCardProps = {
   vehicle: VehicleCardType;
@@ -88,7 +88,9 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
       <div className="card-bottom">
         <Link href={vehicleDetailsPageLink} target="_blank">
           {/* title */}
-          <div className="model-name">{vehicle.model}</div>
+          <div className="model-name">
+            {vehicle.vehicleTitle || vehicle.model}
+          </div>
 
           {/* vehicle specs grid */}
           <SpecsGrid vehicle={vehicle} />
@@ -107,10 +109,9 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
           </div>
         </Link>
         <div className="bottom-box">
-          <RentNowButton
-            vehicleDetailsPageLink={vehicleDetailsPageLink}
-            companyLogo={vehicle.companyLogo}
-          />
+          {/* client component which handles the dialog logic via context */}
+          <EnquireBestPrice vehicle={vehicle} />
+
           <ContactIcons
             vehicleId={vehicle.vehicleId}
             whatsappUrl={whatsappUrl}

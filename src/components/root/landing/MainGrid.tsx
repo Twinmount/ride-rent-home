@@ -4,6 +4,7 @@ import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMai
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
+import PriceEnquireDialog from "./dialog/PriceEnquireDialog";
 
 const MainGrid = async ({ state, category }: StateCategoryProps) => {
   const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
@@ -32,7 +33,7 @@ const MainGrid = async ({ state, category }: StateCategoryProps) => {
 
   return (
     <MotionSection className="wrapper h-auto min-h-fit w-full pb-8">
-      <section className="mx-auto grid w-fit max-w-fit grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
+      <div className="mx-auto grid w-fit max-w-fit grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
         {vehicleData.map((vehicle, index) => (
           <VehicleMainCard
             key={vehicle.vehicleId}
@@ -40,10 +41,12 @@ const MainGrid = async ({ state, category }: StateCategoryProps) => {
             index={index}
           />
         ))}
-      </section>
+      </div>
       <ViewAllButton
         link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.POPULAR_MODELS}`}
       />
+
+      <PriceEnquireDialog />
     </MotionSection>
   );
 };

@@ -35,7 +35,7 @@ export default function VehicleCategories() {
 
   return (
     <div
-      className="mx-auto mr-2 h-fit w-[86%] rounded-xl py-0 max-lg:mr-10 max-md:mr-5 sm:w-[70%] sm:max-w-[70%] md:ml-6 lg:max-w-[75%]"
+      className="mx-auto h-fit w-[95%] rounded-xl py-0 sm:w-[60%] md:mr-8 md:w-[70%] lg:max-w-[75%]"
       id="categories"
     >
       <Carousel className="w-full p-0">
@@ -45,8 +45,8 @@ export default function VehicleCategories() {
           ))}
         </CarouselContent>
 
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious className="max-sm:hidden" />
+        <CarouselNext className="max-sm:hidden" />
       </Carousel>
     </div>
   );

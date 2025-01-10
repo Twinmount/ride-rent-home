@@ -16,7 +16,7 @@ const VehicleCategorySkelton = () => {
 
   return (
     <div
-      className="mr-2 h-fit w-fit max-w-[70%] rounded-xl max-lg:mr-10 max-md:mr-5 lg:max-w-[80%]"
+      className="mx-auto h-fit w-[95%] rounded-xl py-0 sm:w-[60%] md:mr-8 md:w-[70%] lg:max-w-[75%]"
       id="categories"
     >
       <Carousel

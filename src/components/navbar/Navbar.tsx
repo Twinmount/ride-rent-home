@@ -1,8 +1,5 @@
 "use client";
 
-import { GiHamburgerMenu } from "react-icons/gi";
-import React, { useEffect, useState } from "react";
-import Sidebar from "../sidebar/Sidebar";
 import Link from "next/link";
 import Image from "next/image";
 import StatesDropdown from "./StatesDropdown";
@@ -11,33 +8,14 @@ import { useParams } from "next/navigation";
 import { useShouldExclude } from "@/hooks/useShouldExclude";
 import { useNavbar } from "@/context/NavbarContext";
 import { SearchDialog } from "./SearchDialog";
+import MobileSidebar from "./MobileSidebar";
 
 const Navbar = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { isHidden, setIsHidden } = useNavbar();
   const params = useParams<{ state: string; category: string }>();
 
   const state = params.state || "dubai";
   const category = params.category || "cars";
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSidebarOpen(false);
-    };
-
-    if (typeof window !== "undefined")
-      window.addEventListener("resize", handleResize);
-
-    return () => {
-      if (typeof window !== "undefined") {
-        window.removeEventListener("resize", handleResize);
-      }
-    };
-  }, []);
 
   // should state/category/quickLinks dropdowns render
   const shouldRenderDropdowns = useShouldExclude({ isCategory: false });
@@ -61,7 +39,7 @@ const Navbar = () => {
       }}
       animate={isHidden ? "hidden" : "visible"}
       transition={{ duration: 0, ease: "easeInOut" }}
-      className={`global__padding fixed left-0 right-0 top-0 z-50 flex h-[4.4rem] flex-col items-center justify-center gap-y-5 border-b bg-bgGray transition-all duration-200 ease-in-out`}
+      className={`global__padding fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-bgGray transition-all duration-200 ease-in-out`}
     >
       <nav className={`flex-between w-full`}>
         <div className="flex w-fit items-center justify-center">
@@ -93,7 +71,9 @@ const Navbar = () => {
         <div className="flex w-fit items-center">
           <ul className="flex w-full items-center justify-between gap-4">
             {/* Search Dialog */}
-            <SearchDialog />
+            <li className="max-sm:hidden">
+              <SearchDialog />
+            </li>
 
             {/* Location */}
             {!shouldRenderDropdowns && (
@@ -115,24 +95,8 @@ const Navbar = () => {
             </li>
           </ul>
 
-          {/* Hamburger */}
-          <button
-            aria-label="Hamburger"
-            className="m-0 inline-flex cursor-pointer items-center justify-center border-none bg-transparent p-0 outline-none lg:hidden"
-            onClick={toggleSidebar}
-          >
-            <GiHamburgerMenu className="hover:text-yellow-400 mb-1 h-6 w-6 text-current transition-colors duration-100 ease-in" />
-          </button>
+          <MobileSidebar />
         </div>
-
-        {/* sidebar */}
-        {isSidebarOpen && (
-          <div
-            className={`transition-al fixed left-0 top-0 z-[100] h-full w-full bg-black bg-opacity-60 duration-1000 ease-in-out`}
-            onClick={toggleSidebar}
-          />
-        )}
-        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       </nav>
     </motion.header>
   );

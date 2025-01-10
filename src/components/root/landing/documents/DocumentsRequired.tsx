@@ -6,8 +6,8 @@ import Link from "next/link";
 const DocumentsRequired = () => {
   return (
     <div className="mt-12">
-      <div className="g mb-12 w-fit text-center">
-        <h2 className="text-xl font-bold">
+      <div className="g mx-auto mb-12 w-fit text-center">
+        <h2 className="text-center text-xl font-bold">
           Documents Required to Car & Drive in the UAE
         </h2>
         <hr className="mx-auto mt-2 w-[70%] border-t-4 border-yellow" />

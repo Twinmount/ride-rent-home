@@ -1,5 +1,4 @@
 "use client";
-import "./SidebarAccordion.scss";
 
 import {
   Accordion,
@@ -17,11 +16,7 @@ import { FaLink } from "react-icons/fa6";
 import { GiSteeringWheel } from "react-icons/gi";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
-type SidebarAccordionType = {
-  toggleSidebar: () => void;
-};
-
-export function SidebarAccordion({ toggleSidebar }: SidebarAccordionType) {
+export function SidebarAccordion() {
   const { state, category } = useParams<{ state: string; category: string }>();
   // Fetch categories using react-query
   const { data: categoryData, isLoading: isCategoryLoading } = useQuery({
@@ -63,7 +58,6 @@ export function SidebarAccordion({ toggleSidebar }: SidebarAccordionType) {
               <Link
                 key={cat.categoryId}
                 href={`/${state}/${cat.value}`}
-                onClick={toggleSidebar}
                 className={`accordion-item flex cursor-pointer items-center gap-2 text-base hover:text-yellow hover:underline ${
                   category === cat.value ? "text-yellow" : ""
                 }`}
@@ -97,7 +91,6 @@ export function SidebarAccordion({ toggleSidebar }: SidebarAccordionType) {
                 <Link
                   key={link.linkId}
                   href={link.link}
-                  onClick={toggleSidebar}
                   className="accordion-item flex cursor-pointer items-center gap-2 text-base hover:text-yellow hover:underline"
                 >
                   <MdKeyboardDoubleArrowRight />
