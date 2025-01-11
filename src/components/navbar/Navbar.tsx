@@ -9,6 +9,8 @@ import { useShouldExclude } from "@/hooks/useShouldExclude";
 import { useNavbar } from "@/context/NavbarContext";
 import { SearchDialog } from "./SearchDialog";
 import MobileSidebar from "./MobileSidebar";
+import ProfileDropdown from "./ProfileDropdown";
+import useIsHomePage from "@/hooks/useIsHomePage";
 
 const Navbar = () => {
   const { isHidden, setIsHidden } = useNavbar();
@@ -30,6 +32,8 @@ const Navbar = () => {
       setIsHidden(false);
     }
   });
+
+  const isHomePage = useIsHomePage();
 
   return (
     <motion.header
@@ -71,9 +75,11 @@ const Navbar = () => {
         <div className="flex w-fit items-center">
           <ul className="flex w-full items-center justify-between gap-4">
             {/* Search Dialog */}
-            <li className="max-sm:hidden">
-              <SearchDialog />
-            </li>
+            {!isHomePage && (
+              <li className="max-sm:hidden">
+                <SearchDialog />
+              </li>
+            )}
 
             {/* Location */}
             {!shouldRenderDropdowns && (
@@ -93,9 +99,15 @@ const Navbar = () => {
                 List your vehicle for FREE
               </Link>
             </li>
-          </ul>
 
-          <MobileSidebar />
+            <li className="max-sm:hidden">
+              <ProfileDropdown />
+            </li>
+
+            <li className="sm:hidden">
+              <MobileSidebar />
+            </li>
+          </ul>
         </div>
       </nav>
     </motion.header>

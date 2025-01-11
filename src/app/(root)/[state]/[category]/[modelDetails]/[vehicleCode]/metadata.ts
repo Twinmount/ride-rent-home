@@ -1,7 +1,11 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { VehicleDetailsPageResponse } from "@/types/vehicle-details-types";
-import { convertToLabel, generateVehicleDetailsUrl } from "@/helpers";
+import {
+  convertToLabel,
+  generateVehicleDetailsUrl,
+  singularizeType,
+} from "@/helpers";
 import { restoreVehicleCodeFormat } from ".";
 
 export async function fetchVehicleData(
@@ -42,7 +46,7 @@ export function generateVehicleMetadata(
   const vehicle = data.result;
 
   // Construct the title
-  const title = `Rent ${vehicle.vehicleTitle || category} in ${convertToLabel(state)} | Ride.Rent ${convertToLabel(category)} Rentals in  ${convertToLabel(state)}`;
+  const title = `Rent ${vehicle.vehicleTitle || category} | Ride.Rent ${singularizeType(convertToLabel(category))} Rentals in ${convertToLabel(state)}`;
 
   // Construct the description
   const description = `${vehicle.vehicleTitle || category} For Rent in ${convertToLabel(

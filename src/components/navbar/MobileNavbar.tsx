@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { SearchDialog } from "./SearchDialog";
 import PriceFilterDialog from "../root/landing/PriceFilterDialog";
 import { User } from "lucide-react";
+import ProfileDropdown from "./ProfileDropdown";
 
 const MobileNavbar = () => {
   const [isHidden, setIsHidden] = useState(false);
@@ -50,9 +51,9 @@ const MobileNavbar = () => {
             <SearchDialog isMobileNav={true} />
             <span className="text-xs text-gray-600">search</span>
           </li>
-          <li className="flex-center w-fit flex-col gap-y-1">
-            <User />
-            <span className="text-xs text-gray-600">account </span>
+
+          <li>
+            <ProfileDropdown isMobile />
           </li>
         </ul>
       </div>
