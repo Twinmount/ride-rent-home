@@ -1,15 +1,13 @@
-@import '../../../../styles/variables';
+@import "../../../../styles/variables";
 
 /* Default styles for mobile devices and above */
 .filter-container {
   width: auto;
-  min-width: 16rem;
-  max-width: 18rem;
+  min-width: 11rem;
+  max-width: 12rem;
   display: none;
   padding: 1rem;
   border-radius: 1rem;
-
-
 
   // button styling
   .filter-buttons {
@@ -31,7 +29,11 @@
       font-size: 1rem;
       color: white;
       border-radius: 1rem;
-      transition: opacity 0.5s ease, transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+      transition:
+        opacity 0.5s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
       cursor: pointer;
       margin: 1rem auto 0.5rem;
 
@@ -56,7 +58,11 @@
       font-size: 1rem;
       color: #dc3545;
       border-radius: 1rem;
-      transition: opacity 0.5s ease, transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+      transition:
+        opacity 0.5s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
       cursor: pointer;
 
       &:hover {
@@ -70,13 +76,11 @@
       }
     }
   }
-
 }
 
-
-
 /*  (min-width: 768px) and above */
-@media (min-width: 768px) {}
+@media (min-width: 768px) {
+}
 
 /* (min-width: 1024px) and above */
 @media (min-width: 1200px) {

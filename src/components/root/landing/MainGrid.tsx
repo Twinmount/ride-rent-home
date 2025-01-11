@@ -33,7 +33,7 @@ const MainGrid = async ({ state, category }: StateCategoryProps) => {
 
   return (
     <MotionSection className="wrapper h-auto min-h-fit w-full pb-8">
-      <div className="mx-auto grid w-fit max-w-fit grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
+      <div className="mx-auto grid !w-fit max-w-fit grid-cols-1 !gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
         {vehicleData.map((vehicle, index) => (
           <VehicleMainCard
             key={vehicle.vehicleId}

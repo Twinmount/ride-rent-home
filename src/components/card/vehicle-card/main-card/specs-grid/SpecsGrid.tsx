@@ -8,7 +8,8 @@ type SpecsGridProps = {
 
 export default function SpecsGrid({ vehicle }: SpecsGridProps) {
   // Base URL for fetching icons
-  const baseAssetsUrl = process.env.ASSETS_URL;
+  const baseAssetsUrl =
+    process.env.ASSETS_URL || process.env.NEXT_PUBLIC_ASSETS_URL;
 
   return (
     <div className={styles.specsGrid}>

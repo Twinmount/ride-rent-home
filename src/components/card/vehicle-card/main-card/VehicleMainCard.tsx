@@ -88,9 +88,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
       <div className="card-bottom">
         <Link href={vehicleDetailsPageLink} target="_blank">
           {/* title */}
-          <div className="model-name">
-            {vehicle.vehicleTitle || vehicle.model}
-          </div>
+          <div className="model-name">{vehicle.model}</div>
 
           {/* vehicle specs grid */}
           <SpecsGrid vehicle={vehicle} />

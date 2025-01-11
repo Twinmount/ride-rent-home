@@ -54,7 +54,7 @@ export default function Home({ params: { state, category } }: PageProps) {
         <NewlyArrived state={state} category={category} />
       </Suspense>
 
-      {/* <Suspense fallback={<StatesGridSkeleton />}>
+      <Suspense fallback={<StatesGridSkeleton />}>
         <States category={category} />
       </Suspense>
 
@@ -74,7 +74,7 @@ export default function Home({ params: { state, category } }: PageProps) {
       <Suspense fallback={<SectionLoading />}>
         <Locations state={state} category={category} />
         <TrustedReviewsSection />
-      </Suspense> */}
+      </Suspense>
     </>
   );
 }

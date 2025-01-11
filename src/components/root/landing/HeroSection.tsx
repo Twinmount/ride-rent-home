@@ -1,4 +1,3 @@
-import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { SearchDialog } from "@/components/navbar/SearchDialog";
 import { TypewriterEffect } from "@/components/ui/typewriter-effect";
 import { convertToLabel } from "@/helpers";
@@ -10,7 +9,7 @@ type HeroSectionProps = {
 
 export default function HeroSection({ state, category }: HeroSectionProps) {
   return (
-    <MotionSection className="relative overflow-hidden border-b pb-5 bg-grid-small-black/[0.3]">
+    <section className="relative overflow-hidden border-b pb-5 bg-grid-small-black/[0.3]">
       {/* radial gradient for the faded look over the edges */}
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-bgGray [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
@@ -33,6 +32,6 @@ export default function HeroSection({ state, category }: HeroSectionProps) {
           <SearchDialog isHero={true} />
         </div>
       </div>
-    </MotionSection>
+    </section>
   );
 }

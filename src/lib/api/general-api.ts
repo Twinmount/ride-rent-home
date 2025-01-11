@@ -13,7 +13,7 @@ import {
 export const FetchVehicleByFilters = async (
   query: string,
   state: string = "dubai",
-  limit: number = 6,
+  pageParam: number = 1, // Accept pageParam here directly
 ): Promise<FetchVehicleCardsResponse> => {
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);
@@ -31,10 +31,11 @@ export const FetchVehicleByFilters = async (
 
   // Build the payload for the POST request
   const payload: Record<string, any> = {
-    page: getParamValue("page", "1"), // Ensure it's a string
-    limit: getParamValue("limit", limit.toString()), // Ensure it's a string
-    sortOrder: "DESC", // You can dynamically set this if needed
-    state: getParamValue("state", state), // Default state if not specified
+    page: pageParam.toString(), // Use the pageParam directly
+    limit: "6", // Ensure it's a string
+    sortOrder: "DESC",
+    category: getParamValue("category") || "cars",
+    state: getParamValue("state", state),
   };
 
   // Add optional fields only if they are non-empty
@@ -77,7 +78,7 @@ export const FetchVehicleByFilters = async (
 
   const data: FetchVehicleCardsResponse = await response.json();
 
-  return data; // The data now adheres to the FetchVehicleCardsResponse type
+  return data; // Adheres to FetchVehicleCardsResponse type
 };
 
 // send portfolio count post

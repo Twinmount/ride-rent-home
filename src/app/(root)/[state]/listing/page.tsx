@@ -1,13 +1,10 @@
 import "./ListingPage.scss";
 import Filter from "@/components/root/listing/filter/Filter";
-import GridSwitch from "@/components/root/listing/grid-switch/GridSwitch";
-import LimitDropdown from "@/components/root/listing/limit-dropdown/LimitDropdown";
 import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
-
 import { convertToLabel } from "@/helpers";
 import { PageProps } from "@/types";
 import { Metadata } from "next";
-import { FC, Suspense } from "react";
+import { FC } from "react";
 import {
   fetchListingMetadata,
   generateListingMetadata,
@@ -34,11 +31,6 @@ export async function generateMetadata({
 }
 
 const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
-  // Determine the initial view based on URL parameters
-  const isGridView = searchParams.view === "grid";
-  const page = parseInt(searchParams.page || "1", 10);
-  const limit = parseInt(searchParams.limit || "6", 10);
-
   const category = searchParams.category;
   const brand = searchParams.brand;
 
@@ -78,28 +70,14 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
             </span>
           )}
         </h1>
-
-        <div className="list-navbar-right">
-          {/* Limit dropdown */}
-          <LimitDropdown />
-          {/* grid vs list switch button */}
-          <Suspense fallback={<div>...</div>}>
-            <GridSwitch isGridView={isGridView} />
-          </Suspense>
-        </div>
       </div>
 
       <div className="listing-container">
         {/*dynamically imported filter */}
-        <Filter category={searchParams.category} isMobile={false} />
+        {/* <Filter category={searchParams.category} isMobile={false} /> */}
 
         {/* vehicle grid */}
-        <VehicleGrid
-          isGridView={isGridView}
-          page={page}
-          limit={limit}
-          state={state}
-        />
+        <VehicleGrid state={state} />
       </div>
     </div>
   );

@@ -37,6 +37,7 @@ export default function Filter({
   category: string | undefined;
   isMobile?: boolean;
 }) {
+  // custom hook to handle filters state and URL updates
   const { selectedFilters, handleFilterChange, applyFilters, resetFilters } =
     useFilters();
   const router = useRouter();
