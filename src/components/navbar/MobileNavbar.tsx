@@ -2,19 +2,18 @@
 
 import React, { useState } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 
 import { SearchDialog } from "./SearchDialog";
 import PriceFilterDialog from "../root/landing/PriceFilterDialog";
-import { User } from "lucide-react";
 import ProfileDropdown from "./ProfileDropdown";
 
 const MobileNavbar = () => {
   const [isHidden, setIsHidden] = useState(false);
-  const params = useParams<{ state: string; category: string }>();
+  // const params = useParams<{ state: string; category: string }>();
 
-  const state = params.state || "dubai";
-  const category = params.category || "cars";
+  // const state = params.state || "dubai";
+  // const category = params.category || "cars";
 
   const { scrollY } = useScroll();
 

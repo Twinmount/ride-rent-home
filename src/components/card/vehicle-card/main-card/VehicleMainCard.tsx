@@ -59,8 +59,8 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
           <VehicleThumbnail
             src={vehicle.thumbnail}
             alt={vehicle.model || "Vehicle Image"}
-            width={400}
-            height={400}
+            width={350}
+            height={250}
             className="vehicle-image"
           />
 

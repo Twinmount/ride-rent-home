@@ -15,16 +15,19 @@ export default function ProfileDropdown({
 }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="border-none outline-none ring-0 focus:outline-none focus:ring-0">
+      <DropdownMenuTrigger
+        aria-label="Open menu"
+        className="border-none outline-none ring-0 focus:outline-none focus:ring-0"
+      >
         {isMobile ? (
-          <div className="flex-center w-fit flex-col gap-y-1">
+          <span className="flex-center w-fit flex-col gap-y-1">
             <User />
             <span className="text-xs text-gray-600">account </span>
-          </div>
+          </span>
         ) : (
-          <div className="flex-center gap-x-1 rounded-full border border-slate-300 px-4 py-2 text-slate-700 transition-colors hover:bg-slate-200">
+          <span className="flex-center gap-x-1 rounded-full border border-slate-300 px-4 py-2 text-slate-700 transition-colors hover:bg-slate-200">
             <Menu width={16} /> <CircleUserRound />
-          </div>
+          </span>
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="rounded-xl bg-white data-[side=bottom]:right-4">

@@ -60,19 +60,25 @@ export function SearchDialog({
     <BlurDialog>
       <DialogTrigger asChild>
         {isHero ? (
-          <span className="flex-center relative mx-auto mt-4 h-[3rem] w-full max-w-[400px] cursor-pointer rounded-xl border border-slate-500/70 bg-white/80">
+          <button
+            aria-label="Open Search Dialog"
+            className="flex-center relative mx-auto mt-4 h-[3rem] w-full max-w-[400px] cursor-pointer rounded-xl border border-slate-500/70 bg-white/80"
+          >
             <Search className="absolute left-2 top-3 z-10 transform text-slate-600 md:left-4" />
             <PlaceholderTypewriter />
-          </span>
+          </button>
         ) : isMobileNav ? (
-          <span>
+          <button aria-label="Open Search Dialog">
             <Search className="" />
-          </span>
+          </button>
         ) : (
-          <span className="flex-center gap-x-2 rounded-xl border border-gray-300 px-4 text-black">
+          <button
+            aria-label="Open Search Dialog"
+            className="flex-center gap-x-2 rounded-xl border border-gray-300 px-4 text-black"
+          >
             <Search className="h-4 w-4 text-orange" strokeWidth={2} />{" "}
             <span className="relative mt-1">Search</span>
-          </span>
+          </button>
         )}
       </DialogTrigger>
       <DialogContent

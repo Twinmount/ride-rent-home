@@ -55,15 +55,20 @@ export default function Phone({ phoneNumber, onClick, loading }: PhoneProps) {
 
   return (
     <Popover>
-      <PopoverTrigger>
-        <FaSquarePhoneFlip
-          className={`h-10 w-10 ${
+      <PopoverTrigger
+        aria-label="Show phone number"
+        disabled={loading || !phoneNumber}
+      >
+        <span
+          className={`flex items-center justify-center ${
             loading || !phoneNumber
               ? "cursor-not-allowed opacity-30 blur-sm"
               : "cursor-pointer"
           }`}
           style={loading ? { cursor: "wait" } : {}}
-        />
+        >
+          <FaSquarePhoneFlip className="h-10 w-10" />
+        </span>
       </PopoverTrigger>
       {phoneNumber && (
         <PopoverContent

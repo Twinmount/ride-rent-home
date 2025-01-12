@@ -72,8 +72,8 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
       className={`flex w-fit gap-2 ${isDisabled ? "container-disabled" : ""}`}
     >
       {/* WhatsApp Icon */}
-      <div
-        aria-label="whatsapp"
+      <button
+        aria-label="open whatsapp"
         onClick={handleWhatsAppClick}
         className={` ${
           loading || !whatsappUrl
@@ -81,9 +81,10 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
             : "cursor-pointer"
         }`}
         style={loading ? { cursor: "wait" } : {}}
+        disabled={loading || !whatsappUrl}
       >
         <FaWhatsappSquare className="h-10 w-10 text-green-500" />
-      </div>
+      </button>
 
       {/* Phone Icon */}
       <Phone

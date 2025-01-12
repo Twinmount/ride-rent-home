@@ -1,8 +1,8 @@
-import { MdEmail } from 'react-icons/md'
-import { socials } from '.'
-import './Social.scss'
-import { FaPhoneVolume } from 'react-icons/fa6'
-import MotionDiv from '../../general/framer-motion/MotionDiv'
+import { MdEmail } from "react-icons/md";
+import { socials } from ".";
+import "./Social.scss";
+import { FaPhoneVolume } from "react-icons/fa6";
+import MotionDiv from "../../general/framer-motion/MotionDiv";
 
 const Social = () => {
   return (
@@ -15,7 +15,7 @@ const Social = () => {
             <FaPhoneVolume className="icon" />
             <a
               href="tel:+971502972335"
-              className="p-0 max-h-fit max-w-fit w-fit h-fit"
+              className="h-fit max-h-fit w-fit max-w-fit p-0"
             >
               +971 50 297 2335
             </a>
@@ -35,7 +35,7 @@ const Social = () => {
         <div className="title">We are Social!</div>
         <div className="icons">
           {socials.map((social) => {
-            const Icon = social.icon
+            const Icon = social.icon;
             return (
               <a
                 key={social.id}
@@ -43,14 +43,15 @@ const Social = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="icon-container"
+                aria-label={`Visit our ${social.label} page`}
               >
                 <Icon className="icon" />
               </a>
-            )
+            );
           })}
         </div>
       </div>
     </MotionDiv>
-  )
-}
-export default Social
+  );
+};
+export default Social;

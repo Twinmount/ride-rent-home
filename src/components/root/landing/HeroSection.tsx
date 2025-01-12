@@ -23,9 +23,9 @@ export default function HeroSection({ state, category }: HeroSectionProps) {
             </div>
             <div className="mt-5 max-w-3xl">
               <p className="text-base text-muted-foreground lg:text-lg">
-                Whether you're in {convertToLabel(state)} or exploring beyond,
-                find the perfect {convertToLabel(category)} that fits your
-                journey.
+                Whether you&apos;re in {convertToLabel(state)} or exploring
+                beyond, find the perfect {convertToLabel(category)} that fits
+                your journey.
               </p>
             </div>
           </div>

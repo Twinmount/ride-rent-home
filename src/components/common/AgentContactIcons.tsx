@@ -90,8 +90,8 @@ const AgentContactIcons: React.FC<AgentContactIconsProps> = ({
       className={`flex w-fit items-center gap-2 ${isDisabled ? "container-disabled" : ""}`}
     >
       {/* WhatsApp Icon */}
-      <div
-        aria-label="whatsapp"
+      <button
+        aria-label="company whatsapp"
         onClick={handleWhatsAppClick}
         className={` ${
           !whatsappUrl
@@ -100,16 +100,16 @@ const AgentContactIcons: React.FC<AgentContactIconsProps> = ({
         }`}
       >
         <FaWhatsappSquare className="h-10 w-10 text-green-500" />
-      </div>
+      </button>
 
       {/* Email Icon */}
-      <div
-        aria-label="email"
+      <button
+        aria-label="company email"
         onClick={handleEmailClick}
         className={` ${!email ? "cursor-not-allowed opacity-30 blur-sm" : "cursor-pointer"}`}
       >
         <ImMail className="h-9 w-9 text-blue-500" />
-      </div>
+      </button>
 
       {/* Phone Icon */}
       <Phone phoneNumber={phoneNumber} />

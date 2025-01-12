@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function TrustedReviewsSection() {
@@ -20,27 +21,33 @@ export default function TrustedReviewsSection() {
 ubai_Emirate_of_Dubai.html`}
           target="_blank"
         >
-          <img
+          <Image
             src="/assets/logo/tripadvisor.webp"
             alt="tripadvisor logo"
             className="h-8 sm:h-12 lg:h-14"
+            width={130}
+            height={100}
           />
         </Link>
         <Link
           href={`https://www.trustpilot.com/review/ride.rent`}
           target="_blank"
         >
-          <img
+          <Image
             src="/assets/logo/trustpilot.webp"
             alt="trustpilot logo"
             className="h-5 sm:h-9 lg:h-11"
+            width={170}
+            height={100}
           />
         </Link>
         <Link href={`https://g.page/r/CXPd6aHEo_hvEAE/review`} target="_blank">
-          <img
+          <Image
             src="/assets/logo/google.webp"
             alt="google logo"
             className="h-8 sm:h-16"
+            width={160}
+            height={100}
           />
         </Link>
       </div>

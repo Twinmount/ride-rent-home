@@ -177,10 +177,9 @@ type FetchPriceRangeResponse = {
 };
 
 // fetchPriceRange function to mimic API response with all periods
-export const fetchPriceRange = async (
-  state: string,
-  category: string,
-): Promise<FetchPriceRangeResponse | undefined> => {
+export const fetchPriceRange = async (): Promise<
+  FetchPriceRangeResponse | undefined
+> => {
   try {
     // Mock data for price ranges by period
     const mockResponse = {

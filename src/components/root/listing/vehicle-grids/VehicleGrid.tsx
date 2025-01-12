@@ -1,12 +1,12 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import useIsSmallScreen from "@/hooks/useIsSmallScreen";
-import useIntersectionObserver from "@/hooks/useIntersectionObserver";
+// import useIsSmallScreen from "@/hooks/useIsSmallScreen";
+// import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 import { useSearchParams } from "next/navigation";
 import ListingSkelton from "@/components/skelton/ListingsSkelton";
 import NoResultsFound from "./NoResultsFound";
-import FiltersSidebar from "../filter/FiltersSidebar";
+// import FiltersSidebar from "../filter/FiltersSidebar";
 import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
 import PriceEnquireDialog from "../../landing/dialog/PriceEnquireDialog";
 import { useInView } from "react-intersection-observer";
@@ -18,14 +18,14 @@ type VehicleGridProps = {
 };
 
 const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
-  const isFiltersButtonVisible = useIsSmallScreen(1200);
+  // const isFiltersButtonVisible = useIsSmallScreen(1200);
   const vehicleGridRef = useRef<HTMLDivElement | null>(null);
-  const isVehicleGridVisible = useIntersectionObserver(vehicleGridRef);
+  // const isVehicleGridVisible = useIntersectionObserver(vehicleGridRef);
   const searchParams = useSearchParams();
 
   const { ref, inView } = useInView(); // For infinite scrolling trigger
 
-  const category = searchParams.get("category") || "cars";
+  // const category = searchParams.get("category") || "cars";
 
   // Fetch data using custom hook utilizing useInfiniteQuery
   const { vehicles, fetchNextPage, hasNextPage, isFetching, isLoading } =

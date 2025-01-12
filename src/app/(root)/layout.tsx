@@ -9,7 +9,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <NavbarProvider>
       <VehicleCardDialogProvider>
         <Navbar />
-
         <main className="mt-[4rem]">{children}</main>
         <MobileNavbar />
         <Footer />

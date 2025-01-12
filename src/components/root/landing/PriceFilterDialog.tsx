@@ -17,7 +17,6 @@ import { PriceRangeSlider } from "@/components/ui/prince-range-slider";
 import Link from "next/link";
 import { convertToLabel, generateListingUrl } from "@/helpers";
 import { SlidersHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const rentalPeriods = [
   { label: "All", value: "all" },
@@ -41,7 +40,7 @@ export default function PriceFilterDialog({
 
   const { data, isLoading } = useQuery({
     queryKey: ["priceRange", state, category],
-    queryFn: () => fetchPriceRange(state, category),
+    queryFn: () => fetchPriceRange(),
     enabled: !!state && !!category,
   });
 
