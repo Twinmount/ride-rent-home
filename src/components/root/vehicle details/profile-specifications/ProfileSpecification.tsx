@@ -33,23 +33,17 @@ const ProfileSpecification = ({
     <div className="profile-specifications">
       <div className="specifications">
         {/* Payment Type */}
-        <div className="specification">
-          <div className="icon-box">
-            <img
-              src={
-                specs.isCryptoAccepted
-                  ? "/assets/icons/profile icons/Crypto Accepted.svg"
-                  : "/assets/icons/profile icons/fiat icon.svg"
-              }
-              alt="Payment Type Icon"
-            />
+        {specs.isCryptoAccepted && (
+          <div className="specification">
+            <div className="icon-box">
+              <img
+                src="/assets/icons/profile icons/Crypto Accepted.svg"
+                alt="Payment Type Icon"
+              />
+            </div>
+            <span className="label">Crypto Accepted</span>
           </div>
-          <span className="label">
-            {specs.isCryptoAccepted
-              ? "Crypto Accepted"
-              : "Accepts Fiat Currencies"}
-          </span>
-        </div>
+        )}
 
         {/* Delivery Option */}
         <div className="specification">
