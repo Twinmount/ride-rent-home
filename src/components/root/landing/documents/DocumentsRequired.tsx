@@ -83,7 +83,13 @@ const DocumentsRequired = () => {
         </p>
         <br />
         <p className="text-center text-sm font-normal">
-          <Link href="/" target="_blank" className="text-blue-500 underline">
+          <Link
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="ride.rent"
+            className="text-blue-500 underline"
+          >
             Click here
           </Link>{" "}
           to find out if your country&apos;s license is accepted in the UAE.

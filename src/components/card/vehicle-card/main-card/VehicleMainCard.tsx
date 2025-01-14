@@ -9,7 +9,7 @@ import {
   getFormattedPhoneNumber,
 } from "@/helpers";
 import ContactIcons from "@/components/common/contact-icons/ContactIcons";
-import SpecsGrid from "./specs-grid/SpecsGrid";
+import SpecsGrid from "../SpecsGrid";
 import ZeroDeposit from "../ZeroDeposit";
 
 import CompanyLogo from "../CompanyLogo";
@@ -48,10 +48,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
   });
 
   return (
-    <MotionMainCardDiv
-      index={index}
-      className="main-card-container slide-visible"
-    >
+    <MotionMainCardDiv index={index} className="main-card-container">
       {/* card top */}
       <Link href={vehicleDetailsPageLink} target="_blank" className="card-top">
         <div className="image-box">
