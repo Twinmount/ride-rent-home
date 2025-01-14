@@ -48,7 +48,7 @@ export function generateVehicleMetadata(
   const vehicle = data.result;
 
   // Construct the title
-  const title = `Rent ${vehicle.vehicleTitle || category} | Starts 24 AED/Day ${singularizeType(convertToLabel(category))} Rentals in  ${convertToLabel(state)}`;
+  const title = `Rent ${vehicle.vehicleTitle || category} | Starts 34 AED/Day ${singularizeType(convertToLabel(category))} Rentals in  ${convertToLabel(state)}`;
 
   // Construct the description
   const description = `${vehicle.vehicleTitle || category} For Rent in ${convertToLabel(
