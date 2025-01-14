@@ -48,14 +48,14 @@ export function generateVehicleMetadata(
   const vehicle = data.result;
 
   // Construct the title
-  const title = `Rent ${vehicle.vehicleTitle || category} | Ride.Rent ${singularizeType(convertToLabel(category))} Rentals in ${convertToLabel(state)}`;
+  const title = `Rent ${vehicle.vehicleTitle || category} | Starts 24 AED/Day ${singularizeType(convertToLabel(category))} Rentals in  ${convertToLabel(state)}`;
 
   // Construct the description
   const description = `${vehicle.vehicleTitle || category} For Rent in ${convertToLabel(
     state,
   )} at cheap rates, free spot delivery available. Daily, monthly, and lease options.`;
 
-  // Shortened versions for social media
+  // Shortened versions of title and description for social media
   const shortTitle = title.length > 60 ? `${title.substring(0, 57)}...` : title;
   const shortDescription =
     description.length > 155
