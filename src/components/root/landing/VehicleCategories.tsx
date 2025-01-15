@@ -1,24 +1,27 @@
 "use client";
 
 import { useMemo } from "react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { useQuery } from "@tanstack/react-query";
-import { sortCategories } from "@/helpers";
-import { CategoryType } from "@/types/contextTypes";
-import Link from "next/link";
-import Image from "next/image";
-import VehicleCategorySkelton from "@/components/skelton/VehicleCategorySkelton";
-import { useParams } from "next/navigation";
-import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
 import { fetchCategories } from "@/lib/api/general-api";
+import { useQuery } from "@tanstack/react-query";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
+import { CategoryType } from "@/types";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { convertToLabel, singularizeType, sortCategories } from "@/helpers";
+
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+
+import Image from "next/image";
 
 export default function VehicleCategories() {
-  // const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
+  const { state, category } = useStateAndCategory();
 
   // Fetch categories using useQuery
   const { data, isLoading } = useQuery({
@@ -31,41 +34,58 @@ export default function VehicleCategories() {
     return data?.result?.list ? sortCategories(data.result.list) : [];
   }, [data]);
 
-  if (isLoading) return <VehicleCategorySkelton />;
+  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
 
   return (
-    <div
-      className="mx-auto h-fit w-[95%] rounded-xl py-0 sm:w-[60%] md:mr-8 md:w-[70%] lg:max-w-[75%]"
-      id="categories"
-    >
-      <Carousel className="w-full p-0">
-        <CarouselContent className="flex h-fit gap-x-2 px-1 py-0 md:gap-x-3 lg:gap-x-4">
-          {sortedCategories.map((cat: CategoryType, index) => (
-            <VehicleCategoryCard key={cat.categoryId} cat={cat} index={index} />
-          ))}
-        </CarouselContent>
-
-        <CarouselPrevious className="max-sm:hidden" />
-        <CarouselNext className="max-sm:hidden" />
-      </Carousel>
-    </div>
+    <NavigationMenu delayDuration={0}>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuTrigger
+            disabled={isLoading}
+            className={`flex-center h-12 gap-2 rounded-[0.5em] border border-gray-400 px-3 py-1 text-sm font-semibold ${isLoading && "cursor-default text-gray-500"}`}
+          >
+            <Image
+              src={`${baseAssetsUrl}/icons/vehicle-categories/${category}.png`}
+              alt={`${category} Icon`}
+              className={`transition-all duration-200 ease-out max-sm:hidden ${
+                category === "sports-cars" ? "scale-[1.02]" : ""
+              }`}
+              width={25}
+              height={25}
+            />{" "}
+            {singularizeType(convertToLabel(category))}
+          </NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid h-full w-[20rem] min-w-[20rem] grid-cols-3 place-items-center gap-2 px-3">
+              {sortedCategories.map((cat: CategoryType, index) => (
+                <VehicleCategoryCard
+                  key={cat.categoryId}
+                  cat={cat}
+                  index={index}
+                  selectedCategory={category}
+                  selectedState={state}
+                />
+              ))}
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 }
 
+// individual vehicle type card
 function VehicleCategoryCard({
   cat,
   index,
+  selectedCategory,
+  selectedState,
 }: {
   cat: CategoryType;
   index: number;
+  selectedCategory: string;
+  selectedState: string;
 }) {
-  const params = useParams<{ state: string; category: string }>();
-
-  const state = params.state || "dubai";
-  const category = params.category || "cars";
-
-  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
-
   // Animation variants for categories
   const categoryVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -73,50 +93,50 @@ function VehicleCategoryCard({
       opacity: 1,
       y: 0,
       transition: {
-        delay: index * 0.1,
+        delay: index * 0.05,
         duration: 0.5,
         ease: "easeOut",
       },
     }),
   };
 
+  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
+
   return (
-    <MotionDivElm
+    <motion.li
       key={cat.categoryId}
       custom={index} // Pass the index for staggered animation
       initial="hidden"
       animate="visible"
       variants={categoryVariants}
-      className="h-full"
+      className={`flex aspect-square h-[6rem] min-h-[6rem] w-[6rem] min-w-[6rem] cursor-pointer flex-col justify-center gap-[0.2rem] overflow-hidden rounded-[0.4rem]`}
     >
-      <Link
-        href={`/${state}/${cat.value}`}
-        key={cat.categoryId}
-        className={`flex aspect-square h-[70%] w-[4rem] min-w-[4rem] cursor-pointer flex-col justify-center gap-[0.2rem] overflow-hidden rounded-[0.4rem] lg:w-[5.2rem] lg:min-w-[5.2rem]`}
-      >
-        <div
-          className={`flex h-[60%] w-full items-center justify-center rounded-[0.4rem] bg-gray-100 ${
-            category === cat.value ? "yellow-gradient" : ""
-          }`}
-        >
-          <Image
-            src={`${baseAssetsUrl}/icons/vehicle-categories/${cat.value}.png`}
-            alt={`${cat.name} Icon`}
-            className={`transition-all duration-200 ease-out ${
-              cat.value === "sports-cars" ? "scale-[1.02]" : ""
+      <Link href={`/${selectedState}/${cat.value}`} key={cat.categoryId}>
+        <NavigationMenuLink>
+          <div
+            className={`flex h-[3.6rem] w-full items-center justify-center rounded-[0.4rem] bg-gray-100 hover:bg-gray-200 ${
+              selectedCategory === cat.value ? "yellow-gradient" : ""
             }`}
-            width={40}
-            height={40}
-          />
-        </div>
-        <span
-          className={`line-clamp-1 w-full text-center text-[0.56rem] text-gray-600 lg:text-[0.65rem] ${
-            category === cat.value && "font-medium"
-          }`}
-        >
-          {cat.name}
-        </span>
+          >
+            <Image
+              src={`${baseAssetsUrl}/icons/vehicle-categories/${cat.value}.png`}
+              alt={`${cat.name} Icon`}
+              className={`transition-all duration-200 ease-out ${
+                cat.value === "sports-cars" ? "scale-[1.02]" : ""
+              }`}
+              width={40}
+              height={40}
+            />
+          </div>
+          <span
+            className={`line-clamp-1 w-full text-center text-[0.7rem] text-gray-600 lg:text-[0.65rem] ${
+              selectedCategory === cat.value && "font-medium"
+            }`}
+          >
+            {cat.name}
+          </span>
+        </NavigationMenuLink>
       </Link>
-    </MotionDivElm>
+    </motion.li>
   );
 }

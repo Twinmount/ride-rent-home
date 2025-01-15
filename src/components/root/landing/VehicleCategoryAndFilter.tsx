@@ -1,8 +1,8 @@
 "use client";
 
-import VehicleCategories from "./VehicleCategories";
+import VehicleTypesCarousel from "./VehicleTypesCarousel";
 import { useNavbar } from "@/context/NavbarContext";
-import VehicleTypesDialog from "./dialog/VehicleTypesDialog";
+import VehicleCategories from "./VehicleCategories";
 import PriceFilterDialog from "./PriceFilterDialog";
 
 export default function VehicleCategoryAndFilter() {
@@ -10,30 +10,34 @@ export default function VehicleCategoryAndFilter() {
 
   return (
     <div
-      className={`sticky z-30 mb-4 flex items-center justify-between bg-bgGray ${isHidden && "shadow"}`}
+      className={`sticky z-30 mb-4 flex items-center justify-between bg-bgGray py-3 ${isHidden && "shadow"}`}
       style={{
         top: isHidden ? "-0.1rem" : "3.9rem",
         transition: "top 0.3s ease-in-out",
       }}
     >
       <div
-        className={`mx-auto flex w-[95%] max-w-[95%] items-center justify-start gap-x-6 p-0 pt-3 md:pl-8 md:pt-4 lg:gap-x-16`}
+        className={`mx-auto flex w-fit max-w-[98%] items-center justify-center gap-x-4 p-0 sm:pl-4 lg:gap-x-6`}
       >
-        {/* vehicle categories carousel */}
+        {/* vehicle categories menu bar */}
         <VehicleCategories />
 
-        {/* right side vehicle types and price filter */}
-        <div className="flex-center gap-x-3 max-sm:hidden lg:gap-x-6">
-          {/* vertical bar separator */}
-          <div
-            className={`hidden h-12 w-[0.1rem] bg-gray-300 sm:block lg:h-14`}
-          ></div>
+        <VerticalBar />
 
-          <VehicleTypesDialog />
+        {/* vehicle types carousel */}
+        <VehicleTypesCarousel />
 
+        <VerticalBar className="max-sm:hidden" />
+
+        {/* filter modal */}
+        <div className="max-sm:hidden">
           <PriceFilterDialog />
         </div>
       </div>
     </div>
   );
 }
+
+const VerticalBar = ({ className }: { className?: string }) => (
+  <div className={`my-auto h-12 w-[0.1rem] bg-gray-300 lg:h-14 ${className}`} />
+);

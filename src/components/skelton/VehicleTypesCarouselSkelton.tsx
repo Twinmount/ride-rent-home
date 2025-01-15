@@ -11,7 +11,7 @@ import {
 
 import { Skeleton } from "../ui/skeleton";
 
-const VehicleCategorySkelton = () => {
+const VehicleTypesCarouselSkelton = () => {
   const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
 
   return (
@@ -29,7 +29,7 @@ const VehicleCategorySkelton = () => {
           {Array.from({ length: 11 }).map((_, index) => (
             <div
               key={index}
-              className={`bottom-1 flex aspect-square h-[70%] w-[4rem] min-w-[4rem] cursor-pointer flex-col justify-center gap-[0.2rem] overflow-hidden rounded-[0.4rem] lg:w-[5.2rem] lg:min-w-[5.2rem]`}
+              className={`flex aspect-square h-[70%] w-[4rem] min-w-[4rem] cursor-pointer flex-col justify-center gap-[0.2rem] overflow-hidden rounded-[0.4rem] lg:w-[5.2rem] lg:min-w-[5.2rem]`}
             >
               <Skeleton
                 className={`flex h-[60%] w-full items-center justify-center rounded-[0.4rem] bg-gray-200`}
@@ -48,4 +48,4 @@ const VehicleCategorySkelton = () => {
   );
 };
 
-export default VehicleCategorySkelton;
+export default VehicleTypesCarouselSkelton;

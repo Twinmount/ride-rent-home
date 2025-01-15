@@ -74,7 +74,7 @@ export default function PriceFilterDialog({
           </span>
         ) : (
           <span
-            className={`flex-center relative bottom-2 h-12 gap-2 rounded-[0.5em] border border-gray-300 px-3 py-1 text-sm font-semibold ${isLoading && "cursor-default text-gray-500"}`}
+            className={`flex-center h-12 gap-2 rounded-[0.5em] border border-gray-300 px-3 py-1 text-sm font-semibold ${isLoading && "cursor-default text-gray-500"}`}
           >
             <SlidersHorizontal width={15} />
             Price
