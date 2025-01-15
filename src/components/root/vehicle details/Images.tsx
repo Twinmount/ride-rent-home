@@ -37,7 +37,7 @@ const Images = ({ photos }: ImagesProps) => {
   }, [api]);
 
   return (
-    <MotionDiv className="mr-8 h-auto w-full min-w-full max-w-[90rem] overflow-hidden rounded-xl bg-white p-1.5 shadow-sm">
+    <MotionDiv className="mr-8 h-auto w-full min-w-full max-w-[90rem] overflow-hidden rounded-xl border border-gray-100 bg-white p-1.5 shadow-sm">
       <Carousel
         setApi={setApi}
         plugins={[plugin.current]}

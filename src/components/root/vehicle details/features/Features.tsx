@@ -14,7 +14,7 @@ const VehicleFeatures = ({
   vehicleCategory,
 }: VehicleFeaturesProps) => {
   return (
-    <div className="relative mx-auto my-4 w-full max-w-full overflow-hidden rounded-2xl bg-white p-4 shadow-md">
+    <div className="relative mx-auto my-4 w-full max-w-full overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
       <MotionH2
         initial={{ opacity: 0.1, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

@@ -25,7 +25,7 @@ export default function CurrentPageBreadcrumb({
   const formattedState = convertToLabel(state);
 
   return (
-    <MotionDiv className="my-3 rounded-xl bg-white px-4 py-2">
+    <MotionDiv className="my-3 rounded-xl border border-gray-100 bg-white px-4 py-2 shadow-sm">
       <Breadcrumb className="w-fit rounded-2xl px-1">
         <BreadcrumbList>
           <BreadcrumbItem>

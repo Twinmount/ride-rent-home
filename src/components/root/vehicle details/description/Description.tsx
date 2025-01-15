@@ -9,7 +9,7 @@ const Description = ({ description }: { description: string }) => {
   const formattedDescription = description.replace(/\n/g, "<br>");
 
   return (
-    <MotionDiv className="relative mx-auto my-4 mb-8 h-auto max-w-[80%] overflow-hidden rounded-2xl bg-white p-4 pb-12 shadow-md lg:max-w-[80%]">
+    <MotionDiv className="relative mx-auto my-4 mb-8 h-auto max-w-[80%] overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 pb-12 shadow-sm lg:max-w-[80%]">
       <h2 className="custom-heading mb-8 text-gray-900">Description</h2>
       {/* Hidden checkbox for toggling */}
       <input

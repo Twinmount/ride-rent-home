@@ -23,7 +23,7 @@ export default async function RelatedLinks({ state }: { state: string }) {
   }
 
   return (
-    <MotionDiv className="flex w-full flex-col gap-4 rounded-lg bg-white p-4 shadow-md lg:max-w-[25rem]">
+    <MotionDiv className="flex w-full flex-col gap-4 rounded-lg border border-gray-100 bg-white p-4 shadow-sm lg:max-w-[25rem]">
       <div className="mb-8">
         <h2 className="custom-heading font-medium">Related links</h2>
       </div>

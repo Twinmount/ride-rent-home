@@ -79,7 +79,7 @@ const Specification: FC<SpecificationsProps> = ({
   vehicleCategory,
 }) => {
   return (
-    <MotionDiv className="mx-auto my-4 rounded-xl bg-white p-4 shadow-md">
+    <MotionDiv className="mx-auto my-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
       <h2 className="custom-heading mb-8 text-gray-900">Specifications</h2>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {Object.entries(specifications).map(([key, spec]) => (
