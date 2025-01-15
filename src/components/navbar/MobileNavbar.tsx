@@ -5,7 +5,7 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 // import { useParams } from "next/navigation";
 
 import { SearchDialog } from "./SearchDialog";
-import PriceFilterDialog from "../root/landing/PriceFilterDialog";
+import PriceFilterDialog from "../root/landing/dialog/PriceFilterDialog";
 import ProfileDropdown from "./ProfileDropdown";
 
 const MobileNavbar = () => {

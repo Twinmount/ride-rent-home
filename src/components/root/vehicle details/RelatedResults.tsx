@@ -1,5 +1,4 @@
 import MainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
-import "./RelatedResults.scss";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
@@ -46,7 +45,9 @@ export default async function RelatedResults({
 
   return (
     <MotionSection className="wrapper">
-      <h2 className="heading">Related Recommendations</h2>
+      <h2 className="mb-4 mt-14 text-center text-xl font-bold">
+        Related Recommendations
+      </h2>
       <CarouselWrapper>
         {vehicleData.map((vehicle, index) => (
           <MainCard key={vehicle.vehicleId} vehicle={vehicle} index={index} />

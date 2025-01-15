@@ -3,7 +3,7 @@
 import VehicleTypesCarousel from "./VehicleTypesCarousel";
 import { useNavbar } from "@/context/NavbarContext";
 import VehicleCategories from "./VehicleCategories";
-import PriceFilterDialog from "./PriceFilterDialog";
+import PriceFilterDialog from "./dialog/PriceFilterDialog";
 
 export default function VehicleCategoryAndFilter() {
   const { isHidden } = useNavbar();
@@ -22,11 +22,13 @@ export default function VehicleCategoryAndFilter() {
         {/* vehicle categories menu bar */}
         <VehicleCategories />
 
+        {/* vertical bar */}
         <VerticalBar />
 
         {/* vehicle types carousel */}
         <VehicleTypesCarousel />
 
+        {/* vertical bar */}
         <VerticalBar className="max-sm:hidden" />
 
         {/* filter modal */}
@@ -38,6 +40,7 @@ export default function VehicleCategoryAndFilter() {
   );
 }
 
+// vertical bar component
 const VerticalBar = ({ className }: { className?: string }) => (
   <div className={`my-auto h-12 w-[0.1rem] bg-gray-300 lg:h-14 ${className}`} />
 );

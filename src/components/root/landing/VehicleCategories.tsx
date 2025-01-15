@@ -42,7 +42,7 @@ export default function VehicleCategories() {
         <NavigationMenuItem>
           <NavigationMenuTrigger
             disabled={isLoading}
-            className={`flex-center h-12 gap-2 rounded-[0.5em] border border-gray-400 px-3 py-1 text-sm font-semibold ${isLoading && "cursor-default text-gray-500"}`}
+            className={`flex-center h-12 gap-2 rounded-[0.5em] border px-3 py-1 text-sm font-semibold text-black hover:text-black ${isLoading ? "cursor-default text-gray-500" : "yellow-gradient hover:yellow-gradient"}`}
           >
             <Image
               src={`${baseAssetsUrl}/icons/vehicle-categories/${category}.png`}
@@ -50,13 +50,13 @@ export default function VehicleCategories() {
               className={`transition-all duration-200 ease-out max-sm:hidden ${
                 category === "sports-cars" ? "scale-[1.02]" : ""
               }`}
-              width={25}
-              height={25}
+              width={35}
+              height={35}
             />{" "}
-            {singularizeType(convertToLabel(category))}
+            {convertToLabel(category)}
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid h-full w-[20rem] min-w-[20rem] grid-cols-3 place-items-center gap-2 px-3">
+            <ul className="grid h-full w-[20rem] min-w-[20rem] grid-cols-3 place-items-center gap-2 px-3 md:w-[26rem] md:min-w-[26rem] md:grid-cols-4">
               {sortedCategories.map((cat: CategoryType, index) => (
                 <VehicleCategoryCard
                   key={cat.categoryId}

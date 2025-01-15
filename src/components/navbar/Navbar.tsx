@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 import { useShouldExclude } from "@/hooks/useShouldExclude";
 import { useNavbar } from "@/context/NavbarContext";
 import { SearchDialog } from "./SearchDialog";
-import MobileSidebar from "./MobileSidebar";
+import MobileSidebar from "../sidebar/MobileSidebar";
 import ProfileDropdown from "./ProfileDropdown";
 import useIsHomePage from "@/hooks/useIsHomePage";
 

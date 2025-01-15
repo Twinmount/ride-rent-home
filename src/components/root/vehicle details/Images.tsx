@@ -1,5 +1,4 @@
 "use client";
-import "./Images.scss";
 
 import Autoplay from "embla-carousel-autoplay";
 import {
@@ -38,33 +37,33 @@ const Images = ({ photos }: ImagesProps) => {
   }, [api]);
 
   return (
-    <MotionDiv className="images-container">
+    <MotionDiv className="mr-8 h-auto w-full min-w-full max-w-[90rem] overflow-hidden rounded-xl bg-white p-1.5 shadow-sm">
       <Carousel
         setApi={setApi}
         plugins={[plugin.current]}
-        className="w-full  max-w-full mx-auto md:px-9"
+        className="mx-auto w-full max-w-full md:px-9"
         onMouseEnter={plugin.current.stop}
         onMouseLeave={() => plugin.current.play()}
         opts={{
           align: "start",
         }}
       >
-        <CarouselContent className="gap-2 -mx-1 w-full h-full max-w-full sub-container">
+        <CarouselContent className="-mx-1 h-auto max-h-[90vh] min-h-[35vh] w-full max-w-full gap-2 md:min-h-[50vh] xl:min-h-[60vh]">
           {photos.map((src, index) => {
             return (
               <CarouselItem
                 key={index}
-                className="w-full min-w-[100%] rounded-[1rem] relative p-0  overflow-hidden"
+                className="relative w-full min-w-[100%] overflow-hidden rounded-[1rem] p-0"
               >
                 {src ? (
                   <Image
                     src={src}
                     alt={`Vehicle image ${index + 1}`}
-                    className="w-full h-full object-contain rounded-[1rem]"
+                    className="h-full w-full rounded-[1rem] object-contain"
                     fill
                   />
                 ) : (
-                  <div className="w-full text-lg text-slate-500 h-full object-contain flex-center rounded-[1rem] ">
+                  <div className="flex-center h-full w-full rounded-[1rem] object-contain text-lg text-slate-500">
                     Oops! Image loading failed!
                   </div>
                 )}
@@ -72,20 +71,32 @@ const Images = ({ photos }: ImagesProps) => {
             );
           })}
         </CarouselContent>
-        <CarouselPrevious className="max-md:hidden ml-[2.8rem]" />
-        <CarouselNext className="max-md:hidden mr-[2.8rem]" />
+        <CarouselPrevious className="ml-[2.8rem] max-md:hidden" />
+        <CarouselNext className="mr-[2.8rem] max-md:hidden" />
       </Carousel>
 
-      <div className="dots-container">
-        {Array.from({ length: count }).map((_, index) => (
-          <div
-            key={index}
-            className={`dot ${current - 1 === index ? "active" : ""}`}
-          ></div>
-        ))}
-      </div>
+      <DotIndicator count={count} current={current} />
     </MotionDiv>
   );
 };
 
 export default Images;
+
+const DotIndicator = ({
+  count,
+  current,
+}: {
+  count: number;
+  current: number;
+}) => {
+  return (
+    <div className="mt-[0.3rem] flex justify-center gap-x-2">
+      {Array.from({ length: count }).map((_, index) => (
+        <div
+          key={index}
+          className={`h-[10px] w-[10px] rounded-[50%] bg-gray-200 ${current - 1 === index ? "bg-gray-600" : ""}`}
+        />
+      ))}
+    </div>
+  );
+};

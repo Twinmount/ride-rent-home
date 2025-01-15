@@ -17,21 +17,21 @@ function CardPayments({ creditDebitCards, tabby }: CardPaymentsProps) {
   }
 
   return (
-    <div className="card-payments">
-      <div className="card-payments-text">{message}</div>
-      <div className="card-payments-icons">
+    <div className="-mb-3 flex items-center justify-center gap-2">
+      <div className="text-sm font-normal">{message}</div>
+      <div className="flex gap-1">
         {creditDebitCards && (
           <img
-            src="/assets/icons/profile icons/cards.svg"
+            src="/assets/icons/profile-icons/cards.svg"
             alt="credit/debit card"
-            className="card-icon"
+            className="w-7"
           />
         )}
         {tabby && (
           <img
-            src="/assets/icons/profile icons/tabby.svg"
+            src="/assets/icons/profile-icons/tabby.svg"
             alt="tabby card"
-            className={`card-icon card-icon-tabby`}
+            className="w-8"
           />
         )}
       </div>

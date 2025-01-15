@@ -3,20 +3,17 @@ import "./VehicleDetailsPage.scss";
 import ProfileCard from "@/components/card/owner-profile-card/ProfileCard";
 import WhyOpt from "@/components/common/why-opt/WhyOpt";
 import Description from "@/components/root/vehicle details/description/Description";
-import Specification from "@/components/root/vehicle details/specifications/Specification";
+import Specification from "@/components/root/vehicle details/Specification";
 import DetailsSectionClient from "@/components/root/vehicle details/DetailsSectionClient";
-import Images from "@/components/root/vehicle details/vehicle-images/Images";
+import Images from "@/components/root/vehicle details/Images";
 import VehicleFeatures from "@/components/root/vehicle details/features/Features";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
-import { Suspense } from "react";
-import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
-import Locations from "@/components/common/locations/Locations";
-import RelatedResults from "@/components/root/vehicle details/related-results/RelatedResults";
+import RelatedResults from "@/components/root/vehicle details/RelatedResults";
 import {
   ProfileCardDataType,
   VehicleDetailsPageResponse,
 } from "@/types/vehicle-details-types";
-import QuickLinks from "@/components/root/vehicle details/quick-links/QuickLinks";
+import RelatedLinks from "@/components/root/vehicle details/RelatedLinks";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { formatVehicleSpecification } from "@/helpers";
@@ -24,8 +21,8 @@ import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
 import { fetchVehicleData, generateVehicleMetadata } from "./metadata";
 import RentalInfo from "@/components/root/vehicle details/RentalInfo";
 import NoDeposit from "@/components/root/vehicle details/NoDeposit";
-import AddOnServices from "@/components/root/vehicle details/add-on-services/AddOnServices";
-import Location from "@/components/root/vehicle details/locations/Location";
+import AddOnServices from "@/components/root/vehicle details/AddOnServices";
+import Location from "@/components/root/vehicle details/Location";
 import CurrentPageBreadcrumb from "@/components/root/vehicle details/CurrentPageBreadcrumb";
 import { restoreVehicleCodeFormat } from ".";
 
@@ -166,7 +163,7 @@ export default async function VehicleDetails({
               <ProfileCard profileData={ProfileCardData} />
 
               {/* Right Side Quick Links */}
-              <QuickLinks state={state} />
+              <RelatedLinks state={state} />
             </div>
           </div>
         </section>
@@ -187,11 +184,6 @@ export default async function VehicleDetails({
 
       {/* Why Opt Ride.Rent and Available Locations */}
       <WhyOpt state={state} category={category} />
-
-      {/* available locations */}
-      <Suspense fallback={<SectionLoading />}>
-        <Locations state={state} category={category} />
-      </Suspense>
     </section>
   );
 }

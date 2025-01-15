@@ -1,8 +1,8 @@
-import "./ProfileSpecification.scss";
 import { CompanySpecs, RentalDetails } from "@/types/vehicle-details-types";
 import { HandCoins, ThumbsUp } from "lucide-react";
 import CardPayments from "./CardPayments";
 import RentalDetailsTab from "./RentalDetailsTab";
+import SpecificationList from "./SpecificationList";
 
 type ProfileSpecificationProps = {
   specs: CompanySpecs;
@@ -30,47 +30,13 @@ const ProfileSpecification = ({
   };
 
   return (
-    <div className="profile-specifications">
-      <div className="specifications">
-        {/* Payment Type */}
-        {specs.isCryptoAccepted && (
-          <div className="specification">
-            <div className="icon-box">
-              <img
-                src="/assets/icons/profile icons/Crypto Accepted.svg"
-                alt="Payment Type Icon"
-              />
-            </div>
-            <span className="label">Crypto Accepted</span>
-          </div>
-        )}
+    <div className="flex flex-col justify-center gap-4">
+      {/* specification list */}
+      <SpecificationList
+        specs={specs}
+        getRentalAvailability={getRentalAvailability}
+      />
 
-        {/* Delivery Option */}
-        <div className="specification">
-          <div className="icon-box">
-            <img
-              src="/assets/icons/profile icons/Spot Delivery.svg"
-              alt="Delivery Option Icon"
-            />
-          </div>
-          <span className="label">
-            {specs.isSpotDeliverySupported
-              ? "Free Spot Delivery"
-              : "Collect at Point"}
-          </span>
-        </div>
-
-        {/* Rental Availability */}
-        <div className="specification">
-          <div className="icon-box">
-            <img
-              src="/assets/icons/profile icons/Monthly Rental Available.svg"
-              alt="Rental Availability Icon"
-            />
-          </div>
-          <span className="label">{getRentalAvailability()}</span>
-        </div>
-      </div>
       {/* card payments */}
       <CardPayments
         creditDebitCards={specs.isCreditOrDebitCardsSupported}
@@ -79,18 +45,22 @@ const ProfileSpecification = ({
       {/* rental details tab */}
       <RentalDetailsTab rentalDetails={rentalDetails} />
 
-      {/* security deposits */}
+      {/* Security Deposits */}
       {securityDeposit && securityDeposit?.enabled && (
-        <div className="deposit-box">
-          <HandCoins className="icon" />
-          <span className="label">{`${securityDeposit?.amountInAED} AED deposit applies`}</span>
+        <div className="-mb-1 flex items-center justify-center">
+          <HandCoins className="text-yellow-500 h-auto w-5" />
+          <span className="ml-1 whitespace-nowrap text-sm font-normal capitalize">
+            {`${securityDeposit?.amountInAED} AED deposit applies`}
+          </span>
         </div>
       )}
+
+      {/* Lease Box */}
       {isLease && (
-        <div className="lease-box">
-          <ThumbsUp className="lease-icon" width={20} />
-          <span className="label">
-            {"This vehicle is also available for lease"}
+        <div className="mx-auto -mb-3 -mt-2 flex w-[97%] items-center justify-center rounded-md p-1.5 px-3">
+          <ThumbsUp className="text-yellow-500 mb-1 h-auto w-5" />
+          <span className="ml-1 whitespace-nowrap text-sm font-light capitalize">
+            This vehicle is also available for lease
           </span>
         </div>
       )}

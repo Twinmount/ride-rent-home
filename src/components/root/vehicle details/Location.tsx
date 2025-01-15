@@ -1,7 +1,6 @@
 import React from "react";
 import { IoLocationOutline } from "react-icons/io5";
-import CityListSubheading from "../CityListSubheading";
-import styles from "./Location.module.scss"; // Import the CSS module
+import CityListSubheading from "./CityListSubheading";
 import { City } from "@/types/vehicle-details-types";
 
 type LocationProps = {
@@ -11,16 +10,18 @@ type LocationProps = {
 
 const Location: React.FC<LocationProps> = ({ stateLabel, cities }) => {
   return (
-    <div className={styles.locationContainer}>
-      <span className={styles.location}>
+    <div className="mt-2.5 flex items-start text-[15px] text-gray-700 md:gap-0.5">
+      <span className="mt-0.5 flex items-center gap-1 text-lg">
         <IoLocationOutline
           size={20}
-          className="text-yellow relative bottom-[2px]"
+          className="text-yellow-500 relative bottom-[2px]"
           strokeWidth={3}
           fill="yellow"
         />
       </span>
-      <span className={styles.state}>{stateLabel} : </span>
+      <span className="mr-1 flex items-center whitespace-nowrap font-medium text-gray-900">
+        {stateLabel} :
+      </span>
       <CityListSubheading cities={cities} />
     </div>
   );
