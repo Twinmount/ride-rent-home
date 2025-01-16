@@ -4,17 +4,19 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 interface UseFetchVehiclesParams {
   searchParams: string;
   state: string;
+  limit: string
 }
 
 export const useFetchVehicles = ({
   searchParams,
   state,
+  limit,
 }: UseFetchVehiclesParams) => {
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useInfiniteQuery({
       queryKey: ["vehicles", state, searchParams],
       queryFn: ({ pageParam = 1 }) => {
-        return FetchVehicleByFilters(searchParams, state, pageParam);
+        return FetchVehicleByFilters(searchParams, state, pageParam, limit);
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage) => {

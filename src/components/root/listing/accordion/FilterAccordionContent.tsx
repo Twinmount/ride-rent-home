@@ -36,11 +36,11 @@ const FilterAccordionContent: FC<FilterAccordionContentProps> = ({
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pl-4">
       {options.map((option) => (
         <div
           key={option.value}
-          className="flex items-center justify-start gap-x-1 mt-2"
+          className="mt-2 flex items-center justify-start gap-x-1"
         >
           <Checkbox
             id={option.value}
@@ -50,7 +50,7 @@ const FilterAccordionContent: FC<FilterAccordionContentProps> = ({
                 : selected === option.value
             }
             onCheckedChange={() => handleCheckboxChange(option.value)}
-            className="bg-white data-[state=checked]:bg-yellow data-[state=checked]:border-none !rounded-sm data-[state=checked]:!text-white"
+            className="!rounded-sm bg-white data-[state=checked]:border-none data-[state=checked]:bg-yellow data-[state=checked]:!text-white"
           />
           <label htmlFor={option.value} className="">
             {option.label}

@@ -13,7 +13,8 @@ import {
 export const FetchVehicleByFilters = async (
   query: string,
   state: string = "dubai",
-  pageParam: number = 1, // Accept pageParam here directly
+  pageParam: number = 1,
+  limit: string = "8", // Accept pageParam here directly
 ): Promise<FetchVehicleCardsResponse> => {
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);
@@ -32,7 +33,7 @@ export const FetchVehicleByFilters = async (
   // Build the payload for the POST request
   const payload: Record<string, any> = {
     page: pageParam.toString(), // Use the pageParam directly
-    limit: "6", // Ensure it's a string
+    limit, // Ensure it's a string
     sortOrder: "DESC",
     category: getParamValue("category") || "cars",
     state: getParamValue("state", state),

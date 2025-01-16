@@ -4,9 +4,12 @@ import { FeatureType } from "@/types/vehicle-types";
 import { useMemo } from "react";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 
-const LimitedFeatures = ({ features }: { features: Record<string, FeatureType[]> }) => {
-
-    const getLimitedFeatures = (
+const LimitedFeatures = ({
+  features,
+}: {
+  features: Record<string, FeatureType[]>;
+}) => {
+  const getLimitedFeatures = (
     features: Record<string, FeatureType[]>,
     maxCategories: number,
     maxFeaturesPerCategory: number,
@@ -43,6 +46,9 @@ const LimitedFeatures = ({ features }: { features: Record<string, FeatureType[]>
       </div>
     </div>
   ));
+
+  // Add a displayName for better debugging
+  FeatureItem.displayName = "FeatureItem";
 
   return (
     <MotionDiv className="grid h-auto max-h-80 gap-4 rounded-2xl md:grid-cols-3">

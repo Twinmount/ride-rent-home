@@ -1,11 +1,11 @@
 import { FC, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { CategoryType } from "@/types/contextTypes";
 import useFilters from "@/hooks/useFilters";
 import FilterAccordionContent from "./FilterAccordionContent";
 import { useSearchParams } from "next/navigation";
 import qs from "query-string";
 import { fetchCategories } from "@/lib/api/general-api";
+import { CategoryType } from "@/types";
 
 const VehicleCategoryAccordion: FC = () => {
   const { selectedFilters, handleFilterChange } = useFilters();

@@ -41,17 +41,3 @@ export default function VehicleCardSkeletonGrid({
     </div>
   );
 }
-
-export function ListingVehicleCardSkeletonGrid({
-  count = 6,
-}: {
-  count?: number;
-}) {
-  return (
-    <div className="mx-auto grid w-full max-w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: count }).map((_, index) => (
-        <VehicleCardSkeleton key={index} index={index} />
-      ))}
-    </div>
-  );
-}

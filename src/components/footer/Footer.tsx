@@ -6,7 +6,7 @@ import RideRentLogo from "./RideRentLogo";
 
 const Footer = () => {
   return (
-    <footer className="wrapper bg-black p-8 text-white">
+    <footer className="bg-black p-8 text-white">
       {/* Footer Grid */}
       <FooterGrid />
 
@@ -14,12 +14,10 @@ const Footer = () => {
       <Social />
 
       {/* Logo Section */}
-      <MotionDiv className="mx-auto mb-8 w-fit">
-        <RideRentLogo />
-      </MotionDiv>
+      <RideRentLogo />
 
       {/* Bottom Section */}
-      <MotionDiv className="mx-auto w-full text-center font-light text-gray-400 md:w-[90%] lg:w-[80%]">
+      <MotionDiv className="mx-auto w-full text-center font-light text-gray-400 md:w-[90%] lg:w-[80%] xl:w-[70%]">
         <div>
           Get unbeatable deals on car rentals, chauffeur services, and car with
           driver, alongside bike, yacht, and private Charter/ helicopter

@@ -7,7 +7,7 @@ import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 import { CategoryType } from "@/types";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { convertToLabel, singularizeType, sortCategories } from "@/helpers";
+import { convertToLabel, sortCategories } from "@/helpers";
 
 import {
   NavigationMenu,

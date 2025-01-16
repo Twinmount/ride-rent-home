@@ -1,45 +1,51 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-// import useIsSmallScreen from "@/hooks/useIsSmallScreen";
-// import useIntersectionObserver from "@/hooks/useIntersectionObserver";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import ListingSkelton from "@/components/skelton/ListingsSkelton";
 import NoResultsFound from "./NoResultsFound";
-// import FiltersSidebar from "../filter/FiltersSidebar";
 import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
 import PriceEnquireDialog from "../../landing/dialog/PriceEnquireDialog";
 import { useInView } from "react-intersection-observer";
 import { useFetchVehicles } from "@/hooks/useFetchListingVehicles";
-import { ListingVehicleCardSkeletonGrid } from "@/components/skelton/VehicleCardSkeleton";
+import LoadingWheel from "@/components/common/LoadingWheel";
 
 type VehicleGridProps = {
   state: string;
 };
 
 const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
-  // const isFiltersButtonVisible = useIsSmallScreen(1200);
-  const vehicleGridRef = useRef<HTMLDivElement | null>(null);
-  // const isVehicleGridVisible = useIntersectionObserver(vehicleGridRef);
   const searchParams = useSearchParams();
 
-  const { ref, inView } = useInView(); // For infinite scrolling trigger
+  const { ref, inView } = useInView();
 
-  // const category = searchParams.get("category") || "cars";
+  // State to control when to switch to "Load More"
+  const [useLoadMore, setUseLoadMore] = useState(false);
+
+  // limit 8
+  const limit = "8";
 
   // Fetch data using custom hook utilizing useInfiniteQuery
   const { vehicles, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useFetchVehicles({
       searchParams: searchParams.toString(),
       state,
+      limit,
     });
 
-  // Trigger fetchNextPage when the bottom element is in view
+  // Check when to switch to "Load More" mode
   useEffect(() => {
-    if (inView && hasNextPage) {
+    if (vehicles.length > 24) {
+      setUseLoadMore(true);
+    }
+  }, [vehicles]);
+
+  // Trigger fetchNextPage on scroll if not in "Load More" mode
+  useEffect(() => {
+    if (inView && hasNextPage && !useLoadMore) {
       fetchNextPage();
     }
-  }, [inView]);
+  }, [inView, hasNextPage, useLoadMore]);
 
   return (
     <div className="flex w-full flex-col">
@@ -47,13 +53,13 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
         <ListingSkelton />
       ) : (
         <>
-          <div ref={vehicleGridRef} className={`w-full`}>
+          <div className={`w-full`}>
             {vehicles.length === 0 ? (
               <NoResultsFound />
             ) : (
-              <div className="mx-auto grid w-fit max-w-fit grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mx-auto grid w-fit max-w-fit grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {vehicles.map((vehicle, index) => {
-                  const animationIndex = index % 6;
+                  const animationIndex = index % 8;
                   return (
                     <VehicleMainCard
                       key={vehicle.vehicleId}
@@ -66,23 +72,37 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
             )}
           </div>
 
-          {/* Infinite scrolling loader */}
-          {/* Infinite scrolling loader */}
-          <div ref={ref} className="w-full py-4 text-center">
-            {isFetching ? (
-              <ListingVehicleCardSkeletonGrid />
-            ) : !hasNextPage ? (
-              <span className="mt-16 text-base italic text-gray-500">
-                You have reached the end
-              </span>
-            ) : null}
-          </div>
+          {/* Infinite scrolling loader till the first 18 vehicles */}
+          {!useLoadMore && hasNextPage && (
+            <div ref={ref} className="w-full py-4 text-center">
+              {isFetching ? (
+                <div className="flex-center h-24">
+                  <LoadingWheel />
+                </div>
+              ) : null}
+            </div>
+          )}
+
+          {/* "Load More" button after the first 18 vehicles */}
+          {useLoadMore && hasNextPage && (
+            <div className="w-full py-4 text-center">
+              <button
+                onClick={() => fetchNextPage()} // Wrap in an inline function
+                disabled={isFetching}
+                className="w-full rounded-xl border border-gray-300 py-3 font-semibold text-gray-800 hover:bg-gray-200 disabled:opacity-50"
+              >
+                {isFetching ? "Loading..." : "Load More"}
+              </button>
+            </div>
+          )}
+
+          {!hasNextPage && !isFetching && useLoadMore && (
+            <span className="mt-16 text-base italic text-gray-500">
+              You have reached the end
+            </span>
+          )}
         </>
       )}
-
-      {/* {isFiltersButtonVisible && isVehicleGridVisible && (
-        <FiltersSidebar category={category} />
-      )} */}
 
       {/* Dialog to enquire best prices */}
       <PriceEnquireDialog />
