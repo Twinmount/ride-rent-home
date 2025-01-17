@@ -1,6 +1,6 @@
 "use client";
 
-import MobileProfileCard from "@/components/card/mobile-profile-card/MobileProfileCard";
+import MobileProfileCard from "@/components/root/vehicle-details/profile-card/mobile-profile-card/MobileProfileCard";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 import { sendPortfolioVisit } from "@/lib/api/general-api";
 import { ProfileCardDataType } from "@/types/vehicle-details-types";
@@ -26,7 +26,7 @@ const DetailsSectionClient = ({
     queryKey: ["portfolioVisit", vehicleId],
     queryFn: () => sendPortfolioVisit(vehicleId),
     staleTime: 600000, // 10 minutes in milliseconds
-    enabled: !!vehicleId, // Ensures the query runs only when vehicleId is available
+    enabled: !!vehicleId,
   });
 
   return (

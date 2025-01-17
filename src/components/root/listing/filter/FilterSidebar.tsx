@@ -13,31 +13,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { SlidersHorizontal } from "lucide-react";
+import useElementVisibility from "@/hooks/useElementVisibility";
 
 export const FilterSidebar = () => {
   const [open, setOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const footerRef = useRef<HTMLElement | null>(null);
-
-  /*
-   Check if the footer is visible or not, to determine the visibility of filter sidebar trigger button
- */
-  useEffect(() => {
-    const footer = document.querySelector("footer"); // Assuming the footer has a `footer` tag
-    if (footer) {
-      footerRef.current = footer;
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          setIsVisible(!entry.isIntersecting); // Hide the button if the footer is visible
-        },
-        { root: null, threshold: 0.1 }, // Trigger when 10% of the footer is visible
-      );
-      observer.observe(footer);
-      return () => observer.disconnect();
-    }
-
-    return undefined;
-  }, []);
+  const isVisible = useElementVisibility("footer", 0.1);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

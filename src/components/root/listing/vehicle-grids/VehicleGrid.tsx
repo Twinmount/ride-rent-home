@@ -22,7 +22,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   // State to control when to switch to "Load More"
   const [useLoadMore, setUseLoadMore] = useState(false);
 
-  // limit 8
+  // 8 vehicles loads per pagination.
   const limit = "8";
 
   // Fetch data using custom hook utilizing useInfiniteQuery

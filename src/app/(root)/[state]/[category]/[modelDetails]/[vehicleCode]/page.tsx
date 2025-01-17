@@ -1,29 +1,29 @@
 import "./VehicleDetailsPage.scss";
 
-import ProfileCard from "@/components/card/owner-profile-card/ProfileCard";
+import ProfileCard from "@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard";
 import WhyOpt from "@/components/common/why-opt/WhyOpt";
-import Description from "@/components/root/vehicle details/description/Description";
-import Specification from "@/components/root/vehicle details/Specification";
-import DetailsSectionClient from "@/components/root/vehicle details/DetailsSectionClient";
-import Images from "@/components/root/vehicle details/Images";
-import VehicleFeatures from "@/components/root/vehicle details/features/Features";
+import Description from "@/components/root/vehicle-details/description/Description";
+import Specification from "@/components/root/vehicle-details/Specification";
+import DetailsSectionClient from "@/components/root/vehicle-details/DetailsSectionClient";
+import Images from "@/components/root/vehicle-details/Images";
+import VehicleFeatures from "@/components/root/vehicle-details/features/Features";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
-import RelatedResults from "@/components/root/vehicle details/RelatedResults";
+import RelatedResults from "@/components/root/vehicle-details/RelatedResults";
 import {
   ProfileCardDataType,
   VehicleDetailsPageResponse,
 } from "@/types/vehicle-details-types";
-import RelatedLinks from "@/components/root/vehicle details/RelatedLinks";
+import RelatedLinks from "@/components/root/vehicle-details/RelatedLinks";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { formatVehicleSpecification } from "@/helpers";
 import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
 import { fetchVehicleData, generateVehicleMetadata } from "./metadata";
-import RentalInfo from "@/components/root/vehicle details/RentalInfo";
-import NoDeposit from "@/components/root/vehicle details/NoDeposit";
-import AddOnServices from "@/components/root/vehicle details/AddOnServices";
-import Location from "@/components/root/vehicle details/Location";
-import CurrentPageBreadcrumb from "@/components/root/vehicle details/CurrentPageBreadcrumb";
+import RentalInfo from "@/components/root/vehicle-details/RentalInfo";
+import NoDeposit from "@/components/root/vehicle-details/NoDeposit";
+import AddOnServices from "@/components/root/vehicle-details/AddOnServices";
+import Location from "@/components/root/vehicle-details/Location";
+import CurrentPageBreadcrumb from "@/components/root/vehicle-details/CurrentPageBreadcrumb";
 import { restoreVehicleCodeFormat } from ".";
 
 type ParamsProps = {
@@ -182,7 +182,7 @@ export default async function VehicleDetails({
       {/* FAQ */}
       <DynamicFAQ vehicle={vehicle} />
 
-      {/* Why Opt Ride.Rent and Available Locations */}
+      {/* Why Opt Ride.Rent  */}
       <WhyOpt state={state} category={category} />
     </section>
   );
