@@ -1,3 +1,5 @@
+import "./Overlay.scss";
+
 type OverlayProps = {
   isVisible: boolean;
 };

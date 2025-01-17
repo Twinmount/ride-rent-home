@@ -1,3 +1,4 @@
+import "./TopContainer.scss";
 import Link from "next/link";
 import { SquareArrowOutUpRight } from "lucide-react";
 import { MdVerifiedUser } from "react-icons/md";
@@ -15,6 +16,7 @@ const TopContainer = ({
   return (
     <div className="top-container">
       <div className="top">
+        {/* moving border animation */}
         <div className="absolute inset-0 z-0 h-full w-full animate-rotate rounded-full bg-[conic-gradient(#ffa733_20deg,transparent_120deg)]" />
         <Link
           href={companyProfilePageLink}

@@ -8,9 +8,9 @@ import RentalDetailsTab from "../../profile-specifications/RentalDetailsTab";
 import SecurityDepositInfo from "../../profile-specifications/SecurityDepositInfo";
 import useProfileData from "@/hooks/useProfileCardData";
 import LeaseInfo from "../../profile-specifications/LeaseInfo";
-import ExpandableHeader from "./ExpandableHeader";
-import MobileProfileInfo from "./MobileProfileInfo";
-import Overlay from "./Overlay";
+import ExpandableHeader from "./expandable-header/ExpandableHeader";
+import MobileProfileInfo from "./mobile-profile-info/MobileProfileInfo";
+import Overlay from "./overlay/Overlay";
 
 type MobileProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -89,7 +89,7 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
               <RentNowSection
                 vehicleId={vehicleId}
                 whatsappUrl={whatsappUrl}
-                email={profileData.company.contactDetails?.email}
+                email={company.contactDetails?.email}
                 formattedPhoneNumber={formattedPhoneNumber}
                 isPing={true}
                 isMobileProfileCard={true}

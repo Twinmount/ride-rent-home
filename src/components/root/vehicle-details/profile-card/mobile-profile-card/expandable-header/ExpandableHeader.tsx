@@ -1,3 +1,4 @@
+import "./ExpandableHeader.scss";
 import { MdOutlineExpandCircleDown } from "react-icons/md";
 
 type ExpandableHeaderProps = {

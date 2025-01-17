@@ -1,3 +1,4 @@
+import "./MobileProfileInfo.scss";
 import { Company } from "@/types/vehicle-details-types";
 import Link from "next/link";
 import { MdVerifiedUser } from "react-icons/md";

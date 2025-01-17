@@ -55,10 +55,7 @@ export default function VehicleTypesCarousel() {
   const currentlySelectedType = searchParams.get("type");
 
   return (
-    <div
-      className="h-fit w-fit max-w-[67%] rounded-xl bg-white py-0 sm:max-w-[60%] md:ml-6 md:mr-8 md:max-w-[58%] lg:max-w-[66%] xl:max-w-[73%]"
-      id="categories"
-    >
+    <VehicleTypesCarouselWrapper>
       <Carousel className="w-full max-w-full p-0">
         <CarouselContent className="flex h-fit gap-x-3 px-1 py-0 lg:gap-x-4">
           {vehicleTypes.map((type, index) => (
@@ -76,7 +73,7 @@ export default function VehicleTypesCarousel() {
         <CarouselPrevious className="max-md:hidden" />
         <CarouselNext className="max-md:hidden" />
       </Carousel>
-    </div>
+    </VehicleTypesCarouselWrapper>
   );
 }
 
@@ -149,3 +146,21 @@ function VehicleTypeCard({
     </MotionDivElm>
   );
 }
+
+/*
+ extracted the wrapper div style logic to make it reusable in the VehicleTypesCarouselSkelton component also
+*/
+export const VehicleTypesCarouselWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <div
+      className="sm: h-fit w-fit max-w-[67%] rounded-xl bg-white py-0 sm:max-w-[53%] md:ml-6 md:mr-8 md:max-w-[55%] lg:max-w-[64%] xl:max-w-[68%] 2xl:max-w-[72%]"
+      id="categories"
+    >
+      {children}
+    </div>
+  );
+};

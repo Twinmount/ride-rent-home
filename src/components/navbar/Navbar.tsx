@@ -42,7 +42,7 @@ const Navbar = () => {
         hidden: { y: "-100%" },
       }}
       animate={isHidden ? "hidden" : "visible"}
-      transition={{ duration: 0, ease: "easeInOut" }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
       className={`global__padding fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-bgGray transition-all duration-200 ease-in-out`}
     >
       <nav className={`flex-between w-full`}>

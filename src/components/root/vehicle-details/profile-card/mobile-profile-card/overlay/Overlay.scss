@@ -1,0 +1,31 @@
+.black-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  /* Semi-transparent black */
+  z-index: 99; //1 less than Mobile profile card;
+  transition:
+    opacity 0.3s ease-in-out,
+    visibility 0.3s ease-in-out;
+  opacity: 0;
+  /* Initially hidden */
+  visibility: hidden;
+  /* Initially non-interactive */
+
+  &.visible {
+    opacity: 1;
+    /* Fade-in effect */
+    visibility: visible;
+    /* Make interactive */
+  }
+
+  &.hidden {
+    opacity: 0;
+    /* Fade-out effect */
+    visibility: hidden;
+    /* Make non-interactive */
+  }
+}

@@ -1,0 +1,157 @@
+@import "../../../../../../styles/variables";
+
+.border-wrapper {
+  padding: 0.1rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+
+  .profile-details {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: solid 1px rgba(0, 0, 0, 0.1);
+    border-radius: 1rem;
+    padding: 0.4rem 0.8rem;
+    transition: background-color 0.3s ease;
+    padding: 0.6rem;
+    position: relative;
+    z-index: 10;
+    overflow: hidden;
+    background-color: #fff;
+    font-size: 0.9rem;
+
+    &:hover {
+      background-color: rgb(241, 241, 241);
+      cursor: pointer;
+    }
+
+    // image container
+    .profile {
+      width: 3rem;
+      height: 3rem;
+      min-width: 3rem;
+      min-height: 3rem;
+      aspect-ratio: 1;
+      border-radius: 100%;
+      overflow: hidden;
+      border: solid 1px rgba(0, 0, 0, 0.1);
+
+      .company-profile {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+    }
+
+    .blurred-profile {
+      filter: blur(13px); //for blurring the profile
+    }
+
+    .company-info {
+      // name label
+      .company-name {
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: rgb(61, 61, 61);
+        margin-bottom: 0.4rem;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      // for blurring the text
+      .blurred-text {
+        color: transparent;
+        text-shadow: 0 0 8px #000;
+        width: fit-content;
+        user-select: none;
+        pointer-events: none;
+        cursor: not-allowed;
+      }
+
+      // verified label
+      .verified-vendor {
+        display: flex;
+        align-items: center;
+        column-gap: 0.1rem;
+        position: relative;
+        font-size: 0.8rem;
+        white-space: nowrap;
+
+        .icon {
+          scale: 1.4;
+          color: $yellow;
+          position: absolute;
+        }
+
+        span {
+          background-color: rgb(211, 211, 211);
+          border-radius: 0.3rem;
+          padding: 0.2rem;
+          font-size: 0.65rem;
+          margin-left: 0.6rem;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+/* min width 768px and above */
+@media (min-width: 768px) {
+  .profile-details {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    // image container
+    .profile {
+      width: 3rem;
+      height: 3rem;
+      aspect-ratio: 1;
+      border-radius: 100%;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+    }
+
+    // name label
+    p {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: rgb(61, 61, 61);
+      margin-bottom: 0.4rem;
+    }
+
+    // verified-vendor label
+    .verified-vendor {
+      display: flex;
+      align-items: center;
+      column-gap: 0.3rem;
+      position: relative;
+
+      .icon {
+        scale: 1.4;
+        color: $yellow;
+        position: absolute;
+      }
+
+      span {
+        background-color: rgb(211, 211, 211);
+        border-radius: 0.3rem;
+        padding: 0.2rem 0.4rem 0.2rem 0.8rem;
+        font-size: 0.65rem;
+        margin-left: 0.8rem;
+        font-weight: 500;
+      }
+    }
+  }
+}

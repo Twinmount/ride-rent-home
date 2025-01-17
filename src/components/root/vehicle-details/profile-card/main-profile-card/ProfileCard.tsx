@@ -7,7 +7,7 @@ import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import RentNowSection from "@/components/common/rent-now/RentNowSection";
 import { ProfileCardDataType } from "@/types/vehicle-details-types";
 import useProfileData from "@/hooks/useProfileCardData";
-import TopContainer from "./TopContainer";
+import TopContainer from "./top-container/TopContainer";
 import RentalDetailsTab from "../../profile-specifications/RentalDetailsTab";
 import LeaseInfo from "../../profile-specifications/LeaseInfo";
 import SecurityDepositInfo from "../../profile-specifications/SecurityDepositInfo";
@@ -27,6 +27,8 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
     securityDeposit,
     vehicleId,
   } = useProfileData(profileData);
+
+  const { company } = profileData;
 
   return (
     <MotionDiv className="profile-card">
@@ -63,7 +65,7 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
         <RentNowSection
           vehicleId={vehicleId}
           whatsappUrl={whatsappUrl}
-          email={profileData.company.contactDetails?.email}
+          email={company.contactDetails?.email}
           formattedPhoneNumber={formattedPhoneNumber}
           isPing={true}
         />
