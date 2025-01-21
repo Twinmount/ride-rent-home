@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import BrandSearch from "@/components/root/brand/BrandSearch";
 import { FetchBrandsResponse } from "@/types";
 import Link from "next/link";
-import Pagination from "@/components/general/pagination/Pagination";
+import Pagination from "@/components/common/Pagination";
 import { singularizeType } from "@/helpers";
 import BackButton from "@/components/common/BackButton";
 

@@ -20,7 +20,7 @@ export default function MobileSidebar() {
       </SheetTrigger>
       <SheetContent side="right" className="w-64 bg-white px-0">
         <SheetTitle className="sr-only">Sidebar</SheetTitle>
-        <SheetDescription className="sr-only text-muted-foreground">
+        <SheetDescription className="text-lightGray-foreground sr-only">
           Sidebar
         </SheetDescription>
         <div className="flex h-full w-full flex-col justify-between px-4 py-6">

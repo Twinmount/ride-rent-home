@@ -1,10 +1,11 @@
 import "./TermsCondition.scss";
-import HeadingBanner from "@/components/general/heading-banner/HeadingBanner";
+
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import MainSection from "@/components/root/term-conditions/MainSection";
 import GuestUsersSection from "@/components/root/term-conditions/GuestUsersSection";
 import AgentSubSection from "@/components/root/term-conditions/AgentSubSection";
 import AdvertisersSection from "@/components/root/term-conditions/AdvertisersSection";
+import HeadingBanner from "@/components/common/heading-banner/HeadingBanner";
 
 export async function generateMetadata() {
   const canonicalUrl = `https://ride.rent/terms-condition`;

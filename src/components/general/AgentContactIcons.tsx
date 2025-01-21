@@ -3,7 +3,7 @@
 import React from "react";
 import { FaWhatsappSquare } from "react-icons/fa";
 import { ImMail } from "react-icons/im";
-import Phone from "./contact-icons/Phone";
+import Phone from "../common/contact-icons/Phone";
 
 interface AgentContactIconsProps {
   whatsappUrl: string | null;

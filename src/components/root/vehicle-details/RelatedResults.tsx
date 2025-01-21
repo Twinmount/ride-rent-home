@@ -44,7 +44,7 @@ export default async function RelatedResults({
   if (vehicleData.length === 0) return null;
 
   return (
-    <MotionSection className="wrapper">
+    <MotionSection>
       <h2 className="mb-4 mt-14 text-center text-xl font-bold">
         Related Recommendations
       </h2>

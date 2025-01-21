@@ -28,17 +28,10 @@ export default function CurrentPageBreadcrumb({
     <MotionDiv className="my-3 rounded-xl border border-gray-100 bg-white px-4 py-2 shadow-sm">
       <Breadcrumb className="w-fit rounded-2xl px-1">
         <BreadcrumbList>
+          {/* vehicle state */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/${state}/${category}`}
-              className="font-semibold transition-colors hover:text-yellow hover:underline"
-            >
-              {formattedCategory} for rent{" "}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink
+              target="_blank"
               href={`/${state}/${category}`}
               className="font-semibold transition-colors hover:text-yellow hover:underline"
             >
@@ -46,6 +39,20 @@ export default function CurrentPageBreadcrumb({
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
+
+          {/* vehicle category */}
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              href={`/${state}/listing?category=${category}`}
+              target="_blank"
+              className="font-semibold transition-colors hover:text-yellow hover:underline"
+            >
+              {formattedCategory} for rent{" "}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+
+          {/* vehicle title */}
           <BreadcrumbItem>
             <BreadcrumbPage className="cursor-default font-semibold text-yellow">
               {vehicleTitle}

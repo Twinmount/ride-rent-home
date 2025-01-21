@@ -22,7 +22,7 @@ export default function DynamicFAQ({ vehicle }: DynamicFAQProps) {
   if (faqData.length === 0) return null;
 
   return (
-    <MotionSection className="wrapper pb-12 pt-8">
+    <MotionSection className="w-full pb-12 pt-8">
       <div className="relative mb-12 text-xl">
         <h2 className="mb-6 text-center text-xl">Frequently Asked Questions</h2>
         <Image
@@ -34,20 +34,22 @@ export default function DynamicFAQ({ vehicle }: DynamicFAQProps) {
         />
       </div>
 
-      <Accordion type="single" collapsible className="mx-auto w-full md:w-3/4">
-        {faqData.map((item, index) => (
-          <AccordionItem
-            className="mb-1 rounded-lg bg-white p-1 px-4 shadow"
-            key={index}
-            value={`item-${index + 1}`}
-          >
-            <AccordionTrigger className="text-start hover:no-underline">
-              {item.question}
-            </AccordionTrigger>
-            <AccordionContent>{item.answer}</AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+      <div className="mx-auto w-full md:w-[95%]">
+        <Accordion type="single" collapsible className="mx-auto w-full">
+          {faqData.map((item, index) => (
+            <AccordionItem
+              className="mb-1 rounded-lg bg-white p-1 px-4 shadow"
+              key={index}
+              value={`item-${index + 1}`}
+            >
+              <AccordionTrigger className="text-start hover:no-underline">
+                {item.question}
+              </AccordionTrigger>
+              <AccordionContent>{item.answer}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
     </MotionSection>
   );
 }

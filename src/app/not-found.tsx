@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <section className="flex min-h-screen flex-col items-center bg-bgGray pb-12 pt-12">
+    <section className="bg-lightGray flex min-h-screen flex-col items-center pb-12 pt-12">
       {/* Top Section */}
       <div className="mb-8 mt-16 flex items-center justify-center">
         <img

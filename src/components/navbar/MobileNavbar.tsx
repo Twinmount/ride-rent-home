@@ -35,7 +35,7 @@ const MobileNavbar = () => {
       animate={isHidden ? "hidden" : "visible"}
       transition={{ duration: 0.3, ease: "linear" }}
       // make the background light semi transparent small light blur
-      className={`global__padding fixed bottom-0 left-0 right-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-t bg-bgGray transition-all duration-200 ease-in-out sm:hidden`}
+      className={`global__padding bg-lightGray fixed bottom-0 left-0 right-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-t transition-all duration-200 ease-in-out sm:hidden`}
       role="navigation"
       aria-label="Mobile Actions"
     >

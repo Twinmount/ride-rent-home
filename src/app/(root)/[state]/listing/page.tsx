@@ -44,7 +44,7 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
     : [];
 
   return (
-    <div className="wrapper bg-bgGray pb-8 pt-4">
+    <div className="wrapper bg-lightGray pb-8 pt-4">
       <div className="flex-between mb-6 h-fit w-full pr-[5%] max-md:flex-col">
         <h1 className="ml-8 break-words text-2xl font-normal max-md:mr-auto">
           Rent or Lease&nbsp;

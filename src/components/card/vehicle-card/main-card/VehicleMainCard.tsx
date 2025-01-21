@@ -1,7 +1,6 @@
 import "./VehicleMainCard.scss";
 import Link from "next/link";
 import { VehicleCardType } from "@/types/vehicle-types";
-import { IoLocationOutline } from "react-icons/io5";
 import {
   convertToLabel,
   generateVehicleDetailsUrl,
@@ -19,6 +18,7 @@ import RentalDetails from "../RentalDetails";
 
 import MotionMainCardDiv from "@/components/general/framer-motion/MotionMainCardDiv";
 import EnquireBestPrice from "../EnquireBestPrice";
+import { MapPin } from "lucide-react";
 
 type VehicleMainCardProps = {
   vehicle: VehicleCardType;
@@ -39,7 +39,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
     vehicleCode: vehicle.vehicleCode,
   });
 
-  // whatsapp url
+  // whatsapp url with dynamic message attached
   const whatsappUrl = generateWhatsappUrl({
     whatsappPhone: vehicle.whatsappPhone,
     whatsappCountryCode: vehicle.whatsappCountryCode,
@@ -93,7 +93,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
           {/* location and rental details */}
           <div className="location-box">
             <div className="location">
-              <IoLocationOutline size={18} />{" "}
+              <MapPin strokeWidth={1.5} size={18} />{" "}
               <span className="state">
                 {convertToLabel(vehicle.state) || "N/A"}
               </span>

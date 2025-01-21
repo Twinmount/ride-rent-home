@@ -1,5 +1,5 @@
+import HeadingBanner from "@/components/common/heading-banner/HeadingBanner";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
-import HeadingBanner from "@/components/general/heading-banner/HeadingBanner";
 
 export async function generateMetadata() {
   const canonicalUrl = `https://ride.rent/privacy-policy`;

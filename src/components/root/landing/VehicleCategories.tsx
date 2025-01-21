@@ -24,7 +24,7 @@ export default function VehicleCategories() {
   const { state, category } = useStateAndCategory();
 
   // Fetch categories using useQuery
-  const { data, isLoading } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });
@@ -41,8 +41,8 @@ export default function VehicleCategories() {
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger
-            disabled={isLoading}
-            className={`flex-center h-12 gap-2 rounded-[0.5em] border px-3 py-1 text-sm font-semibold text-black hover:text-black ${isLoading ? "cursor-default text-gray-500" : "yellow-gradient hover:yellow-gradient"}`}
+            disabled={isFetching}
+            className={`flex-center h-12 gap-2 rounded-[0.5em] border px-3 py-1 text-sm font-semibold text-black hover:text-black ${isFetching ? "cursor-default text-gray-500" : "yellow-gradient hover:yellow-gradient"}`}
           >
             <Image
               src={`${baseAssetsUrl}/icons/vehicle-categories/${category}.png`}

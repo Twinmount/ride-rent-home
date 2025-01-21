@@ -27,7 +27,7 @@ const config = {
       colors: {
         yellow: "#ffa733",
         orange: "#ea7b0b",
-        bgGray: "hsl(34, 100%, 99%)",
+        lightGray: "#f5f5f5", //bg light gray
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -45,7 +45,7 @@ const config = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
-        muted: {
+        mutedd: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
         },

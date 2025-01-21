@@ -11,7 +11,7 @@ export default function HeroSection({ state, category }: HeroSectionProps) {
   return (
     <section className="relative overflow-hidden border-b pb-5 bg-grid-small-black/[0.3]">
       {/* radial gradient for the faded look over the edges */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-bgGray [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+      <div className="bg-lightGray pointer-events-none absolute inset-0 flex items-center justify-center [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
       <div className="relative z-10">
         <div className="container py-5">
@@ -22,7 +22,7 @@ export default function HeroSection({ state, category }: HeroSectionProps) {
               <TypewriterEffect state={state} category={category} />
             </div>
             <div className="mt-5 max-w-3xl">
-              <p className="text-base text-muted-foreground lg:text-lg">
+              <p className="text-lightGray-foreground text-base lg:text-lg">
                 Whether you&apos;re in {convertToLabel(state)} or exploring
                 beyond, find the perfect {convertToLabel(category)} that fits
                 your journey.

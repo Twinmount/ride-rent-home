@@ -71,7 +71,7 @@ export default async function VehicleDetails({
 
   const vehicle = data.result;
 
-  // data for profile card and mobile profile card
+  // prop data for profile card and mobile profile card
   const ProfileCardData: ProfileCardDataType = {
     company: vehicle?.company,
     rentalDetails: vehicle?.rentalDetails,
@@ -131,7 +131,7 @@ export default async function VehicleDetails({
       <CurrentPageBreadcrumb
         category={category}
         state={state}
-        vehicleTitle={vehicle?.vehicleTitle || vehicle.modelName}
+        vehicleTitle={vehicle?.vehicleTitle}
       />
 
       {/* Wrapper to handle client side logic regarding mobile profile card */}

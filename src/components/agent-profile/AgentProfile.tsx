@@ -1,7 +1,6 @@
 import React from "react";
-import { MdVerifiedUser } from "react-icons/md";
-import { MapPin } from "lucide-react";
-import AgentContactIcons from "../common/AgentContactIcons";
+import { MapPin, ShieldCheck } from "lucide-react";
+import AgentContactIcons from "../general/AgentContactIcons";
 import {
   generateAgentProfileWhatsappUrl,
   getAgentFormattedPhoneNumber,
@@ -90,7 +89,10 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
             {/* Verified badge */}
             {isCompanyValid && (
               <div className="relative flex items-center gap-1">
-                <MdVerifiedUser className="absolute scale-125 text-yellow sm:scale-150" />
+                <ShieldCheck
+                  fill="#ffa733"
+                  className="absolute rounded-full text-slate-700"
+                />
                 <span className="ml-3 rounded-[0.56rem] bg-gray-300 px-2 py-[0.22rem] pl-[0.65rem] text-sm font-medium">
                   Verified Vendor
                 </span>
