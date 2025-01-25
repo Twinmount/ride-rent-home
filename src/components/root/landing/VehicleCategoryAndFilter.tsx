@@ -1,6 +1,6 @@
 "use client";
 
-import VehicleTypesCarousel from "./VehicleTypesCarousel";
+import VehicleTypesCarousel from "./vehicle-types-carousel/VehicleTypesCarousel";
 import { useNavbar } from "@/context/NavbarContext";
 import VehicleCategories from "./VehicleCategories";
 import PriceFilterDialog from "./dialog/PriceFilterDialog";
@@ -10,7 +10,7 @@ export default function VehicleCategoryAndFilter() {
 
   return (
     <div
-      className={`bg-lightGray sticky z-30 mb-4 flex items-center justify-between py-2 ${isHidden && "shadow"}`}
+      className={`sticky z-30 mb-4 flex items-center justify-between bg-lightGray py-2 ${isHidden && "shadow"}`}
       style={{
         top: isHidden ? "-0.1rem" : "3.9rem",
         transition: "top 0.3s ease-in-out",

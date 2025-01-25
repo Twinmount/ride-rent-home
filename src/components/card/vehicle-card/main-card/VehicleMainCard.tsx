@@ -17,8 +17,9 @@ import HourlyRentalBadge from "./hourly-rental-badge/HourlyRentalBadge";
 import RentalDetails from "../RentalDetails";
 
 import MotionMainCardDiv from "@/components/general/framer-motion/MotionMainCardDiv";
-import EnquireBestPrice from "../EnquireBestPrice";
+// import EnquireBestPrice from "../EnquireBestPrice";
 import { MapPin } from "lucide-react";
+import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
 
 type VehicleMainCardProps = {
   vehicle: VehicleCardType;
@@ -105,8 +106,11 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
         </Link>
         <div className="bottom-box">
           {/* client component which handles the dialog logic via context */}
-          <EnquireBestPrice vehicle={vehicle} />
-
+          {/* <EnquireBestPrice vehicle={vehicle} /> */}
+          <RentNowButton
+            vehicleDetailsPageLink={vehicleDetailsPageLink}
+            companyLogo={vehicle.companyLogo}
+          />
           <ContactIcons
             vehicleId={vehicle.vehicleId}
             whatsappUrl={whatsappUrl}

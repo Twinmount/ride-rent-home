@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/carousel";
 
 import { Skeleton } from "../ui/skeleton";
-import { VehicleTypesCarouselWrapper } from "../root/landing/VehicleTypesCarousel";
+import { VehicleTypesCarouselWrapper } from "../root/landing/vehicle-types-carousel/VehicleTypesCarousel";
 
 const VehicleTypesCarouselSkelton = () => {
   return (

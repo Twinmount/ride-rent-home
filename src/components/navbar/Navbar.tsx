@@ -9,7 +9,7 @@ import { useShouldExclude } from "@/hooks/useShouldExclude";
 import { useNavbar } from "@/context/NavbarContext";
 import { SearchDialog } from "./SearchDialog";
 import MobileSidebar from "../sidebar/MobileSidebar";
-import ProfileDropdown from "./ProfileDropdown";
+// import ProfileDropdown from "./ProfileDropdown";
 import useIsHomePage from "@/hooks/useIsHomePage";
 
 const Navbar = () => {
@@ -43,7 +43,7 @@ const Navbar = () => {
       }}
       animate={isHidden ? "hidden" : "visible"}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={`global__padding bg-lightGray fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b transition-all duration-200 ease-in-out`}
+      className={`global__padding fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-lightGray transition-all duration-200 ease-in-out`}
     >
       <nav className={`flex-between w-full`}>
         <div className="flex w-fit items-center justify-center">
@@ -100,9 +100,9 @@ const Navbar = () => {
               </Link>
             </li>
 
-            <li className="max-sm:hidden">
+            {/* <li className="max-sm:hidden">
               <ProfileDropdown />
-            </li>
+            </li> */}
 
             <li className="sm:hidden">
               <MobileSidebar />
