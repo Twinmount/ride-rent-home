@@ -256,6 +256,7 @@ export enum VehicleHomeFilter {
   TOP_BRANDS = "top-brands",
   LATEST_MODELS = "latest-models",
   HOURLY_RENTAL_VEHICLE = "hourly-rental-vehicle",
+  NONE = "none",
 }
 
 export type CompanyProfileDataType = {
@@ -263,7 +264,7 @@ export type CompanyProfileDataType = {
   companyLogo: string | null;
   companyAddress: string | null;
   companyLanguages: string[];
-  state: string | null; 
+  state: string | null;
   languages: string[];
   contactDetails: ContactDetails | null;
   categories: {

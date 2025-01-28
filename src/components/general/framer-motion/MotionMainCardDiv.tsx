@@ -26,7 +26,7 @@ const MotionMainCardDiv: FC<MotionMainCardDivProps> = ({
       opacity: 1,
       y: 0,
       transition: {
-        delay: index * 0.1,
+        delay: index * 0.25,
         duration: 0.5,
         ease: "easeOut",
       },

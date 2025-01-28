@@ -170,7 +170,6 @@ export const fetchVehicleTypesByValue = async (
 };
 
 type FetchPriceRangeResponse = {
-  all: { min: number; max: number };
   hour: { min: number; max: number };
   day: { min: number; max: number };
   week: { min: number; max: number };
@@ -184,7 +183,6 @@ export const fetchPriceRange = async (): Promise<
   try {
     // Mock data for price ranges by period
     const mockResponse = {
-      all: { min: 0, max: 100000 },
       hour: { min: 10, max: 900 },
       day: { min: 50, max: 5000 },
       week: { min: 300, max: 20000 },

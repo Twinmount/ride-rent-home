@@ -19,14 +19,13 @@ import { convertToLabel, generateListingUrl } from "@/helpers";
 import { SlidersHorizontal } from "lucide-react";
 
 const rentalPeriods = [
-  { label: "All", value: "all" },
   { label: "Hourly", value: "hour" },
   { label: "Daily", value: "day" },
   { label: "Weekly", value: "week" },
   { label: "Monthly", value: "month" },
 ];
 
-type PeriodType = "all" | "hour" | "day" | "week" | "month";
+type PeriodType = "hour" | "day" | "week" | "month";
 
 export default function PriceFilterDialog({
   isMobileNav = false,
@@ -35,7 +34,7 @@ export default function PriceFilterDialog({
 }) {
   const { state, category } = useStateAndCategory();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("all");
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("hour");
   const [values, setValues] = useState([0, 100]);
 
   const { data, isLoading } = useQuery({

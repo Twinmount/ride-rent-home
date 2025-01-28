@@ -9,6 +9,7 @@ import PriceEnquireDialog from "../../landing/dialog/PriceEnquireDialog";
 import { useInView } from "react-intersection-observer";
 import { useFetchVehicles } from "@/hooks/useFetchListingVehicles";
 import LoadingWheel from "@/components/common/LoadingWheel";
+import VehicleListingsGridWrapper from "@/components/common/VehicleListingsGridWrapper";
 
 type VehicleGridProps = {
   state: string;
@@ -57,7 +58,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
             {vehicles.length === 0 ? (
               <NoResultsFound />
             ) : (
-              <div className="mx-auto grid w-fit max-w-fit grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <VehicleListingsGridWrapper>
                 {vehicles.map((vehicle, index) => {
                   const animationIndex = index % 8;
                   return (
@@ -68,7 +69,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
                     />
                   );
                 })}
-              </div>
+              </VehicleListingsGridWrapper>
             )}
           </div>
 

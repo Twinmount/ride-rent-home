@@ -13,7 +13,7 @@ import { VehicleTypeType } from "@/types";
 import VehicleTypesCarouselSkelton from "@/components/skelton/VehicleTypesCarouselSkelton";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
-import { formUrlQuery } from "@/helpers";
+import { formUrlQuery, removeKeysFromQuery } from "@/helpers";
 import { VehicleTypeCard } from "./VehicleTypeCard";
 
 export default function VehicleTypesCarousel() {
@@ -43,10 +43,20 @@ export default function VehicleTypesCarousel() {
   );
 
   const handleTypeClick = (typeValue: string) => {
-    updateUrlType(typeValue);
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 300, behavior: "smooth" });
+    const currentlySelectedType = searchParams.get("type");
+
+    if (currentlySelectedType === typeValue) {
+      const newUrl = removeKeysFromQuery({
+        params: searchParams.toString(),
+        keysToRemove: ["type"],
+      });
+      router.push(newUrl, { scroll: false });
+    } else {
+      updateUrlType(typeValue);
     }
+    // if (typeof window !== "undefined") {
+    //   window.scrollTo({ top: 300, behavior: "smooth" });
+    // }
   };
 
   if (isLoading) return <VehicleTypesCarouselSkelton />;
