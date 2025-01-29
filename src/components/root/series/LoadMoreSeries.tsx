@@ -17,6 +17,7 @@ export default function LoadMoreSeries({ state, series }: LoadMoreSeriesProps) {
   const [data, setData] = useState<JSX.Element[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
+  //  fetch data based on the scroll
   useEffect(() => {
     if (inView && hasMore) {
       fetchVehicleSeriesData({ page, state, vehicleSeries: series }).then(

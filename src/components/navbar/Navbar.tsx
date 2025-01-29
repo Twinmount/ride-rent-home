@@ -7,10 +7,11 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldExclude } from "@/hooks/useShouldExclude";
 import { useNavbar } from "@/context/NavbarContext";
-import { SearchDialog } from "./SearchDialog";
+
 import MobileSidebar from "../sidebar/MobileSidebar";
 // import ProfileDropdown from "./ProfileDropdown";
 import useIsHomePage from "@/hooks/useIsHomePage";
+import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
 
 const Navbar = () => {
   const { isHidden, setIsHidden } = useNavbar();

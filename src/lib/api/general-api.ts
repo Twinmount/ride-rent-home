@@ -5,9 +5,12 @@ import {
   FetchCategoriesResponse,
   FetchCitiesResponse,
   FetchLinksResponse,
+  FetchSearchResultsResponse,
   FetchStatesResponse,
   FetchTypesResponse,
 } from "@/types";
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Function to fetch vehicles based on filters using a POST request
 export const FetchVehicleByFilters = async (
@@ -62,16 +65,13 @@ export const FetchVehicleByFilters = async (
   });
 
   // Send the POST request to the API
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/vehicle/filter`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+  const response = await fetch(`${BASE_URL}/vehicle/filter`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify(payload),
+  });
 
   if (!response.ok) {
     throw new Error("Failed to fetch vehicles");
@@ -87,7 +87,7 @@ export const sendPortfolioVisit = async (vehicleId: string) => {
   try {
     // Send a POST request to the API with the vehicleId in the request body
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/portfolio`, // Assuming '/portfolio' is the correct endpoint
+      `${BASE_URL}/portfolio`, // Assuming '/portfolio' is the correct endpoint
       {
         method: "POST",
         headers: {
@@ -122,7 +122,7 @@ export const sendQuery = async (
   medium: "EMAIL" | "WHATSAPP" | "OTHER",
 ) => {
   try {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/queries`;
+    const url = `${BASE_URL}/queries`;
 
     const response = await fetch(url, {
       method: "POST",
@@ -145,10 +145,8 @@ export const fetchVehicleTypesByValue = async (
   vehicleCategoryValue: string,
 ): Promise<FetchTypesResponse | undefined> => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
     // generating api URL
-    const apiUrl = `${baseUrl}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}`;
+    const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}`;
 
     const response = await fetch(apiUrl);
 
@@ -199,34 +197,23 @@ export const fetchPriceRange = async (): Promise<
   }
 };
 
-export const fetchSearchResults = async (search: string): Promise<string[]> => {
+export const fetchSearchResults = async (
+  search: string,
+): Promise<FetchSearchResultsResponse | undefined> => {
   try {
-    // Simulate a backend response based on search input
-    const mockData: { [key: string]: string[] } = {
-      car: [
-        "Car Rentals",
-        "Car Wash",
-        "Car Repair",
-        "Car Sales",
-        "Car Accessories",
-      ],
-      bike: ["Bike Rentals", "Bike Sales", "Bike Repair"],
-      luxury: ["Luxury Cars", "Luxury Rentals"],
-    };
+    const res = await fetch(
+      `${BASE_URL}/vehicle/search?search=${encodeURIComponent(search)}`,
+    );
 
-    // Filter results matching the search input (case-insensitive)
-    const results = Object.entries(mockData)
-      .filter(([key]) => key.toLowerCase().includes(search.toLowerCase()))
-      .flatMap(([, values]) => values)
-      .slice(0, 6); // Return only 5-6 results for now
+    if (!res.ok) {
+      throw new Error(`Failed to fetch search results`);
+    }
 
-    // Simulate network latency
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    return results;
+    const data: FetchSearchResultsResponse = await res.json();
+    return data;
   } catch (error) {
     console.error("Error in fetchSearchResults:", error);
-    return [];
+    return undefined;
   }
 };
 
@@ -234,9 +221,7 @@ export const fetchStates = async (): Promise<
   FetchStatesResponse | undefined
 > => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
-    const res = await fetch(`${baseUrl}/states/list`, {
+    const res = await fetch(`${BASE_URL}/states/list`, {
       method: "GET",
     });
 
@@ -258,9 +243,7 @@ export const fetchAllCities = async (
   stateId: string,
 ): Promise<FetchCitiesResponse> => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
-    const response = await fetch(`${baseUrl}/city/list?stateId=${stateId}`);
+    const response = await fetch(`${BASE_URL}/city/list?stateId=${stateId}`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch cities");
@@ -279,10 +262,8 @@ export const fetchCategories = async (): Promise<
   FetchCategoriesResponse | undefined
 > => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
     const response = await fetch(
-      `${baseUrl}/vehicle-category/list?limit=15&page=1`,
+      `${BASE_URL}/vehicle-category/list?limit=15&page=1`,
       {
         method: "GET",
       },
@@ -305,9 +286,7 @@ export const fetchQuickLinksByValue = async (
   stateValue: string,
 ): Promise<FetchLinksResponse | undefined> => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
-    const apiUrl = `${baseUrl}/links/list?page=1&limit=20&sortOrder=ASC&stateValue=${stateValue}`;
+    const apiUrl = `${BASE_URL}/links/list?page=1&limit=20&sortOrder=ASC&stateValue=${stateValue}`;
 
     const response = await fetch(apiUrl, {
       method: "GET",
@@ -337,10 +316,8 @@ export const fetchVehicleBrandsByValue = async (
   searchTerm: string,
 ): Promise<FetchBrandsResponse | undefined> => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
     // generating api URL
-    const apiUrl = `${baseUrl}/vehicle-brand/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategory}&search=${searchTerm}`;
+    const apiUrl = `${BASE_URL}/vehicle-brand/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategory}&search=${searchTerm}`;
 
     const response = await fetch(apiUrl, {
       method: "GET",

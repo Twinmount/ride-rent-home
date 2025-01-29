@@ -278,3 +278,18 @@ export interface FetchCompanyDetailsResponse {
   status: string;
   statusCode: number;
 }
+
+type SearchItem = {
+  title: string;
+  code: string;
+  _id: string;
+};
+
+export interface FetchSearchResultsResponse {
+  status: string;
+  result: {
+    vehicleSeries: SearchItem[];
+    vehicle: SearchItem[];
+  };
+  statusCode: number;
+}

@@ -17,35 +17,20 @@ export const fetchVehicleSeriesData = async ({
   state,
   vehicleSeries,
 }: Props) => {
-  // const params = new URLSearchParams({
-  //   page: page.toString(),
-  //   limit: "8",
-  //   state,
-  //   vehicleSeries,
-  //   sortOrder: "DESC",
-  // });
-
-  // // Construct the full URL
-  // const url = `${API_URL}/vehicle/vehicle-series/list?${params.toString()}`;
-
-  const requestBody = {
+  const params = new URLSearchParams({
     page: page.toString(),
     limit: "8",
-    state: "dubai",
-    category: "cars",
+    state,
+    vehicleSeries,
     sortOrder: "DESC",
-  };
+  });
 
   // Construct the full URL
-  // const url = `${API_URL}/vehicle/vehicle-series/list?${params.toString()}`;
-  const url = `${API_URL}/vehicle/filter`;
+  const url = `${API_URL}/vehicle/vehicle-series/list?${params.toString()}`;
 
   const response = await fetch(`${url}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
+    method: "GET",
+    cache: "no-cache",
   });
 
   const data: FetchVehicleCardsResponse = await response.json();
