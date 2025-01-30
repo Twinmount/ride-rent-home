@@ -54,9 +54,9 @@ export default function VehicleTypesCarousel() {
     } else {
       updateUrlType(typeValue);
     }
-    // if (typeof window !== "undefined") {
-    //   window.scrollTo({ top: 300, behavior: "smooth" });
-    // }
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 300, behavior: "smooth" });
+    }
   };
 
   if (isLoading) return <VehicleTypesCarouselSkelton />;
