@@ -12,7 +12,7 @@ import { fetchCategories } from "@/lib/next-api/next-api";
 import { CategoryType } from "@/types";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { notFound, useParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { sortCategories } from "@/helpers";
 
@@ -44,8 +44,8 @@ export default function CategoryDropdown() {
       if (foundCategory) {
         setSelectedCategory(foundCategory);
       } else {
-        // If the category is not found, render the notFound page
-        notFound(); // This will trigger the 404 page
+        // If the category is not found, throw new error
+        throw new Error("Category not found");
       }
     }
   }, [category, categories, state, router, isLoading]);
@@ -53,21 +53,21 @@ export default function CategoryDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center !rounded-xl border-none outline-none">
-        <MdManageSearch className="text-orange mr-1 text-lg " width={20} />
+        <MdManageSearch className="mr-1 text-lg text-orange" width={20} />
         <span className="font-semibold">
           {selectedCategory ? selectedCategory.name : "Select Category"}
         </span>
         <ChevronDown className="text-yellow" width={20} />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="!w-32 flex flex-col p-1 shadow-md bg-white  !rounded-xl  gap-1">
+      <DropdownMenuContent className="flex !w-32 flex-col gap-1 !rounded-xl bg-white p-1 shadow-md">
         {categories.map((cat) => (
           <DropdownMenuItem asChild key={cat.categoryId}>
             <Link
               href={`/${state}/${cat.value}`}
-              className="cursor-pointer p-1 px-2 !rounded-xl flex items-center gap-x-1 hover:text-orange"
+              className="flex cursor-pointer items-center gap-x-1 !rounded-xl p-1 px-2 hover:text-orange"
             >
               <span
-                className={`!text-sm whitespace-nowrap hover:text-orange ${
+                className={`whitespace-nowrap !text-sm hover:text-orange ${
                   cat.value === selectedCategory?.value ? "text-orange" : ""
                 }`}
               >

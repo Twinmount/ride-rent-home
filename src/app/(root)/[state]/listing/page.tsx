@@ -12,7 +12,6 @@ import {
   fetchListingMetadata,
   generateListingMetadata,
 } from "./listing-metadata";
-import { notFound } from "next/navigation";
 
 export async function generateMetadata({
   params: { state },
@@ -27,7 +26,7 @@ export async function generateMetadata({
   const data = await fetchListingMetadata(state, category, vehicleType);
 
   if (!data) {
-    return notFound();
+    throw new Error("Failed to fetch listing metadata");
   }
 
   return generateListingMetadata(data, state, category, vehicleType);
