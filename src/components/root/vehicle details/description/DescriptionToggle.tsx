@@ -20,7 +20,7 @@ const DescriptionToggle = ({ isExpanded }: { isExpanded: boolean }) => {
   return (
     <label
       htmlFor="toggle-description"
-      className="bg-orange p-1 rounded-2xl text-white mb-2 px-4 shadow-sm hover:shadow-lg transition-transform ease-in-out cursor-pointer flex items-center gap-x-2"
+      className="mb-2 flex cursor-pointer items-center gap-x-2 rounded-2xl bg-orange p-1 px-4 text-white shadow-sm transition-transform ease-in-out hover:shadow-lg"
       onClick={handleToggle}
     >
       {expanded ? "Show Less" : "Show More"}
