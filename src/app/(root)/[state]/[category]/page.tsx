@@ -30,7 +30,7 @@ export async function generateMetadata({
   const data = await fetchHomepageMetadata(state);
 
   if (!data) {
-    return notFound();
+    throw new Error("Failed to fetch homepage metadata");
   }
 
   return generateHomePageMetadata(data, state, category);

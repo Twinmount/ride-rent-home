@@ -11,7 +11,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { useQuery } from "@tanstack/react-query";
 import { StateType } from "@/types";
 import { useEffect, useState } from "react";
-import { notFound, useParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { capitalizeFirstLetter, rearrangeStates } from "@/helpers";
 import { useMemo } from "react";
@@ -46,8 +46,8 @@ export default function StatesDropdown() {
       if (foundState) {
         setSelectedState(foundState);
       } else {
-        // If the state is not found, render the notFound page
-        notFound(); // This will trigger the 404 page
+        // If the state is not found, throw error
+        throw new Error("State not found");
       }
     }
   }, [state, states, router, selectedCategory, isLoading]);

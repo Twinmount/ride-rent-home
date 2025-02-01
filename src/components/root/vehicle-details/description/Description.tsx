@@ -1,4 +1,5 @@
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import styles from "./Description.module.scss";
 import DescriptionToggle from "./DescriptionToggle";
 
 const Description = ({ description }: { description: string }) => {
@@ -6,26 +7,29 @@ const Description = ({ description }: { description: string }) => {
     return null;
   }
 
-  const formattedDescription = description.replace(/\n/g, "<br>");
-
   return (
-    <MotionDiv className="relative mx-auto my-4 mb-8 h-auto w-full overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 pb-12 shadow-sm md:w-[95%]">
-      <h2 className="custom-heading mb-8 text-gray-900">Description</h2>
+    <MotionDiv className={styles["description-section"]}>
+      <h2 className="custom-heading">Description</h2>
+
       {/* Hidden checkbox for toggling */}
       <input
         type="checkbox"
         id="toggle-description"
-        className="hidden"
+        className={styles["toggle-checkbox"]}
         aria-hidden="true"
       />
-      <div
-        className="max-h-60 overflow-hidden whitespace-pre-wrap break-words transition-[max-height] duration-300 ease-in-out"
-        id="description-content"
-      >
-        <div dangerouslySetInnerHTML={{ __html: formattedDescription }}></div>
+
+      {/* Render the description content */}
+      <div className={styles["description-content"]} id="description-content">
+        <div
+          dangerouslySetInnerHTML={{
+            __html: description, // Render HTML content
+          }}
+        ></div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 z-10 flex h-24 items-end justify-center bg-gradient-to-b from-transparent to-white pb-2">
+      {/* Gradient overlay and toggle button */}
+      <div className={styles.overlay}>
         <DescriptionToggle isExpanded={false} />
       </div>
     </MotionDiv>

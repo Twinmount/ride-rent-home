@@ -9,7 +9,7 @@ type MetaDataResponse = {
 };
 
 export async function fetchHomepageMetadata(
-  state: string
+  state: string,
 ): Promise<MetaDataResponse | null> {
   const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
@@ -18,7 +18,7 @@ export async function fetchHomepageMetadata(
       `${baseUrl}/metadata/homepage?state=${state}`,
       {
         method: "GET",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -35,10 +35,10 @@ export async function fetchHomepageMetadata(
 export function generateHomePageMetadata(
   data: MetaDataResponse,
   state: string,
-  category: string
+  category: string,
 ): Metadata {
   if (!data?.result) {
-    notFound();
+    throw new Error("Failed to fetch homepage metadata");
   }
 
   const canonicalUrl = `https://ride.rent/${state}/${category}`;

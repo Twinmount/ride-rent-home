@@ -26,12 +26,9 @@ const RentalInfo: React.FC<RentalInfoProps> = ({
     .join(", ");
 
   return (
-    <p className="text-gray-600 w-full text-sm md:w-[85%]">
+    <p className="w-full text-sm text-gray-600 md:w-[85%]">
       Rent {modelName} model in {stateLabel}. Enjoy flexible rental terms with
-      no hidden fees.{" "}
-      {isCryptoAccepted
-        ? "Crypto payments are accepted."
-        : "Crypto payments are not accepted."}{" "}
+      no hidden fees.{isCryptoAccepted && " Crypto payments are accepted."}{" "}
       Available for {rentalPeriods} Rentals.
     </p>
   );
