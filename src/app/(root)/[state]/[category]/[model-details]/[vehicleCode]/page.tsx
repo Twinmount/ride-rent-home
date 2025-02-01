@@ -93,7 +93,7 @@ export default async function VehicleDetails({
 
   return (
     <section className="vehicle-details-section wrapper">
-      {/* Details heading */}
+      {/* heading and related details */}
       <MotionDiv className="heading-box">
         <h1 className="custom-heading model-name">
           {vehicle?.vehicleTitle || vehicle.modelName}

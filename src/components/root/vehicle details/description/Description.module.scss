@@ -1,0 +1,99 @@
+.description-section {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2);
+  height: auto;
+  margin: 1rem 0;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.description-section h2 {
+  color: rgb(29, 29, 29);
+  margin-bottom: 2rem;
+}
+
+/* Hidden checkbox */
+.toggle-checkbox {
+  display: none;
+}
+
+.description-content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap; /* Preserve whitespace and line breaks */
+  max-height: 15rem; /* Collapsed height */
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.toggle-checkbox:checked ~ .description-content {
+  max-height: none;
+  padding-bottom: 3rem;
+}
+
+/* Overlay for gradient fade */
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6rem;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 1));
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  padding-bottom: 0.5rem;
+}
+
+/* Tag-specific styles for this component only */
+.description-content h1,
+.description-content h2,
+.description-content h3,
+.description-content h4,
+.description-content h5,
+.description-content h6 {
+  margin-bottom: 1rem;
+}
+
+.description-content h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.description-content h2 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.description-content h3 {
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+
+.description-content p {
+  margin-bottom: 1rem;
+}
+
+.description-content ul,
+.description-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.description-content a {
+  color: blue;
+  text-decoration: underline;
+}
+
+/* Responsive Adjustments */
+@media (min-width: 1200px) {
+  .description-section {
+    max-width: 80%;
+  }
+}
