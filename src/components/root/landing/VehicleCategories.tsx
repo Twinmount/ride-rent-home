@@ -1,13 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
-import { fetchCategories } from "@/lib/api/general-api";
-import { useQuery } from "@tanstack/react-query";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 import { CategoryType } from "@/types";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { convertToLabel, sortCategories } from "@/helpers";
+import { convertToLabel } from "@/helpers";
 
 import {
   NavigationMenu,
@@ -19,30 +16,21 @@ import {
 } from "@/components/ui/navigation-menu";
 
 import Image from "next/image";
+import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
 
 export default function VehicleCategories() {
   const { state, category } = useStateAndCategory();
 
-  // Fetch categories using useQuery
-  const { data, isFetching } = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-  });
-
-  // Check if data is defined and then sort categories
-  const sortedCategories = useMemo(() => {
-    return data?.result?.list ? sortCategories(data.result.list) : [];
-  }, [data]);
-
-  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
+  const { sortedCategories, isCategoriesLoading, baseAssetsUrl } =
+    useFetchVehicleCategories();
 
   return (
     <NavigationMenu delayDuration={0}>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger
-            disabled={isFetching}
-            className={`flex-center h-12 gap-2 rounded-[0.5em] border px-3 py-1 text-sm font-semibold text-black hover:text-black ${isFetching ? "cursor-default text-gray-500" : "yellow-gradient hover:yellow-gradient"}`}
+            disabled={isCategoriesLoading}
+            className={`flex-center h-12 gap-2 rounded-[0.5em] border px-3 py-1 text-sm font-semibold text-black hover:text-black ${isCategoriesLoading ? "cursor-default text-gray-500" : "yellow-gradient hover:yellow-gradient"}`}
           >
             <Image
               src={`${baseAssetsUrl}/icons/vehicle-categories/${category}.png`}

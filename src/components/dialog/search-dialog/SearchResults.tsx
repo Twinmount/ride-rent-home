@@ -1,5 +1,10 @@
+"use client";
+
 import { FetchSearchResultsResponse } from "@/types";
-import Link from "next/link";
+import { useParams } from "next/navigation";
+import VehicleModelsSearchResult from "./VehicleModelsSearchResult";
+import VehiclesSeriesSearchResult from "./VehiclesSeriesSearchResult";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type SearchResultsProps = {
   debouncedSearch: string;
@@ -14,14 +19,26 @@ export function SearchResults({
   results,
   isLoading,
 }: SearchResultsProps) {
-  const vehicleSeries = results?.result.vehicleSeries || [];
+  // accessing state from the url params
+  const { state } = useParams<{ state: string }>();
+
+  const vehicleSeries =
+    results?.result.vehicleSeries ||
+    [
+      // {
+      //   _id: "afsdfas",
+      //   title: "asdfsad asdf a",
+      //   brand: " asdfa ",
+      //   code: " sadfs",
+      // },
+    ];
   const vehicles = results?.result.vehicle || [];
 
   // Show placeholder when no search input
   if (!debouncedSearch || !search) {
     return (
       <div className="text-center text-sm italic text-gray-500">
-        Search brand, model, or vehicle type
+        Search brand, model, or vehicle series
       </div>
     );
   }
@@ -41,44 +58,12 @@ export function SearchResults({
   }
 
   return (
-    <div className="mt-2 flex flex-col space-y-3">
+    <ScrollArea className="mt-2 flex h-fit max-h-full flex-col space-y-3">
       {/* Vehicle Series Results */}
-      {vehicleSeries.length > 0 && (
-        <div>
-          <h3 className="px-3 py-2 text-sm font-semibold text-gray-700">
-            Vehicle Series
-          </h3>
-          {vehicleSeries.map((item) => (
-            <Link
-              key={item._id}
-              href={""}
-              target="_blank"
-              className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200"
-            >
-              {item.title}
-            </Link>
-          ))}
-        </div>
-      )}
+      <VehiclesSeriesSearchResult vehicleSeries={vehicleSeries} state={state} />
 
       {/* Vehicles Results */}
-      {vehicles.length > 0 && (
-        <div>
-          <h3 className="px-3 py-2 text-sm font-semibold text-gray-700">
-            Vehicles
-          </h3>
-          {vehicles.map((item) => (
-            <Link
-              key={item._id}
-              href={""}
-              target="_blank"
-              className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200"
-            >
-              {item.title}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
+      <VehicleModelsSearchResult vehicles={vehicles} state={state} />
+    </ScrollArea>
   );
 }

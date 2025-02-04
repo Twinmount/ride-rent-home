@@ -279,17 +279,38 @@ export interface FetchCompanyDetailsResponse {
   statusCode: number;
 }
 
-type SearchItem = {
+export type VehicleSeriesSearchItems = {
   title: string;
   code: string;
   _id: string;
+  brand: string;
+};
+export type VehicleSearchItems = {
+  title: string;
+  code: string;
+  _id: string;
+  category: string;
 };
 
 export interface FetchSearchResultsResponse {
   status: string;
   result: {
-    vehicleSeries: SearchItem[];
-    vehicle: SearchItem[];
+    vehicleSeries: VehicleSeriesSearchItems[];
+    vehicle: VehicleSearchItems[];
+  };
+  statusCode: number;
+}
+
+export interface FetchVehicleSeriesInfo {
+  status: string;
+  result: {
+    vehicleSeriesId: string;
+    vehicleSeries: string;
+    vehicleSeriesMetaTitle: string;
+    vehicleSeriesMetaDescription: string;
+    vehicleSeriesPageHeading: string;
+    vehicleSeriesPageSubheading: string;
+    seriesCode: string;
   };
   statusCode: number;
 }

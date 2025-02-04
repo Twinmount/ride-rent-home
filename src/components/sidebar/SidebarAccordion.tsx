@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 import { fetchCategories, fetchQuickLinksByValue } from "@/lib/api/general-api";
 import { CategoryType, LinkType } from "@/types";
@@ -36,12 +37,7 @@ export function SidebarAccordion() {
 const CategoriesAccordion = () => {
   const { state, category } = useStateAndCategory();
 
-  const { data: categoryData, isLoading: isCategoryLoading } = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-  });
-
-  const categories: CategoryType[] = categoryData?.result?.list || [];
+  const { categories, isCategoriesLoading } = useFetchVehicleCategories();
 
   return (
     <AccordionItem value="item-1">
@@ -52,7 +48,7 @@ const CategoriesAccordion = () => {
         </div>
       </AccordionTrigger>
       <AccordionContent className="flex flex-col gap-y-1 rounded-xl bg-slate-100 p-1 pl-2">
-        {isCategoryLoading ? (
+        {isCategoriesLoading ? (
           <div>Loading...</div>
         ) : categories.length > 0 ? (
           categories.map((cat) => (

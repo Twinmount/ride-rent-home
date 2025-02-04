@@ -316,6 +316,7 @@ export const generateCompanyProfilePageLink = (
   companyId: string,
 ): string => {
   const formattedCompanyName = formatToUrlFriendly(companyName);
+
   return `/profile/${formattedCompanyName}/${companyId}`;
 };
 
@@ -453,7 +454,9 @@ export const debounce = <T extends any[]>(
  * @param {string} input - String to capitalize
  * @returns {string} Capitalized string
  */
-/******  0150f7f5-2c9b-44ba-8f86-bcbf9330e37e  *******/export function capitalizeFirstLetter(input: string): string {
+/******  0150f7f5-2c9b-44ba-8f86-bcbf9330e37e  *******/ export function capitalizeFirstLetter(
+  input: string,
+): string {
   if (!input) return ""; // Handle empty or undefined input
   return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
 }

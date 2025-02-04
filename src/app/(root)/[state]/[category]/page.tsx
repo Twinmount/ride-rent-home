@@ -4,7 +4,7 @@ import SectionLoading from "@/components/skelton/section-loading/SectionLoading"
 import Documents from "@/components/root/landing/documents/Documents";
 import RideRentFeatures from "@/components/root/landing/features/Features";
 import Locations from "@/components/common/locations/Locations";
-import States from "@/components/root/landing/States";
+import States from "@/components/root/landing/states/States";
 import MainGrid from "@/components/root/landing/MainGrid";
 import Recommended from "@/components/root/landing/Recommended";
 import TopBrands from "@/components/root/landing/TopBrands";
@@ -15,7 +15,6 @@ import {
   fetchHomepageMetadata,
   generateHomePageMetadata,
 } from "./landing-metadata";
-import { notFound } from "next/navigation";
 import BrandsCarouselSkeleton from "@/components/skelton/BrandsCarouselSkeleton";
 import NewlyArrived from "@/components/root/landing/NewlyArrived";
 import VehicleCategoryAndFilter from "@/components/root/landing/VehicleCategoryAndFilter";

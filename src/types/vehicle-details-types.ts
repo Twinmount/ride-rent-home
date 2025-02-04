@@ -76,6 +76,7 @@ export type Company = {
   companySpecs: CompanySpecs;
   contactDetails: ContactDetails | null;
 };
+
 export type AdditionalVehicleTypes = {
   typeId: string;
   name: string;

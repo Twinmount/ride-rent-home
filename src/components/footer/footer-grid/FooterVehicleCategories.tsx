@@ -1,31 +1,20 @@
 "use client";
 
-import { sortCategories } from "@/helpers";
-import { fetchCategories } from "@/lib/api/general-api";
-import { useQuery } from "@tanstack/react-query";
+import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
 import Link from "next/link";
-import { useMemo } from "react";
 
 export default function FooterVehicleCategories() {
-  // Fetch categories using useQuery
-  const { data, isLoading } = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-  });
+  const { sortedCategories: categories, isCategoriesLoading } =
+    useFetchVehicleCategories();
 
-  // Check if data is defined and then sort categories
-  const categories = useMemo(() => {
-    return data?.result?.list ? sortCategories(data.result.list) : [];
-  }, [data]);
-
-  if (!categories) return null;
+  if (categories.length === 0) return null;
 
   return (
     <div>
       {/* category  link */}
       <h3 className="mb-2 text-[1.1rem] text-yellow">Vehicle Categories</h3>
       <div className="flex flex-col gap-y-1 text-base font-light text-gray-400">
-        {isLoading ? (
+        {isCategoriesLoading ? (
           <div>Loading...</div>
         ) : (
           categories.map((category) => (

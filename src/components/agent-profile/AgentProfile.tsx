@@ -104,6 +104,7 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
           <p className="text-center text-sm font-extralight sm:text-left">
             {companyAddress || "Address Not Available"}
           </p>
+
           <div className="flex-center -ml-1 gap-x-3 text-center text-sm sm:text-left sm:text-base">
             {companyName && (
               <a

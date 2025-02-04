@@ -44,6 +44,7 @@ export function SearchDialog({
     queryKey: ["search", debouncedSearch],
     queryFn: () => fetchSearchResults(debouncedSearch),
     enabled: !!debouncedSearch,
+    staleTime: 0,
   });
 
   return (
@@ -77,7 +78,7 @@ export function SearchDialog({
         <DialogHeader className="sr-only">
           <DialogTitle className="sr-only">Search Vehicle</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col space-y-2">
+        <div className="flex h-auto max-h-[80vh] flex-col space-y-2">
           {/* Search Input */}
           <SearchInput search={search} setSearch={setSearch} />
 

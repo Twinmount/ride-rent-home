@@ -7,10 +7,10 @@ import {
 } from "@/components/ui/accordion";
 import FilterAccordionContent from "../accordion/FilterAccordionContent";
 import { CategoryType } from "@/types";
-import { useQuery } from "@tanstack/react-query";
-import { fetchCategories } from "@/lib/api/general-api";
+
 import { useEffect } from "react";
 import { FiltersType } from "@/hooks/useFilters";
+import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
 
 type CategoryAccordionProps = {
   handleFilterChange: (filterName: keyof FiltersType, value: string) => void;
@@ -22,30 +22,28 @@ export const CategoryAccordion = ({
   category,
 }: CategoryAccordionProps) => {
   // Fetch categories
-  const { data: categoriesData, isLoading: categoriesLoading } = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-  });
+
+  const { categories, isCategoriesLoading } = useFetchVehicleCategories();
 
   // Map categories to options
   const categoryOptions =
-    categoriesData?.result.list.map((category: CategoryType) => ({
+    categories.map((category: CategoryType) => ({
       label: category.name,
       value: category.value,
     })) || [];
 
   // Set default category as "cars" if none is selected
   useEffect(() => {
-    if (!category && categoriesData) {
+    if (!category && categories) {
       handleFilterChange("category", "cars");
     }
-  }, [categoriesData]);
+  }, [categories]);
 
   return (
     <AccordionItem value="vehicle-category">
       <AccordionTrigger>Vehicle Category</AccordionTrigger>
       <AccordionContent className="max-h-64 overflow-y-auto">
-        {categoriesLoading ? (
+        {isCategoriesLoading ? (
           <div>Loading categories...</div>
         ) : (
           <FilterAccordionContent
