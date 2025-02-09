@@ -25,6 +25,7 @@ import AddOnServices from "@/components/root/vehicle-details/AddOnServices";
 import Location from "@/components/root/vehicle-details/Location";
 import CurrentPageBreadcrumb from "@/components/root/vehicle-details/CurrentPageBreadcrumb";
 import { restoreVehicleCodeFormat } from ".";
+import { ENV } from "@/config/env";
 
 type ParamsProps = {
   params: { state: string; category: string; vehicleCode: string };
@@ -46,7 +47,7 @@ export async function generateMetadata({
 export default async function VehicleDetails({
   params: { state, category, vehicleCode },
 }: ParamsProps) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = ENV.API_URL;
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
 

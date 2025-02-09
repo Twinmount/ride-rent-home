@@ -2,9 +2,10 @@ import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { FetchStatesResponse } from "@/types"; // Import your types
 import { rearrangeStates } from "@/helpers";
 import StateCardList from "./StateCardList";
+import { ENV } from "@/config/env";
 
 export default async function States({ category }: { category: string }) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = ENV.API_URL;
 
   // Fetch the states data from the API
   const response = await fetch(`${baseUrl}/states/list`, {
@@ -27,10 +28,7 @@ export default async function States({ category }: { category: string }) {
         Find Vehicle Rental Offers In Other States
       </h2>
       <div className="mx-auto mb-[1.5rem] grid w-fit auto-rows-auto grid-cols-2 justify-items-center gap-[1.4rem] md:grid-cols-3 lg:grid-cols-4">
-        {/* Map through states and render each one */}
-        <div className="mx-auto mb-[1.5rem] grid w-fit auto-rows-auto grid-cols-2 justify-items-center gap-[1.4rem] md:grid-cols-3 lg:grid-cols-4">
-          <StateCardList states={states} category={category} />
-        </div>
+        <StateCardList states={states} category={category} />
       </div>
     </MotionSection>
   );

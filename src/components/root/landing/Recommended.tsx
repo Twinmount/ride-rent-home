@@ -1,6 +1,7 @@
 import PromotionCard from "@/components/card/vehicle-card/PromotionCard";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { ENV } from "@/config/env";
 import { FetchPromotionsResponse } from "@/types";
 
 export const revalidate = 900;
@@ -10,7 +11,7 @@ export default async function Recommended({
 }: {
   state: string | undefined;
 }) {
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
 
   // Fetch the vehicle data from the API
   const response = await fetch(

@@ -12,7 +12,7 @@ const PromotionCard = ({ promotionImage, promotionLink }: PromotionType) => {
             className="h-full w-full transform object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
           />
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
-            <span className="text-lg font-semibold text-white">Visidt</span>
+            <span className="text-lg font-semibold text-white">Visit</span>
           </div>
         </figure>
       </div>

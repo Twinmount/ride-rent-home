@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { fetchCategories } from "@/lib/api/general-api";
 import { useQuery } from "@tanstack/react-query";
 import { sortCategories } from "@/helpers";
+import { ENV } from "@/config/env";
 
 export function useFetchVehicleCategories() {
   // Fetch categories using react-query
@@ -19,7 +20,7 @@ export function useFetchVehicleCategories() {
     return data?.result?.list ? sortCategories(data.result.list) : [];
   }, [data]);
 
-  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
 
   const isCategoriesLoading = isFetching || isLoading;
 

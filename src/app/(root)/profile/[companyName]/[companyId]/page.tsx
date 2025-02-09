@@ -10,6 +10,7 @@ import {
   fetchCompanyDetails,
   generateCompanyMetadata,
 } from "./profile-metadata";
+import { ENV } from "@/config/env";
 
 type PropsType = {
   searchParams: { [key: string]: string | undefined };
@@ -33,7 +34,7 @@ export default async function AgentProfilePage({
   searchParams,
   params: { companyId },
 }: PropsType) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = ENV.API_URL;
 
   // Default filter category set to "car"
   const filter = searchParams.filter;

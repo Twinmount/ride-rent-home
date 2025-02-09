@@ -1,6 +1,7 @@
 import MainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { ENV } from "@/config/env";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 
 type RelatedResultsType = {
@@ -14,7 +15,7 @@ export default async function RelatedResults({
   category,
   vehicleCode,
 }: RelatedResultsType) {
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
   // Fetch brand data from your API endpoint
   const response = await fetch(`${baseUrl}/vehicle/filter`, {
     method: "POST",

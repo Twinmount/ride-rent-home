@@ -1,3 +1,4 @@
+import { ENV } from "@/config/env";
 import { formatKeyForIcon } from "@/helpers";
 import { VehicleCardType } from "@/types/vehicle-types";
 
@@ -7,8 +8,7 @@ type SpecsGridProps = {
 
 export default function SpecsGrid({ vehicle }: SpecsGridProps) {
   // Base URL for fetching icons
-  const baseAssetsUrl =
-    process.env.ASSETS_URL || process.env.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL;
 
   return (
     <div className="mb-1 flex w-full max-w-full flex-wrap gap-x-1 gap-y-2">

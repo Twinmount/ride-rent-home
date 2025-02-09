@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/sheet";
 import { FeatureType } from "@/types/vehicle-types";
 import { formatKeyForIcon } from "@/helpers";
+import { ENV } from "@/config/env";
 
 type FeaturesSidebarProps = {
   features: Record<string, FeatureType[]>;
@@ -16,7 +17,7 @@ type FeaturesSidebarProps = {
 
 export default function FeaturesSidebar({ features }: FeaturesSidebarProps) {
   // Base URL for fetching icons
-  const baseAssetsUrl = process.env.ASSETS_URL;
+  const baseAssetsUrl = ENV.ASSETS_URL;
 
   // Convert features object to an array for easier mapping
   const featureEntries = Object.entries(features);

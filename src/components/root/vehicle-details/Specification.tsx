@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import { formatKeyForIcon } from "@/helpers";
+import { ENV } from "@/config/env";
 
 // Types for specifications
 interface SpecificationItem {
@@ -24,7 +25,7 @@ type SpecificationsProps = {
 };
 
 // Base URL for fetching icons
-const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL || "";
+const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
 
 /**
  * Renders an individual specification item with tooltip, icon, and details.

@@ -1,6 +1,6 @@
 import Footer from "@/components/footer/Footer";
 import MobileNavbar from "@/components/navbar/MobileNavbar";
-import Navbar from "@/components/navbar/Navbar";
+import { Navbar } from "@/components/navbar/Navbar";
 import { NavbarProvider } from "@/context/NavbarContext";
 import { VehicleCardDialogProvider } from "@/context/VehicleCardDialogContext";
 import { NetworkWrapper } from "./NetworkWrapper";

@@ -17,6 +17,7 @@ import {
 
 import Image from "next/image";
 import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
+import { ENV } from "@/config/env";
 
 export default function VehicleCategories() {
   const { state, category } = useStateAndCategory();
@@ -88,7 +89,7 @@ function VehicleCategoryCard({
     }),
   };
 
-  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
 
   return (
     <motion.li

@@ -2,9 +2,10 @@ import { LinkType } from "@/types";
 import Link from "next/link";
 import { Link as LinkIcon } from "lucide-react";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import { ENV } from "@/config/env";
 
 export default async function RelatedLinks({ state }: { state: string }) {
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
 
   // generating api URL
   const apiUrl = `${baseUrl}/recomented-links/list?page=1&limit=10&sortOrder=ASC&stateValue=${state}`;

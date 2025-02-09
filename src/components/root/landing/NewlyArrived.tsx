@@ -2,6 +2,7 @@ import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMai
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import ViewAllButton from "@/components/common/ViewAllButton";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { ENV } from "@/config/env";
 import { convertToLabel } from "@/helpers";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
@@ -10,7 +11,7 @@ export default async function NewlyArrived({
   state,
   category,
 }: StateCategoryProps) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = ENV.API_URL;
 
   const params = new URLSearchParams({
     page: "1",

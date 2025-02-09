@@ -1,6 +1,7 @@
 import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
 import Image from "next/image";
 import { VehicleTypeType } from "@/types";
+import { ENV } from "@/config/env";
 
 export function VehicleTypeCard({
   type,
@@ -15,7 +16,7 @@ export function VehicleTypeCard({
   handleTypeClick: (typeValue: string) => void;
   currentType?: string | null;
 }) {
-  const baseAssetsUrl = process.env.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
 
   // Animation variants for categories
   const categoryVariants = {

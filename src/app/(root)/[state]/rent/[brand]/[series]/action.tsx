@@ -2,6 +2,7 @@
 
 import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
 import VehicleListingsGridWrapper from "@/components/common/VehicleListingsGridWrapper";
+import { ENV } from "@/config/env";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 
 type Props = {
@@ -10,7 +11,7 @@ type Props = {
   vehicleSeries: string;
 };
 
-const API_URL = process.env.API_URL;
+const API_URL = ENV.API_URL;
 
 export const fetchVehicleSeriesData = async ({
   page,

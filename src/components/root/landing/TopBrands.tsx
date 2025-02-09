@@ -5,6 +5,7 @@ import { BrandType, FetchTopBrandsResponse } from "@/types";
 import Link from "next/link";
 import { convertToLabel } from "@/helpers";
 import Image from "next/image";
+import { ENV } from "@/config/env";
 
 export const revalidate = 3600;
 
@@ -15,7 +16,7 @@ export default async function TopBrands({
   category: string | undefined;
   state: string | undefined;
 }) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = ENV.API_URL;
 
   const url = `${baseUrl}/vehicle-brand/top-brands?categoryValue=${category}`;
 
@@ -65,7 +66,7 @@ export function BrandCard({
   category: string;
   state: string;
 }) {
-  const baseAssetsUrl = process.env.ASSETS_URL;
+  const baseAssetsUrl = ENV.ASSETS_URL;
 
   return (
     <Link

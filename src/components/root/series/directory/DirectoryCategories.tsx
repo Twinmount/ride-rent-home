@@ -46,7 +46,7 @@ function VehicleCategoryCard({ cat }: { cat: CategoryType }) {
         key={cat.categoryId}
         className="flex h-full flex-col items-center justify-between"
       >
-        <div className="flex h-full w-full flex-col items-center justify-between rounded-[0.4rem] border">
+        <div className="flex h-full w-full flex-col items-center justify-between rounded-[0.6rem] border border-gray-300">
           <div
             className={`flex-center mx-auto mt-1 h-[60%] w-[60%] rounded-[0.4rem]`}
           >

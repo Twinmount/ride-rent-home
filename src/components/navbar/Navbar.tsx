@@ -13,7 +13,7 @@ import MobileSidebar from "../sidebar/MobileSidebar";
 import useIsHomePage from "@/hooks/useIsHomePage";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
 
-const Navbar = () => {
+export const Navbar = () => {
   const { isHidden, setIsHidden } = useNavbar();
   const params = useParams<{ state: string; category: string }>();
 
@@ -37,15 +37,7 @@ const Navbar = () => {
   const isHomePage = useIsHomePage();
 
   return (
-    <motion.header
-      variants={{
-        visible: { y: 0 },
-        hidden: { y: "-100%" },
-      }}
-      animate={isHidden ? "hidden" : "visible"}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={`global__padding fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-lightGray transition-all duration-200 ease-in-out`}
-    >
+    <NavbarWrapper isHidden={isHidden}>
       <nav className={`flex-between w-full`}>
         <div className="flex w-fit items-center justify-center">
           <div className="w-fit p-0">
@@ -111,8 +103,32 @@ const Navbar = () => {
           </ul>
         </div>
       </nav>
-    </motion.header>
+    </NavbarWrapper>
   );
 };
 
-export default Navbar;
+/**
+ * NavbarWrapper component with motion effects based on the isHidden state.
+ *
+ */
+const NavbarWrapper = ({
+  children,
+  isHidden,
+}: {
+  children: React.ReactNode;
+  isHidden: boolean;
+}) => {
+  return (
+    <motion.header
+      variants={{
+        visible: { y: 0 },
+        hidden: { y: "-100%" },
+      }}
+      animate={isHidden ? "hidden" : "visible"}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className={`global__padding fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-lightGray transition-all duration-200 ease-in-out`}
+    >
+      {children}
+    </motion.header>
+  );
+};

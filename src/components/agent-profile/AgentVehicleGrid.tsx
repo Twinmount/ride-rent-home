@@ -2,6 +2,7 @@ import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 import MainCard from "../card/vehicle-card/main-card/VehicleMainCard";
 import { Suspense } from "react";
 import Pagination from "../common/Pagination";
+import { ENV } from "@/config/env";
 
 type Props = {
   filter: string;
@@ -16,7 +17,7 @@ export default async function AgentVehicleGrid({
   page,
   companyId,
 }: Props) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = ENV.API_URL;
 
   const params = new URLSearchParams({
     page: page.toString(),

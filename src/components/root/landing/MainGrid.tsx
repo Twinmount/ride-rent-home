@@ -4,13 +4,14 @@ import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 import PriceEnquireDialog from "./dialog/PriceEnquireDialog";
+import { ENV } from "@/config/env";
 
 type MainGridProps = StateCategoryProps & {
   vehicleType: string | undefined;
 };
 
 const MainGrid = async ({ state, category, vehicleType }: MainGridProps) => {
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
 
   const params = new URLSearchParams({
     page: "1",

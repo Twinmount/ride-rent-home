@@ -1,3 +1,4 @@
+import { ENV } from "@/config/env";
 import { FetchVehicleSeriesInfo } from "@/types";
 
 type PropsType = {
@@ -5,7 +6,7 @@ type PropsType = {
 };
 
 export default async function VehicleSeriesHeading({ series }: PropsType) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = ENV.API_URL;
 
   const url = `${baseUrl}/vehicle-series/info?vehicleSeries=${series}`;
 
