@@ -314,3 +314,61 @@ export interface FetchVehicleSeriesInfo {
   };
   statusCode: number;
 }
+
+export interface CategoryDirectoryStatsResponse {
+  status: string;
+  result: {
+    brandsCount: number;
+    vehiclesCount: number;
+  };
+  statusCode: number;
+}
+
+// individual  type
+export interface DirectoryCategory {
+  name: string; // Sports Car
+  value: string; // sports-car
+  vehicleCount: number; // 123
+}
+
+// response for fetch all categories for directory
+export interface FetchCategoriesForDirectory {
+  status: string;
+  result: DirectoryCategory[]; // Array of categories
+  statusCode: number;
+}
+
+export type VehicleSeriesWithCount = {
+  vehicleSeries: string; //actual series label
+  vehicleCount: number; // number of vehicles under the series
+};
+
+export interface SeriesUnderBrandType {
+  brandLabel: string;
+  brandValue: string;
+  series: VehicleSeriesWithCount[]; // Array of series , at most 5 series, at least 1
+  count: number; // total count of the series under that state/brand
+}
+
+//  interface for the get-all-brands-with-series-sub-list API response
+export interface FetchBrandsWithSeriesResponse {
+  result: {
+    list: SeriesUnderBrandType[]; // Array of brands which has atleast 1 series in it.
+    page: string;
+    limit: string;
+    total: number;
+  };
+  status: string;
+  statusCode: number;
+}
+
+export interface FetchAllSeriesUnderBrandResponse {
+  result: {
+    list: VehicleSeriesWithCount[];
+    page: string;
+    limit: string;
+    total: number;
+  };
+  status: string;
+  statusCode: number;
+}

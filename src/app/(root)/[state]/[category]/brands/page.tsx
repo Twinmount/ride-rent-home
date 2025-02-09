@@ -1,11 +1,11 @@
 import { Suspense } from "react";
 import BrandSearch from "@/components/root/brand/BrandSearch";
 import { FetchBrandsResponse } from "@/types";
-import Link from "next/link";
 import Pagination from "@/components/common/Pagination";
 import { singularizeType } from "@/helpers";
 import BackButton from "@/components/common/BackButton";
 import { ENV } from "@/config/env";
+import BrandsList from "@/components/root/brand/BrandsList";
 
 type ParamsProps = {
   params: { state: string; category: string };
@@ -69,8 +69,6 @@ export default async function Brands({
   const brands = data?.result?.list || [];
   const totalPages = data?.result?.totalNumberOfPages || 1;
 
-  const baseAssetsUrl = ENV.ASSETS_URL;
-
   return (
     <section className="wrapper pb-8">
       <div>
@@ -88,37 +86,12 @@ export default async function Brands({
         </Suspense>
 
         {/* brands data */}
-        {brands.length > 0 ? (
-          <div className="!grid grid-cols-2 gap-2 gap-y-4 pb-20 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
-            {brands.map((data) => (
-              <Link
-                href={`/${state}/listing?category=${category}&brand=${data.brandValue}`}
-                key={data.id}
-                className="h-36 w-full min-w-32 rounded-xl border bg-white"
-              >
-                <div className="flex-center h-[6.5rem] w-auto p-2">
-                  <img
-                    src={`${baseAssetsUrl}/icons/brands/${category}/${data.brandValue}.png`}
-                    alt={data.brandName}
-                    className="h-full w-[95%] max-w-28 object-contain"
-                  />
-                </div>
-                <div className="max-w-full text-center text-sm font-semibold">
-                  {data.brandName}
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="flex-center my-32">
-            No Brands found&nbsp;
-            {search.length > 0 && (
-              <span>
-                for <span className="italic">&quot;{search}&quot;</span>
-              </span>
-            )}
-          </div>
-        )}
+        <BrandsList
+          brands={brands}
+          state={state}
+          category={category}
+          search={search}
+        />
       </div>
 
       <Suspense fallback={<div>Loading Pagination...</div>}>

@@ -3,7 +3,11 @@ import { CategoryType, FetchCategoriesResponse } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function DirectoryCategories() {
+export default async function DirectoryCategories({
+  state,
+}: {
+  state: string;
+}) {
   const API_URL = ENV.API_URL;
 
   // Fetch the states data from the API
@@ -25,7 +29,7 @@ export default async function DirectoryCategories() {
     <section>
       <ul className="flex flex-wrap items-center gap-4">
         {categories.map((cat) => (
-          <VehicleCategoryCard key={cat.categoryId} cat={cat} />
+          <VehicleCategoryCard key={cat.categoryId} cat={cat} state={state} />
         ))}
       </ul>
     </section>
@@ -33,7 +37,13 @@ export default async function DirectoryCategories() {
 }
 
 // individual vehicle type card
-function VehicleCategoryCard({ cat }: { cat: CategoryType }) {
+function VehicleCategoryCard({
+  cat,
+  state,
+}: {
+  cat: CategoryType;
+  state: string;
+}) {
   const baseAssetsUrl = ENV.ASSETS_URL;
 
   return (
@@ -42,9 +52,10 @@ function VehicleCategoryCard({ cat }: { cat: CategoryType }) {
       className={`flex aspect-square h-[7rem] w-[7rem] cursor-pointer flex-col justify-center gap-[0.2rem] overflow-hidden`}
     >
       <Link
-        href={`/${cat.value}`}
+        href={`/${state}/directory/${cat.value}`}
         key={cat.categoryId}
         className="flex h-full flex-col items-center justify-between"
+        target="_blank"
       >
         <div className="flex h-full w-full flex-col items-center justify-between rounded-[0.6rem] border border-gray-300">
           <div
