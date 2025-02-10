@@ -14,14 +14,12 @@ export default function AllSeriesList({
   return (
     <ul className="mt-3 grid grid-cols-1 gap-2 max-md:pl-8 md:grid-cols-2 lg:grid-cols-3">
       {list.map((series) => (
-        <li key={series.vehicleSeries}>
-          <SeriesListLink
-            key={series.vehicleSeries}
-            state={state}
-            brandValue={brand}
-            series={series}
-          />
-        </li>
+        <SeriesListLink
+          key={series.seriesName}
+          state={state}
+          brandValue={brand}
+          series={series}
+        />
       ))}
     </ul>
   );

@@ -20,41 +20,29 @@ export default async function BrandSeriesPage({
 }: PageProps) {
   const page = parseInt(searchParams.page || "1", 10);
 
-  // // Construct the full URL
-  // const url = `${ENV.API_URL}/vehicle/home-page/`;
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: "12",
+    sortOrder: "DESC",
+    brand: brand,
+    state: state,
+  }).toString();
 
-  // // Fetch data using the generated URL
-  // const response = await fetch(url, {
-  //   method: "GET",
-  //   cache: "no-cache",
-  // });
+  // Construct the full URL
+  const url = `${ENV.API_URL}/vehicle-series/brands/list?${params}`;
 
-  // // Parse the JSON response
-  // const data: FetchAllSeriesUnderBrandResponse = await response.json();
+  // Fetch data using the generated URL
+  const response = await fetch(url, {
+    method: "GET",
+    cache: "no-cache",
+  });
 
-  const result = {
-    list: [
-      { vehicleSeries: "Yaris 2022", vehicleCount: 12 },
-      { vehicleSeries: "Yaris 2023", vehicleCount: 8 },
-      { vehicleSeries: "Corolla 2024", vehicleCount: 15 },
-      { vehicleSeries: "Yaris 2022", vehicleCount: 12 },
-      { vehicleSeries: "Yaris 2023", vehicleCount: 8 },
-      { vehicleSeries: "Corolla 2024", vehicleCount: 15 },
-      { vehicleSeries: "Yaris 2022", vehicleCount: 12 },
-      { vehicleSeries: "Yaris 2023", vehicleCount: 8 },
-      { vehicleSeries: "Corolla 2024", vehicleCount: 15 },
-      { vehicleSeries: "Yaris 2022", vehicleCount: 12 },
-      { vehicleSeries: "Yaris 2023", vehicleCount: 8 },
-      { vehicleSeries: "Corolla 2024", vehicleCount: 15 },
-    ],
-    page: "1",
-    limit: "10",
-    total: 3,
-  };
+  // Parse the JSON response
+  const data: FetchAllSeriesUnderBrandResponse = await response.json();
 
-  const totalPages = result.total || 1;
+  const totalPages = data?.result?.totalNumberOfPages || 1;
 
-  const list = result.list || [];
+  const list = data?.result?.list || [];
 
   return (
     <div className="wrapper h-auto min-h-screen pt-6">

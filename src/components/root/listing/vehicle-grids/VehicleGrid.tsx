@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import ListingSkelton from "@/components/skelton/ListingsSkelton";
+import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import NoResultsFound from "./NoResultsFound";
 import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
 import PriceEnquireDialog from "../../landing/dialog/PriceEnquireDialog";
@@ -51,7 +51,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   return (
     <div className="flex w-full flex-col">
       {isLoading ? (
-        <ListingSkelton />
+        <AnimatedSkelton />
       ) : (
         <>
           <div className={`w-full`}>

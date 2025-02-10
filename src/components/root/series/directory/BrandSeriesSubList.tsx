@@ -19,9 +19,9 @@ export default function BrandSeriesSubList({
   return (
     <ul className="mt-5 flex w-full flex-col gap-y-2 pl-2">
       {/* mapping over series array and rendering link for each series which redirects to series page /[state]/rent/[brand]/[series] */}
-      {brand.series.map((series) => (
+      {brand.vehicleSeries.map((series) => (
         <SeriesListLink
-          key={series.vehicleSeries}
+          key={series.seriesName}
           state={state}
           brandValue={brand.brandValue}
           series={series}
@@ -29,16 +29,17 @@ export default function BrandSeriesSubList({
       ))}
 
       {/* show view all only if the count is more than 5 */}
-      {brand.count > 3 && (
-        <Link
-          href={`/${state}/directory/${category}/${brand.brandValue}/list`}
-          className="flex-center ml-auto w-fit gap-2 rounded-[0.3rem] bg-green-200 px-2 transition-colors hover:text-yellow"
-          target="_blank"
-        >
-          View All
-          <FaExternalLinkAlt className="relative bottom-[2px] w-3" />
-        </Link>
-      )}
+      {brand.seriesCount > 3 ||
+        (true && (
+          <Link
+            href={`/${state}/directory/${category}/${brand.brandValue}/list`}
+            className="flex-center ml-auto mt-3 w-fit gap-2 rounded-xl border border-slate-800 px-3 py-1 text-sm transition-colors hover:bg-slate-700 hover:text-white"
+            target="_blank"
+          >
+            View All
+            <FaExternalLinkAlt className="relative bottom-[2px] w-3" />
+          </Link>
+        ))}
     </ul>
   );
 }

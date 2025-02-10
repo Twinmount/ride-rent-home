@@ -12,20 +12,20 @@ export default function SeriesListLink({
   series,
 }: SeriesListLinkProps) {
   return (
-    <Link
-      href={`/${state}/rent/${brandValue}/${series.vehicleSeries}`}
-      key={series.vehicleSeries}
-      className="group flex w-fit items-center gap-1 text-base font-semibold text-gray-700 transition-all hover:translate-x-2 hover:text-yellow"
-      target="_blank"
-    >
-      &sdot;{" "}
-      <span className="hover:text-yellow-500 line-clamp-1 w-fit cursor-pointer duration-300 ease-out hover:text-yellow hover:underline">
-        {series.vehicleSeries}
-      </span>
-      &nbsp;{" "}
-      <span className="font-light">
-        &#40;{series.vehicleCount} Vehicles&#41;
-      </span>
-    </Link>
+    <li>
+      <Link
+        href={`/${state}/rent/${brandValue}/${series.seriesName}`}
+        key={series.seriesName}
+        className="g group flex w-fit items-center text-base font-semibold text-gray-700 transition-all hover:translate-x-2 hover:text-yellow"
+        target="_blank"
+      >
+        &sdot;&nbsp;
+        <span className="hover:text-yellow-500 line-clamp-1 w-fit cursor-pointer duration-300 ease-out hover:text-yellow hover:underline">
+          {series.seriesName}
+        </span>
+        &nbsp;{" "}
+        <span className="font-light">&#40;{series.vehicleCount}&#41;</span>
+      </Link>
+    </li>
   );
 }

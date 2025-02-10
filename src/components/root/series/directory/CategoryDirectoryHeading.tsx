@@ -26,19 +26,16 @@ export default async function CategoryDirectoryHeading({
   // const count = data?.result || {};
 
   // const hasCount = count?.vehiclesCount && count?.brandsCount;
-  const hasCount = false;
 
   return (
-    <>
+    <div className="mb-8">
       <h1 className="md:text3xl mb-2 text-2xl font-semibold lg:text-4xl">
         {convertToLabel(category)} for rent in {convertToLabel(state)}
       </h1>
-      {/* {hasCount && (
-        <h2 className="mb-4 text-lg md:text-xl">
-          {count.vehiclesCount} vehicles are available to choose from{" "}
-          {count.brandsCount} brands
-        </h2>
-      )} */}
-    </>
+
+      <h2 className="mb-4 text-lg md:text-xl">
+        {123} vehicles are available to choose from {123} brands
+      </h2>
+    </div>
   );
 }

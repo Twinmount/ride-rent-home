@@ -339,15 +339,15 @@ export interface FetchCategoriesForDirectory {
 }
 
 export type VehicleSeriesWithCount = {
-  vehicleSeries: string; //actual series label
+  seriesName: string; //actual series label
   vehicleCount: number; // number of vehicles under the series
 };
 
 export interface SeriesUnderBrandType {
-  brandLabel: string;
+  brandName: string;
   brandValue: string;
-  series: VehicleSeriesWithCount[]; // Array of series , at most 5 series, at least 1
-  count: number; // total count of the series under that state/brand
+  vehicleSeries: VehicleSeriesWithCount[]; // Array of series , at most 5 series, at least 1
+  seriesCount: number; // total count of the series under that state/brand
 }
 
 //  interface for the get-all-brands-with-series-sub-list API response
@@ -357,6 +357,7 @@ export interface FetchBrandsWithSeriesResponse {
     page: string;
     limit: string;
     total: number;
+    totalNumberOfPages: number;
   };
   status: string;
   statusCode: number;
@@ -368,6 +369,7 @@ export interface FetchAllSeriesUnderBrandResponse {
     page: string;
     limit: string;
     total: number;
+    totalNumberOfPages: number;
   };
   status: string;
   statusCode: number;

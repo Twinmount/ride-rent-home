@@ -132,13 +132,13 @@ body {
 }
 
 .global__padding {
-  padding-left: 1rem !important;
-  padding-right: 1rem !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
 
   // Small screens (sm)
   @media (min-width: 576px) {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: 1.8rem;
+    padding-right: 1.8rem;
   }
 
   // Medium screens (md)
