@@ -10,11 +10,11 @@
   bottom: 0.5rem;
   z-index: 50;
   gap: 0.7rem;
-  width: 98%;
+  width: 96%;
   max-width: 40rem;
   padding: 0.5rem 0.8rem;
-  background-color: #f2f7f6;
-  border-radius: 1rem;
+  background-color: white;
+  border-radius: 0.75rem;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
   height: 10.5rem;
   min-height: 10.5rem;
@@ -27,8 +27,8 @@
   // expanded height
   &.expanded-view {
     height: 22rem; // Let the content determine the height
-
     max-height: 100vh; // Limit the maximum height
+    z-index: 50;
 
     .top-heading {
       .expand {

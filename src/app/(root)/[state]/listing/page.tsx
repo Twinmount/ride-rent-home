@@ -7,9 +7,9 @@ import {
   fetchListingMetadata,
   generateListingMetadata,
 } from "./listing-metadata";
-import { notFound } from "next/navigation";
 
 import { FilterSidebar } from "@/components/root/listing/filter/FilterSidebar";
+import PriceFilterTag from "@/components/root/listing/PriceFilterTag";
 
 export async function generateMetadata({
   params: { state },
@@ -44,9 +44,9 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
     : [];
 
   return (
-    <div className="wrapper bg-lightGray pb-8 pt-4">
+    <div className="wrapper h-auto min-h-screen bg-lightGray pb-8 pt-4">
       <div className="flex-between mb-6 h-fit w-full pr-[5%] max-md:flex-col">
-        <h1 className="ml-8 break-words text-2xl font-normal max-md:mr-auto">
+        <h1 className="ml-2 break-words text-2xl font-normal max-md:mr-auto lg:text-3xl">
           Rent or Lease&nbsp;
           {formattedBrand && (
             <span className="font-semibold">{formattedBrand}&nbsp;</span>
@@ -61,7 +61,10 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
         <FilterSidebar />
       </div>
 
-      <div className="mt-2 flex gap-8">
+      {/* New Price Filter Tag */}
+      <PriceFilterTag />
+
+      <div className="mt-3 flex gap-8">
         {/* vehicle grid */}
         <VehicleGrid state={state} />
       </div>

@@ -5,6 +5,7 @@ import {
   FetchCategoriesResponse,
   FetchCitiesResponse,
   FetchLinksResponse,
+  FetchPriceRangeResponse,
   FetchSearchResultsResponse,
   FetchStatesResponse,
   FetchTypesResponse,
@@ -41,6 +42,21 @@ export const FetchVehicleByFilters = async (
     category: getParamValue("category") || "cars",
     state: getParamValue("state", state),
   };
+
+  // Extract price and selectedPeriod from URL params
+  const priceParam = getParamValue("price"); // Example: "45-250"
+  const selectedPeriod = getParamValue("period", "hour"); // Default to "hour"
+
+  // Only add priceRange if both price and period are available
+  if (priceParam && selectedPeriod) {
+    const [minPrice, maxPrice] = priceParam.split("-");
+    payload.priceRange = {
+      [selectedPeriod]: {
+        min: minPrice || "",
+        max: maxPrice || "",
+      },
+    };
+  }
 
   // Add optional fields only if they are non-empty
   const optionalFields = {
@@ -167,30 +183,30 @@ export const fetchVehicleTypesByValue = async (
   }
 };
 
-type FetchPriceRangeResponse = {
-  hour: { min: number; max: number };
-  day: { min: number; max: number };
-  week: { min: number; max: number };
-  month: { min: number; max: number };
-};
-
-// fetchPriceRange function to mimic API response with all periods
-export const fetchPriceRange = async (): Promise<
-  FetchPriceRangeResponse | undefined
-> => {
+// fetchPriceRange function to get the price range for all hour-day-week-month time period
+export const fetchPriceRange = async ({
+  state,
+  category,
+}: {
+  state: string;
+  category: string;
+}): Promise<FetchPriceRangeResponse | undefined> => {
   try {
-    // Mock data for price ranges by period
-    const mockResponse = {
-      hour: { min: 10, max: 900 },
-      day: { min: 50, max: 5000 },
-      week: { min: 300, max: 20000 },
-      month: { min: 1000, max: 100000 },
-    };
+    // generating api URL
+    const apiUrl = `${BASE_URL}/vehicle/price-range?state=${state}&category=${category}`;
 
-    // Simulating network latency
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    const response = await fetch(apiUrl);
 
-    return mockResponse;
+    // Check if the response is OK
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch  price range. Status: ${response.status}`,
+      );
+    }
+
+    const data = await response.json();
+
+    return data;
   } catch (error) {
     console.error("Error in fetchPriceRange:", error);
     return undefined;

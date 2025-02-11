@@ -5,9 +5,9 @@ import { useSearchParams } from "next/navigation";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import NoResultsFound from "./NoResultsFound";
 import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
-import PriceEnquireDialog from "../../landing/dialog/PriceEnquireDialog";
+import PriceEnquireDialog from "../../../dialog/price-filter-dialog/PriceEnquireDialog";
 import { useInView } from "react-intersection-observer";
-import { useFetchVehicles } from "@/hooks/useFetchListingVehicles";
+import { useFetchListingVehicles } from "@/hooks/useFetchListingVehicles";
 import LoadingWheel from "@/components/common/LoadingWheel";
 import VehicleListingsGridWrapper from "@/components/common/VehicleListingsGridWrapper";
 
@@ -28,7 +28,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
 
   // Fetch data using custom hook utilizing useInfiniteQuery
   const { vehicles, fetchNextPage, hasNextPage, isFetching, isLoading } =
-    useFetchVehicles({
+    useFetchListingVehicles({
       searchParams: searchParams.toString(),
       state,
       limit,

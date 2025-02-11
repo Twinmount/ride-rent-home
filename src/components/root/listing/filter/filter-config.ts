@@ -24,7 +24,7 @@ export const filterConfigs: FilterConfig[] = [
       value: year.toString(),
     })),
     field: "modelYear",
-    isMultipleChoice: true,
+    isMultipleChoice: false,
   },
   {
     key: "seats",

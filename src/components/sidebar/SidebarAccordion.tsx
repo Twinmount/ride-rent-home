@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/accordion";
 import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
-import { fetchCategories, fetchQuickLinksByValue } from "@/lib/api/general-api";
-import { CategoryType, LinkType } from "@/types";
+import { fetchQuickLinksByValue } from "@/lib/api/general-api";
+import { LinkType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { FaLink } from "react-icons/fa6";

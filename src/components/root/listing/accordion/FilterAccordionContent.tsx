@@ -11,6 +11,7 @@ type FilterAccordionContentProps = {
   selected: string[] | string;
   onChange: (value: string) => void;
   isMultipleChoice?: boolean;
+  allowUncheck?: boolean;
 };
 
 const FilterAccordionContent: FC<FilterAccordionContentProps> = ({
@@ -18,15 +19,18 @@ const FilterAccordionContent: FC<FilterAccordionContentProps> = ({
   selected,
   onChange,
   isMultipleChoice = true,
+  allowUncheck = true,
 }) => {
   const handleCheckboxChange = (value: string) => {
     if (isMultipleChoice) {
       // Toggle the value in the selected array for multiple choice
       onChange(value);
     } else {
-      // Replace the selected value for single choice
-      if (selected !== value) {
-        onChange(value);
+      // for single selection, if already selected, uncheck only if allowUncheck is true
+      if (selected === value && allowUncheck) {
+        onChange(""); // Uncheck
+      } else if (selected !== value) {
+        onChange(value); // Select new value
       }
     }
   };

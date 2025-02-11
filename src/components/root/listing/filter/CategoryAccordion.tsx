@@ -51,6 +51,7 @@ export const CategoryAccordion = ({
             selected={category}
             onChange={(value) => handleFilterChange("category", value)}
             isMultipleChoice={false}
+            allowUncheck={false}
           />
         )}
       </AccordionContent>

@@ -1,6 +1,5 @@
 import "./MobileProfileCard.scss";
-
-import { useEffect, useRef, useState } from "react";
+import {useState } from "react";
 import ProfileSpecification from "@/components/root/vehicle-details/profile-specifications/ProfileSpecification";
 import { ProfileCardDataType } from "@/types/vehicle-details-types";
 import RentNowSection from "@/components/common/rent-now/RentNowSection";
@@ -11,6 +10,7 @@ import LeaseInfo from "../../profile-specifications/LeaseInfo";
 import ExpandableHeader from "./expandable-header/ExpandableHeader";
 import MobileProfileInfo from "./mobile-profile-info/MobileProfileInfo";
 import Overlay from "./overlay/Overlay";
+import MobileProfileCardWrapper from "./MobileProfileCardWrapper";
 
 type MobileProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -18,8 +18,6 @@ type MobileProfileCardProps = {
 
 const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [height, setHeight] = useState("9rem"); //
-  const contentRef = useRef<HTMLDivElement>(null);
 
   const {
     formattedPhoneNumber,
@@ -29,43 +27,22 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
     isLease,
     securityDeposit,
     vehicleId,
+    company,
   } = useProfileData(profileData);
-
-  const { company } = profileData;
 
   // Toggle function
   const handleToggle = () => {
     setIsExpanded((prev) => !prev);
   };
 
-  // Mouse leave toggle function
-  const handleMouseLeave = () => {
-    if (!isExpanded) return;
-    setIsExpanded(false);
-  };
-
-  useEffect(() => {
-    const content = contentRef.current;
-    if (content) {
-      if (isExpanded) {
-        const expandedHeight = content.scrollHeight; // Get the full height when expanded
-        setHeight(`${expandedHeight}px`); // Set the height explicitly
-      } else {
-        setHeight("9rem"); // Set the height back to the initial height
-      }
-    }
-  }, [isExpanded]);
-
   return (
     <>
       {/* Overlay */}
-      <Overlay isVisible={isExpanded} />
+      <Overlay isVisible={isExpanded} setIsExpanded={setIsExpanded} />
 
-      <div
-        ref={contentRef}
-        onMouseLeave={handleMouseLeave}
-        className={`mobile-profile-card ${isExpanded ? "expanded-view" : ""}`}
-        style={{ height: height }}
+      <MobileProfileCardWrapper
+        isExpanded={isExpanded}
+        setIsExpanded={setIsExpanded}
       >
         {/* Expandable Header */}
         <ExpandableHeader
@@ -112,7 +89,7 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
 
         {/* Lease Info */}
         <LeaseInfo isLease={isLease} />
-      </div>
+      </MobileProfileCardWrapper>
     </>
   );
 };

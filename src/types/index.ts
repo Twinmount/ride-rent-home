@@ -84,6 +84,22 @@ export interface FetchTypesResponse {
   statusCode: number;
 }
 
+export type PriceRange = {
+  min: number;
+  max: number;
+};
+
+export interface FetchPriceRangeResponse {
+  status: string;
+  statusCode: number;
+  result: {
+    day: PriceRange;
+    month: PriceRange;
+    hour: PriceRange;
+    week: PriceRange;
+  };
+}
+
 // type of single brand
 export interface BrandType {
   id: string;
@@ -339,7 +355,8 @@ export interface FetchCategoriesForDirectory {
 }
 
 export type VehicleSeriesWithCount = {
-  seriesName: string; //actual series label
+  seriesName: string; //actual series value
+  seriesLabel: string; // actual series label
   vehicleCount: number; // number of vehicles under the series
 };
 

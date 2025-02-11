@@ -4,7 +4,7 @@ import ProfileCard from "@/components/root/vehicle-details/profile-card/main-pro
 import WhyOpt from "@/components/common/why-opt/WhyOpt";
 import Description from "@/components/root/vehicle-details/description/Description";
 import Specification from "@/components/root/vehicle-details/Specification";
-import DetailsSectionClient from "@/components/root/vehicle-details/DetailsSectionClient";
+import DetailsSectionClientWrapper from "@/components/root/vehicle-details/DetailsSectionClientWrapper";
 import Images from "@/components/root/vehicle-details/Images";
 import VehicleFeatures from "@/components/root/vehicle-details/features/Features";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
@@ -136,7 +136,7 @@ export default async function VehicleDetails({
       />
 
       {/* Wrapper to handle client side logic regarding mobile profile card */}
-      <DetailsSectionClient profileData={ProfileCardData}>
+      <DetailsSectionClientWrapper profileData={ProfileCardData}>
         {/* Vehicle Details Section */}
         <section className="details-section">
           <div className="details-container">
@@ -168,7 +168,7 @@ export default async function VehicleDetails({
             </div>
           </div>
         </section>
-      </DetailsSectionClient>
+      </DetailsSectionClientWrapper>
 
       {/* related result */}
       <RelatedResults

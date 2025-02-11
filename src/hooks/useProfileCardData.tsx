@@ -95,6 +95,7 @@ const useProfileData = (profileData: ProfileCardDataType) => {
     securityDeposit,
     vehicleId,
     vehicleTitle,
+    company,
   };
 };
 

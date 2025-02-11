@@ -3,7 +3,7 @@
 import VehicleTypesCarousel from "./vehicle-types-carousel/VehicleTypesCarousel";
 import { useNavbar } from "@/context/NavbarContext";
 import VehicleCategories from "./VehicleCategories";
-import PriceFilterDialog from "./dialog/PriceFilterDialog";
+import PriceFilterDialog from "../../dialog/price-filter-dialog/PriceFilterDialog";
 
 export default function VehicleCategoryAndFilter() {
   const { isHidden } = useNavbar();

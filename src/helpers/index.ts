@@ -413,17 +413,18 @@ export const getFormattedPhoneNumber = (
  * @param {number[]} values - Array with 2 elements: minPrice and maxPrice
  * @param {string} state - State to filter by
  * @param {string} category - Category to filter by
+ * @param {string} selectedPeriod - Period to filter by
  * @returns {string} URL for the listing page with the given filters
  */
-
 export const generateListingUrl = (
   values: number[],
   state: string,
   category: string,
+  selectedPeriod: "hour" | "day" | "week" | "month",
 ): string => {
   const [minPrice, maxPrice] = values;
 
-  return `/${state}/listing?category=${category}&price=${minPrice}-${maxPrice}`;
+  return `/${state}/listing?category=${category}&price=${minPrice}-${maxPrice}&period=${selectedPeriod}`;
 };
 
 /**

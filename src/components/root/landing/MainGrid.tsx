@@ -3,7 +3,7 @@ import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMai
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
-import PriceEnquireDialog from "./dialog/PriceEnquireDialog";
+import PriceEnquireDialog from "../../dialog/price-filter-dialog/PriceEnquireDialog";
 import { ENV } from "@/config/env";
 
 type MainGridProps = StateCategoryProps & {

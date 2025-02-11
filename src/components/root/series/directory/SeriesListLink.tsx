@@ -21,7 +21,7 @@ export default function SeriesListLink({
       >
         &sdot;&nbsp;
         <span className="hover:text-yellow-500 line-clamp-1 w-fit cursor-pointer duration-300 ease-out hover:text-yellow hover:underline">
-          {series.seriesName}
+          {series.seriesLabel}
         </span>
         &nbsp;{" "}
         <span className="font-light">&#40;{series.vehicleCount}&#41;</span>

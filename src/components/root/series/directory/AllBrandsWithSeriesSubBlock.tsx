@@ -15,6 +15,7 @@ export default async function AllBrandsWithSeriesSubBlock({
   category,
   page,
 }: PropsType) {
+  // Construct the query string
   const params = new URLSearchParams({
     page: page.toString(),
     limit: "12",
@@ -50,7 +51,12 @@ export default async function AllBrandsWithSeriesSubBlock({
     <div className="flex h-screen flex-col justify-between pb-10">
       <div className="grid auto-rows-auto grid-cols-1 items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {list.map((brand) => (
-          <SeriesSubBlock state={state} category={category} brand={brand} />
+          <SeriesSubBlock
+            key={brand.brandValue}
+            state={state}
+            category={category}
+            brand={brand}
+          />
         ))}
       </div>
 
