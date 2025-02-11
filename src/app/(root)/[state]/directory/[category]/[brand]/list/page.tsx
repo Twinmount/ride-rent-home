@@ -4,7 +4,9 @@ import AllSeriesPageHeading from "@/components/root/series/directory/AllSeriesPa
 
 import { ENV } from "@/config/env";
 import { FetchAllSeriesUnderBrandResponse } from "@/types";
+import { Metadata } from "next";
 import { Suspense } from "react";
+import { generateSeriesListPageMetadata } from "./metadata";
 
 type PageProps = {
   params: {
@@ -14,6 +16,13 @@ type PageProps = {
   };
   searchParams: { [key: string]: string | undefined };
 };
+
+export async function generateMetadata({
+  params: { state, category, brand },
+}: PageProps): Promise<Metadata> {
+  return generateSeriesListPageMetadata({ state, category, brand });
+}
+
 export default async function BrandSeriesPage({
   params: { state, category, brand },
   searchParams,

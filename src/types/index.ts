@@ -326,6 +326,8 @@ export interface FetchVehicleSeriesInfo {
     vehicleSeriesMetaDescription: string;
     vehicleSeriesPageHeading: string;
     vehicleSeriesPageSubheading: string;
+    vehicleSeriesInfoTitle: string;
+    vehicleSeriesInfoDescription: string;
     seriesCode: string;
   };
   statusCode: number;

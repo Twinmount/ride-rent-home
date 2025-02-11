@@ -2,7 +2,9 @@ import AllBrandsWithSeriesSubBlock from "@/components/root/series/directory/AllB
 import CategoryDirectoryHeading from "@/components/root/series/directory/CategoryDirectoryHeading";
 
 import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
+import { Metadata } from "next";
 import { Suspense } from "react";
+import { generateCategoryDirectoryPageMetadata } from "./metadata";
 
 type PageProps = {
   params: {
@@ -11,6 +13,12 @@ type PageProps = {
   };
   searchParams: { [key: string]: string | undefined };
 };
+
+export async function generateMetadata({
+  params: { state, category },
+}: PageProps): Promise<Metadata> {
+  return generateCategoryDirectoryPageMetadata({ state, category });
+}
 
 export default async function CategoryDirectoryPage({
   params: { state, category },

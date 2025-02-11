@@ -1,12 +1,20 @@
 import DirectoryCategories from "@/components/root/series/directory/DirectoryCategories";
 import DirectoryStates from "@/components/root/series/directory/DirectoryStates";
 import { convertToLabel } from "@/helpers";
+import { Metadata } from "next";
+import { generateDirectoryPageMetadata } from "./directory-metadata";
 
 type PageProps = {
   params: {
     state: string;
   };
 };
+
+export async function generateMetadata({
+  params: { state },
+}: PageProps): Promise<Metadata> {
+  return generateDirectoryPageMetadata({ state });
+}
 
 export default function DirectoryPage({ params: { state } }: PageProps) {
   return (

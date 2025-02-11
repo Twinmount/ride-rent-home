@@ -16,7 +16,7 @@ import VehicleThumbnail from "../VehicleThumbnail";
 import HourlyRentalBadge from "./hourly-rental-badge/HourlyRentalBadge";
 import RentalDetails from "../RentalDetails";
 
-import MotionMainCardDiv from "@/components/general/framer-motion/MotionMainCardDiv";
+import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
 // import EnquireBestPrice from "../EnquireBestPrice";
 import { MapPin } from "lucide-react";
 import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
@@ -49,7 +49,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
   });
 
   return (
-    <MotionMainCardDiv index={index} className="main-card-container">
+    <MotionStaggeredDiv index={index} className="main-card-container">
       {/* card top */}
       <Link href={vehicleDetailsPageLink} target="_blank" className="card-top">
         <div className="image-box">
@@ -119,7 +119,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
           />
         </div>
       </div>
-    </MotionMainCardDiv>
+    </MotionStaggeredDiv>
   );
 };
 

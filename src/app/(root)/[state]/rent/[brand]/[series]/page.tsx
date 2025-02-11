@@ -1,6 +1,8 @@
-import VehicleSeriesHeading from "@/components/root/series/VehicleSeriesHeading";
+import VehicleSeriesInfo from "@/components/root/series/VehicleSeriesInfo";
 import { fetchVehicleSeriesData } from "./action";
 import LoadMoreSeries from "@/components/root/series/LoadMoreSeries";
+import { Metadata } from "next";
+import { generateSeriesListingPageMetadata } from "./metadata";
 
 export type PageProps = {
   params: {
@@ -9,6 +11,12 @@ export type PageProps = {
     series: string;
   };
 };
+
+export async function generateMetadata({
+  params: { state, brand, series },
+}: PageProps): Promise<Metadata> {
+  return generateSeriesListingPageMetadata({ state, brand, series });
+}
 
 export default async function VehicleSeriesPage({
   params: { state, series },
@@ -23,7 +31,7 @@ export default async function VehicleSeriesPage({
 
   return (
     <div className="wrapper flex h-auto min-h-screen flex-col bg-lightGray pb-8 pt-4">
-      <VehicleSeriesHeading series={series} />
+      <VehicleSeriesInfo series={series} state={state} />
       {hasVehicles ? (
         <>
           {/* initial first page of data (SSR) */}

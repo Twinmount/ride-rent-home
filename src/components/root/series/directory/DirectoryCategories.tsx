@@ -1,3 +1,4 @@
+import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
 import { ENV } from "@/config/env";
 import { convertToLabel } from "@/helpers";
 import { DirectoryCategory, FetchCategoriesForDirectory } from "@/types";
@@ -33,12 +34,17 @@ export default async function DirectoryCategories({
 
   return (
     <section>
-      <ul className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         {/* mapping over categories array and rendering link for each category which redirects to category page /[state]/directory/[category] */}
-        {categories.map((cat) => (
-          <VehicleCategoryCard key={cat.value} cat={cat} state={state} />
+        {categories.map((cat, index) => (
+          <VehicleCategoryCard
+            key={cat.value}
+            cat={cat}
+            state={state}
+            index={index}
+          />
         ))}
-      </ul>
+      </div>
     </section>
   );
 }
@@ -53,14 +59,18 @@ export default async function DirectoryCategories({
 function VehicleCategoryCard({
   cat,
   state,
+  index,
 }: {
   cat: DirectoryCategory;
   state: string;
+  index: number;
 }) {
   const baseAssetsUrl = ENV.ASSETS_URL;
 
   return (
-    <li
+    <MotionStaggeredDiv
+      index={index}
+      delay={0.1}
       className={`flex aspect-square h-[6rem] w-[7rem] cursor-pointer flex-col justify-center gap-[0.2rem]`}
     >
       <Link
@@ -82,11 +92,11 @@ function VehicleCategoryCard({
           />
         </div>
         <span
-          className={`flex-center line-clamp-1 h-[25%] w-full text-center text-[0.8rem] text-gray-800 lg:text-[0.65rem]`}
+          className={`flex-center line-clamp-1 h-[25%] w-full text-center text-[0.7rem] text-gray-800 lg:text-[0.8rem]`}
         >
-          {cat.name} &#40; {cat.vehicleCount} &#41;
+          {cat.name} &#40;{cat.vehicleCount}&#41;
         </span>
       </Link>
-    </li>
+    </MotionStaggeredDiv>
   );
 }

@@ -1,4 +1,6 @@
+import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
 import { ENV } from "@/config/env";
+import { rearrangeStates } from "@/helpers";
 import { FetchStatesResponse, StateType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,6 +20,9 @@ export default async function DirectoryStates() {
 
   if (states.length === 0) return null;
 
+  //
+  states = rearrangeStates(states);
+
   return (
     <section className="my-10">
       <h4 className="md:text3xl mb-2 text-2xl font-semibold">
@@ -32,9 +37,9 @@ export default async function DirectoryStates() {
 
 // individual state card
 function StateCard({ states }: { states: StateType[] }) {
-  return states.map((state) =>
+  return states.map((state, index) =>
     state.stateImage ? (
-      <li key={state.stateId}>
+      <MotionStaggeredDiv index={index} delay={0.1} key={state.stateId}>
         <Link
           href={`/${state.stateValue}/directory`}
           className="group relative flex h-[6rem] w-full min-w-[6rem] max-w-[8rem] cursor-pointer items-center justify-center overflow-hidden rounded-[2rem] text-center shadow-[2px_2px_4px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in"
@@ -52,7 +57,7 @@ function StateCard({ states }: { states: StateType[] }) {
             {state.stateName}
           </figcaption>
         </Link>
-      </li>
+      </MotionStaggeredDiv>
     ) : null,
   );
 }

@@ -1,6 +1,4 @@
-import { ENV } from "@/config/env";
 import { convertToLabel } from "@/helpers";
-import { CategoryDirectoryStatsResponse } from "@/types";
 
 type PropsType = {
   state: string;
@@ -14,13 +12,13 @@ export default async function CategoryDirectoryHeading({
   // // Construct the full URL
   // const url = `${ENV.API_URL}/vehicle/home-page/`;
 
-  // // Fetch data using the generated URL
+  // Fetch data using the generated URL
   // const response = await fetch(url, {
   //   method: "GET",
   //   cache: "no-cache",
   // });
 
-  // // Parse the JSON response
+  // Parse the JSON response
   // const data: CategoryDirectoryStatsResponse = await response.json();
 
   // const count = data?.result || {};

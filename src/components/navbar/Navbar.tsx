@@ -7,10 +7,7 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldExclude } from "@/hooks/useShouldExclude";
 import { useNavbar } from "@/context/NavbarContext";
-
 import MobileSidebar from "../sidebar/MobileSidebar";
-// import ProfileDropdown from "./ProfileDropdown";
-import useIsHomePage from "@/hooks/useIsHomePage";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
 
 export const Navbar = () => {
@@ -33,8 +30,6 @@ export const Navbar = () => {
       setIsHidden(false);
     }
   });
-
-  const isHomePage = useIsHomePage();
 
   return (
     <NavbarWrapper isHidden={isHidden}>
@@ -68,11 +63,9 @@ export const Navbar = () => {
         <div className="flex w-fit items-center">
           <ul className="flex w-full items-center justify-between gap-4">
             {/* Search Dialog */}
-            {!isHomePage && (
-              <li className="max-sm:hidden">
-                <SearchDialog />
-              </li>
-            )}
+            <li className="max-sm:hidden">
+              <SearchDialog />
+            </li>
 
             {/* Location */}
             {!shouldRenderDropdowns && (

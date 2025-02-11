@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { fetchSearchResults } from "@/lib/api/general-api";
 import { debounce } from "@/helpers";
 import { PlaceholderTypewriter } from "@/components/navbar/PlaceholderTypewriter";
@@ -26,7 +25,6 @@ export function SearchDialog({
   isHero = false,
   isMobileNav = false,
 }: SearchDialogProps) {
-  const router = useRouter();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 

@@ -1,9 +1,10 @@
-import MotionMainCardDiv from "../general/framer-motion/MotionMainCardDiv";
+import MotionStaggeredDiv from "../general/framer-motion/MotionStaggeredDiv";
+
 import { Skeleton } from "../ui/skeleton";
 
 export function VehicleCardSkeleton({ index = 0 }: { index?: number }) {
   return (
-    <MotionMainCardDiv
+    <MotionStaggeredDiv
       index={index}
       className="mx-auto flex !w-full min-w-[17.3rem] max-w-96 flex-col overflow-hidden rounded-2xl bg-white p-[0.3rem] shadow-lg"
     >
@@ -24,7 +25,7 @@ export function VehicleCardSkeleton({ index = 0 }: { index?: number }) {
           <Skeleton className="h-full w-12 min-w-12 rounded-xl bg-gray-300" />
         </div>
       </div>
-    </MotionMainCardDiv>
+    </MotionStaggeredDiv>
   );
 }
 

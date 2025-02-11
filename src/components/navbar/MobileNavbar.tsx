@@ -3,12 +3,17 @@
 import PriceFilterDialog from "@/components/dialog/price-filter-dialog/PriceFilterDialog";
 import { SearchDialog } from "@/components/dialog/search-dialog/SearchDialog";
 import MobileNavbarWrapper from "./MobileNavbarWrapper";
+import useIsSmallScreen from "@/hooks/useIsSmallScreen";
 
 const MobileNavbar = () => {
   // const params = useParams<{ state: string; category: string }>();
 
   // const state = params.state || "dubai";
   // const category = params.category || "cars";
+
+  const isSmallScreen = useIsSmallScreen(640);
+
+  if (!isSmallScreen) return null;
 
   return (
     <MobileNavbarWrapper>

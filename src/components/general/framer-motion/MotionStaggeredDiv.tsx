@@ -3,22 +3,23 @@
 import { motion } from "framer-motion";
 import React, { CSSProperties, FC, ReactNode } from "react";
 
-interface MotionMainCardDivProps {
+interface MotionStaggeredDivProps {
   children: ReactNode;
   className?: string;
   duration?: number;
-  delay?: number;
   style?: CSSProperties;
   once?: boolean; // Option to control if animation should only trigger once
   index?: number;
+  delay?: number;
 }
 
-const MotionMainCardDiv: FC<MotionMainCardDivProps> = ({
+const MotionStaggeredDiv: FC<MotionStaggeredDivProps> = ({
   children,
   className,
   style,
   once = true,
   index,
+  delay = 0.25,
 }) => {
   const categoryVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -26,7 +27,7 @@ const MotionMainCardDiv: FC<MotionMainCardDivProps> = ({
       opacity: 1,
       y: 0,
       transition: {
-        delay: index * 0.25,
+        delay: index * delay,
         duration: 0.5,
         ease: "easeOut",
       },
@@ -48,4 +49,4 @@ const MotionMainCardDiv: FC<MotionMainCardDivProps> = ({
   );
 };
 
-export default MotionMainCardDiv;
+export default MotionStaggeredDiv;
