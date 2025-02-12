@@ -12,7 +12,7 @@ export default function RentalDetails({ rentalDetails }: RentalDetailsProps) {
     <div className="text-[0.7rem] text-gray-600">
       {rentalPeriod ? (
         <>
-          <span className="text-base font-extrabold text-red-500">
+          <span className="font-extrabold text-base text-red-500">
             {rentalPeriod.rentInAED || "N/A"} AED
           </span>
           <span className="text-[0.9rem]">&nbsp;{rentalPeriod.label}</span>

@@ -1,12 +1,16 @@
 import AgentProfile from "@/components/agent-profile/AgentProfile";
 import AgentVehicleFilter from "@/components/agent-profile/AgentVehicleFilter";
 import AgentVehicleGrid from "@/components/agent-profile/AgentVehicleGrid";
-import VehicleCardSkeleton from "@/components/skelton/VehicleCardSkeleton";
+import VehicleCardSkeletonGrid from "@/components/skelton/VehicleCardSkeleton";
 import { FetchCompanyDetailsResponse } from "@/types";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import React, { Suspense } from "react";
-import { fetchCompanyDetails, generateCompanyMetadata } from "./profile-metadata";
+import {
+  fetchCompanyDetails,
+  generateCompanyMetadata,
+} from "./profile-metadata";
+import { ENV } from "@/config/env";
 
 type PropsType = {
   searchParams: { [key: string]: string | undefined };
@@ -30,20 +34,19 @@ export default async function AgentProfilePage({
   searchParams,
   params: { companyId },
 }: PropsType) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = ENV.API_URL;
 
   // Default filter category set to "car"
   const filter = searchParams.filter;
   const page = parseInt(searchParams.page || "1", 10);
 
+  const url = `${baseUrl}/company/public?companyId=${companyId}`;
+
   // Fetch Data from API
-  const response = await fetch(
-    `${baseUrl}/company/public?companyId=${companyId}`,
-    {
-      method: "GET",
-      cache: "no-cache",
-    }
-  );
+  const response = await fetch(url, {
+    method: "GET",
+    cache: "no-cache",
+  });
 
   const data: FetchCompanyDetailsResponse = await response.json();
 
@@ -58,21 +61,16 @@ export default async function AgentProfilePage({
   const filters = data.result.categories || [];
 
   return (
-    <section className="wrapper bg-white">
+    <section className="wrapper bg-white pb-8">
       {/* agent details */}
       <AgentProfile companyDetails={companyDetails} />
 
-      <h1 className="text-2xl lg:text-3xl font-semibold mt-6 text-center">
+      <h1 className="mt-6 text-center text-2xl font-semibold lg:text-3xl">
         Our Vehicles Available For Rent / Lease
       </h1>
       <AgentVehicleFilter filters={filters} />
-      <Suspense
-        fallback={
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <VehicleCardSkeleton />
-          </div>
-        }
-      >
+
+      <Suspense fallback={<VehicleCardSkeletonGrid count={9} />}>
         <AgentVehicleGrid
           filter={filter as string}
           page={page}

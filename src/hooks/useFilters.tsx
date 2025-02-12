@@ -1,164 +1,167 @@
-import { useState, useEffect } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
-import qs from 'query-string'
-import { removeKeysFromQuery } from '@/helpers'
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { removeKeysFromQuery } from "@/helpers";
+import {
+  generateUpdatedUrl,
+  getDefaultFilters,
+  parseFiltersFromUrl,
+} from "@/helpers/filter-helper";
 
-interface FiltersType {
-  modelYear: string
-  category: string
-  vehicleTypes: string[]
-  seats: string
-  transmission: string[]
-  fuelType: string[]
-  color: string[]
-  brand: string[]
+export interface FiltersType {
+  modelYear: string;
+  category: string;
+  seats: string;
+  vehicleTypes: string[];
+  transmission: string[];
+  fuelType: string[];
+  color: string[];
+  brand: string[];
 }
 
+/**
+ * Custom hook for managing vehicle filter states and synchronizing them with the URL.
+ *
+ * This hook provides functionality to manage filter states, apply changes, and reset filters
+ * to their default values. It also handles the synchronization of filter states with the URL
+ * parameters using Next.js navigation hooks.
+ *
+ * @returns {Object} - An object containing the current selected and applied filters, as well as
+ * functions to handle filter changes, apply filters, and reset filters.
+ *   - `selectedFilters`: The current filter selections made by the user.
+ *   - `appliedFilters`: The filters that are currently applied, reflecting the URL parameters.
+ *   - `handleFilterChange`: Function to update the `selectedFilters` state based on a filter
+ *     name and value.
+ *   - `applyFilters`: Function to apply the current selected filters to the URL.
+ *   - `resetFilters`: Function to reset filters to their default values.
+ */
 const useFilters = () => {
   // Local state for filter changes
   const [selectedFilters, setSelectedFilters] = useState<FiltersType>({
-    modelYear: '',
-    category: '',
+    modelYear: "",
+    category: "",
     vehicleTypes: [],
-    seats: '',
+    seats: "",
     transmission: [],
     fuelType: [],
     color: [],
     brand: [],
-  })
+  });
 
   // Applied filters reflecting the URL parameters
   const [appliedFilters, setAppliedFilters] = useState<FiltersType>({
-    modelYear: '',
-    category: '',
+    modelYear: "",
+    category: "",
     vehicleTypes: [],
-    seats: '',
+    seats: "",
     transmission: [],
     fuelType: [],
     color: [],
     brand: [],
-  })
+  });
 
-  const searchParams = useSearchParams()
-  const router = useRouter()
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   // Initialize filters from URL parameters
   useEffect(() => {
-    const params = qs.parse(searchParams.toString())
+    const filtersFromParams = parseFiltersFromUrl(searchParams.toString());
+    setSelectedFilters(filtersFromParams);
+    setAppliedFilters(filtersFromParams);
+  }, [searchParams]);
 
-    const filtersFromParams: FiltersType = {
-      modelYear: typeof params.modelYear === 'string' ? params.modelYear : '',
-      category: typeof params.category === 'string' ? params.category : '',
-      vehicleTypes:
-        typeof params.vehicleTypes === 'string'
-          ? params.vehicleTypes.split(',')
-          : [],
-      seats: typeof params.seats === 'string' ? params.seats : '',
-      transmission:
-        typeof params.transmission === 'string'
-          ? params.transmission.split(',')
-          : [],
-      fuelType:
-        typeof params.fuelType === 'string' ? params.fuelType.split(',') : [],
-      color: typeof params.color === 'string' ? params.color.split(',') : [],
-      brand: typeof params.brand === 'string' ? params.brand.split(',') : [],
+  /**
+   * Updates the `selectedFilters` state based on the provided filter name and value. It WON'T update the url, instead, it keep tracks of the changes in the state.
+   *
+   * @param {keyof FiltersType} filterName - The name of the filter to update. Can be one of:
+   *   "modelYear", "category", "seats", "vehicleTypes", "transmission", "fuelType", "color", "brand".
+   * @param {string} value - The value to apply to the filter. If the filter is multi-select,
+   *   the value will be added or removed from the filter array.
+   *
+   * If the `filterName` is "category", the `vehicleTypes` and `brand` filters are reset.
+   * Single string filters ("modelYear", "category", "seats") are directly assigned the new value.
+   * Multi-select filters toggle the presence of `value` in their respective arrays.
+   */
+  const handleFilterChange = (filterName: keyof FiltersType, value: string) => {
+    const updatedFilters = { ...selectedFilters };
+
+    if (filterName === "category") {
+      // Reset dependent filters (vehicleTypes and brands) when category changes
+      updatedFilters.vehicleTypes = [];
+      updatedFilters.brand = [];
     }
 
-    setSelectedFilters(filtersFromParams)
-    setAppliedFilters(filtersFromParams)
-  }, [searchParams])
-
-  const handleFilterChange = (filterName: keyof FiltersType, value: string) => {
-    const updatedFilters = { ...selectedFilters }
-
     if (
-      filterName === 'modelYear' ||
-      filterName === 'category' ||
-      filterName === 'seats'
+      filterName === "modelYear" ||
+      filterName === "category" ||
+      filterName === "seats"
     ) {
       // Single string filter
-      updatedFilters[filterName] = value
+      updatedFilters[filterName] = value;
     } else {
       // Multi-select filter logic
-      const filterArray = updatedFilters[filterName] as string[]
+      const filterArray = updatedFilters[filterName] as string[];
       if (filterArray.includes(value)) {
         updatedFilters[filterName] = filterArray.filter(
-          (v) => v !== value
-        ) as string[]
+          (v) => v !== value,
+        ) as string[];
       } else {
-        updatedFilters[filterName] = [...filterArray, value] as string[]
+        updatedFilters[filterName] = [...filterArray, value] as string[];
       }
     }
 
-    setSelectedFilters(updatedFilters)
-  }
+    setSelectedFilters(updatedFilters);
+  };
 
+  /**
+   * Applies the current selectedFilters to the URL and navigates to the updated URL.
+   *
+   * This function is called when the user clicks the "Apply Filters" button.
+   * It first updates the `appliedFilters` state with the current `selectedFilters`.
+   * Then it generates a new URL by taking the current URL and applying the selected filters.
+   * Finally, it navigates to the new URL using the `router.push` method.
+   *
+   * Note that the `scroll` option is set to `false` to prevent the page from scrolling to the top.
+   */
   const applyFilters = () => {
     // Apply changes and update the URL
-    setAppliedFilters(selectedFilters)
+    setAppliedFilters(selectedFilters);
 
-    // Get the current URL params and merge with the selected filters
-    const currentParams = qs.parse(searchParams.toString())
+    // Generate the updated URL
+    const updatedUrl = generateUpdatedUrl(
+      selectedFilters,
+      searchParams.toString(),
+    );
 
-    // Merge the selected filters with the current params
-    const updatedParams = {
-      ...currentParams,
-      ...selectedFilters,
-    }
+    // Navigate to the new URL
+    const newUrl = `${window.location.pathname}?${updatedUrl}`;
+    router.push(newUrl, { scroll: false });
+  };
 
-    // Filter out any empty values before updating the URL
-    const nonEmptyFilters = Object.fromEntries(
-      Object.entries(updatedParams).filter(
-        ([_, value]) =>
-          value !== '' && !(Array.isArray(value) && value.length === 0)
-      )
-    )
-
-    // Update the URL parameters with non-empty values
-    const queryParams = qs.stringify(nonEmptyFilters, { arrayFormat: 'comma' })
-    const newUrl = `${window.location.pathname}?${queryParams}`
-    router.push(newUrl, { scroll: false })
-  }
-
+  /**
+   * Resets the filters to their default values and navigates to the updated URL.
+   */
   const resetFilters = () => {
-    setSelectedFilters({
-      modelYear: '',
-      category: 'cars',
-      vehicleTypes: [],
-      seats: '',
-      transmission: [],
-      fuelType: [],
-      color: [],
-      brand: [],
-    })
+    const defaultFilters = getDefaultFilters();
 
-    // Reset the URL and applied filters
-    setAppliedFilters({
-      modelYear: '',
-      category: 'cars',
-      vehicleTypes: [],
-      seats: '',
-      transmission: [],
-      fuelType: [],
-      color: [],
-      brand: [],
-    })
+    // Reset local filter states
+    setSelectedFilters(defaultFilters);
+    setAppliedFilters(defaultFilters);
 
     const newUrl = removeKeysFromQuery({
       params: searchParams.toString(),
       keysToRemove: [
-        'modelYear',
-        'vehicleTypes',
-        'seats',
-        'transmission',
-        'fuelType',
-        'color',
-        'brand',
+        "modelYear",
+        "vehicleTypes",
+        "seats",
+        "transmission",
+        "fuelType",
+        "color",
+        "brand",
       ],
-    })
+    });
 
-    router.push(newUrl, { scroll: false })
-  }
+    router.push(newUrl, { scroll: false });
+  };
 
   return {
     selectedFilters,
@@ -166,7 +169,7 @@ const useFilters = () => {
     handleFilterChange,
     applyFilters,
     resetFilters,
-  }
-}
+  };
+};
 
-export default useFilters
+export default useFilters;

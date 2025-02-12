@@ -1,98 +1,112 @@
 "use client";
 
-import "./VehicleGrid.scss";
-import { useRef, Suspense } from "react";
-import HorizontalCard from "../../../card/vehicle-card/listing-horizontal-card/HorizontalCard";
-import VerticalCard from "../../../card/vehicle-card/listing-vertical-card/VerticalCard";
-import useIsSmallScreen from "@/hooks/useIsSmallScreen";
-import useIntersectionObserver from "@/hooks/useIntersectionObserver";
-import Pagination from "@/components/general/pagination/Pagination";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { FetchVehicleByFilters } from "@/lib/api/general-api";
-import ListingSkelton from "@/components/skelton/ListingsSkelton";
+import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import NoResultsFound from "./NoResultsFound";
-import FiltersSidebar from "../filter/FiltersSidebar";
+import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
+import PriceEnquireDialog from "../../../dialog/price-filter-dialog/PriceEnquireDialog";
+import { useInView } from "react-intersection-observer";
+import { useFetchListingVehicles } from "@/hooks/useFetchListingVehicles";
+import LoadingWheel from "@/components/common/LoadingWheel";
+import VehicleListingsGridWrapper from "@/components/common/VehicleListingsGridWrapper";
 
 type VehicleGridProps = {
-  isGridView: boolean;
-  page: number;
-  limit: number;
   state: string;
 };
 
-const VehicleGrid: React.FC<VehicleGridProps> = ({
-  isGridView,
-  page,
-  limit,
-  state,
-}) => {
-  const isSmallScreen = useIsSmallScreen(850);
-  const isFiltersButtonVisible = useIsSmallScreen(1200);
-  const vehicleGridRef = useRef<HTMLDivElement | null>(null);
-  const isVehicleGridVisible = useIntersectionObserver(vehicleGridRef);
+const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   const searchParams = useSearchParams();
 
-  // Fetch data using react-query
-  const { data, isLoading } = useQuery({
-    queryKey: ["vehicles", state, searchParams.toString()],
-    queryFn: () => FetchVehicleByFilters(searchParams.toString(), state, limit),
-    enabled: !!searchParams.toString(),
-    staleTime: 0,
-  });
+  const { ref, inView } = useInView();
 
-  const category = searchParams.get("category") || "cars";
+  // State to control when to switch to "Load More"
+  const [useLoadMore, setUseLoadMore] = useState(false);
 
-  // Explicitly typing vehicleData to avoid undefined errors
-  const vehicleData = data?.result?.list || [];
+  // 8 vehicles loads per pagination.
+  const limit = "8";
+
+  // Fetch data using custom hook utilizing useInfiniteQuery
+  const { vehicles, fetchNextPage, hasNextPage, isFetching, isLoading } =
+    useFetchListingVehicles({
+      searchParams: searchParams.toString(),
+      state,
+      limit,
+    });
+
+  // Check when to switch to "Load More" mode
+  useEffect(() => {
+    if (vehicles.length > 24) {
+      setUseLoadMore(true);
+    }
+  }, [vehicles]);
+
+  // Trigger fetchNextPage on scroll if not in "Load More" mode
+  useEffect(() => {
+    if (inView && hasNextPage && !useLoadMore) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, useLoadMore]);
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="flex w-full flex-col">
       {isLoading ? (
-        <ListingSkelton />
+        <AnimatedSkelton />
       ) : (
         <>
-          <div
-            ref={vehicleGridRef}
-            className={`${
-              vehicleData.length === 0
-                ? "w-full"
-                : `grid ${isGridView ? "multi-grid" : ""} ${
-                    isSmallScreen ? "two-column-vertical" : ""
-                  }`
-            }`}
-          >
-            {vehicleData.length === 0 ? (
+          <div className={`w-full`}>
+            {vehicles.length === 0 ? (
               <NoResultsFound />
             ) : (
-              vehicleData.map((vehicle, index) =>
-                isSmallScreen || isGridView ? (
-                  <VerticalCard
-                    key={vehicle.vehicleId || index}
-                    vehicle={vehicle}
-                  />
-                ) : (
-                  <HorizontalCard
-                    key={vehicle.vehicleId || index}
-                    vehicle={vehicle}
-                  />
-                )
-              )
+              <VehicleListingsGridWrapper>
+                {vehicles.map((vehicle, index) => {
+                  const animationIndex = index % 8;
+                  return (
+                    <VehicleMainCard
+                      key={vehicle.vehicleId}
+                      vehicle={vehicle}
+                      index={animationIndex}
+                    />
+                  );
+                })}
+              </VehicleListingsGridWrapper>
             )}
           </div>
-          <Suspense fallback={<div>Loading Pagination...</div>}>
-            <Pagination
-              page={page}
-              totalPages={data?.result.totalNumberOfPages || 1}
-            />
-          </Suspense>
+
+          {/* Infinite scrolling loader till the first 18 vehicles */}
+          {!useLoadMore && hasNextPage && (
+            <div ref={ref} className="w-full py-4 text-center">
+              {isFetching ? (
+                <div className="flex-center h-24">
+                  <LoadingWheel />
+                </div>
+              ) : null}
+            </div>
+          )}
+
+          {/* "Load More" button after the first 18 vehicles */}
+          {useLoadMore && hasNextPage && (
+            <div className="w-full py-4 text-center">
+              <button
+                onClick={() => fetchNextPage()} // Wrap in an inline function
+                disabled={isFetching}
+                className="w-full rounded-xl border border-gray-300 py-3 font-semibold text-gray-800 hover:bg-gray-200 disabled:opacity-50"
+              >
+                {isFetching ? "Loading..." : "Load More"}
+              </button>
+            </div>
+          )}
+
+          {!hasNextPage && !isFetching && useLoadMore && (
+            <span className="mt-16 text-base italic text-gray-500">
+              You have reached the end
+            </span>
+          )}
         </>
       )}
 
-      {/* Filter modal toggle button */}
-      {isFiltersButtonVisible && isVehicleGridVisible && (
-        <FiltersSidebar category={category} />
-      )}
+      {/* Dialog to enquire best prices */}
+      <PriceEnquireDialog />
     </div>
   );
 };

@@ -1,5 +1,4 @@
 import FooterGrid from "./footer-grid/FooterGrid";
-import "./Footer.scss";
 import Social from "./social/Social";
 import { FaRegCopyright, FaRegRegistered } from "react-icons/fa6";
 import MotionDiv from "../general/framer-motion/MotionDiv";
@@ -7,15 +6,18 @@ import RideRentLogo from "./RideRentLogo";
 
 const Footer = () => {
   return (
-    <footer>
+    <footer className="bg-black p-8 text-white">
+      {/* Footer Grid */}
       <FooterGrid />
+
+      {/* Social Section */}
       <Social />
 
-      {/* logo */}
-      <MotionDiv className="footer-logo-container">
-        <RideRentLogo />
-      </MotionDiv>
-      <MotionDiv className="bottom-container">
+      {/* Logo Section */}
+      <RideRentLogo />
+
+      {/* Bottom Section */}
+      <MotionDiv className="mx-auto w-full text-center font-light text-gray-400 md:w-[90%] lg:w-[80%] xl:w-[70%]">
         <div>
           Get unbeatable deals on car rentals, chauffeur services, and car with
           driver, alongside bike, yacht, and private Charter/ helicopter
@@ -27,12 +29,12 @@ const Footer = () => {
           <br />
           <br />
           All trademarks utilized within this portal for representation are the
-          property fo their respective owners.
+          property of their respective owners.
           <br />
           <br />
-          <div className="bottom-container">
+          <div>
             Ride.Rent is a brand owned and operated by{" "}
-            <span className="bold ">FleetOrbita Group</span>
+            <span className="font-semibold">FleetOrbita Group</span>
             <p className="mt-3">
               <span>
                 Operating as Ride Rent LLC in the UAE, licensed under Sharjah
@@ -40,18 +42,22 @@ const Footer = () => {
               </span>
             </p>
           </div>
-          <div className="flex-center gap-x-1 sm:text-sm flex-wrap text-center mt-3">
-            <span className="bold flex justify-center items-start gap-x-1">
-              <FaRegCopyright className="mt-[.17rem]" />
-              <FaRegRegistered className="mt-[.17rem]" />
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-1 text-center sm:text-sm">
+            <span className="flex items-start gap-1 font-semibold">
+              <FaRegCopyright className="mt-[0.17rem]" />
+              <FaRegRegistered className="mt-[0.17rem]" />
               FleetOrbita Internet Services/Ride Rent LLC
             </span>
-            <span className="max-sm:hidden">|</span> ACJ-9769 | Ride Rent LLC
-            (UAE) License Version: 2434340.01 | All Rights Reserved
+            <span className="hidden sm:inline-block">|</span>
+            <span>
+              ACJ-9769 | Ride Rent LLC (UAE) License Version: 2434340.01 | All
+              Rights Reserved
+            </span>
           </div>
         </div>
       </MotionDiv>
     </footer>
   );
 };
+
 export default Footer;

@@ -1,18 +1,17 @@
-import MotionSection from '@/components/general/framer-motion/MotionSection'
-import DocumentsRequired from '../documents-required/DocumentsRequired'
-import './Documents.scss'
-import { convertToLabel } from '@/helpers'
-import { StateCategoryProps } from '@/types'
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import DocumentsRequired from "./DocumentsRequired";
+import { convertToLabel } from "@/helpers";
+import { StateCategoryProps } from "@/types";
 
 const Documents = ({ state, category }: StateCategoryProps) => {
   return (
-    <MotionSection className="documents-section wrapper">
-      <h2>
+    <MotionSection className="section-container wrapper">
+      <h2 className="section-heading">
         Ride.Rent is getting you the best {convertToLabel(category)} for rental
         in {convertToLabel(state)}
       </h2>
-      <div className="description">
-        <p>
+      <div className="mx-auto w-full max-w-[95%] md:max-w-[80%]">
+        <p className="text-center text-sm font-normal md:text-base">
           As the fastest-growing vehicle rental portal, we pride ourselves on
           offering an extensive range of vehicles available for rent in the UAE,
           from luxurious cars and sports cars to thrilling motorbikes and sport
@@ -38,6 +37,6 @@ const Documents = ({ state, category }: StateCategoryProps) => {
       {/* Documents Required */}
       <DocumentsRequired />
     </MotionSection>
-  )
-}
-export default Documents
+  );
+};
+export default Documents;

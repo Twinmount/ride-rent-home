@@ -1,12 +1,11 @@
-import './PrivacyPolicy.scss'
-import MotionDiv from '@/components/general/framer-motion/MotionDiv'
-import HeadingBanner from '@/components/general/heading-banner/HeadingBanner'
+import HeadingBanner from "@/components/common/heading-banner/HeadingBanner";
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 
 export async function generateMetadata() {
-  const canonicalUrl = `https://ride.rent/privacy-policy`
-  const title = `Privacy Policy - Ride Rent`
+  const canonicalUrl = `https://ride.rent/privacy-policy`;
+  const title = `Privacy Policy - Ride Rent`;
   const description = `Read our privacy policy to learn how  FleetOrbita
- Internet Services/Ride Rent LLC collects, uses, and protects your personal information.`
+ Internet Services/Ride Rent LLC collects, uses, and protects your personal information.`;
 
   return {
     title,
@@ -16,66 +15,85 @@ export async function generateMetadata() {
       title,
       description,
       url: canonicalUrl,
-      type: 'website',
+      type: "website",
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title,
       description,
     },
     alternates: {
       canonical: canonicalUrl,
     },
-  }
+  };
 }
 
 export default function PrivacyPolicy() {
   return (
-    <section className="privacy-section">
+    <section className="pb-12">
       <HeadingBanner heading="Privacy Policy" />
-      <MotionDiv className="container">
-        <h2 className="text-lg font-semibold text-center">
+      <MotionDiv className="mx-auto mt-12 flex w-4/5 flex-col items-center gap-8">
+        <h2 className="text-center text-lg font-semibold">
           Privacy Policy for Ride.Rent & Myfleet.rent
         </h2>
 
         <h3 className="text-2xl font-semibold">Introduction</h3>
 
-        <h4 className="text-lg font-semibold -my-2">
-          <a href="https://ride.rent" target="_blank">
+        <h4 className="-my-2 text-lg font-semibold">
+          <a
+            className="text-blue-500 hover:underline"
+            href="https://ride.rent"
+            target="_blank"
+          >
             Ride.Rent
-          </a>{' '}
-          & it&apos;s sister portal,{' '}
-          <a href="https://myfleet.rent">MyFleet.rent</a>, are brands owned &
-          operated by  FleetOrbita
-          Internet Services/Ride Rent LLC.
+          </a>{" "}
+          & it&apos;s sister portal,{" "}
+          <a
+            className="text-blue-500 hover:underline"
+            href="https://myfleet.rent"
+          >
+            MyFleet.rent
+          </a>
+          , are brands owned & operated by FleetOrbita Internet Services/Ride
+          Rent LLC.
         </h4>
 
         <p className="text-center">
-          <span className="highlight"> FleetOrbita
-          Internet Services/Ride Rent LLC</span> is
-          dedicated to safeguarding your privacy and is committed to protecting
-          the personal information collected from you through our website
-          (hereinafter collectively referred to as the “Platform”). This Privacy
-          Policy outlines the manner in which we gather and use information. By
-          utilizing the services offered on our Platform (“Services”), you
-          consent to the terms of this policy. References to &apos;we&apos;,
-          &apos;us&apos;, or &apos;our&apos; within this policy pertain to{' '}
-          <span className="highlight"> FleetOrbita
-          Internet Services/Ride Rent LLC.</span> This
-          Privacy Policy complements any other terms and conditions applicable
-          to the Platform. Specific privacy terms provided in any documents by
-          us should be read in conjunction with this Privacy Policy.
+          <span className="font-bold text-black">
+            {" "}
+            FleetOrbita Internet Services/Ride Rent LLC
+          </span>{" "}
+          is dedicated to safeguarding your privacy and is committed to
+          protecting the personal information collected from you through our
+          website (hereinafter collectively referred to as the “Platform”). This
+          Privacy Policy outlines the manner in which we gather and use
+          information. By utilizing the services offered on our Platform
+          (“Services”), you consent to the terms of this policy. References to
+          &apos;we&apos;, &apos;us&apos;, or &apos;our&apos; within this policy
+          pertain to{" "}
+          <span className="highlight">
+            {" "}
+            FleetOrbita Internet Services/Ride Rent LLC.
+          </span>{" "}
+          This Privacy Policy complements any other terms and conditions
+          applicable to the Platform. Specific privacy terms provided in any
+          documents by us should be read in conjunction with this Privacy
+          Policy.
         </p>
 
         {/* external links section */}
         <div className="mr-auto">
-          <h4 className="text-lg font-semibold my-4 ">External Links</h4>
+          <h4 className="my-4 text-lg font-semibold">External Links</h4>
           <p>
-            {' '}
-            The website{' '}
-            <a target="_blank" href="https://ride.rent">
+            {" "}
+            The website{" "}
+            <a
+              className="text-blue-500 hover:underline"
+              target="_blank"
+              href="https://ride.rent"
+            >
               ride.rent
-            </a>{' '}
+            </a>{" "}
             is not responsible for the privacy policies of websites it links to.
             If you provide information to such third parties, different rules
             regarding the collection and use of your personal data may apply.
@@ -86,7 +104,7 @@ export default function PrivacyPolicy() {
 
         {/* Policy Updates section */}
         <div className="mr-auto">
-          <h4 className="text-lg font-semibold my-4 ">Policy Updates</h4>
+          <h4 className="my-4 text-lg font-semibold">Policy Updates</h4>
           <p>
             The Website Policies and Terms & Conditions may be updated
             periodically to meet the requirements and standards. Therefore,
@@ -103,8 +121,8 @@ export default function PrivacyPolicy() {
 
         {/* Information Collection  section */}
         <div className="mr-auto">
-          <h4 className="text-lg font-semibold my-4 ">
-            Information Collection{' '}
+          <h4 className="my-4 text-lg font-semibold">
+            Information Collection{" "}
           </h4>
           <p>
             When you use our Services, you may provide us with personal
@@ -115,7 +133,7 @@ export default function PrivacyPolicy() {
 
         {/* Cookies section */}
         <div className="mr-auto">
-          <h4 className="text-lg font-semibold my-4 ">Cookies</h4>
+          <h4 className="my-4 text-lg font-semibold">Cookies</h4>
           <p>
             When visiting our Platform, we may place one or more cookies (small
             files stored by your browser to recognize you and store your
@@ -131,7 +149,7 @@ export default function PrivacyPolicy() {
 
         {/*  Personal Information Collection and Use section */}
         <div className="mr-auto">
-          <h4 className="text-lg font-semibold my-4 ">
+          <h4 className="my-4 text-lg font-semibold">
             Personal Information Collection and Use
           </h4>
           <p className="mb-4">
@@ -139,7 +157,7 @@ export default function PrivacyPolicy() {
             improve our offerings, we may collect and process the following
             personal information:
           </p>
-          <ul className="list-disc list-inside space-y-2">
+          <ul className="list-inside list-disc space-y-2">
             <li>Contact details such as name, email, etc.</li>
             <li>
               Credit/debit card details and personally identifiable information
@@ -161,7 +179,7 @@ export default function PrivacyPolicy() {
 
         {/*   Usage of Personal Information section */}
         <div className="mr-auto">
-          <h4 className="text-lg font-semibold my-4 ">
+          <h4 className="my-4 text-lg font-semibold">
             Usage of Personal Information
           </h4>
           <p className="mb-4">
@@ -170,7 +188,7 @@ export default function PrivacyPolicy() {
             Privacy Policy. We may use your personal information in the
             following ways:
           </p>
-          <ul className="list-disc list-inside space-y-2">
+          <ul className="list-inside list-disc space-y-2">
             <li>To present Platform content effectively.</li>
             <li>
               To provide service information, products, or services as
@@ -190,16 +208,14 @@ export default function PrivacyPolicy() {
 
         {/*   Third-Party Disclosure section */}
         <div className="mr-auto">
-          <h4 className="text-lg font-semibold my-4 ">
-            Third-Party Disclosure
-          </h4>
+          <h4 className="my-4 text-lg font-semibold">Third-Party Disclosure</h4>
           <p className="mb-4">
             We do not sell, trade, rent, or share personal information for
             marketing purposes without your consent, except as outlined in this
             Privacy Policy. We may use your personal information in the
             following ways:
           </p>
-          <ul className="list-disc list-inside space-y-2">
+          <ul className="list-inside list-disc space-y-2">
             <li>To present Platform content effectively.</li>
             <li>
               To provide service information, products, or services as
@@ -219,7 +235,7 @@ export default function PrivacyPolicy() {
 
         {/* Data Retention section */}
         <div className="mr-auto">
-          <h4 className="text-lg font-semibold my-4 ">Data Retention</h4>
+          <h4 className="my-4 text-lg font-semibold">Data Retention</h4>
           <p>
             We retain personal data as long as your account is active or needed
             for services, financial reporting, legal obligations, dispute
@@ -229,7 +245,7 @@ export default function PrivacyPolicy() {
 
         {/* Communication Preferences section */}
         <div className="mr-auto">
-          <h4 className="text-lg font-semibold my-4 ">
+          <h4 className="my-4 text-lg font-semibold">
             Communication Preferences
           </h4>
           <p>
@@ -240,7 +256,7 @@ export default function PrivacyPolicy() {
 
         {/* Third-Party Advertisements and Links */}
         <div className="mr-auto">
-          <h2 className="font-bold text-lg mb-2">
+          <h2 className="mb-2 text-lg font-bold">
             Third-Party Advertisements and Links
           </h2>
           <p>
@@ -253,7 +269,7 @@ export default function PrivacyPolicy() {
 
         {/* Security */}
         <div className="mr-auto">
-          <h2 className="font-bold text-lg mb-2">Security</h2>
+          <h2 className="mb-2 text-lg font-bold">Security</h2>
           <p>
             We prioritize the security of your Personal Information and employ
             industry-standard technologies to protect against unauthorized
@@ -267,19 +283,21 @@ export default function PrivacyPolicy() {
 
         {/* Verification and Review */}
         <div className="mr-auto">
-          <h2 className="font-bold text-lg mb-2">Verification and Review</h2>
+          <h2 className="mb-2 text-lg font-bold">Verification and Review</h2>
           <p>
-            To verify or update the details you submitted to{' '}
-            <span className="highlight"> FleetOrbita
-            Internet Services/Ride Rent LLC</span>,
-            contact us via the provided email address. We may request proof of
+            To verify or update the details you submitted to{" "}
+            <span className="highlight">
+              {" "}
+              FleetOrbita Internet Services/Ride Rent LLC
+            </span>
+            , contact us via the provided email address. We may request proof of
             identity for security purposes.
           </p>
         </div>
 
         {/* Rights under CCPA and GDPR */}
         <div className="mr-auto">
-          <h2 className="font-bold text-lg mb-2">Rights under CCPA and GDPR</h2>
+          <h2 className="mb-2 text-lg font-bold">Rights under CCPA and GDPR</h2>
           <p>
             California residents and users subject to GDPR have specific rights
             regarding their personal data. These include the right to access,
@@ -291,7 +309,7 @@ export default function PrivacyPolicy() {
 
         {/* Applicable Law and Jurisdiction */}
         <div className="mr-auto">
-          <h2 className="font-bold text-lg mb-2">
+          <h2 className="mb-2 text-lg font-bold">
             Applicable Law and Jurisdiction
           </h2>
           <p>
@@ -303,16 +321,19 @@ export default function PrivacyPolicy() {
 
         {/* Contact Us  */}
         <div className="mr-auto">
-          <h2 className="font-bold text-lg mb-2">Contact Us</h2>
+          <h2 className="mb-2 text-lg font-bold">Contact Us</h2>
           <p>
             For queries, complaints, or recommendations about this Policy, or to
-            correct or update your personal information, contact us at{' '}
-            <a href="mailto:hello@ride.rent" className="">
+            correct or update your personal information, contact us at{" "}
+            <a
+              className="text-blue-500 hover:underline"
+              href="mailto:hello@ride.rent"
+            >
               hello@ride.rent
             </a>
           </p>
         </div>
       </MotionDiv>
     </section>
-  )
+  );
 }

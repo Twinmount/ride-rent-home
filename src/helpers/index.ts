@@ -6,7 +6,7 @@ import {
   UrlQueryParams,
 } from "@/types";
 import { CardRentalDetails } from "@/types/vehicle-types";
-import { VehicleDetailsResponse } from "@/types/vehicle-details-types";
+import { City, VehicleDetailsPageType } from "@/types/vehicle-details-types";
 import { IoIosSpeedometer } from "react-icons/io";
 import { FaCrown } from "react-icons/fa6";
 import { IoShieldCheckmark } from "react-icons/io5";
@@ -184,11 +184,11 @@ const formatSeatingCapacity = (seatingCapacity: string): string => {
 };
 
 // Helper function to generate dynamic FAQs for the vehicle details page
-export const generateDynamicFAQ = (
-  vehicle: VehicleDetailsResponse["result"],
-) => {
+export const generateDynamicFAQ = (vehicle: VehicleDetailsPageType) => {
   const seatingCapacitySpec = vehicle.specs["Seating Capacity"];
-  const availableCities = vehicle.cities.map((city) => city.label).join(", ");
+  const availableCities = vehicle.cities
+    .map((city: City) => city.label)
+    .join(", ");
 
   // Prepare the FAQ array
   const faqArray = [
@@ -316,6 +316,7 @@ export const generateCompanyProfilePageLink = (
   companyId: string,
 ): string => {
   const formattedCompanyName = formatToUrlFriendly(companyName);
+
   return `/profile/${formattedCompanyName}/${companyId}`;
 };
 
@@ -405,3 +406,58 @@ export const getFormattedPhoneNumber = (
   if (!countryCode || !phoneNumber) return null;
   return formatPhoneNumber(countryCode, phoneNumber);
 };
+
+/**
+ * Generates a URL for the listing page with the given filters
+ *
+ * @param {number[]} values - Array with 2 elements: minPrice and maxPrice
+ * @param {string} state - State to filter by
+ * @param {string} category - Category to filter by
+ * @param {string} selectedPeriod - Period to filter by
+ * @returns {string} URL for the listing page with the given filters
+ */
+export const generateListingUrl = (
+  values: number[],
+  state: string,
+  category: string,
+  selectedPeriod: "hour" | "day" | "week" | "month",
+): string => {
+  const [minPrice, maxPrice] = values;
+
+  return `/${state}/listing?category=${category}&price=${minPrice}-${maxPrice}&period=${selectedPeriod}`;
+};
+
+/**
+ * Returns a debounced version of the given function. The function will only be called
+ * once the debounce timer has expired. The timer is reset every time the function is
+ * called.
+ *
+ * @param {Function} callback - Function to debounce
+ * @param {number} delay - Debounce delay in milliseconds
+ * @returns {Function} Debounced function
+ */
+
+export const debounce = <T extends any[]>(
+  callback: (...args: T) => void,
+  delay: number,
+) => {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: T) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback(...args), delay);
+  };
+};
+
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * Capitalizes the first letter of a string and lowercases the rest.
+ *
+ * @param {string} input - String to capitalize
+ * @returns {string} Capitalized string
+ */
+/******  0150f7f5-2c9b-44ba-8f86-bcbf9330e37e  *******/ export function capitalizeFirstLetter(
+  input: string,
+): string {
+  if (!input) return ""; // Handle empty or undefined input
+  return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
+}
