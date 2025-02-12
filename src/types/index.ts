@@ -382,9 +382,15 @@ export interface FetchBrandsWithSeriesResponse {
   statusCode: number;
 }
 
+export type VehicleBrandSeriesWithCount = {
+  vehicleSeries: string; //actual series value
+  vehicleSeriesLabel: string; // actual series label
+  vehicleCount: number; // number of vehicles under the series
+};
+
 export interface FetchAllSeriesUnderBrandResponse {
   result: {
-    list: VehicleSeriesWithCount[];
+    list: VehicleBrandSeriesWithCount[];
     page: string;
     limit: string;
     total: number;

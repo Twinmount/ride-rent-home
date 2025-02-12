@@ -54,7 +54,7 @@ export default async function BrandSeriesPage({
   const list = data?.result?.list || [];
 
   return (
-    <div className="wrapper h-auto min-h-screen pt-6">
+    <div className="wrapper h-auto min-h-screen py-6">
       <AllSeriesPageHeading state={state} category={category} brand={brand} />
 
       <AllSeriesList state={state} list={list} brand={brand} />

@@ -32,10 +32,11 @@ export default async function VehicleSeriesPage({
   return (
     <div className="wrapper flex h-auto min-h-screen flex-col bg-lightGray pb-8 pt-4">
       <VehicleSeriesInfo series={series} state={state} />
+
       {hasVehicles ? (
         <>
           {/* initial first page of data (SSR) */}
-          <section className={`w-full`}>{data.vehicles}</section>
+          <section className={`mt-6 w-full`}>{data.vehicles}</section>
           <section>
             {/* infinitely loading remaining data from page 2 onwards (CSR) */}
             <LoadMoreSeries state={state} series={series} />

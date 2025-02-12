@@ -12,11 +12,11 @@ export default function SeriesListLink({
   series,
 }: SeriesListLinkProps) {
   return (
-    <li>
+    <li className="h-fit">
       <Link
         href={`/${state}/rent/${brandValue}/${series.seriesName}`}
         key={series.seriesName}
-        className="g group flex w-fit items-center text-base font-semibold text-gray-700 transition-all hover:translate-x-2 hover:text-yellow"
+        className="group flex w-fit items-center text-base font-semibold text-gray-700 transition-all hover:translate-x-2 hover:text-yellow"
         target="_blank"
       >
         &sdot;&nbsp;

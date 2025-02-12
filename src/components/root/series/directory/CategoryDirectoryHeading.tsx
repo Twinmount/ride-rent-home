@@ -1,4 +1,6 @@
+import { ENV } from "@/config/env";
 import { convertToLabel } from "@/helpers";
+import { CategoryDirectoryStatsResponse } from "@/types";
 
 type PropsType = {
   state: string;
@@ -10,20 +12,19 @@ export default async function CategoryDirectoryHeading({
   category,
 }: PropsType) {
   // // Construct the full URL
-  // const url = `${ENV.API_URL}/vehicle/home-page/`;
+  const url = `${ENV.API_URL}/vehicle-brand/vehicle-series/directory/heading?state=${state}&category=${category}`;
 
   // Fetch data using the generated URL
-  // const response = await fetch(url, {
-  //   method: "GET",
-  //   cache: "no-cache",
-  // });
+  const response = await fetch(url, {
+    method: "GET",
+    cache: "no-cache",
+  });
 
-  // Parse the JSON response
-  // const data: CategoryDirectoryStatsResponse = await response.json();
+  const data: CategoryDirectoryStatsResponse = await response.json();
 
-  // const count = data?.result || {};
+  const count = data?.result || {};
 
-  // const hasCount = count?.vehiclesCount && count?.brandsCount;
+  const hasCount = count?.vehiclesCount && count?.brandsCount;
 
   return (
     <div className="mb-8">
@@ -31,9 +32,12 @@ export default async function CategoryDirectoryHeading({
         {convertToLabel(category)} for rent in {convertToLabel(state)}
       </h1>
 
-      <h2 className="mb-4 text-lg md:text-xl">
-        {123} vehicles are available to choose from {123} brands
-      </h2>
+      {hasCount && (
+        <h2 className="mb-4 text-lg md:text-xl">
+          {count.vehiclesCount} vehicles are available to choose from{" "}
+          {count.brandsCount} brands
+        </h2>
+      )}
     </div>
   );
 }

@@ -38,7 +38,7 @@ export function SearchResults({
   if (!debouncedSearch || !search) {
     return (
       <div className="text-center text-sm italic text-gray-500">
-        Search brand, model, or vehicle series
+        Search brand, model, or series
       </div>
     );
   }

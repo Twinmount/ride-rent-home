@@ -12,7 +12,7 @@ export default async function AllSeriesPageHeading({
 }: PropsType) {
   return (
     <>
-      <h1 className="md:text3xl mb-6 text-2xl font-semibold lg:text-4xl">
+      <h1 className="md:text3xl custom-heading mb-6 text-2xl font-semibold lg:text-4xl">
         {convertToLabel(brand).toUpperCase()} series in {convertToLabel(state)}
       </h1>
     </>
