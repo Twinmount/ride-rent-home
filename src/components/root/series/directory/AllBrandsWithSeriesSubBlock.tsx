@@ -48,8 +48,8 @@ export default async function AllBrandsWithSeriesSubBlock({
     );
 
   return (
-    <div className="flex h-screen flex-col justify-between pb-10">
-      <div className="grid auto-rows-auto grid-cols-1 items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="flex h-auto min-h-[90vh] flex-col justify-between pb-10">
+      <div className="grid auto-rows-max grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {list.map((brand) => (
           <SeriesSubBlock
             key={brand.brandValue}

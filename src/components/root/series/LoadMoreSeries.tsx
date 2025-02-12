@@ -42,7 +42,7 @@ export default function LoadMoreSeries({ state, series }: LoadMoreSeriesProps) {
             <LoadingWheel />
           </div>
         ) : (
-          <div className="flex-center h-24">No more vehicles to load.</div>
+          <div className="flex-center h-24">You’ve reached the end!</div>
         )}
       </section>
     </>

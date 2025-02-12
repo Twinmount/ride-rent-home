@@ -1,4 +1,4 @@
-import { ENV } from "@/config/env";
+import BrandImage from "@/components/common/BrandImage";
 import { BrandType } from "@/types";
 import Link from "next/link";
 
@@ -15,8 +15,6 @@ export default function BrandsList({
   category,
   search,
 }: BrandsListProps) {
-  const baseAssetsUrl = ENV.ASSETS_URL;
-
   if (brands.length === 0)
     return (
       <div className="flex-center my-32">
@@ -38,9 +36,9 @@ export default function BrandsList({
           className="h-36 w-full min-w-32 rounded-xl border bg-white"
         >
           <div className="flex-center h-[6.5rem] w-auto p-2">
-            <img
-              src={`${baseAssetsUrl}/icons/brands/${category}/${data.brandValue}.png`}
-              alt={data.brandName}
+            <BrandImage
+              category={category}
+              brandValue={data.brandValue}
               className="h-full w-[95%] max-w-28 object-contain"
             />
           </div>

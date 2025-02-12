@@ -15,7 +15,7 @@ export default function SeriesSubBlock({
   return (
     <div
       key={brand.brandValue}
-      className="h-full min-h-fit w-full rounded-xl border bg-white p-4"
+      className="relative h-full w-full rounded-xl border bg-white p-4 pb-6"
     >
       {/* Brand Logo and title */}
       <BrandLogoWithTitle brand={brand} category={category} />
