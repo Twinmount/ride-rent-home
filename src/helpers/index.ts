@@ -413,19 +413,72 @@ export const getFormattedPhoneNumber = (
  * @param {number[]} values - Array with 2 elements: minPrice and maxPrice
  * @param {string} state - State to filter by
  * @param {string} category - Category to filter by
- * @param {string} selectedPeriod - Period to filter by
+ * @param {string | null} selectedPeriod - Period to filter by (can be null)
  * @returns {string} URL for the listing page with the given filters
  */
 export const generateListingUrl = (
   values: number[],
   state: string,
   category: string,
-  selectedPeriod: "hour" | "day" | "week" | "month",
+  selectedPeriod: "hour" | "day" | "week" | "month" | null, // Accept null
 ): string => {
+  if (!selectedPeriod) return "/"; // Fallback if no period
+
   const [minPrice, maxPrice] = values;
 
   return `/${state}/listing?category=${category}&price=${minPrice}-${maxPrice}&period=${selectedPeriod}`;
 };
+
+type PeriodType = "hour" | "day" | "week" | "month";
+
+const PERIOD_ORDER: PeriodType[] = ["day", "week", "month", "hour"];
+
+/**
+ * Formats and sorts available rental periods for price range filter.
+ * Ensures correct order: Daily, Weekly, Monthly, Hourly.
+ */
+export function formatAndSortPeriods(availablePeriods: PeriodType[]) {
+  const periodLabels: Record<PeriodType, string> = {
+    day: "Daily",
+    week: "Weekly",
+    month: "Monthly",
+    hour: "Hourly",
+  };
+
+  // Filter available periods in the correct order
+  return PERIOD_ORDER.filter((period) => availablePeriods.includes(period)).map(
+    (period) => ({
+      key: period,
+      label: periodLabels[period],
+    }),
+  );
+}
+
+type PriceRange = { min: number; max: number };
+
+/**
+ * Extract available rental periods in a sorted order.
+ */
+export function getAvailablePeriods(
+  result: Record<string, PriceRange | null> | undefined,
+): PeriodType[] {
+  const periodOrder: PeriodType[] = ["day", "week", "month", "hour"];
+
+  return periodOrder.filter((period) => result?.[period] !== null);
+}
+
+/**
+ * Adjusts min and max values to prevent issues when they are equal.
+ */
+export function adjustMinMaxIfEqual(priceRange: PriceRange): PriceRange {
+  if (priceRange.min === priceRange.max) {
+    return {
+      min: priceRange.min,
+      max: priceRange.min + 10, // Ensure a valid range
+    };
+  }
+  return priceRange;
+}
 
 /**
  * Returns a debounced version of the given function. The function will only be called

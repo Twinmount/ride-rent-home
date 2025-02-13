@@ -93,10 +93,10 @@ export interface FetchPriceRangeResponse {
   status: string;
   statusCode: number;
   result: {
-    day: PriceRange;
-    month: PriceRange;
-    hour: PriceRange;
-    week: PriceRange;
+    day: PriceRange | null;
+    month: PriceRange | null;
+    hour: PriceRange | null;
+    week: PriceRange | null;
   };
 }
 
