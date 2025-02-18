@@ -11,10 +11,7 @@ import TopBrands from "@/components/root/landing/TopBrands";
 import { Suspense } from "react";
 import { PageProps } from "@/types";
 import TrustedReviewsSection from "@/components/root/landing/trusted-reviews/TrustedReviewsSection";
-import {
-  fetchHomepageMetadata,
-  generateHomePageMetadata,
-} from "./landing-metadata";
+import { generateHomePageMetadata } from "./landing-metadata";
 import BrandsCarouselSkeleton from "@/components/skelton/BrandsCarouselSkeleton";
 import NewlyArrived from "@/components/root/landing/NewlyArrived";
 import VehicleCategoryAndFilter from "@/components/root/landing/VehicleCategoryAndFilter";
@@ -26,15 +23,8 @@ import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
 export async function generateMetadata({
   params: { state, category },
 }: PageProps): Promise<Metadata> {
-  const data = await fetchHomepageMetadata(state);
-
-  if (!data) {
-    throw new Error("Failed to fetch homepage metadata");
-  }
-
-  return generateHomePageMetadata(data, state, category);
+  return generateHomePageMetadata(state, category);
 }
-
 export default function Home({
   params: { state, category },
   searchParams,

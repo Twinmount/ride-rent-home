@@ -7,23 +7,24 @@ type MetaDataResponse = {
   };
 };
 
-export async function fetchHomepageMetadata(
+async function fetchHomepageMetadata(
   state: string,
+  category: string,
 ): Promise<MetaDataResponse | null> {
   const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
   try {
     const response = await fetch(
-      `${baseUrl}/metadata/homepage?state=${state}`,
+      `${baseUrl}/metadata/homepage?state=${state}&category=${category}`,
       {
         method: "GET",
+        cache: "reload",
+        next: {
+          revalidate: 1800,
+        },
       },
     );
-
-    if (!response.ok) {
-      return null;
-    }
-
+    if (!response.ok) return null;
     return await response.json();
   } catch (error) {
     console.error("Failed to fetch homepage metadata:", error);
@@ -31,17 +32,21 @@ export async function fetchHomepageMetadata(
   }
 }
 
-export function generateHomePageMetadata(
-  data: MetaDataResponse,
+export async function generateHomePageMetadata(
   state: string,
   category: string,
-): Metadata {
+): Promise<Metadata> {
+  const data = await fetchHomepageMetadata(state, category);
+
   if (!data?.result) {
     throw new Error("Failed to fetch homepage metadata");
   }
 
   const canonicalUrl = `https://ride.rent/${state}/${category}`;
   const ogImage = "/assets/icons/ride-rent.png";
+
+  const metaTitle = data.result.metaTitle;
+  const metaDescription = data.result.metaDescription;
 
   const shortTitle =
     data.result.metaTitle.length > 60
@@ -54,8 +59,8 @@ export function generateHomePageMetadata(
       : data.result.metaDescription;
 
   return {
-    title: data.result.metaTitle,
-    description: data.result.metaDescription,
+    title: metaTitle,
+    description: metaDescription,
     keywords: [
       "ride rent",
       "vehicle rental near me",
