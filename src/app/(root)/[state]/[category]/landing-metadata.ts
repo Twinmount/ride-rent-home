@@ -18,10 +18,7 @@ async function fetchHomepageMetadata(
       `${baseUrl}/metadata/homepage?state=${state}&category=${category}`,
       {
         method: "GET",
-        cache: "reload",
-        next: {
-          revalidate: 1800,
-        },
+        cache: "no-cache",
       },
     );
     if (!response.ok) return null;
