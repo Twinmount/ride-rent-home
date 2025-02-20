@@ -5,6 +5,7 @@ import SectionLoading from "@/components/skelton/section-loading/SectionLoading"
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { generateCategoryDirectoryPageMetadata } from "./metadata";
+import { extractCategory } from "@/helpers";
 
 type PageProps = {
   params: {
@@ -17,7 +18,13 @@ type PageProps = {
 export async function generateMetadata({
   params: { state, category },
 }: PageProps): Promise<Metadata> {
-  return generateCategoryDirectoryPageMetadata({ state, category });
+  // remove '-for-rent' from category
+  const categoryValue = extractCategory(category);
+
+  return generateCategoryDirectoryPageMetadata({
+    state,
+    category: categoryValue,
+  });
 }
 
 export default async function CategoryDirectoryPage({
@@ -26,15 +33,17 @@ export default async function CategoryDirectoryPage({
 }: PageProps) {
   const page = parseInt(searchParams.page || "1", 10);
 
+  const categoryValue = extractCategory(category);
+
   return (
     <div className="wrapper h-auto min-h-screen pt-6">
-      <CategoryDirectoryHeading state={state} category={category} />
+      <CategoryDirectoryHeading state={state} category={categoryValue} />
 
       <Suspense fallback={<SectionLoading />}>
         {/* Async Server Component */}
         <AllBrandsWithSeriesSubBlock
           state={state}
-          category={category}
+          category={categoryValue}
           page={page}
         />
       </Suspense>

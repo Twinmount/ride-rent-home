@@ -1,22 +1,27 @@
+import { convertToLabel } from "@/helpers";
 import { Metadata } from "next";
 
-export async function generateCategoryDirectoryPageMetadata({
+export async function generateDirectoryPageMetadata({
   state,
-  category,
 }: {
   state: string;
-  category: string;
 }): Promise<Metadata> {
-  const canonicalUrl = `https://ride.rent/${state}/directory/${category}`;
+  const canonicalUrl = `https://ride.rent/${state}/directory`;
   const ogImage = "/assets/icons/ride-rent.png";
 
+  // meta-title
+  const title = `Rent Cars, Yachts and Bikes in ${convertToLabel(state)} with Ride.Rent | Free Directory`;
+
+  // meta-description
+  const description = `The best vehicle rental database in ${convertToLabel(state)} | Choose from a vast list of cars, yachts and bikes with daily, weekly, and monthly options from verified agents.`;
+
   return {
-    title: "some title",
-    description: "some description",
+    title,
+    description,
     keywords: ["ride rent"],
     openGraph: {
-      title: "some title",
-      description: "some description",
+      title,
+      description,
       url: canonicalUrl,
       type: "website",
       images: [
@@ -30,8 +35,8 @@ export async function generateCategoryDirectoryPageMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: "some title",
-      description: "some description",
+      title,
+      description,
       images: [ogImage],
     },
     robots: {

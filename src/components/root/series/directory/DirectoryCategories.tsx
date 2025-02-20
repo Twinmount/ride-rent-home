@@ -74,7 +74,7 @@ function VehicleCategoryCard({
       className={`flex aspect-square h-[6rem] w-[7rem] cursor-pointer flex-col justify-center gap-[0.2rem]`}
     >
       <Link
-        href={`/${state}/directory/${cat.value}`}
+        href={`/${state}/vehicle-rentals/${cat.value}-for-rent`}
         className="flex h-full w-full flex-col items-center justify-between rounded-[0.6rem] border border-gray-200 bg-white transition-all hover:scale-[1.02] hover:shadow-md"
         target="_blank"
       >

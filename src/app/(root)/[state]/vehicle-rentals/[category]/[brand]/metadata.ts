@@ -1,3 +1,4 @@
+import { convertToLabel } from "@/helpers";
 import { Metadata } from "next";
 
 export async function generateSeriesListPageMetadata({
@@ -12,13 +13,19 @@ export async function generateSeriesListPageMetadata({
   const canonicalUrl = `https://ride.rent/${state}/directory/${category}/${brand}/list`;
   const ogImage = "/assets/icons/ride-rent.png";
 
+  // meta-title
+  const title = `Rent ${convertToLabel(brand)} ${convertToLabel(category)} in ${convertToLabel(state)} with Ride.Rent | Free Directory`;
+
+  // meta-description
+  const description = `Rent ${convertToLabel(brand)} ${convertToLabel(category)} in ${convertToLabel(state)} with Ride.Rent – a free directory for fast booking and the best rental deals on BMW Models!`;
+
   return {
-    title: "some title",
-    description: "some description",
+    title,
+    description,
     keywords: ["ride rent"],
     openGraph: {
-      title: "some title",
-      description: "some description",
+      title,
+      description,
       url: canonicalUrl,
       type: "website",
       images: [
@@ -32,8 +39,8 @@ export async function generateSeriesListPageMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: "some title",
-      description: "some description",
+      title,
+      description,
       images: [ogImage],
     },
     robots: {

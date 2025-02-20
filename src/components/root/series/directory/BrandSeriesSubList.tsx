@@ -57,7 +57,7 @@ const ViewAllSeries = ({
 }) => {
   return (
     <Link
-      href={`/${state}/directory/${category}/${brand}/list`}
+      href={`/${state}/vehicle-rentals/${category}-for-rent/${brand}`}
       className="flex-center absolute bottom-2 right-2 ml-auto mt-auto w-fit justify-end gap-2 rounded-xl border border-slate-800 px-3 py-1 text-sm transition-colors hover:bg-slate-700 hover:text-white"
       target="_blank"
     >

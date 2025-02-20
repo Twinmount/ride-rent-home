@@ -514,3 +514,13 @@ export const debounce = <T extends any[]>(
   if (!input) return ""; // Handle empty or undefined input
   return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
 }
+
+/**
+ * Removes the "-for-rent" suffix from a category string, if present.
+ *
+ * @param {string} category - Category string to process
+ * @returns {string} Processed category string
+ */
+export const extractCategory = (category: string): string => {
+  return category.replace(/-for-rent$/, "");
+};
