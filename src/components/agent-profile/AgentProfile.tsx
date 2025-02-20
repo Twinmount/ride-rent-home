@@ -56,7 +56,7 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
   const isCompanyValid = !!companyName || !!companyLogo;
 
   return (
-    <div className="mx-auto flex flex-col items-center justify-center rounded-lg border-b-2 border-gray-200 bg-white p-4 max-md:gap-y-6 md:flex-row lg:max-w-[90%] lg:justify-between xl:max-w-[80%]">
+    <div className="mx-auto flex flex-col items-center justify-center border-b-2 border-gray-300 p-4 max-md:gap-y-6 md:flex-row lg:max-w-[90%] lg:justify-between">
       {/* left box logo and company details*/}
       <div className="flex flex-col items-center sm:flex-row">
         {/* Left side profile image */}

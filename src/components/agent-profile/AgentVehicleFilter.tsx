@@ -28,7 +28,7 @@ export default function AgentVehicleFilter({ filters }: Props) {
       });
       router.push(newUrl, { scroll: false });
     },
-    [searchParams, router]
+    [searchParams, router],
   );
 
   useEffect(() => {
@@ -53,12 +53,12 @@ export default function AgentVehicleFilter({ filters }: Props) {
   }
 
   return (
-    <div className="flex-center flex-wrap gap-2 my-4">
+    <div className="flex-center my-4 mb-6 flex-wrap gap-2">
       {sortedFilters.map((filter) => (
         <div
           key={filter.value}
           onClick={() => updateFilterInUrl(filter.value)} // Update the filter when clicked
-          className={`font-medium shadow-md border h-6 md:h-8 flex-center hover:bg-yellow cursor-pointer bg-gray-200 hover:text-white rounded-[0.5rem] px-2 ${
+          className={`flex-center h-6 cursor-pointer rounded-[0.5rem] border bg-gray-200 px-2 font-medium shadow-md hover:bg-yellow hover:text-white md:h-8 ${
             currentFilter === filter.value
               ? "selected bg-yellow text-white"
               : ""
