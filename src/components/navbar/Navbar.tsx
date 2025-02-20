@@ -113,12 +113,6 @@ const NavbarWrapper = ({
 }) => {
   return (
     <motion.header
-      variants={{
-        visible: { y: 0 },
-        hidden: { y: "-100%" },
-      }}
-      animate={isHidden ? "hidden" : "visible"}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
       className={`global__padding fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-lightGray transition-all duration-200 ease-in-out`}
     >
       {children}
