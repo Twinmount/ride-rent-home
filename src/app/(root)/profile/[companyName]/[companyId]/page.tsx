@@ -61,7 +61,7 @@ export default async function AgentProfilePage({
   const filters = data.result.categories || [];
 
   return (
-    <section className="wrapper bg-white pb-8">
+    <section className="wrapper pb-8 pt-4">
       {/* agent details */}
       <AgentProfile companyDetails={companyDetails} />
 
