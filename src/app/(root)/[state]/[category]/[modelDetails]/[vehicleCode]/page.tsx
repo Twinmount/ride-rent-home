@@ -1,0 +1,190 @@
+import "./VehicleDetailsPage.scss";
+
+import ProfileCard from "@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard";
+import WhyOpt from "@/components/common/why-opt/WhyOpt";
+import Description from "@/components/root/vehicle-details/description/Description";
+import Specification from "@/components/root/vehicle-details/Specification";
+import DetailsSectionClientWrapper from "@/components/root/vehicle-details/DetailsSectionClientWrapper";
+import Images from "@/components/root/vehicle-details/Images";
+import VehicleFeatures from "@/components/root/vehicle-details/features/Features";
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import RelatedResults from "@/components/root/vehicle-details/RelatedResults";
+import {
+  ProfileCardDataType,
+  VehicleDetailsPageResponse,
+} from "@/types/vehicle-details-types";
+import RelatedLinks from "@/components/root/vehicle-details/RelatedLinks";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+import { formatVehicleSpecification } from "@/helpers";
+import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
+import { fetchVehicleData, generateVehicleMetadata } from "./metadata";
+import RentalInfo from "@/components/root/vehicle-details/RentalInfo";
+import NoDeposit from "@/components/root/vehicle-details/NoDeposit";
+import AddOnServices from "@/components/root/vehicle-details/AddOnServices";
+import Location from "@/components/root/vehicle-details/Location";
+import CurrentPageBreadcrumb from "@/components/root/vehicle-details/CurrentPageBreadcrumb";
+import { restoreVehicleCodeFormat } from ".";
+import { ENV } from "@/config/env";
+
+type ParamsProps = {
+  params: { state: string; category: string; vehicleCode: string };
+};
+
+// dynamic meta data generate
+export async function generateMetadata({
+  params: { state, category, vehicleCode },
+}: ParamsProps): Promise<Metadata> {
+  const data = await fetchVehicleData(vehicleCode);
+
+  if (!data || data.status === "NOT_SUCCESS" || !data.result) {
+    return notFound();
+  }
+
+  return generateVehicleMetadata(data, state, category, vehicleCode);
+}
+
+export default async function VehicleDetails({
+  params: { state, category, vehicleCode },
+}: ParamsProps) {
+  const baseUrl = ENV.API_URL;
+
+  const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
+
+  // Fetch the vehicle data from the API
+  const response = await fetch(
+    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}`,
+    {
+      method: "GET",
+      cache: "no-cache",
+    },
+  );
+
+  const data: VehicleDetailsPageResponse = await response.json();
+
+  if (
+    data?.status === "NOT_SUCCESS" ||
+    response.status === 400 ||
+    !data.result
+  ) {
+    return notFound();
+  }
+
+  const vehicle = data.result;
+
+  // prop data for profile card and mobile profile card
+  const ProfileCardData: ProfileCardDataType = {
+    company: vehicle?.company,
+    rentalDetails: vehicle?.rentalDetails,
+    vehicleId: vehicle.vehicleId,
+    vehicleCode: vehicle.vehicleCode,
+    isLease: vehicle.isAvailableForLease,
+    vehicleData: {
+      brandName: vehicle.brand.value,
+      model: vehicle.modelName,
+      state: state,
+      category: category,
+    },
+    securityDeposit: vehicle.securityDeposit,
+    vehicleTitle: vehicle.vehicleTitle,
+  };
+
+  return (
+    <section className="vehicle-details-section wrapper">
+      {/* Details heading */}
+      <MotionDiv className="heading-box">
+        <h1 className="custom-heading model-name">
+          {vehicle?.vehicleTitle || vehicle.modelName}
+        </h1>
+        {/* sub heading */}
+        <RentalInfo
+          modelName={vehicle?.modelName}
+          stateLabel={vehicle?.state.label}
+          isCryptoAccepted={vehicle?.company.companySpecs.isCryptoAccepted}
+          rentalDetails={vehicle?.rentalDetails}
+        />
+
+        <div className="important-features">
+          <div className="spec-deposit-container">
+            {/* no deposit box */}
+            {!vehicle.securityDeposit.enabled && <NoDeposit />}
+
+            <div className="specification-info">
+              Specification:{" "}
+              {formatVehicleSpecification(vehicle.vehicleSpecification)}
+            </div>
+
+            {/* add-on services */}
+            <AddOnServices
+              additionalVehicleTypes={vehicle.additionalVehicleTypes}
+            />
+          </div>
+        </div>
+
+        {/* state and cities */}
+        <Location
+          stateLabel={vehicle?.state.label}
+          cities={vehicle?.cities || []}
+        />
+      </MotionDiv>
+
+      {/* breadcrumb for current page path*/}
+      <CurrentPageBreadcrumb
+        category={category}
+        state={state}
+        vehicleTitle={vehicle?.vehicleTitle}
+      />
+
+      {/* Wrapper to handle client side logic regarding mobile profile card */}
+      <DetailsSectionClientWrapper profileData={ProfileCardData}>
+        {/* Vehicle Details Section */}
+        <section className="details-section">
+          <div className="details-container">
+            {/* container left */}
+            <div className="details">
+              {/* Vehicle Images Slider */}
+              <Images photos={vehicle?.vehiclePhotos} />
+
+              {/* Vehicle Specifications */}
+              <Specification
+                specifications={vehicle?.specs}
+                vehicleCategory={category}
+              />
+
+              {/* Vehicle Features */}
+              <VehicleFeatures
+                features={vehicle?.features}
+                vehicleCategory={category}
+              />
+            </div>
+
+            {/* container right side */}
+            <div className="right">
+              {/* Right Side Profile Card */}
+              <ProfileCard profileData={ProfileCardData} />
+
+              {/* Right Side Quick Links */}
+              <RelatedLinks state={state} />
+            </div>
+          </div>
+        </section>
+      </DetailsSectionClientWrapper>
+
+      {/* related result */}
+      <RelatedResults
+        state={state}
+        category={category}
+        vehicleCode={vehicleCode}
+      />
+
+      {/* Description */}
+      <Description description={vehicle.description} />
+
+      {/* FAQ */}
+      <DynamicFAQ vehicle={vehicle} />
+
+      {/* Why Opt Ride.Rent  */}
+      <WhyOpt state={state} category={category} />
+    </section>
+  );
+}

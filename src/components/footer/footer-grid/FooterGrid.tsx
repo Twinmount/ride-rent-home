@@ -1,14 +1,13 @@
-import './FooterGrid.scss'
-import React, { Suspense } from 'react'
-import MotionDiv from '../../general/framer-motion/MotionDiv'
-import FooterLocations from './locations/FooterLocations'
-import FooterVehicleCategories from './vehicle-categories/FooterVehicleCategories'
-import FooterQuickLinks from './quick-links/FooterQuickLinks'
-import { CompanyLinks } from './company-links/CompanyLinks'
+import React, { Suspense } from "react";
+import MotionDiv from "../../general/framer-motion/MotionDiv";
+import FooterLocations from "./FooterLocations";
+import FooterVehicleCategories from "./FooterVehicleCategories";
+import FooterQuickLinks from "./FooterQuickLinks";
+import { CompanyLinks } from "./CompanyLinks";
 
 const FooterGrid = () => {
   return (
-    <MotionDiv className="footer-grid wrapper ">
+    <MotionDiv className="mx-auto grid w-full grid-cols-2 gap-4 pb-8 md:max-w-[90%] md:grid-cols-4 lg:max-w-[80%] xl:max-w-[70%]">
       <FooterLocations />
 
       {/* links for the company */}
@@ -24,7 +23,7 @@ const FooterGrid = () => {
         <FooterQuickLinks />
       </Suspense>
     </MotionDiv>
-  )
-}
+  );
+};
 
-export default FooterGrid
+export default FooterGrid;

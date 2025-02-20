@@ -1,82 +1,63 @@
 import type { Metadata } from "next";
 import FAQ from "@/components/common/FAQ/FAQ";
-import SectionLoading from "@/components/general/section-loading/SectionLoading";
-import Affordable from "@/components/root/landing/affordable/Affordable";
+import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
 import Documents from "@/components/root/landing/documents/Documents";
 import RideRentFeatures from "@/components/root/landing/features/Features";
-import Landing from "@/components/root/landing/landing/Landing";
-import Latest from "@/components/root/landing/latest/Latest";
 import Locations from "@/components/common/locations/Locations";
 import States from "@/components/root/landing/states/States";
-import MostPopular from "@/components/root/landing/most-popular/MostPopular";
-import NewlyArrived from "@/components/root/landing/newly-arrived/NewlyArrived";
-import Promotions from "@/components/root/landing/promotion/Promotions";
-import TopBrands from "@/components/root/landing/top-brands/TopBrands";
-import VehicleTypes from "@/components/root/landing/vehicle-types/VehicleTypes";
+import MainGrid from "@/components/root/landing/MainGrid";
+import Recommended from "@/components/root/landing/Recommended";
+import TopBrands from "@/components/root/landing/TopBrands";
 import { Suspense } from "react";
 import { PageProps } from "@/types";
-import HourlyRentals from "@/components/root/landing/hourly-rentals/HourlyRentals";
 import TrustedReviewsSection from "@/components/root/landing/trusted-reviews/TrustedReviewsSection";
-import {
-  fetchHomepageMetadata,
-  generateHomePageMetadata,
-} from "./landing-metadata";
+import { generateHomePageMetadata } from "./landing-metadata";
+import BrandsCarouselSkeleton from "@/components/skelton/BrandsCarouselSkeleton";
+import NewlyArrived from "@/components/root/landing/NewlyArrived";
+import VehicleCategoryAndFilter from "@/components/root/landing/VehicleCategoryAndFilter";
+import HeroSection from "@/components/root/landing/HeroSection";
+import VehicleCardSkeletonGrid from "@/components/skelton/VehicleCardSkeleton";
+import VehicleCardCarouselSkeleton from "@/components/skelton/VehicleCardCarouselSkeleton";
+import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
 
 export async function generateMetadata({
   params: { state, category },
 }: PageProps): Promise<Metadata> {
-  const data = await fetchHomepageMetadata(state);
-
-  if (!data) {
-    throw new Error("Failed to fetch homepage metadata");
-  }
-
-  return generateHomePageMetadata(data, state, category);
+  return generateHomePageMetadata(state, category);
 }
-
-export default function Home({ params: { state, category } }: PageProps) {
+export default function Home({
+  params: { state, category },
+  searchParams,
+}: PageProps) {
+  // accessing vehicle type from the url if its available for the MainGrid component.
+  const vehicleType = searchParams.type;
   return (
     <>
-      <Landing state={state} category={category} />
-      <VehicleTypes state={state} category={category} />
+      <HeroSection state={state} category={category} />
+      <VehicleCategoryAndFilter />
 
-      <Suspense fallback={<SectionLoading />}>
-        <MostPopular state={state} category={category} />
+      <Suspense fallback={<VehicleCardSkeletonGrid />}>
+        <MainGrid state={state} category={category} vehicleType={vehicleType} />
       </Suspense>
 
-      <Suspense fallback={<SectionLoading />}>
+      <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
         <TopBrands state={state} category={category} />
       </Suspense>
 
-      <Suspense fallback={<SectionLoading />}>
-        <Latest state={state} category={category} />
-      </Suspense>
-
-      <Suspense fallback={<SectionLoading />}>
+      <Suspense fallback={<VehicleCardCarouselSkeleton />}>
         <NewlyArrived state={state} category={category} />
       </Suspense>
 
-      <Suspense fallback={<SectionLoading />}>
-        <HourlyRentals state={state} category={category} />
-      </Suspense>
-
-      <Suspense fallback={<SectionLoading />}>
-        <Affordable state={state} category={category} />
-      </Suspense>
-
-      <Suspense fallback={<SectionLoading />}>
+      <Suspense fallback={<StatesGridSkeleton />}>
         <States category={category} />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
-        <Promotions state={state} />
+        <Recommended state={state} />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
         <RideRentFeatures state={state} category={category} />
-      </Suspense>
-
-      <Suspense fallback={<SectionLoading />}>
         <Documents state={state} category={category} />
       </Suspense>
 

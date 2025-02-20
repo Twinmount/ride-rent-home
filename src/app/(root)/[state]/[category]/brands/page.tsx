@@ -1,10 +1,12 @@
 import { Suspense } from "react";
 import BrandSearch from "@/components/root/brand/BrandSearch";
 import { FetchBrandsResponse } from "@/types";
-import Link from "next/link";
-import Pagination from "@/components/general/pagination/Pagination";
+import Pagination from "@/components/common/Pagination";
 import { singularizeType } from "@/helpers";
-import BackButton from "@/components/common/back-btn/BackButton";
+import BackButton from "@/components/common/BackButton";
+import { ENV } from "@/config/env";
+import BrandsList from "@/components/root/brand/BrandsList";
+import { generateBrandsListingPageMetadata } from "./metadata";
 
 type ParamsProps = {
   params: { state: string; category: string };
@@ -18,47 +20,19 @@ export const revalidate = 600;
 export async function generateMetadata({
   params: { state, category },
 }: ParamsProps) {
-  const canonicalUrl = `https://ride.rent/${state}/${category}/brands`;
-  const title = `Explore Vehicle Brands - ${singularizeType(
-    category
-  )} in ${state}`;
-  const description = `Browse and explore top vehicle brands for ${singularizeType(
-    category
-  )} rentals in ${state}. Find the perfect brand to suit your needs.`;
-
-  return {
-    title,
-    description,
-    keywords: `vehicle brands, ${singularizeType(
-      category
-    )}, ${state}, vehicle rental brands`,
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-    alternates: {
-      canonical: canonicalUrl,
-    },
-  };
+  return generateBrandsListingPageMetadata({ state, category });
 }
 
 export default async function Brands({
   params: { state, category },
   searchParams,
 }: ParamsProps) {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = ENV.API_URL;
   const page = parseInt(searchParams.page || "1", 10);
   const search = searchParams.search || "";
 
   const response = await fetch(
-    `${baseUrl}/vehicle-brand/list?page=${page}&limit=20&sortOrder=ASC&categoryValue=${category}&search=${search}`
+    `${baseUrl}/vehicle-brand/list?page=${page}&limit=20&sortOrder=ASC&categoryValue=${category}&search=${search}`,
   );
 
   // Parse the JSON response
@@ -68,14 +42,12 @@ export default async function Brands({
   const brands = data?.result?.list || [];
   const totalPages = data?.result?.totalNumberOfPages || 1;
 
-  const baseAssetsUrl = process.env.ASSETS_URL;
-
   return (
-    <section className=" wrapper">
+    <section className="wrapper pb-8">
       <div>
-        <div className="flex items-center mt-24 justify-start gap-x-4">
+        <div className="mt-24 flex items-center justify-start gap-x-4">
           <BackButton />
-          <h1 className="text-2xl lg:text-4xl font-semibold mb-4 uppercase">
+          <h1 className="mb-4 text-2xl font-semibold uppercase lg:text-4xl">
             <span className="text-yellow"> {singularizeType(category)}</span>{" "}
             Brands
           </h1>
@@ -87,37 +59,12 @@ export default async function Brands({
         </Suspense>
 
         {/* brands data */}
-        {brands.length > 0 ? (
-          <div className="!grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-y-4 pb-20">
-            {brands.map((data) => (
-              <Link
-                href={`/${state}/listing?category=${category}&brand=${data.brandValue}`}
-                key={data.id}
-                className="w-full bg-white border min-w-32 h-36 rounded-xl"
-              >
-                <div className="flex-center w-auto h-[6.5rem] p-2 ">
-                  <img
-                    src={`${baseAssetsUrl}/icons/brands/${category}/${data.brandValue}.png`}
-                    alt={data.brandName}
-                    className="object-contain w-[95%] h-full max-w-28"
-                  />
-                </div>
-                <div className="max-w-full text-sm font-semibold text-center">
-                  {data.brandName}
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="flex-center my-32">
-            No Brands found&nbsp;
-            {search.length > 0 && (
-              <span>
-                for <span className="italic">&quot;{search}&quot;</span>
-              </span>
-            )}
-          </div>
-        )}
+        <BrandsList
+          brands={brands}
+          state={state}
+          category={category}
+          search={search}
+        />
       </div>
 
       <Suspense fallback={<div>Loading Pagination...</div>}>

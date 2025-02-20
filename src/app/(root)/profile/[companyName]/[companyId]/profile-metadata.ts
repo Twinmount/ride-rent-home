@@ -11,7 +11,7 @@ type FetchCompanyDetailsResponse = {
 };
 
 export async function fetchCompanyDetails(
-  companyId: string,
+  companyId: string
 ): Promise<FetchCompanyDetailsResponse | null> {
   const baseUrl = process.env.API_URL;
 
@@ -21,7 +21,7 @@ export async function fetchCompanyDetails(
       {
         method: "GET",
         cache: "no-cache",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -37,7 +37,7 @@ export async function fetchCompanyDetails(
 
 export function generateCompanyMetadata(
   companyDetails: FetchCompanyDetailsResponse["result"],
-  companyId: string,
+  companyId: string
 ): Metadata {
   if (!companyDetails) {
     notFound();

@@ -207,7 +207,7 @@ export type VehicleCardType = {
   isTabbySupported: boolean;
 };
 
-// API response type for fetching vehicle cards
+// API response type for FetchVehicleByFilters api function
 export interface FetchVehicleCardsResponse {
   status: string;
   result: {

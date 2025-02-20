@@ -84,6 +84,22 @@ export interface FetchTypesResponse {
   statusCode: number;
 }
 
+export type PriceRange = {
+  min: number;
+  max: number;
+};
+
+export interface FetchPriceRangeResponse {
+  status: string;
+  statusCode: number;
+  result: {
+    day: PriceRange | null;
+    month: PriceRange | null;
+    hour: PriceRange | null;
+    week: PriceRange | null;
+  };
+}
+
 // type of single brand
 export interface BrandType {
   id: string;
@@ -256,6 +272,7 @@ export enum VehicleHomeFilter {
   TOP_BRANDS = "top-brands",
   LATEST_MODELS = "latest-models",
   HOURLY_RENTAL_VEHICLE = "hourly-rental-vehicle",
+  NONE = "none",
 }
 
 export type CompanyProfileDataType = {
@@ -263,7 +280,7 @@ export type CompanyProfileDataType = {
   companyLogo: string | null;
   companyAddress: string | null;
   companyLanguages: string[];
-  state: string | null; 
+  state: string | null;
   languages: string[];
   contactDetails: ContactDetails | null;
   categories: {
@@ -274,6 +291,111 @@ export type CompanyProfileDataType = {
 
 export interface FetchCompanyDetailsResponse {
   result: CompanyProfileDataType;
+  status: string;
+  statusCode: number;
+}
+
+export type VehicleSeriesSearchItems = {
+  title: string;
+  code: string;
+  _id: string;
+  brand: string;
+};
+export type VehicleSearchItems = {
+  title: string;
+  code: string;
+  _id: string;
+  category: string;
+};
+
+export interface FetchSearchResultsResponse {
+  status: string;
+  result: {
+    vehicleSeries: VehicleSeriesSearchItems[];
+    vehicle: VehicleSearchItems[];
+  };
+  statusCode: number;
+}
+
+export interface FetchVehicleSeriesInfo {
+  status: string;
+  result: {
+    vehicleSeriesId: string;
+    vehicleSeries: string;
+    vehicleSeriesMetaTitle: string;
+    vehicleSeriesMetaDescription: string;
+    vehicleSeriesPageHeading: string;
+    vehicleSeriesPageSubheading: string;
+    vehicleSeriesInfoTitle: string;
+    vehicleSeriesInfoDescription: string;
+    seriesCode: string;
+  };
+  statusCode: number;
+}
+
+export interface CategoryDirectoryStatsResponse {
+  status: string;
+  result: {
+    brandsCount: number;
+    vehiclesCount: number;
+  };
+  statusCode: number;
+}
+
+// individual  type
+export interface DirectoryCategory {
+  name: string; // Sports Car
+  value: string; // sports-car
+  vehicleCount: number; // 123
+}
+
+// response for fetch all categories for directory
+export interface FetchCategoriesForDirectory {
+  status: string;
+  result: DirectoryCategory[]; // Array of categories
+  statusCode: number;
+}
+
+export type VehicleSeriesWithCount = {
+  seriesName: string; //actual series value
+  seriesLabel: string; // actual series label
+  vehicleCount: number; // number of vehicles under the series
+};
+
+export interface SeriesUnderBrandType {
+  brandName: string;
+  brandValue: string;
+  vehicleSeries: VehicleSeriesWithCount[]; // Array of series , at most 5 series, at least 1
+  seriesCount: number; // total count of the series under that state/brand
+}
+
+//  interface for the get-all-brands-with-series-sub-list API response
+export interface FetchBrandsWithSeriesResponse {
+  result: {
+    list: SeriesUnderBrandType[]; // Array of brands which has atleast 1 series in it.
+    page: string;
+    limit: string;
+    total: number;
+    totalNumberOfPages: number;
+  };
+  status: string;
+  statusCode: number;
+}
+
+export type VehicleBrandSeriesWithCount = {
+  vehicleSeries: string; //actual series value
+  vehicleSeriesLabel: string; // actual series label
+  vehicleCount: number; // number of vehicles under the series
+};
+
+export interface FetchAllSeriesUnderBrandResponse {
+  result: {
+    list: VehicleBrandSeriesWithCount[];
+    page: string;
+    limit: string;
+    total: number;
+    totalNumberOfPages: number;
+  };
   status: string;
   statusCode: number;
 }

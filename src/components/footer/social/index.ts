@@ -10,22 +10,37 @@ export const socials = [
     id: 1,
     icon: FaFacebookF,
     link: "https://www.facebook.com/people/Ride-Rent/61567306207466/",
+    label: "Facebook",
   },
-  { id: 2, icon: FaXTwitter, link: "https://x.com/rentrideglobal" },
+  {
+    id: 2,
+    icon: FaXTwitter,
+    link: "https://x.com/rentrideglobal",
+    label: "Twitter",
+  },
   {
     id: 3,
     icon: FaInstagram,
     link: "https://www.instagram.com/ride.rentofficial/",
+    label: "Instagram",
   },
-  { id: 4, icon: FaYoutube, link: " https://www.youtube.com/@ride.rentglobal" },
+  {
+    id: 4,
+    icon: FaYoutube,
+    link: "https://www.youtube.com/@ride.rentglobal",
+    label: "YouTube",
+  },
   {
     id: 5,
     icon: FaPinterestP,
-    link: " https://www.pinterest.com/ridearentglobal",
+    link: "https://www.pinterest.com/ridearentglobal",
+    label: "Pinterest",
   },
   {
     id: 6,
     icon: FaLinkedinIn,
     link: "https://www.linkedin.com/company/ride-rent",
+    label: "LinkedIn",
   },
 ];
+
