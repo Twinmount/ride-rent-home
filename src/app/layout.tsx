@@ -1,5 +1,5 @@
 import "./globals.scss";
-import { ReactQueryProvider } from "@/utils/ReactQueryProvider";
+import { ReactQueryProvider } from "@/app/ReactQueryProvider";
 import type { Metadata } from "next";
 import { Fira_Sans } from "next/font/google";
 
