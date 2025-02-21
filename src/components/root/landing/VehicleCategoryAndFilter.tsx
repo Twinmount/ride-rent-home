@@ -10,10 +10,9 @@ export default function VehicleCategoryAndFilter() {
 
   return (
     <div
-      className={`sticky z-30 mb-4 flex items-center justify-between bg-lightGray py-2 ${isHidden && "shadow"}`}
+      className={`sticky z-30 mb-4 flex items-center justify-between bg-lightGray py-2`}
       style={{
-        top: isHidden ? "-0.1rem" : "3.9rem",
-        transition: "top 0.3s ease-in-out",
+        top: "3.9rem",
       }}
     >
       <div

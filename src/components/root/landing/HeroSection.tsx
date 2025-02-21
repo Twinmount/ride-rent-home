@@ -1,6 +1,5 @@
 import { SearchDialog } from "@/components/dialog/search-dialog/SearchDialog";
 import { TypewriterEffect } from "@/components/ui/typewriter-effect";
-import { convertToLabel } from "@/helpers";
 
 type HeroSectionProps = {
   state: string;
@@ -16,16 +15,15 @@ export default function HeroSection({ state, category }: HeroSectionProps) {
       <div className="relative z-10">
         <div className="container py-5">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="">Discover the best options in Ride.Rent</p>
+            <p className="">The fastest way to find a vehicle for rent</p>
 
             <div className="mt-4 max-w-2xl">
               <TypewriterEffect state={state} category={category} />
             </div>
             <div className="mt-5 max-w-3xl">
               <p className="text-lightGray-foreground text-base lg:text-lg">
-                Whether you&apos;re in {convertToLabel(state)} or exploring
-                beyond, find the perfect {convertToLabel(category)} that fits
-                your journey.
+                Explore 1000+ options & pick your favorite, from the Toyota
+                Yaris to the Ferrari&nbsp;296&nbsp;GTB.
               </p>
             </div>
           </div>

@@ -16,6 +16,7 @@ const generateWordsArray = (state: string, category: string) => {
 
   return [
     { text: "Rent", className: "text-slate-800" },
+    { text: "a", className: "text-slate-800" },
     ...splitIntoWords(convertToLabel(category), "text-slate-850"),
     { text: "In", className: "text-slate-800" },
     ...splitIntoWords(convertToLabel(state), "text-slate-850"),
