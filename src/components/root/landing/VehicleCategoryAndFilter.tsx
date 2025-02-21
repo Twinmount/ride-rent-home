@@ -1,13 +1,11 @@
 "use client";
 
 import VehicleTypesCarousel from "./vehicle-types-carousel/VehicleTypesCarousel";
-import { useNavbar } from "@/context/NavbarContext";
 import VehicleCategories from "./VehicleCategories";
 import PriceFilterDialog from "../../dialog/price-filter-dialog/PriceFilterDialog";
 
 export default function VehicleCategoryAndFilter() {
-  const { isHidden } = useNavbar();
-
+ 
   return (
     <div
       className={`sticky z-30 mb-4 flex items-center justify-between bg-lightGray py-2`}

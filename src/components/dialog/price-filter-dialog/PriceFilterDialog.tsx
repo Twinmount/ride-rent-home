@@ -12,7 +12,7 @@ import {
 
 import { PriceRangeSlider } from "@/components/ui/price-range-slider";
 import Link from "next/link";
-import { convertToLabel, generateListingUrl } from "@/helpers";
+import {  generateListingUrl } from "@/helpers";
 import PriceDialogTrigger from "./PriceDialogTrigger";
 import RentalPeriod from "./RentalPeriod";
 import MinAndMaxPrice from "./MinAndMaxPrice";
