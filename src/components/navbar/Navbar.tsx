@@ -3,15 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import StatesDropdown from "./StatesDropdown";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { motion} from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldExclude } from "@/hooks/useShouldExclude";
-import { useNavbar } from "@/context/NavbarContext";
 import MobileSidebar from "../sidebar/MobileSidebar";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
 
 export const Navbar = () => {
-  const { isHidden, setIsHidden } = useNavbar();
   const params = useParams<{ state: string; category: string }>();
 
   const state = params.state || "dubai";
@@ -20,19 +18,8 @@ export const Navbar = () => {
   // should state/category/quickLinks dropdowns render
   const shouldRenderDropdowns = useShouldExclude({ isCategory: false });
 
-  const { scrollY } = useScroll();
-
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    const previous = scrollY.getPrevious() ?? 0;
-    if (latest > previous && latest > 150) {
-      setIsHidden(true);
-    } else {
-      setIsHidden(false);
-    }
-  });
-
   return (
-    <NavbarWrapper isHidden={isHidden}>
+    <NavbarWrapper>
       <nav className={`flex-between w-full`}>
         <div className="flex w-fit items-center justify-center">
           <div className="w-fit p-0">
@@ -106,19 +93,11 @@ export const Navbar = () => {
  */
 const NavbarWrapper = ({
   children,
-  isHidden,
 }: {
   children: React.ReactNode;
-  isHidden: boolean;
 }) => {
   return (
     <motion.header
-      variants={{
-        visible: { y: 0 },
-        hidden: { y: "-100%" },
-      }}
-      animate={isHidden ? "hidden" : "visible"}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
       className={`global__padding fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-lightGray transition-all duration-200 ease-in-out`}
     >
       {children}

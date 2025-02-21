@@ -12,7 +12,7 @@ import {
 
 import { PriceRangeSlider } from "@/components/ui/price-range-slider";
 import Link from "next/link";
-import { convertToLabel, generateListingUrl } from "@/helpers";
+import {  generateListingUrl } from "@/helpers";
 import PriceDialogTrigger from "./PriceDialogTrigger";
 import RentalPeriod from "./RentalPeriod";
 import MinAndMaxPrice from "./MinAndMaxPrice";
@@ -64,14 +64,7 @@ export default function PriceFilterDialog({
       <DialogContent className="!max-h-fit !w-[80vw] overflow-hidden rounded-2xl bg-white !px-2 py-4">
         <DialogHeader>
           <DialogTitle className="text-center text-lg text-gray-700">
-            Filter Price Range for{" "}
-            <span className="font-semibold text-black">
-              {convertToLabel(category)}
-            </span>{" "}
-            in{" "}
-            <span className="font-semibold text-black">
-              {convertToLabel(state)}
-            </span>
+            Find one that fits your budget
           </DialogTitle>
         </DialogHeader>
 

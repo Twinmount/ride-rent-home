@@ -7,6 +7,7 @@ import { FetchAllSeriesUnderBrandResponse } from "@/types";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { generateSeriesListPageMetadata } from "./metadata";
+import { extractCategory } from "@/helpers";
 
 type PageProps = {
   params: {
@@ -20,7 +21,13 @@ type PageProps = {
 export async function generateMetadata({
   params: { state, category, brand },
 }: PageProps): Promise<Metadata> {
-  return generateSeriesListPageMetadata({ state, category, brand });
+  const categoryValue = extractCategory(category);
+
+  return generateSeriesListPageMetadata({
+    state,
+    category: categoryValue,
+    brand,
+  });
 }
 
 export default async function BrandSeriesPage({
@@ -28,6 +35,8 @@ export default async function BrandSeriesPage({
   searchParams,
 }: PageProps) {
   const page = parseInt(searchParams.page || "1", 10);
+
+  const categoryValue = extractCategory(category);
 
   const params = new URLSearchParams({
     page: page.toString(),
@@ -55,7 +64,11 @@ export default async function BrandSeriesPage({
 
   return (
     <div className="wrapper h-auto min-h-screen py-6">
-      <AllSeriesPageHeading state={state} category={category} brand={brand} />
+      <AllSeriesPageHeading
+        state={state}
+        category={categoryValue}
+        brand={brand}
+      />
 
       <AllSeriesList state={state} list={list} brand={brand} />
 

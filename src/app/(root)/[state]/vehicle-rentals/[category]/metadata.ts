@@ -1,20 +1,26 @@
+import { convertToLabel } from "@/helpers";
 import { Metadata } from "next";
 
-export async function generateDirectoryPageMetadata({
+export async function generateCategoryDirectoryPageMetadata({
   state,
+  category,
 }: {
   state: string;
+  category: string;
 }): Promise<Metadata> {
-  const canonicalUrl = `https://ride.rent/${state}/directory`;
+  const canonicalUrl = `https://ride.rent/${state}/directory/${category}`;
   const ogImage = "/assets/icons/ride-rent.png";
 
+  const title = `Rent ${convertToLabel(category)} in ${convertToLabel(state)} with Ride.Rent | Free Directory`;
+  const description = `Rent ${convertToLabel(category)} in ${convertToLabel(state)} with Ride.Rent – a free directory for fast car booking. Browse, compare, and book with our free directory!`;
+
   return {
-    title: "some title",
-    description: "some description",
+    title,
+    description,
     keywords: ["ride rent"],
     openGraph: {
-      title: "some title",
-      description: "some description",
+      title,
+      description,
       url: canonicalUrl,
       type: "website",
       images: [

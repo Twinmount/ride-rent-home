@@ -1,4 +1,7 @@
+"use client";
+import { VehicleCardImageSkeleton } from "@/components/skelton/VehicleCardImageSkeleton";
 import Image from "next/image";
+import { useState } from "react";
 
 type VehicleThumbnailProps = {
   src: string | null;
@@ -15,22 +18,42 @@ const VehicleThumbnail = ({
   height,
   className,
 }: VehicleThumbnailProps) => {
-  return src ? (
-    <Image
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      className={className}
-    />
-  ) : (
-    <img
-      src={"/assets/img/default-thumbnail.webp"}
-      alt={alt}
-      width={width}
-      height={height}
-      className={className}
-    />
+  const [isImageLoading, setImageLoading] = useState(true);
+
+  // if src is null, render a regular img tag.
+  if (!src) {
+    return (
+      <img
+        src={"/assets/img/default-thumbnail.webp"}
+        alt={alt}
+        width={width}
+        height={height}
+        className={className}
+      />
+    );
+  }
+
+  // if (isImageLoading) {
+  //   return (
+  //     <VehicleCardImageSkeleton />
+  //   )
+  // }
+
+  return (
+    <div className="image-box">
+      {/* Show skeleton only when image is loading */}
+      {isImageLoading && <VehicleCardImageSkeleton />}
+
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        onLoad={() => setImageLoading(false)}
+        className={className}
+        quality={70}
+      />
+    </div>
   );
 };
 

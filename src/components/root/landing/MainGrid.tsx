@@ -15,7 +15,7 @@ const MainGrid = async ({ state, category, vehicleType }: MainGridProps) => {
 
   const params = new URLSearchParams({
     page: "1",
-    limit: "12",
+    limit: "20",
     state,
     sortOrder: "DESC",
     category,

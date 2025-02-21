@@ -19,9 +19,6 @@ async function fetchHomepageMetadata(
       {
         method: "GET",
         cache: "no-cache",
-        next: {
-          revalidate: 0,
-        },
       },
     );
     if (!response.ok) return null;

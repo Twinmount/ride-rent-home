@@ -1,6 +1,6 @@
 import { CompanySpecs, RentalDetails } from "@/types/vehicle-details-types";
 import CardPayments from "./CardPayments";
-import SpecificationList from "./SpecificationList";
+import SpecificationGrid from "./SpecificationGrid";
 
 type ProfileSpecificationProps = {
   specs: CompanySpecs;
@@ -23,7 +23,7 @@ const ProfileSpecification = ({
   return (
     <div className="flex flex-col justify-center gap-4">
       {/* specification list */}
-      <SpecificationList
+      <SpecificationGrid
         specs={specs}
         getRentalAvailability={getRentalAvailability}
       />

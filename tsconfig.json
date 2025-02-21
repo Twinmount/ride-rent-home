@@ -32,7 +32,8 @@
     ".next/types/**/*.ts",
     "**/*.d.ts",
     "src/helpers/VehicleDetailsHelper.ts",
-    "src/app/(root)/details/[vehicleId]/faq.js"
+    "src/app/(root)/details/[vehicleId]/faq.js",
+    "tailwind.config.mjs"
   ],
   "exclude": ["node_modules"]
 }
