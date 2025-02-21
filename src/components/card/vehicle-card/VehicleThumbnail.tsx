@@ -11,15 +11,14 @@ type VehicleThumbnailProps = {
   className?: string;
 };
 
-const VehicleThumbnail =  ({
+const VehicleThumbnail = ({
   src,
   alt,
   width,
   height,
   className,
 }: VehicleThumbnailProps) => {
-  const [isImageLoading, setImageLoading] = useState(true)
-
+  const [isImageLoading, setImageLoading] = useState(true);
 
   // if src is null, render a regular img tag.
   if (!src) {
@@ -34,34 +33,27 @@ const VehicleThumbnail =  ({
     );
   }
 
-
   // if (isImageLoading) {
   //   return (
   //     <VehicleCardImageSkeleton />
   //   )
   // }
 
-  
-
   return (
-   <div className="relative">
-     {/* Show skeleton only when image is loading */}
-      {isImageLoading && (
-        <div className="absolute inset-0">
-          <VehicleCardImageSkeleton />
-        </div>
-      )}
-      
-     <Image
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      onLoad={() => setImageLoading(false)}
-      className={className}
-      quality={70}
-    />
-   </div>
+    <div className="image-box">
+      {/* Show skeleton only when image is loading */}
+      {isImageLoading && <VehicleCardImageSkeleton />}
+
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        onLoad={() => setImageLoading(false)}
+        className={className}
+        quality={70}
+      />
+    </div>
   );
 };
 
