@@ -9,46 +9,38 @@ import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 type Props = {
   page: number;
   state: string;
-  vehicleSeries: string;
+  category: string;
+  vehicleType?: string;
 };
 
 const API_URL = ENV.API_URL;
 
-export const fetchVehicleSeriesData = async ({
+export const fetchVehicleHomeGridData = async ({
   page,
   state,
-  vehicleSeries,
+  category,
+  vehicleType,
 }: Props) => {
-  // const params = new URLSearchParams({
-  //   page: page.toString(),
-  //   limit: "8",
-  //   state,
-  //   vehicleSeries,
-  //   sortOrder: "DESC",
-  // });
-
-  // // Construct the full URL
-  // const url = `${API_URL}/vehicle/vehicle-series/list?${params.toString()}`;
   const params = new URLSearchParams({
     page: page.toString(),
     limit: "8",
     state,
-    category: "cars",
+    category,
     sortOrder: "DESC",
     filter: VehicleHomeFilter.NONE,
   });
 
+  if (vehicleType) {
+    params.set("type", vehicleType);
+  }
+
   const url = `${API_URL}/vehicle/home-page/list?${params.toString()}`;
 
-  const response = await fetch(`${url}`, {
-    method: "GET",
-    cache: "no-cache",
-  });
+  const response = await fetch(url, { method: "GET", cache: "no-cache" });
 
   const data: FetchVehicleCardsResponse = await response.json();
 
-  const vehicles = data.result.list || [];
-
+  const vehicles = data?.result?.list || [];
   const hasMore = parseInt(data.result.page) < data.result.totalNumberOfPages;
 
   return {
@@ -62,8 +54,6 @@ export const fetchVehicleSeriesData = async ({
         />
       );
     }),
-
     hasMore,
-    totalNumberOfPages: data.result.totalNumberOfPages,
   };
 };

@@ -33,12 +33,6 @@ const VehicleThumbnail = ({
     );
   }
 
-  // if (isImageLoading) {
-  //   return (
-  //     <VehicleCardImageSkeleton />
-  //   )
-  // }
-
   return (
     <div className="image-box">
       {/* Show skeleton only when image is loading */}
