@@ -35,7 +35,7 @@ export default async function DirectoryCategories({
   return (
     <section>
       <div className="flex flex-wrap items-center gap-4">
-        {/* mapping over categories array and rendering link for each category which redirects to category page /[state]/directory/[category] */}
+        {/* mapping over categories array and rendering link for each category which redirects to category page  */}
         {categories.map((cat, index) => (
           <VehicleCategoryCard
             key={cat.value}
@@ -52,8 +52,7 @@ export default async function DirectoryCategories({
 /**
  * Renders a card component for a vehicle category.
 
- * @returns {JSX.Element} A list item containing a link that navigates to the       category directory page, which redirects to category page 
-  /[state]/directory/[category] 
+ * @returns {JSX.Element} A list item containing a link that navigates to the  category directory page, which redirects to category page 
 
  */
 function VehicleCategoryCard({

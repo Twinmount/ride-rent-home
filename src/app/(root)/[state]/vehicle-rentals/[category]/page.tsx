@@ -1,4 +1,4 @@
-import AllBrandsWithSeriesSubBlock from "@/components/root/series/directory/AllBrandsWithSeriesSubBlock";
+import BrandsWithSeriesGrid from "@/components/root/series/directory/BrandsWithSeriesGrid";
 import CategoryDirectoryHeading from "@/components/root/series/directory/CategoryDirectoryHeading";
 
 import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
@@ -41,7 +41,7 @@ export default async function CategoryDirectoryPage({
 
       <Suspense fallback={<SectionLoading />}>
         {/* Async Server Component */}
-        <AllBrandsWithSeriesSubBlock
+        <BrandsWithSeriesGrid
           state={state}
           category={categoryValue}
           page={page}

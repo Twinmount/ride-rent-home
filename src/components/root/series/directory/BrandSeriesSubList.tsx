@@ -19,7 +19,7 @@ export default function BrandSeriesSubList({
   return (
     <div className="flex flex-col">
       <ul className="h-full w-full gap-y-2 p-2">
-        {/* mapping over series array and rendering link for each series which redirects to series page /[state]/rent/[brand]/[series] */}
+        {/* mapping over series array and rendering link for each series which redirects to series page  */}
         {brand.vehicleSeries.map((series) => (
           <SeriesListLink
             key={series.seriesName}
@@ -31,7 +31,7 @@ export default function BrandSeriesSubList({
       </ul>
 
       {/* show view all only if the count is more than 5 */}
-      {brand.seriesCount > 2 && (
+      {brand.seriesCount > 1 && (
         <ViewAllSeries
           state={state}
           category={category}
@@ -44,7 +44,6 @@ export default function BrandSeriesSubList({
 
 /**
  *  "View All" link which redirects to all series page under a particular brand
- *   link to `/[state]/directory/[category]/[brand]/list`
  */
 const ViewAllSeries = ({
   state,

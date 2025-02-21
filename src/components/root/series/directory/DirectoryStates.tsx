@@ -25,8 +25,8 @@ export default async function DirectoryStates() {
 
   return (
     <section className="my-10">
-      <h4 className="md:text3xl mb-2 text-2xl font-semibold">
-        Explore offers from other states
+      <h4 className="mb-4 text-xl font-[500] md:text-2xl">
+        Explore offers from other locations
       </h4>
       <ul className="mx-auto mb-[1.5rem] flex flex-wrap items-center gap-4">
         <StateCard states={states} />
@@ -42,7 +42,7 @@ function StateCard({ states }: { states: StateType[] }) {
       <MotionStaggeredDiv index={index} delay={0.1} key={state.stateId}>
         <Link
           href={`/${state.stateValue}/vehicle-rentals`}
-          className="group relative flex h-[6rem] w-full min-w-[6rem] max-w-[8rem] cursor-pointer items-center justify-center overflow-hidden rounded-[2rem] text-center shadow-[2px_2px_4px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in"
+          className="group relative flex h-[5rem] w-full min-w-[5rem] max-w-[7rem] cursor-pointer items-center justify-center overflow-hidden rounded-[2rem] text-center shadow-[2px_2px_4px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in lg:max-w-32"
         >
           <div className="absolute bottom-0 left-0 h-1/4 w-full bg-gradient-to-t from-black/80 to-transparent" />
 
@@ -53,7 +53,7 @@ function StateCard({ states }: { states: StateType[] }) {
             alt={`${state.stateName} logo`}
             className="h-full w-full scale-110 object-cover transition-transform duration-500 ease-out group-hover:scale-100"
           />
-          <figcaption className="absolute bottom-[0.2rem] z-[2] m-0 whitespace-nowrap p-0 text-sm font-bold text-white">
+          <figcaption className="absolute bottom-[0.15rem] z-[2] m-0 whitespace-nowrap p-0 text-[0.78rem] font-bold text-white lg:text-sm">
             {state.stateName}
           </figcaption>
         </Link>
