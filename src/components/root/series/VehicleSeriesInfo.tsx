@@ -33,20 +33,20 @@ export default async function VehicleSeriesInfo({ series, state }: PropsType) {
     <div className="flex flex-col gap-y-3">
       {/* page heading and subheading */}
       <div className="flex flex-col gap-y-1 rounded-xl border bg-white p-3 lg:px-5">
-        <h1 className="custom-heading text-xl font-semibold md:text-2xl lg:text-3xl">
+        <h1 className="custom-heading mb-2 text-2xl font-[500] md:text-2xl">
           {heading}
         </h1>
-        <h2 className="text-md md:text-lg lg:text-xl">{subHeading}</h2>
+        <h2 className="text-md lg:text-lg">{subHeading}</h2>
       </div>
 
       {/* info title and info description */}
       {infoTitle && infoDescription && (
         <div className="flex flex-col gap-y-1 rounded-xl border bg-white p-2 px-3 lg:px-5">
-          <h3 className="flex items-center gap-x-2 text-lg font-semibold">
+          <h3 className="flex items-center gap-x-2 text-lg font-[500]">
             <Info width={18} className="text-yellow" strokeWidth={2} />
             {infoTitle}
           </h3>
-          <p className="ml-7 text-sm">{infoDescription}</p>
+          <p className="ml-7 text-sm text-gray-800">{infoDescription}</p>
         </div>
       )}
     </div>

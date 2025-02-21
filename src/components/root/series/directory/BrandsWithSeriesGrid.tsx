@@ -10,7 +10,7 @@ type PropsType = {
   page: number;
 };
 
-export default async function AllBrandsWithSeriesSubBlock({
+export default async function BrandsWithSeriesGrid({
   state,
   category,
   page,
@@ -49,6 +49,7 @@ export default async function AllBrandsWithSeriesSubBlock({
 
   return (
     <div className="flex h-auto min-h-[90vh] flex-col justify-between pb-10">
+      {/* brands with 5 series grid */}
       <div className="grid auto-rows-max grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {list.map((brand) => (
           <SeriesSubBlock

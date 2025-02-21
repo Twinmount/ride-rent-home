@@ -28,12 +28,12 @@ export default async function CategoryDirectoryHeading({
 
   return (
     <div className="mb-8">
-      <h1 className="md:text3xl mb-2 text-2xl font-semibold lg:text-4xl">
+      <h1 className="mb-2 text-2xl font-[500] md:text-3xl">
         {convertToLabel(category)} for rent in {convertToLabel(state)}
       </h1>
 
       {hasCount && (
-        <h2 className="mb-4 text-lg md:text-xl">
+        <h2 className="mb-4 text-base md:text-lg">
           {count.vehiclesCount} vehicles are available to choose from{" "}
           {count.brandsCount} brands
         </h2>

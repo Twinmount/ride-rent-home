@@ -21,7 +21,7 @@ export default async function AllSeriesPageHeading({
           className="h-full w-[95%] max-w-28 object-contain"
         />
       </div>
-      <h1 className="md:text3xl text-2xl font-semibold lg:text-4xl">
+      <h1 className="text-2xl font-[500] md:text-3xl">
         {convertToLabel(brand).toUpperCase()} series in {convertToLabel(state)}
       </h1>
     </div>
