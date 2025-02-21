@@ -52,7 +52,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
     <MotionStaggeredDiv index={index} className="main-card-container">
       {/* card top */}
       <Link href={vehicleDetailsPageLink} target="_blank" className="card-top">
-        <div className="image-box">
+        <div className="image-container">
           {/* Thumbnail Image */}
           <VehicleThumbnail
             src={vehicle.thumbnail}
