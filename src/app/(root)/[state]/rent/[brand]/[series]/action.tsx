@@ -1,9 +1,8 @@
 "use server";
 
 import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
-import VehicleListingsGridWrapper from "@/components/common/VehicleListingsGridWrapper";
 import { ENV } from "@/config/env";
-import { VehicleHomeFilter } from "@/types";
+
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 
 type Props = {
@@ -19,26 +18,16 @@ export const fetchVehicleSeriesData = async ({
   state,
   vehicleSeries,
 }: Props) => {
-  // const params = new URLSearchParams({
-  //   page: page.toString(),
-  //   limit: "8",
-  //   state,
-  //   vehicleSeries,
-  //   sortOrder: "DESC",
-  // });
-
-  // // Construct the full URL
-  // const url = `${API_URL}/vehicle/vehicle-series/list?${params.toString()}`;
   const params = new URLSearchParams({
     page: page.toString(),
     limit: "8",
     state,
-    category: "cars",
+    vehicleSeries,
     sortOrder: "DESC",
-    filter: VehicleHomeFilter.NONE,
   });
 
-  const url = `${API_URL}/vehicle/home-page/list?${params.toString()}`;
+  // Construct the full URL
+  const url = `${API_URL}/vehicle/vehicle-series/list?${params.toString()}`;
 
   const response = await fetch(`${url}`, {
     method: "GET",

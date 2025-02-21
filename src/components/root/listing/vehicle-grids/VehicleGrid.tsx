@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import NoResultsFound from "./NoResultsFound";
@@ -9,7 +9,7 @@ import PriceEnquireDialog from "../../../dialog/price-filter-dialog/PriceEnquire
 import { useInView } from "react-intersection-observer";
 import { useFetchListingVehicles } from "@/hooks/useFetchListingVehicles";
 import LoadingWheel from "@/components/common/LoadingWheel";
-import VehicleListingsGridWrapper from "@/components/common/VehicleListingsGridWrapper";
+import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
 
 type VehicleGridProps = {
   state: string;
@@ -48,7 +48,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
             {vehicles.length === 0 ? (
               <NoResultsFound />
             ) : (
-              <VehicleListingsGridWrapper>
+              <VehicleGridWrapper>
                 {vehicles.map((vehicle, index) => {
                   const animationIndex = index % 8;
                   return (
@@ -59,7 +59,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
                     />
                   );
                 })}
-              </VehicleListingsGridWrapper>
+              </VehicleGridWrapper>
             )}
           </div>
 

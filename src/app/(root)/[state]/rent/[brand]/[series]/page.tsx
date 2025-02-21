@@ -3,7 +3,7 @@ import { fetchVehicleSeriesData } from "./action";
 import LoadMoreSeries from "@/components/root/series/LoadMoreSeries";
 import { Metadata } from "next";
 import { generateSeriesListingPageMetadata } from "./metadata";
-import VehicleListingsGridWrapper from "@/components/common/VehicleListingsGridWrapper";
+import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
 
 export type PageProps = {
   params: {
@@ -38,9 +38,9 @@ export default async function VehicleSeriesPage({
         <>
           {/* initial first page of data (SSR) */}
           <section className={`mt-6 w-full`}>
-            <VehicleListingsGridWrapper classNames="mb-4">
+            <VehicleGridWrapper classNames="mb-4">
               {data.vehicles}
-            </VehicleListingsGridWrapper>
+            </VehicleGridWrapper>
 
             {/* infinitely loading remaining data from page 2 onwards (CSR) */}
             <LoadMoreSeries state={state} series={series} />

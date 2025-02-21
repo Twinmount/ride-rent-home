@@ -4,6 +4,7 @@ import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import PriceEnquireDialog from "../../dialog/price-filter-dialog/PriceEnquireDialog";
 import { fetchVehicleHomeGridData } from "@/app/(root)/[state]/[category]/action";
 import LoadMoreGridVehicles from "./LoadMoreGridVehicles";
+import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
 
 type MainGridProps = StateCategoryProps & {
   vehicleType: string | undefined;
@@ -18,27 +19,23 @@ const MainGrid = async ({ state, category, vehicleType }: MainGridProps) => {
     vehicleType,
   });
 
-  if (!data.vehicles) {
-    return (
-      <MotionSection className="wrapper flex-center h-auto min-h-48 w-full pb-8 text-base italic text-gray-500">
-        <span>No results found!</span>
-      </MotionSection>
-    );
-  }
+  const hasVehicles = !!data.vehicles?.length;
 
   return (
     <MotionSection className="wrapper h-auto min-h-fit w-full pb-8">
-      <div className="mx-auto grid !w-fit max-w-fit grid-cols-1 !gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
-        {/* first 8 vehicles server rendered */}
-        {data.vehicles}
+      {hasVehicles ? (
+        // server rendered first 8 result
+        <div className={`mt-6 w-full`}>
+          <VehicleGridWrapper classNames="mb-4">
+            {data.vehicles}
+          </VehicleGridWrapper>
 
-        {/* Client-side component for next 8 vehicles (CSR) based on scroll */}
-        <LoadMoreGridVehicles
-          state={state}
-          category={category}
-          vehicleType={vehicleType}
-        />
-      </div>
+          {/* loading next 8 result while in view (CSR) */}
+          <LoadMoreGridVehicles state={state} category={category} />
+        </div>
+      ) : (
+        ""
+      )}
       <ViewAllButton
         link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.POPULAR_MODELS}`}
       />

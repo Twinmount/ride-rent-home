@@ -1,7 +1,6 @@
 "use server";
 
 import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
-import VehicleListingsGridWrapper from "@/components/common/VehicleListingsGridWrapper";
 import { ENV } from "@/config/env";
 import { VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";

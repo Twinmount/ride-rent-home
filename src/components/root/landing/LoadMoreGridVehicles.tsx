@@ -2,6 +2,7 @@
 
 import { fetchVehicleHomeGridData } from "@/app/(root)/[state]/[category]/action";
 import LoadingWheel from "@/components/common/LoadingWheel";
+import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
 import { useState, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -20,6 +21,7 @@ export default function LoadMoreGridVehicles({
   const [data, setData] = useState<JSX.Element[]>([]);
   const [loaded, setLoaded] = useState(false);
 
+  // Fetch data when in view
   useEffect(() => {
     if (inView && !loaded) {
       fetchVehicleHomeGridData({ page: 2, state, category, vehicleType }).then(
@@ -33,14 +35,15 @@ export default function LoadMoreGridVehicles({
 
   return (
     <>
-      <section>{data}</section>
-      <section>
+      <VehicleGridWrapper classNames="mb-4">{data}</VehicleGridWrapper>
+
+      <div className="w-full">
         {!loaded ? (
-          <div ref={ref} className="flex-center h-12">
+          <div ref={ref} className="flex-center h-12 w-full">
             <LoadingWheel />
           </div>
         ) : null}
-      </section>
+      </div>
     </>
   );
 }
