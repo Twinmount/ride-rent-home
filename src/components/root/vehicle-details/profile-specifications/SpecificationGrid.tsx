@@ -1,4 +1,4 @@
-type SpecificationListProps = {
+type SpecificationGridProps = {
   specs: {
     isCryptoAccepted: boolean;
     isSpotDeliverySupported: boolean;
@@ -6,7 +6,7 @@ type SpecificationListProps = {
   getRentalAvailability: () => string;
 };
 
-const SpecificationList: React.FC<SpecificationListProps> = ({
+const SpecificationGrid: React.FC<SpecificationGridProps> = ({
   specs,
   getRentalAvailability,
 }) => {
@@ -46,14 +46,14 @@ const SpecificationList: React.FC<SpecificationListProps> = ({
 
       {/* Rental Availability */}
       <div className="flex items-center">
-        <div className="flex h-6 w-6 items-center justify-center p-0.5">
+        <div className="flex h-6 w-6 min-w-6  items-center justify-center p-0.5">
           <img
             src="/assets/icons/profile-icons/rental-icon.svg"
             alt="Rental Availability Icon"
             className="h-full w-full object-contain"
           />
         </div>
-        <span className="ml-1 whitespace-nowrap text-sm font-light capitalize">
+        <span className="ml-1 whitespace-nowrap text-[0.81rem] font-light capitalize">
           {getRentalAvailability()}
         </span>
       </div>
@@ -61,4 +61,4 @@ const SpecificationList: React.FC<SpecificationListProps> = ({
   );
 };
 
-export default SpecificationList;
+export default SpecificationGrid;
