@@ -19,7 +19,6 @@ import HeroSection from "@/components/root/landing/HeroSection";
 import VehicleCardSkeletonGrid from "@/components/skelton/VehicleCardSkeleton";
 import VehicleCardCarouselSkeleton from "@/components/skelton/VehicleCardCarouselSkeleton";
 import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
-import TopCompanies from "@/components/root/landing/TopCompanies";
 
 export async function generateMetadata({
   params: { state, category },
@@ -45,9 +44,7 @@ export default function Home({
         <TopBrands state={state} category={category} />
       </Suspense>
 
-      <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
-        <TopCompanies state={state} category={category} />
-      </Suspense>
+
 
       <Suspense fallback={<VehicleCardCarouselSkeleton />}>
         <NewlyArrived state={state} category={category} />
