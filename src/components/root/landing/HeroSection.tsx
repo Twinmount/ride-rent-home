@@ -15,7 +15,9 @@ export default function HeroSection({ state, category }: HeroSectionProps) {
       <div className="relative z-10">
         <div className="container py-5">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="">The fastest way to find a vehicle for rent</p>
+            <p className="">
+              The fastest way to find a vehicle for rent in UAE
+            </p>
 
             <div className="mt-4 max-w-2xl">
               <TypewriterEffect state={state} category={category} />

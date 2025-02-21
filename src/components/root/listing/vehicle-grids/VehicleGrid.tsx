@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import NoResultsFound from "./NoResultsFound";
@@ -9,7 +9,7 @@ import PriceEnquireDialog from "../../../dialog/price-filter-dialog/PriceEnquire
 import { useInView } from "react-intersection-observer";
 import { useFetchListingVehicles } from "@/hooks/useFetchListingVehicles";
 import LoadingWheel from "@/components/common/LoadingWheel";
-import VehicleListingsGridWrapper from "@/components/common/VehicleListingsGridWrapper";
+import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
 
 type VehicleGridProps = {
   state: string;
@@ -19,9 +19,6 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   const searchParams = useSearchParams();
 
   const { ref, inView } = useInView();
-
-  // State to control when to switch to "Load More"
-  const [useLoadMore, setUseLoadMore] = useState(false);
 
   // 8 vehicles loads per pagination.
   const limit = "8";
@@ -34,19 +31,12 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
       limit,
     });
 
-  // Check when to switch to "Load More" mode
-  useEffect(() => {
-    if (vehicles.length > 24) {
-      setUseLoadMore(true);
-    }
-  }, [vehicles]);
-
   // Trigger fetchNextPage on scroll if not in "Load More" mode
   useEffect(() => {
-    if (inView && hasNextPage && !useLoadMore) {
+    if (inView && hasNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, useLoadMore]);
+  }, [inView, hasNextPage]);
 
   return (
     <div className="flex w-full flex-col">
@@ -58,7 +48,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
             {vehicles.length === 0 ? (
               <NoResultsFound />
             ) : (
-              <VehicleListingsGridWrapper>
+              <VehicleGridWrapper>
                 {vehicles.map((vehicle, index) => {
                   const animationIndex = index % 8;
                   return (
@@ -69,35 +59,22 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
                     />
                   );
                 })}
-              </VehicleListingsGridWrapper>
+              </VehicleGridWrapper>
             )}
           </div>
 
           {/* Infinite scrolling loader till the first 18 vehicles */}
-          {!useLoadMore && hasNextPage && (
+          {hasNextPage && (
             <div ref={ref} className="w-full py-4 text-center">
               {isFetching ? (
-                <div className="flex-center h-24">
+                <div className="flex-center h-12">
                   <LoadingWheel />
                 </div>
               ) : null}
             </div>
           )}
 
-          {/* "Load More" button after the first 18 vehicles */}
-          {useLoadMore && hasNextPage && (
-            <div className="w-full py-4 text-center">
-              <button
-                onClick={() => fetchNextPage()} // Wrap in an inline function
-                disabled={isFetching}
-                className="w-full rounded-xl border border-gray-300 py-3 font-semibold text-gray-800 hover:bg-gray-200 disabled:opacity-50"
-              >
-                {isFetching ? "Loading..." : "Load More"}
-              </button>
-            </div>
-          )}
-
-          {!hasNextPage && !isFetching && useLoadMore && (
+          {!hasNextPage && !isFetching && (
             <span className="mt-16 text-base italic text-gray-500">
               You have reached the end
             </span>
