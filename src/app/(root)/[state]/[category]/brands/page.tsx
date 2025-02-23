@@ -31,9 +31,23 @@ export default async function Brands({
   const page = parseInt(searchParams.page || "1", 10);
   const search = searchParams.search || "";
 
-  const response = await fetch(
-    `${baseUrl}/vehicle-brand/list?page=${page}&limit=20&sortOrder=ASC&categoryValue=${category}&search=${search}`,
-  );
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: "20",
+    sortOrder: "ASC",
+    categoryValue: category,
+  });
+
+  if (search) {
+    params.set("search", search);
+  }
+
+  const url = `${baseUrl}/vehicle-brand/list?${params.toString()}`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    cache: "no-cache",
+  });
 
   // Parse the JSON response
   const data: FetchBrandsResponse = await response.json();

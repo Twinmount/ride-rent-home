@@ -1,8 +1,8 @@
 import "./SectionLoading.scss";
 
-const SectionLoading = () => {
+const SectionLoading = ({ className = "" }: { className?: string }) => {
   return (
-    <section className="lazy-loader">
+    <section className={`lazy-loader ${className}`}>
       <div className="loader"></div>
     </section>
   );

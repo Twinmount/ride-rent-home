@@ -75,7 +75,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
           )}
 
           {!hasNextPage && !isFetching && (
-            <span className="mt-16 text-base italic text-gray-500">
+            <span className="mt-16 text-center text-base italic text-gray-500">
               You have reached the end
             </span>
           )}

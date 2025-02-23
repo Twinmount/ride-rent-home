@@ -39,7 +39,7 @@
       .specification-info {
         font-weight: 500;
         background-color: rgb(232, 232, 232);
-        padding: 0.3rem 0.6rem;
+        padding: 0.5rem 0.6rem;
         border-radius: 0.3rem;
         width: fit-content;
         font-size: 0.875rem /* 14px */;
@@ -94,11 +94,6 @@
 
       .important-features {
         .specification-info {
-          font-weight: 500;
-          background-color: rgb(232, 232, 232);
-          padding: 0.3rem 0.6rem;
-          border-radius: 0.3rem;
-          width: fit-content;
           font-size: 1rem /* 16px */;
           line-height: 1.5rem /* 24px */;
         }

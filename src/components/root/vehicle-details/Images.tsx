@@ -10,8 +10,8 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import VehicleImage from "./VehicleImage";
 
 type ImagesProps = {
   photos: string[];
@@ -56,12 +56,7 @@ const Images = ({ photos }: ImagesProps) => {
                 className="relative w-full min-w-[100%] overflow-hidden rounded-[1rem] p-0"
               >
                 {src ? (
-                  <Image
-                    src={src}
-                    alt={`Vehicle image ${index + 1}`}
-                    className="h-full w-full rounded-[1rem] object-contain"
-                    fill
-                  />
+                  <VehicleImage src={src} index={index} />
                 ) : (
                   <div className="flex-center h-full w-full rounded-[1rem] object-contain text-lg text-slate-500">
                     Oops! Image loading failed!

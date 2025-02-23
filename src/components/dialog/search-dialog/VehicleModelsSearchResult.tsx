@@ -32,7 +32,6 @@ export default function VehicleModelsSearchResult({
             <Link
               key={item._id}
               href={vehicleDetailsPageLink}
-              target="_blank"
               className="cursor-pointer rounded px-3 py-2 text-sm text-gray-900 hover:bg-gray-200"
             >
               {item.title || "N/A"}
