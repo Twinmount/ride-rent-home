@@ -3,20 +3,24 @@
 import Link from "next/link";
 import Image from "next/image";
 import StatesDropdown from "./StatesDropdown";
-import { motion} from "framer-motion";
+import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldExclude } from "@/hooks/useShouldExclude";
 import MobileSidebar from "../sidebar/MobileSidebar";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
+import { extractCategory } from "@/helpers";
 
 export const Navbar = () => {
   const params = useParams<{ state: string; category: string }>();
 
   const state = params.state || "dubai";
-  const category = params.category || "cars";
+  let category = params.category || "cars";
 
   // should state/category/quickLinks dropdowns render
   const shouldRenderDropdowns = useShouldExclude({ isCategory: false });
+
+  // if category ends with "-for-rent", remove "-for-rent"
+  category = extractCategory(category);
 
   return (
     <NavbarWrapper>
@@ -91,11 +95,7 @@ export const Navbar = () => {
  * NavbarWrapper component with motion effects based on the isHidden state.
  *
  */
-const NavbarWrapper = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+const NavbarWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.header
       className={`global__padding fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-lightGray transition-all duration-200 ease-in-out`}
