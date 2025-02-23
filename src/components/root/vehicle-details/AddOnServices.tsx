@@ -18,11 +18,11 @@ const AddOnServices: React.FC<AddOnServicesProps> = ({
       <div className="flex items-center font-medium md:mr-2">
         Add-on Services <span className="mx-1 hidden md:inline-block">:</span>
       </div>
-      <div className="flex flex-wrap items-center gap-x-1">
+      <div className="mt-[0.2rem] flex flex-wrap items-center gap-x-1">
         {additionalVehicleTypes.map((type, index) => (
           <span key={index} className="whitespace-nowrap text-sm">
             {formatAdditionalTypeName(type.name)}
-            {index === additionalVehicleTypes.length - 1 ? "." : ", "}
+            {index === additionalVehicleTypes.length - 1 ? "" : ", "}
           </span>
         ))}
       </div>

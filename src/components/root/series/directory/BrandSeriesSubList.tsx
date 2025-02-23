@@ -31,7 +31,7 @@ export default function BrandSeriesSubList({
       </ul>
 
       {/* show view all only if the count is more than 5 */}
-      {brand.seriesCount > 1 && (
+      {brand.seriesCount >= 5 && (
         <ViewAllSeries
           state={state}
           category={category}
