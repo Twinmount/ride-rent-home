@@ -26,6 +26,8 @@ import Location from "@/components/root/vehicle-details/Location";
 import CurrentPageBreadcrumb from "@/components/root/vehicle-details/CurrentPageBreadcrumb";
 import { restoreVehicleCodeFormat } from ".";
 import { ENV } from "@/config/env";
+import { Suspense } from "react";
+import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
 
 type ParamsProps = {
   params: { state: string; category: string; vehicleCode: string };
@@ -94,8 +96,9 @@ export default async function VehicleDetails({
       {/* Details heading */}
       <MotionDiv className="heading-box">
         <h1 className="custom-heading model-name">
-          {vehicle?.vehicleTitle || vehicle.modelName}
+          {vehicle.vehicleTitle || vehicle.modelName}
         </h1>
+
         {/* sub heading */}
         <RentalInfo
           modelName={vehicle?.modelName}
@@ -171,11 +174,13 @@ export default async function VehicleDetails({
       </DetailsSectionClientWrapper>
 
       {/* related result */}
-      <RelatedResults
-        state={state}
-        category={category}
-        vehicleCode={vehicleCode}
-      />
+      <Suspense fallback={<SectionLoading />}>
+        <RelatedResults
+          state={state}
+          category={category}
+          vehicleCode={vehicleCode}
+        />
+      </Suspense>
 
       {/* Description */}
       <Description description={vehicle.description} />

@@ -1,11 +1,9 @@
 export type Brand = {
-  id: string;
   label: string;
   value: string;
 };
 
 export type State = {
-  id: string;
   label: string;
   value: string;
 };
@@ -92,7 +90,7 @@ export type VehicleDetailsPageType = {
   subTitle: string;
   state: State;
   isLease: boolean; //isLease
-  cities: City[];
+  cities: string[]; // city label array
   vehiclePhotos: VehiclePhoto[];
   specs: Specs;
   features: Features;

@@ -186,9 +186,7 @@ const formatSeatingCapacity = (seatingCapacity: string): string => {
 // Helper function to generate dynamic FAQs for the vehicle details page
 export const generateDynamicFAQ = (vehicle: VehicleDetailsPageType) => {
   const seatingCapacitySpec = vehicle.specs["Seating Capacity"];
-  const availableCities = vehicle.cities
-    .map((city: City) => city.label)
-    .join(", ");
+  const availableCities = vehicle.cities.join(", ");
 
   // Prepare the FAQ array
   const faqArray = [

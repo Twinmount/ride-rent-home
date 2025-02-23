@@ -15,7 +15,8 @@ export default async function RelatedResults({
   category,
   vehicleCode,
 }: RelatedResultsType) {
-  const baseUrl = ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
+  const baseUrl = ENV.API_URL;
+
   // Fetch brand data from your API endpoint
   const response = await fetch(`${baseUrl}/vehicle/filter`, {
     method: "POST",
@@ -24,11 +25,12 @@ export default async function RelatedResults({
     },
     body: JSON.stringify({
       page: "1",
-      limit: "10",
+      limit: "7",
       sortOrder: "DESC",
       category: category,
       state: state,
     }),
+    cache: "no-cache",
   });
 
   // Parse the JSON response
@@ -36,13 +38,13 @@ export default async function RelatedResults({
 
   let vehicleData = data?.result?.list || [];
 
-  // Filter out the vehicle with the passed vehicleCode prop
+  // If there are no vehicles left after filtering, return null
+  if (vehicleData.length === 0) return null;
+
+  // Filter out the vehicle with the current vehicleCode prop
   vehicleData = vehicleData.filter(
     (vehicle) => vehicle.vehicleCode !== vehicleCode,
   );
-
-  // If there are no vehicles left after filtering, return null
-  if (vehicleData.length === 0) return null;
 
   return (
     <MotionSection>
