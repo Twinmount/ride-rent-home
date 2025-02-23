@@ -51,12 +51,12 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
   return (
     <MotionStaggeredDiv index={index} className="main-card-container">
       {/* card top */}
-      <Link href={vehicleDetailsPageLink} target="_blank" className="card-top">
+      <Link href={vehicleDetailsPageLink} className="card-top">
         <div className="image-container">
           {/* Thumbnail Image */}
           <VehicleThumbnail
             src={vehicle.thumbnail}
-            alt={vehicle.model || "Vehicle Image"}
+            alt={vehicle.vehicleTitle || "Vehicle Image"}
             width={350}
             height={250}
             className="vehicle-image"
@@ -84,7 +84,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
 
       {/* card bottom */}
       <div className="card-bottom">
-        <Link href={vehicleDetailsPageLink} target="_blank">
+        <Link href={vehicleDetailsPageLink}>
           {/* title */}
           <div className="model-name">{vehicle.model}</div>
 
@@ -107,10 +107,13 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
         <div className="bottom-box">
           {/* client component which handles the dialog logic via context */}
           {/* <EnquireBestPrice vehicle={vehicle} /> */}
-          <RentNowButton
-            vehicleDetailsPageLink={vehicleDetailsPageLink}
-            companyLogo={vehicle.companyLogo}
-          />
+          <Link href={vehicleDetailsPageLink}>
+            <RentNowButton
+              vehicleDetailsPageLink={vehicleDetailsPageLink}
+              companyLogo={vehicle.companyLogo}
+            />
+          </Link>
+
           <ContactIcons
             vehicleId={vehicle.vehicleId}
             whatsappUrl={whatsappUrl}

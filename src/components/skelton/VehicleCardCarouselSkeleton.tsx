@@ -9,7 +9,7 @@ export default function VehicleCardCarouselSkeleton({
   return (
     <CarouselWrapper>
       {Array.from({ length: count }).map((_, index) => (
-        <VehicleCardSkeleton key={index} />
+        <VehicleCardSkeleton key={index} index={index} />
       ))}
     </CarouselWrapper>
   );

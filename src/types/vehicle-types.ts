@@ -182,7 +182,6 @@ export type VehicleCardType = {
   vehicleCode: string;
   thumbnail: string;
   model: string;
-  registredYear: string;
   brandName: string;
   countryCode: string | null;
   phoneNumber: string | null;
@@ -197,14 +196,11 @@ export type VehicleCardType = {
   isDisabled: boolean;
   isCryptoAccepted: boolean;
   isSpotDeliverySupported: boolean;
-  vehicleTitle?: string;
-  additionalVehicleTypes?: { typeId: string; label: string; value: string }[];
+  vehicleTitle: string;
   securityDeposit: {
     enabled: boolean;
     amountInAED?: string;
   };
-  isCreditOrDebitCardsSupported: boolean;
-  isTabbySupported: boolean;
 };
 
 // API response type for FetchVehicleByFilters api function

@@ -6,7 +6,7 @@ import {
   UrlQueryParams,
 } from "@/types";
 import { CardRentalDetails } from "@/types/vehicle-types";
-import { City, VehicleDetailsPageType } from "@/types/vehicle-details-types";
+import { VehicleDetailsPageType } from "@/types/vehicle-details-types";
 import { IoIosSpeedometer } from "react-icons/io";
 import { FaCrown } from "react-icons/fa6";
 import { IoShieldCheckmark } from "react-icons/io5";
@@ -186,9 +186,7 @@ const formatSeatingCapacity = (seatingCapacity: string): string => {
 // Helper function to generate dynamic FAQs for the vehicle details page
 export const generateDynamicFAQ = (vehicle: VehicleDetailsPageType) => {
   const seatingCapacitySpec = vehicle.specs["Seating Capacity"];
-  const availableCities = vehicle.cities
-    .map((city: City) => city.label)
-    .join(", ");
+  const availableCities = vehicle.cities.join(", ");
 
   // Prepare the FAQ array
   const faqArray = [

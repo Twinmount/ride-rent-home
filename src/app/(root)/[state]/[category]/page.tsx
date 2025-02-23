@@ -44,8 +44,6 @@ export default function Home({
         <TopBrands state={state} category={category} />
       </Suspense>
 
-
-
       <Suspense fallback={<VehicleCardCarouselSkeleton />}>
         <NewlyArrived state={state} category={category} />
       </Suspense>
