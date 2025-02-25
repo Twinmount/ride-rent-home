@@ -9,42 +9,14 @@
   // heading container
   .heading-box {
     background-color: white;
-    padding: 1rem;
+    padding: 0.7rem 1rem;
     border-radius: 1rem;
     border: solid 1px rgba(109, 109, 109, 0.1);
     box-shadow: 1px 1px 4px rgba(101, 101, 101, 0.1);
-
+    margin-bottom: 1rem;
     .model-name {
       font-weight: 500;
       font-size: 1.18rem;
-      margin-bottom: 1.4rem;
-    }
-
-    .important-features {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: start;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-
-      .spec-deposit-container {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        flex-wrap: wrap;
-        justify-content: start;
-      }
-
-      .specification-info {
-        font-weight: 500;
-        background-color: rgb(232, 232, 232);
-        padding: 0.5rem 0.6rem;
-        border-radius: 0.3rem;
-        width: fit-content;
-        font-size: 0.875rem /* 14px */;
-        line-height: 1.25rem /* 20px */;
-      }
     }
   }
 
@@ -87,16 +59,8 @@
     // heading container
     .heading-box {
       .model-name {
-        max-width: 80%;
         font-size: 1.45rem;
-        width: 80%;
-      }
-
-      .important-features {
-        .specification-info {
-          font-size: 1rem /* 16px */;
-          line-height: 1.5rem /* 24px */;
-        }
+        width: 90%;
       }
     }
 

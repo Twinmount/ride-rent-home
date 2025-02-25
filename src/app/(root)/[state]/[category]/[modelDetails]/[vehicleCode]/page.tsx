@@ -16,18 +16,14 @@ import {
 import RelatedLinks from "@/components/root/vehicle-details/RelatedLinks";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { formatVehicleSpecification } from "@/helpers";
 import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
 import { fetchVehicleData, generateVehicleMetadata } from "./metadata";
-import RentalInfo from "@/components/root/vehicle-details/RentalInfo";
-import NoDeposit from "@/components/root/vehicle-details/NoDeposit";
-import AddOnServices from "@/components/root/vehicle-details/AddOnServices";
-import Location from "@/components/root/vehicle-details/Location";
 import CurrentPageBreadcrumb from "@/components/root/vehicle-details/CurrentPageBreadcrumb";
 import { restoreVehicleCodeFormat } from ".";
 import { ENV } from "@/config/env";
 import { Suspense } from "react";
 import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
+import { VehicleInfo } from "@/components/root/vehicle-details/VehicleInfo";
 
 type ParamsProps = {
   params: { state: string; category: string; vehicleCode: string };
@@ -99,44 +95,14 @@ export default async function VehicleDetails({
           {vehicle.vehicleTitle || vehicle.modelName}
         </h1>
 
-        {/* sub heading */}
-        <RentalInfo
-          modelName={vehicle?.modelName}
-          stateLabel={vehicle?.state.label}
-          isCryptoAccepted={vehicle?.company.companySpecs.isCryptoAccepted}
-          rentalDetails={vehicle?.rentalDetails}
-        />
-
-        <div className="important-features">
-          <div className="spec-deposit-container">
-            {/* no deposit box */}
-            {!vehicle.securityDeposit.enabled && <NoDeposit />}
-
-            <div className="specification-info">
-              Specification:{" "}
-              {formatVehicleSpecification(vehicle.vehicleSpecification)}
-            </div>
-
-            {/* add-on services */}
-            <AddOnServices
-              additionalVehicleTypes={vehicle.additionalVehicleTypes}
-            />
-          </div>
-        </div>
-
-        {/* state and cities */}
-        <Location
-          stateLabel={vehicle?.state.label}
-          cities={vehicle?.cities || []}
+        {/* breadcrumb for current page path*/}
+        <CurrentPageBreadcrumb
+          category={category}
+          state={state}
+          brand={vehicle?.brand}
+          vehicleTitle={vehicle?.vehicleTitle}
         />
       </MotionDiv>
-
-      {/* breadcrumb for current page path*/}
-      <CurrentPageBreadcrumb
-        category={category}
-        state={state}
-        vehicleTitle={vehicle?.vehicleTitle}
-      />
 
       {/* Wrapper to handle client side logic regarding mobile profile card */}
       <DetailsSectionClientWrapper profileData={ProfileCardData}>
@@ -147,6 +113,20 @@ export default async function VehicleDetails({
             <div className="details">
               {/* Vehicle Images Slider */}
               <Images photos={vehicle?.vehiclePhotos} />
+
+              {/* vehicle information */}
+              <VehicleInfo
+                modelName={vehicle?.modelName}
+                stateLabel={vehicle?.state.label}
+                isCryptoAccepted={
+                  vehicle?.company.companySpecs.isCryptoAccepted
+                }
+                rentalDetails={vehicle?.rentalDetails}
+                securityDepositEnabled={vehicle?.securityDeposit.enabled}
+                vehicleSpecification={vehicle?.vehicleSpecification}
+                additionalVehicleTypes={vehicle?.additionalVehicleTypes}
+                cities={vehicle?.cities}
+              />
 
               {/* Vehicle Specifications */}
               <Specification
