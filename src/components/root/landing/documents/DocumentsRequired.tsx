@@ -8,7 +8,7 @@ const DocumentsRequired = ({ category }: { category: string }) => {
     <div className="mt-12">
       <div className="g mx-auto mb-12 w-fit text-center">
         <h2 className="text-center text-xl font-bold">
-          Rent a {category} in the UAE
+          Documents Required to Rent a {category} in UAE
         </h2>
         <hr className="mx-auto mt-2 w-[70%] border-t-4 border-yellow" />
       </div>
@@ -80,19 +80,6 @@ const DocumentsRequired = ({ category }: { category: string }) => {
           Travellers from the GCC, US, UK, Canada, Europe, and some other places
           can use their home country driver&apos;s license to drive in UAE,
           without needing an International Driving Permit (IDP) .
-        </p>
-        <br />
-        <p className="text-center text-sm font-normal">
-          <Link
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="ride.rent"
-            className="text-blue-500 underline"
-          >
-            Click here
-          </Link>{" "}
-          to find out if your country&apos;s license is accepted in the UAE.
         </p>
       </div>
     </div>

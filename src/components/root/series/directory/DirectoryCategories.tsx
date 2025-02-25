@@ -1,6 +1,6 @@
 import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
 import { ENV } from "@/config/env";
-import { convertToLabel } from "@/helpers";
+import { convertToLabel, sortCategories } from "@/helpers";
 import { DirectoryCategory, FetchCategoriesForDirectory } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,6 +24,8 @@ export default async function DirectoryCategories({
 
   // Extract the states list from the response
   let categories = data?.result || [];
+
+  categories = sortCategories(categories);
 
   if (categories.length === 0)
     return (
