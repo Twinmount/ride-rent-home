@@ -22,16 +22,7 @@ export function SearchResults({
   // accessing state from the url params
   const { state } = useParams<{ state: string }>();
 
-  const vehicleSeries =
-    results?.result.vehicleSeries ||
-    [
-      // {
-      //   _id: "afsdfas",
-      //   title: "asdfsad asdf a",
-      //   brand: " asdfa ",
-      //   code: " sadfs",
-      // },
-    ];
+  const vehicleSeries = results?.result.vehicleSeries || [];
   const vehicles = results?.result.vehicle || [];
 
   // Show placeholder when no search input

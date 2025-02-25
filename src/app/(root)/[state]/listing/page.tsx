@@ -1,5 +1,5 @@
 import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
-import { convertToLabel } from "@/helpers";
+import { convertToLabel, singularizeType } from "@/helpers";
 import { PageProps } from "@/types";
 import { Metadata } from "next";
 import { FC } from "react";
@@ -34,7 +34,7 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
   const category = searchParams.category;
   const brand = searchParams.brand ? searchParams.brand.split(",")[0] : "";
 
-  const formattedCategory = convertToLabel(category);
+  const formattedCategory = singularizeType(convertToLabel(category));
   const formattedState = convertToLabel(state);
   const formattedBrand = convertToLabel(brand);
 
@@ -46,13 +46,12 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
   return (
     <div className="wrapper h-auto min-h-screen bg-lightGray pb-8 pt-4">
       <div className="flex-between mb-6 h-fit w-full pr-[5%] max-md:flex-col">
-        <h1 className="ml-2 break-words text-2xl font-normal max-md:mr-auto lg:text-3xl">
+        <h1 className="ml-2 break-words text-2xl font-[500] max-md:mr-auto lg:text-3xl">
           Rent or Lease&nbsp;
           {formattedBrand && (
             <span className="font-semibold">{formattedBrand}&nbsp;</span>
           )}
-          <span className="font-semibold">{formattedCategory} </span>in{" "}
-          <span className="font-semibold">{formattedState}</span>
+          {formattedCategory} in {formattedState}
           {/*rendering vehicle types, if there are any */}
           <SelectedVehicleTypes vehicleTypes={vehicleTypes} />
         </h1>

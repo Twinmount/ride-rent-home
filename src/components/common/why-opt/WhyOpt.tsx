@@ -1,14 +1,16 @@
 import { StateCategoryProps } from "@/types";
 import "./WhyOpt.scss";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
-import { convertToLabel } from "@/helpers";
+import { convertToLabel, singularizeType } from "@/helpers";
 
 const WhyOpt = ({ state, category }: StateCategoryProps) => {
+  const formattedCategory = singularizeType(convertToLabel(category));
+
   return (
     <MotionSection className="wrapper why-opt-section">
       <h2>
-        Why Opt RIDE.RENT When Looking for {convertToLabel(category)} for Rent
-        in {convertToLabel(state)}{" "}
+        Why Opt RIDE.RENT When Looking for {formattedCategory} for Rent in{" "}
+        {convertToLabel(state)}{" "}
       </h2>
 
       <div className="description">

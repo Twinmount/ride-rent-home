@@ -1,12 +1,7 @@
 import qs from "query-string";
-import {
-  CategoryType,
-  RemoveUrlQueryParams,
-  StateType,
-  UrlQueryParams,
-} from "@/types";
+import { RemoveUrlQueryParams, StateType, UrlQueryParams } from "@/types";
 import { CardRentalDetails } from "@/types/vehicle-types";
-import { City, VehicleDetailsPageType } from "@/types/vehicle-details-types";
+import { VehicleDetailsPageType } from "@/types/vehicle-details-types";
 import { IoIosSpeedometer } from "react-icons/io";
 import { FaCrown } from "react-icons/fa6";
 import { IoShieldCheckmark } from "react-icons/io5";
@@ -46,7 +41,9 @@ export function removeKeysFromQuery({
   );
 }
 
-export const sortCategories = (categories: CategoryType[]): CategoryType[] => {
+export const sortCategories = <T extends { value: string }>(
+  categories: T[],
+): T[] => {
   const order = [
     "cars",
     "sports-cars",
@@ -61,8 +58,13 @@ export const sortCategories = (categories: CategoryType[]): CategoryType[] => {
     "charters",
   ];
 
-  return categories.sort((a, b) => {
-    return order.indexOf(a.value) - order.indexOf(b.value);
+  return [...categories].sort((a, b) => {
+    const indexA = order.indexOf(a.value);
+    const indexB = order.indexOf(b.value);
+
+    return (
+      (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB)
+    );
   });
 };
 
@@ -186,9 +188,7 @@ const formatSeatingCapacity = (seatingCapacity: string): string => {
 // Helper function to generate dynamic FAQs for the vehicle details page
 export const generateDynamicFAQ = (vehicle: VehicleDetailsPageType) => {
   const seatingCapacitySpec = vehicle.specs["Seating Capacity"];
-  const availableCities = vehicle.cities
-    .map((city: City) => city.label)
-    .join(", ");
+  const availableCities = vehicle.cities.join(", ");
 
   // Prepare the FAQ array
   const faqArray = [

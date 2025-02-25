@@ -1,11 +1,10 @@
 import React from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import CityListSubheading from "./CityListSubheading";
-import { City } from "@/types/vehicle-details-types";
 
 type LocationProps = {
   stateLabel: string;
-  cities: City[];
+  cities: string[];
 };
 
 const Location: React.FC<LocationProps> = ({ stateLabel, cities }) => {

@@ -1,4 +1,5 @@
 "use client";
+
 import { VehicleCardImageSkeleton } from "@/components/skelton/VehicleCardImageSkeleton";
 import Image from "next/image";
 import { useState } from "react";
@@ -32,12 +33,6 @@ const VehicleThumbnail = ({
       />
     );
   }
-
-  // if (isImageLoading) {
-  //   return (
-  //     <VehicleCardImageSkeleton />
-  //   )
-  // }
 
   return (
     <div className="image-box">

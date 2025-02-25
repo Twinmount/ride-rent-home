@@ -19,7 +19,7 @@ const MotionStaggeredDiv: FC<MotionStaggeredDivProps> = ({
   style,
   once = true,
   index,
-  delay = 0.25,
+  delay = 0.15,
 }) => {
   const categoryVariants = {
     hidden: { opacity: 0, y: 10 },

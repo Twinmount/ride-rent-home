@@ -5,11 +5,9 @@ import { Fira_Sans } from "next/font/google";
 
 import TrackingScripts from "./TrackingScripts";
 import BodyScripts from "./BodyScripts";
+import { getRootMetadata } from "./root-metadata";
 
-export const metadata: Metadata = {
-  title: "Ride.Rent",
-  description: "The ultimate vehicle rental platform in UAE",
-};
+export const metadata: Metadata = getRootMetadata();
 
 const firaSans = Fira_Sans({
   subsets: ["latin"],

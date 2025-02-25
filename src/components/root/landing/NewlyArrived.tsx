@@ -3,7 +3,7 @@ import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrappe
 import ViewAllButton from "@/components/common/ViewAllButton";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { ENV } from "@/config/env";
-import { convertToLabel } from "@/helpers";
+import { convertToLabel, singularizeType } from "@/helpers";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 
@@ -38,12 +38,14 @@ export default async function NewlyArrived({
 
   if (vehicleData.length === 0) return null;
 
+  const formattedCategory = singularizeType(convertToLabel(category));
+
   return (
     <MotionSection className="section-container wrapper">
       <h2 className="section-heading">
         Newly arrived{" "}
         <span className="yellow-gradient rounded-xl px-1">
-          {convertToLabel(category)}
+          {formattedCategory}
         </span>{" "}
         for rent in{" "}
         <span className="yellow-gradient rounded-xl px-2 capitalize">

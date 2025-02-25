@@ -10,30 +10,37 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-interface City {
-  id: string;
-  label: string;
-  value: string;
-}
-
 interface CityListSubheadingProps {
-  cities: City[];
+  cities: string[];
 }
 
 const CityListSubheading: React.FC<CityListSubheadingProps> = ({ cities }) => {
-  // Memoize and sort cities alphabetically by their "value" property
-  const sortedCities = useMemo(
-    () => [...cities].sort((a, b) => a.value.localeCompare(b.value)),
-    [cities]
-  );
+  // sort the cities
+  const sortedCities = useMemo(() => {
+    if (!Array.isArray(cities) || cities.length < 2) return cities; //
+
+    // remove any undefined/null values and ensure all elements are strings
+    const validCities = cities.filter(
+      (city): city is string => typeof city === "string",
+    );
+
+    //  Check if already sorted
+    const isAlreadySorted = validCities.every(
+      (city, i, arr) => i === 0 || city.localeCompare(arr[i - 1]) >= 0,
+    );
+
+    return isAlreadySorted
+      ? validCities
+      : [...validCities].sort((a, b) => a.localeCompare(b));
+  }, [cities]);
 
   return (
     <div>
       <span>
         {sortedCities.slice(0, 5).map((city, index) => (
-          <span className="city" key={city.id}>
-            {city.label}
-            {index < cities.length - 1 && index < 4 ? ", " : ""}
+          <span className="city" key={city}>
+            {city}
+            {index < sortedCities.length - 1 && index < 4 ? ", " : ""}
           </span>
         ))}
         {sortedCities.length > 5 && (
@@ -41,25 +48,28 @@ const CityListSubheading: React.FC<CityListSubheadingProps> = ({ cities }) => {
             and&nbsp;
             <Dialog>
               <DialogTrigger>
-                <span className="city !text-blue-500  cursor-pointer">
+                <span className="city cursor-pointer !text-blue-500">
                   more...
                 </span>
               </DialogTrigger>
-              <DialogContent className="bg-white !rounded-xl overflow-hidden h-fit ">
+              <DialogContent className="h-fit overflow-hidden !rounded-xl bg-white">
                 <DialogHeader>
                   <DialogTitle className="text-center">
                     Available Cities
                   </DialogTitle>
                 </DialogHeader>
-                <DialogDescription>
-                  <ul className="list-disc grid !grid-cols-2 gap-x-3 !gap-y-1 pl-5 max-h-[80vh] overflow-y-auto ">
-                    {sortedCities.map((city, i) => (
-                      <li key={city.id}>
-                        {city.label} {i === 10 && "as of now a big city"}
-                      </li>
-                    ))}
-                  </ul>
+
+                <DialogDescription className="sr-only">
+                  List of available cities for this vehicle
                 </DialogDescription>
+
+                <ul className="grid max-h-[80vh] list-disc !grid-cols-2 !gap-y-1 gap-x-3 overflow-y-auto pl-5">
+                  {sortedCities.map((city, i) => (
+                    <li key={city}>
+                      {city} {i === 10 && "as of now a big city"}
+                    </li>
+                  ))}
+                </ul>
               </DialogContent>
             </Dialog>
           </span>
