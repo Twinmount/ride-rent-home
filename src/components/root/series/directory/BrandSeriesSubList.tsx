@@ -1,8 +1,7 @@
 import { SeriesUnderBrandType } from "@/types";
 import Link from "next/link";
-import { FaExternalLinkAlt } from "react-icons/fa";
 import SeriesListLink from "./SeriesListLink";
-import { ArrowRight, MoveRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 // prop type for BrandSeriesSubList
 type BrandSeriesSubListProps = {
