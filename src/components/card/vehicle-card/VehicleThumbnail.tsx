@@ -1,4 +1,5 @@
 "use client";
+
 import { VehicleCardImageSkeleton } from "@/components/skelton/VehicleCardImageSkeleton";
 import Image from "next/image";
 import { useState } from "react";

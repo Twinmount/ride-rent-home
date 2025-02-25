@@ -1,3 +1,4 @@
+import { ENV } from "@/config/env";
 import { Metadata } from "next";
 
 type MetaDataResponse = {
@@ -40,7 +41,9 @@ export async function generateHomePageMetadata(
   }
 
   const canonicalUrl = `https://ride.rent/${state}/${category}`;
-  const ogImage = "/assets/icons/ride-rent.png";
+
+  // open graph image
+  const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
 
   const metaTitle = data.result.metaTitle;
   const metaDescription = data.result.metaDescription;

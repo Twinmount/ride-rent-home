@@ -25,7 +25,7 @@ export function VehicleTypeCard({
       opacity: 1,
       y: 0,
       transition: {
-        delay: index * 0.1,
+        delay: index * 0.07,
         duration: 0.5,
         ease: "easeOut",
       },

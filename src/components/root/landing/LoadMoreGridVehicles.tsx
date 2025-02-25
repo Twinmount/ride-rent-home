@@ -2,7 +2,6 @@
 
 import { fetchVehicleHomeGridData } from "@/app/(root)/[state]/[category]/action";
 import LoadingWheel from "@/components/common/LoadingWheel";
-import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
 import { useState, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -35,9 +34,9 @@ export default function LoadMoreGridVehicles({
 
   return (
     <>
-      <VehicleGridWrapper classNames="mb-4">{data}</VehicleGridWrapper>
+      {data}
 
-      <div className="w-full">
+      <div className="absolute -bottom-6 w-full">
         {!loaded ? (
           <div ref={ref} className="flex-center h-12 w-full">
             <LoadingWheel />

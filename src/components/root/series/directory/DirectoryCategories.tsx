@@ -34,7 +34,7 @@ export default async function DirectoryCategories({
 
   return (
     <section>
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4 max-sm:justify-center">
         {/* mapping over categories array and rendering link for each category which redirects to category page  */}
         {categories.map((cat, index) => (
           <VehicleCategoryCard
@@ -50,10 +50,8 @@ export default async function DirectoryCategories({
 }
 
 /**
- * Renders a card component for a vehicle category.
-
- * @returns {JSX.Element} A list item containing a link that navigates to the  category directory page, which redirects to category page 
-
+ *  Renders a card component for a vehicle category.
+ *  A list item containing a link that navigates to the  category directory page
  */
 function VehicleCategoryCard({
   cat,
@@ -78,10 +76,10 @@ function VehicleCategoryCard({
         target="_blank"
       >
         <div
-          className={`flex-center mx-auto mt-1 h-[70%] w-[50%] rounded-[0.4rem]`}
+          className={`flex-center mx-auto mt-1 h-[80%] w-[70%] rounded-[0.4rem]`}
         >
           <Image
-            src={`${baseAssetsUrl}/icons/vehicle-categories/${cat.value}.png`}
+            src={`${baseAssetsUrl}/icons/directory-categories/${cat.value}.webp`}
             alt={`${cat.name} Icon`}
             className={`h-full w-full object-contain transition-all duration-200 ease-out ${
               cat.value === "sports-cars" ? "scale-[1.02]" : ""

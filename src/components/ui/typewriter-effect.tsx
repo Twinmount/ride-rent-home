@@ -1,6 +1,6 @@
 "use client";
 
-import { convertToLabel } from "@/helpers";
+import { convertToLabel, singularizeType } from "@/helpers";
 import { cn } from "@/lib/utils";
 import { motion, stagger, useAnimate, useInView } from "framer-motion";
 import { useEffect, useMemo } from "react";
@@ -14,12 +14,15 @@ const generateWordsArray = (state: string, category: string) => {
     }));
   };
 
+  const formattedCategory = singularizeType(convertToLabel(category));
+  const formattedState = convertToLabel(state);
+
   return [
     { text: "Rent", className: "text-slate-800" },
     { text: "a", className: "text-slate-800" },
-    ...splitIntoWords(convertToLabel(category), "text-slate-850"),
+    ...splitIntoWords(formattedCategory, "text-slate-850"),
     { text: "In", className: "text-slate-800" },
-    ...splitIntoWords(convertToLabel(state), "text-slate-850"),
+    ...splitIntoWords(formattedState, "text-slate-850"),
   ];
 };
 
