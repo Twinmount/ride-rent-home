@@ -1,10 +1,5 @@
 import qs from "query-string";
-import {
-  CategoryType,
-  RemoveUrlQueryParams,
-  StateType,
-  UrlQueryParams,
-} from "@/types";
+import { RemoveUrlQueryParams, StateType, UrlQueryParams } from "@/types";
 import { CardRentalDetails } from "@/types/vehicle-types";
 import { VehicleDetailsPageType } from "@/types/vehicle-details-types";
 import { IoIosSpeedometer } from "react-icons/io";
@@ -46,7 +41,9 @@ export function removeKeysFromQuery({
   );
 }
 
-export const sortCategories = (categories: CategoryType[]): CategoryType[] => {
+export const sortCategories = <T extends { value: string }>(
+  categories: T[],
+): T[] => {
   const order = [
     "cars",
     "sports-cars",
@@ -61,8 +58,13 @@ export const sortCategories = (categories: CategoryType[]): CategoryType[] => {
     "charters",
   ];
 
-  return categories.sort((a, b) => {
-    return order.indexOf(a.value) - order.indexOf(b.value);
+  return [...categories].sort((a, b) => {
+    const indexA = order.indexOf(a.value);
+    const indexB = order.indexOf(b.value);
+
+    return (
+      (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB)
+    );
   });
 };
 

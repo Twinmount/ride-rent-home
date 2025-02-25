@@ -12,12 +12,14 @@ import { convertToLabel, singularizeType } from "@/helpers";
 type CurrentPageBreadcrumbProps = {
   category: string;
   state: string;
+  brand: { label: string; value: string };
   vehicleTitle: string;
 };
 
 export default function CurrentPageBreadcrumb({
   category,
   state,
+  brand,
   vehicleTitle,
 }: CurrentPageBreadcrumbProps) {
   const formattedCategory = convertToLabel(singularizeType(category));
@@ -25,8 +27,8 @@ export default function CurrentPageBreadcrumb({
   const formattedState = convertToLabel(state);
 
   return (
-    <MotionDiv className="my-3 rounded-xl border border-gray-100 bg-white px-4 py-2 shadow-sm">
-      <Breadcrumb className="w-fit rounded-2xl px-1">
+    <MotionDiv className="mt-6 rounded-xl bg-white">
+      <Breadcrumb className="w-fit rounded-2xl">
         <BreadcrumbList>
           {/* vehicle state */}
           <BreadcrumbItem>
@@ -43,11 +45,23 @@ export default function CurrentPageBreadcrumb({
           {/* vehicle category */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/${state}/listing?category=${category}`}
+              href={`/${state}/${category}`}
               target="_blank"
               className="font-semibold transition-colors hover:text-yellow hover:underline"
             >
               {formattedCategory} for rent{" "}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+
+          {/* vehicle brand */}
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              href={`/${state}/listing?brand=${brand.value}`}
+              target="_blank"
+              className="font-semibold transition-colors hover:text-yellow hover:underline"
+            >
+              {brand.label}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
