@@ -25,6 +25,14 @@ const MainVehicleGrid = async ({
 
   const hasVehicles = !!data.vehicles?.length;
 
+  // view all link
+  let viewAllLink = `/${state}/listing?category=${category}`;
+
+  // if vehicleType exists, add it in the link
+  if (vehicleType) {
+    viewAllLink += `&vehicleTypes=${vehicleType}`;
+  }
+
   return (
     <MotionSection className="wrapper h-auto min-h-fit w-full pb-8">
       {hasVehicles ? (
@@ -41,7 +49,7 @@ const MainVehicleGrid = async ({
       ) : (
         ""
       )}
-      <ViewAllButton link={`/${state}/listing?category=${category}`} />
+      <ViewAllButton link={viewAllLink} />
 
       <PriceEnquireDialog />
     </MotionSection>

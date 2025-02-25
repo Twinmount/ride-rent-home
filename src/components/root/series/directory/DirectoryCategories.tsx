@@ -73,7 +73,6 @@ function VehicleCategoryCard({
       <Link
         href={`/${state}/vehicle-rentals/${cat.value}-for-rent`}
         className="flex h-full w-full flex-col items-center justify-between rounded-[0.6rem] border border-gray-200 bg-white transition-all hover:scale-[1.02] hover:shadow-md"
-        target="_blank"
       >
         <div
           className={`flex-center mx-auto mt-1 h-[80%] w-[70%] rounded-[0.4rem]`}
