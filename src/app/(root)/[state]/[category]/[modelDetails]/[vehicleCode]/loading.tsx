@@ -1,9 +1,5 @@
-import LottieLoader from "@/components/skelton/LottieLoader";
+import LazyLoad from "@/components/skelton/LazyLoad";
 
 export default function VehicleDetailsLoading() {
-  return (
-    <section className="h-screen flex flex-col justify-center  items-center">
-      <LottieLoader text="Getting everything ready for you..." />
-    </section>
-  );
+  return <LazyLoad />;
 }

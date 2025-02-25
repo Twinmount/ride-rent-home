@@ -1,5 +1,5 @@
 import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
-import { convertToLabel } from "@/helpers";
+import { convertToLabel, singularizeType } from "@/helpers";
 import { PageProps } from "@/types";
 import { Metadata } from "next";
 import { FC } from "react";
@@ -34,7 +34,7 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
   const category = searchParams.category;
   const brand = searchParams.brand ? searchParams.brand.split(",")[0] : "";
 
-  const formattedCategory = convertToLabel(category);
+  const formattedCategory = singularizeType(convertToLabel(category));
   const formattedState = convertToLabel(state);
   const formattedBrand = convertToLabel(brand);
 

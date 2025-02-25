@@ -5,7 +5,7 @@ import Documents from "@/components/root/landing/documents/Documents";
 import RideRentFeatures from "@/components/root/landing/features/Features";
 import Locations from "@/components/common/locations/Locations";
 import States from "@/components/root/landing/states/States";
-import MainGrid from "@/components/root/landing/MainGrid";
+import MainVehicleGrid from "@/components/root/landing/MainVehicleGrid";
 import Recommended from "@/components/root/landing/Recommended";
 import TopBrands from "@/components/root/landing/TopBrands";
 import { Suspense } from "react";
@@ -29,7 +29,7 @@ export default function Home({
   params: { state, category },
   searchParams,
 }: PageProps) {
-  // accessing vehicle type from the url if its available for the MainGrid component.
+  // accessing vehicle type from the url if its available for the MainVehicleGrid component.
   const vehicleType = searchParams.type;
   return (
     <>
@@ -37,7 +37,11 @@ export default function Home({
       <VehicleCategoryAndFilter />
 
       <Suspense fallback={<VehicleCardSkeletonGrid />}>
-        <MainGrid state={state} category={category} vehicleType={vehicleType} />
+        <MainVehicleGrid
+          state={state}
+          category={category}
+          vehicleType={vehicleType}
+        />
       </Suspense>
 
       <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>

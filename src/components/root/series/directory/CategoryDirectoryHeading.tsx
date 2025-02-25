@@ -1,5 +1,5 @@
 import { ENV } from "@/config/env";
-import { convertToLabel } from "@/helpers";
+import { convertToLabel, singularizeType } from "@/helpers";
 import { CategoryDirectoryStatsResponse } from "@/types";
 
 type PropsType = {
@@ -26,10 +26,12 @@ export default async function CategoryDirectoryHeading({
 
   const hasCount = count?.vehiclesCount && count?.brandsCount;
 
+  const formattedCategory = singularizeType(convertToLabel(category));
+
   return (
     <div className="mb-8">
       <h1 className="mb-2 text-2xl font-[500] md:text-3xl">
-        {convertToLabel(category)} for rent in {convertToLabel(state)}
+        {formattedCategory} for rent in {convertToLabel(state)}
       </h1>
 
       {hasCount && (

@@ -1,14 +1,16 @@
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import DocumentsRequired from "./DocumentsRequired";
-import { convertToLabel } from "@/helpers";
+import { convertToLabel, singularizeType } from "@/helpers";
 import { StateCategoryProps } from "@/types";
 
 const Documents = ({ state, category }: StateCategoryProps) => {
+  const formattedCategory = singularizeType(convertToLabel(category));
+
   return (
     <MotionSection className="section-container wrapper">
       <h2 className="section-heading">
-        Ride.Rent is getting you the best {convertToLabel(category)} for rental
-        in {convertToLabel(state)}
+        Ride.Rent is getting you the best {formattedCategory} for rental in{" "}
+        {convertToLabel(state)}
       </h2>
       <div className="mx-auto w-full max-w-[95%] md:max-w-[80%]">
         <p className="text-center text-sm font-normal md:text-base">
@@ -35,7 +37,7 @@ const Documents = ({ state, category }: StateCategoryProps) => {
       </div>
 
       {/* Documents Required */}
-      <DocumentsRequired />
+      <DocumentsRequired category={formattedCategory} />
     </MotionSection>
   );
 };
