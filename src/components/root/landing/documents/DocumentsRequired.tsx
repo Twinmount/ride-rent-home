@@ -1,7 +1,6 @@
 import { GiCheckMark } from "react-icons/gi";
 import Image from "next/image";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
-import Link from "next/link";
 
 const DocumentsRequired = ({ category }: { category: string }) => {
   return (

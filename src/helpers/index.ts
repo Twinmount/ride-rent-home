@@ -1,10 +1,5 @@
 import qs from "query-string";
-import {
-  CategoryType,
-  RemoveUrlQueryParams,
-  StateType,
-  UrlQueryParams,
-} from "@/types";
+import { RemoveUrlQueryParams, StateType, UrlQueryParams } from "@/types";
 import { CardRentalDetails } from "@/types/vehicle-types";
 import { VehicleDetailsPageType } from "@/types/vehicle-details-types";
 import { IoIosSpeedometer } from "react-icons/io";
