@@ -6,6 +6,8 @@ import { Fira_Sans } from "next/font/google";
 import TrackingScripts from "./TrackingScripts";
 import BodyScripts from "./BodyScripts";
 import { getRootMetadata } from "./root-metadata";
+import { NetworkWrapper } from "./(root)/NetworkWrapper";
+import { GlobalContextProvider } from "@/context/GlobalContext";
 
 export const metadata: Metadata = getRootMetadata();
 
@@ -31,7 +33,12 @@ export default function RootLayout({
         <BodyScripts />
 
         {/* react query provider */}
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <NetworkWrapper>
+          {/* global context provider */}
+          <GlobalContextProvider>
+            <ReactQueryProvider>{children}</ReactQueryProvider>
+          </GlobalContextProvider>
+        </NetworkWrapper>
       </body>
     </html>
   );

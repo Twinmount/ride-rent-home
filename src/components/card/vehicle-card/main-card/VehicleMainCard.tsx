@@ -20,6 +20,7 @@ import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStagger
 // import EnquireBestPrice from "../EnquireBestPrice";
 import { MapPin } from "lucide-react";
 import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
+import LinkWrapper from "../LinkWrapper";
 
 type VehicleMainCardProps = {
   vehicle: VehicleCardType;
@@ -51,7 +52,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
   return (
     <MotionStaggeredDiv index={index} className="main-card-container">
       {/* card top */}
-      <Link href={vehicleDetailsPageLink} className="card-top">
+      <LinkWrapper href={vehicleDetailsPageLink} className="card-top">
         <div className="image-container">
           {/* Thumbnail Image */}
           <VehicleThumbnail
@@ -80,11 +81,11 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
             isHourlyRental={vehicle?.rentalDetails?.hour?.enabled}
           />
         </div>
-      </Link>
+      </LinkWrapper>
 
       {/* card bottom */}
       <div className="card-bottom">
-        <Link href={vehicleDetailsPageLink}>
+        <LinkWrapper href={vehicleDetailsPageLink}>
           {/* title */}
           <div className="model-name">{vehicle.model}</div>
 
@@ -103,16 +104,16 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
             {/* rental details */}
             <RentalDetails rentalDetails={vehicle.rentalDetails} />
           </div>
-        </Link>
+        </LinkWrapper>
         <div className="bottom-box">
           {/* client component which handles the dialog logic via context */}
           {/* <EnquireBestPrice vehicle={vehicle} /> */}
-          <Link href={vehicleDetailsPageLink}>
+          <LinkWrapper href={vehicleDetailsPageLink}>
             <RentNowButton
               vehicleDetailsPageLink={vehicleDetailsPageLink}
               companyLogo={vehicle.companyLogo}
             />
-          </Link>
+          </LinkWrapper>
 
           <ContactIcons
             vehicleId={vehicle.vehicleId}

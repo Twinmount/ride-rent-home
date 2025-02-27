@@ -1,6 +1,6 @@
 "use client";
 
-import { useDialogContext } from "@/context/VehicleCardDialogContext";
+import { useVehicleCardContext } from "@/context/VehicleCardContext";
 import { VehicleCardType } from "@/types/vehicle-types";
 
 type EnquireBestPriceProps = {
@@ -8,7 +8,7 @@ type EnquireBestPriceProps = {
 };
 
 export default function EnquireBestPrice({ vehicle }: EnquireBestPriceProps) {
-  const { openDialog } = useDialogContext();
+  const { openDialog } = useVehicleCardContext();
 
   const handleClick = () => {
     openDialog(vehicle);

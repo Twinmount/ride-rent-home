@@ -239,6 +239,7 @@ export const fetchStates = async (): Promise<
   try {
     const res = await fetch(`${BASE_URL}/states/list`, {
       method: "GET",
+      cache: "force-cache",
     });
 
     if (!res.ok) {
@@ -257,9 +258,13 @@ export const fetchStates = async (): Promise<
 // fetch all cities
 export const fetchAllCities = async (
   stateId: string,
+  limit: number = 30,
+  page: number = 1,
 ): Promise<FetchCitiesResponse> => {
   try {
-    const response = await fetch(`${BASE_URL}/city/list?stateId=${stateId}`);
+    const response = await fetch(
+      `${BASE_URL}/city/list?stateId=${stateId}&page=${page}&limit=${limit}`,
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch cities");

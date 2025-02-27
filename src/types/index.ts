@@ -35,15 +35,19 @@ export interface FetchStatesResponse {
 }
 
 export interface CityType {
-  stateId: string;
-  cityId: string;
   cityName: string;
   cityValue: string;
 }
 
 //  interface for the location API response
 export interface FetchCitiesResponse {
-  result: CityType[];
+  result: {
+    list: CityType[];
+    page: string;
+    limit: string;
+    total: number;
+    totalNumberOfPages: number;
+  };
   status: string;
   statusCode: number;
 }
@@ -229,6 +233,7 @@ export interface FetchLinksResponse {
     page: string;
     limit: string;
     total: number;
+    totalNumberOfPages: number;
   };
   status: string;
   statusCode: number;
