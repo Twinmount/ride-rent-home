@@ -7,20 +7,18 @@ import {
   singularizeType,
 } from "@/helpers";
 import { restoreVehicleCodeFormat } from ".";
+import { ENV } from "@/config/env";
 
 export async function fetchVehicleData(
   vehicleCode: string,
 ): Promise<VehicleDetailsPageResponse | null> {
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
+  const url = `${ENV.API_URL}/vehicle/details?vehicleCode=${formattedVehicleCode}`;
   try {
-    const response = await fetch(
-      `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}`,
-      {
-        method: "GET",
-        cache: "no-cache",
-      },
-    );
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-cache",
+    });
 
     if (!response.ok) {
       return null;

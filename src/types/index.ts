@@ -70,6 +70,16 @@ export interface FetchCategoriesResponse {
   statusCode: number;
 }
 
+export type CompanyMetadataResponse = {
+  status: string;
+  statusCode: number;
+  result: {
+    companyMetaTitle: string;
+    companyMetaDescription: string; //
+    companyName: string;
+  };
+};
+
 // type of single vehicle type
 export interface VehicleTypeType {
   typeId: string;

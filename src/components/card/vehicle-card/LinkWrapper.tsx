@@ -26,6 +26,10 @@ const LinkWrapper = ({ children, href, className }: LinkWrapperProps) => {
     if (currentPath.startsWith(href)) {
       setIsPageLoading(false);
     }
+
+    return () => {
+      setIsPageLoading(false); // Ensure it resets when unmounting
+    };
   }, [currentPath, href]); // Runs when the route changes
 
   return (

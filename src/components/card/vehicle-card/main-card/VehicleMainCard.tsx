@@ -1,5 +1,4 @@
 import "./VehicleMainCard.scss";
-import Link from "next/link";
 import { VehicleCardType } from "@/types/vehicle-types";
 import {
   convertToLabel,
