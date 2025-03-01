@@ -17,7 +17,7 @@ import RelatedLinks from "@/components/root/vehicle-details/RelatedLinks";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
-import { fetchVehicleData, generateVehicleMetadata } from "./metadata";
+import { fetchVehicleMetaData, generateVehicleMetadata } from "./metadata";
 import CurrentPageBreadcrumb from "@/components/root/vehicle-details/CurrentPageBreadcrumb";
 import { restoreVehicleCodeFormat } from ".";
 import { ENV } from "@/config/env";
@@ -33,13 +33,7 @@ type ParamsProps = {
 export async function generateMetadata({
   params: { state, category, vehicleCode },
 }: ParamsProps): Promise<Metadata> {
-  const data = await fetchVehicleData(vehicleCode);
-
-  if (!data || data.status === "NOT_SUCCESS" || !data.result) {
-    return notFound();
-  }
-
-  return generateVehicleMetadata(data, state, category, vehicleCode);
+  return generateVehicleMetadata(state, category, vehicleCode);
 }
 
 export default async function VehicleDetails({

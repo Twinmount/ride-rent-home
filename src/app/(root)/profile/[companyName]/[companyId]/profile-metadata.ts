@@ -1,27 +1,19 @@
 import { formatToUrlFriendly } from "@/helpers";
+import { CompanyMetadataResponse } from "@/types";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
-
-type FetchCompanyDetailsResponse = {
-  result?: {
-    companyName: string;
-    companyAddress: string;
-    companyLogo: string;
-  };
-};
 
 export async function fetchCompanyDetails(
-  companyId: string
-): Promise<FetchCompanyDetailsResponse | null> {
+  companyId: string,
+): Promise<CompanyMetadataResponse | null> {
   const baseUrl = process.env.API_URL;
 
   try {
     const response = await fetch(
-      `${baseUrl}/company/public?companyId=${companyId}`,
+      `${baseUrl}/metadata/company?companyId=${companyId}`,
       {
         method: "GET",
         cache: "no-cache",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -35,30 +27,36 @@ export async function fetchCompanyDetails(
   }
 }
 
-export function generateCompanyMetadata(
-  companyDetails: FetchCompanyDetailsResponse["result"],
-  companyId: string
-): Metadata {
+export async function generateCompanyMetadata(
+  companyId: string,
+): Promise<Metadata> {
+  const data = await fetchCompanyDetails(companyId);
+
+  const companyDetails = data?.result;
+
   if (!companyDetails) {
-    notFound();
+    throw new Error("Failed to fetch company details");
   }
 
-  const companyName = companyDetails.companyName || "Ride.Rent";
-  const companyAddress = companyDetails.companyAddress || "UAE";
+  const companyName = companyDetails.companyName;
+  const companyAddress = companyDetails?.companyAddress || "UAE";
 
   const title = `${companyName}, Affordable Vehicle Renting & Leasing Company in ${companyAddress} | A Ride.Rent Partner.`;
 
   const description = `Rent or Lease cars, bikes, sports cars, bicycles, buses, vans, buggies, and charters effortlessly with ${companyName}. Partnering with the best rental agencies, Ride.Rent is your trusted vehicle rental platform for seamless bookings, unbeatable prices, and top-quality service when it comes to vehicle renting and leasing.`;
 
+  const metaTitle = companyDetails?.companyMetaTitle || title;
+  const metaDescription = companyDetails?.companyMetaDescription || description;
+
   const formattedCompanyName = formatToUrlFriendly(companyName);
   const companyProfilePageLink = `/profile/${formattedCompanyName}/${companyId}`;
 
   const canonicalUrl = `https://ride.rent/${companyProfilePageLink}`;
-  const ogImage = companyDetails.companyLogo || "/assets/icons/ride-rent.png";
+  const ogImage = companyDetails?.companyLogo || "/assets/icons/ride-rent.png";
 
   return {
-    title,
-    description,
+    title: metaTitle,
+    description: metaDescription,
     keywords: `rent vehicles, ${companyName}, cars, bikes, charters, vehicle rental platform`,
     openGraph: {
       title,

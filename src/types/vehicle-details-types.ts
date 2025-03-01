@@ -109,14 +109,17 @@ export type VehicleDetailsPageResponse = {
   result: VehicleDetailsPageType;
   statusCode: number;
 };
+
+export type VehicleMetadataType = {
+  vehicleMetaTitle: string;
+  vehicleMetaDescription: string;
+  vehicleTitle: string; // The title of the vehicle
+  vehicleModel: string; // Model name of the vehicle
+  vehiclePhoto: string; // URL of the first vehicle photo
+};
+
 export type VehicleMetaDataResponse = {
-  result: {
-    vehicleMetaTitle: string;
-    vehicleMetaDescription: string;
-    vehicleTitle: string; // The title of the vehicle
-    vehicleModel: string; // Model name of the vehicle
-    vehiclePhoto: string; // URL of the first vehicle photo
-  };
+  result: VehicleMetadataType;
   status: string;
   statusCode: number;
 };

@@ -70,14 +70,18 @@ export interface FetchCategoriesResponse {
   statusCode: number;
 }
 
+export type CompanyMetadataType = {
+  companyMetaTitle: string;
+  companyMetaDescription: string;
+  companyName: string;
+  companyAddress: string;
+  companyLogo: string;
+};
+
 export type CompanyMetadataResponse = {
   status: string;
   statusCode: number;
-  result: {
-    companyMetaTitle: string;
-    companyMetaDescription: string; //
-    companyName: string;
-  };
+  result: CompanyMetadataType;
 };
 
 // type of single vehicle type
