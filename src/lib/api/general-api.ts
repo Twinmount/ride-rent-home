@@ -162,7 +162,7 @@ export const fetchVehicleTypesByValue = async (
 ): Promise<FetchTypesResponse | undefined> => {
   try {
     // generating api URL
-    const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}`;
+    const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}&hasVehicle=true`;
 
     const response = await fetch(apiUrl);
 
@@ -237,7 +237,7 @@ export const fetchStates = async (): Promise<
   FetchStatesResponse | undefined
 > => {
   try {
-    const res = await fetch(`${BASE_URL}/states/list`, {
+    const res = await fetch(`${BASE_URL}/states/list?hasVehicle=true`, {
       method: "GET",
       cache: "force-cache",
     });
@@ -284,7 +284,7 @@ export const fetchCategories = async (): Promise<
 > => {
   try {
     const response = await fetch(
-      `${BASE_URL}/vehicle-category/list?limit=15&page=1`,
+      `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true`,
       {
         method: "GET",
       },
