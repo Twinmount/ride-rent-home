@@ -279,6 +279,30 @@ export const fetchAllCities = async (
   }
 };
 
+// fetch all cities
+export const fetchAllPaginatedCities = async (
+  stateId: string,
+  page: number = 1,
+  limit: number = 30,
+): Promise<FetchCitiesResponse> => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/city/paginated/list?state=${stateId}&page=${page}&limit=${limit}`,
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch cities");
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching cities:", error);
+    throw error;
+  }
+};
+
 export const fetchCategories = async (): Promise<
   FetchCategoriesResponse | undefined
 > => {

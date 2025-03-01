@@ -53,9 +53,9 @@ const Locations = ({ state, category }: StateCategoryProps) => {
       </div>
 
       {/* Display Cities */}
-      {/* {selectedState && (
+      {selectedState && (
         <Cities selectedState={selectedState} category={category} />
-      )} */}
+      )}
     </section>
   );
 };
