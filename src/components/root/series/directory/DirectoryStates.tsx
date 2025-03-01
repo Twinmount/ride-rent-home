@@ -9,7 +9,7 @@ export default async function DirectoryStates() {
   const API_URL = ENV.API_URL;
 
   // Fetch the states data from the API
-  const response = await fetch(`${API_URL}/states/list`, {
+  const response = await fetch(`${API_URL}/states/list?hasVehicle=true`, {
     cache: "force-cache",
   });
 

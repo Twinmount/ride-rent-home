@@ -1,5 +1,6 @@
 "use client";
 
+import { extractCategory } from "@/helpers";
 import { useParams } from "next/navigation";
 
 export const useStateAndCategory = () => {
@@ -7,7 +8,9 @@ export const useStateAndCategory = () => {
 
   // Fallback defaults for state and category
   const state = params.state || "dubai";
-  const category = params.category || "cars";
+  let category = params.category || "cars";
+
+  category = extractCategory(category);
 
   return { state, category };
 };

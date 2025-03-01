@@ -35,15 +35,19 @@ export interface FetchStatesResponse {
 }
 
 export interface CityType {
-  stateId: string;
-  cityId: string;
   cityName: string;
   cityValue: string;
 }
 
 //  interface for the location API response
 export interface FetchCitiesResponse {
-  result: CityType[];
+  result: {
+    list: CityType[];
+    page: string;
+    limit: string;
+    total: number;
+    totalNumberOfPages: number;
+  };
   status: string;
   statusCode: number;
 }
@@ -65,6 +69,20 @@ export interface FetchCategoriesResponse {
   };
   statusCode: number;
 }
+
+export type CompanyMetadataType = {
+  companyMetaTitle: string;
+  companyMetaDescription: string;
+  companyName: string;
+  companyAddress: string;
+  companyLogo: string;
+};
+
+export type CompanyMetadataResponse = {
+  status: string;
+  statusCode: number;
+  result: CompanyMetadataType;
+};
 
 // type of single vehicle type
 export interface VehicleTypeType {
@@ -229,6 +247,7 @@ export interface FetchLinksResponse {
     page: string;
     limit: string;
     total: number;
+    totalNumberOfPages: number;
   };
   status: string;
   statusCode: number;

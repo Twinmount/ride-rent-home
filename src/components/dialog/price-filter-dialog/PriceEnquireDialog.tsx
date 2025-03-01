@@ -8,11 +8,11 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { useDialogContext } from "@/context/VehicleCardDialogContext";
+import { useVehicleCardContext } from "@/context/VehicleCardContext";
 import EnquirePriceDialogCard from "@/components/card/vehicle-card/EnquirePriceDialogCard";
 
 const PriceEnquireDialog: React.FC = () => {
-  const { selectedVehicle, closeDialog } = useDialogContext();
+  const { selectedVehicle, closeDialog } = useVehicleCardContext();
   const isOpen = Boolean(selectedVehicle);
 
   return (

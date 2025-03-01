@@ -23,7 +23,8 @@ export default function MobileSidebar() {
         <SheetDescription className="text-lightGray-foreground sr-only">
           Sidebar
         </SheetDescription>
-        <div className="flex h-full w-full flex-col justify-between px-4 py-6">
+        <div className="flex h-full w-full flex-col justify-start px-4 py-6">
+          {/* sidebar accordions */}
           <SidebarAccordion />
         </div>
       </SheetContent>

@@ -8,14 +8,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { FaLocationDot } from "react-icons/fa6";
-import { useQuery } from "@tanstack/react-query";
 import { StateType } from "@/types";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
-import { capitalizeFirstLetter, rearrangeStates } from "@/helpers";
-import { useMemo } from "react";
-import { fetchStates } from "@/lib/api/general-api";
+import { capitalizeFirstLetter, extractCategory } from "@/helpers";
+import useFetchStates from "@/hooks/useFetchStates";
 
 export default function StatesDropdown() {
   const router = useRouter();
@@ -26,19 +24,10 @@ export default function StatesDropdown() {
   );
   const { state, category } = useParams<{ state: string; category: string }>();
 
-  const selectedCategory = category || "cars";
+  const selectedCategory = extractCategory(category || "cars");
 
-  // Query to fetch states
-  const { data, isLoading } = useQuery({
-    queryKey: ["states"],
-    queryFn: fetchStates,
-  });
-
-  // Memoize the rearranged states to avoid recalculating on every render
-  const states: StateType[] = useMemo(() => {
-    const fetchedStates = data?.result || [];
-    return rearrangeStates(fetchedStates);
-  }, [data]);
+  // fetching states using custom hook
+  const { states, isLoading } = useFetchStates();
 
   useEffect(() => {
     if (states.length > 0) {
