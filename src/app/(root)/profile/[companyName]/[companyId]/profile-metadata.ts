@@ -9,7 +9,7 @@ export async function fetchCompanyDetails(
 
   try {
     const response = await fetch(
-      `${baseUrl}/metadata/company?companyId=${companyId}`,
+      `${baseUrl}/metadata/company?company=${companyId}`,
       {
         method: "GET",
         cache: "no-cache",

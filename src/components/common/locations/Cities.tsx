@@ -15,21 +15,21 @@ const Cities = ({ selectedState, category }: CitiesProps) => {
   const { cities, isLoading } = useFetchCities({
     stateId: selectedState.stateId,
     page: 1,
-    limit: 30,
+    limit: 20,
   });
 
   return (
     <div className="flex flex-col items-center">
-      <div className="cities">
+      <div className="mx-auto flex w-full flex-wrap justify-center gap-2 gap-x-4 md:max-w-[90%] lg:max-w-[80%]">
         {isLoading ? (
           <LocationsSkelton count={30} />
         ) : (
-          <div className="flex flex-wrap justify-center gap-2">
+          <ul className="flex flex-wrap justify-center gap-2 gap-x-4">
             {cities.map((city) => (
-              <li key={city.cityValue}>
+              <li key={city.cityValue} className="">
                 <Link
                   href={`/${selectedState.stateValue}/listing?category=${category}&city=${city.cityValue}`}
-                  className="city"
+                  className="flex-center gap-x-1 rounded-xl bg-gray-200 px-2 text-sm text-black hover:bg-gray-300"
                   prefetch={false}
                 >
                   {city.cityName}
@@ -45,7 +45,7 @@ const Cities = ({ selectedState, category }: CitiesProps) => {
             >
               View All <ArrowRight className="relative bottom-[2px] w-3" />
             </Link>
-          </div>
+          </ul>
         )}
       </div>
     </div>

@@ -17,7 +17,7 @@ import RelatedLinks from "@/components/root/vehicle-details/RelatedLinks";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
-import { fetchVehicleMetaData, generateVehicleMetadata } from "./metadata";
+import { generateVehicleMetadata } from "./metadata";
 import CurrentPageBreadcrumb from "@/components/root/vehicle-details/CurrentPageBreadcrumb";
 import { restoreVehicleCodeFormat } from ".";
 import { ENV } from "@/config/env";

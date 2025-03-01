@@ -7,12 +7,10 @@ interface UseFetchCitiesParams {
   limit?: number;
 }
 
-const CITIES_LIMIT = 30; // Number of cities per page
-
 export const useFetchCities = ({
   stateId,
   page,
-  limit = CITIES_LIMIT,
+  limit,
 }: UseFetchCitiesParams) => {
   const { data, isLoading } = useQuery({
     queryKey: ["cities", stateId],

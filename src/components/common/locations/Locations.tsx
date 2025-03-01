@@ -1,6 +1,5 @@
 "use client";
 
-import "./Locations.scss";
 import { useState, useEffect } from "react";
 import { StateType, StateCategoryProps } from "@/types";
 import LocationsSkelton from "@/components/skelton/LocationsSkelton";
@@ -29,12 +28,16 @@ const Locations = ({ state, category }: StateCategoryProps) => {
   }, [statesData, state]);
 
   return (
-    <section className="wrapper locations-section">
-      <h3>Available Locations</h3>
-      <p>Choose your state/city to rent</p>
+    <section className="wrapper mx-auto mb-8 rounded-2xl px-20 pb-8 pt-4">
+      <h3 className="mb-2 text-center text-lg font-semibold">
+        Available Locations
+      </h3>
+      <p className="mb-6 text-center text-sm text-gray-600">
+        Choose your state/city to rent
+      </p>
 
       {/* Display States */}
-      <div className="countries">
+      <div className="flex-center mb-4 flex-wrap gap-2 gap-x-4">
         {isStatesLoading ? (
           <LocationsSkelton count={8} />
         ) : (
@@ -42,9 +45,7 @@ const Locations = ({ state, category }: StateCategoryProps) => {
             <button
               key={state.stateId}
               onClick={() => setSelectedState(state)}
-              className={
-                selectedState?.stateId === state.stateId ? "selected" : ""
-              }
+              className={`flex-center cursor-pointer rounded-[0.5rem] border-none bg-gray-200 px-2 font-semibold transition-all ${selectedState?.stateId === state.stateId ? "bg-slate-900 text-white" : ""}`}
             >
               {state.stateName}
             </button>
