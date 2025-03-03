@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useCallback } from "react";
 import { BlurDialog } from "@/components/ui/blur-dialog";
 import {
@@ -15,6 +14,7 @@ import { debounce } from "@/helpers";
 import { PlaceholderTypewriter } from "@/components/navbar/PlaceholderTypewriter";
 import { SearchResults } from "./SearchResults";
 import { SearchInput } from "./SearchInput";
+import { CompanyPromotionList } from "./CompanyPromotionList";
 
 type SearchDialogProps = {
   isHero?: boolean;
@@ -45,6 +45,10 @@ export function SearchDialog({
     staleTime: 0,
   });
 
+  const vehicleSeries = results?.result.vehicleSeries || [];
+  const vehicles = results?.result.vehicle || [];
+  const hasSearchResult = vehicleSeries.length > 0 || vehicles.length > 0;
+
   return (
     <BlurDialog>
       <DialogTrigger asChild>
@@ -71,7 +75,7 @@ export function SearchDialog({
         )}
       </DialogTrigger>
       <DialogContent
-        className={`h-fit rounded-xl bg-white py-6 max-md:w-[95%] sm:max-w-md`}
+        className={`h-fit rounded-xl bg-white py-6 max-md:w-[95%] sm:max-w-[500px]`}
       >
         <DialogHeader className="sr-only">
           <DialogTitle className="sr-only">Search Vehicle</DialogTitle>
@@ -87,6 +91,7 @@ export function SearchDialog({
             results={results}
             isLoading={isLoading}
           />
+          {!hasSearchResult && <CompanyPromotionList />}
         </div>
       </DialogContent>
     </BlurDialog>
