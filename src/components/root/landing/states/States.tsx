@@ -8,8 +8,8 @@ export default async function States({ category }: { category: string }) {
   const baseUrl = ENV.API_URL;
 
   // Fetch the states data from the API
-  const response = await fetch(`${baseUrl}/states/list`, {
-    cache: "force-cache",
+  const response = await fetch(`${baseUrl}/states/list?hasVehicle=true`, {
+    cache: "no-cache",
   });
 
   const data: FetchStatesResponse = await response.json();

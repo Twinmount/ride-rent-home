@@ -23,6 +23,7 @@ export const useShouldExclude = ({
     "/profile",
     "/directory",
     "/agents",
+    "/sitemap",
   ];
 
   // Check if the current pathname matches any of the excludePaths or starts with any of the dynamicPaths

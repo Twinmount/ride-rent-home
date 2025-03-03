@@ -5,16 +5,22 @@ import { Info } from "lucide-react";
 type PropsType = {
   series: string;
   state: string;
+  brand: string;
 };
 
-export default async function VehicleSeriesInfo({ series, state }: PropsType) {
+export default async function VehicleSeriesInfo({
+  series,
+  state,
+  brand,
+}: PropsType) {
   const baseUrl = ENV.API_URL;
 
-  const url = `${baseUrl}/vehicle-series/info?vehicleSeries=${series}&state=${state}`;
+  const url = `${baseUrl}/vehicle-series/info?vehicleSeries=${series}&state=${state}&brand=${brand}`;
 
   // Fetch data using the generated URL
   const response = await fetch(url, {
     method: "GET",
+    cache: "no-cache",
   });
 
   const data: FetchVehicleSeriesInfo = await response.json();

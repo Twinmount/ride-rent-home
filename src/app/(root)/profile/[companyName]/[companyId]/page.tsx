@@ -6,10 +6,7 @@ import { FetchCompanyDetailsResponse } from "@/types";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import React, { Suspense } from "react";
-import {
-  fetchCompanyDetails,
-  generateCompanyMetadata,
-} from "./profile-metadata";
+import { generateCompanyMetadata } from "./profile-metadata";
 import { ENV } from "@/config/env";
 
 type PropsType = {
@@ -21,13 +18,7 @@ type PropsType = {
 export async function generateMetadata({
   params: { companyId },
 }: PropsType): Promise<Metadata> {
-  const data = await fetchCompanyDetails(companyId);
-
-  if (!data || !data.result) {
-    return notFound();
-  }
-
-  return generateCompanyMetadata(data.result, companyId);
+  return generateCompanyMetadata(companyId);
 }
 
 export default async function AgentProfilePage({

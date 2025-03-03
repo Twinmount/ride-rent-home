@@ -17,7 +17,7 @@ export function useFetchVehicleCategories() {
 
   // Sort categories once fetched
   const sortedCategories = useMemo(() => {
-    return data?.result?.list ? sortCategories(data.result.list) : [];
+    return data ? sortCategories(data.result.list) : [];
   }, [data]);
 
   const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;

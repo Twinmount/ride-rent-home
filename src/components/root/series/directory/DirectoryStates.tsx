@@ -9,8 +9,8 @@ export default async function DirectoryStates() {
   const API_URL = ENV.API_URL;
 
   // Fetch the states data from the API
-  const response = await fetch(`${API_URL}/states/list`, {
-    cache: "force-cache",
+  const response = await fetch(`${API_URL}/states/list?hasVehicle=true`, {
+    cache: "no-cache",
   });
 
   const data: FetchStatesResponse = await response.json();

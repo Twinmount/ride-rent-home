@@ -1,26 +1,23 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { VehicleDetailsPageResponse } from "@/types/vehicle-details-types";
+import { VehicleMetaDataResponse } from "@/types/vehicle-details-types";
 import {
   convertToLabel,
   generateVehicleDetailsUrl,
   singularizeType,
 } from "@/helpers";
 import { restoreVehicleCodeFormat } from ".";
+import { ENV } from "@/config/env";
 
-export async function fetchVehicleData(
+export async function fetchVehicleMetaData(
   vehicleCode: string,
-): Promise<VehicleDetailsPageResponse | null> {
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+): Promise<VehicleMetaDataResponse | null> {
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
+  const url = `${ENV.API_URL}/metadata/vehicle?vehicle=${formattedVehicleCode}`;
   try {
-    const response = await fetch(
-      `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}`,
-      {
-        method: "GET",
-        cache: "no-cache",
-      },
-    );
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-cache",
+    });
 
     if (!response.ok) {
       return null;
@@ -33,14 +30,15 @@ export async function fetchVehicleData(
   }
 }
 
-export function generateVehicleMetadata(
-  data: VehicleDetailsPageResponse,
+export async function generateVehicleMetadata(
   state: string,
   category: string,
   vehicleCode: string,
-): Metadata {
+): Promise<Metadata> {
+  const data = await fetchVehicleMetaData(vehicleCode);
+
   if (!data?.result) {
-    notFound();
+    throw new Error("Failed to fetch vehicle metadata");
   }
 
   const vehicle = data.result;
@@ -53,12 +51,16 @@ export function generateVehicleMetadata(
     state,
   )} at cheap rates, free spot delivery available. Daily, monthly, and lease options.`;
 
+  const metaTitle = vehicle?.vehicleMetaTitle || title;
+  const metaDescription = vehicle?.vehicleMetaDescription || description;
+
   // Shortened versions for social media
-  const shortTitle = title.length > 60 ? `${title.substring(0, 57)}...` : title;
+  const shortTitle =
+    metaTitle.length > 60 ? `${metaTitle.substring(0, 57)}...` : metaTitle;
   const shortDescription =
-    description.length > 155
-      ? `${description.substring(0, 152)}...`
-      : description;
+    metaDescription.length > 155
+      ? `${metaDescription.substring(0, 152)}...`
+      : metaDescription;
 
   // dynamic link to  vehicle details page
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
@@ -69,12 +71,12 @@ export function generateVehicleMetadata(
   });
 
   const canonicalUrl = `https://ride.rent${vehicleDetailsPageLink}`;
-  const ogImage = vehicle.vehiclePhotos?.[0] || "/assets/icons/ride-rent.png";
+  const ogImage = vehicle.vehiclePhoto;
 
   return {
-    title,
-    description,
-    keywords: `${vehicle.brand.label}, ${vehicle.modelName}, ${category} rental in ${state}, ${vehicle.state.label} ${category} rental near me`,
+    title: metaTitle,
+    description: metaDescription,
+    keywords: ` ${vehicle.vehicleModel}, ${category} rental in ${state}, ${convertToLabel(state)} ${category} rental near me`,
     openGraph: {
       title: shortTitle,
       description: shortDescription,
@@ -83,7 +85,7 @@ export function generateVehicleMetadata(
       images: [
         {
           url: ogImage,
-          alt: `${vehicle.modelName}`,
+          alt: `${vehicle.vehicleMetaTitle}`,
           width: 1200,
           height: 630,
         },

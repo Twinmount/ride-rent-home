@@ -110,6 +110,20 @@ export type VehicleDetailsPageResponse = {
   statusCode: number;
 };
 
+export type VehicleMetadataType = {
+  vehicleMetaTitle: string;
+  vehicleMetaDescription: string;
+  vehicleTitle: string; // The title of the vehicle
+  vehicleModel: string; // Model name of the vehicle
+  vehiclePhoto: string; // URL of the first vehicle photo
+};
+
+export type VehicleMetaDataResponse = {
+  result: VehicleMetadataType;
+  status: string;
+  statusCode: number;
+};
+
 export type ProfileCardDataType = {
   company: Company;
   rentalDetails: RentalDetails;

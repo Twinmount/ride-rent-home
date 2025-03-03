@@ -36,21 +36,21 @@ const MainVehicleGrid = async ({
   return (
     <MotionSection className="wrapper h-auto min-h-fit w-full pb-8">
       {hasVehicles ? (
-        // server rendered first 8 result
         <div className={`relative mt-6 w-full p-4`}>
           <VehicleGridWrapper classNames="mb-4">
+            {/*  server rendered first 8 result */}
             {data.vehicles}
 
+            {/* client rendered remaining 8 results (CSR) */}
             <LoadMoreGridVehicles state={state} category={category} />
           </VehicleGridWrapper>
-
-          {/* loading next 8 result while in view (CSR) */}
         </div>
       ) : (
-        ""
+        <div className="flex-center h-36 italic text-gray-500">
+          No Results Found
+        </div>
       )}
       <ViewAllButton link={viewAllLink} />
-
       <PriceEnquireDialog />
     </MotionSection>
   );

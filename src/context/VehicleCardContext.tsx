@@ -3,15 +3,17 @@
 import { VehicleCardType } from "@/types/vehicle-types";
 import React, { createContext, useState, useContext } from "react";
 
-interface DialogContextType {
+interface VehicleCardContextType {
   selectedVehicle: VehicleCardType;
   openDialog: (vehicle: VehicleCardType) => void;
   closeDialog: () => void;
 }
 
-const DialogContext = createContext<DialogContextType | undefined>(undefined);
+const VehicleCardContext = createContext<VehicleCardContextType | undefined>(
+  undefined,
+);
 
-export const VehicleCardDialogProvider: React.FC<{
+export const VehicleCardContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
@@ -25,19 +27,23 @@ export const VehicleCardDialogProvider: React.FC<{
   };
 
   return (
-    <DialogContext.Provider
-      value={{ selectedVehicle, openDialog, closeDialog }}
+    <VehicleCardContext.Provider
+      value={{
+        selectedVehicle,
+        openDialog,
+        closeDialog,
+      }}
     >
       {children}
-    </DialogContext.Provider>
+    </VehicleCardContext.Provider>
   );
 };
 
-export const useDialogContext = (): DialogContextType => {
-  const context = useContext(DialogContext);
+export const useVehicleCardContext = (): VehicleCardContextType => {
+  const context = useContext(VehicleCardContext);
   if (!context) {
     throw new Error(
-      "useDialog must be used within a VehicleCardDialogProvider",
+      "useVehicleCardContext must be used within a VehicleCardProvider",
     );
   }
   return context;

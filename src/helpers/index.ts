@@ -378,8 +378,6 @@ export function generateModelDetailsUrl(vehicleTitle?: string): string {
 
 /**
  * Generates a URL redirecting to the vehicle details page
- *
- * @param {VehicleCardType} vehicle - Vehicle object
  * @returns {string} URL redirecting to the vehicle details page
  */
 export const generateVehicleDetailsUrl = (vehicle: {
