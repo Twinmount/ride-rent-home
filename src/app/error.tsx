@@ -15,13 +15,13 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="w-full h-screen flex flex-col items-center pt-72 text-center">
+    <div className="flex h-screen w-full flex-col items-center pt-72 text-center">
       <h2 className="text-2xl font-semibold text-black">
         Oops! Something went wrong :/
       </h2>
       {/* <p className="text-sm text-red-500">{error.message}</p> */}
       <button
-        className="bg-slate-900 px-2 py-1 rounded-xl text-white hover:bg-slate-950 mt-3"
+        className="mt-3 rounded-xl bg-slate-900 px-2 py-1 text-white hover:bg-slate-950"
         onClick={() => reset()}
       >
         Try again

@@ -9,7 +9,7 @@ export default async function States({ category }: { category: string }) {
 
   // Fetch the states data from the API
   const response = await fetch(`${baseUrl}/states/list?hasVehicle=true`, {
-    cache: "force-cache",
+    cache: "no-cache",
   });
 
   const data: FetchStatesResponse = await response.json();

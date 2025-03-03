@@ -20,7 +20,7 @@ export async function generateMetadata({
 }
 
 export default async function VehicleSeriesPage({
-  params: { state, series },
+  params: { state, brand, series },
 }: PageProps) {
   const data = await fetchVehicleSeriesData({
     page: 1,
@@ -32,7 +32,7 @@ export default async function VehicleSeriesPage({
 
   return (
     <div className="wrapper flex h-auto min-h-screen flex-col bg-lightGray pb-8 pt-4">
-      <VehicleSeriesInfo series={series} state={state} />
+      <VehicleSeriesInfo series={series} state={state} brand={brand} />
 
       {hasVehicles ? (
         <>

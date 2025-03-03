@@ -2,12 +2,9 @@
 
 import LazyLoad from "@/components/skelton/LazyLoad";
 import { useGlobalContext } from "@/context/GlobalContext";
-import { useEffect } from "react";
 
 export default function GlobalPageLoadingIndicator() {
   const { isPageLoading } = useGlobalContext();
-
-  useEffect(() => console.log(isPageLoading), [isPageLoading]);
 
   if (!isPageLoading) return null;
 

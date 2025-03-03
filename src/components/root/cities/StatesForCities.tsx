@@ -13,7 +13,7 @@ export default async function StatesForCities({ state, category }: PropType) {
 
   // Fetch the states data from the API
   const response = await fetch(`${baseUrl}/states/list?hasVehicle=true`, {
-    cache: "force-cache",
+    cache: "no-cache",
   });
 
   const data: FetchStatesResponse = await response.json();

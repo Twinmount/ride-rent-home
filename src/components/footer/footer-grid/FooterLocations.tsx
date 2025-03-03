@@ -8,7 +8,7 @@ export default async function FooterLocations() {
 
   // Fetch the states data from the API
   const response = await fetch(`${baseUrl}/states/list?hasVehicle=true`, {
-    cache: "force-cache",
+    cache: "no-cache",
   });
   const data: FetchStatesResponse = await response.json();
 

@@ -164,7 +164,9 @@ export const fetchVehicleTypesByValue = async (
     // generating api URL
     const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}&hasVehicle=true`;
 
-    const response = await fetch(apiUrl);
+    const response = await fetch(apiUrl, {
+      cache: "no-cache",
+    });
 
     // Check if the response is OK
     if (!response.ok) {
@@ -239,7 +241,7 @@ export const fetchStates = async (): Promise<
   try {
     const res = await fetch(`${BASE_URL}/states/list?hasVehicle=true`, {
       method: "GET",
-      cache: "force-cache",
+      cache: "no-cache",
     });
 
     if (!res.ok) {
@@ -311,6 +313,7 @@ export const fetchCategories = async (): Promise<
       `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true`,
       {
         method: "GET",
+        cache: "no-cache",
       },
     );
 

@@ -3,13 +3,20 @@ import { Metadata } from "next";
 
 const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
-export async function fetchVehicleSeriesMetadata(
-  state: string,
-  series: string,
-): Promise<FetchVehicleSeriesInfo | null> {
+type FetchVehicleSeriesInfoType = {
+  state: string;
+  series: string;
+  brand: string;
+};
+
+export async function fetchVehicleSeriesMetadata({
+  state,
+  series,
+  brand,
+}: FetchVehicleSeriesInfoType): Promise<FetchVehicleSeriesInfo | null> {
   try {
-    const url = `${baseUrl}/vehicle-series/info?vehicleSeries=${series}&state=${state}`;
-    const response = await fetch(url, { method: "GET" });
+    const url = `${baseUrl}/vehicle-series/info?vehicleSeries=${series}&state=${state}&brand=${brand}`;
+    const response = await fetch(url, { method: "GET", cache: "no-cache" });
 
     if (!response.ok) {
       console.error(
@@ -34,7 +41,7 @@ export async function generateSeriesListingPageMetadata({
   series: string;
   brand: string;
 }): Promise<Metadata> {
-  const data = await fetchVehicleSeriesMetadata(state, series);
+  const data = await fetchVehicleSeriesMetadata({ state, series, brand });
 
   if (!data || !data.result) {
     throw new Error(

@@ -74,8 +74,8 @@ export async function generateVehicleMetadata(
   const ogImage = vehicle.vehiclePhoto;
 
   return {
-    title,
-    description,
+    title: metaTitle,
+    description: metaDescription,
     keywords: ` ${vehicle.vehicleModel}, ${category} rental in ${state}, ${convertToLabel(state)} ${category} rental near me`,
     openGraph: {
       title: shortTitle,
