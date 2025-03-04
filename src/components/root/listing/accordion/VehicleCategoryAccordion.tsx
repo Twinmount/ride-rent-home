@@ -16,6 +16,7 @@ const VehicleCategoryAccordion: FC = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
+    staleTime: 60 * 1000,
   });
 
   useEffect(() => {

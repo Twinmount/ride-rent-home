@@ -27,6 +27,7 @@ export const VehicleTypeAccordion = ({
     queryKey: ["vehicle-types", category],
     queryFn: () => fetchVehicleTypesByValue(category),
     enabled: !!category, // Only fetch if a category is selected
+    staleTime: 60 * 1000,
   });
 
   // Map vehicle types to options

@@ -33,7 +33,6 @@ export default function CurrentPageBreadcrumb({
           {/* vehicle state */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              target="_blank"
               href={`/${state}/${category}`}
               className="font-semibold transition-colors hover:text-yellow hover:underline"
             >
@@ -46,7 +45,6 @@ export default function CurrentPageBreadcrumb({
           <BreadcrumbItem>
             <BreadcrumbLink
               href={`/${state}/${category}`}
-              target="_blank"
               className="font-semibold transition-colors hover:text-yellow hover:underline"
             >
               {formattedCategory} for rent{" "}
@@ -57,7 +55,7 @@ export default function CurrentPageBreadcrumb({
           {/* vehicle brand */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/${state}/listing?brand=${brand.value}`}
+              href={`/${state}/listing?category=${category}&brand=${brand.value}`}
               target="_blank"
               className="font-semibold transition-colors hover:text-yellow hover:underline"
             >
