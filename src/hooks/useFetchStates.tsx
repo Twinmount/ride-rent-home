@@ -11,6 +11,7 @@ export default function useFetchStates() {
   const { data, isLoading } = useQuery({
     queryKey: ["states"],
     queryFn: fetchStates,
+    staleTime: 10 * 60 * 1000,
   });
 
   // Memoize the rearranged states to avoid recalculating on every render

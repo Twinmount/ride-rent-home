@@ -25,6 +25,7 @@ export default function VehicleTypesCarousel() {
     queryKey: ["vehicleTypes", category],
     queryFn: () => fetchVehicleTypesByValue(category),
     enabled: !!category,
+    staleTime: 60 * 1000,
   });
 
   const vehicleTypes: VehicleTypeType[] = data?.result?.list || [];
