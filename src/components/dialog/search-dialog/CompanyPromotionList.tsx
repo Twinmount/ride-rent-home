@@ -63,8 +63,8 @@ export const CompanyPromotionList = () => {
 
   return (
     <>
-      {data.length > 0 && (
-        <div className="flex flex-col items-center p-6 pt-20">
+      {data?.length > 0 && (
+        <div className="mt-auto flex flex-col items-center p-6">
           <h2 className="mb-1 text-center text-xl text-gray-800">
             Rent From Premium Suppliers
           </h2>
@@ -72,7 +72,17 @@ export const CompanyPromotionList = () => {
             Affordable prices & Instant Bookings
           </p>
 
-          <div className="mt-4 flex flex-wrap justify-center gap-6">
+          <div
+            className={`mt-4 grid justify-center gap-6 ${
+              data.length === 1
+                ? "grid-cols-1"
+                : data.length === 2
+                  ? "grid-cols-2"
+                  : data.length === 3
+                    ? "grid-cols-3 md:grid-cols-3"
+                    : "grid-cols-2 md:grid-cols-4"
+            }`}
+          >
             {data.length > 0 ? (
               data.map((element, index) => (
                 <CompanyPromotionItem

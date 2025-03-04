@@ -38,7 +38,7 @@ export const CompanyPromotionItem = ({
           />
         )}
       </div>
-      <p className="mt-1 text-xs font-medium text-gray-700">
+      <p className="mt-1 text-center text-xs font-medium text-gray-700">
         {element.companyName}
       </p>
       <p className="text-xs text-gray-500">
