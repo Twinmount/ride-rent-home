@@ -1,7 +1,7 @@
 import { ENV } from "@/config/env";
 import type { Metadata } from "next";
 
-export function getRootMetadata(): Metadata {
+export function getDefaultMetadata(): Metadata {
   // open graph image
   const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
 

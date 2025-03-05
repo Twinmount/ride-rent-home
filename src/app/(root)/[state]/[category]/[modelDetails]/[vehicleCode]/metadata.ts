@@ -7,6 +7,7 @@ import {
 } from "@/helpers";
 import { restoreVehicleCodeFormat } from ".";
 import { ENV } from "@/config/env";
+import { getDefaultMetadata } from "@/app/root-metadata";
 
 export async function fetchVehicleMetaData(
   vehicleCode: string,
@@ -38,7 +39,7 @@ export async function generateVehicleMetadata(
   const data = await fetchVehicleMetaData(vehicleCode);
 
   if (!data?.result) {
-    throw new Error("Failed to fetch vehicle metadata");
+    return getDefaultMetadata();
   }
 
   const vehicle = data.result;

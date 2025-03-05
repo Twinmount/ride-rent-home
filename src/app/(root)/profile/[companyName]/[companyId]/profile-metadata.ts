@@ -1,3 +1,4 @@
+import { getDefaultMetadata } from "@/app/root-metadata";
 import { formatToUrlFriendly } from "@/helpers";
 import { CompanyMetadataResponse } from "@/types";
 import { Metadata } from "next";
@@ -35,7 +36,7 @@ export async function generateCompanyMetadata(
   const companyDetails = data?.result;
 
   if (!companyDetails) {
-    throw new Error("Failed to fetch company details");
+    return getDefaultMetadata();
   }
 
   const companyName = companyDetails.companyName;
