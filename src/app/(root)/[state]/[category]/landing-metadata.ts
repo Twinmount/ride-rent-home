@@ -1,3 +1,4 @@
+import { getDefaultMetadata } from "@/app/root-metadata";
 import { ENV } from "@/config/env";
 import { Metadata } from "next";
 
@@ -37,7 +38,7 @@ export async function generateHomePageMetadata(
   const data = await fetchHomepageMetadata(state, category);
 
   if (!data?.result) {
-    throw new Error("Failed to fetch homepage metadata");
+    return getDefaultMetadata();
   }
 
   const canonicalUrl = `https://ride.rent/${state}/${category}`;

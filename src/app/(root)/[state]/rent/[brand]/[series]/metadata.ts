@@ -1,3 +1,4 @@
+import { getDefaultMetadata } from "@/app/root-metadata";
 import { FetchVehicleSeriesInfo } from "@/types";
 import { Metadata } from "next";
 
@@ -44,9 +45,7 @@ export async function generateSeriesListingPageMetadata({
   const data = await fetchVehicleSeriesMetadata({ state, series, brand });
 
   if (!data || !data.result) {
-    throw new Error(
-      `Failed to fetch metadata for vehicle series: ${series} in ${state}`,
-    );
+    return getDefaultMetadata();
   }
 
   const {
