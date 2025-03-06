@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { ENV } from "@/config/env";
-import { useParams } from "next/navigation";
+import React from "react";
 import { CompanyPromotionItem } from "./CompanyPromotionItem";
+import { useCompanyPromotionList } from "./useCompanyPromotionList";
 
 interface CompanyPromotion {
   companyLogo?: string;
@@ -12,52 +11,9 @@ interface CompanyPromotion {
 }
 
 export const CompanyPromotionList = () => {
-  const params = useParams<{ state?: string; category?: string }>();
-  const baseUrl = ENV.NEXT_PUBLIC_API_URL;
-  const [data, setData] = useState<CompanyPromotion[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { data, isLoading } = useCompanyPromotionList();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const page = 0;
-        const state = params?.state || "dubai";
-        const category = params?.category || "cars";
-
-        const queryParams = new URLSearchParams({
-          page: page.toString(),
-          limit: "4",
-          sortOrder: "ASC",
-          state,
-          category,
-        });
-
-        const url = `${baseUrl}/company-promotion/public/list?${queryParams.toString()}`;
-
-        const response = await fetch(url, {
-          method: "GET",
-          cache: "no-cache",
-        });
-
-        const result = await response.json();
-
-        if (Array.isArray(result?.result)) {
-          setData(result.result as CompanyPromotion[]);
-        } else {
-          setData([]);
-        }
-      } catch (error) {
-        setData([]);
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [params?.state, params?.category, baseUrl]);
-
-  if (loading) {
+  if (isLoading) {
     return <></>;
   }
 
@@ -84,7 +40,7 @@ export const CompanyPromotionList = () => {
             }`}
           >
             {data.length > 0 ? (
-              data.map((element, index) => (
+              data.map((element: CompanyPromotion, index: number) => (
                 <CompanyPromotionItem
                   key={`${index}_company_promotion_list`}
                   element={element}
