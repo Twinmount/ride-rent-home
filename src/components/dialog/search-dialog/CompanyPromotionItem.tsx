@@ -22,7 +22,11 @@ export const CompanyPromotionItem = ({
   );
 
   return (
-    <Link href={companyProfilePageLink} className="flex flex-col items-center">
+    <Link
+      href={companyProfilePageLink}
+      className="flex flex-col items-center"
+      onClick={() => (document.activeElement as HTMLElement)?.blur()}
+    >
       <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-gray-500 text-lg text-gray-600">
         {element.companyLogo ? (
           <img
