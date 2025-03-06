@@ -110,6 +110,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { value: "sports-bikes" },
     { value: "vans" },
     { value: "motorcycles" },
+    { value: "bicycles" },
     { value: "yachts" },
     { value: "leisure-boats" },
     { value: "charters" },

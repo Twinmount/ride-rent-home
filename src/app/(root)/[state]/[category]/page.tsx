@@ -11,7 +11,10 @@ import TopBrands from "@/components/root/landing/TopBrands";
 import { Suspense } from "react";
 import { PageProps } from "@/types";
 import TrustedReviewsSection from "@/components/root/landing/trusted-reviews/TrustedReviewsSection";
-import { generateHomePageMetadata } from "./landing-metadata";
+import {
+  generateHomePageMetadata,
+  getHomePageJsonLd,
+} from "./landing-metadata";
 import BrandsCarouselSkeleton from "@/components/skelton/BrandsCarouselSkeleton";
 import NewlyArrived from "@/components/root/landing/NewlyArrived";
 import VehicleCategoryAndFilter from "@/components/root/landing/VehicleCategoryAndFilter";
@@ -19,20 +22,28 @@ import HeroSection from "@/components/root/landing/HeroSection";
 import VehicleCardSkeletonGrid from "@/components/skelton/VehicleCardSkeleton";
 import VehicleCardCarouselSkeleton from "@/components/skelton/VehicleCardCarouselSkeleton";
 import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
+import JsonLd from "@/components/common/JsonLd";
 
 export async function generateMetadata({
   params: { state, category },
 }: PageProps): Promise<Metadata> {
   return generateHomePageMetadata(state, category);
 }
+
 export default function Home({
   params: { state, category },
   searchParams,
 }: PageProps) {
   // accessing vehicle type from the url if its available for the MainVehicleGrid component.
   const vehicleType = searchParams.type;
+
+  // Generate JSON-LD without API call
+  const jsonLdData = getHomePageJsonLd(state, category);
   return (
     <>
+      {/* Inject JSON-LD */}
+      <JsonLd jsonLdData={jsonLdData} id="json-ld-homepage" />
+
       <HeroSection state={state} category={category} />
       <VehicleCategoryAndFilter />
 
