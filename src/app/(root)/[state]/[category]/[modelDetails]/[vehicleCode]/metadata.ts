@@ -130,6 +130,8 @@ export function getVehicleJsonLd(
   category: string,
   vehicleCode: string,
 ) {
+  const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+
   // Generate URLs using the helper
   const vehicleDetailsPageLink = getAbsoluteUrl(
     generateVehicleDetailsUrl({
@@ -175,6 +177,41 @@ export function getVehicleJsonLd(
         name: vehicle.company.companyName,
         url: companyPortfolioPageLink,
       },
+    },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: getAbsoluteUrl("/"),
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: state,
+          item: getAbsoluteUrl(`/${state}`),
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: category,
+          item: getAbsoluteUrl(`/${state}/${category}`),
+        },
+        {
+          "@type": "ListItem",
+          position: 4,
+          name: vehicle.modelName,
+          item: vehicleDetailsPageLink,
+        },
+      ],
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Ride Rent",
+      url: getAbsoluteUrl("/"),
+      logo: rootImage,
     },
   };
 }

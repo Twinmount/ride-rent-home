@@ -156,7 +156,6 @@ export function getCompanyJsonLd(
           "@type": "ListItem",
           position: 2,
           name: "Profile",
-          item: getAbsoluteUrl("/profile"),
         },
         {
           "@type": "ListItem",
