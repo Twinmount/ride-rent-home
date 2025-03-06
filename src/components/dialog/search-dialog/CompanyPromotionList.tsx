@@ -2,6 +2,7 @@
 import React from "react";
 import { CompanyPromotionItem } from "./CompanyPromotionItem";
 import { useCompanyPromotionList } from "./useCompanyPromotionList";
+import { CompanyPromotionSkeleton } from "@/components/skelton/CompanyPromotionSkeleton";
 
 interface CompanyPromotion {
   companyLogo?: string;
@@ -14,7 +15,7 @@ export const CompanyPromotionList = () => {
   const { data, isLoading } = useCompanyPromotionList();
 
   if (isLoading) {
-    return <></>;
+    return <CompanyPromotionSkeleton /> ;
   }
 
   return (
