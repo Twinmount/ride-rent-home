@@ -17,13 +17,14 @@ import RelatedLinks from "@/components/root/vehicle-details/RelatedLinks";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
-import { generateVehicleMetadata } from "./metadata";
+import { generateVehicleMetadata, getVehicleJsonLd } from "./metadata";
 import CurrentPageBreadcrumb from "@/components/root/vehicle-details/CurrentPageBreadcrumb";
 import { restoreVehicleCodeFormat } from ".";
 import { ENV } from "@/config/env";
 import { Suspense } from "react";
 import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
 import { VehicleInfo } from "@/components/root/vehicle-details/VehicleInfo";
+import JsonLd from "@/components/common/JsonLd";
 
 type ParamsProps = {
   params: { state: string; category: string; vehicleCode: string };
@@ -81,8 +82,18 @@ export default async function VehicleDetails({
     vehicleTitle: vehicle.vehicleTitle,
   };
 
+  // Generate JSON-LD
+  const jsonLdData = getVehicleJsonLd(vehicle, state, category, vehicleCode);
+
   return (
-    <section className="vehicle-details-section wrapper">
+    <div className="vehicle-details-section wrapper">
+      {/* Inject JSON-LD */}
+      <JsonLd
+        key={vehicleCode}
+        jsonLdData={jsonLdData}
+        id={`json-ld-vehicle-${vehicleCode}`}
+      />
+
       {/* Details heading */}
       <MotionDiv className="heading-box">
         <h1 className="custom-heading model-name">
@@ -164,6 +175,6 @@ export default async function VehicleDetails({
 
       {/* Why Opt Ride.Rent  */}
       <WhyOpt state={state} category={category} />
-    </section>
+    </div>
   );
 }

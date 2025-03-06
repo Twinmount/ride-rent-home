@@ -1,5 +1,7 @@
 import { getDefaultMetadata } from "@/app/root-metadata";
 import { ENV } from "@/config/env";
+import { convertToLabel } from "@/helpers";
+import { getAbsoluteUrl } from "@/helpers/metadata-helper";
 import { Metadata } from "next";
 
 type MetaDataResponse = {
@@ -104,6 +106,58 @@ export async function generateHomePageMetadata(
     },
     alternates: {
       canonical: canonicalUrl,
+    },
+  };
+}
+
+/**
+ * Generates JSON-LD structured data for the homepage dynamically.
+ *
+ * @param {string} state - Selected state (e.g., "dubai", "sharjah").
+ * @param {string} category - Selected vehicle category (e.g., "cars", "yachts").
+ * @returns {object} JSON-LD structured data object.
+ */
+export function getHomePageJsonLd(state: string, category: string) {
+  const homepageUrl = getAbsoluteUrl(`/${state}/${category}`);
+
+  const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: `Rent ${convertToLabel(category)} in ${convertToLabel(state)} | Ride Rent`,
+    description: `Find the best rental deals for ${convertToLabel(category)} in ${convertToLabel(state)}. Compare prices, book easily, and enjoy the ride.`,
+    url: homepageUrl,
+    inLanguage: "en",
+    image: rootImage,
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: getAbsoluteUrl("/"),
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: state,
+          item: getAbsoluteUrl(`/${state}`),
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: category,
+          item: homepageUrl,
+        },
+      ],
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Ride Rent",
+      url: getAbsoluteUrl("/"),
+      logo: rootImage,
     },
   };
 }

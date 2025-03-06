@@ -2,8 +2,12 @@ import VehicleSeriesInfo from "@/components/root/series/VehicleSeriesInfo";
 import { fetchVehicleSeriesData } from "./action";
 import LoadMoreSeries from "@/components/root/series/LoadMoreSeries";
 import { Metadata } from "next";
-import { generateSeriesListingPageMetadata } from "./metadata";
+import {
+  generateSeriesListingPageMetadata,
+  getSeriesListingPageJsonLd,
+} from "./metadata";
 import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
+import JsonLd from "@/components/common/JsonLd";
 
 export type PageProps = {
   params: {
@@ -30,8 +34,17 @@ export default async function VehicleSeriesPage({
 
   const hasVehicles = !!data.vehicles?.length;
 
+  // Generate JSON-LD
+  const jsonLdData = getSeriesListingPageJsonLd(state, brand, series);
+
   return (
     <div className="wrapper flex h-auto min-h-screen flex-col bg-lightGray pb-8 pt-4">
+      {/* Inject JSON-LD */}
+      <JsonLd
+        id={`json-ld-series-${brand}-${series}`}
+        jsonLdData={jsonLdData}
+      />
+
       <VehicleSeriesInfo series={series} state={state} brand={brand} />
 
       {hasVehicles ? (
