@@ -1,13 +1,18 @@
 import { Metadata } from "next";
-import { VehicleMetaDataResponse } from "@/types/vehicle-details-types";
+import {
+  VehicleDetailsPageType,
+  VehicleMetaDataResponse,
+} from "@/types/vehicle-details-types";
 import {
   convertToLabel,
+  generateCompanyProfilePageLink,
   generateVehicleDetailsUrl,
   singularizeType,
 } from "@/helpers";
 import { restoreVehicleCodeFormat } from ".";
 import { ENV } from "@/config/env";
 import { getDefaultMetadata } from "@/app/root-metadata";
+import { getAbsoluteUrl } from "@/helpers/metadata-helper";
 
 export async function fetchVehicleMetaData(
   vehicleCode: string,
@@ -114,6 +119,99 @@ export async function generateVehicleMetadata(
     },
     alternates: {
       canonical: canonicalUrl,
+    },
+  };
+}
+
+// Function to generate JSON-LD
+export function getVehicleJsonLd(
+  vehicle: VehicleDetailsPageType,
+  state: string,
+  category: string,
+  vehicleCode: string,
+) {
+  const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+
+  // Generate URLs using the helper
+  const vehicleDetailsPageLink = getAbsoluteUrl(
+    generateVehicleDetailsUrl({
+      vehicleTitle: vehicle.vehicleTitle,
+      state: state,
+      vehicleCategory: category,
+      vehicleCode: vehicleCode,
+    }),
+  );
+
+  const companyPortfolioPageLink = getAbsoluteUrl(
+    generateCompanyProfilePageLink(
+      vehicle.company.companyName,
+      vehicle.company.companyId,
+    ),
+  );
+
+  const isVehicleAvailable =
+    !!vehicle?.company?.companyName && !!vehicle?.company?.companyProfile;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: vehicle.vehicleTitle || vehicle.modelName,
+    description: vehicle.description,
+    brand: {
+      "@type": "Brand",
+      name: vehicle.brand.label,
+    },
+    model: vehicle.modelName,
+    image: vehicle.vehiclePhotos?.[0],
+    url: vehicleDetailsPageLink,
+    offers: {
+      "@type": "Offer",
+      price: vehicle.rentalDetails?.day?.rentInAED || "0",
+      priceCurrency: "AED",
+      availability: isVehicleAvailable
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      validFrom: new Date().toISOString(),
+      seller: {
+        "@type": "Organization",
+        name: vehicle.company.companyName,
+        url: companyPortfolioPageLink,
+      },
+    },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: getAbsoluteUrl("/"),
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: state,
+          item: getAbsoluteUrl(`/${state}`),
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: category,
+          item: getAbsoluteUrl(`/${state}/${category}`),
+        },
+        {
+          "@type": "ListItem",
+          position: 4,
+          name: vehicle.modelName,
+          item: vehicleDetailsPageLink,
+        },
+      ],
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Ride Rent",
+      url: getAbsoluteUrl("/"),
+      logo: rootImage,
     },
   };
 }

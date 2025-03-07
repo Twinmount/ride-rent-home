@@ -6,10 +6,13 @@ import { FC } from "react";
 import {
   fetchListingMetadata,
   generateListingMetadata,
+  getListingPageJsonLd,
 } from "./listing-metadata";
 
 import { FilterSidebar } from "@/components/root/listing/filter/FilterSidebar";
 import PriceFilterTag from "@/components/root/listing/PriceFilterTag";
+import { getDefaultMetadata } from "@/app/root-metadata";
+import JsonLd from "@/components/common/JsonLd";
 
 export async function generateMetadata({
   params: { state },
@@ -24,7 +27,7 @@ export async function generateMetadata({
   const data = await fetchListingMetadata(state, category, vehicleType);
 
   if (!data) {
-    throw new Error("Failed to fetch listing metadata");
+    return getDefaultMetadata();
   }
 
   return generateListingMetadata(data, state, category, vehicleType);
@@ -43,8 +46,16 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
     ? searchParams.vehicleTypes.split(",").map((type) => convertToLabel(type))
     : [];
 
+  // generate JSON-LD
+  const jsonLdData = getListingPageJsonLd(state, formattedCategory);
+
   return (
     <div className="wrapper h-auto min-h-screen bg-lightGray pb-8 pt-4">
+      {/* ✅ Inject JSON-LD */}
+      <JsonLd
+        id={`json-ld-listing-${state}-${category}`}
+        jsonLdData={jsonLdData}
+      />
       <div className="flex-between mb-6 h-fit w-full pr-[5%] max-md:flex-col">
         <h1 className="ml-2 break-words text-2xl font-[500] max-md:mr-auto lg:text-3xl">
           Rent or Lease&nbsp;

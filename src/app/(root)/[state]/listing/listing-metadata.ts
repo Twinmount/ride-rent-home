@@ -1,3 +1,6 @@
+import { ENV } from "@/config/env";
+import { convertToLabel } from "@/helpers";
+import { getAbsoluteUrl } from "@/helpers/metadata-helper";
 import { Metadata } from "next";
 
 type ListingPageMetaResponse = {
@@ -10,7 +13,7 @@ type ListingPageMetaResponse = {
 export async function fetchListingMetadata(
   state: string,
   category: string,
-  vehicleType: string
+  vehicleType: string,
 ): Promise<ListingPageMetaResponse | null> {
   const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
@@ -45,7 +48,7 @@ export function generateListingMetadata(
   data: ListingPageMetaResponse | null,
   state: string,
   category: string,
-  vehicleType: string
+  vehicleType: string,
 ): Metadata {
   const metaTitle =
     data?.result?.metaTitle ||
@@ -104,6 +107,58 @@ export function generateListingMetadata(
     },
     alternates: {
       canonical: canonicalUrl,
+    },
+  };
+}
+
+/**
+ * Generates JSON-LD structured data for the listing page dynamically.
+ *
+ * @param {string} state - Selected state (e.g., "dubai", "sharjah").
+ * @param {string} category - Selected vehicle category (e.g., "cars", "yachts").
+ * @returns {object} JSON-LD structured data object.
+ */
+export function getListingPageJsonLd(state: string, category: string) {
+  const listingPageUrl = getAbsoluteUrl(
+    `/${state}/listing?category=${category}`,
+  );
+  const siteImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `Explore ${convertToLabel(category)} Rentals in ${convertToLabel(state)} | Ride Rent`,
+    description: `Find and rent the best ${convertToLabel(category)} in ${convertToLabel(state)}. Browse listings for cars, bikes, yachts, and more.`,
+    url: listingPageUrl,
+    image: siteImage,
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: getAbsoluteUrl("/"),
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: state,
+          item: getAbsoluteUrl(`/${state}`),
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: "Listings",
+          item: listingPageUrl,
+        },
+      ],
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Ride Rent",
+      url: getAbsoluteUrl("/"),
+      logo: siteImage,
     },
   };
 }

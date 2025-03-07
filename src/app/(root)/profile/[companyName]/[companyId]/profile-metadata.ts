@@ -1,5 +1,7 @@
 import { getDefaultMetadata } from "@/app/root-metadata";
+import { ENV } from "@/config/env";
 import { formatToUrlFriendly } from "@/helpers";
+import { getAbsoluteUrl } from "@/helpers/metadata-helper";
 import { CompanyMetadataResponse } from "@/types";
 import { Metadata } from "next";
 
@@ -95,6 +97,79 @@ export async function generateCompanyMetadata(
     },
     alternates: {
       canonical: canonicalUrl,
+    },
+  };
+}
+
+/**
+ * Generates JSON-LD structured data for the company profile page.
+ *
+ * @param {string} companyId - Unique identifier for the company.
+ * @param {string} companyNameValue - URL-friendly name of the company.
+ * @param {string | null} companyName - Name of the company (nullable).
+ * @param {string | null} companyAddress - Address of the company (nullable).
+ * @param {string | null} companyLogo - Logo URL of the company (nullable).
+ * @returns {object | null} JSON-LD structured data object.
+ */
+export function getCompanyJsonLd(
+  companyId: string,
+  companyNameValue: string,
+  companyNameLabel: string | null,
+  companyAddress: string | null,
+  companyLogo: string | null,
+) {
+  // If company data is null, return null (no JSON-LD)
+  if (!companyNameLabel || !companyAddress || !companyLogo) {
+    return null;
+  }
+
+  const companyProfileUrl = getAbsoluteUrl(
+    `/profile/${companyNameValue}/${companyId}`,
+  );
+
+  const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+
+  const address = companyAddress || "UAE"; // Default to "UAE" if address is missing
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: companyNameLabel,
+    url: companyProfileUrl,
+    logo: companyLogo,
+    image: companyLogo,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: address,
+      addressCountry: "UAE",
+    },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: getAbsoluteUrl("/"),
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Profile",
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: companyNameLabel,
+          item: companyProfileUrl,
+        },
+      ],
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Ride Rent",
+      url: getAbsoluteUrl("/"),
+      logo: rootImage,
     },
   };
 }

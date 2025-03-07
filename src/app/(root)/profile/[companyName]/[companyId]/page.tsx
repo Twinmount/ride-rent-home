@@ -6,12 +6,13 @@ import { FetchCompanyDetailsResponse } from "@/types";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import React, { Suspense } from "react";
-import { generateCompanyMetadata } from "./profile-metadata";
+import { generateCompanyMetadata, getCompanyJsonLd } from "./profile-metadata";
 import { ENV } from "@/config/env";
+import JsonLd from "@/components/common/JsonLd";
 
 type PropsType = {
   searchParams: { [key: string]: string | undefined };
-  params: { companyId: string };
+  params: { companyId: string; companyName: string };
 };
 
 // // Generate Meta Data
@@ -23,7 +24,7 @@ export async function generateMetadata({
 
 export default async function AgentProfilePage({
   searchParams,
-  params: { companyId },
+  params: { companyId, companyName },
 }: PropsType) {
   const baseUrl = ENV.API_URL;
 
@@ -51,8 +52,20 @@ export default async function AgentProfilePage({
   const companyDetails = data.result;
   const filters = data.result.categories || [];
 
+  // Generate JSON-LD
+  const jsonLdData = getCompanyJsonLd(
+    companyId,
+    companyName,
+    companyDetails.companyName,
+    companyDetails.companyAddress,
+    companyDetails.companyLogo,
+  );
+
   return (
     <section className="wrapper pb-8 pt-4">
+      {/*  Inject JSON-LD */}
+      <JsonLd id={`json-ld-company-${companyId}`} jsonLdData={jsonLdData} />
+
       {/* agent details */}
       <AgentProfile companyDetails={companyDetails} />
 

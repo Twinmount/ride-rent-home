@@ -126,10 +126,6 @@ export function convertToLabel(value: string | undefined): string {
     return "SUV's";
   }
 
-  if (value.toLowerCase() === "suvs") {
-    return "SUV's";
-  }
-
   return value
     .split("-") // Split the value by hyphen
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
