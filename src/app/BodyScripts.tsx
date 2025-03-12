@@ -63,6 +63,17 @@ export default function BodyScripts() {
           src="https://px.ads.linkedin.com/collect/?pid=6480588&fmt=gif"
         />
       </noscript>
+
+      {/* Yandex.Metrika Noscript */}
+      <noscript>
+        <div>
+          <img
+            src="https://mc.yandex.ru/watch/100313141"
+            style={{ position: "absolute", left: "-9999px" }}
+            alt=""
+          />
+        </div>
+      </noscript>
     </>
   );
 }
