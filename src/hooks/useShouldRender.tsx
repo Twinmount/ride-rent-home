@@ -3,15 +3,15 @@
 import { usePathname } from "next/navigation";
 
 /**
- * Custom hook to check if a component should be excluded based on the current pathname.
+ * Custom hook to check if a component should be rendered based on the current pathname as well as an array of excluded paths.
  * @param excludePaths Array of exact paths to exclude.
- * @returns A boolean indicating whether the component should be excluded.
+ * @returns A boolean indicating whether the component should be rendered or not.
  */
 export const useShouldRender = (excludedPaths: string[]) => {
   const pathname = usePathname();
 
-  // Check if the current pathname matches any of the excludePaths or starts with any of the dynamicPaths
-  const shouldExclude = excludedPaths.some((path) => pathname.startsWith(path));
+  // Check if the current pathname matches any of the excludePaths
+  const shouldRender = excludedPaths.some((path) => pathname.startsWith(path));
 
-  return shouldExclude;
+  return shouldRender;
 };
