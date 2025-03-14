@@ -217,11 +217,16 @@ export const fetchPriceRange = async ({
 
 export const fetchSearchResults = async (
   search: string,
+  state?: string,
 ): Promise<FetchSearchResultsResponse | undefined> => {
   try {
-    const res = await fetch(
-      `${BASE_URL}/vehicle/search?search=${encodeURIComponent(search)}`,
-    );
+    let url = `${BASE_URL}/vehicle/search?search=${encodeURIComponent(search)}`;
+
+    if (state) {
+      url += `&state=${state}`;
+    }
+
+    const res = await fetch(url);
 
     if (!res.ok) {
       throw new Error(`Failed to fetch search results`);

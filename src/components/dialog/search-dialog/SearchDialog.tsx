@@ -19,11 +19,13 @@ import { CompanyPromotionList } from "./CompanyPromotionList";
 type SearchDialogProps = {
   isHero?: boolean;
   isMobileNav?: boolean;
+  state?: string;
 };
 
 export function SearchDialog({
   isHero = false,
   isMobileNav = false,
+  state,
 }: SearchDialogProps) {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -40,8 +42,8 @@ export function SearchDialog({
 
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", debouncedSearch],
-    queryFn: () => fetchSearchResults(debouncedSearch),
-    enabled: !!debouncedSearch,
+    queryFn: () => fetchSearchResults(debouncedSearch, state),
+    enabled: !!debouncedSearch && !!state && debouncedSearch.length > 1,
     staleTime: 0,
   });
 

@@ -37,7 +37,7 @@ export default function Home({
   // accessing vehicle type from the url if its available for the MainVehicleGrid component.
   const vehicleType = searchParams.type;
 
-  // Generate JSON-LD without API call
+  // Generate JSON-LD
   const jsonLdData = getHomePageJsonLd(state, category);
   return (
     <>

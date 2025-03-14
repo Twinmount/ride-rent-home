@@ -29,7 +29,9 @@ export default function HeroSection({ state, category }: HeroSectionProps) {
               </p>
             </div>
           </div>
-          <SearchDialog isHero={true} />
+
+          {/* search box with trending agents */}
+          <SearchDialog isHero={true} state={state} />
         </div>
       </div>
     </section>
