@@ -159,10 +159,11 @@ export const sendQuery = async (
 // fetch vehicle types (e.g., Luxury, SUVs) by vehicle category value
 export const fetchVehicleTypesByValue = async (
   vehicleCategoryValue: string,
+  vehicleState: string,
 ): Promise<FetchTypesResponse | undefined> => {
   try {
     // generating api URL
-    const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}&hasVehicle=true`;
+    const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}&hasVehicle=true&state=${vehicleState}`;
 
     const response = await fetch(apiUrl, {
       cache: "no-cache",

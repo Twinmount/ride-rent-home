@@ -17,13 +17,13 @@ import { formUrlQuery, removeKeysFromQuery } from "@/helpers";
 import { VehicleTypeCard } from "./VehicleTypeCard";
 
 export default function VehicleTypesCarousel() {
-  const { category } = useStateAndCategory();
+  const { state, category } = useStateAndCategory();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const { data, isLoading } = useQuery({
     queryKey: ["vehicleTypes", category],
-    queryFn: () => fetchVehicleTypesByValue(category),
+    queryFn: () => fetchVehicleTypesByValue(category, state),
     enabled: !!category,
     staleTime: 60 * 1000,
   });
