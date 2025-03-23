@@ -127,12 +127,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
-      url: "https://ride.rent/faq",
-      lastModified: new Date().toISOString(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
       url: "https://ride.rent/privacy-policy",
       lastModified: new Date().toISOString(),
       changeFrequency: "monthly",
@@ -145,6 +139,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
   ];
+
+  const faqPages = states.map(({ stateValue }) => ({
+    url: `https://ride.rent/faq/${stateValue}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
 
   // Generate sitemap entries for each state/category combination
   const dynamicRoutes: MetadataRoute.Sitemap = states.flatMap((state) =>
@@ -191,6 +192,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Combine static pages with dynamic routes
   const sitemapEntries: MetadataRoute.Sitemap = [
     ...staticPages,
+    ...faqPages,
     ...dynamicRoutes,
     ...listingPages,
     ...rentalsPage,

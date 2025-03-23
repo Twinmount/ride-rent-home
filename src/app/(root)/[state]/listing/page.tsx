@@ -19,6 +19,8 @@ export async function generateMetadata({
   searchParams,
 }: PageProps): Promise<Metadata> {
   const category = searchParams.category || "cars";
+  const brand = searchParams?.brand || "";
+  const city = searchParams?.city || "";
   const vehicleTypesParam = searchParams.vehicleTypes;
   const vehicleType = vehicleTypesParam
     ? vehicleTypesParam.split(",")[0]
@@ -30,7 +32,14 @@ export async function generateMetadata({
     return getDefaultMetadata();
   }
 
-  return generateListingMetadata(data, state, category, vehicleType);
+  return generateListingMetadata(
+    data,
+    state,
+    category,
+    vehicleType,
+    brand,
+    city,
+  );
 }
 
 const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
