@@ -5,12 +5,15 @@ import { fetchCategories } from "@/lib/api/general-api";
 import { useQuery } from "@tanstack/react-query";
 import { sortCategories } from "@/helpers";
 import { ENV } from "@/config/env";
+import { useStateAndCategory } from "./useStateAndCategory";
 
 export function useFetchVehicleCategories() {
+  const { state } = useStateAndCategory();
+
   // Fetch categories using react-query
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
+    queryKey: ["categories", state],
+    queryFn: () => fetchCategories(state),
     staleTime: 60 * 1000,
   });
 
