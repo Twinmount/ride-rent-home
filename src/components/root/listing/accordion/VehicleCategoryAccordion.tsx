@@ -6,16 +6,18 @@ import { useSearchParams } from "next/navigation";
 import qs from "query-string";
 import { fetchCategories } from "@/lib/api/general-api";
 import { CategoryType } from "@/types";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 const VehicleCategoryAccordion: FC = () => {
   const { selectedFilters, handleFilterChange } = useFilters();
+  const { state } = useStateAndCategory();
   const searchParams = useSearchParams();
   const isInitialLoad = useRef(true);
 
   // Fetch categories using react-query
   const { data, isLoading } = useQuery({
     queryKey: ["categories"],
-    queryFn: fetchCategories,
+    queryFn: () => fetchCategories(state),
     staleTime: 60 * 1000,
   });
 

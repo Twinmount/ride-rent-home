@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchVehicleTypesByValue } from "@/lib/api/general-api";
 import { VehicleTypeType } from "@/types";
 import { FiltersType } from "@/hooks/useFilters";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 type VehicleTypeAccordionProps = {
   category: string;
@@ -22,10 +23,12 @@ export const VehicleTypeAccordion = ({
   vehicleTypes,
   handleFilterChange,
 }: VehicleTypeAccordionProps) => {
+  const { state } = useStateAndCategory();
+
   // Fetch vehicle types based on the selected category
   const { data: vehicleTypesData, isLoading: vehicleTypesLoading } = useQuery({
     queryKey: ["vehicle-types", category],
-    queryFn: () => fetchVehicleTypesByValue(category),
+    queryFn: () => fetchVehicleTypesByValue(category, state),
     enabled: !!category, // Only fetch if a category is selected
     staleTime: 60 * 1000,
   });
