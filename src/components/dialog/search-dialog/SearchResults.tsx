@@ -26,7 +26,7 @@ export function SearchResults({
   const vehicles = results?.result.vehicle || [];
 
   // Show placeholder when no search input
-  if (!debouncedSearch || !search) {
+  if (!debouncedSearch || !search || search?.length < 2) {
     return (
       <div className="text-center text-sm italic text-gray-500">
         Search brand, model, or series

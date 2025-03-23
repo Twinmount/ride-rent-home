@@ -47,8 +47,9 @@ export async function generateSeriesListingPageMetadata({
 }): Promise<Metadata> {
   const data = await fetchVehicleSeriesMetadata({ state, series, brand });
 
+  const canonicalUrl = `https://ride.rent/${state}/rent/${brand}/${series}`;
   if (!data || !data.result) {
-    return getDefaultMetadata();
+    return getDefaultMetadata(canonicalUrl);
   }
 
   const {
@@ -58,7 +59,6 @@ export async function generateSeriesListingPageMetadata({
     vehicleSeriesPageSubheading,
   } = data.result;
 
-  const canonicalUrl = `https://ride.rent/${state}/rent/${brand}/${series}`;
   const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
 
   const shortTitle =

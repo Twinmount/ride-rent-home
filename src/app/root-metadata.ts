@@ -1,9 +1,10 @@
 import { ENV } from "@/config/env";
 import type { Metadata } from "next";
 
-export function getDefaultMetadata(): Metadata {
+export function getDefaultMetadata(canonicalUrl?: string): Metadata {
   // open graph image
   const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const pageUrl = !!canonicalUrl ? canonicalUrl : "https://ride.rent";
 
   return {
     title: "Ride.Rent",
@@ -18,7 +19,7 @@ export function getDefaultMetadata(): Metadata {
       title: "Ride.Rent - The Ultimate Vehicle Rental Platform",
       description:
         "Find the best rental vehicles across UAE, from cars, yachts, and more!",
-      url: "https://ride.rent",
+      url: pageUrl,
       type: "website",
       images: [
         {
@@ -51,7 +52,7 @@ export function getDefaultMetadata(): Metadata {
       },
     },
     alternates: {
-      canonical: "https://ride.rent",
+      canonical: pageUrl,
     },
   };
 }

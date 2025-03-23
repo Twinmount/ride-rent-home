@@ -12,14 +12,17 @@ type JsonLdProps = {
  * @param {string} [id="json-ld"] - The id attribute for the script tag.
  */
 
-export default function JsonLd({ jsonLdData, id = "json-ld" }: JsonLdProps) {
+export default function JsonLd({
+  jsonLdData,
+  id = "json-ld-default",
+}: JsonLdProps) {
   if (!jsonLdData) {
     return null;
   }
 
   return (
     <Script
-      id={id || "json-ld-default"}
+      id={id}
       type="application/ld+json"
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(jsonLdData, null, 2),

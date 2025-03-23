@@ -55,6 +55,7 @@ export default async function VehicleDetails({
 
   const data: VehicleDetailsPageResponse = await response.json();
 
+  // if the vehicle data is not found, return 404 not found
   if (
     data?.status === "NOT_SUCCESS" ||
     response.status === 400 ||
@@ -63,9 +64,14 @@ export default async function VehicleDetails({
     return notFound();
   }
 
+  // if the state in the url doesn't match the state in the data , return 404 not found
+  if (state !== data.result.state.value) {
+    return notFound();
+  }
+
   const vehicle = data.result;
 
-  // prop data for profile card and mobile profile card
+  // generating prop data for profile card and mobile profile card
   const ProfileCardData: ProfileCardDataType = {
     company: vehicle?.company,
     rentalDetails: vehicle?.rentalDetails,
@@ -86,7 +92,7 @@ export default async function VehicleDetails({
   const jsonLdData = getVehicleJsonLd(vehicle, state, category, vehicleCode);
 
   return (
-    <div className="vehicle-details-section wrapper">
+    <div className="vehicle-details-page wrapper">
       {/* Inject JSON-LD */}
       <JsonLd
         key={vehicleCode}
@@ -112,48 +118,44 @@ export default async function VehicleDetails({
       {/* Wrapper to handle client side logic regarding mobile profile card */}
       <DetailsSectionClientWrapper profileData={ProfileCardData}>
         {/* Vehicle Details Section */}
-        <section className="details-section">
-          <div className="details-container">
-            {/* container left */}
-            <div className="details">
-              {/* Vehicle Images Slider */}
-              <Images photos={vehicle?.vehiclePhotos} />
+        <section className="vehicle-details-section">
+          {/* container left */}
+          <div className="details-left">
+            {/* Vehicle Images Slider */}
+            <Images photos={vehicle?.vehiclePhotos} />
 
-              {/* vehicle information */}
-              <VehicleInfo
-                modelName={vehicle?.modelName}
-                stateLabel={vehicle?.state.label}
-                isCryptoAccepted={
-                  vehicle?.company.companySpecs.isCryptoAccepted
-                }
-                rentalDetails={vehicle?.rentalDetails}
-                securityDepositEnabled={vehicle?.securityDeposit.enabled}
-                vehicleSpecification={vehicle?.vehicleSpecification}
-                additionalVehicleTypes={vehicle?.additionalVehicleTypes}
-                cities={vehicle?.cities}
-              />
+            {/* vehicle information */}
+            <VehicleInfo
+              modelName={vehicle?.modelName}
+              stateLabel={vehicle?.state.label}
+              isCryptoAccepted={vehicle?.company.companySpecs.isCryptoAccepted}
+              rentalDetails={vehicle?.rentalDetails}
+              securityDepositEnabled={vehicle?.securityDeposit.enabled}
+              vehicleSpecification={vehicle?.vehicleSpecification}
+              additionalVehicleTypes={vehicle?.additionalVehicleTypes}
+              cities={vehicle?.cities}
+            />
 
-              {/* Vehicle Specifications */}
-              <Specification
-                specifications={vehicle?.specs}
-                vehicleCategory={category}
-              />
+            {/* Vehicle Specifications */}
+            <Specification
+              specifications={vehicle?.specs}
+              vehicleCategory={category}
+            />
 
-              {/* Vehicle Features */}
-              <VehicleFeatures
-                features={vehicle?.features}
-                vehicleCategory={category}
-              />
-            </div>
+            {/* Vehicle Features */}
+            <VehicleFeatures
+              features={vehicle?.features}
+              vehicleCategory={category}
+            />
+          </div>
 
-            {/* container right side */}
-            <div className="right">
-              {/* Right Side Profile Card */}
-              <ProfileCard profileData={ProfileCardData} />
+          {/* container right side */}
+          <div className="details-right">
+            {/* Right Side Profile Card */}
+            <ProfileCard profileData={ProfileCardData} />
 
-              {/* Right Side Quick Links */}
-              <RelatedLinks state={state} />
-            </div>
+            {/* Right Side Quick Links */}
+            <RelatedLinks state={state} />
           </div>
         </section>
       </DetailsSectionClientWrapper>

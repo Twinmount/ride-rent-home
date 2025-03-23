@@ -159,10 +159,11 @@ export const sendQuery = async (
 // fetch vehicle types (e.g., Luxury, SUVs) by vehicle category value
 export const fetchVehicleTypesByValue = async (
   vehicleCategoryValue: string,
+  vehicleState: string,
 ): Promise<FetchTypesResponse | undefined> => {
   try {
     // generating api URL
-    const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}&hasVehicle=true`;
+    const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}&hasVehicle=true&state=${vehicleState}`;
 
     const response = await fetch(apiUrl, {
       cache: "no-cache",
@@ -217,11 +218,16 @@ export const fetchPriceRange = async ({
 
 export const fetchSearchResults = async (
   search: string,
+  state?: string,
 ): Promise<FetchSearchResultsResponse | undefined> => {
   try {
-    const res = await fetch(
-      `${BASE_URL}/vehicle/search?search=${encodeURIComponent(search)}`,
-    );
+    let url = `${BASE_URL}/vehicle/search?search=${encodeURIComponent(search)}`;
+
+    if (state) {
+      url += `&state=${state}`;
+    }
+
+    const res = await fetch(url);
 
     if (!res.ok) {
       throw new Error(`Failed to fetch search results`);
@@ -305,12 +311,12 @@ export const fetchAllPaginatedCities = async (
   }
 };
 
-export const fetchCategories = async (): Promise<
-  FetchCategoriesResponse | undefined
-> => {
+export const fetchCategories = async (
+  state: string,
+): Promise<FetchCategoriesResponse | undefined> => {
   try {
     const response = await fetch(
-      `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true`,
+      `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}`,
       {
         method: "GET",
         cache: "no-cache",

@@ -5,10 +5,11 @@ import Image from "next/image";
 import StatesDropdown from "./StatesDropdown";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
-import { useShouldExclude } from "@/hooks/useShouldExclude";
+import { useShouldRender } from "@/hooks/useShouldRender";
 import MobileSidebar from "../sidebar/MobileSidebar";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
 import { extractCategory } from "@/helpers";
+import { noStatesDropdownRoutes } from ".";
 
 export const Navbar = () => {
   const params = useParams<{ state: string; category: string }>();
@@ -16,8 +17,8 @@ export const Navbar = () => {
   const state = params.state || "dubai";
   let category = params.category || "cars";
 
-  // should state/category/quickLinks dropdowns render
-  const shouldRenderDropdowns = useShouldExclude({ isCategory: false });
+  // should state dropdowns render or not for the specified routes
+  const shouldRenderDropdowns = useShouldRender(noStatesDropdownRoutes);
 
   // if category ends with "-for-rent", remove "-for-rent"
   category = extractCategory(category);
@@ -55,7 +56,7 @@ export const Navbar = () => {
           <ul className="flex w-full items-center justify-between gap-4">
             {/* Search Dialog */}
             <li className="max-sm:hidden">
-              <SearchDialog />
+              <SearchDialog state={state} />
             </li>
 
             {/* Location */}
