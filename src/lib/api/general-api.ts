@@ -310,12 +310,12 @@ export const fetchAllPaginatedCities = async (
   }
 };
 
-export const fetchCategories = async (): Promise<
-  FetchCategoriesResponse | undefined
-> => {
+export const fetchCategories = async (
+  state: string,
+): Promise<FetchCategoriesResponse | undefined> => {
   try {
     const response = await fetch(
-      `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true`,
+      `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}`,
       {
         method: "GET",
         cache: "no-cache",
