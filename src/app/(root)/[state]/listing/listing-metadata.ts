@@ -61,7 +61,7 @@ export function generateListingMetadata(
 
   const canonicalUrl = `https://ride.rent/${state}/listing${
     !!category || !!brand || !!city
-      ? `?${!!category ? `category=${category}` : ""}${!!brand ? `&brand=${brand}` : ""}${!!city ? `&city=${city}` : ""}`
+      ? `?${!!category ? `category=${category}` : ""}${!!brand ? `&brand=${brand}` : ""}${!!city ? `&city=${city}` : ""}${vehicleType !== "other" && !!vehicleType ? `&vehicleTypes=${vehicleType}` : ""}`
       : ""
   }`.replace(/\?&/, "?");
 
