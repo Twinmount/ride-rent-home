@@ -5,18 +5,28 @@ import { Metadata } from "next";
 import { generateDirectoryPageMetadata } from "./directory-metadata";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     state: string;
-  };
+  }>;
 };
 
-export async function generateMetadata({
-  params: { state },
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
+
+  const {
+    state
+  } = params;
+
   return generateDirectoryPageMetadata({ state });
 }
 
-export default function DirectoryPage({ params: { state } }: PageProps) {
+export default async function DirectoryPage(props: PageProps) {
+  const params = await props.params;
+
+  const {
+    state
+  } = params;
+
   return (
     <div className="wrapper pt-6">
       <h1 className="mb-2 text-2xl font-[500] md:text-3xl">

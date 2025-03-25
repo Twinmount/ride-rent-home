@@ -11,21 +11,30 @@ import { ENV } from "@/config/env";
 import JsonLd from "@/components/common/JsonLd";
 
 type PropsType = {
-  searchParams: { [key: string]: string | undefined };
-  params: { companyId: string; companyName: string };
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+  params: Promise<{ companyId: string; companyName: string }>;
 };
 
 // // Generate Meta Data
-export async function generateMetadata({
-  params: { companyId },
-}: PropsType): Promise<Metadata> {
+export async function generateMetadata(props: PropsType): Promise<Metadata> {
+  const params = await props.params;
+
+  const {
+    companyId
+  } = params;
+
   return generateCompanyMetadata(companyId);
 }
 
-export default async function AgentProfilePage({
-  searchParams,
-  params: { companyId, companyName },
-}: PropsType) {
+export default async function AgentProfilePage(props: PropsType) {
+  const params = await props.params;
+
+  const {
+    companyId,
+    companyName
+  } = params;
+
+  const searchParams = await props.searchParams;
   const baseUrl = ENV.API_URL;
 
   // Default filter category set to "car"

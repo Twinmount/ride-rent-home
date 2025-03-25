@@ -7,16 +7,20 @@ import { FetchCitiesResponse } from "@/types";
 import { Suspense } from "react";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     state: string;
-  };
-  searchParams: { [key: string]: string | undefined };
+  }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
-export default async function CitiesPage({
-  params: { state },
-  searchParams,
-}: PageProps) {
+export default async function CitiesPage(props: PageProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const {
+    state
+  } = params;
+
   const category = searchParams.category || "cars";
   const page = parseInt(searchParams.page || "1", 10);
 

@@ -3,7 +3,13 @@ import { PageProps } from "@/types";
 import { convertToLabel } from "@/helpers";
 import HeadingBanner from "@/components/common/heading-banner/HeadingBanner";
 
-export async function generateMetadata({ params: { state } }: PageProps) {
+export async function generateMetadata(props: PageProps) {
+  const params = await props.params;
+
+  const {
+    state
+  } = params;
+
   const canonicalUrl = `https://ride.rent/faq/${state}`;
   const title = `Frequently Asked Questions - Ride Rent - ${convertToLabel(state)}`;
   const description = `Find answers to frequently asked questions about renting vehicles in ${convertToLabel(state)}. Learn more about vehicle rentals, services, and policies.`;
@@ -29,7 +35,13 @@ export async function generateMetadata({ params: { state } }: PageProps) {
   };
 }
 
-export default function FAQPage({ params: { state } }: PageProps) {
+export default async function FAQPage(props: PageProps) {
+  const params = await props.params;
+
+  const {
+    state
+  } = params;
+
   return (
     <section>
       <HeadingBanner heading="Frequently Asked Questions" />

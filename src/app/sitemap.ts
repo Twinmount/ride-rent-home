@@ -15,7 +15,11 @@ async function fetchCompanies() {
 
     if (data.status === "SUCCESS" && data.result?.list) {
       return data.result.list.map(
-        (company: { companyName: string; companyId: string }) => ({
+        (company: {
+          companyName: string;
+          companyId: string;
+          companyLogo: any;
+        }) => ({
           url: `https://ride.rent${generateCompanyProfilePageLink(
             company.companyName,
             company.companyId,
@@ -23,6 +27,11 @@ async function fetchCompanies() {
           lastModified: new Date().toISOString(),
           changeFrequency: "weekly",
           priority: 0.8,
+          images: !!company.companyLogo
+            ? [
+                `https://dev.backend.ride.rent/v1/riderent/file/stream?path=${company.companyLogo}`,
+              ]
+            : [],
         }),
       );
     }
@@ -40,12 +49,15 @@ async function fetchVehicles() {
     const data = await response.json();
 
     if (data.status === "SUCCESS" && data.result?.list) {
+      console.log(data.result?.list);
+
       return data.result.list.map(
         (vehicle: {
           vehicleTitle: string;
           vehicleCode: string;
           stateValue: string;
           categoryValue: string;
+          vehiclePhotos: any;
         }) => ({
           url: `https://ride.rent${generateVehicleDetailsUrl({
             vehicleTitle: vehicle.vehicleTitle,
@@ -56,6 +68,12 @@ async function fetchVehicles() {
           lastModified: new Date().toISOString(),
           changeFrequency: "weekly",
           priority: 0.8,
+          images:
+            vehicle.vehiclePhotos?.length > 0
+              ? [
+                  `https://dev.backend.ride.rent/v1/riderent/file/stream?path=${vehicle.vehiclePhotos[0]}`,
+                ]
+              : [],
         }),
       );
     }

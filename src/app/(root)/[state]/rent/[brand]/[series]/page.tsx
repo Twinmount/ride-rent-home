@@ -10,22 +10,34 @@ import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
 import JsonLd from "@/components/common/JsonLd";
 
 export type PageProps = {
-  params: {
+  params: Promise<{
     state: string;
     brand: string;
     series: string;
-  };
+  }>;
 };
 
-export async function generateMetadata({
-  params: { state, brand, series },
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
+
+  const {
+    state,
+    brand,
+    series
+  } = params;
+
   return generateSeriesListingPageMetadata({ state, brand, series });
 }
 
-export default async function VehicleSeriesPage({
-  params: { state, brand, series },
-}: PageProps) {
+export default async function VehicleSeriesPage(props: PageProps) {
+  const params = await props.params;
+
+  const {
+    state,
+    brand,
+    series
+  } = params;
+
   const data = await fetchVehicleSeriesData({
     page: 1,
     state,

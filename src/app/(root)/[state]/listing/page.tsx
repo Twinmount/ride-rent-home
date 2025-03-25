@@ -14,10 +14,14 @@ import PriceFilterTag from "@/components/root/listing/PriceFilterTag";
 import { getDefaultMetadata } from "@/app/root-metadata";
 import JsonLd from "@/components/common/JsonLd";
 
-export async function generateMetadata({
-  params: { state },
-  searchParams,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const {
+    state
+  } = params;
+
   const category = searchParams.category || "cars";
   const brand = searchParams?.brand || "";
   const city = searchParams?.city || "";
@@ -42,7 +46,14 @@ export async function generateMetadata({
   );
 }
 
-const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
+const ListingPage: FC<PageProps> = async props => {
+  const params = await props.params;
+
+  const {
+    state
+  } = params;
+
+  const searchParams = await props.searchParams;
   const category = searchParams.category;
   const brand = searchParams.brand ? searchParams.brand.split(",")[0] : "";
 
