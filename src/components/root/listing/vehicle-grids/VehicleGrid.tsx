@@ -24,16 +24,11 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   const searchParams = useSearchParams();
   const [stateValue, setStateValue] = useState(state);
   const [vehicles, setVehicles] = useImmer<Record<string, any[]>>({});
-  const [relatedStateList, setRelatedStateList] = useState<any>([
-    "abu-dhabi",
-    "ajman",
-    "sharjah",
-  ]);
+  const [relatedStateList, setRelatedStateList] = useState<any>([]);
 
   const { ref, inView } = useInView();
 
   const limit = "8";
-  console.log(vehicles);
 
   const {
     vehicles: fetchedVehicles,
@@ -47,6 +42,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   });
 
   const [isIntitalLoad, setIsIntitalLoad] = useImmer(true);
+  const [apiCallDelay, setApiCallDelay] = useImmer(false);
 
   const { data: relatedState } = useQuery({
     queryKey: ["related-state", state],
@@ -55,17 +51,17 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
     staleTime: 0,
   });
 
-  // useEffect(() => {
-  //   if (relatedState?.result?.relatedStates) {
-  //     setRelatedStateList(relatedState?.result?.relatedStates);
-  //   }
-  // }, [relatedState]);
+  useEffect(() => {
+    if (relatedState?.result?.relatedStates) {
+      setRelatedStateList(relatedState?.result?.relatedStates);
+    }
+  }, [relatedState]);
 
   useEffect(() => {
-    if (inView && hasNextPage) {
-      console.log("working");
-
+    if (isFetching || apiCallDelay) return;
+    if (inView && hasNextPage && !apiCallDelay) {
       fetchNextPage();
+      setApiCallDelay(true);
     }
     const totalVehicles: number = Object.values(vehicles).reduce(
       (sum, arr: any[]) => sum + arr.length,
@@ -83,8 +79,17 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
         setStateValue(nextState);
         return remainingStates;
       });
+      setApiCallDelay(true);
     }
   }, [inView, hasNextPage, fetchedVehicles, isFetching]);
+
+  useEffect(() => {
+    if (apiCallDelay) {
+      setTimeout(() => {
+        setApiCallDelay(false);
+      }, 1000);
+    }
+  }, [apiCallDelay]);
 
   useEffect(() => {
     if (isFetching) return;
@@ -148,8 +153,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
             )}
           </div>
 
-          {/* Infinite scrolling loader till the first 18 vehicles */}
-          {(hasNextPage || relatedStateList.length > 0) && (
+          {(hasNextPage || relatedStateList.length > 0 || isFetching) && (
             <div ref={ref} className="w-full py-4 text-center">
               {isFetching ? (
                 <div className="flex-center h-12">
