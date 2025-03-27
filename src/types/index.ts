@@ -253,6 +253,14 @@ export interface FetchLinksResponse {
   statusCode: number;
 }
 
+export interface FetchRelatedStateResponse {
+  result: {
+    relatedStates: string[];
+  };
+  status: string;
+  statusCode: number;
+}
+
 // home page meta
 export interface HomePageMeta {
   metaDataId: string;

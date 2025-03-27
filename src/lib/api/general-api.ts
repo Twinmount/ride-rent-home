@@ -6,6 +6,7 @@ import {
   FetchCitiesResponse,
   FetchLinksResponse,
   FetchPriceRangeResponse,
+  FetchRelatedStateResponse,
   FetchSearchResultsResponse,
   FetchStatesResponse,
   FetchTypesResponse,
@@ -372,6 +373,32 @@ export const fetchVehicleBrandsByValue = async (
   try {
     // generating api URL
     const apiUrl = `${BASE_URL}/vehicle-brand/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategory}&search=${searchTerm}`;
+
+    const response = await fetch(apiUrl, {
+      method: "GET",
+    });
+
+    // Check if the response is OK
+    if (!response.ok) {
+      throw new Error(`Failed to fetch vehicle brands`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error in fetchVehicleTypes:", error);
+    handleError(error);
+    return undefined;
+  }
+};
+
+export const fetcheRealatedStateList = async (
+  state: string,
+): Promise<FetchRelatedStateResponse | undefined> => {
+  try {
+    // generating api URL
+    const apiUrl = `${BASE_URL}/states/related-state?stateValue=${state}`;
 
     const response = await fetch(apiUrl, {
       method: "GET",
