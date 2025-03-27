@@ -17,16 +17,20 @@ type ParamsProps = {
 export const revalidate = 600;
 
 // generate meta data
-export async function generateMetadata({
-  params: { state, category },
-}: ParamsProps) {
+export async function generateMetadata(props: ParamsProps) {
+  const params = await props.params;
+
+  const { state, category } = params;
+
   return generateBrandsListingPageMetadata({ state, category });
 }
 
-export default async function Brands({
-  params: { state, category },
-  searchParams,
-}: ParamsProps) {
+export default async function Brands(props: ParamsProps) {
+  const searchParams = await props.searchParams;
+  const paramss = await props.params;
+
+  const { state, category } = paramss;
+
   const baseUrl = ENV.API_URL;
   const page = parseInt(searchParams.page || "1", 10);
   const search = searchParams.search || "";

@@ -18,9 +18,11 @@ type PageProps = {
   searchParams: { [key: string]: string | undefined };
 };
 
-export async function generateMetadata({
-  params: { state, category, brand },
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
+
+  const { state, category, brand } = params;
+
   const categoryValue = extractCategory(category);
 
   return generateSeriesListPageMetadata({
@@ -30,10 +32,12 @@ export async function generateMetadata({
   });
 }
 
-export default async function BrandSeriesPage({
-  params: { state, category, brand },
-  searchParams,
-}: PageProps) {
+export default async function BrandSeriesPage(props: PageProps) {
+  const paramss = await props.params;
+  const searchParams = await props.searchParams;
+
+  const { state, category, brand } = paramss;
+
   const page = parseInt(searchParams.page || "1", 10);
 
   const categoryValue = extractCategory(category);
