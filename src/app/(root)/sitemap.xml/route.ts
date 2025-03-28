@@ -1,4 +1,3 @@
-// app/sitemap.xml/route.ts
 import {
   generateCompanyProfilePageLink,
   generateVehicleDetailsUrl,
