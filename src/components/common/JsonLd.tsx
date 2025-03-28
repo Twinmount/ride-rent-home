@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Script from "next/script";
 
 type JsonLdProps = {
@@ -22,23 +21,13 @@ export default function JsonLd({
   }
 
   return (
-    <Head>
-      <Script
-        id={id}
-        type="application/ld+json"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLdData, null, 2),
-        }}
-      />
-
-      {/* <Script
-        id="test-script"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `console.log("Head script is working!");`,
-        }}
-      /> */}
-    </Head>
+    <Script
+      id={id}
+      type="application/ld+json"
+      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(jsonLdData, null, 2),
+      }}
+    />
   );
 }
