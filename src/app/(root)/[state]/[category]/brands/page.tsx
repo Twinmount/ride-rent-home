@@ -9,8 +9,8 @@ import BrandsList from "@/components/root/brand/BrandsList";
 import { generateBrandsListingPageMetadata } from "./metadata";
 
 type ParamsProps = {
-  params: { state: string; category: string };
-  searchParams: { [key: string]: string | undefined };
+  params: Promise<{ state: string; category: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
 // revalidate after 10 minutes

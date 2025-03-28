@@ -6,8 +6,8 @@ import {
 } from "./vehicle-types";
 
 export type PageProps = {
-  params: { state: string; category: string };
-  searchParams: { [key: string]: string | undefined };
+  params: Promise<{ state: string; category: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
 export type StateCategoryProps = {

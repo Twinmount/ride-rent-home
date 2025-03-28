@@ -10,12 +10,12 @@ import { generateSeriesListPageMetadata } from "./metadata";
 import { extractCategory } from "@/helpers";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     state: string;
     category: string;
     brand: string;
-  };
-  searchParams: { [key: string]: string | undefined };
+  }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
