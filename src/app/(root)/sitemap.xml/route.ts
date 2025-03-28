@@ -1,15 +1,16 @@
+// app/sitemap.xml/route.ts
 import {
   generateCompanyProfilePageLink,
   generateVehicleDetailsUrl,
 } from "@/helpers";
-import { MetadataRoute } from "next";
+import { NextResponse } from "next/server";
 
 const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
 async function fetchCompanies() {
   try {
     const response = await fetch(
-      `${baseUrl}/company/site-map?page=0&limit=100&sortOrder=DESC`,
+      `${baseUrl}/company/site-map?page=0&limit=500&sortOrder=DESC`,
     );
     const data = await response.json();
 
@@ -44,13 +45,11 @@ async function fetchCompanies() {
 async function fetchVehicles() {
   try {
     const response = await fetch(
-      `${baseUrl}/vehicle/site-map?page=0&limit=1000&sortOrder=DESC`,
+      `${baseUrl}/vehicle/site-map?page=0&limit=5000&sortOrder=DESC`,
     );
     const data = await response.json();
 
     if (data.status === "SUCCESS" && data.result?.list) {
-      console.log(data.result?.list);
-
       return data.result.list.map(
         (vehicle: {
           vehicleTitle: string;
@@ -78,7 +77,7 @@ async function fetchVehicles() {
       );
     }
   } catch (error) {
-    console.error("Error fetching companies:", error);
+    console.error("Error fetching vehicles:", error);
   }
   return [];
 }
@@ -86,7 +85,7 @@ async function fetchVehicles() {
 async function fetchVehicleSeries() {
   try {
     const response = await fetch(
-      `${baseUrl}/vehicle-series/site-map?page=0&limit=1000&sortOrder=DESC`,
+      `${baseUrl}/vehicle-series/site-map?page=0&limit=5000&sortOrder=DESC`,
     );
     const data = await response.json();
 
@@ -105,12 +104,12 @@ async function fetchVehicleSeries() {
       );
     }
   } catch (error) {
-    console.error("Error fetching companies:", error);
+    console.error("Error fetching vehicle series:", error);
   }
   return [];
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export async function GET() {
   const states = [
     { stateValue: "dubai" },
     { stateValue: "sharjah" },
@@ -136,8 +135,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { value: "buggies" },
   ];
 
-  // Static pages to be included in the sitemap
-  const staticPages: MetadataRoute.Sitemap = [
+  // Static pages
+  const staticPages = [
     {
       url: "https://ride.rent/about-us",
       lastModified: new Date().toISOString(),
@@ -158,6 +157,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  // FAQ pages
   const faqPages = states.map(({ stateValue }) => ({
     url: `https://ride.rent/faq/${stateValue}`,
     lastModified: new Date().toISOString(),
@@ -165,8 +165,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // Generate sitemap entries for each state/category combination
-  const dynamicRoutes: MetadataRoute.Sitemap = states.flatMap((state) =>
+  // Dynamic routes
+  const dynamicRoutes = states.flatMap((state) =>
     categories.map((category) => ({
       url: `https://ride.rent/${state.stateValue}/${category.value}`,
       lastModified: new Date().toISOString(),
@@ -175,8 +175,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   );
 
-  // Generate /{state}/listing?category={category}
-  const listingPages: MetadataRoute.Sitemap = states.flatMap((state) =>
+  // Listing pages
+  const listingPages = states.flatMap((state) =>
     categories.map((category) => ({
       url: `https://ride.rent/${state.stateValue}/listing?category=${encodeURIComponent(category.value)}`,
       lastModified: new Date().toISOString(),
@@ -185,16 +185,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   );
 
-  // Generate /{state}/vehicle-rentals
-  const rentalsPage: MetadataRoute.Sitemap = states.flatMap((state) => ({
+  // Rentals page
+  const rentalsPage = states.map((state) => ({
     url: `https://ride.rent/${state.stateValue}/vehicle-rentals`,
     lastModified: new Date().toISOString(),
     changeFrequency: "daily",
     priority: 0.9,
   }));
 
-  // Generate /{state}/vehicle-rentals/${category}-for-rent
-  const rentalsTypePage: MetadataRoute.Sitemap = states.flatMap((state) =>
+  // Rentals type page
+  const rentalsTypePage = states.flatMap((state) =>
     categories.map((category) => ({
       url: `https://ride.rent/${state.stateValue}/vehicle-rentals/${category.value}-for-rent`,
       lastModified: new Date().toISOString(),
@@ -203,12 +203,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   );
 
-  const companyProfiles = await fetchCompanies();
-  const vehicles = await fetchVehicles();
-  const vehicleSeries = await fetchVehicleSeries();
+  // Fetch all dynamic data in parallel
+  const [companyProfiles, vehicles, vehicleSeries] = await Promise.all([
+    fetchCompanies(),
+    fetchVehicles(),
+    fetchVehicleSeries(),
+  ]);
 
-  // Combine static pages with dynamic routes
-  const sitemapEntries: MetadataRoute.Sitemap = [
+  // Combine all entries
+  const sitemapEntries = [
     ...staticPages,
     ...faqPages,
     ...dynamicRoutes,
@@ -220,5 +223,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...vehicleSeries,
   ];
 
-  return sitemapEntries;
+  // Generate XML
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+              xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        ${sitemapEntries
+          .map(
+            (entry) => `
+          <url>
+            <loc>${entry.url}</loc>
+            <lastmod>${entry.lastModified}</lastmod>
+            <changefreq>${entry.changeFrequency}</changefreq>
+            <priority>${entry.priority}</priority>
+            ${
+              entry.images
+                ?.map(
+                  (img: any) => `
+              <image:image>
+                <image:loc>${img}</image:loc>
+              </image:image>
+            `,
+                )
+                .join("") || ""
+            }
+          </url>
+        `,
+          )
+          .join("")}
+      </urlset>`;
+
+  return new NextResponse(xml, {
+    headers: {
+      "Content-Type": "application/xml",
+    },
+  });
 }

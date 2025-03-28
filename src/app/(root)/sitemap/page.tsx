@@ -111,7 +111,6 @@ async function generateSitemapEntries(): Promise<MetadataRoute.Sitemap> {
 
   const staticPages = [
     { url: "https://ride.rent/about-us" },
-    { url: "https://ride.rent/faq" },
     { url: "https://ride.rent/privacy-policy" },
     { url: "https://ride.rent/terms-condition" },
   ];
@@ -138,12 +137,20 @@ async function generateSitemapEntries(): Promise<MetadataRoute.Sitemap> {
     })),
   );
 
+  const faqPages = states.map(({ stateValue }) => ({
+    url: `https://ride.rent/faq/${stateValue}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
   const companyProfiles = await fetchCompanies();
   const vehicles = await fetchVehicles();
   const vehicleSeries = await fetchVehicleSeries();
 
   return [
     ...staticPages,
+    ...faqPages,
     ...dynamicRoutes,
     ...listingPages,
     ...rentalsPage,
@@ -258,7 +265,7 @@ export default async function SitemapPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {`${label} in ${basePath.slice(1)}`}
+                            {`${label} ${basePath.slice(1) === "faq" ? "" : `in ${basePath.slice(1)}`}`}
                           </a>
                         </li>
                       );
