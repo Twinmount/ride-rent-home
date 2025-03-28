@@ -157,6 +157,11 @@ export function getVehicleJsonLd(
     "@type": "Product",
     name: vehicle.vehicleTitle || vehicle.modelName,
     description: vehicle.description,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      bestRating: "5",
+    },
     brand: {
       "@type": "Brand",
       name: vehicle.brand.label,

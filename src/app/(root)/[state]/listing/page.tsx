@@ -14,10 +14,12 @@ import PriceFilterTag from "@/components/root/listing/PriceFilterTag";
 import { getDefaultMetadata } from "@/app/root-metadata";
 import JsonLd from "@/components/common/JsonLd";
 
-export async function generateMetadata({
-  params: { state },
-  searchParams,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { state } = params;
+
   const category = searchParams.category || "cars";
   const brand = searchParams?.brand || "";
   const city = searchParams?.city || "";
@@ -42,7 +44,12 @@ export async function generateMetadata({
   );
 }
 
-const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
+const ListingPage: FC<PageProps> = async (props) => {
+  const params = await props.params;
+
+  const { state } = params;
+
+  const searchParams = await props.searchParams;
   const category = searchParams.category;
   const brand = searchParams.brand ? searchParams.brand.split(",")[0] : "";
 
@@ -59,35 +66,37 @@ const ListingPage: FC<PageProps> = ({ searchParams, params: { state } }) => {
   const jsonLdData = getListingPageJsonLd(state, formattedCategory);
 
   return (
-    <div className="wrapper h-auto min-h-screen bg-lightGray pb-8 pt-4">
-      {/* ✅ Inject JSON-LD */}
+    <>
+      {/* Inject JSON-LD into the <head> */}
       <JsonLd
         id={`json-ld-listing-${state}-${category}`}
         jsonLdData={jsonLdData}
       />
-      <div className="flex-between mb-6 h-fit w-full pr-[5%] max-md:flex-col">
-        <h1 className="ml-2 break-words text-2xl font-[500] max-md:mr-auto lg:text-3xl">
-          Rent or Lease&nbsp;
-          {formattedBrand && (
-            <span className="font-semibold">{formattedBrand}&nbsp;</span>
-          )}
-          {formattedCategory} in {formattedState}
-          {/*rendering vehicle types, if there are any */}
-          <SelectedVehicleTypes vehicleTypes={vehicleTypes} />
-        </h1>
+      <div className="wrapper h-auto min-h-screen bg-lightGray pb-8 pt-4">
+        <div className="flex-between mb-6 h-fit w-full pr-[5%] max-md:flex-col">
+          <h1 className="ml-2 break-words text-2xl font-[500] max-md:mr-auto lg:text-3xl">
+            Rent or Lease&nbsp;
+            {formattedBrand && (
+              <span className="font-semibold">{formattedBrand}&nbsp;</span>
+            )}
+            {formattedCategory} in {formattedState}
+            {/*rendering vehicle types, if there are any */}
+            <SelectedVehicleTypes vehicleTypes={vehicleTypes} />
+          </h1>
 
-        {/* filter sidebar */}
-        <FilterSidebar />
+          {/* filter sidebar */}
+          <FilterSidebar />
+        </div>
+
+        {/* New Price Filter Tag */}
+        <PriceFilterTag />
+
+        <div className="mt-3 flex gap-8">
+          {/* vehicle grid */}
+          <VehicleGrid state={state} />
+        </div>
       </div>
-
-      {/* New Price Filter Tag */}
-      <PriceFilterTag />
-
-      <div className="mt-3 flex gap-8">
-        {/* vehicle grid */}
-        <VehicleGrid state={state} />
-      </div>
-    </div>
+    </>
   );
 };
 

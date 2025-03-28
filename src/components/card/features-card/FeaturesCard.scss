@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@use "../../../styles/variables" as *;
 
 /* Default styles for mobile devices and above */
 .features_card {
@@ -23,7 +23,6 @@
     .icon {
       transform: scale(1.1);
     }
-
   }
 
   .feature_icon {
@@ -53,7 +52,6 @@
       height: 2.4rem;
       transition: transform 0.1s ease-out;
     }
-
   }
 
   h3 {

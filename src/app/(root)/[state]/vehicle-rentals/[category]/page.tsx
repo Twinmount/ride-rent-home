@@ -8,16 +8,21 @@ import { generateCategoryDirectoryPageMetadata } from "./metadata";
 import { extractCategory } from "@/helpers";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     state: string;
     category: string;
-  };
-  searchParams: { [key: string]: string | undefined };
+  }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
-export async function generateMetadata({
-  params: { state, category },
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
+
+  const {
+    state,
+    category
+  } = params;
+
   // remove '-for-rent' from category
   const categoryValue = extractCategory(category);
 
@@ -27,10 +32,15 @@ export async function generateMetadata({
   });
 }
 
-export default async function CategoryDirectoryPage({
-  params: { state, category },
-  searchParams,
-}: PageProps) {
+export default async function CategoryDirectoryPage(props: PageProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const {
+    state,
+    category
+  } = params;
+
   const page = parseInt(searchParams.page || "1", 10);
 
   const categoryValue = extractCategory(category);

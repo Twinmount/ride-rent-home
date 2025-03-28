@@ -138,6 +138,11 @@ export function getCompanyJsonLd(
     url: companyProfileUrl,
     logo: companyLogo,
     image: companyLogo,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      bestRating: "5",
+    },
     address: {
       "@type": "PostalAddress",
       addressLocality: address,

@@ -138,6 +138,11 @@ export function getListingPageJsonLd(state: string, category: string) {
     description: `Find and rent the best ${convertToLabel(category)} in ${convertToLabel(state)}. Browse listings for cars, bikes, yachts, and more.`,
     url: listingPageUrl,
     image: siteImage,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      bestRating: "5",
+    },
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [

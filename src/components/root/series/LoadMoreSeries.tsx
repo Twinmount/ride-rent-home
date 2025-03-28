@@ -3,7 +3,7 @@
 import { fetchVehicleSeriesData } from "@/app/(root)/[state]/rent/[brand]/[series]/action";
 import LoadingWheel from "@/components/common/LoadingWheel";
 import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
-import { useState, useEffect } from "react";
+import { useState, useEffect, type JSX } from "react";
 import { useInView } from "react-intersection-observer";
 
 // page starts from 2 and onwards

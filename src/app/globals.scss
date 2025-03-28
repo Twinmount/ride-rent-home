@@ -1,8 +1,7 @@
+@use "../styles/_variables.scss" as *;
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import "../styles/_variables.scss";
 
 *,
 *::before,

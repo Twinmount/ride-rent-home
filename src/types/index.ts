@@ -6,8 +6,8 @@ import {
 } from "./vehicle-types";
 
 export type PageProps = {
-  params: { state: string; category: string };
-  searchParams: { [key: string]: string | undefined };
+  params: Promise<{ state: string; category: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
 export type StateCategoryProps = {
@@ -248,6 +248,14 @@ export interface FetchLinksResponse {
     limit: string;
     total: number;
     totalNumberOfPages: number;
+  };
+  status: string;
+  statusCode: number;
+}
+
+export interface FetchRelatedStateResponse {
+  result: {
+    relatedStates: string[];
   };
   status: string;
   statusCode: number;

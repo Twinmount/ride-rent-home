@@ -2,7 +2,7 @@
 
 import { fetchVehicleHomeGridData } from "@/app/(root)/[state]/[category]/action";
 import LoadingWheel from "@/components/common/LoadingWheel";
-import { useState, useEffect } from "react";
+import { useState, useEffect, type JSX } from "react";
 import { useInView } from "react-intersection-observer";
 
 type LoadMoreGridProps = {

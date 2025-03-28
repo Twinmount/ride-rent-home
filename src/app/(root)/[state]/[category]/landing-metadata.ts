@@ -129,6 +129,11 @@ export function getHomePageJsonLd(state: string, category: string) {
     description: `Find the best rental deals for ${convertToLabel(category)} in ${convertToLabel(state)}. Compare prices, book easily, and enjoy the ride.`,
     url: homepageUrl,
     inLanguage: "en",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      bestRating: "5",
+    },
     image: rootImage,
     breadcrumb: {
       "@type": "BreadcrumbList",
