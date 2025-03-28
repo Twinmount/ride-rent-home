@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Script from "next/script";
 
 type JsonLdProps = {
@@ -6,7 +7,7 @@ type JsonLdProps = {
 };
 
 /**
- * Renders a JSON-LD script tag for embedding structured data into a webpage.
+ * Renders a JSON-LD script tag inside the <head> of the page.
  *
  * @param {object} jsonLdData - The JSON-LD data to be embedded.
  * @param {string} [id="json-ld"] - The id attribute for the script tag.
@@ -21,12 +22,23 @@ export default function JsonLd({
   }
 
   return (
-    <Script
-      id={id}
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(jsonLdData, null, 2),
-      }}
-    />
+    <Head>
+      <Script
+        id={id}
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLdData, null, 2),
+        }}
+      />
+
+      {/* <Script
+        id="test-script"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `console.log("Head script is working!");`,
+        }}
+      /> */}
+    </Head>
   );
 }

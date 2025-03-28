@@ -27,10 +27,7 @@ import JsonLd from "@/components/common/JsonLd";
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
 
-  const {
-    state,
-    category
-  } = params;
+  const { state, category } = params;
 
   return generateHomePageMetadata(state, category);
 }
@@ -39,10 +36,7 @@ export default async function Home(props: PageProps) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
-  const {
-    state,
-    category
-  } = params;
+  const { state, category } = params;
 
   // accessing vehicle type from the url if its available for the MainVehicleGrid component.
   const vehicleType = searchParams.type;
@@ -51,7 +45,7 @@ export default async function Home(props: PageProps) {
   const jsonLdData = getHomePageJsonLd(state, category);
   return (
     <>
-      {/* Inject JSON-LD */}
+      {/* Inject JSON-LD into the <head> */}
       <JsonLd jsonLdData={jsonLdData} id="json-ld-homepage" />
 
       <HeroSection state={state} category={category} />

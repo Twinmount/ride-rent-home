@@ -19,9 +19,7 @@ type PropsType = {
 export async function generateMetadata(props: PropsType): Promise<Metadata> {
   const params = await props.params;
 
-  const {
-    companyId
-  } = params;
+  const { companyId } = params;
 
   return generateCompanyMetadata(companyId);
 }
@@ -29,10 +27,7 @@ export async function generateMetadata(props: PropsType): Promise<Metadata> {
 export default async function AgentProfilePage(props: PropsType) {
   const params = await props.params;
 
-  const {
-    companyId,
-    companyName
-  } = params;
+  const { companyId, companyName } = params;
 
   const searchParams = await props.searchParams;
   const baseUrl = ENV.API_URL;
@@ -71,25 +66,27 @@ export default async function AgentProfilePage(props: PropsType) {
   );
 
   return (
-    <section className="wrapper pb-8 pt-4">
-      {/*  Inject JSON-LD */}
+    <>
+      {/*  Inject JSON-LD into the <head> */}
       <JsonLd id={`json-ld-company-${companyId}`} jsonLdData={jsonLdData} />
 
-      {/* agent details */}
-      <AgentProfile companyDetails={companyDetails} />
+      <div className="wrapper pb-8 pt-4">
+        {/* agent details */}
+        <AgentProfile companyDetails={companyDetails} />
 
-      <h1 className="mt-6 text-center text-2xl font-semibold lg:text-3xl">
-        Our Vehicles Available For Rent / Lease
-      </h1>
-      <AgentVehicleFilter filters={filters} />
+        <h1 className="mt-6 text-center text-2xl font-semibold lg:text-3xl">
+          Our Vehicles Available For Rent / Lease
+        </h1>
+        <AgentVehicleFilter filters={filters} />
 
-      <Suspense fallback={<VehicleCardSkeletonGrid count={9} />}>
-        <AgentVehicleGrid
-          filter={filter as string}
-          page={page}
-          companyId={companyId}
-        />
-      </Suspense>
-    </section>
+        <Suspense fallback={<VehicleCardSkeletonGrid count={9} />}>
+          <AgentVehicleGrid
+            filter={filter as string}
+            page={page}
+            companyId={companyId}
+          />
+        </Suspense>
+      </div>
+    </>
   );
 }
