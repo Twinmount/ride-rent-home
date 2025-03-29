@@ -6,7 +6,7 @@ type JsonLdProps = {
 };
 
 /**
- * Renders a JSON-LD script tag for embedding structured data into a webpage.
+ * Renders a JSON-LD script tag inside the <head> of the page.
  *
  * @param {object} jsonLdData - The JSON-LD data to be embedded.
  * @param {string} [id="json-ld"] - The id attribute for the script tag.
@@ -24,6 +24,7 @@ export default function JsonLd({
     <Script
       id={id}
       type="application/ld+json"
+      strategy="beforeInteractive"
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(jsonLdData, null, 2),
       }}

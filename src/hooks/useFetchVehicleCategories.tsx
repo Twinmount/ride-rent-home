@@ -14,7 +14,7 @@ export function useFetchVehicleCategories() {
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["categories", state],
     queryFn: () => fetchCategories(state),
-    staleTime: 60 * 1000,
+    staleTime: 0,
   });
 
   const categories = data?.result?.list || [];

@@ -1,5 +1,4 @@
 import "./VehicleDetailsPage.scss";
-
 import ProfileCard from "@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard";
 import WhyOpt from "@/components/common/why-opt/WhyOpt";
 import Description from "@/components/root/vehicle-details/description/Description";
@@ -27,19 +26,23 @@ import { VehicleInfo } from "@/components/root/vehicle-details/VehicleInfo";
 import JsonLd from "@/components/common/JsonLd";
 
 type ParamsProps = {
-  params: { state: string; category: string; vehicleCode: string };
+  params: Promise<{ state: string; category: string; vehicleCode: string }>;
 };
 
 // dynamic meta data generate
-export async function generateMetadata({
-  params: { state, category, vehicleCode },
-}: ParamsProps): Promise<Metadata> {
+export async function generateMetadata(props: ParamsProps): Promise<Metadata> {
+  const params = await props.params;
+
+  const { state, category, vehicleCode } = params;
+
   return generateVehicleMetadata(state, category, vehicleCode);
 }
 
-export default async function VehicleDetails({
-  params: { state, category, vehicleCode },
-}: ParamsProps) {
+export default async function VehicleDetails(props: ParamsProps) {
+  const params = await props.params;
+
+  const { state, category, vehicleCode } = params;
+
   const baseUrl = ENV.API_URL;
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
@@ -92,91 +95,95 @@ export default async function VehicleDetails({
   const jsonLdData = getVehicleJsonLd(vehicle, state, category, vehicleCode);
 
   return (
-    <div className="vehicle-details-page wrapper">
-      {/* Inject JSON-LD */}
+    <>
+      {/* Inject JSON-LD into the <head> */}
       <JsonLd
         key={vehicleCode}
         jsonLdData={jsonLdData}
         id={`json-ld-vehicle-${vehicleCode}`}
       />
 
-      {/* Details heading */}
-      <MotionDiv className="heading-box">
-        <h1 className="custom-heading model-name">
-          {vehicle.vehicleTitle || vehicle.modelName}
-        </h1>
+      <div className="vehicle-details-page wrapper">
+        {/* Details heading */}
+        <MotionDiv className="heading-box">
+          <h1 className="custom-heading model-name">
+            {vehicle.vehicleTitle || vehicle.modelName}
+          </h1>
 
-        {/* breadcrumb for current page path*/}
-        <CurrentPageBreadcrumb
-          category={category}
-          state={state}
-          brand={vehicle?.brand}
-          vehicleTitle={vehicle?.vehicleTitle}
-        />
-      </MotionDiv>
+          {/* breadcrumb for current page path*/}
+          <CurrentPageBreadcrumb
+            category={category}
+            state={state}
+            brand={vehicle?.brand}
+            vehicleTitle={vehicle?.vehicleTitle}
+          />
+        </MotionDiv>
 
-      {/* Wrapper to handle client side logic regarding mobile profile card */}
-      <DetailsSectionClientWrapper profileData={ProfileCardData}>
-        {/* Vehicle Details Section */}
-        <section className="vehicle-details-section">
-          {/* container left */}
-          <div className="details-left">
-            {/* Vehicle Images Slider */}
-            <Images photos={vehicle?.vehiclePhotos} />
+        {/* Wrapper to handle client side logic regarding mobile profile card */}
+        <DetailsSectionClientWrapper profileData={ProfileCardData}>
+          {/* Vehicle Details Section */}
+          <section className="vehicle-details-section">
+            {/* container left */}
+            <div className="details-left">
+              {/* Vehicle Images Slider */}
+              <Images photos={vehicle?.vehiclePhotos} />
 
-            {/* vehicle information */}
-            <VehicleInfo
-              modelName={vehicle?.modelName}
-              stateLabel={vehicle?.state.label}
-              isCryptoAccepted={vehicle?.company.companySpecs.isCryptoAccepted}
-              rentalDetails={vehicle?.rentalDetails}
-              securityDepositEnabled={vehicle?.securityDeposit.enabled}
-              vehicleSpecification={vehicle?.vehicleSpecification}
-              additionalVehicleTypes={vehicle?.additionalVehicleTypes}
-              cities={vehicle?.cities}
-            />
+              {/* vehicle information */}
+              <VehicleInfo
+                modelName={vehicle?.modelName}
+                stateLabel={vehicle?.state.label}
+                isCryptoAccepted={
+                  vehicle?.company.companySpecs.isCryptoAccepted
+                }
+                rentalDetails={vehicle?.rentalDetails}
+                securityDepositEnabled={vehicle?.securityDeposit.enabled}
+                vehicleSpecification={vehicle?.vehicleSpecification}
+                additionalVehicleTypes={vehicle?.additionalVehicleTypes}
+                cities={vehicle?.cities}
+              />
 
-            {/* Vehicle Specifications */}
-            <Specification
-              specifications={vehicle?.specs}
-              vehicleCategory={category}
-            />
+              {/* Vehicle Specifications */}
+              <Specification
+                specifications={vehicle?.specs}
+                vehicleCategory={category}
+              />
 
-            {/* Vehicle Features */}
-            <VehicleFeatures
-              features={vehicle?.features}
-              vehicleCategory={category}
-            />
-          </div>
+              {/* Vehicle Features */}
+              <VehicleFeatures
+                features={vehicle?.features}
+                vehicleCategory={category}
+              />
+            </div>
 
-          {/* container right side */}
-          <div className="details-right">
-            {/* Right Side Profile Card */}
-            <ProfileCard profileData={ProfileCardData} />
+            {/* container right side */}
+            <div className="details-right">
+              {/* Right Side Profile Card */}
+              <ProfileCard profileData={ProfileCardData} />
 
-            {/* Right Side Quick Links */}
-            <RelatedLinks state={state} />
-          </div>
-        </section>
-      </DetailsSectionClientWrapper>
+              {/* Right Side Quick Links */}
+              <RelatedLinks state={state} />
+            </div>
+          </section>
+        </DetailsSectionClientWrapper>
 
-      {/* related result */}
-      <Suspense fallback={<SectionLoading />}>
-        <RelatedResults
-          state={state}
-          category={category}
-          vehicleCode={vehicleCode}
-        />
-      </Suspense>
+        {/* related result */}
+        <Suspense fallback={<SectionLoading />}>
+          <RelatedResults
+            state={state}
+            category={category}
+            vehicleCode={vehicleCode}
+          />
+        </Suspense>
 
-      {/* Description */}
-      <Description description={vehicle.description} />
+        {/* Description */}
+        <Description description={vehicle.description} />
 
-      {/* FAQ */}
-      <DynamicFAQ vehicle={vehicle} />
+        {/* FAQ */}
+        <DynamicFAQ vehicle={vehicle} />
 
-      {/* Why Opt Ride.Rent  */}
-      <WhyOpt state={state} category={category} />
-    </div>
+        {/* Why Opt Ride.Rent  */}
+        <WhyOpt state={state} category={category} />
+      </div>
+    </>
   );
 }

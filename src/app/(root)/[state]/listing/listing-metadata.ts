@@ -61,7 +61,7 @@ export function generateListingMetadata(
 
   const canonicalUrl = `https://ride.rent/${state}/listing${
     !!category || !!brand || !!city
-      ? `?${!!category ? `category=${category}` : ""}${!!brand ? `&brand=${brand}` : ""}${!!city ? `&city=${city}` : ""}`
+      ? `?${!!category ? `category=${category}` : ""}${!!brand ? `&brand=${brand}` : ""}${!!city ? `&city=${city}` : ""}${vehicleType !== "other" && !!vehicleType ? `&vehicleTypes=${vehicleType}` : ""}`
       : ""
   }`.replace(/\?&/, "?");
 
@@ -138,6 +138,11 @@ export function getListingPageJsonLd(state: string, category: string) {
     description: `Find and rent the best ${convertToLabel(category)} in ${convertToLabel(state)}. Browse listings for cars, bikes, yachts, and more.`,
     url: listingPageUrl,
     image: siteImage,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      bestRating: "5",
+    },
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [

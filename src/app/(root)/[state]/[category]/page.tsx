@@ -24,16 +24,20 @@ import VehicleCardCarouselSkeleton from "@/components/skelton/VehicleCardCarouse
 import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
 import JsonLd from "@/components/common/JsonLd";
 
-export async function generateMetadata({
-  params: { state, category },
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
+
+  const { state, category } = params;
+
   return generateHomePageMetadata(state, category);
 }
 
-export default function Home({
-  params: { state, category },
-  searchParams,
-}: PageProps) {
+export default async function Home(props: PageProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { state, category } = params;
+
   // accessing vehicle type from the url if its available for the MainVehicleGrid component.
   const vehicleType = searchParams.type;
 
@@ -41,7 +45,7 @@ export default function Home({
   const jsonLdData = getHomePageJsonLd(state, category);
   return (
     <>
-      {/* Inject JSON-LD */}
+      {/* Inject JSON-LD into the <head> */}
       <JsonLd jsonLdData={jsonLdData} id="json-ld-homepage" />
 
       <HeroSection state={state} category={category} />
