@@ -8,6 +8,7 @@ import BodyScripts from "./BodyScripts";
 import { getDefaultMetadata } from "./root-metadata";
 import { NetworkWrapper } from "./(root)/NetworkWrapper";
 import { GlobalContextProvider } from "@/context/GlobalContext";
+import { ErrorWrapper } from "./ErrorWrapper";
 
 export const metadata: Metadata = getDefaultMetadata();
 
@@ -24,19 +25,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        {/* tracking scripts */}
-        <TrackingScripts />
-      </head>
       <body className={firaSans.className}>
-        {/* body scripts */}
+        <TrackingScripts />
         <BodyScripts />
 
         {/* react query provider */}
         <NetworkWrapper>
           {/* global context provider */}
           <GlobalContextProvider>
-            <ReactQueryProvider>{children}</ReactQueryProvider>
+            <ReactQueryProvider>
+              <ErrorWrapper>{children}</ErrorWrapper>
+            </ReactQueryProvider>
           </GlobalContextProvider>
         </NetworkWrapper>
       </body>
