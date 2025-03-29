@@ -137,6 +137,12 @@ export async function GET() {
   // Static pages
   const staticPages = [
     {
+      url: "https://ride.rent/test",
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },,
+    {
       url: "https://ride.rent/about-us",
       lastModified: new Date().toISOString(),
       changeFrequency: "monthly",
