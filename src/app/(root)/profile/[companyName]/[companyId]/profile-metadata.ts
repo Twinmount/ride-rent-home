@@ -8,7 +8,7 @@ import { Metadata } from "next";
 export async function fetchCompanyDetails(
   companyId: string,
 ): Promise<CompanyMetadataResponse | null> {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = "https://prod-api.ride.rent/v1/riderent";
 
   try {
     const response = await fetch(

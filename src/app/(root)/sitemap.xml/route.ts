@@ -4,7 +4,7 @@ import {
 } from "@/helpers";
 import { NextResponse } from "next/server";
 
-const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = "https://prod-api.ride.rent/v1/riderent";
 
 async function fetchCompanies() {
   try {

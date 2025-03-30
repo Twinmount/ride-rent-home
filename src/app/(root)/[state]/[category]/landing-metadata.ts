@@ -15,7 +15,7 @@ async function fetchHomepageMetadata(
   state: string,
   category: string,
 ): Promise<MetaDataResponse | null> {
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = "https://prod-api.ride.rent/v1/riderent";
 
   try {
     const response = await fetch(

@@ -12,7 +12,7 @@ import {
   FetchTypesResponse,
 } from "@/types";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = "https://prod-api.ride.rent/v1/riderent";
 
 // Function to fetch vehicles based on filters using a POST request
 export const FetchVehicleByFilters = async (

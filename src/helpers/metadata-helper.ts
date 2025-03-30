@@ -5,6 +5,6 @@
  * @returns {string} The absolute URL (e.g., "https://ride.rent/rent/car/123").
  */
 export function getAbsoluteUrl(relativePath: string): string {
-  const baseUrl = process.env.SITE_URL || "https://ride.rent"; // Fallback URL
+  const baseUrl = "https://ride.rent"; // Fallback URL
   return `${baseUrl}${relativePath.startsWith("/") ? relativePath : `/${relativePath}`}`;
 }

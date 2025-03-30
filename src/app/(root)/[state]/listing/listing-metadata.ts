@@ -15,7 +15,7 @@ export async function fetchListingMetadata(
   category: string,
   vehicleType: string,
 ): Promise<ListingPageMetaResponse | null> {
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = "https://prod-api.ride.rent/v1/riderent";
 
   let url = `${baseUrl}/metadata/listing?state=${state}`;
 
