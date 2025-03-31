@@ -21,12 +21,17 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const { state } = params;
 
   const category = searchParams.category || "cars";
-  const brand = searchParams?.brand || "";
-  const city = searchParams?.city || "";
   const vehicleTypesParam = searchParams.vehicleTypes;
   const vehicleType = vehicleTypesParam
     ? vehicleTypesParam.split(",")[0]
     : "other";
+
+  const host = "https://ride.rent";
+  const canonicalUrl = `${host}/${state}/listing${
+    searchParams
+      ? `?${new URLSearchParams(searchParams as Record<string, string>)}`
+      : ""
+  }`;
 
   const data = await fetchListingMetadata(state, category, vehicleType);
 
@@ -39,8 +44,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     state,
     category,
     vehicleType,
-    brand,
-    city,
+    canonicalUrl,
   );
 }
 
