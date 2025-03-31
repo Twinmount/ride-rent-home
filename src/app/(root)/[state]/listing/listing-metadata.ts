@@ -49,8 +49,7 @@ export function generateListingMetadata(
   state: string,
   category: string,
   vehicleType: string,
-  brand: string,
-  city: string,
+  canonicalUrl: any,
 ): Metadata {
   const metaTitle =
     data?.result?.metaTitle ||
@@ -58,12 +57,6 @@ export function generateListingMetadata(
   const metaDescription =
     data?.result?.metaDescription ||
     "Find and rent top-quality vehicles including cars, bikes, and more across various locations in UAE.";
-
-  const canonicalUrl = `https://ride.rent/${state}/listing${
-    !!category || !!brand || !!city
-      ? `?${!!category ? `category=${category}` : ""}${!!brand ? `&brand=${brand}` : ""}${!!city ? `&city=${city}` : ""}${vehicleType !== "other" && !!vehicleType ? `&vehicleTypes=${vehicleType}` : ""}`
-      : ""
-  }`.replace(/\?&/, "?");
 
   const ogImage = "/assets/icons/ride-rent.png";
 
