@@ -40,6 +40,7 @@ export async function generateVehicleMetadata(
   state: string,
   category: string,
   vehicleCode: string,
+  modelDetails: string,
 ): Promise<Metadata> {
   const data = await fetchVehicleMetaData(vehicleCode);
 
@@ -69,14 +70,8 @@ export async function generateVehicleMetadata(
       : metaDescription;
 
   // dynamic link to  vehicle details page
-  const vehicleDetailsPageLink = generateVehicleDetailsUrl({
-    vehicleTitle: vehicle.vehicleTitle,
-    state: state,
-    vehicleCategory: category,
-    vehicleCode: vehicleCode,
-  });
 
-  const canonicalUrl = `https://ride.rent${vehicleDetailsPageLink}`;
+  const canonicalUrl = `https://ride.rent/${state}/${category}/${modelDetails}/${vehicleCode}`;
   const ogImage = vehicle.vehiclePhoto;
 
   return {
