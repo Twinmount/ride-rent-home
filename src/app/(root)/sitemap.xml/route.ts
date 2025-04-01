@@ -28,9 +28,7 @@ async function fetchCompanies() {
           changeFrequency: "weekly",
           priority: 0.8,
           images: !!company.companyLogo
-            ? [
-                `https://dev.backend.ride.rent/v1/riderent/file/stream?path=${company.companyLogo}`,
-              ]
+            ? [`${baseUrl}/file/stream?path=${company.companyLogo}`]
             : [],
         }),
       );
@@ -68,9 +66,7 @@ async function fetchVehicles() {
           priority: 0.8,
           images:
             vehicle.vehiclePhotos?.length > 0
-              ? [
-                  `https://dev.backend.ride.rent/v1/riderent/file/stream?path=${vehicle.vehiclePhotos[0]}`,
-                ]
+              ? [`${baseUrl}/file/stream?path=${vehicle.vehiclePhotos[0]}`]
               : [],
         }),
       );
