@@ -26,16 +26,21 @@ import { VehicleInfo } from "@/components/root/vehicle-details/VehicleInfo";
 import JsonLd from "@/components/common/JsonLd";
 
 type ParamsProps = {
-  params: Promise<{ state: string; category: string; vehicleCode: string }>;
+  params: Promise<{
+    state: string;
+    category: string;
+    vehicleCode: string;
+    modelDetails: string;
+  }>;
 };
 
 // dynamic meta data generate
 export async function generateMetadata(props: ParamsProps): Promise<Metadata> {
   const params = await props.params;
 
-  const { state, category, vehicleCode } = params;
+  const { state, category, vehicleCode, modelDetails } = params;
 
-  return generateVehicleMetadata(state, category, vehicleCode);
+  return generateVehicleMetadata(state, category, vehicleCode, modelDetails);
 }
 
 export default async function VehicleDetails(props: ParamsProps) {
