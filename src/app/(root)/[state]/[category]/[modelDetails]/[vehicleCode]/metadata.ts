@@ -156,6 +156,7 @@ export function getVehicleJsonLd(
       "@type": "AggregateRating",
       ratingValue: "4.9",
       bestRating: "5",
+      ratingCount: "680"
     },
     brand: {
       "@type": "Brand",
@@ -190,18 +191,12 @@ export function getVehicleJsonLd(
         {
           "@type": "ListItem",
           position: 2,
-          name: state,
-          item: getAbsoluteUrl(`/${state}`),
-        },
-        {
-          "@type": "ListItem",
-          position: 3,
           name: category,
           item: getAbsoluteUrl(`/${state}/${category}`),
         },
         {
           "@type": "ListItem",
-          position: 4,
+          position: 3,
           name: vehicle.modelName,
           item: vehicleDetailsPageLink,
         },
