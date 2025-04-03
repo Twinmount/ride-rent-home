@@ -143,11 +143,6 @@ export function getSeriesListingPageJsonLd(
     description: `Find the best ${convertToLabel(series)} (${convertToLabel(brand)}) rentals in ${convertToLabel(state)}. Compare prices, book easily, and enjoy the ride.`,
     url: seriesListingUrl,
     image: siteImage,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.8",
-      bestRating: "5",
-    },
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [
@@ -160,22 +155,6 @@ export function getSeriesListingPageJsonLd(
         {
           "@type": "ListItem",
           position: 2,
-          name: state,
-          item: getAbsoluteUrl(`/${state}`),
-        },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: "Rent",
-        },
-        {
-          "@type": "ListItem",
-          position: 4,
-          name: convertToLabel(brand),
-        },
-        {
-          "@type": "ListItem",
-          position: 5,
           name: convertToLabel(series),
           item: seriesListingUrl,
         },

@@ -133,6 +133,11 @@ export function getHomePageJsonLd(state: string, category: string) {
       "@type": "AggregateRating",
       ratingValue: "4.9",
       bestRating: "5",
+      ratingCount: "680",
+      itemReviewed: {
+        "@type": "Service",
+        name: "Rentals for " + convertToLabel(category) + " in " + convertToLabel(state)
+      }
     },
     image: rootImage,
     breadcrumb: {
@@ -147,12 +152,6 @@ export function getHomePageJsonLd(state: string, category: string) {
         {
           "@type": "ListItem",
           position: 2,
-          name: state,
-          item: getAbsoluteUrl(`/${state}`),
-        },
-        {
-          "@type": "ListItem",
-          position: 3,
           name: category,
           item: homepageUrl,
         },
