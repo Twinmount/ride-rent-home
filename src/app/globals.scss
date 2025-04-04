@@ -183,3 +183,46 @@ body {
     @apply mb-7 mt-7 text-center text-2xl font-bold;
   }
 }
+
+.skiptranslate iframe,
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+/* Style the select box */
+.goog-te-combo {
+  @apply cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-1 text-sm text-black focus:outline-none;
+}
+
+.goog-logo-link,
+.goog-te-gadget span,
+.goog-te-gadget-simple {
+  display: none !important;
+}
+
+.goog-te-gadget {
+  font-size: 0 !important;
+}
+
+/* Remove Google Translate Banner */
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+}
+
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
+}
+#goog-gt-tt {
+  display: none !important;
+}
+
+/* Prevent extra space from appearing */
+body {
+  top: 0px !important;
+}

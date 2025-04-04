@@ -13,6 +13,7 @@ import { FilterSidebar } from "@/components/root/listing/filter/FilterSidebar";
 import PriceFilterTag from "@/components/root/listing/PriceFilterTag";
 import { getDefaultMetadata } from "@/app/root-metadata";
 import JsonLd from "@/components/common/JsonLd";
+import PriceFilterDialog from "@/components/dialog/price-filter-dialog/PriceFilterDialog";
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const searchParams = await props.searchParams;
@@ -89,7 +90,12 @@ const ListingPage: FC<PageProps> = async (props) => {
           </h1>
 
           {/* filter sidebar */}
-          <FilterSidebar />
+          <div className="flex">
+            <div className="me-2 max-sm:hidden">
+              <PriceFilterDialog isListingPage={true} />
+            </div>
+            <FilterSidebar />
+          </div>
         </div>
 
         {/* New Price Filter Tag */}
