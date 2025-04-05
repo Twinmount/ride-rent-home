@@ -1,33 +1,79 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { VehicleCardContextProvider } from "./VehicleCardContext";
+import { useImmer } from "use-immer";
+import { useFetchExchangeRates } from "@/hooks/useFetchExchangeRates";
 
 type GlobalContextType = {
   isPageLoading: boolean;
   setIsPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  currency: string;
+  setCurrency: React.Dispatch<React.SetStateAction<string>>;
+  exchangeRates: { [key: string]: number };
 };
 
-// global context
+type ExchangeValue = {
+  sourceCurrency: string;
+  exchangeRates: { [key: string]: number };
+};
+
 const GlobalContext = createContext<GlobalContextType | null>(null);
 
-// wrapper component for global context
 export const GlobalContextProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
   const [isPageLoading, setIsPageLoading] = useState(false);
+  const [exchangeRates, setExchangeRates] = useImmer<{ [key: string]: number }>(
+    {
+      AED: 1,
+    },
+  );
+  const [currency, setCurrency] = useImmer<string>("AED");
+
+  const {
+    exchangeValue,
+    isLoading,
+  }: { exchangeValue: ExchangeValue | any; isLoading: boolean } =
+    useFetchExchangeRates();
+
+  useEffect(() => {
+    if (isLoading) return;
+    const mergedRates = {
+      [exchangeValue.sourceCurrency]: 1,
+      ...exchangeValue.exchangeRates,
+    };
+
+    setExchangeRates(mergedRates);
+  }, [exchangeValue]);
+
+  useEffect(() => {
+    const storedCurrency = localStorage.getItem("currency");
+
+    if (storedCurrency && exchangeRates[storedCurrency]) {
+      setCurrency(storedCurrency);
+    } else {
+      setCurrency("AED");
+    }
+  }, [exchangeRates]);
 
   return (
-    <GlobalContext.Provider value={{ isPageLoading, setIsPageLoading }}>
-      {/* vehicle card context provider */}
+    <GlobalContext.Provider
+      value={{
+        isPageLoading,
+        setIsPageLoading,
+        currency,
+        setCurrency,
+        exchangeRates,
+      }}
+    >
       <VehicleCardContextProvider>{children}</VehicleCardContextProvider>
     </GlobalContext.Provider>
   );
 };
 
-// custom hook for global context
 export const useGlobalContext = () => {
   const context = useContext(GlobalContext);
 

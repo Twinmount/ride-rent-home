@@ -4,6 +4,7 @@ import {
   FetchBrandsResponse,
   FetchCategoriesResponse,
   FetchCitiesResponse,
+  FetchExchangeRatesResponse,
   FetchLinksResponse,
   FetchPriceRangeResponse,
   FetchRelatedStateResponse,
@@ -406,7 +407,31 @@ export const fetcheRealatedStateList = async (
 
     // Check if the response is OK
     if (!response.ok) {
-      throw new Error(`Failed to fetch vehicle brands`);
+      throw new Error(`Failed to fetch related states`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error in fetchVehicleTypes:", error);
+    handleError(error);
+    return undefined;
+  }
+};
+
+export const fetchExchangeRates = async (): Promise<FetchExchangeRatesResponse | undefined> => {
+  try {
+    // generating api URL
+    const apiUrl = `${BASE_URL}/exchange-rates/today`;
+
+    const response = await fetch(apiUrl, {
+      method: "GET",
+    });
+
+    // Check if the response is OK
+    if (!response.ok) {
+      throw new Error(`Failed to fetch exchange rates`);
     }
 
     const data = await response.json();

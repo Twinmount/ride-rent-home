@@ -34,9 +34,9 @@ export default function RootLayout({
         {/* react query provider */}
         <NetworkWrapper>
           {/* global context provider */}
-          <GlobalContextProvider>
-            <ReactQueryProvider>{children}</ReactQueryProvider>
-          </GlobalContextProvider>
+          <ReactQueryProvider>
+            <GlobalContextProvider>{children}</GlobalContextProvider>
+          </ReactQueryProvider>
         </NetworkWrapper>
       </body>
     </html>
