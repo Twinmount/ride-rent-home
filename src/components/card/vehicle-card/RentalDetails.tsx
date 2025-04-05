@@ -1,4 +1,6 @@
+"use client"
 import { getRentalPeriodDetails } from "@/helpers";
+import { usePriceConverter } from "@/hooks/usePriceConverter";
 import { CardRentalDetails } from "@/types/vehicle-types";
 
 interface RentalDetailsProps {
@@ -8,12 +10,13 @@ interface RentalDetailsProps {
 export default function RentalDetails({ rentalDetails }: RentalDetailsProps) {
   // Use the helper function to get rental period details
   const rentalPeriod = getRentalPeriodDetails(rentalDetails);
+  const { convert } = usePriceConverter();
   return (
     <div className="text-[0.7rem] text-gray-600">
       {rentalPeriod ? (
         <>
           <span className="font-extrabold text-base text-red-500">
-            {rentalPeriod.rentInAED || "N/A"} AED
+            {convert(Number(rentalPeriod.rentInAED)) || "N/A"}
           </span>
           <span className="text-[0.9rem]">&nbsp;{rentalPeriod.label}</span>
         </>

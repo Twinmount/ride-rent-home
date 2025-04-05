@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 import {
   Dialog,
@@ -9,10 +10,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import { PriceRangeSlider } from "@/components/ui/price-range-slider";
 import Link from "next/link";
-import {  generateListingUrl } from "@/helpers";
+import { generateListingUrl } from "@/helpers";
 import PriceDialogTrigger from "./PriceDialogTrigger";
 import RentalPeriod from "./RentalPeriod";
 import MinAndMaxPrice from "./MinAndMaxPrice";
@@ -21,12 +21,18 @@ import { usePriceFilter } from "./usePriceFilter";
 
 export default function PriceFilterDialog({
   isMobileNav = false,
+  isListingPage = false,
 }: {
   isMobileNav?: boolean;
+  isListingPage?: boolean;
 }) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  // custom hook
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+
   const {
     state,
     category,
@@ -46,6 +52,21 @@ export default function PriceFilterDialog({
     category,
     selectedPeriod,
   );
+
+  const handleApply = () => {
+    setIsNavigating(true);
+    router.push(dynamicUrl);
+  };
+
+  // 💡 Effect to watch for route change completion
+  useEffect(() => {
+    const currentUrl = `${pathname}?${searchParams.toString()}`;
+
+    if (decodeURIComponent(currentUrl) === decodeURIComponent(dynamicUrl)) {
+      setIsNavigating(false);
+      setIsDialogOpen(false);
+    }
+  }, [pathname, searchParams, dynamicUrl]);
 
   if (isLoading) {
     return <PriceFilterLoadingSkelton isMobileNav={isMobileNav} />;
@@ -68,7 +89,6 @@ export default function PriceFilterDialog({
           </DialogTitle>
         </DialogHeader>
 
-        {/* Rental Period Selection */}
         {availablePeriods.length > 0 && (
           <RentalPeriod
             selectedPeriod={selectedPeriod}
@@ -77,7 +97,6 @@ export default function PriceFilterDialog({
           />
         )}
 
-        {/* Price Range Slider */}
         <div className="mt-4 w-full px-10">
           <PriceRangeSlider
             value={values}
@@ -88,15 +107,23 @@ export default function PriceFilterDialog({
           />
         </div>
 
-        {/* Minimum and Maximum Price */}
         <MinAndMaxPrice min={values[0]} max={values[1]} />
 
-        {/* Apply Filter Button */}
-        <Link href={dynamicUrl} target="_blank" className="mx-auto w-4/5">
-          <span className="flex-center rounded-xl bg-yellow/90 px-6 py-2 font-semibold text-white transition-colors hover:bg-yellow">
-            Apply Filter
-          </span>
-        </Link>
+        {isListingPage ? (
+          <button
+            onClick={handleApply}
+            disabled={isNavigating}
+            className="mx-auto w-4/5 flex-center rounded-xl bg-yellow/90 px-6 py-2 font-semibold text-white transition-colors hover:bg-yellow"
+          >
+            {isNavigating ? "Applying..." : "Apply Filter"}
+          </button>
+        ) : (
+          <Link href={dynamicUrl} className="mx-auto w-4/5">
+            <span className="flex-center rounded-xl bg-yellow/90 px-6 py-2 font-semibold text-white transition-colors hover:bg-yellow">
+              Apply Filter
+            </span>
+          </Link>
+        )}
       </DialogContent>
     </Dialog>
   );

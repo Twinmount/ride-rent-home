@@ -26,7 +26,7 @@ export const FilterSidebar = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: isVisible ? 1 : 0, scale: isVisible ? 1 : 0.9 }}
           transition={{ duration: 0.3 }}
-          className={`flex-center bottom-20 right-8 z-30 h-10 cursor-pointer gap-2 rounded-[0.5em] border border-gray-300 bg-yellow px-3 py-1 text-sm font-semibold text-white max-md:fixed ${isVisible && "hidden"}`}
+          className={`flex-center bottom-20 right-8 z-30 h-12 cursor-pointer gap-2 rounded-[0.5em] border border-gray-300 bg-yellow px-3 py-1 text-sm font-semibold text-white max-md:fixed ${isVisible && "hidden"}`}
         >
           <SlidersHorizontal width={15} />
           Filter

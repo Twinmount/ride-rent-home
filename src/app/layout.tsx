@@ -24,20 +24,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
+      <head className="notranslate">
         {/* tracking scripts */}
         <TrackingScripts />
       </head>
       <body className={firaSans.className}>
         {/* body scripts */}
         <BodyScripts />
-
         {/* react query provider */}
         <NetworkWrapper>
           {/* global context provider */}
-          <GlobalContextProvider>
-            <ReactQueryProvider>{children}</ReactQueryProvider>
-          </GlobalContextProvider>
+          <ReactQueryProvider>
+            <GlobalContextProvider>{children}</GlobalContextProvider>
+          </ReactQueryProvider>
         </NetworkWrapper>
       </body>
     </html>
