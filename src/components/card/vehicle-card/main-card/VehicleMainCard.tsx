@@ -70,7 +70,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
             className="profile-icon"
           />
 
-          <span className="brand">{vehicle.brandName}</span>
+          <span className="brand notranslate">{vehicle.brandName}</span>
 
           {/* zero deposit */}
           <ZeroDeposit enabled={vehicle?.securityDeposit.enabled} />

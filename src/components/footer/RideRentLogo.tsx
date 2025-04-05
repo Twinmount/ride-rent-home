@@ -10,7 +10,7 @@ export default function RideRentLogo() {
   const { state, category } = useParams<{ state: string; category: string }>();
 
   return (
-    <MotionDiv className="mx-auto mb-8 w-fit">
+    <MotionDiv className="notranslate mx-auto mb-8 w-fit">
       <Link href={`/${state}/${category}`} className="header-logo">
         <figure>
           <Image
