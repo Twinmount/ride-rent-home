@@ -17,7 +17,7 @@ const Footer = () => {
       <RideRentLogo />
 
       {/* Bottom Section */}
-      <MotionDiv className="mx-auto w-full text-center font-light text-gray-400 md:w-[90%] lg:w-[80%] xl:w-[70%]">
+      <MotionDiv className="notranslate mx-auto w-full text-center font-light text-gray-400 md:w-[90%] lg:w-[80%] xl:w-[70%]">
         <div>
           Get unbeatable deals on car rentals, chauffeur services, and car with
           driver, alongside bike, yacht, and private Charter/ helicopter

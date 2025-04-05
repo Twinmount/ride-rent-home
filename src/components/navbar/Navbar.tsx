@@ -29,7 +29,7 @@ export const Navbar = () => {
       <nav className={`flex-between w-full`}>
         <div className="flex w-fit items-center justify-center">
           <div className="w-fit p-0">
-            <Link
+            <a
               href={`/${state}/${category}`}
               className="notranslate max-w-fit p-0 text-right text-xs font-normal text-gray-500"
             >
@@ -49,7 +49,7 @@ export const Navbar = () => {
                   </span>
                 </figcaption>
               </figure>
-            </Link>
+            </a>
           </div>
         </div>
 
