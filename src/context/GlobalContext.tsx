@@ -40,12 +40,11 @@ export const GlobalContextProvider = ({
     useFetchExchangeRates();
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !exchangeValue.sourceCurrency) return;
     const mergedRates = {
       [exchangeValue.sourceCurrency]: 1,
       ...exchangeValue.exchangeRates,
     };
-
     setExchangeRates(mergedRates);
   }, [exchangeValue]);
 
