@@ -2,29 +2,7 @@
 
 import { convertToLabel, singularizeType } from "@/helpers";
 import { cn } from "@/lib/utils";
-import { motion, stagger, useAnimate, useInView } from "framer-motion";
-import { useEffect, useMemo } from "react";
-
-// Helper function to generate the words array
-const generateWordsArray = (state: string, category: string) => {
-  const splitIntoWords = (text: string, className: string) => {
-    return text.split(" ").map((word) => ({
-      text: word,
-      className,
-    }));
-  };
-
-  const formattedCategory = singularizeType(convertToLabel(category));
-  const formattedState = convertToLabel(state);
-
-  return [
-    { text: "Rent", className: "text-slate-800" },
-    { text: "a", className: "text-slate-800" },
-    ...splitIntoWords(formattedCategory, "text-slate-850"),
-    { text: "In", className: "text-slate-800" },
-    ...splitIntoWords(formattedState, "text-slate-850"),
-  ];
-};
+import { useState, useEffect } from "react";
 
 export const TypewriterEffect = ({
   state,
@@ -37,64 +15,20 @@ export const TypewriterEffect = ({
   className?: string;
   cursorClassName?: string;
 }) => {
-  const words = useMemo(
-    () => generateWordsArray(state, category),
-    [state, category],
-  );
+  const formattedCategory = singularizeType(convertToLabel(category));
+  const formattedState = convertToLabel(state);
+  const fullText = `Rent a ${formattedCategory} in ${formattedState}`;
 
-  // split text inside of words into array of characters
-  const wordsArray = words.map((word) => {
-    return {
-      ...word,
-      text: word.text.split(""),
-    };
-  });
+  const [showText, setShowText] = useState(false);
 
-  const [scope, animate] = useAnimate();
-  const isInView = useInView(scope);
   useEffect(() => {
-    if (isInView) {
-      animate(
-        "span",
-        {
-          display: "inline-block",
-          opacity: 1,
-          width: "fit-content",
-        },
-        {
-          duration: 0.3,
-          delay: stagger(0.1),
-          ease: "easeInOut",
-        },
-      );
-    }
-  }, [isInView]);
+    const timer = setTimeout(() => {
+      setShowText(true);
+    }, 2500); // Wait until typewriter animation ends
 
-  const renderWords = () => {
-    return (
-      <motion.div ref={scope} className="inline">
-        {wordsArray.map((word, idx) => {
-          return (
-            <div key={`word-${idx}`} className="inline-block">
-              {word.text.map((char, index) => (
-                <motion.span
-                  initial={{}}
-                  key={`char-${index}`}
-                  className={cn(
-                    `hidden text-black opacity-0 dark:text-white`,
-                    word.className,
-                  )}
-                >
-                  {char}
-                </motion.span>
-              ))}
-              &nbsp;
-            </div>
-          );
-        })}
-      </motion.div>
-    );
-  };
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div
       className={cn(
@@ -102,24 +36,51 @@ export const TypewriterEffect = ({
         className,
       )}
     >
-      {renderWords()}
-      <motion.span
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: 1,
-        }}
-        transition={{
-          duration: 0.8,
-          repeat: Infinity,
-          repeatType: "reverse",
-        }}
+      <div
         className={cn(
-          "inline-block h-6 w-[4px] rounded-sm bg-yellow md:h-8 lg:h-10",
-          cursorClassName,
+          "animate-typewriter delay-[500ms] inline-block max-w-full overflow-hidden whitespace-nowrap border-r-2 text-black dark:text-white",
+          !showText && "opacity-0",
         )}
-      ></motion.span>
+      >
+        {fullText}
+        <span
+          className={cn(
+            "animate-blink ml-[10px] inline-block h-6 w-[4px] bg-yellow md:h-8 lg:h-10",
+            cursorClassName,
+          )}
+        ></span>
+      </div>
+
+      <style jsx>{`
+        @keyframes typewriter {
+          0% {
+            width: 0;
+            opacity: 1;
+          }
+          100% {
+            width: 100%;
+            opacity: 1;
+          }
+        }
+
+        @keyframes blink {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0;
+          }
+        }
+
+        .animate-typewriter {
+          animation: typewriter 2s steps(30) forwards;
+        }
+
+        .animate-blink {
+          animation: blink 1s step-start infinite;
+        }
+      `}</style>
     </div>
   );
 };

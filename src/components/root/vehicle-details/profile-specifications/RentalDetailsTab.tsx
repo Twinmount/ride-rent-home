@@ -89,7 +89,7 @@ const RentalDetailsTab = ({ rentalDetails }: RentalDetailsTabProps) => {
       </div>
 
       {/* Content based on selected period */}
-      <div className="relative h-24 overflow-hidden">
+      <div className="h-auto max-h-[145px] min-h-[6rem] overflow-y-auto overflow-x-hidden">
         <AnimatePresence custom={direction} mode="wait">
           <MotionDivElm
             key={selectedPeriod.period}
@@ -98,7 +98,7 @@ const RentalDetailsTab = ({ rentalDetails }: RentalDetailsTabProps) => {
             initial="enter"
             animate="center"
             exit="exit"
-            className="absolute inset-0 space-y-4"
+            className="inset-0 space-y-4"
           >
             <div className="flex items-center justify-between rounded-[0.5rem] bg-[#2c2c2c] px-2 py-1">
               <span className="flex items-center justify-start gap-x-1 font-medium text-slate-200">
