@@ -35,9 +35,11 @@ export default async function TopBrands({
     <MotionSection className="section-container wrapper">
       <h2 className="section-heading">
         Rent from top brands in{" "}
-        <span className="yellow-gradient rounded-xl px-2 capitalize">
-          {convertToLabel(state as string)}
-        </span>
+        <div className="yellow-gradient inline-block rounded-xl px-2 capitalize">
+          <span data-testid="converted-label">
+            {convertToLabel(state as string)}
+          </span>
+        </div>
       </h2>
 
       <CarouselWrapper>
