@@ -93,7 +93,7 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
                   fill="#ffa733"
                   className="absolute rounded-full text-slate-700"
                 />
-                <span className="ml-3 rounded-[0.56rem] bg-gray-300 px-2 py-[0.22rem] pl-[0.65rem] text-sm font-medium">
+                <span className="ml-3 rounded-[0.56rem] bg-gray-300 px-2 py-[0.22rem] pl-[0.65rem] text-sm">
                   Verified Vendor
                 </span>
               </div>

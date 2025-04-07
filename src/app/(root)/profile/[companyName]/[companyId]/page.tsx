@@ -74,7 +74,7 @@ export default async function AgentProfilePage(props: PropsType) {
         {/* agent details */}
         <AgentProfile companyDetails={companyDetails} />
 
-        <h1 className="mt-6 text-center text-2xl font-semibold lg:text-3xl">
+        <h1 className="mt-6 text-center text-xl font-[400] lg:text-2xl">
           Our Vehicles Available For Rent / Lease
         </h1>
         <AgentVehicleFilter filters={filters} />
