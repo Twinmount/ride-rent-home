@@ -102,6 +102,7 @@ export type VehicleDetailsPageType = {
   additionalVehicleTypes?: AdditionalVehicleTypes[];
   securityDeposit: { enabled: boolean; amountInAED: string };
   vehicleTitle: string;
+  vehicleTitleH1: string;
 };
 
 export type VehicleDetailsPageResponse = {
@@ -141,4 +142,5 @@ export type ProfileCardDataType = {
     amountInAED: string;
   };
   vehicleTitle: string;
+  vehicleTitleH1: string;
 };
