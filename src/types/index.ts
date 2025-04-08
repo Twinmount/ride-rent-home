@@ -272,6 +272,22 @@ export interface FetchExchangeRatesResponse {
   statusCode: number;
 }
 
+export interface FetcFAQResponse {
+  result: {
+    _id?:string;
+    stateId:string,
+    faqs:[
+      {
+        _id?:string;
+        question:string;
+        answer:string;
+      }
+    ]
+  };
+  status: string;
+  statusCode: number;
+}
+
 // home page meta
 export interface HomePageMeta {
   metaDataId: string;
