@@ -54,5 +54,8 @@ export function getDefaultMetadata(canonicalUrl?: string): Metadata {
     alternates: {
       canonical: pageUrl,
     },
+    other: {
+      'norton-safeweb-site-verification': '478TC4UCWMH35PE0IF94SQ618OVMCU0NEQVN4IQORPWKYD5H-A-THWSBRLX06AH6IHUTYOWIW2K8WZ0BH4AHNVQGB5QJ4WNDIC7T4NHWJX4IT5DKQQZKOJG4UYHQQXF4',
+    },
   };
 }

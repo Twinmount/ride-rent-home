@@ -46,15 +46,16 @@ export async function generateMetadata(props: ParamsProps): Promise<Metadata> {
 export default async function VehicleDetails(props: ParamsProps) {
   const params = await props.params;
 
-  const { state, category, vehicleCode } = params;
+  const { state, category, vehicleCode, modelDetails } = params;
 
   const baseUrl = ENV.API_URL;
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
-
+  
+  const formatedModelDetails = modelDetails.replace(/-for-rent$/, "");
   // Fetch the vehicle data from the API
   const response = await fetch(
-    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}`,
+    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}&vehicleTitle=${formatedModelDetails}`,
     {
       method: "GET",
       cache: "no-cache",
@@ -94,6 +95,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     },
     securityDeposit: vehicle.securityDeposit,
     vehicleTitle: vehicle.vehicleTitle,
+    vehicleTitleH1: vehicle.vehicleTitle,
   };
 
   // Generate JSON-LD
@@ -112,7 +114,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         {/* Details heading */}
         <MotionDiv className="heading-box">
           <h1 className="custom-heading model-name">
-            {vehicle.vehicleTitle || vehicle.modelName}
+            {vehicle.vehicleTitleH1 || vehicle.vehicleTitle || vehicle.modelName}
           </h1>
 
           {/* breadcrumb for current page path*/}
@@ -120,7 +122,7 @@ export default async function VehicleDetails(props: ParamsProps) {
             category={category}
             state={state}
             brand={vehicle?.brand}
-            vehicleTitle={vehicle?.vehicleTitle}
+            vehicleTitle={vehicle?.vehicleTitleH1 || vehicle?.vehicleTitle}
           />
         </MotionDiv>
 

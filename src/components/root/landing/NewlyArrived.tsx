@@ -44,14 +44,15 @@ export default async function NewlyArrived({
     <MotionSection className="section-container wrapper">
       <h2 className="section-heading">
         Newly arrived{" "}
-        <span className="yellow-gradient rounded-xl px-1">
-          {formattedCategory}
-        </span>{" "}
+        <div className="yellow-gradient inline-block rounded-xl px-1">
+          <span data-testid="formatted-category">{formattedCategory}</span>
+        </div>{" "}
         for rent in{" "}
-        <span className="yellow-gradient rounded-xl px-2 capitalize">
-          {convertToLabel(state)}
-        </span>
+        <div className="yellow-gradient inline-block rounded-xl px-2 capitalize">
+          <span data-testid="converted-label">{convertToLabel(state)}</span>
+        </div>
       </h2>
+
       <CarouselWrapper isButtonVisible>
         {vehicleData.map((vehicle, index) => (
           <VehicleMainCard

@@ -261,6 +261,17 @@ export interface FetchRelatedStateResponse {
   statusCode: number;
 }
 
+export interface FetchExchangeRatesResponse {
+  result: {
+    sourceCurrency:string,
+    exchangeRates:{
+      [key: string]:number;
+    }
+  };
+  status: string;
+  statusCode: number;
+}
+
 // home page meta
 export interface HomePageMeta {
   metaDataId: string;

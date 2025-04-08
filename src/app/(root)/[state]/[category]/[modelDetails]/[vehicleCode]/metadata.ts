@@ -156,7 +156,7 @@ export function getVehicleJsonLd(
       "@type": "AggregateRating",
       ratingValue: "4.9",
       bestRating: "5",
-      ratingCount: "680"
+      ratingCount: "680",
     },
     brand: {
       "@type": "Brand",
@@ -173,6 +173,9 @@ export function getVehicleJsonLd(
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
       validFrom: new Date().toISOString(),
+      priceValidUntil: new Date(
+        new Date().setFullYear(new Date().getFullYear() + 1),
+      ).toISOString(),
       seller: {
         "@type": "Organization",
         name: vehicle.company.companyName,

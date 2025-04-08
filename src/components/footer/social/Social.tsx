@@ -5,7 +5,7 @@ import MotionDiv from "../../general/framer-motion/MotionDiv";
 
 const Social = () => {
   return (
-    <MotionDiv className="mx-auto my-12 mb-8 flex w-full flex-col items-center justify-evenly gap-4 md:w-[70%] md:flex-row">
+    <MotionDiv className="notranslate mx-auto my-12 mb-8 flex w-full flex-col items-center justify-evenly gap-4 md:w-[70%] md:flex-row">
       {/* social */}
       <div className="flex flex-col items-start justify-center max-md:items-center">
         <div className="mb-2 font-medium text-yellow">We are Social!</div>

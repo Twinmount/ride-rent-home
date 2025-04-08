@@ -10,6 +10,7 @@ import MobileSidebar from "../sidebar/MobileSidebar";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
 import { extractCategory } from "@/helpers";
 import { noStatesDropdownRoutes } from ".";
+import LanguageSelector from "./LanguageSelector";
 
 export const Navbar = () => {
   const params = useParams<{ state: string; category: string }>();
@@ -28,9 +29,9 @@ export const Navbar = () => {
       <nav className={`flex-between w-full`}>
         <div className="flex w-fit items-center justify-center">
           <div className="w-fit p-0">
-            <Link
+            <a
               href={`/${state}/${category}`}
-              className="max-w-fit p-0 text-right text-xs font-normal text-gray-500"
+              className="notranslate max-w-fit p-0 text-right text-xs font-normal text-gray-500"
             >
               <figure className="m-0">
                 <Image
@@ -48,15 +49,18 @@ export const Navbar = () => {
                   </span>
                 </figcaption>
               </figure>
-            </Link>
+            </a>
           </div>
         </div>
 
         <div className="flex w-fit items-center">
-          <ul className="flex w-full items-center justify-between gap-4">
+          <ul className="flex w-full items-center justify-between gap-1 md:gap-4">
             {/* Search Dialog */}
             <li className="max-sm:hidden">
               <SearchDialog state={state} />
+            </li>
+            <li>
+              <LanguageSelector />
             </li>
 
             {/* Location */}
@@ -72,7 +76,7 @@ export const Navbar = () => {
                 href={`https://agent.ride.rent/register`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="yellow-gradient default-btn"
+                className="yellow-gradient default-btn !font-[500]"
               >
                 List your vehicle for FREE
               </Link>
