@@ -76,7 +76,7 @@ export const Navbar = () => {
                 href={`https://agent.ride.rent/register`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="yellow-gradient default-btn"
+                className="yellow-gradient default-btn !font-[500]"
               >
                 List your vehicle for FREE
               </Link>

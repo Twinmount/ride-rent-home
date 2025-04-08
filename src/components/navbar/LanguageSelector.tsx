@@ -5,20 +5,38 @@ import { ChevronDown, Languages } from "lucide-react";
 import { useGlobalContext } from "@/context/GlobalContext";
 
 const languages = [
-  { code: "en", name: "English" },
-  { code: "ar", name: "Arabic" },
-  { code: "fr", name: "French" },
-  { code: "nl", name: "Dutch" },
-  { code: "zh-CN", name: "Chinese" },
-  { code: "es", name: "Spanish" },
-  { code: "pt", name: "Portuguese" },
-  { code: "hi", name: "Hindi" },
-  { code: "ru", name: "Russian" },
-  { code: "ja", name: "Japanese" },
-  { code: "tr", name: "Turkish" },
-  { code: "it", name: "Italian" },
-  { code: "de", name: "German" },
+  { code: "en", name: "English", nativeName: "English" },
+  { code: "ar", name: "Arabic", nativeName: "العربية" },
+  { code: "fr", name: "French", nativeName: "Français" },
+  { code: "nl", name: "Dutch", nativeName: "Nederlands" },
+  { code: "zh-CN", name: "Chinese", nativeName: "中文" },
+  { code: "es", name: "Spanish", nativeName: "Español" },
+  { code: "pt", name: "Portuguese", nativeName: "Português" },
+  { code: "hi", name: "Hindi", nativeName: "हिन्दी" },
+  { code: "ru", name: "Russian", nativeName: "Русский" },
+  { code: "ja", name: "Japanese", nativeName: "日本語" },
+  { code: "tr", name: "Turkish", nativeName: "Türkçe" },
+  { code: "it", name: "Italian", nativeName: "Italiano" },
+  { code: "de", name: "German", nativeName: "Deutsch" },
 ];
+
+const currencySymbols: any = {
+  AED: "د.إ",
+  USD: "$",
+  GBP: "£",
+  EUR: "€",
+  SAR: "﷼",
+  KWD: "د.ك",
+  RUB: "₽",
+  INR: "₹",
+  PKR: "₨",
+  OMR: "ر.ع.",
+  MAD: "د.م.",
+  CNY: "¥",
+  AUD: "A$",
+  CAD: "C$",
+  JPY: "¥",
+};
 
 export default function LanguageSelector() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -76,7 +94,7 @@ export default function LanguageSelector() {
         if (document.getElementById("google_translate_element")) {
           new window.google.translate.TranslateElement(
             { pageLanguage: "en" },
-            "google_translate_element"
+            "google_translate_element",
           );
         }
       };
@@ -104,7 +122,6 @@ export default function LanguageSelector() {
 
       // 🧹 Cleanup on unmount
       return () => observer.disconnect();
-
     }
 
     return;
@@ -143,7 +160,7 @@ export default function LanguageSelector() {
         if (selectElement) {
           selectElement.value = language;
           selectElement.dispatchEvent(new Event("change"));
-    
+
           // Retry logic if HTML lang is not updated
           let retries = 5;
           const checkLangChange = () => {
@@ -201,7 +218,7 @@ export default function LanguageSelector() {
             >
               {languages.map((lang) => (
                 <option key={lang.code} value={lang.code}>
-                  {lang.name}
+                  {`${lang.name} \u00A0\u00A0–\u00A0\u00A0 ${lang.nativeName}`}
                 </option>
               ))}
             </select>
@@ -218,7 +235,7 @@ export default function LanguageSelector() {
             >
               {Object.keys(exchangeRates).map((curr) => (
                 <option key={curr} value={curr}>
-                  {curr}
+                  {`${curr} \u00A0\u00A0–\u00A0\u00A0 ${currencySymbols[curr] || ""}`}
                 </option>
               ))}
             </select>

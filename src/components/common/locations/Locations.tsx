@@ -33,7 +33,7 @@ const Locations = ({ state, category }: StateCategoryProps) => {
         Available Locations
       </h3>
       <p className="mb-6 text-center text-sm text-gray-600">
-        Choose your state/city to rent
+        Choose your state/city to rent a vehicle
       </p>
 
       {/* Display States */}

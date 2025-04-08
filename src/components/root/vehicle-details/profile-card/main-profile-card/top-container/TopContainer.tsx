@@ -47,6 +47,7 @@ const TopContainer = ({
           </div>
           <div>
             <p
+              translate="no"
               className={`${
                 company.companyName ? "" : "blurred-text"
               } company-name`}
