@@ -316,14 +316,15 @@ export const fetchAllPaginatedCities = async (
 export const fetchCategories = async (
   state: string,
 ): Promise<FetchCategoriesResponse | undefined> => {
+  console.log("api function reached for categories");
+
   try {
-    const response = await fetch(
-      `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}`,
-      {
-        method: "GET",
-        cache: "no-cache",
-      },
-    );
+    const url = `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-cache",
+    });
 
     if (!response.ok) {
       throw new Error("Failed to fetch categories data");
@@ -420,7 +421,9 @@ export const fetcheRealatedStateList = async (
   }
 };
 
-export const fetchExchangeRates = async (): Promise<FetchExchangeRatesResponse | undefined> => {
+export const fetchExchangeRates = async (): Promise<
+  FetchExchangeRatesResponse | undefined
+> => {
   try {
     // generating api URL
     const apiUrl = `${BASE_URL}/exchange-rates/today`;

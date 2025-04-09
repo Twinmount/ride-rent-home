@@ -38,7 +38,7 @@ export const TypewriterEffect = ({
     >
       <div
         className={cn(
-          "animate-typewriter delay-[500ms] inline-block max-w-full overflow-hidden whitespace-nowrap border-r-2 text-black dark:text-white",
+          "animate-typewriter inline-block max-w-full overflow-hidden whitespace-nowrap border-r-2 text-black delay-500 dark:text-white",
           !showText && "opacity-0",
         )}
       >

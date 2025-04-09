@@ -108,10 +108,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
           {/* client component which handles the dialog logic via context */}
           {/* <EnquireBestPrice vehicle={vehicle} /> */}
           <LinkWrapper href={vehicleDetailsPageLink}>
-            <RentNowButton
-              vehicleDetailsPageLink={vehicleDetailsPageLink}
-              companyLogo={vehicle.companyLogo}
-            />
+            <RentNowButton companyLogo={vehicle.companyLogo} />
           </LinkWrapper>
 
           <ContactIcons

@@ -44,6 +44,8 @@ export function removeKeysFromQuery({
 export const sortCategories = <T extends { value: string }>(
   categories: T[],
 ): T[] => {
+  if (!categories || categories.length === 0) return [];
+
   const order = [
     "cars",
     "sports-cars",
