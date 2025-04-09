@@ -15,7 +15,7 @@ export default async function Recommended({
 
   // Fetch the vehicle data from the API
   const response = await fetch(
-    `${baseUrl}/promotions/list?stateValue=${state}&page=1&limit=5`,
+    `${baseUrl}/promotions/list?stateValue=${state}&page=1&limit=5&sortOrder=DESC`,
   );
   const data: FetchPromotionsResponse = await response.json();
 

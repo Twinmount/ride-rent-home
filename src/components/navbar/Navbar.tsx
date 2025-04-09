@@ -1,16 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import StatesDropdown from "./StatesDropdown";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
-import MobileSidebar from "../sidebar/MobileSidebar";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
 import { extractCategory } from "@/helpers";
 import { noStatesDropdownRoutes } from ".";
 import LanguageSelector from "./LanguageSelector";
+import { useIsMobile } from "@/hooks/use-mobile";
+// dynamic import for sidebar
+const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
+  loading: () => <span className="text-[0.5rem]">Loading...</span>,
+});
 
 export const Navbar = () => {
   const params = useParams<{ state: string; category: string }>();
@@ -23,6 +28,8 @@ export const Navbar = () => {
 
   // if category ends with "-for-rent", remove "-for-rent"
   category = extractCategory(category);
+
+  const isMobile = useIsMobile(640);
 
   return (
     <NavbarWrapper>
@@ -86,9 +93,7 @@ export const Navbar = () => {
               <ProfileDropdown />
             </li> */}
 
-            <li className="sm:hidden">
-              <MobileSidebar />
-            </li>
+            <li className="sm:hidden">{isMobile && <MobileSidebar />}</li>
           </ul>
         </div>
       </nav>

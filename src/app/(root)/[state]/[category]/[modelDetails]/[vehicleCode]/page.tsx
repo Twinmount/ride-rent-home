@@ -52,10 +52,10 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
 
-  const formatedModelDetails = modelDetails.replace(/-for-rent$/, "");
+  const formattedModelDetails = modelDetails.replace(/-for-rent$/, "");
   // Fetch the vehicle data from the API
   const response = await fetch(
-    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}&vehicleTitle=${formatedModelDetails}`,
+    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}&vehicleTitle=${formattedModelDetails}`,
     {
       method: "GET",
       cache: "no-cache",

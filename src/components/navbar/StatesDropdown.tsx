@@ -10,7 +10,7 @@ import {
 import { FaLocationDot } from "react-icons/fa6";
 import { StateType } from "@/types";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { capitalizeFirstLetter, extractCategory } from "@/helpers";
 import useFetchStates from "@/hooks/useFetchStates";
@@ -35,8 +35,8 @@ export default function StatesDropdown() {
       if (foundState) {
         setSelectedState(foundState);
       } else {
-        // If the state is not found, throw error
-        throw new Error("State not found");
+        // If the state is not found, redirect to not found page
+        notFound();
       }
     }
   }, [state, states, router, selectedCategory, isLoading]);

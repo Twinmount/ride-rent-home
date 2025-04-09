@@ -3,7 +3,7 @@ export function restoreVehicleCodeFormat(lowerCaseCode: string): string {
   const [alphabets, numbers] = lowerCaseCode.split("-");
 
   if (!alphabets || !numbers) {
-    throw new Error("Invalid vehicleCode format");
+    return lowerCaseCode;
   }
 
   // Capitalize the alphabets and combine them back with the numbers
