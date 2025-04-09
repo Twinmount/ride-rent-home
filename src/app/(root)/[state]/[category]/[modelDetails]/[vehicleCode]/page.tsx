@@ -135,7 +135,10 @@ export default async function VehicleDetails(props: ParamsProps) {
             {/* container left */}
             <div className="details-left">
               {/* Vehicle Images Slider */}
-              <Images photos={vehicle?.vehiclePhotos} />
+              <Images
+                photos={vehicle?.vehiclePhotos}
+                imageAlt={vehicle?.modelName}
+              />
 
               {/* vehicle information */}
               <VehicleInfo
@@ -188,7 +191,9 @@ export default async function VehicleDetails(props: ParamsProps) {
         <Description description={vehicle.description} />
 
         {/* FAQ */}
-        <DynamicFAQ vehicle={vehicle} />
+        <Suspense fallback={<SectionLoading />}>
+          <DynamicFAQ vehicle={vehicle} />
+        </Suspense>
 
         {/* Why Opt Ride.Rent  */}
         <WhyOpt state={state} category={category} />
