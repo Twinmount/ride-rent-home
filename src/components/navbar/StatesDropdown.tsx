@@ -12,7 +12,7 @@ import { StateType } from "@/types";
 import { useEffect, useState } from "react";
 import { notFound, useParams, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
-import { capitalizeFirstLetter, extractCategory } from "@/helpers";
+import { extractCategory } from "@/helpers";
 import useFetchStates from "@/hooks/useFetchStates";
 
 export default function StatesDropdown() {
