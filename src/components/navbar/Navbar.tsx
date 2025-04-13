@@ -40,22 +40,14 @@ export const Navbar = () => {
               href={`/${state}/${category}`}
               className="notranslate max-w-fit p-0 text-right text-xs font-normal text-gray-500"
             >
-              <figure className="m-0">
-                <Image
-                  src="/assets/logo/riderent-logo.webp"
-                  alt="ride.rent logo"
-                  width={130}
-                  height={25}
-                  className="w-[8.5rem] md:w-40"
-                  quality={100}
-                />
-                <figcaption className="text-[0.7rem]">
-                  Vehicles for{" "}
-                  <span className="font-bold italic text-black">
-                    Every Journey
-                  </span>
-                </figcaption>
-              </figure>
+              <Image
+                src="/assets/logo/Logo_Black.svg"
+                alt="ride.rent logo"
+                width={130}
+                height={25}
+                className="w-[8.5rem] md:w-40"
+                quality={100}
+              />
             </a>
           </div>
         </div>
