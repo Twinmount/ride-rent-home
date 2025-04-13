@@ -51,11 +51,11 @@ export default async function VehicleDetails(props: ParamsProps) {
   const baseUrl = ENV.API_URL;
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
-  
-  const formatedModelDetails = modelDetails.replace(/-for-rent$/, "");
+
+  const formattedModelDetails = modelDetails.replace(/-for-rent$/, "");
   // Fetch the vehicle data from the API
   const response = await fetch(
-    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}&vehicleTitle=${formatedModelDetails}`,
+    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}&vehicleTitle=${formattedModelDetails}`,
     {
       method: "GET",
       cache: "no-cache",
@@ -114,7 +114,9 @@ export default async function VehicleDetails(props: ParamsProps) {
         {/* Details heading */}
         <MotionDiv className="heading-box">
           <h1 className="custom-heading model-name">
-            {vehicle.vehicleTitleH1 || vehicle.vehicleTitle || vehicle.modelName}
+            {vehicle.vehicleTitleH1 ||
+              vehicle.vehicleTitle ||
+              vehicle.modelName}
           </h1>
 
           {/* breadcrumb for current page path*/}
@@ -133,7 +135,10 @@ export default async function VehicleDetails(props: ParamsProps) {
             {/* container left */}
             <div className="details-left">
               {/* Vehicle Images Slider */}
-              <Images photos={vehicle?.vehiclePhotos} />
+              <Images
+                photos={vehicle?.vehiclePhotos}
+                imageAlt={vehicle?.modelName}
+              />
 
               {/* vehicle information */}
               <VehicleInfo
@@ -186,7 +191,9 @@ export default async function VehicleDetails(props: ParamsProps) {
         <Description description={vehicle.description} />
 
         {/* FAQ */}
-        <DynamicFAQ vehicle={vehicle} />
+        <Suspense fallback={<SectionLoading />}>
+          <DynamicFAQ vehicle={vehicle} />
+        </Suspense>
 
         {/* Why Opt Ride.Rent  */}
         <WhyOpt state={state} category={category} />

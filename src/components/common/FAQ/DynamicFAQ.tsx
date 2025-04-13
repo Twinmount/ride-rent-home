@@ -8,18 +8,48 @@ import {
 } from "@/components/ui/accordion";
 import Image from "next/image";
 
-import { generateDynamicFAQ } from "@/helpers";
 import { VehicleDetailsPageType } from "@/types/vehicle-details-types";
+import { ENV } from "@/config/env";
 
 type DynamicFAQProps = {
   vehicle: VehicleDetailsPageType;
 };
 
-export default function DynamicFAQ({ vehicle }: DynamicFAQProps) {
-  // helper function to generate dynamic FAQ based on the vehicle
-  const faqData = generateDynamicFAQ(vehicle);
+type FAQItem = {
+  question: string;
+  answer: string;
+};
 
-  if (faqData.length === 0) return null;
+export default async function DynamicFAQ({ vehicle }: DynamicFAQProps) {
+  const baseUrl = ENV.API_URL;
+
+  let faqData: FAQItem[] = [];
+
+  try {
+    const response = await fetch(
+      `${baseUrl}/vehicle-faq/${vehicle.vehicleCode}`,
+      {
+        method: "GET",
+        cache: "no-cache",
+      },
+    );
+
+    const result = await response.json();
+
+    if (result.status === "SUCCESS" && Array.isArray(result.result)) {
+      faqData = result.result;
+    }
+  } catch (error) {
+    console.error("Failed to fetch FAQ data:", error);
+  }
+
+  if (faqData.length === 0) {
+    return (
+      <MotionSection className="w-full pb-12 pt-8">
+        <div className="text-center text-lg text-gray-600">No FAQ found</div>
+      </MotionSection>
+    );
+  }
 
   return (
     <MotionSection className="w-full pb-12 pt-8">

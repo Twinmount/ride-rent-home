@@ -1,16 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import StatesDropdown from "./StatesDropdown";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
-import MobileSidebar from "../sidebar/MobileSidebar";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
 import { extractCategory } from "@/helpers";
 import { noStatesDropdownRoutes } from ".";
 import LanguageSelector from "./LanguageSelector";
+import { useIsMobile } from "@/hooks/use-mobile";
+// dynamic import for sidebar
+const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
+  loading: () => <span className="text-[0.5rem]">Loading...</span>,
+});
 
 export const Navbar = () => {
   const params = useParams<{ state: string; category: string }>();
@@ -24,6 +29,8 @@ export const Navbar = () => {
   // if category ends with "-for-rent", remove "-for-rent"
   category = extractCategory(category);
 
+  const isMobile = useIsMobile(640);
+
   return (
     <NavbarWrapper>
       <nav className={`flex-between w-full`}>
@@ -33,22 +40,14 @@ export const Navbar = () => {
               href={`/${state}/${category}`}
               className="notranslate max-w-fit p-0 text-right text-xs font-normal text-gray-500"
             >
-              <figure className="m-0">
-                <Image
-                  src="/assets/logo/riderent-logo.webp"
-                  alt="ride.rent logo"
-                  width={130}
-                  height={25}
-                  className="w-[8.5rem] md:w-40"
-                  quality={100}
-                />
-                <figcaption className="text-[0.7rem]">
-                  Vehicles for{" "}
-                  <span className="font-bold italic text-black">
-                    Every Journey
-                  </span>
-                </figcaption>
-              </figure>
+              <Image
+                src="/assets/logo/Logo_Black.svg"
+                alt="ride.rent logo"
+                width={130}
+                height={25}
+                className="w-[8.5rem] md:w-40"
+                quality={100}
+              />
             </a>
           </div>
         </div>
@@ -86,9 +85,7 @@ export const Navbar = () => {
               <ProfileDropdown />
             </li> */}
 
-            <li className="sm:hidden">
-              <MobileSidebar />
-            </li>
+            <li className="sm:hidden">{isMobile && <MobileSidebar />}</li>
           </ul>
         </div>
       </nav>

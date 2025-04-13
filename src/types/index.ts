@@ -263,10 +263,26 @@ export interface FetchRelatedStateResponse {
 
 export interface FetchExchangeRatesResponse {
   result: {
-    sourceCurrency:string,
-    exchangeRates:{
-      [key: string]:number;
-    }
+    sourceCurrency: string;
+    exchangeRates: {
+      [key: string]: number;
+    };
+  };
+  status: string;
+  statusCode: number;
+}
+
+export interface FetcFAQResponse {
+  result: {
+    _id?:string;
+    stateId:string,
+    faqs:[
+      {
+        _id?:string;
+        question:string;
+        answer:string;
+      }
+    ]
   };
   status: string;
   statusCode: number;

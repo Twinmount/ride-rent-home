@@ -5,9 +5,11 @@ import { useState } from "react";
 export default function VehicleImage({
   src,
   index,
+  imageAlt = `Vehicle image ${index + 1}`,
 }: {
   src: string;
   index: number;
+  imageAlt?: string;
 }) {
   const [isImageLoading, setImageLoading] = useState(true);
 
@@ -18,7 +20,7 @@ export default function VehicleImage({
 
       <Image
         src={src}
-        alt={`Vehicle image ${index + 1}`}
+        alt={imageAlt}
         className="h-full w-full rounded-[1rem] object-contain"
         fill
         onLoad={() => setImageLoading(false)}

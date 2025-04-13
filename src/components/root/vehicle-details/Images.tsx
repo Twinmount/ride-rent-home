@@ -15,9 +15,10 @@ import VehicleImage from "./VehicleImage";
 
 type ImagesProps = {
   photos: string[];
+  imageAlt?: string;
 };
 
-const Images = ({ photos }: ImagesProps) => {
+const Images = ({ photos, imageAlt }: ImagesProps) => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
@@ -56,7 +57,7 @@ const Images = ({ photos }: ImagesProps) => {
                 className="relative w-full min-w-[100%] overflow-hidden rounded-[1rem] p-0"
               >
                 {src ? (
-                  <VehicleImage src={src} index={index} />
+                  <VehicleImage src={src} index={index} imageAlt={imageAlt} />
                 ) : (
                   <div className="flex-center h-full w-full rounded-[1rem] object-contain text-lg text-slate-500">
                     Oops! Image loading failed!

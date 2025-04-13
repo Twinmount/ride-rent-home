@@ -10,9 +10,9 @@ import {
 import { FaLocationDot } from "react-icons/fa6";
 import { StateType } from "@/types";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
-import { capitalizeFirstLetter, extractCategory } from "@/helpers";
+import { extractCategory } from "@/helpers";
 import useFetchStates from "@/hooks/useFetchStates";
 
 export default function StatesDropdown() {
@@ -35,8 +35,8 @@ export default function StatesDropdown() {
       if (foundState) {
         setSelectedState(foundState);
       } else {
-        // If the state is not found, throw error
-        throw new Error("State not found");
+        // If the state is not found, redirect to not found page
+        notFound();
       }
     }
   }, [state, states, router, selectedCategory, isLoading]);
@@ -52,10 +52,8 @@ export default function StatesDropdown() {
         className={`flex items-center !rounded-xl border-none outline-none`}
       >
         <FaLocationDot width={20} height={20} className={`mr-1 text-orange`} />
-        <span className="font-semibold">
-          {selectedState
-            ? capitalizeFirstLetter(selectedState.stateName)
-            : "Select Location"}
+        <span className="font-semibold capitalize">
+          {selectedState ? selectedState.stateName : "Select Location"}
         </span>
         <ChevronDown className="text-yellow" width={20} />
       </DropdownMenuTrigger>
@@ -70,9 +68,7 @@ export default function StatesDropdown() {
               }`}
             >
               <FaLocationDot className={`scale-90 text-orange`} />
-              <span className="text-base">
-                {capitalizeFirstLetter(data.stateName)}
-              </span>
+              <span className="text-base capitalize">{data.stateName}</span>
             </DropdownMenuItem>
           ))
         ) : (

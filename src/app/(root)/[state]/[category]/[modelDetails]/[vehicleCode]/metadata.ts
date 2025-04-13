@@ -11,8 +11,8 @@ import {
 } from "@/helpers";
 import { restoreVehicleCodeFormat } from ".";
 import { ENV } from "@/config/env";
-import { getDefaultMetadata } from "@/app/root-metadata";
 import { getAbsoluteUrl } from "@/helpers/metadata-helper";
+import { notFound } from "next/navigation";
 
 export async function fetchVehicleMetaData(
   vehicleCode: string,
@@ -45,7 +45,7 @@ export async function generateVehicleMetadata(
   const data = await fetchVehicleMetaData(vehicleCode);
 
   if (!data?.result) {
-    return getDefaultMetadata();
+    return notFound();
   }
 
   const vehicle = data.result;

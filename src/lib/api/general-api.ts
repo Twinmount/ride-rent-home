@@ -1,6 +1,7 @@
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 import { handleError } from "../utils";
 import {
+  FetcFAQResponse,
   FetchBrandsResponse,
   FetchCategoriesResponse,
   FetchCitiesResponse,
@@ -316,14 +317,15 @@ export const fetchAllPaginatedCities = async (
 export const fetchCategories = async (
   state: string,
 ): Promise<FetchCategoriesResponse | undefined> => {
+  console.log("api function reached for categories");
+
   try {
-    const response = await fetch(
-      `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}`,
-      {
-        method: "GET",
-        cache: "no-cache",
-      },
-    );
+    const url = `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-cache",
+    });
 
     if (!response.ok) {
       throw new Error("Failed to fetch categories data");
@@ -420,10 +422,37 @@ export const fetcheRealatedStateList = async (
   }
 };
 
-export const fetchExchangeRates = async (): Promise<FetchExchangeRatesResponse | undefined> => {
+export const fetchExchangeRates = async (): Promise<
+  FetchExchangeRatesResponse | undefined
+> => {
   try {
     // generating api URL
     const apiUrl = `${BASE_URL}/exchange-rates/today`;
+
+    const response = await fetch(apiUrl, {
+      method: "GET",
+    });
+
+    // Check if the response is OK
+    if (!response.ok) {
+      throw new Error(`Failed to fetch exchange rates`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error in fetchVehicleTypes:", error);
+    handleError(error);
+    return undefined;
+  }
+};
+
+
+export const fetchFAQ = async (stateValue:string): Promise<FetcFAQResponse | undefined> => {
+  try {
+    // generating api URL
+    const apiUrl = `${BASE_URL}/state-faq/client/${stateValue}`;
 
     const response = await fetch(apiUrl, {
       method: "GET",
