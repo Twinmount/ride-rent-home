@@ -69,10 +69,10 @@ export function SearchDialog({
         ) : (
           <button
             aria-label="Open Search Dialog"
-            className="flex-center gap-x-2 rounded-xl border border-gray-300 px-4 text-black"
+            className="flex-center gap-x-2 rounded-xl border border-gray-300 px-4 py-1 text-black"
           >
             <Search className="h-4 w-4 text-orange" strokeWidth={2} />{" "}
-            <span className="relative mt-1">Search</span>
+            <span className="relative text-gray-500">Search</span>
           </button>
         )}
       </DialogTrigger>
