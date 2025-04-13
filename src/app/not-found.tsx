@@ -1,8 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <section className="bg-lightGray flex min-h-screen flex-col items-center pb-12 pt-12">
+    <section className="flex min-h-screen flex-col items-center bg-lightGray pb-12 pt-12">
       {/* Top Section */}
       <div className="mb-8 mt-16 flex items-center justify-center">
         <img
@@ -24,19 +25,13 @@ export default function NotFound() {
         {/* Logo Section */}
         <div className="mb-5">
           <Link href="/" className="flex flex-col items-center">
-            <figure className="text-center">
-              <img
-                src="/assets/logo/riderent-logo.webp"
-                alt="Ride Rent Logo"
-                className="w-[14rem]"
-              />
-              <figcaption className="text-sm">
-                Vehicles for{" "}
-                <span className="font-bold italic text-black">
-                  Every Journey
-                </span>
-              </figcaption>
-            </figure>
+            <Image
+              src={"/assets/logo/Logo_Black.svg"}
+              width={200}
+              height={120}
+              className="header-img"
+              alt="Ride Rent Logo"
+            />
           </Link>
         </div>
 
