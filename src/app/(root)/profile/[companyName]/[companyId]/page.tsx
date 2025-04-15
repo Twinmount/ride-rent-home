@@ -36,7 +36,7 @@ export default async function AgentProfilePage(props: PropsType) {
   const filter = searchParams.filter;
   const page = parseInt(searchParams.page || "1", 10);
 
-  const url = `${baseUrl}/company/public?companyId=${companyId}`;
+  const url = `${baseUrl}/company/public?companyId=${companyId}&companyName=${companyName}`;
 
   // Fetch Data from API
   const response = await fetch(url, {
