@@ -41,6 +41,8 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
     limit,
   });
 
+  const category = searchParams.get("category") || "cars";
+
   const [isIntitalLoad, setIsIntitalLoad] = useImmer(true);
   const [apiCallDelay, setApiCallDelay] = useImmer(false);
 
@@ -121,8 +123,9 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
                   return (
                     <div key={location} className="mb-8">
                       {ind !== 0 && (
-                        <h3 className="relative mb-6 inline-block break-words text-2xl font-[500] max-md:mr-auto lg:text-3xl">
-                          Now showing results from{" "}
+                        <h3 className="relative mb-6 inline-block break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
+                          Discover more{" "}
+                          <span className="capitalize">{category}</span> from{" "}
                           <span className="capitalize">
                             {convertToLabel(location.replace(/-/g, " "))}
                           </span>
