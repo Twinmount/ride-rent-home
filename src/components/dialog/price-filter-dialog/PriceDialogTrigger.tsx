@@ -18,7 +18,7 @@ export default function PriceDialogTrigger({
     </span>
   ) : (
     <span
-      className={`flex-center h-12 gap-2 rounded-[0.5em] border border-gray-300 px-3 py-1 text-sm font-semibold ${(isLoading || isDisabled) && "cursor-default text-gray-500"}`}
+      className={`flex-center h-12 gap-2 rounded-[0.5em] border border-gray-300 bg-lightGray px-3 py-1 text-sm font-semibold ${(isLoading || isDisabled) && "cursor-default text-gray-500"}`}
     >
       <SlidersHorizontal width={15} />
       Price
