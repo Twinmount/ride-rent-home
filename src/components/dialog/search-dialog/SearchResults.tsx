@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import VehicleModelsSearchResult from "./VehicleModelsSearchResult";
 import VehiclesSeriesSearchResult from "./VehiclesSeriesSearchResult";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import CompanySearchResult from "./CompanySearchResult";
 
 type SearchResultsProps = {
   debouncedSearch: string;
@@ -24,6 +25,7 @@ export function SearchResults({
 
   const vehicleSeries = results?.result.vehicleSeries || [];
   const vehicles = results?.result.vehicle || [];
+  const company = results?.result.company || [];
 
   // Show placeholder when no search input
   if (!debouncedSearch || !search || search?.length < 2) {
@@ -39,8 +41,12 @@ export function SearchResults({
     return <div className="text-center text-sm text-gray-500">Loading...</div>;
   }
 
-  // No results found for both categories
-  if (vehicleSeries.length === 0 && vehicles.length === 0) {
+  // No results found for both categories and company
+  if (
+    vehicleSeries.length === 0 &&
+    vehicles.length === 0 &&
+    company.length === 0
+  ) {
     return (
       <div className="text-center text-sm text-gray-500">
         No results for &quot;{debouncedSearch}&quot;
@@ -50,6 +56,9 @@ export function SearchResults({
 
   return (
     <ScrollArea className="mt-2 flex h-fit max-h-full flex-col space-y-3">
+      {/* Company Results */}
+      <CompanySearchResult company={company} />
+
       {/* Vehicle Series Results */}
       <VehiclesSeriesSearchResult vehicleSeries={vehicleSeries} state={state} />
 

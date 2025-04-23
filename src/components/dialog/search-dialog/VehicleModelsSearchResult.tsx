@@ -16,7 +16,7 @@ export default function VehicleModelsSearchResult({
   return (
     <div className="rounded-[0.4rem] bg-slate-50 p-1">
       <h3 className="mb-2 border-b px-3 py-2 text-sm font-semibold text-gray-700">
-        Models
+        Explore Models
       </h3>
       <div className="flex flex-col rounded-[0.25rem] p-1">
         {vehicles.map((item) => {
