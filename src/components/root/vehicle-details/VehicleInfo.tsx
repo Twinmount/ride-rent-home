@@ -33,7 +33,6 @@ export const VehicleInfo: React.FC<VehicleInfoProps> = async ({
       {/* sub heading */}
       <RentalInfo
         modelName={modelName}
-        stateLabel={stateLabel}
         isCryptoAccepted={isCryptoAccepted}
         rentalDetails={rentalDetails}
       />
