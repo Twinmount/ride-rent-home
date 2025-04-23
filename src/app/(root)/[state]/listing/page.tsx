@@ -77,7 +77,7 @@ const ListingPage: FC<PageProps> = async (props) => {
         id={`json-ld-listing-${state}-${category}`}
         jsonLdData={jsonLdData}
       />
-      <div className="wrapper h-auto min-h-screen bg-lightGray pb-8 pt-4">
+      <div className="wrapper relative h-auto min-h-screen bg-lightGray pb-8 pt-4">
         <div className="flex-between mb-6 h-fit w-full pr-[5%] max-md:flex-col">
           <h1 className="ml-2 break-words text-2xl font-[500] max-md:mr-auto lg:text-3xl">
             Rent or Lease&nbsp;
@@ -90,8 +90,8 @@ const ListingPage: FC<PageProps> = async (props) => {
           </h1>
 
           {/* filter sidebar */}
-          <div className="flex">
-            <div className="me-2 max-sm:hidden">
+          <div className="listing-page-filter-div z-10 flex">
+            <div className="me-0 max-sm:hidden md:me-2">
               <PriceFilterDialog isListingPage={true} />
             </div>
             <FilterSidebar />
