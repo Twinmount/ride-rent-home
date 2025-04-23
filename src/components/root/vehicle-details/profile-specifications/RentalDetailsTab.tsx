@@ -66,7 +66,7 @@ const RentalDetailsTab = ({ rentalDetails }: RentalDetailsTabProps) => {
       {/* Tabs */}
       <div className="mb-4 flex flex-col border-b border-gray-200">
         <div className="flex gap-2 text-gray-600">
-          <Tag className="text-gray-600" width={15} /> Pricing
+          <Tag className="text-gray-600" width={15} /> Pricing starts
         </div>
         <div className="flex items-center justify-evenly">
           {enabledRentalPeriods.map((rental, index) => (
