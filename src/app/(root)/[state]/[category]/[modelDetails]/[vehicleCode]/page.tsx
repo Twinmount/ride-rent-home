@@ -142,6 +142,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
               {/* vehicle information */}
               <VehicleInfo
+                vehicleId={vehicle?.vehicleId}
                 modelName={vehicle?.modelName}
                 stateLabel={vehicle?.state.label}
                 isCryptoAccepted={
