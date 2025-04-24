@@ -18,6 +18,7 @@ import RentalPeriod from "./RentalPeriod";
 import MinAndMaxPrice from "./MinAndMaxPrice";
 import PriceFilterLoadingSkelton from "./PriceFilterSkelton";
 import { usePriceFilter } from "./usePriceFilter";
+import useElementVisibility from "@/hooks/useElementVisibility";
 
 export default function PriceFilterDialog({
   isMobileNav = false,
@@ -32,6 +33,7 @@ export default function PriceFilterDialog({
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
+  const isVisible = useElementVisibility("footer", 0.5);
 
   const {
     state,
@@ -75,11 +77,13 @@ export default function PriceFilterDialog({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger disabled={isPriceRangeEmpty || isLoading}>
-        <PriceDialogTrigger
-          isMobileNav={isMobileNav}
-          isLoading={isLoading}
-          isDisabled={isPriceRangeEmpty}
-        />
+        {isVisible && (
+          <PriceDialogTrigger
+            isMobileNav={isMobileNav}
+            isLoading={isLoading}
+            isDisabled={isPriceRangeEmpty}
+          />
+        )}
       </DialogTrigger>
 
       <DialogContent className="!max-h-fit !w-[80vw] overflow-hidden rounded-2xl bg-white !px-2 py-4">
@@ -113,7 +117,7 @@ export default function PriceFilterDialog({
           <button
             onClick={handleApply}
             disabled={isNavigating}
-            className="mx-auto w-4/5 flex-center rounded-xl bg-yellow/90 px-6 py-2 font-semibold text-white transition-colors hover:bg-yellow"
+            className="flex-center mx-auto w-4/5 rounded-xl bg-yellow/90 px-6 py-2 font-semibold text-white transition-colors hover:bg-yellow"
           >
             {isNavigating ? "Applying..." : "Apply Filter"}
           </button>

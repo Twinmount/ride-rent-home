@@ -30,16 +30,15 @@ const DetailsSectionClientWrapper = ({
   children,
   profileData,
 }: DetailsSectionClientWrapperProps) => {
-  const { vehicleId } = profileData;
+  const { vehicleCode } = profileData;
 
   const detailsSectionRef = useRef(null);
   const isInViewPort = useIntersectionObserver(detailsSectionRef);
 
   useQuery({
-    queryKey: ["portfolioVisit", vehicleId],
-    queryFn: () => sendPortfolioVisit(vehicleId),
-    staleTime: 600000, // 10 minutes in milliseconds
-    enabled: !!vehicleId,
+    queryKey: ["portfolioVisit", vehicleCode],
+    queryFn: () => sendPortfolioVisit(vehicleCode),
+    staleTime: 0,
   });
 
   return (

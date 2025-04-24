@@ -7,6 +7,7 @@ import Location from "./Location";
 import { AdditionalVehicleTypes } from "@/types/vehicle-details-types";
 
 interface VehicleInfoProps {
+  vehicleId: string;
   modelName: string;
   stateLabel: string;
   isCryptoAccepted: boolean;
@@ -17,7 +18,7 @@ interface VehicleInfoProps {
   cities: string[];
 }
 
-export const VehicleInfo: React.FC<VehicleInfoProps> = ({
+export const VehicleInfo: React.FC<VehicleInfoProps> = async ({
   modelName,
   stateLabel,
   isCryptoAccepted,
@@ -32,7 +33,6 @@ export const VehicleInfo: React.FC<VehicleInfoProps> = ({
       {/* sub heading */}
       <RentalInfo
         modelName={modelName}
-        stateLabel={stateLabel}
         isCryptoAccepted={isCryptoAccepted}
         rentalDetails={rentalDetails}
       />

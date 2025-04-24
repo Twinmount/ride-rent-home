@@ -274,15 +274,15 @@ export interface FetchExchangeRatesResponse {
 
 export interface FetcFAQResponse {
   result: {
-    _id?:string;
-    stateId:string,
-    faqs:[
+    _id?: string;
+    stateId: string;
+    faqs: [
       {
-        _id?:string;
-        question:string;
-        answer:string;
-      }
-    ]
+        _id?: string;
+        question: string;
+        answer: string;
+      },
+    ];
   };
   status: string;
   statusCode: number;
@@ -349,11 +349,19 @@ export interface FetchCompanyDetailsResponse {
   statusCode: number;
 }
 
+export type CompanySearchItems = {
+  title: string;
+  code: string;
+  _id: string;
+  totalVehicles?: number;
+};
+
 export type VehicleSeriesSearchItems = {
   title: string;
   code: string;
   _id: string;
   brand: string;
+  urlTitle?: string;
 };
 export type VehicleSearchItems = {
   title: string;
@@ -367,6 +375,7 @@ export interface FetchSearchResultsResponse {
   result: {
     vehicleSeries: VehicleSeriesSearchItems[];
     vehicle: VehicleSearchItems[];
+    company: CompanySearchItems[];
   };
   statusCode: number;
 }

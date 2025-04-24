@@ -226,3 +226,16 @@ body {
 body {
   top: 0px !important;
 }
+
+.listing-page-filter-div {
+  position: fixed;
+  right: calc((100vw - 90%) / 2);
+
+  @media (max-width: 1023px) {
+    right: calc((100vw - 96%) / 2);
+  }
+
+  @media (min-width: 1600px) {
+    right: calc((100vw - 92rem) / 2);
+  }
+}
