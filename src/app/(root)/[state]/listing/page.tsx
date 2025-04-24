@@ -55,7 +55,7 @@ const ListingPage: FC<PageProps> = async (props) => {
   const { state } = params;
 
   const searchParams = await props.searchParams;
-  const category = searchParams.category;
+  const category = searchParams.category || "";
   const brand = searchParams.brand ? searchParams.brand.split(",")[0] : "";
 
   const formattedCategory = singularizeType(convertToLabel(category));
@@ -70,6 +70,14 @@ const ListingPage: FC<PageProps> = async (props) => {
   // generate JSON-LD
   const jsonLdData = getListingPageJsonLd(state, formattedCategory);
 
+  const data: any = await fetchListingMetadata(
+    state,
+    category,
+    vehicleTypes[0],
+  );
+
+  const oneVehicleType = vehicleTypes.length === 1;
+
   return (
     <>
       {/* Inject JSON-LD into the <head> */}
@@ -79,15 +87,28 @@ const ListingPage: FC<PageProps> = async (props) => {
       />
       <div className="wrapper relative h-auto min-h-screen bg-lightGray pb-8 pt-4">
         <div className="flex-between mb-6 h-fit w-full pr-[5%] max-md:flex-col">
-          <h1 className="ml-2 break-words text-2xl font-[500] max-md:mr-auto lg:text-3xl">
-            Rent or Lease&nbsp;
-            {formattedBrand && (
-              <span className="font-semibold">{formattedBrand}&nbsp;</span>
+          <div>
+            {oneVehicleType && !!data.result.h1 ? (
+              <h1 className="ml-2 break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
+                {data?.result?.h1}
+              </h1>
+            ) : (
+              <h1 className="ml-2 break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
+                Rent or Lease&nbsp;
+                {formattedBrand && (
+                  <span className="font-semibold">{formattedBrand}&nbsp;</span>
+                )}
+                {formattedCategory} in {formattedState}
+                {/*rendering vehicle types, if there are any */}
+                <SelectedVehicleTypes vehicleTypes={vehicleTypes} />
+              </h1>
             )}
-            {formattedCategory} in {formattedState}
-            {/*rendering vehicle types, if there are any */}
-            <SelectedVehicleTypes vehicleTypes={vehicleTypes} />
-          </h1>
+            {oneVehicleType && !!data.result?.h2 && (
+              <h3 className="ml-2 mt-2 break-words text-lg font-[400] max-md:mr-auto lg:text-xl">
+                {data?.result?.h2}
+              </h3>
+            )}
+          </div>
 
           {/* filter sidebar */}
           <div className="listing-page-filter-div z-10 flex">
