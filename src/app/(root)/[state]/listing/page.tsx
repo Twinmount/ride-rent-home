@@ -86,8 +86,11 @@ const ListingPage: FC<PageProps> = async (props) => {
         jsonLdData={jsonLdData}
       />
       <div className="wrapper relative h-auto min-h-screen bg-lightGray pb-8 pt-4">
-        <div className="flex-between mb-6 h-fit w-full pr-[5%] max-md:flex-col">
-          <div>
+        <div
+          className="flex-between mb-6 h-fit w-full max-md:flex-col"
+          style={{ alignItems: "start" }}
+        >
+          <div className="overflow-wrap-anywhere max-w-[calc(100%-180px)] pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full">
             {oneVehicleType && !!data.result.h1 ? (
               <h1 className="ml-2 break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
                 {data?.result?.h1}
@@ -99,7 +102,6 @@ const ListingPage: FC<PageProps> = async (props) => {
                   <span className="font-semibold">{formattedBrand}&nbsp;</span>
                 )}
                 {formattedCategory} in {formattedState}
-                {/*rendering vehicle types, if there are any */}
                 <SelectedVehicleTypes vehicleTypes={vehicleTypes} />
               </h1>
             )}
@@ -111,7 +113,7 @@ const ListingPage: FC<PageProps> = async (props) => {
           </div>
 
           {/* filter sidebar */}
-          <div className="listing-page-filter-div z-10 flex">
+          <div className="listing-page-filter-div z-10 flex flex-shrink-0 max-md:mt-4">
             <div className="me-0 max-sm:hidden md:me-2">
               <PriceFilterDialog isListingPage={true} />
             </div>
