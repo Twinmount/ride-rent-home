@@ -91,7 +91,7 @@ const ListingPage: FC<PageProps> = async (props) => {
           style={{ alignItems: "start" }}
         >
           <div className="overflow-wrap-anywhere max-w-[calc(100%-180px)] pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full">
-            {oneVehicleType && !!data.result.h1 ? (
+            {oneVehicleType && !!data.result?.h1 ? (
               <h1 className="ml-2 break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
                 {data?.result?.h1}
               </h1>
