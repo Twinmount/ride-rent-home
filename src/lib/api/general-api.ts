@@ -320,7 +320,7 @@ export const fetchAllPaginatedCities = async (
 export const fetchCategories = async (
   state: string,
 ): Promise<FetchCategoriesResponse | undefined> => {
-  console.log("api function reached for categories");
+
 
   try {
     const url = `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`;
