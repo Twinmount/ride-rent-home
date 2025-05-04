@@ -9,6 +9,7 @@ import React, { Suspense } from "react";
 import { generateCompanyMetadata, getCompanyJsonLd } from "./profile-metadata";
 import { ENV } from "@/config/env";
 import JsonLd from "@/components/common/JsonLd";
+import { sortFilters } from "@/helpers";
 
 type PropsType = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -55,6 +56,7 @@ export default async function AgentProfilePage(props: PropsType) {
   // Extract company details and filters
   const companyDetails = data.result;
   const filters = data.result.categories || [];
+  const sortedFilters = sortFilters(filters);
 
   // Generate JSON-LD
   const jsonLdData = getCompanyJsonLd(
@@ -77,11 +79,11 @@ export default async function AgentProfilePage(props: PropsType) {
         <h1 className="mt-6 text-center text-xl font-[400] lg:text-2xl">
           Our Vehicles Available For Rent / Lease
         </h1>
-        <AgentVehicleFilter filters={filters} />
+        <AgentVehicleFilter filters={sortedFilters} />
 
         <Suspense fallback={<VehicleCardSkeletonGrid count={9} />}>
           <AgentVehicleGrid
-            filter={filter as string}
+            filter={(filter ?? sortedFilters[0].value) as string}
             page={page}
             companyId={companyId}
           />

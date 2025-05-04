@@ -91,7 +91,7 @@ const ListingPage: FC<PageProps> = async (props) => {
           style={{ alignItems: "start" }}
         >
           <div className="overflow-wrap-anywhere max-w-[calc(100%-180px)] pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full">
-            {oneVehicleType && !!data.result?.h1 ? (
+            {oneVehicleType && !!data?.result?.h1 ? (
               <h1 className="ml-2 break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
                 {data?.result?.h1}
               </h1>
@@ -105,10 +105,10 @@ const ListingPage: FC<PageProps> = async (props) => {
                 <SelectedVehicleTypes vehicleTypes={vehicleTypes} />
               </h1>
             )}
-            {oneVehicleType && !!data.result?.h2 && (
-              <h3 className="ml-2 mt-2 break-words text-lg font-[400] max-md:mr-auto lg:text-xl">
+            {oneVehicleType && !!data?.result?.h2 && (
+              <h2 className="ml-2 mt-2 break-words text-lg font-[400] max-md:mr-auto lg:text-xl">
                 {data?.result?.h2}
-              </h3>
+              </h2>
             )}
           </div>
 
@@ -126,7 +126,7 @@ const ListingPage: FC<PageProps> = async (props) => {
 
         <div className="mt-3 flex gap-8">
           {/* vehicle grid */}
-          <VehicleGrid state={state} />
+          <VehicleGrid key={JSON.stringify(searchParams)} state={state} />
         </div>
       </div>
     </>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { formUrlQuery, sortFilters } from "@/helpers";
 
 type Props = {
@@ -30,18 +30,6 @@ export default function AgentVehicleFilter({ filters }: Props) {
     },
     [searchParams, router],
   );
-
-  useEffect(() => {
-    // Initialize the `page` param in the URL if it's not already set
-    if (!searchParams.get("filter")) {
-      const newUrl = formUrlQuery({
-        params: searchParams.toString(),
-        key: "filter",
-        value: sortedFilters[0].value, // Set to the first filter by default
-      });
-      router.replace(newUrl, { scroll: false });
-    }
-  }, [searchParams, router]);
 
   // Extract the current filter directly from the URL (query params)
   const currentFilter = searchParams.get("filter") || sortedFilters[0].value;
