@@ -17,9 +17,21 @@ const LinkWrapper = ({ children, href, className }: LinkWrapperProps) => {
 
   const currentPath = usePathname(); // Get the current route
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // If it's a modified click (Ctrl, Cmd, Shift, Alt, Middle-click), do nothing
+    if (
+      e.metaKey || // Cmd on Mac
+      e.ctrlKey || // Ctrl on Windows/Linux
+      e.shiftKey ||
+      e.altKey ||
+      e.button === 1 // Middle-click
+    ) {
+      return;
+    }
+  
     setIsPageLoading(true);
   };
+  
 
   useEffect(() => {
     // Reset loading state ONLY if the new route starts with the href

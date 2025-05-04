@@ -24,6 +24,7 @@ import { Suspense } from "react";
 import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
 import { VehicleInfo } from "@/components/root/vehicle-details/VehicleInfo";
 import JsonLd from "@/components/common/JsonLd";
+import BrandImage from "@/components/common/BrandImage";
 
 type ParamsProps = {
   params: Promise<{
@@ -113,11 +114,20 @@ export default async function VehicleDetails(props: ParamsProps) {
       <div className="vehicle-details-page wrapper">
         {/* Details heading */}
         <MotionDiv className="heading-box">
+          <div className="flex items-center gap-2">
+
+          {/* brand logo */}
+          <BrandImage
+            category={category}
+            brandValue={vehicle?.brand.value}
+            className="border-2 border-amber-500 h-12 w-12 rounded-full object-contain"
+          />
           <h1 className="custom-heading model-name">
             {vehicle.vehicleTitleH1 ||
               vehicle.vehicleTitle ||
               vehicle.modelName}
           </h1>
+          </div>
 
           {/* breadcrumb for current page path*/}
           <CurrentPageBreadcrumb

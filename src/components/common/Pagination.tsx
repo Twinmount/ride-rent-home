@@ -8,15 +8,20 @@ import { useEffect } from "react";
 type PaginationProps = {
   page: number;
   totalPages: number;
+  needToSetPageNoInUrlDefault?: boolean;
 };
 
-export default function Pagination({ page, totalPages }: PaginationProps) {
+export default function Pagination({
+  page,
+  totalPages,
+  needToSetPageNoInUrlDefault = true,
+}: PaginationProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     // Initialize the `page` param in the URL if it's not already set
-    if (!searchParams.get("page")) {
+    if (!searchParams.get("page") && needToSetPageNoInUrlDefault) {
       const newUrl = formUrlQuery({
         params: searchParams.toString(),
         key: "page",
@@ -28,7 +33,7 @@ export default function Pagination({ page, totalPages }: PaginationProps) {
 
   const handlePageChange = (event: { selected: number }) => {
     const selectedPage = event.selected + 1; // ReactPaginate is zero-indexed, add 1 for URL
-
+    if (selectedPage === 1 && !needToSetPageNoInUrlDefault) return;
     // Update the URL with the new page parameter
     const newUrl = formUrlQuery({
       params: searchParams.toString(),

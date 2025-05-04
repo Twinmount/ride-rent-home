@@ -53,7 +53,11 @@ export default async function AgentVehicleGrid({
       )}
       {vehicles.length > 0 && (
         <Suspense fallback={<div>Loading Pagination...</div>}>
-          <Pagination page={page} totalPages={totalPages} />
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            needToSetPageNoInUrlDefault={false}
+          />
         </Suspense>
       )}
     </div>

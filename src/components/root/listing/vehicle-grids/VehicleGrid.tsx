@@ -53,6 +53,12 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
     staleTime: 0,
   });
 
+  // when page load go to top, use case -> when filter change key of
+  // this component change, so this effect will be trigerd
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   useEffect(() => {
     if (relatedState?.result?.relatedStates) {
       setRelatedStateList(relatedState?.result?.relatedStates);
@@ -95,8 +101,8 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
 
   useEffect(() => {
     if (isFetching) return;
-    setIsIntitalLoad(false);
     if (fetchedVehicles.length > 0) {
+      setIsIntitalLoad(false);
       setVehicles((draft: any) => {
         draft[stateValue] = fetchedVehicles;
         return draft;
@@ -114,45 +120,56 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
             {Object.keys(vehicles).length === 0 ? (
               <NoResultsFound />
             ) : (
-              Object.entries(vehicles).map(
-                ([location, vehiclesInLocation], ind: number) => {
-                  const locationVehicles = vehiclesInLocation as Array<{
-                    vehicleId: string;
-                  }>;
+              <>
+                {(!vehicles[state] || vehicles[state]?.length === 0) && (
+                  <p className="mb-10 mt-8 text-center text-base text-gray-600">
+                    No vehicles found in{" "}
+                    {convertToLabel(state.replace(/-/g, " "))}. Showing results
+                    from nearby locations.
+                  </p>
+                )}
 
-                  return (
-                    <div key={location} className="mb-8">
-                      {ind !== 0 && (
-                        <h3 className="relative mb-6 inline-block break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
-                          Discover more{" "}
-                          <span className="capitalize">{category}</span> from{" "}
-                          <span className="capitalize">
-                            {convertToLabel(location.replace(/-/g, " "))}
-                          </span>
-                          <motion.div
-                            className="absolute bottom-0 left-0 h-[2px] bg-black"
-                            initial={{ width: 0 }}
-                            animate={{ width: "100%" }}
-                            transition={{ duration: 0.5, ease: "easeOut" }}
-                          />
-                        </h3>
-                      )}
-                      <VehicleGridWrapper>
-                        {locationVehicles.map((vehicle: any, index) => {
-                          const animationIndex = index % 8;
-                          return (
-                            <VehicleMainCard
-                              key={vehicle.vehicleId}
-                              vehicle={vehicle}
-                              index={animationIndex}
+                {Object.entries(vehicles).map(
+                  ([location, vehiclesInLocation]) => {
+                    const locationVehicles = vehiclesInLocation as Array<{
+                      vehicleId: string;
+                    }>;
+                    const isFromRelatedState = location !== state;
+
+                    return (
+                      <div key={location} className="mb-8">
+                        {isFromRelatedState && (
+                          <h3 className="relative mb-6 inline-block break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
+                            Discover more{" "}
+                            <span className="capitalize">{category}</span> from{" "}
+                            <span className="capitalize">
+                              {convertToLabel(location.replace(/-/g, " "))}
+                            </span>
+                            <motion.div
+                              className="absolute bottom-0 left-0 h-[2px] bg-black"
+                              initial={{ width: 0 }}
+                              animate={{ width: "100%" }}
+                              transition={{ duration: 0.5, ease: "easeOut" }}
                             />
-                          );
-                        })}
-                      </VehicleGridWrapper>
-                    </div>
-                  );
-                },
-              )
+                          </h3>
+                        )}
+                        <VehicleGridWrapper>
+                          {locationVehicles.map((vehicle: any, index) => {
+                            const animationIndex = index % 8;
+                            return (
+                              <VehicleMainCard
+                                key={vehicle.vehicleId}
+                                vehicle={vehicle}
+                                index={animationIndex}
+                              />
+                            );
+                          })}
+                        </VehicleGridWrapper>
+                      </div>
+                    );
+                  },
+                )}
+              </>
             )}
           </div>
 
