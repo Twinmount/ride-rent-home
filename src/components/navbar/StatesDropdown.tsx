@@ -8,66 +8,89 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { FaLocationDot } from "react-icons/fa6";
-import { StateType } from "@/types";
 import { useEffect, useState } from "react";
 import { notFound, useParams, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { extractCategory } from "@/helpers";
 import useFetchStates from "@/hooks/useFetchStates";
+import { StateType } from "@/types";
+
+const countries = [
+  { id: "ee8a7c95-303d-4f55-bd6c-85063ff1cf48", name: "UAE" },
+  { id: "68ea1314-08ed-4bba-a2b1-af549946523d", name: "India" },
+];
 
 export default function StatesDropdown() {
   const router = useRouter();
-
-  // State to hold the selected state
-  const [selectedState, setSelectedState] = useState<StateType | undefined>(
-    undefined,
-  );
   const { state, category } = useParams<{ state: string; category: string }>();
 
+  const [selectedCountry, setSelectedCountry] = useState(countries[0].id); // default to India
+  const [selectedState, setSelectedState] = useState<StateType | undefined>(undefined);
   const selectedCategory = extractCategory(category || "cars");
 
-  // fetching states using custom hook
-  const { states, isLoading } = useFetchStates();
+  const { states, isLoading } = useFetchStates({countryId:selectedCountry});
 
   useEffect(() => {
+    if(isLoading) return;
     if (states.length > 0) {
       const foundState = states.find((data) => data.stateValue === state);
       if (foundState) {
         setSelectedState(foundState);
       } else {
-        // If the state is not found, redirect to not found page
-        notFound();
+        setSelectedState(states[0]);
       }
+    }else{
+        notFound();
     }
-  }, [state, states, router, selectedCategory, isLoading]);
+  }, [state, states, isLoading,selectedCategory]);
 
-  // Function to handle state selection
   const handleStateSelect = (stateValue: string) => {
-    router.push(`/${stateValue}/${selectedCategory}`); // Navigate to the selected state
+    router.push(`/${stateValue}/${selectedCategory}`);
+  };
+
+  const handleCountrySelect = (countryId: string) => {
+    setSelectedCountry(countryId);
+    setSelectedState(undefined); 
   };
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        className={`flex items-center !rounded-xl border-none outline-none`}
-      >
-        <FaLocationDot width={20} height={20} className={`mr-1 text-orange`} />
+      <DropdownMenuTrigger className="flex items-center !rounded-xl border-none outline-none">
+        <FaLocationDot className="mr-1 text-orange" />
         <span className="font-semibold capitalize">
           {selectedState ? selectedState.stateName : "Select Location"}
         </span>
-        <ChevronDown className="text-yellow" width={20} />
+        <ChevronDown className="text-yellow" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="flex !w-44 flex-col gap-1 !rounded-xl bg-white p-1 shadow-md">
+
+      <DropdownMenuContent className="flex !w-56 flex-col gap-1 !rounded-xl bg-white p-1 shadow-md">
+        {/* Country Selection */}
+        <div className="px-2 pb-1 text-xs font-semibold text-gray-400">Select Country</div>
+        {countries.map((country) => (
+          <DropdownMenuItem
+            key={country.id}
+            onClick={() => handleCountrySelect(country.id)}
+            className={`cursor-pointer !rounded-md px-2 py-1 text-sm ${
+              selectedCountry === country.id ? "text-orange font-bold" : ""
+            }`}
+          >
+            {country.name}
+          </DropdownMenuItem>
+        ))}
+
+        <div className="mt-2 border-t border-gray-200" />
+
+        {/* State Selection */}
         {states.length > 0 ? (
           states.map((data) => (
             <DropdownMenuItem
               key={data.stateId}
               onClick={() => handleStateSelect(data.stateValue)}
-              className={`flex cursor-pointer items-center gap-x-1 !rounded-xl p-1 px-2 hover:text-orange ${
+              className={`flex items-center gap-x-1 !rounded-xl p-1 px-2 hover:text-orange ${
                 data.stateValue === state ? "text-orange" : ""
               }`}
             >
-              <FaLocationDot className={`scale-90 text-orange`} />
+              <FaLocationDot className="scale-90 text-orange" />
               <span className="text-base capitalize">{data.stateName}</span>
             </DropdownMenuItem>
           ))

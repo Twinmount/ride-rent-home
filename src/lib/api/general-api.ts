@@ -247,11 +247,11 @@ export const fetchSearchResults = async (
   }
 };
 
-export const fetchStates = async (): Promise<
+export const fetchStates = async ({countryId}:{countryId: string}): Promise<
   FetchStatesResponse | undefined
 > => {
   try {
-    const res = await fetch(`${BASE_URL}/states/list?hasVehicle=true`, {
+    const res = await fetch(`${BASE_URL}/states/list?hasVehicle=true&countryId=${countryId}`, {
       method: "GET",
       cache: "no-cache",
     });
