@@ -13,14 +13,14 @@ import BlogsListSkeleton from "@/components/skelton/BlogsListSkeleton";
 import { generateBlogHref } from "@/helpers/blog-helpers";
 import { ENV } from "@/config/env";
 
-type ParamsProps = {
-  params: { blogId: string };
+type PageProps = {
+  params: Promise<{ blogId: string }>;
 };
 
 // dynamic meta data
-export async function generateMetadata({
-  params: { blogId },
-}: ParamsProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const { blogId } = await props.params;
+
   const baseUrl = ENV.API_URL;
 
   const response = await fetch(`${baseUrl}/blogs?blogId=${blogId}`, {
@@ -106,7 +106,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogDetails({ params: { blogId } }: ParamsProps) {
+export default async function BlogDetails(props: PageProps) {
+  const { blogId } = await props.params;
+
   const baseUrl =
     process.env.API_URL || "https://prod-api.ride.rent/v1/riderent";
 
@@ -177,7 +179,7 @@ export default async function BlogDetails({ params: { blogId } }: ParamsProps) {
       </Suspense>
 
       {/* Blogs List */}
-      <Suspense fallback={<BlogsListSkeleton count={9} />}>
+      <Suspense fallback={<BlogsListSkeleton count={12} />}>
         <BlogsList />
       </Suspense>
     </section>

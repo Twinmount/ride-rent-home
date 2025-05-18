@@ -44,7 +44,7 @@ export default async function BlogsList() {
         YOU MIGHT ALSO LIKE
       </h2>
 
-      <div className="mt-3 grid grid-cols-1 gap-2 max-md:pl-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-6 grid grid-cols-1 gap-2 max-md:pl-8 md:grid-cols-2 lg:grid-cols-3">
         {blogsData.map((data) => {
           const href = generateBlogHref(data.blogTitle);
 

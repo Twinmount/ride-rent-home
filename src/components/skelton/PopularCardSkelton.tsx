@@ -6,14 +6,14 @@ export default function PopularCardSkeleton({ count = 4 }: { count?: number }) {
       <h2 className="custom-heading font-semibold text-gray-700 max-md:ml-2">
         Popular
       </h2>
-      <div className="flex flex-col gap-y-1">
+      <div className="mt-8 flex flex-col gap-y-1">
         {Array.from({ length: count }).map((_, index) => (
           <div
             key={index}
             className="mb-1 flex items-center gap-2 border-b border-gray-200 p-0"
           >
             {/* Image Skeleton */}
-            <Skeleton className="h-20 w-20 rounded-md bg-gray-300" />
+            <Skeleton className="h-20 w-20 rounded-xl bg-gray-300" />
 
             {/* Text Info Skeleton */}
             <div className="flex-grow py-1 pl-1">

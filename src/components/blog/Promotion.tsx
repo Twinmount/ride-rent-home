@@ -36,7 +36,7 @@ export default async function Promotion() {
         parentWrapperClass="w-full lg:max-w-[19rem]"
         wrapperClass="w-full -ml-2"
       >
-        {[...promotions, ...promotions, ...promotions].map((promotion) => (
+        {promotions.map((promotion) => (
           <BlogPromotionCard key={promotion.promotionId} {...promotion} />
         ))}
       </CarouselWrapper>

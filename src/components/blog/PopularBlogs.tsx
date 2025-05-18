@@ -45,7 +45,7 @@ export default async function PopularBlogs() {
       <h2 className="custom-heading font-semibold text-gray-700 max-md:ml-2">
         Popular
       </h2>
-      <div className="flex flex-col gap-y-2">
+      <div className="mt-6 flex flex-col gap-y-2">
         {blogsData.map((item, index) => {
           // This is a blog, render PopularCard
           return (

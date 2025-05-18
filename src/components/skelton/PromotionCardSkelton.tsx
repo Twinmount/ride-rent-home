@@ -14,12 +14,12 @@ export default function PromotionCardSkelton({
 
       <CarouselWrapper
         isButtonVisible={false}
-        parentWrapperClass="w-full  md:max-w-[19rem] md:min-w-[17rem] !overflow-hidden"
+        parentWrapperClass="w-full mt-8 md:max-w-[19rem] md:min-w-[17rem] !overflow-hidden"
       >
         {Array.from({ length: count }).map((_, index) => (
           <div
             key={index}
-            className="mx-auto flex h-64 w-full min-w-[15rem] max-w-[17rem] flex-col overflow-hidden rounded-lg"
+            className="mx-auto flex h-64 w-full min-w-[15rem] max-w-[17rem] flex-col overflow-hidden rounded-xl"
           >
             {/* Image Skeleton */}
             <Skeleton className="h-full w-full bg-gray-300" />
