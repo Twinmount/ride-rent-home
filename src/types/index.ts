@@ -6,11 +6,12 @@ import {
 } from "./vehicle-types";
 
 export type PageProps = {
-  params: Promise<{ state: string; category: string }>;
+  params: Promise<{ country: string; state: string; category: string }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
 export type StateCategoryProps = {
+  country: string;
   state: string;
   category: string;
 };
@@ -25,6 +26,8 @@ export interface StateType {
   metaTitle: string;
   metaDescription: string;
   stateImage: any;
+  isFavorite?: boolean;
+  stateIcon?: string;
 }
 
 //  interface for the get-all-states  API response

@@ -18,9 +18,14 @@ const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
 });
 
 export const Navbar = () => {
-  const params = useParams<{ state: string; category: string }>();
+  const params = useParams<{
+    state: string;
+    category: string;
+    country: string;
+  }>();
 
   const state = params.state || "dubai";
+  const country = params.country || "uae";
   let category = params.category || "cars";
 
   // should state dropdowns render or not for the specified routes
@@ -37,7 +42,7 @@ export const Navbar = () => {
         <div className="flex w-fit items-center justify-center">
           <div className="w-fit p-0">
             <a
-              href={`/${state}/${category}`}
+              href={`/${country}/${state}/${category}`}
               className="notranslate max-w-fit p-0 text-right text-xs font-normal text-gray-500"
             >
               <Image

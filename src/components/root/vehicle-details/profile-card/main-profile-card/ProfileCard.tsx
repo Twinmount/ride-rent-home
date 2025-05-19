@@ -14,9 +14,10 @@ import SecurityDepositInfo from "../../profile-specifications/SecurityDepositInf
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
+  country: string;
 };
 
-const ProfileCard = ({ profileData }: ProfileCardProps) => {
+const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
   const {
     formattedPhoneNumber,
     whatsappUrl,
@@ -26,7 +27,7 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
     isLease,
     securityDeposit,
     vehicleId,
-  } = useProfileData(profileData);
+  } = useProfileData(profileData, country);
 
   const { company } = profileData;
 
@@ -53,7 +54,7 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
       />
 
       {/* rental details tab */}
-      <RentalDetailsTab rentalDetails={rentalDetails} />
+      <RentalDetailsTab rentalDetails={rentalDetails} country={country} />
 
       {/* Security Deposit */}
       <SecurityDepositInfo securityDeposit={securityDeposit} />

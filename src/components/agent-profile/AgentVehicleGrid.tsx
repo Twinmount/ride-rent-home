@@ -8,6 +8,7 @@ type Props = {
   filter: string;
   page: number;
   companyId: string;
+  country: string;
 };
 
 export const revalidate = 600;
@@ -16,6 +17,7 @@ export default async function AgentVehicleGrid({
   filter,
   page,
   companyId,
+  country,
 }: Props) {
   const baseUrl = ENV.API_URL;
 
@@ -43,7 +45,12 @@ export default async function AgentVehicleGrid({
       {vehicles.length > 0 ? (
         <div className="mx-auto !grid w-fit max-w-fit grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {vehicles.map((vehicle, index) => (
-            <MainCard key={vehicle.vehicleId} index={index} vehicle={vehicle} />
+            <MainCard
+              key={vehicle.vehicleId}
+              index={index}
+              vehicle={vehicle}
+              country={country}
+            />
           ))}
         </div>
       ) : (

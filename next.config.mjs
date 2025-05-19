@@ -1,6 +1,5 @@
 import path from "path";
 
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -20,18 +19,34 @@ const nextConfig = {
     return [
       {
         source: "/",
-        destination: "/dubai",
+        destination: "/uae/dubai",
+        permanent: true,
+      },
+      {
+        source: "/:country",
+        destination: "/:country/dubai",
         permanent: true,
       },
       {
         source:
-          "/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)",
-        destination: "/:state/cars",
+          "/:country/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)",
+        destination: "/:country/:state/cars",
         permanent: true,
       },
       {
-        source: "/faq",
-        destination: "/faq/dubai",
+        source: "/:country/faq",
+        destination: "/:country/faq/dubai",
+        permanent: true,
+      },
+      {
+        source: "/state/:path*",
+        destination: "/country/state/:path*",
+        permanent: true,
+      },
+      {
+        source:
+          "/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)/:path*",
+        destination: "/uae/:state/:path*",
         permanent: true,
       },
     ];
@@ -39,4 +54,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-

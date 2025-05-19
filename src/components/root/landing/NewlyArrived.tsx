@@ -10,6 +10,7 @@ import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 export default async function NewlyArrived({
   state,
   category,
+  country,
 }: StateCategoryProps) {
   const baseUrl = ENV.API_URL;
 
@@ -59,6 +60,7 @@ export default async function NewlyArrived({
             key={vehicle.vehicleId}
             vehicle={vehicle}
             index={index}
+            country={country}
           />
         ))}
       </CarouselWrapper>

@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { VehicleCardContextProvider } from "./VehicleCardContext";
 import { useImmer } from "use-immer";
 import { useFetchExchangeRates } from "@/hooks/useFetchExchangeRates";
+import { useParams } from "next/navigation";
 
 type GlobalContextType = {
   isPageLoading: boolean;
@@ -31,13 +32,17 @@ export const GlobalContextProvider = ({
       AED: 1,
     },
   );
-  const [currency, setCurrency] = useImmer<string>("AED");
+  const { country } = useParams<{ country: string }>();
+
+  const [currency, setCurrency] = useImmer<string>(
+    country === "in" ? "INR" : "AED",
+  );
 
   const {
     exchangeValue,
     isLoading,
   }: { exchangeValue: ExchangeValue | any; isLoading: boolean } =
-    useFetchExchangeRates();
+    useFetchExchangeRates({ country });
 
   useEffect(() => {
     if (isLoading || !exchangeValue.sourceCurrency) return;
@@ -54,7 +59,7 @@ export const GlobalContextProvider = ({
     if (storedCurrency && exchangeRates[storedCurrency]) {
       setCurrency(storedCurrency);
     } else {
-      setCurrency("AED");
+      setCurrency(country === "in" ? "INR" : "AED");
     }
   }, [exchangeRates]);
 

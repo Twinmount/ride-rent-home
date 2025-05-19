@@ -20,7 +20,7 @@ import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
 import { ENV } from "@/config/env";
 
 export default function VehicleCategories() {
-  const { state, category } = useStateAndCategory();
+  const { country, state, category } = useStateAndCategory();
 
   const { sortedCategories, isCategoriesLoading, baseAssetsUrl } =
     useFetchVehicleCategories();
@@ -53,6 +53,7 @@ export default function VehicleCategories() {
                   index={index}
                   selectedCategory={category}
                   selectedState={state}
+                  selectedCountry={country}
                 />
               ))}
             </ul>
@@ -69,11 +70,13 @@ function VehicleCategoryCard({
   index,
   selectedCategory,
   selectedState,
+  selectedCountry,
 }: {
   cat: CategoryType;
   index: number;
   selectedCategory: string;
   selectedState: string;
+  selectedCountry: string;
 }) {
   // Animation variants for categories
   const categoryVariants = {
@@ -100,7 +103,10 @@ function VehicleCategoryCard({
       variants={categoryVariants}
       className={`flex aspect-square h-[6rem] min-h-[6rem] w-[6rem] min-w-[6rem] cursor-pointer flex-col justify-center gap-[0.2rem] overflow-hidden rounded-[0.4rem]`}
     >
-      <Link href={`/${selectedState}/${cat.value}`} key={cat.categoryId}>
+      <Link
+        href={`/${selectedCountry}/${selectedState}/${cat.value}`}
+        key={cat.categoryId}
+      >
         <NavigationMenuLink>
           <div
             className={`flex h-[3.6rem] w-full items-center justify-center rounded-[0.4rem] bg-gray-100 hover:bg-gray-200 ${

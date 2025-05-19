@@ -22,7 +22,7 @@ export default function VehicleTypesCarousel() {
   const searchParams = useSearchParams();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["vehicleTypes", category],
+    queryKey: ["vehicleTypes", category, state],
     queryFn: () => fetchVehicleTypesByValue(category, state),
     enabled: !!category,
     staleTime: 60 * 1000,

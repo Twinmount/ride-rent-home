@@ -312,10 +312,11 @@ export const generateWhatsappUrl = (vehicle: {
 export const generateCompanyProfilePageLink = (
   companyName: string | null,
   companyId: string,
+  country: string,
 ): string => {
   const formattedCompanyName = formatToUrlFriendly(companyName);
 
-  return `/profile/${formattedCompanyName}/${companyId}`;
+  return `/${country}/profile/${formattedCompanyName}/${companyId}`;
 };
 
 /**
@@ -383,9 +384,10 @@ export const generateVehicleDetailsUrl = (vehicle: {
   state: string;
   vehicleCategory: string;
   vehicleCode: string;
+  country: string;
 }): string => {
   const modelDetails = generateModelDetailsUrl(vehicle.vehicleTitle);
-  return `/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}-for-rent/${vehicle.vehicleCode.toLowerCase()}`;
+  return `/${vehicle.country}/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}-for-rent/${vehicle.vehicleCode.toLowerCase()}`;
 };
 
 /**

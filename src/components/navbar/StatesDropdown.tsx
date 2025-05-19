@@ -16,41 +16,59 @@ import useFetchStates from "@/hooks/useFetchStates";
 import { StateType } from "@/types";
 
 const countries = [
-  { id: "ee8a7c95-303d-4f55-bd6c-85063ff1cf48", name: "UAE" },
-  { id: "68ea1314-08ed-4bba-a2b1-af549946523d", name: "India" },
+  { id: "ee8a7c95-303d-4f55-bd6c-85063ff1cf48", name: "UAE", value: "uae" },
+  { id: "68ea1314-08ed-4bba-a2b1-af549946523d", name: "India", value: "in" },
 ];
 
 export default function StatesDropdown() {
   const router = useRouter();
-  const { state, category } = useParams<{ state: string; category: string }>();
+  const { country, state, category } = useParams<{
+    country: string;
+    state: string;
+    category: string;
+  }>();
 
-  const [selectedCountry, setSelectedCountry] = useState(countries[0].id); // default to India
-  const [selectedState, setSelectedState] = useState<StateType | undefined>(undefined);
+  const [selectedCountry, setSelectedCountry] = useState(
+    country === "in" ? "68ea1314-08ed-4bba-a2b1-af549946523d" : countries[0].id,
+  ); // default to India
+  const [selectedState, setSelectedState] = useState<StateType | undefined>(
+    undefined,
+  );
   const selectedCategory = extractCategory(category || "cars");
 
-  const { states, isLoading } = useFetchStates({countryId:selectedCountry});
+  const { states, isLoading } = useFetchStates({ countryId: selectedCountry });
 
   useEffect(() => {
-    if(isLoading) return;
+    if (isLoading) return;
     if (states.length > 0) {
       const foundState = states.find((data) => data.stateValue === state);
       if (foundState) {
         setSelectedState(foundState);
       } else {
         setSelectedState(states[0]);
+        let selectedCountryURL = countries.find(
+          (country) => country.id === selectedCountry,
+        )?.value;
+        router.push(
+          `/${selectedCountryURL}/${states[0].stateValue}/${selectedCategory}`,
+        );
       }
-    }else{
-        notFound();
+    } else {
+      notFound();
     }
-  }, [state, states, isLoading,selectedCategory]);
+  }, [state, states, isLoading, selectedCategory]);
 
   const handleStateSelect = (stateValue: string) => {
-    router.push(`/${stateValue}/${selectedCategory}`);
+    let selectedCountryURL = countries.find(
+      (country) => country.id === selectedCountry,
+    )?.value;
+    router.push(`/${selectedCountryURL}/${stateValue}/${selectedCategory}`);
   };
 
-  const handleCountrySelect = (countryId: string) => {
+  const handleCountrySelect = (e: any, countryId: string) => {
+    e.preventDefault();
     setSelectedCountry(countryId);
-    setSelectedState(undefined); 
+    // setSelectedState(undefined);
   };
 
   return (
@@ -65,13 +83,15 @@ export default function StatesDropdown() {
 
       <DropdownMenuContent className="flex !w-56 flex-col gap-1 !rounded-xl bg-white p-1 shadow-md">
         {/* Country Selection */}
-        <div className="px-2 pb-1 text-xs font-semibold text-gray-400">Select Country</div>
+        <div className="px-2 pb-1 text-xs font-semibold text-gray-400">
+          Select Country
+        </div>
         {countries.map((country) => (
           <DropdownMenuItem
             key={country.id}
-            onClick={() => handleCountrySelect(country.id)}
+            onClick={(e) => handleCountrySelect(e, country.id)}
             className={`cursor-pointer !rounded-md px-2 py-1 text-sm ${
-              selectedCountry === country.id ? "text-orange font-bold" : ""
+              selectedCountry === country.id ? "font-bold text-orange" : ""
             }`}
           >
             {country.name}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import NoResultsFound from "./NoResultsFound";
 import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
@@ -25,6 +25,11 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   const [stateValue, setStateValue] = useState(state);
   const [vehicles, setVehicles] = useImmer<Record<string, any[]>>({});
   const [relatedStateList, setRelatedStateList] = useState<any>([]);
+
+  const params = useParams();
+  const country = Array.isArray(params.country)
+    ? params.country[0]
+    : params.country || "uae";
 
   const { ref, inView } = useInView();
 
@@ -161,6 +166,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
                                 key={vehicle.vehicleId}
                                 vehicle={vehicle}
                                 index={animationIndex}
+                                country={country}
                               />
                             );
                           })}

@@ -16,7 +16,6 @@ export default async function FAQ({ stateValue }: FAQStateProps) {
     const response = await fetchFAQ(stateValue);
     faqData = response?.result?.faqs || [];
   } catch (error) {
-    console.error("Failed to load FAQ data:", error);
     faqData = [];
   }
 

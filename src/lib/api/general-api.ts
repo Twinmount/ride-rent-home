@@ -247,14 +247,19 @@ export const fetchSearchResults = async (
   }
 };
 
-export const fetchStates = async ({countryId}:{countryId: string}): Promise<
-  FetchStatesResponse | undefined
-> => {
+export const fetchStates = async ({
+  countryId,
+}: {
+  countryId: string;
+}): Promise<FetchStatesResponse | undefined> => {
   try {
-    const res = await fetch(`${BASE_URL}/states/list?hasVehicle=true&countryId=${countryId}`, {
-      method: "GET",
-      cache: "no-cache",
-    });
+    const res = await fetch(
+      `${BASE_URL}/states/list?hasVehicle=true&countryId=${countryId}`,
+      {
+        method: "GET",
+        cache: "no-cache",
+      },
+    );
 
     if (!res.ok) {
       throw new Error(`Failed to fetch states`);
@@ -320,8 +325,6 @@ export const fetchAllPaginatedCities = async (
 export const fetchCategories = async (
   state: string,
 ): Promise<FetchCategoriesResponse | undefined> => {
-
-
   try {
     const url = `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`;
 
@@ -425,12 +428,14 @@ export const fetcheRealatedStateList = async (
   }
 };
 
-export const fetchExchangeRates = async (): Promise<
-  FetchExchangeRatesResponse | undefined
-> => {
+export const fetchExchangeRates = async ({
+  country,
+}: {
+  country: string;
+}): Promise<FetchExchangeRatesResponse | undefined> => {
   try {
     // generating api URL
-    const apiUrl = `${BASE_URL}/exchange-rates/today`;
+    const apiUrl = `${BASE_URL}/exchange-rates/today${country === "in" ? "-inr" : "-aed"}`;
 
     const response = await fetch(apiUrl, {
       method: "GET",
@@ -464,7 +469,7 @@ export const fetchFAQ = async (
 
     // Check if the response is OK
     if (!response.ok) {
-      throw new Error(`Failed to fetch exchange rates`);
+      throw new Error(`Failed to fetch state faq`);
     }
 
     const data = await response.json();
