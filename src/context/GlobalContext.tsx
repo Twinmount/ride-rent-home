@@ -12,6 +12,7 @@ type GlobalContextType = {
   currency: string;
   setCurrency: React.Dispatch<React.SetStateAction<string>>;
   exchangeRates: { [key: string]: number };
+  country: string;
 };
 
 type ExchangeValue = {
@@ -71,6 +72,7 @@ export const GlobalContextProvider = ({
         currency,
         setCurrency,
         exchangeRates,
+        country
       }}
     >
       <VehicleCardContextProvider>{children}</VehicleCardContextProvider>

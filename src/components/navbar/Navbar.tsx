@@ -3,7 +3,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import StatesDropdown from "./StatesDropdown";
+// import StatesDropdown from "./StatesDropdown";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
@@ -12,6 +12,7 @@ import { extractCategory } from "@/helpers";
 import { noStatesDropdownRoutes } from ".";
 import LanguageSelector from "./LanguageSelector";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { LocationDialog } from "../dialog/location-dialog/LocationDialog";
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
   loading: () => <span className="text-[0.5rem]">Loading...</span>,
@@ -70,7 +71,8 @@ export const Navbar = () => {
             {/* Location */}
             {!shouldRenderDropdowns && (
               <li className="mr-2">
-                <StatesDropdown />
+                {/* <StatesDropdown /> */}
+                <LocationDialog />
               </li>
             )}
 

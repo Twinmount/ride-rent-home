@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 type DetailsSectionClientWrapperProps = {
   children: React.ReactNode;
   profileData: ProfileCardDataType;
+  country: string
 };
 
 /**
@@ -29,6 +30,7 @@ type DetailsSectionClientWrapperProps = {
 const DetailsSectionClientWrapper = ({
   children,
   profileData,
+  country
 }: DetailsSectionClientWrapperProps) => {
   const { vehicleCode } = profileData;
 
@@ -37,7 +39,7 @@ const DetailsSectionClientWrapper = ({
 
   useQuery({
     queryKey: ["portfolioVisit", vehicleCode],
-    queryFn: () => sendPortfolioVisit(vehicleCode),
+    queryFn: () => sendPortfolioVisit(vehicleCode,country),
     staleTime: 0,
   });
 

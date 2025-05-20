@@ -4,16 +4,17 @@ import { fetchFAQ } from "@/lib/api/general-api";
 
 type FAQStateProps = {
   stateValue: string;
+  country: string
 };
 
 type faqType = { question: string; answer: string }[];
 
 // Server Component
-export default async function FAQ({ stateValue }: FAQStateProps) {
+export default async function FAQ({ stateValue, country }: FAQStateProps) {
   let faqData: faqType = [];
 
   try {
-    const response = await fetchFAQ(stateValue);
+    const response = await fetchFAQ(stateValue, country);
     faqData = response?.result?.faqs || [];
   } catch (error) {
     faqData = [];

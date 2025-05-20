@@ -36,13 +36,13 @@ export async function generateMetadata(props: PageProps) {
 export default async function FAQPage(props: PageProps) {
   const params = await props.params;
 
-  const { state } = params;
+  const { state, country } = params;
 
   return (
     <section>
       <HeadingBanner heading="Frequently Asked Questions" />
 
-      <FAQ stateValue={state || "dubai"} />
+      <FAQ stateValue={state || "dubai"} country={country} />
     </section>
   );
 }

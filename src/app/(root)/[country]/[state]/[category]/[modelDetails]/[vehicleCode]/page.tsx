@@ -152,7 +152,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         </MotionDiv>
 
         {/* Wrapper to handle client side logic regarding mobile profile card */}
-        <DetailsSectionClientWrapper profileData={ProfileCardData}>
+        <DetailsSectionClientWrapper profileData={ProfileCardData} country={country}>
           {/* Vehicle Details Section */}
           <section className="vehicle-details-section">
             {/* container left */}

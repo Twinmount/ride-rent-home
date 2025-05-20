@@ -89,7 +89,7 @@ export default async function Home(props: PageProps) {
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
-        <FAQ stateValue={state || "dubai"} />
+        <FAQ stateValue={state || "dubai"} country={country} />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>

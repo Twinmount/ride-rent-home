@@ -25,7 +25,6 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   const [stateValue, setStateValue] = useState(state);
   const [vehicles, setVehicles] = useImmer<Record<string, any[]>>({});
   const [relatedStateList, setRelatedStateList] = useState<any>([]);
-
   const params = useParams();
   const country = Array.isArray(params.country)
     ? params.country[0]
@@ -44,6 +43,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
     searchParams: searchParams.toString(),
     state: stateValue,
     limit,
+    country
   });
 
   const category = searchParams.get("category") || "cars";
@@ -53,7 +53,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
 
   const { data: relatedState } = useQuery({
     queryKey: ["related-state", state],
-    queryFn: () => fetcheRealatedStateList(state),
+    queryFn: () => fetcheRealatedStateList(state, country),
     enabled: true,
     staleTime: 0,
   });

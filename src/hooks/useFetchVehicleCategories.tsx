@@ -9,12 +9,12 @@ import { useStateAndCategory } from "./useStateAndCategory";
 import { notFound } from "next/navigation";
 
 export function useFetchVehicleCategories() {
-  const { state, category } = useStateAndCategory();
+  const { state, category, country } = useStateAndCategory();
 
   // Fetch categories using react-query
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["categories", state],
-    queryFn: () => fetchCategories(state),
+    queryFn: () => fetchCategories(state, country),
     staleTime: 0,
   });
 
