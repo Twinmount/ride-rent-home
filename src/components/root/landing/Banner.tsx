@@ -2,12 +2,12 @@ import { headers } from 'next/headers';
 import { ENV } from '@/config/env';
 import BannerSlider from './BannerSlider';
 
-const API_URL = ENV.API_URL;
-
-async function getBannerImages(state: string, isMobile: boolean): Promise<string[]> {
+async function getBannerImages(state: string, isMobile: boolean, country: string): Promise<string[]> {
   try {
+    const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
+
     const res = await fetch(
-      `${API_URL}/homepage-banners/list?state=${state}&isMobile=${isMobile}`,
+      `${baseUrl}/homepage-banners/list?state=${state}&isMobile=${isMobile}`,
       { method: 'GET', cache: 'no-cache' }
     );
 
@@ -25,12 +25,12 @@ async function getBannerImages(state: string, isMobile: boolean): Promise<string
   }
 }
 
-export default async function Banner({ state }: { state: string }) {
+export default async function Banner({ state, country }: { state: string, country: string }) {
   const headersList = await headers(); 
   const userAgent = headersList.get('user-agent') || '';
   const isMobile = /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent);
 
-  const bannerImages = await getBannerImages(state, isMobile);
+  const bannerImages = await getBannerImages(state, isMobile, country);
 
   return <BannerSlider bannerImages={bannerImages} />;
 }

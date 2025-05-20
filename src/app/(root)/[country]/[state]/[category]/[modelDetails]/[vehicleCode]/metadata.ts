@@ -16,9 +16,12 @@ import { notFound } from "next/navigation";
 
 export async function fetchVehicleMetaData(
   vehicleCode: string,
+  country: string
 ): Promise<VehicleMetaDataResponse | null> {
+  const API_URL = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
+
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
-  const url = `${ENV.API_URL}/metadata/vehicle?vehicle=${formattedVehicleCode}`;
+  const url = `${API_URL}/metadata/vehicle?vehicle=${formattedVehicleCode}`;
   try {
     const response = await fetch(url, {
       method: "GET",
@@ -43,7 +46,7 @@ export async function generateVehicleMetadata(
   modelDetails: string,
   country: string,
 ): Promise<Metadata> {
-  const data = await fetchVehicleMetaData(vehicleCode);
+  const data = await fetchVehicleMetaData(vehicleCode,country);
 
   if (!data?.result) {
     return notFound();

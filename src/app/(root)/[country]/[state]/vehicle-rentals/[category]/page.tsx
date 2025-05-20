@@ -35,7 +35,7 @@ export default async function CategoryDirectoryPage(props: PageProps) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
-  const { state, category } = params;
+  const { state, category, country } = params;
 
   const page = parseInt(searchParams.page || "1", 10);
 
@@ -43,7 +43,7 @@ export default async function CategoryDirectoryPage(props: PageProps) {
 
   return (
     <div className="wrapper h-auto min-h-screen pt-6">
-      <CategoryDirectoryHeading state={state} category={categoryValue} />
+      <CategoryDirectoryHeading state={state} category={categoryValue} country={country} />
 
       <Suspense fallback={<SectionLoading />}>
         {/* Async Server Component */}
@@ -51,6 +51,7 @@ export default async function CategoryDirectoryPage(props: PageProps) {
           state={state}
           category={categoryValue}
           page={page}
+          country={country}
         />
       </Suspense>
     </div>

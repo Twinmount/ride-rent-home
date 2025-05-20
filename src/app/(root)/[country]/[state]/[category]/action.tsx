@@ -13,7 +13,6 @@ type Props = {
   country: string;
 };
 
-const API_URL = ENV.API_URL;
 
 export const fetchVehicleHomeGridData = async ({
   page,
@@ -22,6 +21,7 @@ export const fetchVehicleHomeGridData = async ({
   vehicleType,
   country,
 }: Props) => {
+  const API_URL = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
   const params = new URLSearchParams({
     page: page.toString(),
     limit: "8",

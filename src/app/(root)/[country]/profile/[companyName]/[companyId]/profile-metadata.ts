@@ -7,8 +7,9 @@ import { Metadata } from "next";
 
 export async function fetchCompanyDetails(
   companyId: string,
+  country: string
 ): Promise<CompanyMetadataResponse | null> {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   try {
     const response = await fetch(
@@ -34,7 +35,7 @@ export async function generateCompanyMetadata(
   companyId: string,
   country: string,
 ): Promise<Metadata> {
-  const data = await fetchCompanyDetails(companyId);
+  const data = await fetchCompanyDetails(companyId, country);
 
   const companyDetails = data?.result;
 

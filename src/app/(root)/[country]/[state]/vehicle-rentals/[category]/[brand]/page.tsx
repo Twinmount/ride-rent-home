@@ -38,7 +38,7 @@ export default async function BrandSeriesPage(props: PageProps) {
   const paramss = await props.params;
   const searchParams = await props.searchParams;
 
-  const { state, category, brand } = paramss;
+  const { state, category, brand, country } = paramss;
 
   const page = parseInt(searchParams.page || "1", 10);
 
@@ -53,7 +53,8 @@ export default async function BrandSeriesPage(props: PageProps) {
   }).toString();
 
   // Construct the full URL
-  const url = `${ENV.API_URL}/vehicle-series/brands/list?${params}`;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
+  const url = `${baseUrl}/vehicle-series/brands/list?${params}`;
 
   // Fetch data using the generated URL
   const response = await fetch(url, {

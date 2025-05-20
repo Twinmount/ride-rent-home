@@ -50,7 +50,7 @@ export default async function Home(props: PageProps) {
       <JsonLd jsonLdData={jsonLdData} id="json-ld-homepage" />
 
       <Suspense fallback={<div></div>}>
-        <Banner state={state} />
+        <Banner state={state} country={country} />
       </Suspense>
 
       <HeroSection state={state} category={category} />
@@ -68,7 +68,7 @@ export default async function Home(props: PageProps) {
       </Suspense>
 
       <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
-        <TopBrands state={state} category={category} />
+        <TopBrands state={state} category={category} country={country} />
       </Suspense>
 
       <Suspense fallback={<VehicleCardCarouselSkeleton />}>
@@ -76,11 +76,11 @@ export default async function Home(props: PageProps) {
       </Suspense>
 
       <Suspense fallback={<StatesGridSkeleton />}>
-        <States category={category} />
+        <States category={category} country={country} />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
-        <Recommended state={state} />
+        <Recommended state={state} country={country} />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>

@@ -6,10 +6,11 @@ import Link from "next/link";
 type PropType = {
   state: string;
   category: string;
+  country: string;
 };
 
-export default async function StatesForCities({ state, category }: PropType) {
-  const baseUrl = ENV.API_URL;
+export default async function StatesForCities({ state, category, country }: PropType) {
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Fetch the states data from the API
   const response = await fetch(`${baseUrl}/states/list?hasVehicle=true`, {

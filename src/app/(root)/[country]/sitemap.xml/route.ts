@@ -4,10 +4,10 @@ import {
 } from "@/helpers";
 import { NextResponse } from "next/server";
 
-const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
-
 async function fetchCompanies(country: string) {
   try {
+    const baseUrl = country === "in" ? process.env.API_URL_INDIA || process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+
     const response = await fetch(
       `${baseUrl}/company/site-map?page=0&limit=500&sortOrder=DESC`,
     );
@@ -42,6 +42,8 @@ async function fetchCompanies(country: string) {
 
 async function fetchVehicles(country: string) {
   try {
+    const baseUrl = country === "in" ? process.env.API_URL_INDIA || process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+
     const response = await fetch(
       `${baseUrl}/vehicle/site-map?page=0&limit=5000&sortOrder=DESC`,
     );
@@ -81,6 +83,8 @@ async function fetchVehicles(country: string) {
 
 async function fetchVehicleSeries(country: string) {
   try {
+    const baseUrl = country === "in" ? process.env.API_URL_INDIA || process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+
     const response = await fetch(
       `${baseUrl}/vehicle-series/site-map?page=0&limit=5000&sortOrder=DESC`,
     );

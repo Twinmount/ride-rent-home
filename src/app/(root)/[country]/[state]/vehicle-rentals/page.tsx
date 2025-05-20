@@ -22,7 +22,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 export default async function DirectoryPage(props: PageProps) {
   const params = await props.params;
 
-  const { state } = params;
+  const { state, country } = params;
 
   return (
     <div className="wrapper pt-6">
@@ -35,9 +35,9 @@ export default async function DirectoryPage(props: PageProps) {
         deals from verified agents.
       </h2>
 
-      <DirectoryCategories state={state} />
+      <DirectoryCategories state={state} country={country} />
 
-      <DirectoryStates />
+      <DirectoryStates country={country} />
     </div>
   );
 }

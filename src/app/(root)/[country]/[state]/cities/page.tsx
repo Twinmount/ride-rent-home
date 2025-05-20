@@ -9,6 +9,7 @@ import { Suspense } from "react";
 type PageProps = {
   params: Promise<{
     state: string;
+    country: string;
   }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
@@ -18,14 +19,16 @@ export default async function CitiesPage(props: PageProps) {
   const params = await props.params;
 
   const {
-    state
+    state,
+    country
   } = params;
 
   const category = searchParams.category || "cars";
   const page = parseInt(searchParams.page || "1", 10);
 
   // Construct the full URL
-  const url = `${ENV.API_URL}/city/paginated/list?state=${state}&page=${page}&limit=${50}`;
+  const API_URL = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
+  const url = `${API_URL}/city/paginated/list?state=${state}&page=${page}&limit=${50}`;
 
   // Fetch data using the generated URL
   const response = await fetch(url, {
@@ -46,7 +49,7 @@ export default async function CitiesPage(props: PageProps) {
       </h1>
 
       <section className="mt-8">
-        <StatesForCities state={state} category={category} />
+        <StatesForCities state={state} category={category} country={country} />
 
         <CitiesGrid cities={cities} state={state} category={category} />
 

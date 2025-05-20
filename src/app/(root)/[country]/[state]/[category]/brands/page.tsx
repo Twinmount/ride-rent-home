@@ -29,9 +29,10 @@ export default async function Brands(props: ParamsProps) {
   const searchParams = await props.searchParams;
   const paramss = await props.params;
 
-  const { state, category } = paramss;
+  const { state, category, country } = paramss;
 
-  const baseUrl = ENV.API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
+
   const page = parseInt(searchParams.page || "1", 10);
   const search = searchParams.search || "";
 

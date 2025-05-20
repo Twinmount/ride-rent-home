@@ -8,12 +8,14 @@ type PropsType = {
   state: string;
   category: string;
   page: number;
+  country: string
 };
 
 export default async function BrandsWithSeriesGrid({
   state,
   category,
   page,
+  country
 }: PropsType) {
   // Construct the query string
   const params = new URLSearchParams({
@@ -23,9 +25,9 @@ export default async function BrandsWithSeriesGrid({
     state: state,
     category: category,
   }).toString();
-
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
   // Construct the full URL with the query string
-  const url = `${ENV.API_URL}/vehicle-brand/vehicle-series/list?${params}`;
+  const url = `${baseUrl}/vehicle-brand/vehicle-series/list?${params}`;
 
   // Fetch data using the generated URL
   const response = await fetch(url, {

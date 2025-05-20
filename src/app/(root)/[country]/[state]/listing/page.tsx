@@ -34,7 +34,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
       : ""
   }`;
 
-  const data = await fetchListingMetadata(state, category, vehicleType);
+  const data = await fetchListingMetadata(state, category, vehicleType, country);
 
   if (!data) {
     return getDefaultMetadata();
@@ -74,6 +74,7 @@ const ListingPage: FC<PageProps> = async (props) => {
     state,
     category,
     vehicleTypes[0],
+    country
   );
 
   const oneVehicleType = vehicleTypes.length === 1;

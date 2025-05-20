@@ -12,8 +12,6 @@ type Props = {
   country: string;
 };
 
-const API_URL = ENV.API_URL;
-
 export const fetchVehicleSeriesData = async ({
   page,
   state,
@@ -27,6 +25,8 @@ export const fetchVehicleSeriesData = async ({
     vehicleSeries,
     sortOrder: "DESC",
   });
+
+  const API_URL = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Construct the full URL
   const url = `${API_URL}/vehicle/vehicle-series/list?${params.toString()}`;

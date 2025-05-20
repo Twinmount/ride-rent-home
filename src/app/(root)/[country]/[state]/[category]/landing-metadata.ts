@@ -14,8 +14,9 @@ type MetaDataResponse = {
 async function fetchHomepageMetadata(
   state: string,
   category: string,
+  country: string,
 ): Promise<MetaDataResponse | null> {
-  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA || ENV.NEXT_PUBLIC_API_URL_INDIA : ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
 
   try {
     const response = await fetch(
@@ -38,7 +39,7 @@ export async function generateHomePageMetadata(
   category: string,
   country: string,
 ): Promise<Metadata> {
-  const data = await fetchHomepageMetadata(state, category);
+  const data = await fetchHomepageMetadata(state, category, country);
 
   if (!data?.result) {
     return getDefaultMetadata();

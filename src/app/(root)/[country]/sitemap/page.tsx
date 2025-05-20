@@ -4,14 +4,14 @@ import {
 } from "@/helpers";
 import { MetadataRoute } from "next";
 
-const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
-
 type PropsType = {
   params: Promise<{ country: string }>;
 };
 
 async function fetchCompanies(country: string) {
   try {
+    const baseUrl = country === "in" ? process.env.API_URL_INDIA || process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+
     const response = await fetch(
       `${baseUrl}/company/site-map?page=0&limit=100&sortOrder=DESC`,
     );
@@ -36,6 +36,8 @@ async function fetchCompanies(country: string) {
 
 async function fetchVehicles(country: string) {
   try {
+    const baseUrl = country === "in" ? process.env.API_URL_INDIA || process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+
     const response = await fetch(
       `${baseUrl}/vehicle/site-map?page=0&limit=1000&sortOrder=DESC`,
     );
@@ -67,6 +69,8 @@ async function fetchVehicles(country: string) {
 
 async function fetchVehicleSeries(country: string) {
   try {
+    const baseUrl = country === "in" ? process.env.API_URL_INDIA || process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+
     const response = await fetch(
       `${baseUrl}/vehicle-series/site-map?page=0&limit=1000&sortOrder=DESC`,
     );

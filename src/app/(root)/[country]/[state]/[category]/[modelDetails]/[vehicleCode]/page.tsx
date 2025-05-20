@@ -56,7 +56,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   const { country, state, category, vehicleCode, modelDetails } = params;
 
-  const baseUrl = ENV.API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
 
@@ -197,7 +197,7 @@ export default async function VehicleDetails(props: ParamsProps) {
               <ProfileCard profileData={ProfileCardData} country={country} />
 
               {/* Right Side Quick Links */}
-              <RelatedLinks state={state} />
+              <RelatedLinks state={state} country={country} />
             </div>
           </section>
         </DetailsSectionClientWrapper>
@@ -217,7 +217,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
         {/* FAQ */}
         <Suspense fallback={<SectionLoading />}>
-          <DynamicFAQ vehicle={vehicle} />
+          <DynamicFAQ vehicle={vehicle} country={country} />
         </Suspense>
 
         {/* Why Opt Ride.Rent  */}

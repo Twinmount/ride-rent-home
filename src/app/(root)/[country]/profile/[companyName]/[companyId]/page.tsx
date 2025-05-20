@@ -31,7 +31,7 @@ export default async function AgentProfilePage(props: PropsType) {
   const { country, companyId, companyName } = params;
 
   const searchParams = await props.searchParams;
-  const baseUrl = ENV.API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Default filter category set to "car"
   const filter = searchParams.filter;

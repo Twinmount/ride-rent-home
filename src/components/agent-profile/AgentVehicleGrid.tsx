@@ -19,7 +19,7 @@ export default async function AgentVehicleGrid({
   companyId,
   country,
 }: Props) {
-  const baseUrl = ENV.API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   const params = new URLSearchParams({
     page: page.toString(),

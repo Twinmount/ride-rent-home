@@ -17,7 +17,7 @@ export default async function RelatedResults({
   vehicleCode,
   country,
 }: RelatedResultsType) {
-  const baseUrl = ENV.API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Fetch brand data from your API endpoint
   const response = await fetch(`${baseUrl}/vehicle/filter`, {

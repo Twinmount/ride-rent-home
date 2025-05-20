@@ -5,20 +5,22 @@ import { getAbsoluteUrl } from "@/helpers/metadata-helper";
 import { FetchVehicleSeriesInfo } from "@/types";
 import { Metadata } from "next";
 
-const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
-
 type FetchVehicleSeriesInfoType = {
   state: string;
   series: string;
   brand: string;
+  country: string;
 };
 
 export async function fetchVehicleSeriesMetadata({
   state,
   series,
   brand,
+  country
 }: FetchVehicleSeriesInfoType): Promise<FetchVehicleSeriesInfo | null> {
   try {
+    const baseUrl = country === "in" ? ENV.API_URL_INDIA || ENV.NEXT_PUBLIC_API_URL_INDIA : ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
+
     const url = `${baseUrl}/vehicle-series/info?vehicleSeries=${series}&state=${state}&brand=${brand}`;
     const response = await fetch(url, { method: "GET", cache: "no-cache" });
 
@@ -47,7 +49,7 @@ export async function generateSeriesListingPageMetadata({
   brand: string;
   country: string;
 }): Promise<Metadata> {
-  const data = await fetchVehicleSeriesMetadata({ state, series, brand });
+  const data = await fetchVehicleSeriesMetadata({ state, series, brand, country });
 
   const canonicalUrl = `https://ride.rent/${country}/${state}/rent/${brand}/${series}`;
   if (!data || !data.result) {
