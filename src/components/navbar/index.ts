@@ -8,4 +8,5 @@ export const noStatesDropdownRoutes = [
   "/directory",
   "/agents",
   "/sitemap",
+  "/blog",
 ];
