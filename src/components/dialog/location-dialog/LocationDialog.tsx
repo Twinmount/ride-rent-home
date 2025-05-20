@@ -16,6 +16,7 @@ import useFetchStates from "@/hooks/useFetchStates";
 import { StateType } from "@/types";
 import Image from "next/image";
 import ListGrid from "./ListGrid";
+import { fetchCategories } from "@/lib/api/general-api";
 
 // COUNTRY LIST
 const countries = [
@@ -102,6 +103,7 @@ export function LocationDialog() {
       if (foundState) {
         setSelectedState(foundState);
       } else {
+        if(selectedState) return
         setSelectedState(states[0]);
         let selectedCountryURL = countries.find(
           (country) => country.id === selectedCountry,
@@ -115,11 +117,23 @@ export function LocationDialog() {
     }
   }, [state, states, isLoading, selectedCategory]);
 
-  const handleStateSelect = (stateValue: string) => {
+  const handleStateSelect = async(stateValue: string) => {
     let selectedCountryURL = countries.find(
       (country) => country.id === selectedCountry,
     )?.value;
-    router.push(`/${selectedCountryURL}/${stateValue}/${selectedCategory}`);
+    let country = selectedCountry === "68ea1314-08ed-4bba-a2b1-af549946523d" ? "in" : "uae";
+    const res =  await fetchCategories(stateValue, country)
+    const categories: any = res?.result?.list
+
+    if(categories?.length > 0) {
+      let isSelectedPresent = categories?.find((category: any) => category?.value === selectedCategory)
+      let hasCars = categories?.find((category: any) => category?.value === "cars")
+      router.push(`/${selectedCountryURL}/${stateValue}/${!!isSelectedPresent ? selectedCategory : !!hasCars ? "cars" : categories[0]?.value}`);
+      return
+    }else{
+      router.push(`/${selectedCountryURL}/${stateValue}/${selectedCategory}`);
+    }
+    
   };
 
   const handleCountrySelect = (e: any, countryId: string) => {

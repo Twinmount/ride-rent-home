@@ -5,11 +5,10 @@ import { fetchStates } from "@/lib/api/general-api";
 import { StateType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { useStateAndCategory } from "./useStateAndCategory";
 
 export default function useFetchStates({countryId}: {countryId: string}) {
   // Query to fetch states
-  const { country } = useStateAndCategory()
+  const country = countryId === "68ea1314-08ed-4bba-a2b1-af549946523d" ? "in" : "uae";
   const { data, isLoading } = useQuery({
     queryKey: ["states",countryId],
     queryFn: ()=>fetchStates({countryId, country}),

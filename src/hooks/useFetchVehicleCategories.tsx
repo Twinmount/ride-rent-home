@@ -13,7 +13,7 @@ export function useFetchVehicleCategories() {
 
   // Fetch categories using react-query
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ["categories", state],
+    queryKey: ["categories", state, country],
     queryFn: () => fetchCategories(state, country),
     staleTime: 0,
   });

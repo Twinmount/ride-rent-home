@@ -4,7 +4,7 @@ import WhyOpt from "@/components/common/why-opt/WhyOpt";
 import Description from "@/components/root/vehicle-details/description/Description";
 import Specification from "@/components/root/vehicle-details/Specification";
 import DetailsSectionClientWrapper from "@/components/root/vehicle-details/DetailsSectionClientWrapper";
-import Images from "@/components/root/vehicle-details/Images";
+// import Images from "@/components/root/vehicle-details/Images";
 import VehicleFeatures from "@/components/root/vehicle-details/features/Features";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import RelatedResults from "@/components/root/vehicle-details/RelatedResults";
@@ -25,6 +25,8 @@ import SectionLoading from "@/components/skelton/section-loading/SectionLoading"
 import { VehicleInfo } from "@/components/root/vehicle-details/VehicleInfo";
 import JsonLd from "@/components/common/JsonLd";
 import BrandImage from "@/components/common/BrandImage";
+import ImagesGrid from "@/components/root/vehicle-details/ImagesGrid";
+import LocationMap from "@/components/root/vehicle-details/LocationMap";
 
 type ParamsProps = {
   params: Promise<{
@@ -115,6 +117,32 @@ export default async function VehicleDetails(props: ParamsProps) {
     country,
   );
 
+  type MediaItem = {
+    source: string;
+    type: "video" | "image";
+  };
+
+  const mediaSourceList: MediaItem[] = [];
+
+  if (vehicle?.vehicleVideos?.length) {
+    // Add video as the first item
+    mediaSourceList.push({
+      source: vehicle.vehicleVideos[0],
+      type: "video",
+    });
+  }
+
+  // Add up to 5 - (video count already added) images
+  const remainingSlots = 5 - mediaSourceList.length;
+  const images = vehicle?.vehiclePhotos ?? [];
+
+  for (let i = 0; i < remainingSlots && i < images.length; i++) {
+    mediaSourceList.push({
+      source: images[i],
+      type: "image",
+    });
+  }
+
   return (
     <>
       {/* Inject JSON-LD into the <head> */}
@@ -152,17 +180,27 @@ export default async function VehicleDetails(props: ParamsProps) {
         </MotionDiv>
 
         {/* Wrapper to handle client side logic regarding mobile profile card */}
-        <DetailsSectionClientWrapper profileData={ProfileCardData} country={country}>
+        <DetailsSectionClientWrapper
+          profileData={ProfileCardData}
+          country={country}
+        >
+          {/* Vehicle Images Slider */}
+          <div>
+            {/* <Images
+              photos={vehicle?.vehiclePhotos}
+              imageAlt={vehicle?.modelName}
+            /> */}
+
+            <ImagesGrid
+              mediaItems={mediaSourceList}
+              imageAlt={vehicle?.modelName}
+            />
+          </div>
+
           {/* Vehicle Details Section */}
           <section className="vehicle-details-section">
             {/* container left */}
-            <div className="details-left">
-              {/* Vehicle Images Slider */}
-              <Images
-                photos={vehicle?.vehiclePhotos}
-                imageAlt={vehicle?.modelName}
-              />
-
+            <div className="details-left !w-full !max-w-full">
               {/* vehicle information */}
               <VehicleInfo
                 vehicleId={vehicle?.vehicleId}
@@ -177,13 +215,11 @@ export default async function VehicleDetails(props: ParamsProps) {
                 additionalVehicleTypes={vehicle?.additionalVehicleTypes}
                 cities={vehicle?.cities}
               />
-
               {/* Vehicle Specifications */}
               <Specification
                 specifications={vehicle?.specs}
                 vehicleCategory={category}
               />
-
               {/* Vehicle Features */}
               <VehicleFeatures
                 features={vehicle?.features}
@@ -193,11 +229,17 @@ export default async function VehicleDetails(props: ParamsProps) {
 
             {/* container right side */}
             <div className="details-right">
-              {/* Right Side Profile Card */}
-              <ProfileCard profileData={ProfileCardData} country={country} />
+              <div className="mt-4">
+                {/* Right Side Profile Card */}
+                <ProfileCard profileData={ProfileCardData} country={country} />
+                {/* Right Side Quick Links */}
+                <RelatedLinks state={state} country={country} />
 
-              {/* Right Side Quick Links */}
-              <RelatedLinks state={state} country={country} />
+                {/* Location map */}
+                {vehicle?.location && (
+                  <LocationMap location={vehicle?.location} />
+                )}
+              </div>
             </div>
           </section>
         </DetailsSectionClientWrapper>

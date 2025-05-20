@@ -12,6 +12,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@fancyapps/ui": "^5.0.36",
     "@lottiefiles/dotlottie-react": "^0.13.2",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-checkbox": "^1.1.1",
