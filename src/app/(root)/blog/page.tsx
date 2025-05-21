@@ -4,6 +4,13 @@ import BlogsGrid from "@/components/blog/BlogsGrid";
 import BlogCardSkeleton from "@/components/skelton/BlogCardSkeleton";
 import { CategoryType } from "@/types/blog";
 import { PageProps } from "@/types";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Ride.Rent Blog | Travel Tips & Vehicle Rental Guides",
+  description:
+    "Get quick tips, reviews, and deals on vehicle rentals. Explore expert guides from the Ride.Rent zero-commission marketplace.",
+};
 
 export default async function HomePage(props: PageProps) {
   const searchParams = await props.searchParams;
