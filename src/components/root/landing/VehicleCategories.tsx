@@ -74,7 +74,7 @@ function VehicleCategoryCard({
 }: {
   cat: CategoryType;
   index: number;
-  selectedCategory: string;
+  selectedCategory: string | undefined;
   selectedState: string;
   selectedCountry: string;
 }) {

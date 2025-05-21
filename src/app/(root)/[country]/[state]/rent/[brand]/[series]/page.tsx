@@ -51,7 +51,7 @@ export default async function VehicleSeriesPage(props: PageProps) {
         jsonLdData={jsonLdData}
       />
       <div className="wrapper flex h-auto min-h-screen flex-col bg-lightGray pb-8 pt-4">
-        <VehicleSeriesInfo series={series} state={state} brand={brand} />
+        <VehicleSeriesInfo series={series} state={state} brand={brand} country={country} />
 
         {hasVehicles ? (
           <>
@@ -62,7 +62,7 @@ export default async function VehicleSeriesPage(props: PageProps) {
               </VehicleGridWrapper>
 
               {/* infinitely loading remaining data from page 2 onwards (CSR) */}
-              <LoadMoreSeries state={state} series={series} />
+              <LoadMoreSeries state={state} series={series} country={country} />
             </section>
           </>
         ) : (

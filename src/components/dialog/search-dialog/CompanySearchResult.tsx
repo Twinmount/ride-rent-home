@@ -4,10 +4,12 @@ import Link from "next/link";
 
 type CompanySearchResultProps = {
   company: CompanySearchItems[];
+  country: string;
 };
 
 export default function CompanySearchResult({
   company,
+  country
 }: CompanySearchResultProps) {
   if (company.length === 0) return null;
 
@@ -21,6 +23,7 @@ export default function CompanySearchResult({
           const companyProfilePageLink = generateCompanyProfilePageLink(
             item.title ?? "",
             item.code ?? "",
+            country
           );
           return (
             <Link

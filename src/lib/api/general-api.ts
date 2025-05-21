@@ -498,8 +498,18 @@ export const fetchFAQ = async (
 
     // Check if the response is OK
     if (!response.ok) {
-      throw new Error(`Failed to fetch state faq`);
-    }
+      return {
+          result: {
+            stateId: "",
+            faqs: [{
+              question: "",
+              answer: ""
+            },]
+          },
+          status: "400",
+          statusCode: 400
+        }
+      }
 
     const data = await response.json();
 

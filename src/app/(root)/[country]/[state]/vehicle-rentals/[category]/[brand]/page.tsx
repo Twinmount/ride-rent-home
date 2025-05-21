@@ -75,6 +75,7 @@ export default async function BrandSeriesPage(props: PageProps) {
         state={state}
         category={categoryValue}
         brand={brand}
+        country={country}
       />
 
       <AllSeriesList state={state} list={list} brand={brand} />

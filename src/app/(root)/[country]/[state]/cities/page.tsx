@@ -51,7 +51,7 @@ export default async function CitiesPage(props: PageProps) {
       <section className="mt-8">
         <StatesForCities state={state} category={category} country={country} />
 
-        <CitiesGrid cities={cities} state={state} category={category} />
+        <CitiesGrid cities={cities} state={state} category={category} country={country} />
 
         <Suspense fallback={<div>Loading Pagination...</div>}>
           <Pagination page={page} totalPages={totalPages} />

@@ -28,7 +28,7 @@ export default async function States({ category, country }: { category: string, 
         Find Vehicle Rental Offers In Other States
       </h2>
       <div className="mx-auto mb-[1.5rem] grid w-fit auto-rows-auto grid-cols-2 justify-items-center gap-[1.4rem] md:grid-cols-3 lg:grid-cols-4">
-        <StateCardList states={states} category={category} />
+        <StateCardList states={states} category={category} country={country} />
       </div>
     </MotionSection>
   );

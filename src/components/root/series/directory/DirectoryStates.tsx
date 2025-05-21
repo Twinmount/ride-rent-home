@@ -30,7 +30,7 @@ export default async function DirectoryStates({country}: {country: string}) {
       </h4>
       <ul className="mx-auto mb-[1.5rem] flex flex-wrap items-center gap-4 max-sm:justify-center">
         {states.map((state, index) => (
-          <StateCard state={state} index={index} key={state.stateId} />
+          <StateCard state={state} index={index} country={country} key={state.stateId} />
         ))}
       </ul>
     </section>
@@ -38,11 +38,11 @@ export default async function DirectoryStates({country}: {country: string}) {
 }
 
 // individual state card
-function StateCard({ state, index }: { state: StateType; index: number }) {
+function StateCard({ state, index, country }: { state: StateType; index: number, country: string }) {
   return (
     <MotionStaggeredDiv index={index} delay={0.1}>
       <Link
-        href={`/${state.stateValue}/vehicle-rentals`}
+        href={`/${country}/${state.stateValue}/vehicle-rentals`}
         className="group relative flex h-[4.5rem] w-full min-w-[4rem] max-w-[7rem] cursor-pointer items-center justify-center overflow-hidden rounded-[2rem] text-center shadow-[2px_2px_4px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in"
       >
         <div className="absolute bottom-0 left-0 h-1/4 w-full bg-gradient-to-t from-black/80 to-transparent" />

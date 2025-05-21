@@ -42,7 +42,7 @@ export const fetchVehicleHomeGridData = async ({
   const data: FetchVehicleCardsResponse = await response.json();
 
   const vehicles = data?.result?.list || [];
-  const hasMore = parseInt(data.result.page) < data.result.totalNumberOfPages;
+  const hasMore = Number(data?.result?.page) < data?.result?.totalNumberOfPages;
 
   return {
     vehicles: vehicles.map((vehicle, index) => {

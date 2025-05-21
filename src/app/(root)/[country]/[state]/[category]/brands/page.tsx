@@ -83,6 +83,7 @@ export default async function Brands(props: ParamsProps) {
           state={state}
           category={category}
           search={search}
+          country={country}
         />
       </div>
 

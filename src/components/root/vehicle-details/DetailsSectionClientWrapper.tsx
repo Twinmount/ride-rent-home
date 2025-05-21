@@ -48,7 +48,7 @@ const DetailsSectionClientWrapper = ({
       {children}
 
       {/* Conditionally render MobileProfileCard based on the visibility of DetailsSectionClientWrapper*/}
-      {isInViewPort && <MobileProfileCard profileData={profileData} />}
+      {isInViewPort && <MobileProfileCard profileData={profileData} country={country} />}
     </div>
   );
 };

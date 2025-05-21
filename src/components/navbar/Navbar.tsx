@@ -13,6 +13,7 @@ import { noStatesDropdownRoutes } from ".";
 import LanguageSelector from "./LanguageSelector";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { LocationDialog } from "../dialog/location-dialog/LocationDialog";
+import { useEffect, useState } from "react";
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
   loading: () => <span className="text-[0.5rem]">Loading...</span>,
@@ -25,15 +26,44 @@ export const Navbar = () => {
     country: string;
   }>();
 
-  const state = params.state || "dubai";
-  const country = params.country || "uae";
-  let category = params.category || "cars";
+  const country = (params?.country as string) || "uae";
 
-  // should state dropdowns render or not for the specified routes
+  const [state, setState] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+
+  useEffect(() => {
+    // Check if param values exist
+    const paramState = params?.state as string | undefined;
+    const paramCategory = params?.category as string | undefined;
+
+    // If present in params, store in localStorage
+    if (paramState) {
+      localStorage.setItem("state", paramState);
+    }
+    if (paramCategory) {
+      localStorage.setItem("category", paramCategory);
+    }
+
+    // Fallback order: params → localStorage → default
+    const storedState = localStorage.getItem("state");
+    const storedCategory = localStorage.getItem("category");
+
+    const finalState =
+      paramState ||
+      storedState ||
+      (country === "in" ? "bangalore" : "dubai");
+
+    const finalCategory =
+      paramCategory ||
+      storedCategory ||
+      "cars";
+
+    setState(finalState);
+    setCategory(extractCategory(finalCategory));
+  }, [params, country]);
+
   const shouldRenderDropdowns = useShouldRender(noStatesDropdownRoutes);
 
-  // if category ends with "-for-rent", remove "-for-rent"
-  category = extractCategory(category);
 
   const isMobile = useIsMobile(640);
 

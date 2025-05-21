@@ -4,6 +4,7 @@ import Link from "next/link";
 import { generateCompanyProfilePageLink } from "@/helpers";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 interface CompanyPromotion {
   companyLogo?: string;
@@ -19,9 +20,11 @@ interface CompanyPromotionItemProps {
 export const CompanyPromotionItem = ({
   element,
 }: CompanyPromotionItemProps) => {
+  const { country } = useStateAndCategory();
   const companyProfilePageLink = generateCompanyProfilePageLink(
     element.companyName ?? "",
     element.companyId ?? "",
+    country
   );
 
   const [isLoading, setIsLoading] = useState(true);

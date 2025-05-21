@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { rearrangeStates } from "@/helpers";
-import { ENV } from "@/config/env";
 import { FetchStatesResponse, StateType } from "@/types";
 
 export default function FooterLocations() {
@@ -15,15 +14,16 @@ export default function FooterLocations() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
+    const baseUrl = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.NEXT_PUBLIC_API_URL;
+    const countryId = country === "in" ? "68ea1314-08ed-4bba-a2b1-af549946523d" : "ee8a7c95-303d-4f55-bd6c-85063ff1cf48";
 
     const fetchStates = async () => {
       try {
-        const response = await fetch(`${baseUrl}/states/list?hasVehicle=true`, {
+        const response = await fetch(`${baseUrl}/states/list?hasVehicle=true&countryId=${countryId}`, {
           cache: "no-cache",
         });
         const data: FetchStatesResponse = await response.json();
-        let result = rearrangeStates(data.result);
+        let result = country === "in" ? data.result : rearrangeStates(data.result);
         setStates(result);
       } catch (error) {
         console.error("Failed to fetch states:", error);

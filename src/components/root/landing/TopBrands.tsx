@@ -55,7 +55,7 @@ export default async function TopBrands({
         ))}
       </CarouselWrapper>
 
-      <ViewAllButton link={`/${state}/${category}/brands`} />
+      <ViewAllButton link={`/${country}/${state}/${category}/brands`} />
     </MotionSection>
   );
 }

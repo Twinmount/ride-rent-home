@@ -31,7 +31,7 @@ export default async function StatesForCities({ state, category, country }: Prop
     <div className="flex-center mb-10 flex-wrap gap-3">
       {states.map((data) => (
         <Link
-          href={`/${data.stateValue}/cities?category=${category}`}
+          href={`/${country}/${data.stateValue}/cities?category=${category}`}
           key={data.stateId}
           className={`flex-center rounded-[0.3rem] bg-slate-900 px-3 py-1 text-sm text-white hover:bg-yellow lg:text-lg ${state === data.stateValue ? "bg-yellow" : ""}`}
         >

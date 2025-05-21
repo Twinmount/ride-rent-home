@@ -44,5 +44,5 @@ export function useFetchVehicleCategories() {
 
   const isCategoriesLoading = isFetching || isLoading;
 
-  return { categories, sortedCategories, isCategoriesLoading, baseAssetsUrl };
+  return { categories, sortedCategories, isCategoriesLoading, baseAssetsUrl, country, state };
 }

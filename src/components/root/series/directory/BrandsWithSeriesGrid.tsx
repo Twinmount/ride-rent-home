@@ -59,6 +59,7 @@ export default async function BrandsWithSeriesGrid({
             state={state}
             category={category}
             brand={brand}
+            country={country}
           />
         ))}
       </div>

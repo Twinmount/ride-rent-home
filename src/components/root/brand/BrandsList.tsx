@@ -7,6 +7,7 @@ type BrandsListProps = {
   state: string;
   category: string;
   search: string;
+  country: string
 };
 
 export default function BrandsList({
@@ -14,6 +15,7 @@ export default function BrandsList({
   state,
   category,
   search,
+  country
 }: BrandsListProps) {
   if (brands.length === 0)
     return (
@@ -31,7 +33,7 @@ export default function BrandsList({
     <div className="!grid grid-cols-2 gap-2 gap-y-4 pb-20 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
       {brands.map((data) => (
         <Link
-          href={`/${state}/listing?category=${category}&brand=${data.brandValue}`}
+          href={`/${country}/${state}/listing?category=${category}&brand=${data.brandValue}`}
           key={data.id}
           className="h-36 w-full min-w-32 rounded-xl border bg-white"
         >

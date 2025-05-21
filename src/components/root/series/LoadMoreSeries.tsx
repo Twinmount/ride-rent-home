@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchVehicleSeriesData } from "@/app/(root)/[state]/rent/[brand]/[series]/action";
+import { fetchVehicleSeriesData } from "@/app/(root)/[country]/[state]/rent/[brand]/[series]/action";
 import LoadingWheel from "@/components/common/LoadingWheel";
 import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
 import { useState, useEffect, type JSX } from "react";
@@ -12,9 +12,10 @@ let page = 2;
 type LoadMoreSeriesProps = {
   state: string;
   series: string;
+  country: string;
 };
 
-export default function LoadMoreSeries({ state, series }: LoadMoreSeriesProps) {
+export default function LoadMoreSeries({ state, series, country }: LoadMoreSeriesProps) {
   const { ref, inView } = useInView();
   const [data, setData] = useState<JSX.Element[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -22,7 +23,7 @@ export default function LoadMoreSeries({ state, series }: LoadMoreSeriesProps) {
   // Fetch data when in view
   useEffect(() => {
     if (inView && hasMore) {
-      fetchVehicleSeriesData({ page, state, vehicleSeries: series }).then(
+      fetchVehicleSeriesData({ page, state, vehicleSeries: series, country }).then(
         (response) => {
           if (!response.hasMore) {
             setHasMore(false);

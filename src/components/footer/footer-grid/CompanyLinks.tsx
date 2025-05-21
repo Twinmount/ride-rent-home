@@ -6,7 +6,7 @@ import { company } from ".";
 
 export const CompanyLinks = () => {
   // Get the state from the URL's search params
-  const { state } = useParams();
+  const { state, country } = useParams();
 
   return (
     <div>
@@ -15,7 +15,7 @@ export const CompanyLinks = () => {
         {company.map((item) => {
           // Handle FAQ link dynamically
           const link =
-            item.title === "FAQ" ? `/faq/${state || "dubai"}` : item.link;
+            item.title === "FAQ" ? `/${country}/faq/${state ? state : country === "in" ? "bangalore" : "dubai"}` : item.link;
 
           return item.link.includes("http") ? (
             // Open external links in a new tab for the 'List Vehicles' link
