@@ -1,43 +1,46 @@
-'use client'
+"use client";
 
-import Autoplay from 'embla-carousel-autoplay'
+import Autoplay from "embla-carousel-autoplay";
 import {
   Carousel,
   CarouselContent,
   CarouselNext,
   CarouselPrevious,
-} from '@/components/ui/carousel'
-import { useRef } from 'react'
+} from "@/components/ui/carousel";
+import { useRef } from "react";
 
 type CarouselWrapperProps = {
-  children: React.ReactNode
-  isButtonVisible?: boolean
-  customClass?: string
-}
+  children: React.ReactNode;
+  isButtonVisible?: boolean;
+  parentWrapperClass?: string;
+  wrapperClass?: string;
+};
 
 const CarouselWrapper = ({
   children,
   isButtonVisible = true,
-  customClass = '',
+  parentWrapperClass = "",
+  wrapperClass = "",
 }: CarouselWrapperProps) => {
-  const plugin = useRef(Autoplay({ delay: 2500, stopOnInteraction: false }))
+  const plugin = useRef(Autoplay({ delay: 2500, stopOnInteraction: false }));
 
   return (
     <Carousel
       plugins={[plugin.current]}
-      className={`max-w-full w-fit
-      mx-auto px-1   ${customClass ? customClass : 'md:max-w-[90%]'}`}
+      className={`mx-auto w-fit max-w-full px-1 ${parentWrapperClass ? parentWrapperClass : "md:max-w-[90%]"}`}
       onMouseEnter={plugin.current.stop}
       onMouseLeave={() => plugin.current.play()}
       opts={{
-        align: 'start',
+        align: "start",
       }}
     >
-      <CarouselContent className=" gap-2">{children}</CarouselContent>
+      <CarouselContent className={`gap-2 ${wrapperClass}`}>
+        {children}
+      </CarouselContent>
 
       {isButtonVisible && <CarouselPrevious className="max-md:hidden" />}
       {isButtonVisible && <CarouselNext className="max-md:hidden" />}
     </Carousel>
-  )
-}
-export default CarouselWrapper
+  );
+};
+export default CarouselWrapper;
