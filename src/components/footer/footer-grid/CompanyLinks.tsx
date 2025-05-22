@@ -45,6 +45,15 @@ export const CompanyLinks = () => {
             </Link>
           );
         })}
+         <Link
+            href={country==="in" ? `/in/sitemap` : `/uae/sitemap`}
+            className="flex w-fit gap-[0.2rem] text-white"
+          >
+            &sdot;{" "}
+            <span className="w-fit cursor-pointer transition-transform duration-300 ease-out hover:translate-x-2 hover:text-yellow hover:underline">
+              Sitemap
+            </span>
+          </Link>
       </div>
     </div>
   );

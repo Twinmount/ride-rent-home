@@ -40,7 +40,7 @@ export default function SeriesSubBlock({
       </Link>
 
       {/* sub list of 5 series */}
-      <BrandSeriesSubList state={state} category={category} brand={brand} country={state} />
+      <BrandSeriesSubList state={state} category={category} brand={brand} country={country} />
     </div>
   );
 }

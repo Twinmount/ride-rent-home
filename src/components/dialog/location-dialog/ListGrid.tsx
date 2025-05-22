@@ -4,6 +4,7 @@ interface ListGridProps {
   items: StateType[];
   itemsPerList?: number;
   onClick: (e: string) => void;
+  selectedState: StateType | undefined;
 }
 
 const chunkArray = (arr: StateType[], chunkSize: number): StateType[][] => {
@@ -18,6 +19,7 @@ const ListGrid: React.FC<ListGridProps> = ({
   items,
   onClick,
   itemsPerList = 5,
+  selectedState,
 }) => {
   const columns = chunkArray(items, itemsPerList);
 
@@ -28,7 +30,7 @@ const ListGrid: React.FC<ListGridProps> = ({
           {column?.map((item: StateType) => (
             <li
               key={item?.stateId}
-              className="cursor-pointer px-4 py-1 text-sm hover:text-orange"
+              className={`cursor-pointer py-1 text-sm hover:text-orange ${selectedState?.stateId === item?.stateId ? "!border-orange text-orange" : ""}`}
               onClick={() => onClick(item?.stateValue)}
             >
               {item?.stateName}

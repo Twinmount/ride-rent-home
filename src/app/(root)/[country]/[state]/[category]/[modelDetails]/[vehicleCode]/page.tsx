@@ -4,7 +4,6 @@ import WhyOpt from "@/components/common/why-opt/WhyOpt";
 import Description from "@/components/root/vehicle-details/description/Description";
 import Specification from "@/components/root/vehicle-details/Specification";
 import DetailsSectionClientWrapper from "@/components/root/vehicle-details/DetailsSectionClientWrapper";
-// import Images from "@/components/root/vehicle-details/Images";
 import VehicleFeatures from "@/components/root/vehicle-details/features/Features";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import RelatedResults from "@/components/root/vehicle-details/RelatedResults";
@@ -184,13 +183,8 @@ export default async function VehicleDetails(props: ParamsProps) {
           profileData={ProfileCardData}
           country={country}
         >
-          {/* Vehicle Images Slider */}
+          {/* Vehicle Images Grid */}
           <div>
-            {/* <Images
-              photos={vehicle?.vehiclePhotos}
-              imageAlt={vehicle?.modelName}
-            /> */}
-
             <ImagesGrid
               mediaItems={mediaSourceList}
               imageAlt={vehicle?.modelName}
