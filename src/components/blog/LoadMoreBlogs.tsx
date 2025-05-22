@@ -46,7 +46,7 @@ export default function LoadMoreBlogs({ selectedTag }: LoadMoreBlogsProps) {
             Loading more...
           </div>
         ) : (
-          <div className="flex-center h-12">You've reached the end!</div>
+          <div className="flex-center h-12">You&apos;ve reached the end!</div>
         )}
       </div>
     </>
