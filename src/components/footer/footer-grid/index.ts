@@ -15,7 +15,7 @@ export const company = [
   { id: 3, title: "Privacy Policy", link: "/privacy-policy" },
   { id: 4, title: "Terms & Conditions", link: "/terms-condition" },
   { id: 5, title: "FAQ", link: "/faq" },
-  { id: 6, title: "Blog", link: "/blog" },
+  { id: 6, title: "Our Blogs", link: "/blog" },
 ];
 
 export const vehicles = [

@@ -12,6 +12,7 @@ import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrappe
 import BlogsListSkeleton from "@/components/skelton/BlogsListSkeleton";
 import { generateBlogHref } from "@/helpers/blog-helpers";
 import { ENV } from "@/config/env";
+import BottomBanner from "@/components/blog/BottomBanner";
 
 type PageProps = {
   params: Promise<{ blogId: string }>;
@@ -166,6 +167,17 @@ export default async function BlogDetails(props: PageProps) {
 
       {/* blog main content */}
       <BlogMainContent blogContent={blogContent} />
+
+      {/* Bottom Promotion Banner */}
+      <Suspense
+        fallback={
+          <CarouselWrapper>
+            <BlogCardSkeleton count={4} />
+          </CarouselWrapper>
+        }
+      >
+        <BottomBanner />
+      </Suspense>
 
       {/* latest blogs */}
       <Suspense

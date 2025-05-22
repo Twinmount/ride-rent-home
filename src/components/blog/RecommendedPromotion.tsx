@@ -3,7 +3,7 @@ import BlogPromotionCard from "../card/blog/BlogPromotionCard";
 import CarouselWrapper from "../common/carousel-wrapper/CarouselWrapper";
 import { ENV } from "@/config/env";
 
-export default async function Promotion() {
+export default async function RecommendedPromotion() {
   const baseUrl = ENV.API_URL;
 
   const queryParams = new URLSearchParams({
