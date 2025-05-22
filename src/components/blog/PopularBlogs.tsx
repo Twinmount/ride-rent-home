@@ -47,7 +47,7 @@ export default async function PopularBlogs() {
     page: "1",
     limit: "10",
     sortOrder: "DESC",
-    blogPlacementPosition: BlogPromotionPlacement.PopularList,
+    blogPromotionPlacement: BlogPromotionPlacement.PopularList,
   }).toString();
 
   // Fetch the promotion side card data

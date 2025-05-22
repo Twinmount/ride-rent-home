@@ -10,10 +10,9 @@ import BlogCardSkeleton from "@/components/skelton/BlogCardSkeleton";
 import { Suspense } from "react";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import BlogsListSkeleton from "@/components/skelton/BlogsListSkeleton";
-import { generateBlogHref } from "@/helpers/blog-helpers";
-import { ENV } from "@/config/env";
 import BottomBanner from "@/components/blog/BottomBanner";
 import BottomBannerSkeleton from "@/components/skelton/BottomBannerSkeleton";
+import { generateBlogMetadata } from "./metadata";
 
 type PageProps = {
   params: Promise<{ blogId: string }>;
@@ -23,91 +22,14 @@ type PageProps = {
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const { blogId } = await props.params;
 
-  const baseUrl = ENV.API_URL;
+  const metadata = await generateBlogMetadata(blogId);
 
-  const response = await fetch(`${baseUrl}/blogs?blogId=${blogId}`, {
-    method: "GET",
-    next: { revalidate: 300 },
-  });
+  if (!metadata) return notFound();
 
-  const blogData: FetchSpecificBlogResponse = await response.json();
-
-  if (
-    blogData?.status === "NOT_SUCCESS" ||
-    response.status === 400 ||
-    !blogData.result
-  ) {
-    return notFound();
-  }
-
-  const {
-    blogTitle: title,
-    blogDescription: description,
-    metaTitle,
-    metaDescription,
-    blogImage,
-  } = blogData.result;
-
-  // Shortened versions for social media (optional)
-  const shortTitle = title.length > 60 ? `${title.substring(0, 57)}...` : title;
-  const shortDescription =
-    description.length > 155
-      ? `${description.substring(0, 152)}...`
-      : description;
-
-  const ogImage = blogImage || "/assets/share-me.webp";
-
-  // generating title url
-  const href = generateBlogHref(title);
-
-  const canonicalUrl = `https://happenings.ride.rent/${href}`;
-
-  return {
-    title: metaTitle,
-    description: metaDescription,
-    keywords: ``,
-    openGraph: {
-      title: shortTitle,
-      description: shortDescription,
-      type: "website",
-      images: [
-        {
-          url: ogImage,
-          alt: `${shortTitle}`,
-          width: 1200,
-          height: 630,
-        },
-      ],
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title: shortTitle, // Shorter title for Twitter
-      description: shortDescription, // Shorter description for Twitter
-      images: [ogImage],
-    },
-    manifest: "/manifest.webmanifest",
-
-    robots: {
-      index: true, // Index the page
-      follow: true, // Follow links on the page
-      nocache: true, // Don't cache the page
-      googleBot: {
-        index: true, // Google should index the page
-        follow: true, // Google should follow links
-        noimageindex: true, // Prevent images from being indexed
-        "max-video-preview": -1, // No limit on video preview length
-        "max-image-preview": "large", // Allow large image previews
-        "max-snippet": -1, // No limit on snippet length
-      },
-    },
-
-    alternates: {
-      canonical: canonicalUrl,
-    },
-  };
+  return metadata;
 }
 
+// page component
 export default async function BlogDetails(props: PageProps) {
   const { blogId } = await props.params;
 

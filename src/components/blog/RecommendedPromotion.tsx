@@ -11,7 +11,7 @@ export default async function RecommendedPromotion() {
     page: "1",
     limit: "10",
     sortOrder: "DESC",
-    blogPlacementPosition: BlogPromotionPlacement.RecommendedDeals,
+    blogPromotionPlacement: BlogPromotionPlacement.RecommendedDeals,
   }).toString();
 
   // Fetch the vehicle data from the API

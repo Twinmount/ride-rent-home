@@ -14,8 +14,10 @@ export default async function BottomBanner() {
     page: "1",
     limit: "10",
     sortOrder: "DESC",
-    blogPlacementPosition: BlogPromotionPlacement.BottomBanner,
+    blogPromotionPlacement: BlogPromotionPlacement.BottomBanner,
   }).toString();
+
+  console.log(`${baseUrl}/blogs-promotions/list?${queryParams}`);
 
   // Fetch the promotion side card data
   const promotionResponse = await fetch(
