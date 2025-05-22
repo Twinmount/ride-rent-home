@@ -15,7 +15,6 @@ export const metadata: Metadata = {
 export default async function HomePage(props: PageProps) {
   const searchParams = await props.searchParams;
   const selectedTag = searchParams.tag || "all";
-  const page = parseInt(searchParams.page || "1", 10);
 
   return (
     <section className="wrapper py-8">
@@ -35,7 +34,7 @@ export default async function HomePage(props: PageProps) {
           </div>
         }
       >
-        <BlogsGrid selectedTag={selectedTag} page={page} />
+        <BlogsGrid selectedTag={selectedTag} />
       </Suspense>
     </section>
   );

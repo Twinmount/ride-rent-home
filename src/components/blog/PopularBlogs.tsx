@@ -4,6 +4,7 @@ import BlogPopularCard from "../card/blog/BlogPopularCard";
 import { ENV } from "@/config/env";
 import { FetchPromotionsResponse, PromotionType } from "@/types";
 import PromotionSideCard from "../card/blog/PromotionSideCard";
+import { BlogPromotionPlacement } from "@/types/enum";
 
 interface RequestBody {
   page: string;
@@ -11,27 +12,6 @@ interface RequestBody {
   sortOrder: "ASC" | "DESC";
   filterCondition: string;
 }
-
-export const samplePromotions = [
-  {
-    promotionId: "123",
-    promotionLink: "https://www.google.com",
-    promotionImage:
-      "https://images.unsplash.com/photo-1542317854-f9596ae570f7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZGFyayUyMGxhcHRvcHxlbnwwfHwwfHx8MA%3D%3D",
-  },
-  {
-    promotionId: "143",
-    promotionLink: "https://www.google.com",
-    promotionImage:
-      "https://images.unsplash.com/photo-1515504846179-94ac6b34ebb9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZGFyayUyMGxhcHRvcHxlbnwwfHwwfHx8MA%3D%3D",
-  },
-  {
-    promotionId: "133",
-    promotionLink: "https://www.google.com",
-    promotionImage:
-      "https://images.unsplash.com/photo-1542317854-f9596ae570f7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZGFyayUyMGxhcHRvcHxlbnwwfHwwfHx8MA%3D%3D",
-  },
-];
 
 type CombinedCard =
   | { type: "blog"; data: BlogType }
@@ -62,16 +42,26 @@ export default async function PopularBlogs() {
   const data: FetchBlogsResponse = await response.json();
   const blogsData = data.result.list || [];
 
-  // fetching promotions
+  // promotion query params
+  const queryParams = new URLSearchParams({
+    page: "1",
+    limit: "10",
+    sortOrder: "DESC",
+    blogPlacementPosition: BlogPromotionPlacement.PopularList,
+  }).toString();
+
   // Fetch the promotion side card data
-  const promotionResponse = await fetch(`${baseUrl}/blogs-promotions/list`, {
-    method: "GET",
-    cache: "no-cache",
-  });
+  const promotionResponse = await fetch(
+    `${baseUrl}/blogs-promotions/list?${queryParams}`,
+    {
+      method: "GET",
+      cache: "no-cache",
+    },
+  );
 
   const promotionData: FetchPromotionsResponse = await promotionResponse.json();
 
-  const promotions = promotionData.result.list || samplePromotions;
+  const promotions = promotionData.result.list || [];
 
   // Create a new array to combine the data
   const combinedCards: CombinedCard[] = [];
@@ -127,6 +117,8 @@ export default async function PopularBlogs() {
                 promotionLink={item.data.promotionLink}
               />
             );
+          } else {
+            return null;
           }
         })}
       </div>

@@ -2,6 +2,7 @@ import { FetchBlogPromotionsResponse } from "@/types/blog.types";
 import BlogPromotionCard from "../card/blog/BlogPromotionCard";
 import CarouselWrapper from "../common/carousel-wrapper/CarouselWrapper";
 import { ENV } from "@/config/env";
+import { BlogPromotionPlacement } from "@/types/enum";
 
 export default async function RecommendedPromotion() {
   const baseUrl = ENV.API_URL;
@@ -10,6 +11,7 @@ export default async function RecommendedPromotion() {
     page: "1",
     limit: "10",
     sortOrder: "DESC",
+    blogPlacementPosition: BlogPromotionPlacement.RecommendedDeals,
   }).toString();
 
   // Fetch the vehicle data from the API

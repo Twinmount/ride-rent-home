@@ -2,31 +2,31 @@ import Image from "next/image";
 import Link from "next/link";
 import CarouselWrapper from "../common/carousel-wrapper/CarouselWrapper";
 import HoverOverlay from "../common/HoverOverlay";
-import { samplePromotions } from "./PopularBlogs";
 import { FetchBlogPromotionsResponse } from "@/types/blog.types";
 import { ENV } from "@/config/env";
-
-type bottomPromotionType = {
-  promotionId: string;
-  promotionImage: string;
-  promotionLink: string;
-}[];
+import { BlogPromotionPlacement } from "@/types/enum";
 
 export default async function BottomBanner() {
   const baseUrl = ENV.API_URL;
 
+  // promotion query params
   const queryParams = new URLSearchParams({
     page: "1",
     limit: "10",
     sortOrder: "DESC",
+    blogPlacementPosition: BlogPromotionPlacement.BottomBanner,
   }).toString();
 
-  // Fetch the vehicle data from the API
-  const response = await fetch(
+  // Fetch the promotion side card data
+  const promotionResponse = await fetch(
     `${baseUrl}/blogs-promotions/list?${queryParams}`,
-    { cache: "no-cache" },
+    {
+      method: "GET",
+      cache: "no-cache",
+    },
   );
-  const data: FetchBlogPromotionsResponse = await response.json();
+
+  const data: FetchBlogPromotionsResponse = await promotionResponse.json();
 
   const promotions = data.result.list || [];
 
