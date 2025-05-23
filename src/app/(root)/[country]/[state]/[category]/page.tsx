@@ -24,6 +24,7 @@ import VehicleCardCarouselSkeleton from "@/components/skelton/VehicleCardCarouse
 import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
 import JsonLd from "@/components/common/JsonLd";
 import Banner from "@/components/root/landing/Banner";
+import BannerSkeleton from "@/components/skelton/BannerSkeleton";
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
@@ -49,7 +50,7 @@ export default async function Home(props: PageProps) {
       {/* Inject JSON-LD into the <head> */}
       <JsonLd jsonLdData={jsonLdData} id="json-ld-homepage" />
 
-      <Suspense fallback={<div></div>}>
+      <Suspense fallback={<BannerSkeleton />}>
         <Banner state={state} country={country} />
       </Suspense>
 
