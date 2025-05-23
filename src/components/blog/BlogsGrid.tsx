@@ -22,11 +22,16 @@ export default async function BlogsGrid({ selectedTag }: BlogsGridProps) {
         </>
       ) : (
         <div className="flex-center h-72 text-lg font-thin">
-          No Blogs Found under tag &nbsp;
-          <span className="rounded-lg bg-slate-200 px-1 capitalize italic text-slate-800">
-            {selectedTag}
-          </span>
-          &nbsp; :/
+          No Blogs Found{" "}
+          {selectedTag !== "all" && (
+            <span>
+              under tag &nbsp;
+              <span className="rounded-lg bg-slate-200 px-1 capitalize italic text-slate-800">
+                {selectedTag}
+              </span>
+            </span>
+          )}
+          &nbsp;:/
         </div>
       )}
     </div>

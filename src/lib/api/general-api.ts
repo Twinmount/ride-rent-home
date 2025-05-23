@@ -103,7 +103,6 @@ export const FetchVehicleByFilters = async (
 
 // send portfolio count post
 export const sendPortfolioVisit = async (vehicleId: string) => {
-  console.log("api function reached for portfolio");
   try {
     // Send a POST request to the API with the vehicleId in the request body
     const response = await fetch(
@@ -116,8 +115,6 @@ export const sendPortfolioVisit = async (vehicleId: string) => {
         body: JSON.stringify({ vehicleId }), // Wrapping vehicleId in an object
       },
     );
-
-    console.log("response from portfolio api", response);
 
     // Check if the response was successful
     if (!response.ok) {
@@ -320,8 +317,6 @@ export const fetchAllPaginatedCities = async (
 export const fetchCategories = async (
   state: string,
 ): Promise<FetchCategoriesResponse | undefined> => {
-
-
   try {
     const url = `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`;
 

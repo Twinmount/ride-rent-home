@@ -17,8 +17,6 @@ export default async function BottomBanner() {
     blogPromotionPlacement: BlogPromotionPlacement.BottomBanner,
   }).toString();
 
-  console.log(`${baseUrl}/blogs-promotions/list?${queryParams}`);
-
   // Fetch the promotion side card data
   const promotionResponse = await fetch(
     `${baseUrl}/blogs-promotions/list?${queryParams}`,

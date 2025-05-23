@@ -12,7 +12,7 @@ export default function BrandImage({
   className,
 }: BrandImageProps) {
   const baseAssetsUrl = ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL;
-  console.log("BrandImage", baseAssetsUrl);
+
   return (
     <img
       src={`${baseAssetsUrl}/icons/brands/${category}/${brandValue}.png`}
