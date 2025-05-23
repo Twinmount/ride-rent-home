@@ -19,7 +19,7 @@ const BlogPopularCard = ({
 
   return (
     <Link
-      href={`/${href}/${blogId}`}
+      href={`/blog/${href}/${blogId}`}
       className="mb-1 flex items-center gap-2 border-b border-gray-200 p-0 transition duration-200 hover:bg-gray-100"
     >
       {/* Blog Image */}

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import BlogDetails from "./blog-content/BlogDetails";
 import PromotionCardSkelton from "../skelton/PromotionCardSkelton";
-import Promotion from "./Promotion";
+import Promotion from "./RecommendedPromotion";
 import PopularBlogs from "./PopularBlogs";
 import PopularCardSkeleton from "../skelton/PopularCardSkelton";
 

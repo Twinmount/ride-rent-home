@@ -1,6 +1,5 @@
 import path from "path";
 
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -8,6 +7,12 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "storage.googleapis.com",
+        port: "",
+        pathname: "/**", // This allows any subpath within the specified base path
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
         port: "",
         pathname: "/**", // This allows any subpath within the specified base path
       },
@@ -39,4 +44,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-
