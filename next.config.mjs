@@ -10,6 +10,12 @@ const nextConfig = {
         port: "",
         pathname: "/**", // This allows any subpath within the specified base path
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "/**", // This allows any subpath within the specified base path
+      },
     ],
   },
   sassOptions: {
