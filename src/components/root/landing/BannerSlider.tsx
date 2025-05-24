@@ -28,6 +28,7 @@ export default function BannerSlider({
             if (!!image?.link) {
               return (
                 <a
+                  key={`dashboard-banner-item__${index + 1}`}
                   className="slick-slide-link"
                   href={image?.link}
                   target="_blank"
@@ -37,7 +38,6 @@ export default function BannerSlider({
                     src={image?.src}
                     alt={`Banner ${index + 1}`}
                     className="mw-100"
-                    key={`dashboard-banner-item__${index + 1}`}
                     loading="lazy"
                   />
                 </a>
