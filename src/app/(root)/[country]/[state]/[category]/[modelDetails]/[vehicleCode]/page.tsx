@@ -230,8 +230,8 @@ export default async function VehicleDetails(props: ParamsProps) {
                 <RelatedLinks state={state} country={country} />
 
                 {/* Location map */}
-                {vehicle?.location && (
-                  <LocationMap location={vehicle?.location} />
+                {vehicle?.mapImage && vehicle?.location && (
+                  <LocationMap mapImage={vehicle?.mapImage} location={vehicle?.location}  />
                 )}
               </div>
             </div>

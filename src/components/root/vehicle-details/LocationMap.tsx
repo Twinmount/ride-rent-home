@@ -2,9 +2,10 @@ import { GPSLocation } from "@/types/vehicle-details-types";
 
 type LocationMapProps = {
   location: GPSLocation;
+  mapImage: string;
 };
 
-function LocationMap({ location }: LocationMapProps) {
+function LocationMap({ location, mapImage }: LocationMapProps) {
   const { lat, lng } = location;
 
   console.log("lat-lng :>> ", lat, lng);
@@ -15,7 +16,7 @@ function LocationMap({ location }: LocationMapProps) {
         <h2 className="custom-heading">Location map</h2>
       </div>
       <div className="h-full w-full">
-        <span>MAP GOES HERE</span>
+        <img src={mapImage} alt="Map image"  />
       </div>
     </div>
   );

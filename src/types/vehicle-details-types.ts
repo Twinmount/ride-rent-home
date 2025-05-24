@@ -110,7 +110,8 @@ export type VehicleDetailsPageType = {
   securityDeposit: { enabled: boolean; amountInAED: string };
   vehicleTitle: string;
   vehicleTitleH1: string;
-  location?:GPSLocation
+  location?:GPSLocation,
+  mapImage?:string
 };
 
 export type VehicleDetailsPageResponse = {

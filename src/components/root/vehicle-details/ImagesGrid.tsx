@@ -37,7 +37,7 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
   };
 
   const gridItems = mediaItems.slice(0, 4);
-  const lightboxImages = mediaItems.filter((item) => item.type === "image");
+  const lightboxImages = mediaItems.filter((item) => item.type === "image" && !gridItems.includes(item));
 
   const totalImageCount = mediaItems.filter(
     (item) => item.type === "image",
