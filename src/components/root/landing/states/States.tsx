@@ -4,8 +4,8 @@ import { rearrangeStates } from "@/helpers";
 import StateCardList from "./StateCardList";
 import { ENV } from "@/config/env";
 
-export default async function States({ category }: { category: string }) {
-  const baseUrl = ENV.API_URL;
+export default async function States({ category, country }: { category: string, country: string }) {
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Fetch the states data from the API
   const response = await fetch(`${baseUrl}/states/list?hasVehicle=true`, {
@@ -28,7 +28,7 @@ export default async function States({ category }: { category: string }) {
         Find Vehicle Rental Offers In Other States
       </h2>
       <div className="mx-auto mb-[1.5rem] grid w-fit auto-rows-auto grid-cols-2 justify-items-center gap-[1.4rem] md:grid-cols-3 lg:grid-cols-4">
-        <StateCardList states={states} category={category} />
+        <StateCardList states={states} category={category} country={country} />
       </div>
     </MotionSection>
   );

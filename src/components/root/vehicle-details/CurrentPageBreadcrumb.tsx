@@ -14,6 +14,7 @@ type CurrentPageBreadcrumbProps = {
   state: string;
   brand: { label: string; value: string };
   vehicleTitle: string;
+  country: string;
 };
 
 export default function CurrentPageBreadcrumb({
@@ -21,6 +22,7 @@ export default function CurrentPageBreadcrumb({
   state,
   brand,
   vehicleTitle,
+  country,
 }: CurrentPageBreadcrumbProps) {
   const formattedCategory = convertToLabel(singularizeType(category));
 
@@ -33,7 +35,7 @@ export default function CurrentPageBreadcrumb({
           {/* vehicle state */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/${state}/${category}`}
+              href={`/${country}/${state}/${category}`}
               className="font-semibold transition-colors hover:text-yellow hover:underline"
             >
               {formattedState}
@@ -44,7 +46,7 @@ export default function CurrentPageBreadcrumb({
           {/* vehicle category */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/${state}/${category}`}
+              href={`/${country}/${state}/${category}`}
               className="font-semibold transition-colors hover:text-yellow hover:underline"
             >
               {formattedCategory} for rent{" "}
@@ -55,7 +57,7 @@ export default function CurrentPageBreadcrumb({
           {/* vehicle brand */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/${state}/listing?category=${category}&brand=${brand.value}`}
+              href={`/${country}/${state}/listing?category=${category}&brand=${brand.value}`}
               target="_blank"
               className="font-semibold transition-colors hover:text-yellow hover:underline"
             >

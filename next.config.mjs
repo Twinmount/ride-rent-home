@@ -23,22 +23,60 @@ const nextConfig = {
   },
   async redirects() {
     return [
+     
       {
         source: "/",
-        destination: "/dubai",
+        destination: "/uae/dubai",
+        permanent: true,
+      },
+      {
+        source: "/:country(uae)",
+        destination: "/:country/dubai",
+        permanent: true,
+      },
+      {
+        source: "/:country(in)",
+        destination: "/in/kollam",
         permanent: true,
       },
       {
         source:
-          "/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)",
-        destination: "/:state/cars",
+          "/:country/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)",
+        destination: "/:country/:state/cars",
         permanent: true,
       },
       {
-        source: "/faq",
-        destination: "/faq/dubai",
+        source:
+          "/in/:state",
+        destination: "/in/:state/cars",
         permanent: true,
       },
+      {
+        source: "/:country/faq",
+        destination: "/:country/faq/dubai",
+        permanent: true,
+      },
+      {
+        source: "/state/:path*",
+        destination: "/country/state/:path*",
+        permanent: true,
+      },
+      {
+        source: "/profile/:path*",
+        destination: "/uae/profile/:path*",
+        permanent: true,
+      },
+      {
+        source:
+          "/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)/:path*",
+        destination: "/uae/:state/:path*",
+        permanent: true,
+      },
+      //  { source: "/about-us", destination: "/about-us", permanent: true },
+      // { source: "/privacy-policy", destination: "/privacy-policy", permanent: true },
+      // { source: "/terms-condition", destination: "/terms-condition", permanent: true },
+      // { source: "/sitemap-in.xml", destination: "/sitemap-in.xml", permanent: true },
+      // { source: "/sitemap-uae.xml", destination: "/sitemap-uae.xml", permanent: true },
     ];
   },
 };

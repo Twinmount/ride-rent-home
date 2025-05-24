@@ -23,13 +23,13 @@ export const VehicleTypeAccordion = ({
   vehicleTypes,
   handleFilterChange,
 }: VehicleTypeAccordionProps) => {
-  const { state } = useStateAndCategory();
+  const { state, country } = useStateAndCategory();
 
   // Fetch vehicle types based on the selected category
   const { data: vehicleTypesData, isLoading: vehicleTypesLoading } = useQuery({
     queryKey: ["vehicle-types", category],
-    queryFn: () => fetchVehicleTypesByValue(category, state),
-    enabled: !!category, // Only fetch if a category is selected
+    queryFn: () => fetchVehicleTypesByValue(category, state, country),
+    enabled: !!category && !!country, // Only fetch if a category is selected
     staleTime: 60 * 1000,
   });
 

@@ -14,17 +14,18 @@ import {
   FetchTypesResponse,
 } from "@/types";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
 // Function to fetch vehicles based on filters using a POST request
 export const FetchVehicleByFilters = async (
   query: string,
   state: string = "dubai",
   pageParam: number = 1,
   limit: string = "8", // Accept pageParam here directly
+  country: string
 ): Promise<FetchVehicleCardsResponse> => {
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);
+
+  const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
 
   // Utility function to safely parse parameter values
   const getParamValue = (key: string, defaultValue: string = ""): string => {
@@ -102,8 +103,9 @@ export const FetchVehicleByFilters = async (
 };
 
 // send portfolio count post
-export const sendPortfolioVisit = async (vehicleId: string) => {
+export const sendPortfolioVisit = async (vehicleId: string, country: string) => {
   try {
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
     // Send a POST request to the API with the vehicleId in the request body
     const response = await fetch(
       `${BASE_URL}/portfolio`, // Assuming '/portfolio' is the correct endpoint
@@ -139,8 +141,10 @@ export const sendPortfolioVisit = async (vehicleId: string) => {
 export const sendQuery = async (
   vehicleId: string,
   medium: "EMAIL" | "WHATSAPP" | "OTHER",
+  country: string
 ) => {
   try {
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
     const url = `${BASE_URL}/queries`;
 
     const response = await fetch(url, {
@@ -163,9 +167,11 @@ export const sendQuery = async (
 export const fetchVehicleTypesByValue = async (
   vehicleCategoryValue: string,
   vehicleState: string,
+  country: string
 ): Promise<FetchTypesResponse | undefined> => {
   try {
     // generating api URL
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}&hasVehicle=true&state=${vehicleState}`;
 
     const response = await fetch(apiUrl, {
@@ -193,12 +199,15 @@ export const fetchVehicleTypesByValue = async (
 export const fetchPriceRange = async ({
   state,
   category,
+  country
 }: {
   state: string;
   category: string;
+  country: string
 }): Promise<FetchPriceRangeResponse | undefined> => {
   try {
     // generating api URL
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/vehicle/price-range?state=${state}&category=${category}`;
 
     const response = await fetch(apiUrl);
@@ -220,10 +229,12 @@ export const fetchPriceRange = async ({
 };
 
 export const fetchSearchResults = async (
+  country: string,
   search: string,
   state?: string,
 ): Promise<FetchSearchResultsResponse | undefined> => {
   try {
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
     let url = `${BASE_URL}/vehicle/search?search=${encodeURIComponent(search)}`;
 
     if (state) {
@@ -244,14 +255,23 @@ export const fetchSearchResults = async (
   }
 };
 
-export const fetchStates = async (): Promise<
-  FetchStatesResponse | undefined
-> => {
+export const fetchStates = async ({
+  countryId,
+  country
+}: {
+  countryId: string;
+  country: string
+}): Promise<FetchStatesResponse | undefined> => {
   try {
-    const res = await fetch(`${BASE_URL}/states/list?hasVehicle=true`, {
-      method: "GET",
-      cache: "no-cache",
-    });
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
+
+    const res = await fetch(
+      `${BASE_URL}/states/list?hasVehicle=true&countryId=${countryId}`,
+      {
+        method: "GET",
+        cache: "no-cache",
+      },
+    );
 
     if (!res.ok) {
       throw new Error(`Failed to fetch states`);
@@ -271,8 +291,11 @@ export const fetchAllCities = async (
   stateId: string,
   limit: number = 30,
   page: number = 1,
+  country: string
 ): Promise<FetchCitiesResponse> => {
   try {
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
+
     const response = await fetch(
       `${BASE_URL}/city/list?stateId=${stateId}&page=${page}&limit=${limit}`,
     );
@@ -295,8 +318,10 @@ export const fetchAllPaginatedCities = async (
   stateId: string,
   page: number = 1,
   limit: number = 30,
+  country: string
 ): Promise<FetchCitiesResponse> => {
   try {
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
     const response = await fetch(
       `${BASE_URL}/city/paginated/list?state=${stateId}&page=${page}&limit=${limit}`,
     );
@@ -316,8 +341,10 @@ export const fetchAllPaginatedCities = async (
 
 export const fetchCategories = async (
   state: string,
+  country: string
 ): Promise<FetchCategoriesResponse | undefined> => {
   try {
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
     const url = `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`;
 
     const response = await fetch(url, {
@@ -340,8 +367,10 @@ export const fetchCategories = async (
 // fetch quick links by state value
 export const fetchQuickLinksByValue = async (
   stateValue: string,
+  country: string
 ): Promise<FetchLinksResponse | undefined> => {
   try {
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/links/list?page=1&limit=20&sortOrder=ASC&stateValue=${stateValue}`;
 
     const response = await fetch(apiUrl, {
@@ -370,9 +399,11 @@ export const fetchQuickLinksByValue = async (
 export const fetchVehicleBrandsByValue = async (
   vehicleCategory: string,
   searchTerm: string,
+  country: string
 ): Promise<FetchBrandsResponse | undefined> => {
   try {
     // generating api URL
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/vehicle-brand/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategory}&search=${searchTerm}`;
 
     const response = await fetch(apiUrl, {
@@ -396,9 +427,12 @@ export const fetchVehicleBrandsByValue = async (
 
 export const fetcheRealatedStateList = async (
   state: string,
+  country: string
 ): Promise<FetchRelatedStateResponse | undefined> => {
   try {
     // generating api URL
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
+
     const apiUrl = `${BASE_URL}/states/related-state?stateValue=${state}`;
 
     const response = await fetch(apiUrl, {
@@ -420,12 +454,15 @@ export const fetcheRealatedStateList = async (
   }
 };
 
-export const fetchExchangeRates = async (): Promise<
-  FetchExchangeRatesResponse | undefined
-> => {
+export const fetchExchangeRates = async ({
+  country,
+}: {
+  country: string;
+}): Promise<FetchExchangeRatesResponse | undefined> => {
   try {
     // generating api URL
-    const apiUrl = `${BASE_URL}/exchange-rates/today`;
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = `${BASE_URL}/exchange-rates/today${country === "in" ? "-inr" : "-aed"}`;
 
     const response = await fetch(apiUrl, {
       method: "GET",
@@ -448,9 +485,11 @@ export const fetchExchangeRates = async (): Promise<
 
 export const fetchFAQ = async (
   stateValue: string,
+  country: string
 ): Promise<FetcFAQResponse | undefined> => {
   try {
     // generating api URL
+    const BASE_URL = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA :  process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/state-faq/client/${stateValue}`;
 
     const response = await fetch(apiUrl, {
@@ -459,8 +498,18 @@ export const fetchFAQ = async (
 
     // Check if the response is OK
     if (!response.ok) {
-      throw new Error(`Failed to fetch exchange rates`);
-    }
+      return {
+          result: {
+            stateId: "",
+            faqs: [{
+              question: "",
+              answer: ""
+            },]
+          },
+          status: "400",
+          statusCode: 400
+        }
+      }
 
     const data = await response.json();
 

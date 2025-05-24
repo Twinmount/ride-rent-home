@@ -13,6 +13,7 @@ import { ENV } from "@/config/env";
 
 type DynamicFAQProps = {
   vehicle: VehicleDetailsPageType;
+  country: string;
 };
 
 type FAQItem = {
@@ -20,8 +21,8 @@ type FAQItem = {
   answer: string;
 };
 
-export default async function DynamicFAQ({ vehicle }: DynamicFAQProps) {
-  const baseUrl = ENV.API_URL;
+export default async function DynamicFAQ({ vehicle, country }: DynamicFAQProps) {
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL; 
 
   let faqData: FAQItem[] = [];
 

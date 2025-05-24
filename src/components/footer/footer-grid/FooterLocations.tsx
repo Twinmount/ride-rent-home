@@ -1,28 +1,45 @@
-import { ENV } from "@/config/env";
-import { rearrangeStates } from "@/helpers";
-import { FetchStatesResponse } from "@/types";
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { rearrangeStates } from "@/helpers";
+import { FetchStatesResponse, StateType } from "@/types";
 
-export default async function FooterLocations() {
-  const baseUrl = ENV.API_URL;
+export default function FooterLocations() {
+  const params = useParams();
+  const country = (params?.country as string) || "uae";
 
-  // Fetch the states data from the API
-  const response = await fetch(`${baseUrl}/states/list?hasVehicle=true`, {
-    cache: "no-cache",
-  });
-  const data: FetchStatesResponse = await response.json();
+  const [states, setStates] = useState<StateType[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Extract the states list from the response
-  let states = data.result;
+  useEffect(() => {
+    const baseUrl = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.NEXT_PUBLIC_API_URL;
+    const countryId = country === "in" ? "68ea1314-08ed-4bba-a2b1-af549946523d" : "ee8a7c95-303d-4f55-bd6c-85063ff1cf48";
 
-  // Call the rearrangeStates function to reorder the states array
-  states = rearrangeStates(states);
+    const fetchStates = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/states/list?hasVehicle=true&countryId=${countryId}`, {
+          cache: "no-cache",
+        });
+        const data: FetchStatesResponse = await response.json();
+        let result = country === "in" ? data.result : rearrangeStates(data.result);
+        setStates(result);
+      } catch (error) {
+        console.error("Failed to fetch states:", error);
+        setStates([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (states.length === 0) return null;
+    fetchStates();
+  }, [country]);
+
+  if (loading || states.length === 0) return null;
 
   return (
     <div>
-      {/* locations  link */}
       <h3 className="mb-2 text-[1.1rem] text-yellow">Locations</h3>
       <div className="flex flex-col gap-y-1 text-base font-light text-gray-400">
         {states.map((location) => (

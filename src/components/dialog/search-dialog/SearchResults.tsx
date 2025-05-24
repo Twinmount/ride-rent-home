@@ -21,7 +21,7 @@ export function SearchResults({
   isLoading,
 }: SearchResultsProps) {
   // accessing state from the url params
-  const { state } = useParams<{ state: string }>();
+  const { state, country } = useParams<{ state: string, country: string }>();
 
   const vehicleSeries = results?.result.vehicleSeries || [];
   const vehicles = results?.result.vehicle || [];
@@ -57,13 +57,13 @@ export function SearchResults({
   return (
     <ScrollArea className="mt-2 flex h-fit max-h-full flex-col space-y-3">
       {/* Company Results */}
-      <CompanySearchResult company={company} />
+      <CompanySearchResult company={company} country={country} />
 
       {/* Vehicle Series Results */}
-      <VehiclesSeriesSearchResult vehicleSeries={vehicleSeries} state={state} />
+      <VehiclesSeriesSearchResult vehicleSeries={vehicleSeries} state={state} country={country} />
 
       {/* Vehicles Results */}
-      <VehicleModelsSearchResult vehicles={vehicles} state={state} />
+      <VehicleModelsSearchResult vehicles={vehicles} state={state} country={country} />
     </ScrollArea>
   );
 }

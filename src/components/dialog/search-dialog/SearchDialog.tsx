@@ -15,6 +15,7 @@ import { PlaceholderTypewriter } from "@/components/navbar/PlaceholderTypewriter
 import { SearchResults } from "./SearchResults";
 import { SearchInput } from "./SearchInput";
 import { CompanyPromotionList } from "./CompanyPromotionList";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 type SearchDialogProps = {
   isHero?: boolean;
@@ -36,13 +37,15 @@ export function SearchDialog({
     [],
   );
 
+  const {country} = useStateAndCategory()
+
   useEffect(() => {
     handleDebouncedSearch(search);
   }, [search, handleDebouncedSearch]);
 
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", debouncedSearch],
-    queryFn: () => fetchSearchResults(debouncedSearch, state),
+    queryFn: () => fetchSearchResults(country, debouncedSearch, state),
     enabled: !!debouncedSearch && !!state && debouncedSearch.length > 1,
     staleTime: 0,
   });

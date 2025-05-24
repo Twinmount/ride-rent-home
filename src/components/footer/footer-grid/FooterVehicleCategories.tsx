@@ -4,7 +4,7 @@ import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
 import Link from "next/link";
 
 export default function FooterVehicleCategories() {
-  const { sortedCategories: categories, isCategoriesLoading } =
+  const { sortedCategories: categories, isCategoriesLoading, country, state } =
     useFetchVehicleCategories();
 
   if (categories.length === 0) return null;
@@ -19,7 +19,7 @@ export default function FooterVehicleCategories() {
         ) : (
           categories.map((category) => (
             <Link
-              href={`/dubai/${category.value}`}
+              href={`/${country}/${state}/${category.value}`}
               className="flex w-fit gap-[0.2rem] text-white hover:text-white"
               key={category.categoryId}
             >

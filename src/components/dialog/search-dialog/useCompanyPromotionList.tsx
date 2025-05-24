@@ -3,8 +3,8 @@ import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 import { ENV } from "@/config/env";
 
 export const useCompanyPromotionList = () => {
-  const { state, category } = useStateAndCategory();
-  const baseUrl = ENV.NEXT_PUBLIC_API_URL;
+  const { state, category, country } = useStateAndCategory();
+  const baseUrl = country === "in" ? ENV.NEXT_PUBLIC_API_URL_INDIA : ENV.NEXT_PUBLIC_API_URL;
 
   const fetchData = async (state: string, category: string) => {
     try {

@@ -7,14 +7,16 @@ import Link from "next/link";
 
 export default async function DirectoryCategories({
   state,
+  country,
 }: {
   state: string;
+  country: string;
 }) {
-  const API_URL = ENV.API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Fetch the states data from the API
   const response = await fetch(
-    `${API_URL}/vehicle-category/directory?state=${state}`,
+    `${baseUrl}/vehicle-category/directory?state=${state}`,
     {
       cache: "no-cache",
     },

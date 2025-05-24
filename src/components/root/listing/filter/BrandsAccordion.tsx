@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchVehicleBrandsByValue } from "@/lib/api/general-api";
 import { BrandType } from "@/types";
 import { convertToLabel } from "@/helpers";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 type BrandsAccordionProps = {
   category: string;
@@ -27,12 +28,12 @@ export const BrandsAccordion = ({
 }: BrandsAccordionProps) => {
   const [brandSearchTerm, setBrandSearchTerm] = useState("");
   const [debouncedBrandSearchTerm, setDebouncedBrandSearchTerm] = useState("");
-
+  const {country} = useStateAndCategory();
   // Fetch brands
   const { data: brandsData, isLoading: brandsLoading } = useQuery({
     queryKey: ["brands", category, debouncedBrandSearchTerm],
     queryFn: () =>
-      fetchVehicleBrandsByValue(category, debouncedBrandSearchTerm),
+      fetchVehicleBrandsByValue(category, debouncedBrandSearchTerm, country),
     enabled: !!category && debouncedBrandSearchTerm.length >= 1,
     staleTime: 0,
   });

@@ -29,7 +29,7 @@ import { ProfileCardDataType } from "@/types/vehicle-details-types";
  * - vehicleId: the vehicleId string from the input profileData.
  * - vehicleTitle: the vehicleTitle string from the input profileData.
  */
-const useProfileData = (profileData: ProfileCardDataType) => {
+const useProfileData = (profileData: ProfileCardDataType, country: string) => {
   const {
     company,
     rentalDetails,
@@ -58,6 +58,7 @@ const useProfileData = (profileData: ProfileCardDataType) => {
       state: vehicleData?.state,
       vehicleCategory: vehicleData?.category,
       vehicleCode,
+      country,
     });
   }, [vehicleTitle, vehicleData, vehicleCode]);
 
@@ -76,6 +77,7 @@ const useProfileData = (profileData: ProfileCardDataType) => {
     return generateCompanyProfilePageLink(
       company.companyName,
       company.companyId,
+      country,
     );
   }, [company.companyName, company.companyId]);
 

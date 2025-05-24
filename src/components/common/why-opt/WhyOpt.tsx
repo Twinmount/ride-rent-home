@@ -24,11 +24,11 @@ const WhyOpt = ({ state, category }: StateCategoryProps) => {
           <br />
           <br />
           Seeking a sleek luxury convertible or a cost-effective option for a
-          monthly car rental in Dubai? RIDE.RENT has your perfect match on
+          monthly car rental in {convertToLabel(state)}? RIDE.RENT has your perfect match on
           standby.
           <br />
           <br />
-          Don&apos;t hesitate—secure your ideal car for rent in Dubai with
+          Don&apos;t hesitate—secure your ideal car for rent in {convertToLabel(state)} with
           RIDE.RENT today!
         </p>
       </div>

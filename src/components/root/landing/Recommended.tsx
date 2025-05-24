@@ -8,10 +8,12 @@ export const revalidate = 900;
 
 export default async function Recommended({
   state,
+  country
 }: {
   state: string | undefined;
+  country: string | undefined;
 }) {
-  const baseUrl = ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA || ENV.NEXT_PUBLIC_API_URL_INDIA : ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
 
   // Fetch the vehicle data from the API
   const response = await fetch(

@@ -12,11 +12,13 @@ export const revalidate = 3600;
 export default async function TopBrands({
   category,
   state,
+  country
 }: {
   category: string | undefined;
   state: string | undefined;
+  country: string | undefined;
 }) {
-  const baseUrl = ENV.API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   const url = `${baseUrl}/vehicle-brand/top-brands?categoryValue=${category}`;
 
@@ -53,7 +55,7 @@ export default async function TopBrands({
         ))}
       </CarouselWrapper>
 
-      <ViewAllButton link={`/${state}/${category}/brands`} />
+      <ViewAllButton link={`/${country}/${state}/${category}/brands`} />
     </MotionSection>
   );
 }

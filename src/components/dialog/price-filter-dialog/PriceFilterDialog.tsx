@@ -51,7 +51,7 @@ export default function PriceFilterDialog({
   const dynamicUrl = generateListingUrl(
     values,
     state,
-    category,
+    category ? category : "cars",
     selectedPeriod,
   );
 

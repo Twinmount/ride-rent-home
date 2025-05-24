@@ -8,14 +8,16 @@ type RelatedResultsType = {
   state: string;
   category: string;
   vehicleCode: string;
+  country: string;
 };
 
 export default async function RelatedResults({
   state,
   category,
   vehicleCode,
+  country,
 }: RelatedResultsType) {
-  const baseUrl = ENV.API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Fetch brand data from your API endpoint
   const response = await fetch(`${baseUrl}/vehicle/filter`, {
@@ -53,7 +55,12 @@ export default async function RelatedResults({
       </h2>
       <CarouselWrapper>
         {vehicleData.map((vehicle, index) => (
-          <MainCard key={vehicle.vehicleId} vehicle={vehicle} index={index} />
+          <MainCard
+            key={vehicle.vehicleId}
+            vehicle={vehicle}
+            index={index}
+            country={country}
+          />
         ))}
       </CarouselWrapper>
     </MotionSection>

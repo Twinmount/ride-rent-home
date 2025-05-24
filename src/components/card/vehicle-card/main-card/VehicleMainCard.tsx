@@ -24,9 +24,14 @@ import LinkWrapper from "../LinkWrapper";
 type VehicleMainCardProps = {
   vehicle: VehicleCardType;
   index: number;
+  country: string;
 };
 
-const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
+const VehicleMainCard = ({
+  vehicle,
+  index,
+  country = "uae",
+}: VehicleMainCardProps) => {
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,
     vehicle.phoneNumber,
@@ -38,6 +43,7 @@ const VehicleMainCard = ({ vehicle, index }: VehicleMainCardProps) => {
     state: vehicle.state,
     vehicleCategory: vehicle.vehicleCategory,
     vehicleCode: vehicle.vehicleCode,
+    country: country,
   });
 
   // whatsapp url with dynamic message attached

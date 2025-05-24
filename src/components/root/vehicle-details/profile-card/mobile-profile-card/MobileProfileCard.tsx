@@ -14,9 +14,10 @@ import MobileProfileCardWrapper from "./MobileProfileCardWrapper";
 
 type MobileProfileCardProps = {
   profileData: ProfileCardDataType;
+  country: string;
 };
 
-const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
+const MobileProfileCard = ({ profileData, country }: MobileProfileCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const {
@@ -28,7 +29,7 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
     securityDeposit,
     vehicleId,
     company,
-  } = useProfileData(profileData);
+  } = useProfileData(profileData, country);
 
   // Toggle function
   const handleToggle = () => {
@@ -82,7 +83,7 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
         />
 
         {/* rental details tab */}
-        <RentalDetailsTab rentalDetails={rentalDetails} />
+        <RentalDetailsTab rentalDetails={rentalDetails} country={country} />
 
         {/* Security Deposit */}
         <SecurityDepositInfo securityDeposit={securityDeposit} />
