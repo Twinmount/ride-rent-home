@@ -47,7 +47,7 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
     .filter((item) => item.type === "image").length;
   const remainingImages = totalImageCount - displayedImageCount;
 
-  const renderMedia = (item: MediaItem, index: number) => {
+  const renderMedia = (item: MediaItem, index: number, remainingImages?: number) => {
     if (item.type === "video") {
       return (
         <a
@@ -82,6 +82,11 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
           alt={imageAlt}
           className="h-full w-full rounded object-cover"
         />
+        {!!remainingImages && remainingImages > 0 && (
+            <div className="absolute inset-0 flex select-none items-center justify-center rounded bg-black/50 text-2xl font-semibold text-white">
+              {`+${remainingImages}`}
+            </div>
+          )}
       </a>
     );
   };
@@ -153,11 +158,10 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
             {/* Column 3: fourth item full height */}
             {gridItems[3] && (
               <div className="relative flex-1">
-                {renderMedia(gridItems[3], 3)}
-                {remainingImages > 0 && (
-                  <div className="absolute inset-0 flex select-none items-center justify-center rounded bg-black/50 text-2xl font-semibold text-white">
-                    {`+${remainingImages}`}
-                  </div>
+                {remainingImages > 0 ?(
+                  renderMedia(gridItems[3], 3, remainingImages)
+                ):(
+                  renderMedia(gridItems[3], 3)
                 )}
               </div>
             )}

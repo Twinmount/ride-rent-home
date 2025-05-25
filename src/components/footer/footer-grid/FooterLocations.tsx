@@ -1,17 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { rearrangeStates } from "@/helpers";
 import { FetchStatesResponse, StateType } from "@/types";
+import { fetchCategories } from "@/lib/api/general-api";
+import { useRouter } from "next/navigation";
 
 export default function FooterLocations() {
   const params = useParams();
+  const router = useRouter();
   const country = (params?.country as string) || "uae";
+  const category = (params?.category as string) || "cars";
 
   const [states, setStates] = useState<StateType[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const selectedCategory = category || 'cars'
+  const selectedCountryURL = country === "in" ? "in" : "uae";
 
   useEffect(() => {
     const baseUrl = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.NEXT_PUBLIC_API_URL;
@@ -36,6 +42,27 @@ export default function FooterLocations() {
     fetchStates();
   }, [country]);
 
+  const gotoLocationCategory = async (stateValue: string) => {
+     const res = await fetchCategories(stateValue, country);
+        const categories: any = res?.result?.list;
+    
+        if (categories?.length > 0) {
+          let isSelectedPresent = categories?.find(
+            (category: any) => category?.value === selectedCategory,
+          );
+          let hasCars = categories?.find(
+            (category: any) => category?.value === "cars",
+          );
+          router.push(
+            `/${selectedCountryURL}/${stateValue}/${!!isSelectedPresent ? selectedCategory : !!hasCars ? "cars" : categories[0]?.value}`,
+          );
+         
+          return;
+        } else {
+          router.push(`/${selectedCountryURL}/${stateValue}/${selectedCategory}`);
+        }
+  }
+
   if (loading || states.length === 0) return null;
 
   return (
@@ -43,8 +70,8 @@ export default function FooterLocations() {
       <h3 className="mb-2 text-[1.1rem] text-yellow">Locations</h3>
       <div className="flex flex-col gap-y-1 text-base font-light text-gray-400">
         {states.map((location) => (
-          <Link
-            href={`/${location.stateValue}/cars`}
+          <div
+            onClick={() => gotoLocationCategory(location.stateValue)}
             className="flex w-fit gap-[0.2rem] text-white hover:text-white"
             key={location.stateId}
           >
@@ -52,7 +79,7 @@ export default function FooterLocations() {
             <span className="w-fit cursor-pointer text-white transition-transform duration-300 ease-out hover:translate-x-2 hover:text-yellow hover:underline">
               {location.stateName}
             </span>
-          </Link>
+          </div>
         ))}
       </div>
     </div>

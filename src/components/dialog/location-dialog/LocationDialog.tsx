@@ -161,7 +161,7 @@ export function LocationDialog() {
         <DialogTrigger asChild>
           <button
             aria-label="Open Search Dialog"
-            className="flex-center gap-x-1 rounded-xl px-4 py-1 text-black"
+            className="flex-center gap-x-1 rounded-xl px-2 py-1 text-black"
           >
             <FaLocationDot className="mr-1 text-orange" />
             <span className="font-semibold capitalize">

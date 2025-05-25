@@ -8,6 +8,8 @@ export const CompanyLinks = () => {
   // Get the state from the URL's search params
   const { state, country } = useParams();
 
+  const defaultCountry = country || "uae";
+
   return (
     <div>
       <h3 className="mb-2 text-[1.1rem] text-yellow">Company</h3>
@@ -15,12 +17,12 @@ export const CompanyLinks = () => {
         {company.map((item) => {
           // Handle FAQ link dynamically
           const link =
-            item.title === "FAQ" ? `/${country}/faq/${state ? state : country === "in" ? "bangalore" : "dubai"}` : item.link;
+            item.title === "FAQ" ? `/${defaultCountry}/faq/${state ? state : defaultCountry === "in" ? "bangalore" : "dubai"}` : item.link;
 
           return item.link.includes("http") ? (
             // Open external links in a new tab for the 'List Vehicles' link
             <Link
-              href={item.link}
+              href={country === "in" && !!item.linkIndia ? item.linkIndia : item.link}
               target="_blank"
               rel="noopener noreferrer"
               className="flex w-fit gap-[0.2rem] text-white hover:text-white"
@@ -46,7 +48,7 @@ export const CompanyLinks = () => {
           );
         })}
          <Link
-            href={country==="in" ? `/in/sitemap` : `/uae/sitemap`}
+            href={defaultCountry==="in" ? `/in/sitemap` : `/uae/sitemap`}
             className="flex w-fit gap-[0.2rem] text-white"
           >
             &sdot;{" "}

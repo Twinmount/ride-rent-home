@@ -123,6 +123,17 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   const mediaSourceList: MediaItem[] = [];
 
+  // const videos = vehicle?.vehicleVideos ?? [];
+  const images = vehicle?.vehiclePhotos ?? [];
+
+  // // Add all videos first
+  // for (const video of videos) {
+  //   mediaSourceList.push({
+  //     source: video,
+  //     type: "video",
+  //   });
+  // }
+
   if (vehicle?.vehicleVideos?.length) {
     // Add video as the first item
     mediaSourceList.push({
@@ -131,13 +142,11 @@ export default async function VehicleDetails(props: ParamsProps) {
     });
   }
 
-  // Add up to 5 - (video count already added) images
-  const remainingSlots = 5 - mediaSourceList.length;
-  const images = vehicle?.vehiclePhotos ?? [];
 
-  for (let i = 0; i < remainingSlots && i < images.length; i++) {
+  // Add all images next
+  for (const image of images) {
     mediaSourceList.push({
-      source: images[i],
+      source: image,
       type: "image",
     });
   }
