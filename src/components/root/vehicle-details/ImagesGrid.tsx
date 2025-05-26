@@ -28,13 +28,15 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
     return () => Fancybox.destroy();
   }, []);
 
-  const handleMouseEnter = () => videoRef.current?.play();
-  const handleMouseLeave = () => {
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
-  };
+
+  // play video on hover
+  // const handleMouseEnter = () => videoRef.current?.play();
+  // const handleMouseLeave = () => {
+  //   if (videoRef.current) {
+  //     videoRef.current.pause();
+  //     videoRef.current.currentTime = 0;
+  //   }
+  // };
 
   const gridItems = mediaItems.slice(0, 4);
   const lightboxImages = mediaItems.filter((item) => item.type === "image" && !gridItems.includes(item));
@@ -52,8 +54,8 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
       return (
         <a
           key={index}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          // onMouseEnter={handleMouseEnter}
+          // onMouseLeave={handleMouseLeave}
           className="block h-full w-full"
         >
           <video
@@ -61,6 +63,8 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
             src={item.source}
             muted
             controls
+            autoPlay
+            loop
             // to hide options
             controlsList="nodownload noplaybackrate"
             disablePictureInPicture
