@@ -103,7 +103,7 @@ async function fetchAllData(country: string): Promise<{ urls: string[]; uniqueLo
     });
 
     // Generate URLs for the sitemap
-    const siteBaseUrl = `https://ride.rent/${country === "in" ? "in" : "uae"}`;
+    const siteBaseUrl = `https://ride.rent/${country === "in" ? "in" : "ae"}`;
     const urls: string[] = [];
 
     formattedData.forEach(({ location, categories }:{location: string; categories: string[]}) => {

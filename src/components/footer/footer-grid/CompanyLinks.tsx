@@ -8,7 +8,7 @@ export const CompanyLinks = () => {
   // Get the state from the URL's search params
   const { state, country } = useParams();
 
-  const defaultCountry = country || "uae";
+  const defaultCountry = country || "ae";
 
   return (
     <div>
@@ -48,7 +48,7 @@ export const CompanyLinks = () => {
           );
         })}
          <Link
-            href={defaultCountry==="in" ? `/in/sitemap` : `/uae/sitemap`}
+            href={defaultCountry==="in" ? `/in/sitemap` : `/ae/sitemap`}
             className="flex w-fit gap-[0.2rem] text-white"
           >
             &sdot;{" "}

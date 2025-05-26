@@ -4,10 +4,10 @@ export const noStatesDropdownRoutes = [
   "/about-us",
   "/privacy-policy",
   "/in/faq/",
-  "/uae/faq/",
+  "/ae/faq/",
   "/in/profile/",
-  "/uae/profile/",
+  "/ae/profile/",
   "/in/sitemap",
-  "/uae/sitemap",
+  "/ae/sitemap",
   "/blog",
 ];

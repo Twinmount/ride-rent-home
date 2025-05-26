@@ -13,7 +13,7 @@ export const useStateAndCategory = () => {
 
   // Fallback defaults for state and category
   
-  const country = params.country || "uae";
+  const country = params.country || "ae";
   const [state, setState] = useState<string>("");
   const [category, setCategory] = useState<string>("");
 

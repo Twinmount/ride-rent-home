@@ -8,7 +8,7 @@ import { useMemo } from "react";
 
 export default function useFetchStates({countryId}: {countryId: string}) {
   // Query to fetch states
-  const country = countryId === "68ea1314-08ed-4bba-a2b1-af549946523d" ? "in" : "uae";
+  const country = countryId === "68ea1314-08ed-4bba-a2b1-af549946523d" ? "in" : "ae";
   const { data, isLoading } = useQuery({
     queryKey: ["states",countryId],
     queryFn: ()=>fetchStates({countryId, country}),

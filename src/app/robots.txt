@@ -2,6 +2,6 @@ User-Agent: *
 Allow: /
 Disallow: /api/  # Block the API folder
 Sitemap: https://ride.rent/sitemap-in.xml
-Sitemap: https://ride.rent/sitemap-uae.xml
+Sitemap: https://ride.rent/sitemap-ae.xml
 
 

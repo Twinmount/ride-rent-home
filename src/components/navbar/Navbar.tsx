@@ -26,7 +26,7 @@ export const Navbar = () => {
     country: string;
   }>();
 
-  const country = (params?.country as string) || "uae";
+  const country = (params?.country as string) || "ae";
 
   const [state, setState] = useState<string>("");
   const [category, setCategory] = useState<string>("");
@@ -109,7 +109,7 @@ export const Navbar = () => {
             {/* List Button */}
             <li className="hidden lg:block">
               <Link
-                href={`https://agent.ride.rent/register`}
+                href={`https://agent.ride.rent/${country}/register`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="yellow-gradient default-btn !font-[500]"

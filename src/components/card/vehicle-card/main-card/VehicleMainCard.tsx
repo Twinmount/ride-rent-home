@@ -30,7 +30,7 @@ type VehicleMainCardProps = {
 const VehicleMainCard = ({
   vehicle,
   index,
-  country = "uae",
+  country = "ae",
 }: VehicleMainCardProps) => {
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,

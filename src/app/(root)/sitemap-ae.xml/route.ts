@@ -22,7 +22,7 @@ async function fetchCompanies(baseUrl) {
           url: `https://ride.rent${generateCompanyProfilePageLink(
             company.companyName,
             company.companyId,
-             "uae",
+             "ae",
           )}`,
           lastModified: new Date().toISOString(),
           changeFrequency: "weekly",
@@ -65,7 +65,7 @@ async function fetchAllData(baseUrl) {
     });
 
     // Generate URLs for the sitemap
-    const siteBaseUrl = `https://ride.rent/uae`;
+    const siteBaseUrl = `https://ride.rent/ae`;
     const urls: string[] = [];
 
     formattedData.forEach(({ location, categories }:{location: string; categories: string[]}) => {
@@ -97,7 +97,7 @@ async function fetchVehicleSeries(baseUrl) {
     );
     const data = await response.json();
 
-    const siteBaseUrl = `https://ride.rent/uae`;
+    const siteBaseUrl = `https://ride.rent/ae`;
 
     if (data.status === "SUCCESS" && data.result?.list) {
       return data.result.list.map(
@@ -156,7 +156,7 @@ export async function GET() {
   }))
 
   const faqPages = uniqueLocations.map((stateValue) => ({
-    url: `https://ride.rent/uae/faq/${stateValue}`,
+    url: `https://ride.rent/ae/faq/${stateValue}`,
     lastModified: new Date().toISOString(),
     changeFrequency: "monthly",
     priority: 0.7,
@@ -168,7 +168,7 @@ export async function GET() {
             state: vehicle.state,
             vehicleCategory: vehicle.category,
             vehicleCode: vehicle.vehicleCode,
-            country: "uae"
+            country: "ae"
           })}`,
     images:[vehicle.vehiclePhoto],
     lastModified: new Date().toISOString(),

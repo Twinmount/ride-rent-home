@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchExchangeRates } from "@/lib/api/general-api";
 
 export const useFetchExchangeRates = ({
-  country = "uae",
+  country = "ae",
 }: {
   country: string;
 }) => {

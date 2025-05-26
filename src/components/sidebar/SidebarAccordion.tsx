@@ -5,12 +5,19 @@ import { CategoriesAccordion } from "./CatgoriesAccordion";
 import { QuickLinksAccordion } from "./QuickLinksAccordion";
 import Link from "next/link";
 import { GiSteeringWheel } from "react-icons/gi";
+import { useParams } from "next/navigation";
 
 export function SidebarAccordion() {
+  const params = useParams<{
+    country: string;
+  }>();
+
+  const country = (params?.country as string) || "ae";
+
   return (
     <>
       <Link
-        href={`https://agent.ride.rent/register`}
+        href={`https://agent.ride.rent/${country}/register`}
         target="_blank"
         rel="noopener noreferrer"
         className="yellow-gradient default-btn"

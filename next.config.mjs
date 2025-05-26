@@ -26,11 +26,11 @@ const nextConfig = {
      
       {
         source: "/",
-        destination: "/uae/dubai",
+        destination: "/ae/dubai",
         permanent: true,
       },
       {
-        source: "/:country(uae)",
+        source: "/:country(ae)",
         destination: "/:country/dubai",
         permanent: true,
       },
@@ -63,20 +63,20 @@ const nextConfig = {
       },
       {
         source: "/profile/:path*",
-        destination: "/uae/profile/:path*",
+        destination: "/ae/profile/:path*",
         permanent: true,
       },
       {
         source:
           "/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)/:path*",
-        destination: "/uae/:state/:path*",
+        destination: "/ae/:state/:path*",
         permanent: true,
       },
       //  { source: "/about-us", destination: "/about-us", permanent: true },
       // { source: "/privacy-policy", destination: "/privacy-policy", permanent: true },
       // { source: "/terms-condition", destination: "/terms-condition", permanent: true },
       // { source: "/sitemap-in.xml", destination: "/sitemap-in.xml", permanent: true },
-      // { source: "/sitemap-uae.xml", destination: "/sitemap-uae.xml", permanent: true },
+      // { source: "/sitemap-ae.xml", destination: "/sitemap-ae.xml", permanent: true },
     ];
   },
 };

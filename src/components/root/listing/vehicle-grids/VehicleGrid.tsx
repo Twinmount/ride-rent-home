@@ -28,7 +28,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   const params = useParams();
   const country = Array.isArray(params.country)
     ? params.country[0]
-    : params.country || "uae";
+    : params.country || "ae";
 
   const { ref, inView } = useInView();
 

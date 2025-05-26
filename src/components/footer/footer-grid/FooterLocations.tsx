@@ -10,14 +10,14 @@ import { useRouter } from "next/navigation";
 export default function FooterLocations() {
   const params = useParams();
   const router = useRouter();
-  const country = (params?.country as string) || "uae";
+  const country = (params?.country as string) || "ae";
   const category = (params?.category as string) || "cars";
 
   const [states, setStates] = useState<StateType[]>([]);
   const [loading, setLoading] = useState(true);
 
   const selectedCategory = category || 'cars'
-  const selectedCountryURL = country === "in" ? "in" : "uae";
+  const selectedCountryURL = country === "in" ? "in" : "ae";
 
   useEffect(() => {
     const baseUrl = country === "in" ? process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.NEXT_PUBLIC_API_URL;

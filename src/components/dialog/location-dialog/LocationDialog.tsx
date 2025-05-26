@@ -24,7 +24,7 @@ const countries = [
   {
     id: "ee8a7c95-303d-4f55-bd6c-85063ff1cf48",
     name: "UAE",
-    value: "uae",
+    value: "ae",
     icon: "/assets/icons/country-flags/uae-flag.png",
   },
   {
@@ -125,7 +125,7 @@ export function LocationDialog() {
       (country) => country.id === selectedCountry,
     )?.value;
     let country =
-      selectedCountry === "68ea1314-08ed-4bba-a2b1-af549946523d" ? "in" : "uae";
+      selectedCountry === "68ea1314-08ed-4bba-a2b1-af549946523d" ? "in" : "ae";
     const res = await fetchCategories(stateValue, country);
     const categories: any = res?.result?.list;
 
