@@ -11,6 +11,7 @@ import ExpandableHeader from "./expandable-header/ExpandableHeader";
 import MobileProfileInfo from "./mobile-profile-info/MobileProfileInfo";
 import Overlay from "./overlay/Overlay";
 import MobileProfileCardWrapper from "./MobileProfileCardWrapper";
+import RentalPriceHeader from "../../profile-specifications/RentalPriceHeader";
 
 type MobileProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -49,7 +50,12 @@ const MobileProfileCard = ({ profileData, country }: MobileProfileCardProps) => 
         <ExpandableHeader
           isExpanded={isExpanded}
           onToggle={handleToggle}
-          heading="Owner Details"
+          heading={
+            <RentalPriceHeader 
+              rentalDetails={rentalDetails}
+              className="text-sm font-medium bg-[#ffa733] px-3 m-1  rounded-full"
+            />
+          }
           isUnavailable={!company.companyName || !company.companyProfile}
         />
 

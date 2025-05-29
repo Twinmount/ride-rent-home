@@ -25,7 +25,7 @@ const RentalDetailsTab = ({
   ].filter((rental) => rental.details.enabled);
 
   const { convert } = usePriceConverter();
-  console.log(country);
+  // console.log(country);
 
   // Set default selected period (first enabled period)
   const [selectedPeriod, setSelectedPeriod] = useState(enabledRentalPeriods[0]);

@@ -1,11 +1,12 @@
 import "./ExpandableHeader.scss";
 import { MdOutlineExpandCircleDown } from "react-icons/md";
+import { ReactNode } from "react"; // Added this import
 
 type ExpandableHeaderProps = {
   isExpanded: boolean;
   onToggle: () => void;
   onMouseLeave?: () => void;
-  heading: string;
+  heading: string | ReactNode; // Only changed this line - added | ReactNode
   isUnavailable?: boolean;
 };
 
@@ -28,7 +29,7 @@ const ExpandableHeader = ({
         )}
       </h2>
       <button className="expand" onClick={onToggle}>
-        {isExpanded ? "show less" : "show more"}{" "}
+        {isExpanded ? "Show less" : "Show more"}{" "}
         <MdOutlineExpandCircleDown className="icon" />
       </button>
     </div>
