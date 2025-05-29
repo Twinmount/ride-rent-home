@@ -14,7 +14,6 @@ type RentalDetailsTabProps = {
 
 const RentalDetailsTab = ({
   rentalDetails,
-  country,
 }: RentalDetailsTabProps) => {
   // Filter out only the enabled rental periods
   const enabledRentalPeriods = [
