@@ -1,0 +1,35 @@
+stages:
+  - build
+  - test
+  - deploy
+
+before_script:
+  - apt-get update -y && apt-get install -y openssh-client
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+
+build_job:
+  stage: build
+  script:
+    - echo "🔧 Build skipped — handled inside Docker Compose"
+
+test_job:
+  stage: test
+  script:
+    - echo "🧪 Test skipped — handled inside Docker Compose or manually"
+
+deploy_job:
+  stage: deploy
+  only:
+    - development
+  script:
+    - echo "🚀 Deploying to HostHatch with Docker Compose..."
+    - ssh $SSH_USER@$SSH_HOST << 'EOF'
+        cd /home/riderent_web/ride-rent/ride-rent-home
+        git pull origin development
+        docker compose -f docker-compose-dev.yml build --no-cache
+        docker compose -f docker-compose-dev.yml up -d
+      EOF

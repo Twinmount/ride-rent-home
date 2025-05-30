@@ -2,7 +2,7 @@ import ViewAllButton from "@/components/common/ViewAllButton";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps } from "@/types";
 import PriceEnquireDialog from "../../dialog/price-filter-dialog/PriceEnquireDialog";
-import { fetchVehicleHomeGridData } from "@/app/(root)/[state]/[category]/action";
+import { fetchVehicleHomeGridData } from "@/app/(root)/[country]/[state]/[category]/action";
 import LoadMoreGridVehicles from "./LoadMoreGridVehicles";
 import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
 
@@ -14,6 +14,7 @@ const MainVehicleGrid = async ({
   state,
   category,
   vehicleType,
+  country,
 }: MainVehicleGridProps) => {
   // Fetch first 8 vehicles (SSR)
   const data = await fetchVehicleHomeGridData({
@@ -21,12 +22,13 @@ const MainVehicleGrid = async ({
     state,
     category,
     vehicleType,
+    country,
   });
 
   const hasVehicles = !!data.vehicles?.length;
 
   // view all link
-  let viewAllLink = `/${state}/listing?category=${category}`;
+  let viewAllLink = `/${country}/${state}/listing?category=${category}`;
 
   // if vehicleType exists, add it in the link
   if (vehicleType) {
@@ -42,7 +44,11 @@ const MainVehicleGrid = async ({
             {data.vehicles}
 
             {/* client rendered remaining 8 results (CSR) */}
-            <LoadMoreGridVehicles state={state} category={category} />
+            <LoadMoreGridVehicles
+              state={state}
+              category={category}
+              country={country}
+            />
           </VehicleGridWrapper>
         </div>
       ) : (

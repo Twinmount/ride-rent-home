@@ -11,12 +11,14 @@ import ExpandableHeader from "./expandable-header/ExpandableHeader";
 import MobileProfileInfo from "./mobile-profile-info/MobileProfileInfo";
 import Overlay from "./overlay/Overlay";
 import MobileProfileCardWrapper from "./MobileProfileCardWrapper";
+import RentalPriceHeader from "../../profile-specifications/RentalPriceHeader";
 
 type MobileProfileCardProps = {
   profileData: ProfileCardDataType;
+  country: string;
 };
 
-const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
+const MobileProfileCard = ({ profileData, country }: MobileProfileCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const {
@@ -28,7 +30,7 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
     securityDeposit,
     vehicleId,
     company,
-  } = useProfileData(profileData);
+  } = useProfileData(profileData, country);
 
   // Toggle function
   const handleToggle = () => {
@@ -48,7 +50,12 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
         <ExpandableHeader
           isExpanded={isExpanded}
           onToggle={handleToggle}
-          heading="Owner Details"
+          heading={
+            <RentalPriceHeader 
+              rentalDetails={rentalDetails}
+              className="text-sm font-medium bg-[#ffa733] px-3 m-1  rounded-full"
+            />
+          }
           isUnavailable={!company.companyName || !company.companyProfile}
         />
 
@@ -82,7 +89,7 @@ const MobileProfileCard = ({ profileData }: MobileProfileCardProps) => {
         />
 
         {/* rental details tab */}
-        <RentalDetailsTab rentalDetails={rentalDetails} />
+        <RentalDetailsTab rentalDetails={rentalDetails} country={country} />
 
         {/* Security Deposit */}
         <SecurityDepositInfo securityDeposit={securityDeposit} />

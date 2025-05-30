@@ -5,18 +5,20 @@ import { StateType } from "@/types";
 type StateCardListProps = {
   states: StateType[];
   category: string;
+  country: string;
 };
 
 export default function StateCardList({
   states,
   category,
+  country
 }: StateCardListProps) {
   if (!states.length) return null;
 
   return states.map((state) =>
     state.stateImage ? (
       <Link
-        href={`/${state.stateValue}/${category}`}
+        href={`/${country}/${state.stateValue}/${category}`}
         key={state.stateId}
         className="group relative flex h-[7rem] w-full min-w-[10rem] max-w-[12rem] cursor-pointer items-center justify-center overflow-hidden rounded-[2rem] text-center shadow-[2px_2px_4px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in"
         target="_blank"

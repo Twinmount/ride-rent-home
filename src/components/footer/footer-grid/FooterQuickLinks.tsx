@@ -1,20 +1,17 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { LinkType } from "@/types";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { fetchQuickLinksByValue } from "@/lib/api/general-api";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 export default function FooterQuickLinks() {
-  const params = useParams();
-
-  const state = params.state;
-
+  const { state, country } = useStateAndCategory();
   // Fetch quick links based on the current state
   const { data, isLoading } = useQuery({
     queryKey: ["quick-links", state],
-    queryFn: () => fetchQuickLinksByValue(state as string),
+    queryFn: () => fetchQuickLinksByValue(state as string, country as string),
     enabled: !!state,
     staleTime: 15 * 60 * 1000, //15 minutes
   });

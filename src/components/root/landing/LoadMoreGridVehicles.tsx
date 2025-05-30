@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchVehicleHomeGridData } from "@/app/(root)/[state]/[category]/action";
+import { fetchVehicleHomeGridData } from "@/app/(root)/[country]/[state]/[category]/action";
 import LoadingWheel from "@/components/common/LoadingWheel";
 import { useState, useEffect, type JSX } from "react";
 import { useInView } from "react-intersection-observer";
@@ -9,12 +9,14 @@ type LoadMoreGridProps = {
   state: string;
   category: string;
   vehicleType?: string;
+  country: string;
 };
 
 export default function LoadMoreGridVehicles({
   state,
   category,
   vehicleType,
+  country,
 }: LoadMoreGridProps) {
   const { ref, inView } = useInView();
   const [data, setData] = useState<JSX.Element[]>([]);
@@ -23,12 +25,16 @@ export default function LoadMoreGridVehicles({
   // Fetch data when in view
   useEffect(() => {
     if (inView && !loaded) {
-      fetchVehicleHomeGridData({ page: 2, state, category, vehicleType }).then(
-        (response) => {
-          setData(response.vehicles);
-          setLoaded(true);
-        },
-      );
+      fetchVehicleHomeGridData({
+        page: 2,
+        state,
+        category,
+        vehicleType,
+        country,
+      }).then((response) => {
+        setData(response.vehicles);
+        setLoaded(true);
+      });
     }
   }, [inView, loaded]);
 

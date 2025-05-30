@@ -3,7 +3,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import StatesDropdown from "./StatesDropdown";
+// import StatesDropdown from "./StatesDropdown";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
@@ -12,22 +12,58 @@ import { extractCategory } from "@/helpers";
 import { noStatesDropdownRoutes } from ".";
 import LanguageSelector from "./LanguageSelector";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { LocationDialog } from "../dialog/location-dialog/LocationDialog";
+import { useEffect, useState } from "react";
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
   loading: () => <span className="text-[0.5rem]">Loading...</span>,
 });
 
 export const Navbar = () => {
-  const params = useParams<{ state: string; category: string }>();
+  const params = useParams<{
+    state: string;
+    category: string;
+    country: string;
+  }>();
 
-  const state = params.state || "dubai";
-  let category = params.category || "cars";
+  const country = (params?.country as string) || "ae";
 
-  // should state dropdowns render or not for the specified routes
+  const [state, setState] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+
+  useEffect(() => {
+    // Check if param values exist
+    const paramState = params?.state as string | undefined;
+    const paramCategory = params?.category as string | undefined;
+
+    // If present in params, store in localStorage
+    if (paramState) {
+      localStorage.setItem("state", paramState);
+    }
+    if (paramCategory) {
+      localStorage.setItem("category", paramCategory);
+    }
+
+    // Fallback order: params → localStorage → default
+    const storedState = localStorage.getItem("state");
+    const storedCategory = localStorage.getItem("category");
+
+    const finalState =
+      paramState ||
+      storedState ||
+      (country === "in" ? "bangalore" : "dubai");
+
+    const finalCategory =
+      paramCategory ||
+      storedCategory ||
+      "cars";
+
+    setState(finalState);
+    setCategory(extractCategory(finalCategory));
+  }, [params, country]);
+
   const shouldRenderDropdowns = useShouldRender(noStatesDropdownRoutes);
 
-  // if category ends with "-for-rent", remove "-for-rent"
-  category = extractCategory(category);
 
   const isMobile = useIsMobile(640);
 
@@ -37,7 +73,7 @@ export const Navbar = () => {
         <div className="flex w-fit items-center justify-center">
           <div className="w-fit p-0">
             <a
-              href={`/${state}/${category}`}
+              href={`/${country}/${state}/${category}`}
               className="notranslate max-w-fit p-0 text-right text-xs font-normal text-gray-500"
             >
               <Image
@@ -65,19 +101,20 @@ export const Navbar = () => {
             {/* Location */}
             {!shouldRenderDropdowns && (
               <li className="mr-2">
-                <StatesDropdown />
+                {/* <StatesDropdown /> */}
+                <LocationDialog />
               </li>
             )}
 
             {/* List Button */}
             <li className="hidden lg:block">
               <Link
-                href={`https://agent.ride.rent/register`}
+                href={`https://agent.ride.rent/${country}/register`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="yellow-gradient default-btn !font-[500]"
               >
-                List your vehicle for FREE
+                List your vehicle for FREE..
               </Link>
             </li>
 

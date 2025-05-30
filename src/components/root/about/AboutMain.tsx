@@ -43,7 +43,7 @@ export default function AboutMain() {
         </div>
 
         <Link
-          href={`https://agent.ride.rent/register`}
+          href={`https://agent.ride.rent/ae/register`}
           target="_blank"
           rel="noopener noreferrer"
           className={`yellow-gradient w-fit text-xl leading-relaxed font-bold text-black px-2 md:px-4 py-2 rounded-xl mx-auto mb-10`}

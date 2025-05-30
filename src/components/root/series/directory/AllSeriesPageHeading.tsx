@@ -6,18 +6,20 @@ type PropsType = {
   state: string;
   category: string;
   brand: string;
+  country: string;
 };
 
 export default async function AllSeriesPageHeading({
   state,
   category,
   brand,
+  country
 }: PropsType) {
   const formattedCategory = singularizeType(convertToLabel(category));
   return (
     <div className="custom-heading group mb-6 flex items-center gap-x-3">
       <Link
-        href={`/${state}/listing?category=${category}&brand=${brand}`}
+        href={`/${country}/${state}/listing?category=${category}&brand=${brand}`}
         target="_blank"
         className="flex-center w-13 h-12 overflow-hidden rounded-full border border-gray-300 bg-white p-1 group-hover:border-2 group-hover:border-yellow"
       >

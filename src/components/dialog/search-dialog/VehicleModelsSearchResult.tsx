@@ -5,11 +5,13 @@ import Link from "next/link";
 type VehicleModelsSearchResultProps = {
   vehicles: VehicleSearchItems[];
   state: string;
+  country: string;
 };
 
 export default function VehicleModelsSearchResult({
   vehicles,
   state,
+  country
 }: VehicleModelsSearchResultProps) {
   if (vehicles.length === 0) return null;
 
@@ -26,6 +28,7 @@ export default function VehicleModelsSearchResult({
             state,
             vehicleCategory: item.category,
             vehicleCode: item.code,
+            country
           });
 
           return (

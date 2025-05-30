@@ -8,6 +8,7 @@ type BrandSeriesSubListProps = {
   state: string;
   category: string;
   brand: SeriesUnderBrandType;
+  country: string;
 };
 
 // render a sub list of series under a brand
@@ -15,6 +16,7 @@ export default function BrandSeriesSubList({
   state,
   brand,
   category,
+  country
 }: BrandSeriesSubListProps) {
   return (
     <div className="flex flex-col">
@@ -26,6 +28,7 @@ export default function BrandSeriesSubList({
             state={state}
             brandValue={brand.brandValue}
             series={series}
+            country={country}
           />
         ))}
       </ul>
@@ -36,6 +39,7 @@ export default function BrandSeriesSubList({
           state={state}
           category={category}
           brand={brand.brandValue}
+          country={country}
         />
       )}
     </div>
@@ -49,14 +53,16 @@ const ViewAllSeries = ({
   state,
   category,
   brand,
+  country
 }: {
   state: string;
   category: string;
   brand: string;
+  country: string;
 }) => {
   return (
     <Link
-      href={`/${state}/vehicle-rentals/${category}-for-rent/${brand}`}
+      href={`/${country}/${state}/vehicle-rentals/${category}-for-rent/${brand}`}
       className="flex-center absolute bottom-2 right-2 ml-auto mt-auto w-fit justify-end gap-2 rounded-xl border border-slate-800 px-3 py-1 text-sm transition-colors hover:bg-slate-700 hover:text-white"
     >
       View All
