@@ -26,6 +26,7 @@ import JsonLd from "@/components/common/JsonLd";
 import BrandImage from "@/components/common/BrandImage";
 import ImagesGrid from "@/components/root/vehicle-details/ImagesGrid";
 import LocationMap from "@/components/root/vehicle-details/LocationMap";
+import Link from "next/link";
 
 type ParamsProps = {
   params: Promise<{
@@ -150,6 +151,9 @@ export default async function VehicleDetails(props: ParamsProps) {
       type: "image",
     });
   }
+  const brandValue = vehicle?.brand?.value ?? '';
+  const href = `/${country || ''}/${state || ''}/listing?category=${category || ''}&brand=${brandValue}`;
+
 
   return (
     <>
@@ -165,11 +169,13 @@ export default async function VehicleDetails(props: ParamsProps) {
         <MotionDiv className="heading-box">
           <div className="flex items-center gap-2">
             {/* brand logo */}
-            <BrandImage
-              category={category}
-              brandValue={vehicle?.brand.value}
-              className="h-12 w-12 rounded-full border-2 border-amber-500 object-contain"
-            />
+            <Link href={href}         >
+              <BrandImage
+                category={category}
+                brandValue={vehicle?.brand.value}
+                className="h-12 w-12 rounded-full border-2 border-amber-500 object-contain"
+              />
+            </Link>
             <h1 className="custom-heading model-name">
               {vehicle.vehicleTitleH1 ||
                 vehicle.vehicleTitle ||
