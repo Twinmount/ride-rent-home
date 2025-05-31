@@ -22,12 +22,13 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            set -e
+          ssh -i ~/.ssh/id_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /root/docker/ride-rent/ride-rent-home
             git fetch origin
             git checkout development || git checkout -b development origin/development
-            git reset --hard origin/development
+            git pull origin development
             docker compose -f docker-compose-dev.yml build --no-cache
             docker compose -f docker-compose-dev.yml up -d
           EOF
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
