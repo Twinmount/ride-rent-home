@@ -23,7 +23,7 @@ jobs:
       - name: Deploy via SSH
         run: |
           ssh -i ~/.ssh/id_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd /home/riderent_web/ride-rent/ride-rent-home
+            cd /root/docker/ride-rent/ride-rent-home
             git pull origin development
             docker compose -f docker-compose-dev.yml build --no-cache
             docker compose -f docker-compose-dev.yml up -d
