@@ -114,7 +114,7 @@ export const Navbar = () => {
                 rel="noopener noreferrer"
                 className="yellow-gradient default-btn !font-[500]"
               >
-                List your vehicle for FREE
+                List your vehicle for FREE.
               </Link>
             </li>
 
