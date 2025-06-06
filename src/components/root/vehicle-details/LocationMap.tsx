@@ -1,3 +1,5 @@
+"use client";
+
 import { GPSLocation } from "@/types/vehicle-details-types";
 
 type LocationMapProps = {
@@ -8,15 +10,69 @@ type LocationMapProps = {
 function LocationMap({ location, mapImage }: LocationMapProps) {
   const { lat, lng } = location;
 
-  console.log("lat-lng :>> ", lat, lng);
+  const coordinatesString = sessionStorage.getItem("userLocation") ?? null;
+
+  let parsedCoordinates = null;
+
+  if (coordinatesString) {
+    parsedCoordinates = JSON.parse(coordinatesString);
+  }
+
+  function getDistanceFromLatLonInKm(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number,
+  ) {
+    if (
+      !lat1 ||
+      !lon1 ||
+      !lat2 ||
+      !lon2 ||
+      isNaN(lat1) ||
+      isNaN(lon1) ||
+      isNaN(lat2) ||
+      isNaN(lon2)
+    )
+      return 0;
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in km
+    return distance;
+  }
+
+  function toRad(degrees: number) {
+    return degrees * (Math.PI / 180);
+  }
+
+  const distanceFromMe = getDistanceFromLatLonInKm(
+    parsedCoordinates?.latitude,
+    parsedCoordinates?.longitude,
+    lat,
+    lng,
+  );
+
+  console.log(distanceFromMe);
 
   return (
     <div className="profile-card mt-4">
       <div className="profile-heading">
-        <h2 className="custom-heading">Location map</h2>
+        <h2 className="custom-heading">
+          {distanceFromMe
+            ? `${Math.round(distanceFromMe)} km away from your location`
+            : "Location"}
+        </h2>
       </div>
       <div className="h-full w-full">
-        <img src={mapImage} alt="Map image"  />
+        <img src={mapImage} alt="Map image" />
       </div>
     </div>
   );
