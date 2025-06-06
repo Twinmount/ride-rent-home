@@ -9,7 +9,7 @@ import {
 
 import { FaLocationDot } from "react-icons/fa6";
 import { useEffect, useState } from "react";
-import { notFound, useParams, useRouter } from "next/navigation";
+import { notFound, useParams, usePathname, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { extractCategory } from "@/helpers";
 import useFetchStates from "@/hooks/useFetchStates";
@@ -28,8 +28,10 @@ export default function StatesDropdown() {
     category: string;
   }>();
 
+  const pathName = usePathname();
+
   const [selectedCountry, setSelectedCountry] = useState(
-    country === "in" ? "68ea1314-08ed-4bba-a2b1-af549946523d" : countries[0].id,
+    country === "in" ? countries[1].id : countries[0].id,
   ); // default to India
   const [selectedState, setSelectedState] = useState<StateType | undefined>(
     undefined,
@@ -46,12 +48,16 @@ export default function StatesDropdown() {
         setSelectedState(foundState);
       } else {
         setSelectedState(states[0]);
-        let selectedCountryURL = countries.find(
-          (country) => country.id === selectedCountry,
-        )?.value;
-        router.push(
-          `/${selectedCountryURL}/${states[0].stateValue}/${selectedCategory}`,
-        );
+
+        if (!pathName?.startsWith(`/${country}/blog`)) {
+          let selectedCountryURL = countries.find(
+            (country) => country.id === selectedCountry,
+          )?.value;
+
+          router.push(
+            `/${selectedCountryURL}/${states[0].stateValue}/${selectedCategory}`,
+          );
+        }
       }
     } else {
       notFound();

@@ -53,8 +53,12 @@ export function removeBlogKeysFromQuery({
 }
 
 // generate blog url
-export function generateBlogHref(title: string): string {
-  return title
+export function generateBlogHref(
+  country: string,
+  title: string,
+  blogId: string,
+): string {
+  let cleanTitle = title
     .trim() // Remove leading/trailing spaces
     .toLowerCase() // Convert to lowercase
     .replace(/[^\w\s&!-]/g, "") // Allow letters, numbers, spaces, &, hyphens, and !
@@ -62,4 +66,7 @@ export function generateBlogHref(title: string): string {
     .replace(/\s+/g, "-") // Replace remaining spaces with hyphens
     .replace(/-+/g, "-") // Replace multiple consecutive hyphens with a single one
     .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+
+  // final url to blog details page
+  return `/${country}/blog/${cleanTitle}/${blogId}`;
 }
