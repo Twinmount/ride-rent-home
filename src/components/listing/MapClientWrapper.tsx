@@ -1,11 +1,7 @@
 // src/components/listing/MapClientWrapper.tsx
 "use client";
 
-import dynamic from "next/dynamic";
-
-const MapClient = dynamic(() => import("./MapClient"), {
-  ssr: false,
-});
+import MapClient from "./MapClient";
 
 export default function MapClientWrapper() {
   return <MapClient />;

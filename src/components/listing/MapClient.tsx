@@ -548,23 +548,105 @@ const MapClient = () => {
   }, [apiKey]);
 
   // Initialize map
-  useEffect(() => {
-    if (!isLoading && !error && mapRef.current && !map) {
-      const mapInstance = new window.google.maps.Map(mapRef.current, {
-        center: center,
-        zoom: 15,
-        styles: [
-          {
-            featureType: "poi",
-            elementType: "labels",
-            stylers: [{ visibility: "off" }],
-          },
-        ],
-      });
+  // useEffect(() => {
+  //   const initMap = () => {
+  //     if (!isLoading && !error && mapRef.current && !map && center.lat !== 0.001) {
+  //       const mapInstance = new window.google.maps.Map(mapRef.current, {
+  //         center: center,
+  //         zoom: 15,
+  //         styles: [
+  //           {
+  //             featureType: "poi",
+  //             elementType: "labels",
+  //             stylers: [{ visibility: "off" }],
+  //           },
+  //         ],
+  //       });
 
-      setMap(mapInstance);
+  //       setMap(mapInstance);
+  //     }
+  //   };
+  //   const timer = setTimeout(initMap, 1000);
+  //   return () => clearTimeout(timer);
+  // }, [isLoading, error, map, center]);
+
+  useEffect(() => {
+    let initializationAttempted = false;
+    let timeoutId;
+
+    const initMap = () => {
+      // Your exact condition check
+      if (
+        !isLoading &&
+        !error &&
+        mapRef.current &&
+        !map &&
+        center.lat !== 0.001
+      ) {
+        initializationAttempted = true;
+
+        console.log("Initializing map with center:", center); // Debug log
+
+        try {
+          const mapInstance = new window.google.maps.Map(mapRef.current, {
+            center: center,
+            zoom: 15,
+            styles: [
+              {
+                featureType: "poi",
+                elementType: "labels",
+                stylers: [{ visibility: "off" }],
+              },
+            ],
+          });
+
+          // Add debug event listeners
+          mapInstance.addListener("tilesloaded", () => {
+            console.log("Map tiles fully loaded");
+          });
+
+          mapInstance.addListener("idle", () => {
+            if (!document.querySelector(".gm-style")) {
+              console.warn("Map container empty - triggering recovery");
+              google.maps.event.trigger(mapInstance, "resize");
+              mapInstance.setCenter(center);
+            }
+          });
+
+          setMap(mapInstance);
+        } catch (err) {
+          console.error("Map initialization failed:", err);
+        }
+      } else if (!initializationAttempted) {
+        // Debug why initialization didn't occur
+        console.log("Initialization skipped because:", {
+          isLoading,
+          error,
+          hasMapRef: !!mapRef.current,
+          mapExists: !!map,
+          validCenter: center.lat !== 0.001,
+        });
+      }
+    };
+
+    // First attempt (immediate)
+    initMap();
+
+    // Fallback attempt after delay if not initialized
+    if (!initializationAttempted) {
+      timeoutId = setTimeout(() => {
+        console.log("Fallback initialization attempt");
+        initMap();
+      }, 500);
     }
-  }, [isLoading, error, map]);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (map) {
+        google.maps.event.clearInstanceListeners(map);
+      }
+    };
+  }, [isLoading, error, map, center]);
 
   // Helper function to get best available price and period
   const getBestPrice = (rentalDetails) => {
@@ -818,7 +900,7 @@ const MapClient = () => {
   }
 
   return (
-    <div className="h-[100vh - 4rem] relative w-full">
+    <div className="relative w-full" style={{ height: "calc(100vh - 4rem)" }}>
       {/* Google Maps Container */}
       <div
         ref={mapRef}
