@@ -15,7 +15,7 @@ export default function PromotionSideCard({
     <Link
       href={promotionLink}
       target="_blank"
-      className="group relative mb-1 flex h-28 w-full items-center gap-2 overflow-hidden rounded-xl border-b border-gray-200 p-0 transition duration-200 hover:bg-gray-100"
+      className="group relative mb-1 flex h-[8.2rem] w-full items-center gap-2 overflow-hidden rounded-xl border-b border-gray-200 p-0 transition duration-200 hover:bg-gray-100 md:h-[17rem] lg:h-[6.6rem]"
     >
       {/* Blog Image */}
       <Image

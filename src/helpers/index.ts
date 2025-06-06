@@ -255,7 +255,7 @@ export function rearrangeStates(states: StateType[]): StateType[] {
     "dubai",
     "abu-dhabi",
     "sharjah",
-    "ras-al-khaima",
+    "ras-al-khaimah",
     "ajman",
     "al-ain",
     "fujairah",

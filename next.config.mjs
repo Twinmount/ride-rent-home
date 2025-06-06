@@ -23,12 +23,12 @@ const nextConfig = {
   },
   async redirects() {
     return [
-     
       {
         source: "/",
         destination: "/ae/dubai",
         permanent: true,
       },
+
       {
         source: "/:country(ae)",
         destination: "/:country/dubai",
@@ -46,8 +46,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source:
-          "/in/:state",
+        source: "/in/:state",
         destination: "/in/:state/cars",
         permanent: true,
       },

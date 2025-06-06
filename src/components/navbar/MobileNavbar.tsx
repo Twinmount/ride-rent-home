@@ -26,10 +26,6 @@ const MobileNavbar = () => {
             <SearchDialog isMobileNav={true} state={state} />
             <span className="text-xs text-gray-600">search</span>
           </li>
-
-          {/* <li>
-            <ProfileDropdown isMobile />
-          </li> */}
         </ul>
       </div>
     </MobileNavbarWrapper>
