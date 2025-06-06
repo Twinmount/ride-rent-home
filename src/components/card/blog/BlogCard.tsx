@@ -7,17 +7,15 @@ import { BlogType } from "@/types/blog.types";
 
 type BlogCardProps = {
   blog: BlogType;
+  country: string;
 };
 
-export default function BlogCard({ blog }: BlogCardProps) {
-  const href = generateBlogHref(blog.blogTitle);
+export default function BlogCard({ blog, country }: BlogCardProps) {
+  const href = generateBlogHref(country, blog.blogTitle, blog.blogId);
 
   return (
     <MotionDiv className="group mx-auto h-full min-w-[265px] max-w-sm transform overflow-hidden rounded-xl bg-white shadow-lg transition duration-300 hover:scale-[1.02] hover:shadow-xl">
-      <Link
-        href={`/blog/${href}/${blog.blogId} `}
-        className="flex h-full flex-col"
-      >
+      <Link href={href} className="flex h-full flex-col">
         <div className="overflow-hidden">
           {/* Image with zoom effect on card hover */}
           <Image

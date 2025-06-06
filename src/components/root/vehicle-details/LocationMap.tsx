@@ -5,18 +5,14 @@ type LocationMapProps = {
   mapImage: string;
 };
 
-function LocationMap({ location, mapImage }: LocationMapProps) {
-  const { lat, lng } = location;
-
-  console.log("lat-lng :>> ", lat, lng);
-
+function LocationMap({ mapImage }: LocationMapProps) {
   return (
     <div className="profile-card mt-4">
       <div className="profile-heading">
         <h2 className="custom-heading">Location map</h2>
       </div>
       <div className="h-full w-full">
-        <img src={mapImage} alt="Map image"  />
+        <img src={mapImage} alt="Map image" />
       </div>
     </div>
   );

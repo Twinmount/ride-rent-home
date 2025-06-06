@@ -10,7 +10,7 @@ import {
 import { SearchResults } from "./SearchResults";
 import { SearchInput } from "./SearchInput";
 import { FaLocationDot } from "react-icons/fa6";
-import { useParams, useRouter, notFound } from "next/navigation";
+import { useParams, useRouter, notFound, usePathname } from "next/navigation";
 import { extractCategory } from "@/helpers";
 import useFetchStates from "@/hooks/useFetchStates";
 import { StateType } from "@/types";
@@ -37,6 +37,7 @@ const countries = [
 
 export function LocationDialog() {
   const router = useRouter();
+  const pathname = usePathname();
   const [search, setSearch] = useState<string>("");
   const [favouriteStates, setFavouriteStates] = useState<StateType[]>([]);
   const [listedStates, setListedStates] = useState<StateType[]>([]);
@@ -100,12 +101,15 @@ export function LocationDialog() {
 
   useEffect(() => {
     if (isLoading) return;
+
+    const shouldSkipRedirect = pathname?.startsWith(`/${country}${"/blog"}`);
+
     if (states.length > 0) {
       const foundState = states.find((data) => data.stateValue === state);
       if (foundState) {
         setSelectedState(foundState);
       } else {
-        if (selectedState) return;
+        if (selectedState || shouldSkipRedirect) return;
         setSelectedState(states[0]);
         let selectedCountryURL = countries.find(
           (country) => country.id === selectedCountry,

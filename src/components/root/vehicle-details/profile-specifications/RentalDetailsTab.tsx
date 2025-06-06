@@ -12,9 +12,7 @@ type RentalDetailsTabProps = {
   country: string;
 };
 
-const RentalDetailsTab = ({
-  rentalDetails,
-}: RentalDetailsTabProps) => {
+const RentalDetailsTab = ({ rentalDetails }: RentalDetailsTabProps) => {
   // Filter out only the enabled rental periods
   const enabledRentalPeriods = [
     { period: "Hour", details: rentalDetails.hour },
@@ -24,7 +22,6 @@ const RentalDetailsTab = ({
   ].filter((rental) => rental.details.enabled);
 
   const { convert } = usePriceConverter();
-  // console.log(country);
 
   // Set default selected period (first enabled period)
   const [selectedPeriod, setSelectedPeriod] = useState(enabledRentalPeriods[0]);

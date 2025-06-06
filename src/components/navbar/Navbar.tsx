@@ -49,21 +49,15 @@ export const Navbar = () => {
     const storedCategory = localStorage.getItem("category");
 
     const finalState =
-      paramState ||
-      storedState ||
-      (country === "in" ? "bangalore" : "dubai");
+      paramState || storedState || (country === "in" ? "bangalore" : "dubai");
 
-    const finalCategory =
-      paramCategory ||
-      storedCategory ||
-      "cars";
+    const finalCategory = paramCategory || storedCategory || "cars";
 
     setState(finalState);
     setCategory(extractCategory(finalCategory));
   }, [params, country]);
 
   const shouldRenderDropdowns = useShouldRender(noStatesDropdownRoutes);
-
 
   const isMobile = useIsMobile(640);
 

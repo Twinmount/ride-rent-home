@@ -7,6 +7,7 @@ interface BlogPopularCardProps {
   blogId: string;
   title: string;
   description: string;
+  country: string;
 }
 
 const BlogPopularCard = ({
@@ -14,8 +15,9 @@ const BlogPopularCard = ({
   title,
   blogId,
   description,
+  country,
 }: BlogPopularCardProps) => {
-  const href = generateBlogHref(title);
+  const href = generateBlogHref(country, title, blogId);
 
   return (
     <Link
