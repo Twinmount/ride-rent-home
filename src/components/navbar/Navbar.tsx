@@ -14,9 +14,17 @@ import LanguageSelector from "./LanguageSelector";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { LocationDialog } from "../dialog/location-dialog/LocationDialog";
 import { useEffect, useState } from "react";
+import { AlignRight } from "lucide-react";
+import { Button } from "../ui/button";
+
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
-  loading: () => <span className="text-[0.5rem]">Loading...</span>,
+  loading: () => (
+    <Button className="border-none outline-none" size="icon" disabled>
+      <AlignRight className="h-6 w-6" />
+      <span className="sr-only">Toggle navigation</span>
+    </Button>
+  ),
 });
 
 export const Navbar = () => {
@@ -56,6 +64,27 @@ export const Navbar = () => {
     setState(finalState);
     setCategory(extractCategory(finalCategory));
   }, [params, country]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          // Save to localStorage
+          sessionStorage.setItem(
+            "userLocation",
+            JSON.stringify({ latitude, longitude }),
+          );
+          console.log("Location saved:", latitude, longitude);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        },
+      );
+    } else {
+      console.warn("Geolocation is not supported");
+    }
+  }, []);
 
   const shouldRenderDropdowns = useShouldRender(noStatesDropdownRoutes);
 

@@ -229,14 +229,10 @@ body {
 
 .listing-page-filter-div {
   position: fixed;
-  right: calc((100vw - 90%) / 2);
+  right: calc(100vw - 48%);
 
   @media (max-width: 1023px) {
     right: calc((100vw - 96%) / 2);
-  }
-
-  @media (min-width: 1600px) {
-    right: calc((100vw - 92rem) / 2);
   }
 }
 
