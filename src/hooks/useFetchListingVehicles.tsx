@@ -6,21 +6,23 @@ interface UseFetchListingVehiclesParams {
   state: string;
   limit: string;
   country: string
+  coordinates: { latitude: number; longitude: number } | null
 }
 
 export const useFetchListingVehicles = ({
   searchParams,
   state,
   limit,
-  country
+  country,
+  coordinates
 }: UseFetchListingVehiclesParams) => {
   // Fetch vehicles using react-query and useInfiniteQuery logic
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useInfiniteQuery({
-      queryKey: ["vehicles", state, searchParams],
+      queryKey: ["vehicles", state, searchParams, coordinates],
       queryFn: ({ pageParam = 1 }) => {
         // Fetch data using api helper function
-        return FetchVehicleByFilters(searchParams, state, pageParam, limit, country);
+        return FetchVehicleByFilters(searchParams, state, pageParam, limit, country, coordinates);
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage) => {

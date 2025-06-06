@@ -14,6 +14,7 @@ import PriceFilterTag from "@/components/root/listing/PriceFilterTag";
 import { getDefaultMetadata } from "@/app/root-metadata";
 import JsonLd from "@/components/common/JsonLd";
 import PriceFilterDialog from "@/components/dialog/price-filter-dialog/PriceFilterDialog";
+import MapClientWrapper from "@/components/listing/MapClientWrapper";
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const searchParams = await props.searchParams;
@@ -34,7 +35,12 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
       : ""
   }`;
 
-  const data = await fetchListingMetadata(state, category, vehicleType, country);
+  const data = await fetchListingMetadata(
+    state,
+    category,
+    vehicleType,
+    country,
+  );
 
   if (!data) {
     return getDefaultMetadata();
@@ -74,60 +80,71 @@ const ListingPage: FC<PageProps> = async (props) => {
     state,
     category,
     vehicleTypes[0],
-    country
+    country,
   );
 
   const oneVehicleType = vehicleTypes.length === 1;
 
   return (
     <>
-      {/* Inject JSON-LD into the <head> */}
       <JsonLd
         id={`json-ld-listing-${state}-${category}`}
         jsonLdData={jsonLdData}
       />
-      <div className="wrapper relative h-auto min-h-screen bg-lightGray pb-8 pt-4">
-        <div
-          className="flex-between mb-6 h-fit w-full max-md:flex-col"
-          style={{ alignItems: "start" }}
-        >
-          <div className="overflow-wrap-anywhere max-w-[calc(100%-180px)] pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full">
-            {oneVehicleType && !!data?.result?.h1 ? (
-              <h1 className="ml-2 break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
-                {data?.result?.h1}
-              </h1>
-            ) : (
-              <h1 className="ml-2 break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
-                Rent or Lease&nbsp;
-                {formattedBrand && (
-                  <span className="font-semibold">{formattedBrand}&nbsp;</span>
+      <div className="-mx-2 flex flex-wrap">
+        <div className="w-full px-2 lg:w-1/2">
+          <div className="relative h-auto min-h-screen bg-lightGray px-3 pb-8 pt-4">
+            <div
+              className="flex-between mb-6 h-fit w-full max-md:flex-col"
+              style={{ alignItems: "start" }}
+            >
+              <div className="overflow-wrap-anywhere max-w-[calc(100%-180px)] pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full">
+                {oneVehicleType && !!data?.result?.h1 ? (
+                  <h1 className="ml-2 break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
+                    {data?.result?.h1}
+                  </h1>
+                ) : (
+                  <h1 className="ml-2 break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
+                    Rent or Lease&nbsp;
+                    {formattedBrand && (
+                      <span className="font-semibold">
+                        {formattedBrand}&nbsp;
+                      </span>
+                    )}
+                    {formattedCategory} in {formattedState}
+                    <SelectedVehicleTypes vehicleTypes={vehicleTypes} />
+                  </h1>
                 )}
-                {formattedCategory} in {formattedState}
-                <SelectedVehicleTypes vehicleTypes={vehicleTypes} />
-              </h1>
-            )}
-            {oneVehicleType && !!data?.result?.h2 && (
-              <h2 className="ml-2 mt-2 break-words text-lg font-[400] max-md:mr-auto lg:text-xl">
-                {data?.result?.h2}
-              </h2>
-            )}
-          </div>
-
-          {/* filter sidebar */}
-          <div className="listing-page-filter-div z-10 flex flex-shrink-0 max-md:mt-4">
-            <div className="me-0 max-sm:hidden md:me-2">
-              <PriceFilterDialog isListingPage={true} />
+                {oneVehicleType && !!data?.result?.h2 && (
+                  <h2 className="ml-2 mt-2 break-words text-lg font-[400] max-md:mr-auto lg:text-xl">
+                    {data?.result?.h2}
+                  </h2>
+                )}
+              </div>
+              <div className="listing-page-filter-div z-[200] flex flex-shrink-0 max-md:mt-4">
+                <div className="me-0 max-sm:hidden md:me-2">
+                  <PriceFilterDialog isListingPage={true} />
+                </div>
+                <FilterSidebar />
+              </div>
             </div>
-            <FilterSidebar />
+            <PriceFilterTag />
+            <div className="mt-3 flex gap-8">
+              <VehicleGrid key={JSON.stringify(searchParams)} state={state} />
+            </div>
           </div>
         </div>
-
-        {/* New Price Filter Tag */}
-        <PriceFilterTag />
-
-        <div className="mt-3 flex gap-8">
-          {/* vehicle grid */}
-          <VehicleGrid key={JSON.stringify(searchParams)} state={state} />
+        <div className="hidden w-full px-2 lg:block lg:w-1/2">
+          <div className="h-[100vh - 6rem] sticky top-[4rem] p-3">
+            <div
+              style={{
+                borderRadius: "20px",
+                overflow: "hidden",
+              }}
+            >
+              <MapClientWrapper />
+            </div>
+          </div>
         </div>
       </div>
     </>

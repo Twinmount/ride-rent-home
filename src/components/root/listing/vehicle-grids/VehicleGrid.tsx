@@ -9,12 +9,14 @@ import PriceEnquireDialog from "../../../dialog/price-filter-dialog/PriceEnquire
 import { useInView } from "react-intersection-observer";
 import { useFetchListingVehicles } from "@/hooks/useFetchListingVehicles";
 import LoadingWheel from "@/components/common/LoadingWheel";
-import VehicleGridWrapper from "@/components/common/VehicleGridWrapper";
+import VehicleListingGridWrapper from "@/components/common/VehicleListingGridWrapper";
 import { useImmer } from "use-immer";
 import { convertToLabel } from "@/helpers";
 import { useQuery } from "@tanstack/react-query";
 import { fetcheRealatedStateList } from "@/lib/api/general-api";
 import { motion } from "framer-motion";
+import MapClientWrapper from "@/components/listing/MapClientWrapper";
+import { List, Map } from "lucide-react";
 
 type VehicleGridProps = {
   state: string;
@@ -32,6 +34,19 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
 
   const { ref, inView } = useInView();
 
+  const [parsedCoordinates, setParsedCoordinates] = useState(null);
+
+  useEffect(() => {
+    const coordinatesString = sessionStorage.getItem("userLocation");
+    if (coordinatesString) {
+      try {
+        setParsedCoordinates(JSON.parse(coordinatesString));
+      } catch (err) {
+        console.error("Failed to parse coordinates:", err);
+      }
+    }
+  }, []);
+
   const limit = "8";
 
   const {
@@ -43,13 +58,15 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
     searchParams: searchParams.toString(),
     state: stateValue,
     limit,
-    country
+    country,
+    coordinates: stateValue === state ? parsedCoordinates : null,
   });
 
   const category = searchParams.get("category") || "cars";
 
   const [isIntitalLoad, setIsIntitalLoad] = useImmer(true);
   const [apiCallDelay, setApiCallDelay] = useImmer(false);
+  const [showMap, setShowMap] = useImmer(false);
 
   const { data: relatedState } = useQuery({
     queryKey: ["related-state", state],
@@ -115,91 +132,264 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
     }
   }, [isFetching]);
 
+  const toogleMap = () => {
+    setShowMap((prev) => !prev);
+  };
+
   return (
-    <div className="flex w-full flex-col">
-      {isIntitalLoad ? (
-        <AnimatedSkelton />
-      ) : (
-        <>
-          <div className={`w-full`}>
-            {Object.keys(vehicles).length === 0 ? (
-              <NoResultsFound />
+    // <>
+    //   <div className="relative flex min-h-screen w-full flex-col">
+    //     {isIntitalLoad ? (
+    //       <AnimatedSkelton />
+    //     ) : (
+    //       <>
+    //         {/* Map Layer (Always Mounted) */}
+    //         <div
+    //           className={`absolute left-0 top-0 h-full w-full transition-opacity duration-300 ${
+    //             showMap
+    //               ? "z-40 opacity-100"
+    //               : "pointer-events-none z-0 opacity-0"
+    //           }`}
+    //         >
+    //           <MapClientWrapper />
+    //         </div>
+
+    //         {!showMap && (
+    //           <>
+    //             <div className="relative z-10 w-full">
+    //               {Object.keys(vehicles).length === 0 ? (
+    //                 <NoResultsFound />
+    //               ) : (
+    //                 <>
+    //                   {(!vehicles[state] || vehicles[state]?.length === 0) && (
+    //                     <p className="mb-10 mt-8 text-center text-base text-gray-600">
+    //                       No vehicles found in{" "}
+    //                       {convertToLabel(state.replace(/-/g, " "))}. Showing
+    //                       results from nearby locations.
+    //                     </p>
+    //                   )}
+
+    //                   {Object.entries(vehicles).map(
+    //                     ([location, vehiclesInLocation]) => {
+    //                       const locationVehicles = vehiclesInLocation as Array<{
+    //                         vehicleId: string;
+    //                       }>;
+    //                       const isFromRelatedState = location !== state;
+
+    //                       return (
+    //                         <div key={location} className="mb-8">
+    //                           {isFromRelatedState && (
+    //                             <h3 className="relative mb-6 inline-block break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
+    //                               Discover more{" "}
+    //                               <span className="capitalize">{category}</span>{" "}
+    //                               from{" "}
+    //                               <span className="capitalize">
+    //                                 {convertToLabel(
+    //                                   location.replace(/-/g, " "),
+    //                                 )}{" "}
+    //                               </span>
+    //                               <motion.div
+    //                                 className="absolute bottom-0 left-0 h-[2px] bg-black"
+    //                                 initial={{ width: 0 }}
+    //                                 animate={{ width: "100%" }}
+    //                                 transition={{
+    //                                   duration: 0.5,
+    //                                   ease: "easeOut",
+    //                                 }}
+    //                               />
+    //                             </h3>
+    //                           )}
+    //                           <VehicleListingGridWrapper>
+    //                             {locationVehicles.map((vehicle: any, index) => {
+    //                               const animationIndex = index % 8;
+    //                               return (
+    //                                 <VehicleMainCard
+    //                                   key={vehicle.vehicleId}
+    //                                   vehicle={vehicle}
+    //                                   index={animationIndex}
+    //                                   country={country}
+    //                                 />
+    //                               );
+    //                             })}
+    //                           </VehicleListingGridWrapper>
+    //                         </div>
+    //                       );
+    //                     },
+    //                   )}
+    //                 </>
+    //               )}
+    //             </div>
+
+    //             {(hasNextPage || relatedStateList.length > 0 || isFetching) && (
+    //               <div ref={ref} className="z-10 w-full py-4 text-center">
+    //                 {isFetching && (
+    //                   <div className="flex-center h-12">
+    //                     <LoadingWheel />
+    //                   </div>
+    //                 )}
+    //               </div>
+    //             )}
+
+    //             {!hasNextPage && !isFetching && (
+    //               <span className="mt-16 text-center text-base italic text-gray-500">
+    //                 You have reached the end
+    //               </span>
+    //             )}
+    //           </>
+    //         )}
+    //       </>
+    //     )}
+
+    //     {/* Toggle Button (mobile) */}
+    //     <div className="sticky bottom-[10%] z-50 flex justify-center lg:hidden">
+    //       <button
+    //         className="flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-gray-800"
+    //         onClick={toogleMap}
+    //       >
+    //         {!showMap ? (
+    //           <>
+    //             Show map
+    //             <Map size={16} className="text-white" />
+    //           </>
+    //         ) : (
+    //           <>
+    //             Show list
+    //             <List size={16} className="text-white" />
+    //           </>
+    //         )}
+    //       </button>
+    //     </div>
+
+    //     {/* Dialog */}
+    //     <PriceEnquireDialog />
+    //   </div>
+    // </>
+    <>
+      <div className="relative flex min-h-screen w-full flex-col">
+        {isIntitalLoad ? (
+          <AnimatedSkelton />
+        ) : (
+          <>
+            {/* Map Layer (Always Mounted) */}
+            <div
+              className={`fixed inset-0 top-[4rem] transition-opacity duration-300 ${
+                showMap
+                  ? "z-40 opacity-100"
+                  : "pointer-events-none z-0 opacity-0"
+              }`}
+            >
+              <MapClientWrapper />
+            </div>
+
+            {/* List Layer (Always Mounted, visibility toggled) */}
+            <div
+              className={`relative z-10 w-full transition-opacity duration-300 ${
+                showMap ? "pointer-events-none opacity-0" : "opacity-100"
+              }`}
+            >
+              {Object.keys(vehicles).length === 0 ? (
+                <NoResultsFound />
+              ) : (
+                <>
+                  {(!vehicles[state] || vehicles[state]?.length === 0) && (
+                    <p className="mb-10 mt-8 text-center text-base text-gray-600">
+                      No vehicles found in{" "}
+                      {convertToLabel(state.replace(/-/g, " "))}. Showing
+                      results from nearby locations.
+                    </p>
+                  )}
+
+                  {Object.entries(vehicles).map(
+                    ([location, vehiclesInLocation]) => {
+                      const locationVehicles = vehiclesInLocation as Array<{
+                        vehicleId: string;
+                      }>;
+                      const isFromRelatedState = location !== state;
+
+                      return (
+                        <div key={location} className="mb-8">
+                          {isFromRelatedState && (
+                            <h3 className="relative mb-6 inline-block break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
+                              Discover more{" "}
+                              <span className="capitalize">{category}</span>{" "}
+                              from{" "}
+                              <span className="capitalize">
+                                {convertToLabel(location.replace(/-/g, " "))}
+                              </span>
+                              <motion.div
+                                className="absolute bottom-0 left-0 h-[2px] bg-black"
+                                initial={{ width: 0 }}
+                                animate={{ width: "100%" }}
+                                transition={{
+                                  duration: 0.5,
+                                  ease: "easeOut",
+                                }}
+                              />
+                            </h3>
+                          )}
+                          <VehicleListingGridWrapper>
+                            {locationVehicles.map((vehicle: any, index) => {
+                              const animationIndex = index % 8;
+                              return (
+                                <VehicleMainCard
+                                  key={vehicle.vehicleId}
+                                  vehicle={vehicle}
+                                  index={animationIndex}
+                                  country={country}
+                                />
+                              );
+                            })}
+                          </VehicleListingGridWrapper>
+                        </div>
+                      );
+                    },
+                  )}
+                </>
+              )}
+
+              {(hasNextPage || relatedStateList.length > 0 || isFetching) && (
+                <div ref={ref} className="z-10 w-full py-4 text-center">
+                  {isFetching && (
+                    <div className="flex-center h-12">
+                      <LoadingWheel />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {!hasNextPage && !isFetching && (
+                <span className="mt-16 block text-center text-base italic text-gray-500">
+                  You have reached the end
+                </span>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* Toggle Button (mobile) */}
+        <div className="sticky bottom-[10%] z-50 mt-auto flex justify-center lg:hidden">
+          <button
+            className="flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-gray-800"
+            onClick={toogleMap}
+          >
+            {!showMap ? (
+              <>
+                Show map
+                <Map size={16} className="text-white" />
+              </>
             ) : (
               <>
-                {(!vehicles[state] || vehicles[state]?.length === 0) && (
-                  <p className="mb-10 mt-8 text-center text-base text-gray-600">
-                    No vehicles found in{" "}
-                    {convertToLabel(state.replace(/-/g, " "))}. Showing results
-                    from nearby locations.
-                  </p>
-                )}
-
-                {Object.entries(vehicles).map(
-                  ([location, vehiclesInLocation]) => {
-                    const locationVehicles = vehiclesInLocation as Array<{
-                      vehicleId: string;
-                    }>;
-                    const isFromRelatedState = location !== state;
-
-                    return (
-                      <div key={location} className="mb-8">
-                        {isFromRelatedState && (
-                          <h3 className="relative mb-6 inline-block break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
-                            Discover more{" "}
-                            <span className="capitalize">{category}</span> from{" "}
-                            <span className="capitalize">
-                              {convertToLabel(location.replace(/-/g, " "))}
-                            </span>
-                            <motion.div
-                              className="absolute bottom-0 left-0 h-[2px] bg-black"
-                              initial={{ width: 0 }}
-                              animate={{ width: "100%" }}
-                              transition={{ duration: 0.5, ease: "easeOut" }}
-                            />
-                          </h3>
-                        )}
-                        <VehicleGridWrapper>
-                          {locationVehicles.map((vehicle: any, index) => {
-                            const animationIndex = index % 8;
-                            return (
-                              <VehicleMainCard
-                                key={vehicle.vehicleId}
-                                vehicle={vehicle}
-                                index={animationIndex}
-                                country={country}
-                              />
-                            );
-                          })}
-                        </VehicleGridWrapper>
-                      </div>
-                    );
-                  },
-                )}
+                Show list
+                <List size={16} className="text-white" />
               </>
             )}
-          </div>
+          </button>
+        </div>
 
-          {(hasNextPage || relatedStateList.length > 0 || isFetching) && (
-            <div ref={ref} className="w-full py-4 text-center">
-              {isFetching ? (
-                <div className="flex-center h-12">
-                  <LoadingWheel />
-                </div>
-              ) : null}
-            </div>
-          )}
-
-          {!hasNextPage && !isFetching && (
-            <span className="mt-16 text-center text-base italic text-gray-500">
-              You have reached the end
-            </span>
-          )}
-        </>
-      )}
-
-      {/* Dialog to enquire best prices */}
-      <PriceEnquireDialog />
-    </div>
+        {/* Dialog */}
+        <PriceEnquireDialog />
+      </div>
+    </>
   );
 };
 
