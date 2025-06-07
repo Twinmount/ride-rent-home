@@ -12,7 +12,7 @@ import {
   VehicleDetailsPageResponse,
 } from "@/types/vehicle-details-types";
 import RelatedLinks from "@/components/root/vehicle-details/RelatedLinks";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
 import { generateVehicleMetadata, getVehicleJsonLd } from "./metadata";
@@ -27,6 +27,7 @@ import BrandImage from "@/components/common/BrandImage";
 import ImagesGrid from "@/components/root/vehicle-details/ImagesGrid";
 import LocationMap from "@/components/root/vehicle-details/LocationMap";
 import Link from "next/link";
+import { generateModelDetailsUrl } from "@/helpers";
 
 type ParamsProps = {
   params: Promise<{
@@ -42,15 +43,9 @@ type ParamsProps = {
 export async function generateMetadata(props: ParamsProps): Promise<Metadata> {
   const params = await props.params;
 
-  const { state, category, vehicleCode, modelDetails, country } = params;
+  const { state, category, vehicleCode, country } = params;
 
-  return generateVehicleMetadata(
-    state,
-    category,
-    vehicleCode,
-    modelDetails,
-    country,
-  );
+  return generateVehicleMetadata(state, category, vehicleCode, country);
 }
 
 export default async function VehicleDetails(props: ParamsProps) {
@@ -63,9 +58,10 @@ export default async function VehicleDetails(props: ParamsProps) {
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
 
   const formattedModelDetails = modelDetails.replace(/-for-rent$/, "");
+
   // Fetch the vehicle data from the API
   const response = await fetch(
-    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}&vehicleTitle=${formattedModelDetails}`,
+    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}`,
     {
       method: "GET",
       cache: "no-cache",
@@ -81,6 +77,18 @@ export default async function VehicleDetails(props: ParamsProps) {
     !data.result
   ) {
     return notFound();
+  }
+
+  // 🆕 If the modelDetails in the URL (slug) doesn't match actual vehicle title, redirect to canonical URL
+
+  const normalizedActualTitle = generateModelDetailsUrl(
+    data.result.vehicleTitle,
+  );
+
+  if (formattedModelDetails !== normalizedActualTitle) {
+    redirect(
+      `/${state}/${category}/${normalizedActualTitle}-for-rent/${vehicleCode}`,
+    );
   }
 
   // if the state in the url doesn't match the state in the data , return 404 not found
@@ -143,7 +151,6 @@ export default async function VehicleDetails(props: ParamsProps) {
     });
   }
 
-
   // Add all images next
   for (const image of images) {
     mediaSourceList.push({
@@ -151,9 +158,8 @@ export default async function VehicleDetails(props: ParamsProps) {
       type: "image",
     });
   }
-  const brandValue = vehicle?.brand?.value ?? '';
-  const href = `/${country || ''}/${state || ''}/listing?category=${category || ''}&brand=${brandValue}`;
-
+  const brandValue = vehicle?.brand?.value ?? "";
+  const href = `/${country || ""}/${state || ""}/listing?category=${category || ""}&brand=${brandValue}`;
 
   return (
     <>
@@ -169,7 +175,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         <MotionDiv className="heading-box">
           <div className="flex items-center gap-2">
             {/* brand logo */}
-            <Link href={href}         >
+            <Link href={href}>
               <BrandImage
                 category={category}
                 brandValue={vehicle?.brand.value}
@@ -246,7 +252,10 @@ export default async function VehicleDetails(props: ParamsProps) {
 
                 {/* Location map */}
                 {vehicle?.mapImage && vehicle?.location && (
-                  <LocationMap mapImage={vehicle?.mapImage} location={vehicle?.location}  />
+                  <LocationMap
+                    mapImage={vehicle?.mapImage}
+                    location={vehicle?.location}
+                  />
                 )}
               </div>
             </div>
