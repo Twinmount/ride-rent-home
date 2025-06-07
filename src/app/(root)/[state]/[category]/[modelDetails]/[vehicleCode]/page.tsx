@@ -57,7 +57,7 @@ export default async function VehicleDetails(props: ParamsProps) {
   const formattedModelDetails = modelDetails.replace(/-for-rent$/, "");
   // Fetch the vehicle data from the API
   const response = await fetch(
-    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}&vehicleTitle=${formattedModelDetails}`,
+    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}`,
     {
       method: "GET",
       cache: "no-cache",
