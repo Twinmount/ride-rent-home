@@ -1,15 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import { RentalDetails } from "@/types/vehicle-details-types";
-import { Tag } from "lucide-react";
+import { Infinity, Tag } from "lucide-react";
 import { IoSpeedometer } from "react-icons/io5";
 import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
 import { AnimatePresence } from "framer-motion";
 import { usePriceConverter } from "@/hooks/usePriceConverter";
+import { Cover } from "@/components/ui/cover";
 
 type RentalDetailsTabProps = {
   rentalDetails: RentalDetails;
-  country: string;
 };
 
 const RentalDetailsTab = ({ rentalDetails }: RentalDetailsTabProps) => {
@@ -90,7 +90,7 @@ const RentalDetailsTab = ({ rentalDetails }: RentalDetailsTabProps) => {
       </div>
 
       {/* Content based on selected period */}
-      <div className="h-auto max-h-[145px] min-h-[6rem] overflow-y-auto overflow-x-hidden">
+      <div className="h-[145px] max-h-[145px] min-h-[6rem] overflow-y-auto overflow-x-hidden">
         <AnimatePresence custom={direction} mode="wait">
           <MotionDivElm
             key={selectedPeriod.period}
@@ -113,15 +113,21 @@ const RentalDetailsTab = ({ rentalDetails }: RentalDetailsTabProps) => {
               </span>
             </div>
 
-            <div className="flex items-center justify-between rounded-[0.5rem] bg-[#2c2c2c] px-2 py-1">
-              <span className="flex items-center justify-start gap-x-1 font-medium text-slate-200">
-                <IoSpeedometer className="mb-1" />
-                Included Mileage Limit:
-              </span>
-              <span className="text-lg font-bold text-yellow">
-                {`${selectedPeriod.details.mileageLimit} Km`}
-              </span>
-            </div>
+            {selectedPeriod.details.unlimitedMileage ? (
+              <Cover className="flex-center h-9 gap-x-3 text-xl font-semibold text-yellow">
+                Unlimited Mileage <Infinity />
+              </Cover>
+            ) : (
+              <div className="flex h-12 items-center justify-between rounded-[0.5rem] bg-[#2c2c2c] px-2 py-1">
+                <span className="flex items-center justify-start gap-x-1 font-medium text-slate-200">
+                  <IoSpeedometer className="mb-1" />
+                  Included Mileage Limit:
+                </span>
+                <span className="text-lg font-bold text-yellow">
+                  {`${selectedPeriod.details.mileageLimit} Km`}
+                </span>
+              </div>
+            )}
           </MotionDivElm>
         </AnimatePresence>
       </div>
