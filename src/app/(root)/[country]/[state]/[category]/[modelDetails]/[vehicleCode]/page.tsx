@@ -87,7 +87,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   if (formattedModelDetails !== normalizedActualTitle) {
     redirect(
-      `/${state}/${category}/${normalizedActualTitle}-for-rent/${vehicleCode}`,
+      `/${country}/${state}/${category}/${normalizedActualTitle}-for-rent/${vehicleCode}`,
     );
   }
 
