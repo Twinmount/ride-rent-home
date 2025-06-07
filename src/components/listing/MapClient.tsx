@@ -218,6 +218,38 @@ interface Company {
   };
 }
 
+// Helper function to calculate distance between two coordinates in kilometers
+const calculateDistance = (lat1, lng1, lat2, lng2) => {
+  const R = 6371; // Earth's radius in kilometers
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+// Helper function to calculate bounds for 200km radius
+const calculateBounds = (centerLat, centerLng, radiusKm = 200) => {
+  const R = 6371; // Earth's radius in kilometers
+
+  // Calculate lat/lng deltas for the radius
+  const latDelta = (radiusKm / R) * (180 / Math.PI);
+  const lngDelta =
+    (radiusKm / (R * Math.cos((centerLat * Math.PI) / 180))) * (180 / Math.PI);
+
+  return {
+    north: centerLat + latDelta,
+    south: centerLat - latDelta,
+    east: centerLng + lngDelta,
+    west: centerLng - lngDelta,
+  };
+};
+
 // Helper function to detect if two locations are very close
 const areLocationsClose = (loc1, loc2, threshold = 0.0001) => {
   const latDiff = Math.abs(loc1.lat - loc2.lat);
@@ -416,6 +448,109 @@ const VehiclePopup = ({
   </div>
 );
 
+const minimalTheme = [
+  {
+    featureType: "all",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#7c7c7c" }],
+  },
+  {
+    featureType: "all",
+    elementType: "labels.text.stroke",
+    stylers: [{ color: "#ffffff" }],
+  },
+  {
+    featureType: "administrative",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#000000" }],
+  },
+  {
+    featureType: "administrative",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#144b53" }],
+  },
+  {
+    featureType: "landscape",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#f5f5f2" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#d0d0d0" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "labels",
+    stylers: [{ visibility: "off" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#bae5ce" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#ffffff" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#e0e0e0" }],
+  },
+  {
+    featureType: "road",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#696969" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#ffffff" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#e0e0e0" }],
+  },
+  {
+    featureType: "road.arterial",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#ffffff" }],
+  },
+  {
+    featureType: "road.arterial",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#e0e0e0" }],
+  },
+  {
+    featureType: "road.local",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#ffffff" }],
+  },
+  {
+    featureType: "road.local",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#e0e0e0" }],
+  },
+  {
+    featureType: "transit",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#d0d0d0" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#a2daf2" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#92998d" }],
+  },
+];
+
 const MapClient = () => {
   const mapRef = useRef(null);
   const [map, setMap] = useState(null);
@@ -423,6 +558,7 @@ const MapClient = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [markerClusterer, setMarkerClusterer] = useState(null);
+  const [restrictionCircle, setRestrictionCircle] = useState(null);
   const searchParams = useSearchParams();
   const { state, category } = useStateAndCategory();
   const [companiesList, setCompaniesList] = useImmer<Company[]>([]);
@@ -575,7 +711,6 @@ const MapClient = () => {
     let timeoutId;
 
     const initMap = () => {
-      // Your exact condition check
       if (
         !isLoading &&
         !error &&
@@ -585,20 +720,44 @@ const MapClient = () => {
       ) {
         initializationAttempted = true;
 
-        console.log("Initializing map with center:", center); // Debug log
+        console.log("Initializing map with center:", center);
 
         try {
+          // Calculate bounds for 200km restriction
+          const bounds = calculateBounds(center.lat, center.lng, RADIUS_KM);
+
           const mapInstance = new window.google.maps.Map(mapRef.current, {
             center: center,
-            zoom: 15,
-            styles: [
-              {
-                featureType: "poi",
-                elementType: "labels",
-                stylers: [{ visibility: "off" }],
+            zoom: 12, // Adjusted zoom to better show 200km area
+            restriction: {
+              latLngBounds: {
+                north: bounds.north,
+                south: bounds.south,
+                east: bounds.east,
+                west: bounds.west,
               },
-            ],
+              strictBounds: true, // Prevent panning outside bounds
+            },
+            styles: minimalTheme,
+            // Additional map options to enhance restriction
+            minZoom: 8, // Prevent zooming out too far
+            maxZoom: 18,
           });
+
+          // Create visual circle to show the restriction area
+          const circle = new window.google.maps.Circle({
+            strokeColor: "#FF6B6B",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#FF6B6B",
+            fillOpacity: 0.1,
+            map: mapInstance,
+            center: center,
+            radius: RADIUS_KM * 1000, // Convert km to meters
+            clickable: false,
+          });
+
+          setRestrictionCircle(circle);
 
           // Add debug event listeners
           mapInstance.addListener("tilesloaded", () => {
@@ -613,12 +772,41 @@ const MapClient = () => {
             }
           });
 
+          // Add boundary enforcement listener
+          mapInstance.addListener("center_changed", () => {
+            const currentCenter = mapInstance.getCenter();
+            const distance = calculateDistance(
+              center.lat,
+              center.lng,
+              currentCenter.lat(),
+              currentCenter.lng(),
+            );
+
+            // If user tries to pan outside 200km, snap back to edge
+            if (distance > RADIUS_KM) {
+              const bearing = Math.atan2(
+                currentCenter.lng() - center.lng,
+                currentCenter.lat() - center.lat,
+              );
+
+              const maxDistance = RADIUS_KM - 10; // 10km buffer from edge
+              const maxLat =
+                center.lat + (maxDistance / 111.32) * Math.cos(bearing);
+              const maxLng =
+                center.lng +
+                (maxDistance /
+                  (111.32 * Math.cos((center.lat * Math.PI) / 180))) *
+                  Math.sin(bearing);
+
+              mapInstance.setCenter({ lat: maxLat, lng: maxLng });
+            }
+          });
+
           setMap(mapInstance);
         } catch (err) {
           console.error("Map initialization failed:", err);
         }
       } else if (!initializationAttempted) {
-        // Debug why initialization didn't occur
         console.log("Initialization skipped because:", {
           isLoading,
           error,
@@ -644,6 +832,9 @@ const MapClient = () => {
       clearTimeout(timeoutId);
       if (map) {
         google.maps.event.clearInstanceListeners(map);
+      }
+      if (restrictionCircle) {
+        restrictionCircle.setMap(null);
       }
     };
   }, [isLoading, error, map, center]);
