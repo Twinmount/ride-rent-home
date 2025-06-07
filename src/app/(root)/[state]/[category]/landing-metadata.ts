@@ -136,8 +136,12 @@ export function getHomePageJsonLd(state: string, category: string) {
       ratingCount: "680",
       itemReviewed: {
         "@type": "Service",
-        name: "Rentals for " + convertToLabel(category) + " in " + convertToLabel(state)
-      }
+        name:
+          "Rentals for " +
+          convertToLabel(category) +
+          " in " +
+          convertToLabel(state),
+      },
     },
     image: rootImage,
     breadcrumb: {
