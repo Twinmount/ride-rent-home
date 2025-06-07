@@ -1,5 +1,5 @@
 import "./MobileProfileCard.scss";
-import {useState } from "react";
+import { useState } from "react";
 import ProfileSpecification from "@/components/root/vehicle-details/profile-specifications/ProfileSpecification";
 import { ProfileCardDataType } from "@/types/vehicle-details-types";
 import RentNowSection from "@/components/common/rent-now/RentNowSection";
@@ -18,7 +18,10 @@ type MobileProfileCardProps = {
   country: string;
 };
 
-const MobileProfileCard = ({ profileData, country }: MobileProfileCardProps) => {
+const MobileProfileCard = ({
+  profileData,
+  country,
+}: MobileProfileCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const {
@@ -51,9 +54,9 @@ const MobileProfileCard = ({ profileData, country }: MobileProfileCardProps) => 
           isExpanded={isExpanded}
           onToggle={handleToggle}
           heading={
-            <RentalPriceHeader 
+            <RentalPriceHeader
               rentalDetails={rentalDetails}
-              className="text-sm font-medium bg-[#ffa733] px-3 m-1  rounded-full"
+              className="m-1 rounded-full bg-[#ffa733] px-3 text-sm font-medium"
             />
           }
           isUnavailable={!company.companyName || !company.companyProfile}
@@ -89,7 +92,7 @@ const MobileProfileCard = ({ profileData, country }: MobileProfileCardProps) => 
         />
 
         {/* rental details tab */}
-        <RentalDetailsTab rentalDetails={rentalDetails} country={country} />
+        <RentalDetailsTab rentalDetails={rentalDetails} />
 
         {/* Security Deposit */}
         <SecurityDepositInfo securityDeposit={securityDeposit} />

@@ -54,7 +54,7 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
       />
 
       {/* rental details tab */}
-      <RentalDetailsTab rentalDetails={rentalDetails} country={country} />
+      <RentalDetailsTab rentalDetails={rentalDetails} />
 
       {/* Security Deposit */}
       <SecurityDepositInfo securityDeposit={securityDeposit} />

@@ -37,11 +37,9 @@ export type RentalPeriod = {
   enabled: boolean;
   rentInAED: string;
   mileageLimit: string;
+  unlimitedMileage: boolean;
 };
-export type HourlyRentalPeriod = {
-  enabled: boolean;
-  rentInAED: string;
-  mileageLimit: string;
+export type HourlyRentalPeriod = RentalPeriod & {
   minBookingHours: string;
 };
 
@@ -85,7 +83,7 @@ export type GPSLocation = {
   lat: number;
   lng: number;
   address?: string;
-}
+};
 
 // Vehicle Details Type
 export type VehicleDetailsPageType = {
@@ -110,8 +108,8 @@ export type VehicleDetailsPageType = {
   securityDeposit: { enabled: boolean; amountInAED: string };
   vehicleTitle: string;
   vehicleTitleH1: string;
-  location?:GPSLocation,
-  mapImage?:string
+  location?: GPSLocation;
+  mapImage?: string;
 };
 
 export type VehicleDetailsPageResponse = {
