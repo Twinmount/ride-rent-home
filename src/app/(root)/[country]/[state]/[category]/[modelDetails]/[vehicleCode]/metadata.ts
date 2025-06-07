@@ -6,6 +6,7 @@ import {
 import {
   convertToLabel,
   generateCompanyProfilePageLink,
+  generateModelDetailsUrl,
   generateVehicleDetailsUrl,
   singularizeType,
 } from "@/helpers";
@@ -16,7 +17,7 @@ import { notFound } from "next/navigation";
 
 export async function fetchVehicleMetaData(
   vehicleCode: string,
-  country: string
+  country: string,
 ): Promise<VehicleMetaDataResponse | null> {
   const API_URL = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
@@ -43,10 +44,9 @@ export async function generateVehicleMetadata(
   state: string,
   category: string,
   vehicleCode: string,
-  modelDetails: string,
   country: string,
 ): Promise<Metadata> {
-  const data = await fetchVehicleMetaData(vehicleCode,country);
+  const data = await fetchVehicleMetaData(vehicleCode, country);
 
   if (!data?.result) {
     return notFound();
@@ -66,16 +66,16 @@ export async function generateVehicleMetadata(
   const metaDescription = vehicle?.vehicleMetaDescription || description;
 
   // Shortened versions for social media
-  const shortTitle =
-    metaTitle.length > 60 ? `${metaTitle.substring(0, 57)}...` : metaTitle;
+  const shortTitle = title.length > 60 ? `${title.substring(0, 57)}...` : title;
   const shortDescription =
-    metaDescription.length > 155
-      ? `${metaDescription.substring(0, 152)}...`
-      : metaDescription;
+    description.length > 155
+      ? `${description.substring(0, 152)}...`
+      : description;
+
+  const vehicleTitle = generateModelDetailsUrl(vehicle.vehicleTitle);
 
   // dynamic link to  vehicle details page
-
-  const canonicalUrl = `https://ride.rent/${country}/${state}/${category}/${modelDetails}/${vehicleCode}`;
+  const canonicalUrl = `https://ride.rent/${country}/${state}/${category}/${vehicleTitle}/${vehicleCode}`;
   const ogImage = vehicle.vehiclePhoto;
 
   return {
