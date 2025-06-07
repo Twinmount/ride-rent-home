@@ -13,7 +13,7 @@ import {
   VehicleDetailsPageResponse,
 } from "@/types/vehicle-details-types";
 import RelatedLinks from "@/components/root/vehicle-details/RelatedLinks";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
 import { generateVehicleMetadata, getVehicleJsonLd } from "./metadata";
@@ -25,6 +25,7 @@ import SectionLoading from "@/components/skelton/section-loading/SectionLoading"
 import { VehicleInfo } from "@/components/root/vehicle-details/VehicleInfo";
 import JsonLd from "@/components/common/JsonLd";
 import BrandImage from "@/components/common/BrandImage";
+import { generateModelDetailsUrl } from "@/helpers";
 
 type ParamsProps = {
   params: Promise<{
@@ -39,9 +40,9 @@ type ParamsProps = {
 export async function generateMetadata(props: ParamsProps): Promise<Metadata> {
   const params = await props.params;
 
-  const { state, category, vehicleCode, modelDetails } = params;
+  const { state, category, vehicleCode } = params;
 
-  return generateVehicleMetadata(state, category, vehicleCode, modelDetails);
+  return generateVehicleMetadata(state, category, vehicleCode);
 }
 
 export default async function VehicleDetails(props: ParamsProps) {
@@ -72,6 +73,18 @@ export default async function VehicleDetails(props: ParamsProps) {
     !data.result
   ) {
     return notFound();
+  }
+
+  // 🆕 If the modelDetails in the URL (slug) doesn't match actual vehicle title, redirect to canonical URL
+  const normalizedUrlTitle = formattedModelDetails;
+  const normalizedActualTitle = generateModelDetailsUrl(
+    data.result.vehicleTitle,
+  );
+
+  if (normalizedUrlTitle !== normalizedActualTitle) {
+    redirect(
+      `/${state}/${category}/${normalizedActualTitle}-for-rent/${vehicleCode}`,
+    );
   }
 
   // if the state in the url doesn't match the state in the data , return 404 not found
@@ -115,18 +128,17 @@ export default async function VehicleDetails(props: ParamsProps) {
         {/* Details heading */}
         <MotionDiv className="heading-box">
           <div className="flex items-center gap-2">
-
-          {/* brand logo */}
-          <BrandImage
-            category={category}
-            brandValue={vehicle?.brand.value}
-            className="border-2 border-amber-500 h-12 w-12 rounded-full object-contain"
-          />
-          <h1 className="custom-heading model-name">
-            {vehicle.vehicleTitleH1 ||
-              vehicle.vehicleTitle ||
-              vehicle.modelName}
-          </h1>
+            {/* brand logo */}
+            <BrandImage
+              category={category}
+              brandValue={vehicle?.brand.value}
+              className="h-12 w-12 rounded-full border-2 border-amber-500 object-contain"
+            />
+            <h1 className="custom-heading model-name">
+              {vehicle.vehicleTitleH1 ||
+                vehicle.vehicleTitle ||
+                vehicle.modelName}
+            </h1>
           </div>
 
           {/* breadcrumb for current page path*/}

@@ -6,6 +6,7 @@ import {
 import {
   convertToLabel,
   generateCompanyProfilePageLink,
+  generateModelDetailsUrl,
   generateVehicleDetailsUrl,
   singularizeType,
 } from "@/helpers";
@@ -40,7 +41,6 @@ export async function generateVehicleMetadata(
   state: string,
   category: string,
   vehicleCode: string,
-  modelDetails: string,
 ): Promise<Metadata> {
   const data = await fetchVehicleMetaData(vehicleCode);
 
@@ -62,16 +62,17 @@ export async function generateVehicleMetadata(
   const metaDescription = vehicle?.vehicleMetaDescription || description;
 
   // Shortened versions for social media
-  const shortTitle =
-    metaTitle.length > 60 ? `${metaTitle.substring(0, 57)}...` : metaTitle;
+  const shortTitle = title.length > 60 ? `${title.substring(0, 57)}...` : title;
   const shortDescription =
-    metaDescription.length > 155
-      ? `${metaDescription.substring(0, 152)}...`
-      : metaDescription;
+    description.length > 155
+      ? `${description.substring(0, 152)}...`
+      : description;
+
+  // formatted vehicle title
+  const vehicleTitle = generateModelDetailsUrl(vehicle.vehicleTitle);
 
   // dynamic link to  vehicle details page
-
-  const canonicalUrl = `https://ride.rent/${state}/${category}/${modelDetails}/${vehicleCode}`;
+  const canonicalUrl = `https://ride.rent/${state}/${category}/${vehicleTitle}/${vehicleCode}`;
   const ogImage = vehicle.vehiclePhoto;
 
   return {
