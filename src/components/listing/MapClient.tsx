@@ -598,7 +598,7 @@ const MapClient = () => {
               size = 80;
             } else {
               color = "#F97316"; // Light orange for 5-9 vehicles
-              size = 50;
+              size = 80;
             }
 
             const fontSize = size > 65 ? 11 : size > 50 ? 10 : 9;
