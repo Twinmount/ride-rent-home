@@ -23,43 +23,43 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      {
-        source: "/",
-        destination: "/ae/dubai",
-        permanent: true,
-      },
-
-      {
-        source: "/:country(ae)",
-        destination: "/:country/dubai",
-        permanent: true,
-      },
-      {
-        source: "/:country(in)",
-        destination: "/in/kollam",
-        permanent: true,
-      },
+      // {
+      //   source: "/",
+      //   destination: "/ae/dubai",
+      //   permanent: true,
+      // },
+      // {
+      //   source: "/:country(ae)",
+      //   destination: "/:country/dubai",
+      //   permanent: true,
+      // },
+      // {
+      //   source: "/:country(in)",
+      //   destination: "/in/kollam",
+      //   permanent: true,
+      // },
       {
         source:
-          "/:country/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)",
-        destination: "/:country/:state/cars",
+          "/ae/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)",
+        destination: "/ae/:state/cars",
         permanent: true,
       },
+      // {
+      //   source:
+      //     "/in/:state",
+      //   destination: "/in/:state/cars",
+      //   permanent: true,
+      // },
       {
-        source: "/in/:state",
-        destination: "/in/:state/cars",
+        source: "/ae/faq",
+        destination: "/ae/faq/dubai",
         permanent: true,
       },
-      {
-        source: "/:country/faq",
-        destination: "/:country/faq/dubai",
-        permanent: true,
-      },
-      {
-        source: "/state/:path*",
-        destination: "/country/state/:path*",
-        permanent: true,
-      },
+      // {
+      //   source: "/state/:path*",
+      //   destination: "/country/state/:path*",
+      //   permanent: true,
+      // },
       {
         source: "/profile/:path*",
         destination: "/ae/profile/:path*",

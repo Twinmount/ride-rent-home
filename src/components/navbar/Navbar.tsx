@@ -124,7 +124,7 @@ export const Navbar = () => {
             {!shouldRenderDropdowns && (
               <li className="mr-2">
                 {/* <StatesDropdown /> */}
-                <LocationDialog />
+                {/* <LocationDialog /> */}
               </li>
             )}
 
