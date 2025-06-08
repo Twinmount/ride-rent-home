@@ -8,6 +8,7 @@ import BodyScripts from "./BodyScripts";
 import { getDefaultMetadata } from "./root-metadata";
 import { NetworkWrapper } from "./(root)/NetworkWrapper";
 import { GlobalContextProvider } from "@/context/GlobalContext";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = getDefaultMetadata();
 
@@ -29,6 +30,19 @@ export default function RootLayout({
         <TrackingScripts />
       </head>
       <body className={firaSans.className}>
+        {/* top page loading progress bar indicator */}
+        <NextTopLoader
+          color="#ffa733"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={5}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          zIndex={1600}
+        />
+
         {/* body scripts */}
         <BodyScripts />
         {/* react query provider */}
