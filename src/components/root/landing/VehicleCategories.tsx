@@ -18,6 +18,7 @@ import {
 import Image from "next/image";
 import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
 import { ENV } from "@/config/env";
+import { useTopLoader } from "nextjs-toploader";
 
 export default function VehicleCategories() {
   const { country, state, category } = useStateAndCategory();
@@ -94,6 +95,15 @@ function VehicleCategoryCard({
 
   const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
 
+  const loader = useTopLoader();
+
+  const handleNavigation = () => {
+    loader.start();
+    setTimeout(() => {
+      loader.done();
+    }, 300);
+  };
+
   return (
     <motion.li
       key={cat.categoryId}
@@ -106,6 +116,7 @@ function VehicleCategoryCard({
       <Link
         href={`/${selectedCountry}/${selectedState}/${cat.value}`}
         key={cat.categoryId}
+        onClick={handleNavigation}
       >
         <NavigationMenuLink>
           <div

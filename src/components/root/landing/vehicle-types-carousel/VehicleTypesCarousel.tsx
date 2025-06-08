@@ -15,11 +15,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { formUrlQuery, removeKeysFromQuery } from "@/helpers";
 import { VehicleTypeCard } from "./VehicleTypeCard";
+import { useTopLoader } from "nextjs-toploader";
 
 export default function VehicleTypesCarousel() {
   const { state, category, country } = useStateAndCategory();
   const router = useRouter();
   const searchParams = useSearchParams();
+  // top page load progress hook
+  const loader = useTopLoader();
 
   const { data, isLoading } = useQuery({
     queryKey: ["vehicleTypes", category, state],
@@ -55,6 +58,12 @@ export default function VehicleTypesCarousel() {
     } else {
       updateUrlType(typeValue);
     }
+
+    // show top page loader for 300ms
+    loader.start();
+    setTimeout(() => {
+      loader.done();
+    }, 500);
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 300, behavior: "smooth" });
     }
