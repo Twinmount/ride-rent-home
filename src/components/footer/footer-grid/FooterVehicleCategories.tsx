@@ -4,8 +4,12 @@ import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
 import Link from "next/link";
 
 export default function FooterVehicleCategories() {
-  const { sortedCategories: categories, isCategoriesLoading, country, state } =
-    useFetchVehicleCategories();
+  const {
+    sortedCategories: categories,
+    isCategoriesLoading,
+    country,
+    state,
+  } = useFetchVehicleCategories({ needRedirection: false });
 
   if (categories.length === 0) return null;
 

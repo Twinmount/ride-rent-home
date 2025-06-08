@@ -10,7 +10,11 @@ import { notFound, usePathname } from "next/navigation";
 
 const NO_CATEGORY_PATHS = ["/blog"];
 
-export function useFetchVehicleCategories() {
+export function useFetchVehicleCategories({
+  needRedirection = true,
+}: {
+  needRedirection?: boolean;
+} = {}) {
   const { state, category, country } = useStateAndCategory();
   const pathname = usePathname();
 
@@ -36,7 +40,12 @@ export function useFetchVehicleCategories() {
   );
 
   // if no categories, return 404 not found
-  if (sortedCategories.length === 0 && isCategoriesLoaded && !shouldSkip404) {
+  if (
+    sortedCategories.length === 0 &&
+    isCategoriesLoaded &&
+    !shouldSkip404 &&
+    needRedirection
+  ) {
     return notFound();
   }
 
@@ -48,7 +57,7 @@ export function useFetchVehicleCategories() {
     !shouldSkip404
   ) {
     const foundCategory = categories.find((cat) => cat.value === category);
-    if (!foundCategory) {
+    if (!foundCategory && needRedirection) {
       return notFound();
     }
   }

@@ -102,7 +102,10 @@ export function LocationDialog() {
   useEffect(() => {
     if (isLoading) return;
 
-    const shouldSkipRedirect = pathname?.startsWith(`/${country}${"/blog"}`);
+    const shouldSkipRedirect =
+      pathname?.startsWith(`/${country}${"/blog"}`) ||
+      pathname === "/in" ||
+      pathname === "/ae";
 
     if (states.length > 0) {
       const foundState = states.find((data) => data.stateValue === state);
