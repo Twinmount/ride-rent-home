@@ -75,7 +75,6 @@ export const Navbar = () => {
             "userLocation",
             JSON.stringify({ latitude, longitude }),
           );
-          console.log("Location saved:", latitude, longitude);
         },
         (error) => {
           console.error("Error getting location:", error);

@@ -60,8 +60,6 @@ function LocationMap({ location, mapImage }: LocationMapProps) {
     lng,
   );
 
-  console.log(distanceFromMe);
-
   return (
     <div className="profile-card mt-4">
       <div className="profile-heading">
