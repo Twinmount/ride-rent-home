@@ -8,13 +8,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import Link from "next/link";
 
 export function BlogBreadcrumb({
   title,
   blogCategory,
+  country,
 }: {
   title: string;
   blogCategory: string;
+  country: string;
 }) {
   return (
     <Breadcrumb className="mx-auto my-4 w-fit max-w-[92%]">
@@ -22,10 +25,10 @@ export function BlogBreadcrumb({
         <BreadcrumbItem className="w-fit">
           <BreadcrumbLink
             className="text-base font-semibold text-yellow hover:text-yellow hover:underline lg:text-lg"
-            href="/blog"
             aria-label="Go to home"
+            asChild
           >
-            Home
+            <Link href={`/${country}/blog`}>Home</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
@@ -33,10 +36,12 @@ export function BlogBreadcrumb({
         <BreadcrumbItem className="w-fit">
           <BreadcrumbLink
             className="text-base font-semibold capitalize text-yellow hover:text-yellow hover:underline lg:text-lg"
-            href={`/?page=1&tag=${blogCategory}`}
             aria-label="Go to home"
+            asChild
           >
-            {blogCategory}
+            <Link href={`/${country}/blog?tag=${blogCategory}`}>
+              {blogCategory}
+            </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />

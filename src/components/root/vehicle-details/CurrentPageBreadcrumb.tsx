@@ -8,6 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { convertToLabel, singularizeType } from "@/helpers";
+import Link from "next/link";
 
 type CurrentPageBreadcrumbProps = {
   category: string;
@@ -35,10 +36,12 @@ export default function CurrentPageBreadcrumb({
           {/* vehicle state */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/${country}/${state}/${category}`}
               className="font-semibold transition-colors hover:text-yellow hover:underline"
+              asChild
             >
-              {formattedState}
+              <Link href={`/${country}/${state}/${category}`}>
+                {formattedState}
+              </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -46,10 +49,12 @@ export default function CurrentPageBreadcrumb({
           {/* vehicle category */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/${country}/${state}/${category}`}
               className="font-semibold transition-colors hover:text-yellow hover:underline"
+              asChild
             >
-              {formattedCategory} for rent{" "}
+              <Link href={`/${country}/${state}/${category}`}>
+                {formattedCategory} for rent{" "}
+              </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -57,11 +62,14 @@ export default function CurrentPageBreadcrumb({
           {/* vehicle brand */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/${country}/${state}/listing?category=${category}&brand=${brand.value}`}
-              target="_blank"
               className="font-semibold transition-colors hover:text-yellow hover:underline"
+              asChild
             >
-              {brand.label}
+              <Link
+                href={`/${country}/${state}/listing?category=${category}&brand=${brand.value}`}
+              >
+                {brand.label}
+              </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />

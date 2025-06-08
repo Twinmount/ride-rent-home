@@ -276,7 +276,13 @@ export const formatAdditionalTypeName = (name: string) => {
     .join(" ");
 };
 
-export function formatToUrlFriendly(word: string | null): string {
+/**
+ * helper function for convert a string to its lowercase, hyphen separated version, free of non-alphanumeric characters, and leading/trailing hyphens, making it suitable for use in URLs.
+ *
+ * @param word - The string to convert.
+ * @returns The converted string.
+ */
+export function convertToValue(word: string | null): string {
   if (!word) return "company-disabled";
   return word
     .toLowerCase() // Convert to lowercase
@@ -314,7 +320,7 @@ export const generateCompanyProfilePageLink = (
   companyId: string,
   country: string,
 ): string => {
-  const formattedCompanyName = formatToUrlFriendly(companyName);
+  const formattedCompanyName = convertToValue(companyName);
 
   return `/${country}/profile/${formattedCompanyName}/${companyId}`;
 };
