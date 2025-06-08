@@ -67,6 +67,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   const [isIntitalLoad, setIsIntitalLoad] = useImmer(true);
   const [apiCallDelay, setApiCallDelay] = useImmer(false);
   const [showMap, setShowMap] = useImmer(false);
+  const [mountMap, setMountMap] = useImmer(false);
 
   const { data: relatedState } = useQuery({
     queryKey: ["related-state", state],
@@ -134,6 +135,9 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
 
   const toogleMap = () => {
     setShowMap((prev) => !prev);
+    if (!mountMap) {
+      setMountMap(true);
+    }
   };
 
   return (
@@ -278,7 +282,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
                   : "pointer-events-none z-0 opacity-0"
               }`}
             >
-              <MapClientWrapper />
+              {mountMap && <MapClientWrapper />}
             </div>
 
             {/* List Layer (Always Mounted, visibility toggled) */}

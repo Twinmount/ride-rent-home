@@ -1,13 +1,7 @@
 // @ts-nocheck
 
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  useMemo,
-} from "react";
-import { Car, Clock, MapPin, X } from "lucide-react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { Car, MapPin, X } from "lucide-react";
 import { useFetchListingVehiclesGPS } from "@/hooks/useFetchListingVehiclesGPS";
 import { usePriceConverter } from "@/hooks/usePriceConverter";
 import { useParams, useSearchParams } from "next/navigation";
@@ -19,169 +13,14 @@ import {
   generateVehicleDetailsUrl,
 } from "@/helpers";
 import Link from "next/link";
-
-const vehiclesListss = [
-  {
-    vehicleModel: "Toyota Innova",
-    rentalDetails: { day: "100", week: null, month: null, hour: null },
-    vehicleCode: "V001",
-    location: { lat: 8.896512, lng: 76.6312448, address: "Base Location" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Hyundai Creta",
-    rentalDetails: { day: "110", week: null, month: null, hour: null },
-    vehicleCode: "V002",
-    location: { lat: 8.896552, lng: 76.6312648, address: "Nearby Location A" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Honda City",
-    rentalDetails: { day: "905", week: null, month: null, hour: null },
-    vehicleCode: "V003",
-    location: { lat: 8.896472, lng: 76.6312148, address: "Nearby Location B" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Tata Punch",
-    rentalDetails: { day: "900", week: null, month: null, hour: null },
-    vehicleCode: "V004",
-    location: { lat: 8.89649, lng: 76.6312788, address: "Nearby Location C" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Maruti Baleno",
-    rentalDetails: { day: "850", week: null, month: null, hour: null },
-    vehicleCode: "V005",
-    location: { lat: 8.89653, lng: 76.63123, address: "Nearby Location D" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Mahindra Scorpio",
-    rentalDetails: { day: "120", week: null, month: null, hour: null },
-    vehicleCode: "V006",
-    location: { lat: 8.8965, lng: 76.6312, address: "Nearby Location E" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Kia Sonet",
-    rentalDetails: { day: "105", week: null, month: null, hour: null },
-    vehicleCode: "V007",
-    location: { lat: 8.896548, lng: 76.63121, address: "Nearby Location F" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Renault Triber",
-    rentalDetails: { day: null, week: "399", month: null, hour: null },
-    vehicleCode: "V008",
-    location: { lat: 8.896495, lng: 76.631255, address: "Nearby Location G" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Volkswagen Vento",
-    rentalDetails: { day: "908", week: null, month: null, hour: null },
-    vehicleCode: "V009",
-    location: { lat: 8.89647, lng: 76.631235, address: "Nearby Location H" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Nissan Magnite",
-    rentalDetails: { day: "102", week: null, month: null, hour: null },
-    vehicleCode: "V010",
-    location: { lat: 8.89652, lng: 76.63129, address: "Nearby Location I" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Toyota Innova",
-    rentalDetails: { day: "100", week: null, month: null, hour: null },
-    vehicleCode: "V011",
-    location: { lat: 8.896513, lng: 76.6312458, address: "Base Location 2" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Hyundai Creta",
-    rentalDetails: { day: "110", week: null, month: null, hour: null },
-    vehicleCode: "V012",
-    location: { lat: 8.896553, lng: 76.6312658, address: "Nearby Location A2" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Honda City",
-    rentalDetails: { day: "950", week: null, month: null, hour: null },
-    vehicleCode: "V013",
-    location: { lat: 8.896473, lng: 76.6312158, address: "Nearby Location B2" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Tata Punch",
-    rentalDetails: { day: "90", week: null, month: null, hour: null },
-    vehicleCode: "V014",
-    location: { lat: 8.896491, lng: 76.6312798, address: "Nearby Location C2" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Maruti Baleno",
-    rentalDetails: { day: "85", week: null, month: null, hour: null },
-    vehicleCode: "V015",
-    location: { lat: 8.896531, lng: 76.631231, address: "Nearby Location D2" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Mahindra Scorpio",
-    rentalDetails: { day: "120", week: null, month: null, hour: null },
-    vehicleCode: "V016",
-    location: { lat: 8.896501, lng: 76.631201, address: "Nearby Location E2" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Kia Sonet",
-    rentalDetails: { day: "105", week: null, month: null, hour: null },
-    vehicleCode: "V017",
-    location: { lat: 8.896549, lng: 76.631211, address: "Nearby Location F2" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Renault Triber",
-    rentalDetails: { day: "88", week: null, month: null, hour: null },
-    vehicleCode: "V018",
-    location: { lat: 8.896496, lng: 76.631256, address: "Nearby Location G2" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Volkswagen Vento",
-    rentalDetails: { day: "98", week: null, month: null, hour: null },
-    vehicleCode: "V019",
-    location: { lat: 8.896471, lng: 76.631236, address: "Nearby Location H2" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-  {
-    vehicleModel: "Nissan Magnite",
-    rentalDetails: { day: "102", week: null, month: null, hour: null },
-    vehicleCode: "V020",
-    location: { lat: 8.896521, lng: 76.631291, address: "Nearby Location I2" },
-    companyShortId: "C001",
-    companyName: "Company 2",
-  },
-];
+import { VehicleDetailsDialog } from "./VehicleDetailsDialog";
+import {
+  calculateDistance,
+  adjustOverlappingPositions,
+  calculateBounds,
+  areLocationsClose,
+  vehiclesListss,
+} from "@/helpers/map-helpers";
 
 interface Vehicle {
   vehicleModel: string;
@@ -217,236 +56,6 @@ interface Company {
     address: string;
   };
 }
-
-// Helper function to calculate distance between two coordinates in kilometers
-const calculateDistance = (lat1, lng1, lat2, lng2) => {
-  const R = 6371; // Earth's radius in kilometers
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLng = ((lng2 - lng1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-};
-
-// Helper function to calculate bounds for 200km radius
-const calculateBounds = (centerLat, centerLng, radiusKm = 200) => {
-  const R = 6371; // Earth's radius in kilometers
-
-  // Calculate lat/lng deltas for the radius
-  const latDelta = (radiusKm / R) * (180 / Math.PI);
-  const lngDelta =
-    (radiusKm / (R * Math.cos((centerLat * Math.PI) / 180))) * (180 / Math.PI);
-
-  return {
-    north: centerLat + latDelta,
-    south: centerLat - latDelta,
-    east: centerLng + lngDelta,
-    west: centerLng - lngDelta,
-  };
-};
-
-// Helper function to detect if two locations are very close
-const areLocationsClose = (loc1, loc2, threshold = 0.0001) => {
-  const latDiff = Math.abs(loc1.lat - loc2.lat);
-  const lngDiff = Math.abs(loc1.lng - loc2.lng);
-  return latDiff < threshold && lngDiff < threshold;
-};
-
-// Function to adjust positions for overlapping markers
-const adjustOverlappingPositions = (vehicles, offsetDistance = 0.00015) => {
-  const adjusted = [...vehicles];
-  const processed = new Set();
-
-  for (let i = 0; i < adjusted.length; i++) {
-    if (processed.has(i)) continue;
-
-    const overlapping = [i];
-
-    // Find all vehicles that overlap with current vehicle
-    for (let j = i + 1; j < adjusted.length; j++) {
-      if (processed.has(j)) continue;
-
-      if (areLocationsClose(adjusted[i].location, adjusted[j].location)) {
-        overlapping.push(j);
-      }
-    }
-
-    // If overlapping vehicles found, adjust their positions
-    if (overlapping.length > 1) {
-      overlapping.forEach((index, arrayIndex) => {
-        processed.add(index);
-
-        if (arrayIndex === 0) return; // Keep first vehicle at original position
-
-        // Calculate circular offset positions
-        const angle = (arrayIndex * 2 * Math.PI) / overlapping.length;
-        const radius = offsetDistance * Math.ceil(arrayIndex / 8); // Increase radius for more vehicles
-
-        adjusted[index] = {
-          ...adjusted[index],
-          location: {
-            ...adjusted[index].location,
-            lat: adjusted[index].location.lat + Math.cos(angle) * radius,
-            lng: adjusted[index].location.lng + Math.sin(angle) * radius,
-          },
-          originalLocation: vehicles[index].location, // Keep reference to original
-          isAdjusted: true,
-        };
-      });
-    }
-  }
-
-  return adjusted;
-};
-
-// Vehicle Details Popup Component
-const VehiclePopup = ({
-  vehicles,
-  onClose,
-  country,
-  state,
-  category,
-  baseUrl,
-  convert,
-}) => (
-  <div className="fixed inset-0 z-[250] flex items-center justify-center bg-black bg-opacity-50 p-4">
-    <div className="max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-xl bg-white shadow-2xl">
-      <div className="flex items-center justify-between border-b border-gray-200 p-6">
-        <h2 className="flex items-center gap-2 text-xl font-bold text-gray-800">
-          <MapPin className="h-5 w-5 text-blue-500" />
-          {vehicles.length === 1
-            ? "Vehicle Details"
-            : `${vehicles.length} Vehicles Available`}
-        </h2>
-        <button
-          onClick={onClose}
-          className="rounded-full p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-        >
-          <X className="h-5 w-5" />
-        </button>
-      </div>
-
-      <div className="max-h-96 overflow-y-auto p-6">
-        <div className="space-y-4">
-          {vehicles.map((vehicle) => {
-            const aagentLink = generateCompanyProfilePageLink(
-              vehicle.companyName,
-              vehicle.companyShortId,
-              country,
-            );
-
-            const vehicleDetailsPageLink = generateVehicleDetailsUrl({
-              vehicleTitle: vehicle.vehicleModel,
-              state: state,
-              vehicleCategory: category,
-              vehicleCode: vehicle.vehicleCode,
-              country: country,
-            });
-
-            return (
-              <div
-                key={vehicle.vehicleCode}
-                className="space-y-4 rounded-xl border border-gray-200 bg-white p-5 shadow-lg transition-all hover:shadow-xl"
-              >
-                {/* Vehicle Details Box */}
-                <Link
-                  target="_blank"
-                  href={`https://dev.ride.rent${vehicleDetailsPageLink}`}
-                  className="block rounded-lg border border-blue-100 bg-blue-50 p-4 transition hover:border-blue-400 hover:bg-white"
-                >
-                  <div className="flex items-start justify-between">
-                    {/* Left: Vehicle Info */}
-                    <div>
-                      <h3 className="mb-1 flex items-center gap-2 text-lg font-bold text-blue-900">
-                        <Car className="h-5 w-5 text-blue-500" />
-                        {vehicle.vehicleModel}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        Code: {vehicle.vehicleCode}
-                      </p>
-                      {vehicle.isAdjusted && (
-                        <p className="text-orange-600 mt-1 text-xs font-medium">
-                          ⚠ Position adjusted for visibility
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Right: Price Info */}
-                    <div className="space-y-1 text-right text-yellow">
-                      {vehicle.rentalDetails.day && (
-                        <p className="flex items-center justify-end gap-1 text-sm font-semibold">
-                          {convert(Number(vehicle.rentalDetails.day))}
-                          <span className="ml-1 text-xs text-gray-500">
-                            / day
-                          </span>
-                        </p>
-                      )}
-                      {vehicle.rentalDetails.week && (
-                        <p className="flex items-center justify-end gap-1 text-sm font-semibold">
-                          {convert(Number(vehicle.rentalDetails.week))}
-                          <span className="ml-1 text-xs text-gray-500">
-                            / week
-                          </span>
-                        </p>
-                      )}
-                      {vehicle.rentalDetails.month && (
-                        <p className="flex items-center justify-end gap-1 text-sm font-semibold">
-                          {convert(Number(vehicle.rentalDetails.month))}
-                          <span className="ml-1 text-xs text-gray-500">
-                            / month
-                          </span>
-                        </p>
-                      )}
-                      {vehicle.rentalDetails.hour && (
-                        <p className="flex items-center justify-end gap-1 text-sm font-semibold">
-                          {convert(Number(vehicle.rentalDetails.hour))}
-                          <span className="ml-1 text-xs text-gray-500">
-                            / hour
-                          </span>
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-
-                {/* Vendor Box */}
-                <Link
-                  target="_blank"
-                  href={`https://dev.ride.rent${aagentLink}`}
-                  className="flex items-center gap-4 rounded-lg border border-gray-100 bg-gray-50 p-4 transition hover:border-blue-400 hover:bg-white"
-                >
-                  {/* Logo */}
-                  {vehicle.companyLogo ? (
-                    <img
-                      src={`${baseUrl}/file/stream?path=${vehicle.companyLogo}`}
-                      alt={vehicle.companyName}
-                      className="h-12 w-12 rounded-full border border-gray-200 object-cover shadow-sm"
-                    />
-                  ) : (
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 text-sm text-gray-600">
-                      N/A
-                    </div>
-                  )}
-
-                  {/* Name */}
-                  <p className="text-sm text-gray-700">
-                    <span className="font-semibold text-gray-800">Vendor:</span>{" "}
-                    {vehicle.companyName}
-                  </p>
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 const minimalTheme = [
   {
@@ -572,7 +181,7 @@ const MapClient = () => {
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!;
 
-  const coordinatesString = sessionStorage.getItem("userLocation") ?? null;
+  const coordinatesString = sessionStorage?.getItem("userLocation") ?? null;
 
   let parsedCoordinates = null;
 
@@ -584,6 +193,9 @@ const MapClient = () => {
     country === "in" ? ENV.NEXT_PUBLIC_API_URL_INDIA : ENV.NEXT_PUBLIC_API_URL;
 
   const limit = 200;
+
+  const RADIUS_KM = 100;
+
   const { vehiclesGPS, coordinatesForUi, isFetching } =
     useFetchListingVehiclesGPS({
       searchParams: searchParams.toString(),
@@ -684,27 +296,6 @@ const MapClient = () => {
   }, [apiKey]);
 
   // Initialize map
-  // useEffect(() => {
-  //   const initMap = () => {
-  //     if (!isLoading && !error && mapRef.current && !map && center.lat !== 0.001) {
-  //       const mapInstance = new window.google.maps.Map(mapRef.current, {
-  //         center: center,
-  //         zoom: 15,
-  //         styles: [
-  //           {
-  //             featureType: "poi",
-  //             elementType: "labels",
-  //             stylers: [{ visibility: "off" }],
-  //           },
-  //         ],
-  //       });
-
-  //       setMap(mapInstance);
-  //     }
-  //   };
-  //   const timer = setTimeout(initMap, 1000);
-  //   return () => clearTimeout(timer);
-  // }, [isLoading, error, map, center]);
 
   useEffect(() => {
     let initializationAttempted = false;
@@ -719,8 +310,6 @@ const MapClient = () => {
         center.lat !== 0.001
       ) {
         initializationAttempted = true;
-
-        console.log("Initializing map with center:", center);
 
         try {
           // Calculate bounds for 200km restriction
@@ -1002,7 +591,7 @@ const MapClient = () => {
               textColor = "white";
 
             if (count >= 20) {
-              color = "#DC2626"; // Red for 20+ vehicles
+              color = "#EF4444"; // Red for 20+ vehicles
               size = 80;
             } else if (count >= 10) {
               color = "#EA580C"; // Orange for 10-19 vehicles
@@ -1019,10 +608,25 @@ const MapClient = () => {
               icon: {
                 url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
                   <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-                    <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 3}" fill="${color}" stroke="white" stroke-width="3"/>
-                    <text x="${size / 2}" y="${size / 2 - 8}" font-family="Arial, sans-serif" font-size="${fontSize + 2}" font-weight="bold" text-anchor="middle" fill="${textColor}">${count}</text>
-                    <text x="${size / 2}" y="${size / 2 + 4}" font-family="Arial, sans-serif" font-size="${fontSize - 1}" font-weight="normal" text-anchor="middle" fill="${textColor}">Starting From</text>
-                    <text x="${size / 2}" y="${size / 2 + 18}" font-family="Arial, sans-serif" font-size="${fontSize - 1}" font-weight="normal" text-anchor="middle" fill="${textColor}">${priceText}</text>
+                    <defs>
+                      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.2" />
+                      </filter>
+                    </defs>
+                    <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 3}" fill="${color}" stroke="white" stroke-width="2" filter="url(#shadow)"/>
+                    
+                    <text x="50%" y="${size / 2 - 10}" font-family="Segoe UI, sans-serif" text-anchor="middle" fill="${textColor}">
+                      <tspan font-size="${fontSize + 2}" font-weight="700">${count}</tspan>
+                      <tspan font-size="${fontSize - 2}" font-weight="400">vehicles</tspan>
+                    </text>
+                    
+                    <text x="50%" y="${size / 2 + 4}" font-family="Segoe UI, sans-serif" font-size="${fontSize - 1}" font-weight="500" text-anchor="middle" fill="${textColor}">
+                      Starting From
+                    </text>
+                    
+                    <text x="50%" y="${size / 2 + 20}" font-family="Segoe UI, sans-serif" font-size="${fontSize}" font-weight="600" text-anchor="middle" fill="${textColor}">
+                      ${priceText}
+                    </text>
                   </svg>
                 `)}`,
                 scaledSize: new window.google.maps.Size(size, size),
@@ -1058,6 +662,20 @@ const MapClient = () => {
       markers.forEach((marker) => marker.setMap(null));
     };
   }, [map, vehiclesList]);
+
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (selectedVehicles) {
+      setOpen(true);
+    }
+  }, [selectedVehicles]);
+
+  useEffect(() => {
+    if (open === false) {
+      setSelectedVehicles(null);
+    }
+  }, [open]);
 
   if (error) {
     return (
@@ -1101,10 +719,11 @@ const MapClient = () => {
 
       {/* Vehicle Details Popup */}
       {selectedVehicles && (
-        <VehiclePopup
-          vehicles={selectedVehicles}
-          onClose={() => setSelectedVehicles(null)}
+        <VehicleDetailsDialog
+          open={open}
+          setOpen={setOpen}
           country={country}
+          vehicles={selectedVehicles}
           state={state}
           category={category}
           baseUrl={baseUrl}
@@ -1130,8 +749,6 @@ const MapClient = () => {
           </p>
         </div>
       </div>
-
-      {/* Legend */}
     </div>
   );
 };

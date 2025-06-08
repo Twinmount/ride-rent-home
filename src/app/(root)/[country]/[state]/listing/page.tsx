@@ -121,7 +121,7 @@ const ListingPage: FC<PageProps> = async (props) => {
                   </h2>
                 )}
               </div>
-              <div className="listing-page-filter-div z-[200] flex flex-shrink-0 max-md:mt-4">
+              <div className="listing-page-filter-div z-[12] flex flex-shrink-0 max-md:mt-4">
                 <div className="me-0 max-sm:hidden md:me-2">
                   <PriceFilterDialog isListingPage={true} />
                 </div>
