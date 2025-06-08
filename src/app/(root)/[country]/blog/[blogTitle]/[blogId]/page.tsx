@@ -88,7 +88,11 @@ export default async function BlogDetails(props: PageProps) {
       </BlogCover>
 
       {/* breadcrumb */}
-      <BlogBreadcrumb blogCategory={blogCategory} title={fetchedBlogTitle} />
+      <BlogBreadcrumb
+        blogCategory={blogCategory}
+        title={fetchedBlogTitle}
+        country={country}
+      />
 
       {/* blog main content (blog body, right promotion and popular blog list) */}
       <BlogMainContent blogContent={blogContent} country={country} />

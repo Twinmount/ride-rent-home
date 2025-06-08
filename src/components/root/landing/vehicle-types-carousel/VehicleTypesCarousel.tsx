@@ -59,7 +59,7 @@ export default function VehicleTypesCarousel() {
       updateUrlType(typeValue);
     }
 
-    // show top page loader for 300ms
+    // trigger top page loader for 300ms
     loader.start();
     setTimeout(() => {
       loader.done();

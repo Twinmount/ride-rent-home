@@ -1,13 +1,13 @@
 import { getDefaultMetadata } from "@/app/root-metadata";
 import { ENV } from "@/config/env";
-import { formatToUrlFriendly } from "@/helpers";
+import { convertToValue } from "@/helpers";
 import { getAbsoluteUrl } from "@/helpers/metadata-helper";
 import { CompanyMetadataResponse } from "@/types";
 import { Metadata } from "next";
 
 export async function fetchCompanyDetails(
   companyId: string,
-  country: string
+  country: string,
 ): Promise<CompanyMetadataResponse | null> {
   const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
@@ -53,7 +53,7 @@ export async function generateCompanyMetadata(
   const metaTitle = companyDetails?.companyMetaTitle || title;
   const metaDescription = companyDetails?.companyMetaDescription || description;
 
-  const formattedCompanyName = formatToUrlFriendly(companyName);
+  const formattedCompanyName = convertToValue(companyName);
   const companyProfilePageLink = `/profile/${formattedCompanyName}/${companyId}`;
 
   const canonicalUrl = `https://ride.rent/${country}/${companyProfilePageLink}`;
