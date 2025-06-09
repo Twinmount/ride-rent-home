@@ -95,8 +95,10 @@ function VehicleCategoryCard({
 
   const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
 
+  // top page load progress hook
   const loader = useTopLoader();
 
+  // handle navigation to trigger top page load for 300ms
   const handleNavigation = () => {
     loader.start();
     setTimeout(() => {

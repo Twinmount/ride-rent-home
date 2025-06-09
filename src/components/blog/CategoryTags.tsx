@@ -25,14 +25,13 @@ export default function CategoryTags({ selectedTag }: CategoryTagsProps) {
         params: currentParams,
         updates: {
           tag: undefined, // Remove 'tag' from the URL
-          page: 1, // Reset page to 1
         },
       });
     } else {
       // Update both the selected tag and reset page to 1
       newUrl = formBlogUrlQuery({
         params: searchParams.toString(),
-        updates: { tag: value, page: 1 }, // Reset page to 1 along with tag
+        updates: { tag: value }, // Reset page to 1 along with tag
       });
     }
 

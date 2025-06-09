@@ -4,12 +4,16 @@ import AgentVehicleGrid from "@/components/agent-profile/AgentVehicleGrid";
 import VehicleCardSkeletonGrid from "@/components/skelton/VehicleCardSkeleton";
 import { FetchCompanyDetailsResponse } from "@/types";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import React, { Suspense } from "react";
 import { generateCompanyMetadata, getCompanyJsonLd } from "./profile-metadata";
-import { ENV } from "@/config/env";
 import JsonLd from "@/components/common/JsonLd";
-import { sortFilters } from "@/helpers";
+import {
+  convertToValue,
+  generateCompanyProfilePageLink,
+  sortFilters,
+} from "@/helpers";
+import { API } from "@/utils/API";
 
 type PropsType = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -31,18 +35,19 @@ export default async function AgentProfilePage(props: PropsType) {
   const { country, companyId, companyName } = params;
 
   const searchParams = await props.searchParams;
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Default filter category set to "car"
   const filter = searchParams.filter;
   const page = parseInt(searchParams.page || "1", 10);
 
-  const url = `${baseUrl}/company/public?companyId=${companyId}`;
-
   // Fetch Data from API
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "no-cache",
+  const response = await API({
+    path: `/company/public?companyId=${companyId}`,
+    options: {
+      method: "GET",
+      cache: "no-cache",
+    },
+    country,
   });
 
   const data: FetchCompanyDetailsResponse = await response.json();
@@ -58,10 +63,26 @@ export default async function AgentProfilePage(props: PropsType) {
   const filters = data.result.categories || [];
   const sortedFilters = sortFilters(filters);
 
+  // convert to lowercased-hyphen separated version
+  const formattedCompanyName = convertToValue(
+    companyDetails.companyName as string,
+  );
+
+  // if url companyName doesn't match the formattedCompanyName, then redirect to the correct url
+  if (companyName !== formattedCompanyName) {
+    const validProfileLink = generateCompanyProfilePageLink(
+      companyDetails.companyName,
+      companyId,
+      country,
+    );
+
+    return redirect(validProfileLink);
+  }
+
   // Generate JSON-LD
   const jsonLdData = getCompanyJsonLd(
     companyId,
-    companyName,
+    formattedCompanyName,
     companyDetails.companyName,
     companyDetails.companyAddress,
     companyDetails.companyLogo,
