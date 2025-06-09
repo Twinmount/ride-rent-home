@@ -331,7 +331,7 @@ export default async function SitemapPage(props: PropsType) {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {`${label} ${basePath.slice(1) === "faq" ? "" : `in ${basePath.slice(1)}`}`}
+                            {`${label} ${basePath.slice(1) === "faq" || basePath.slice(1).toUpperCase() === label.toUpperCase() ? "" : `in ${basePath.slice(1)}`}`}
                           </a>
                         </li>
                       );
