@@ -22,7 +22,7 @@ async function fetchCompanies(baseUrl) {
           url: `https://ride.rent${generateCompanyProfilePageLink(
             company.companyName,
             company.companyId,
-             "ae",
+            "ae",
           )}`,
           lastModified: new Date().toISOString(),
           changeFrequency: "weekly",
@@ -42,25 +42,34 @@ async function fetchCompanies(baseUrl) {
 async function fetchAllData(baseUrl) {
   try {
     // Set the countryId based on the selected country
-    const countryId = "ee8a7c95-303d-4f55-bd6c-85063ff1cf48"
+    const countryId = "ee8a7c95-303d-4f55-bd6c-85063ff1cf48";
 
     // Fetch state and vehicle data for the sitemap
-    const response = await fetch(`${baseUrl}/states/list/sitemap?countryId=${countryId}&hasVehicle=true`);
+    const response = await fetch(
+      `${baseUrl}/states/list/sitemap?countryId=${countryId}&hasVehicle=true`,
+    );
     const data = await response.json();
 
-    if (data.status !== "SUCCESS" || !data.result) return {urls: [], uniqueLocations: [], formattedVehicleData: []};
+    if (data.status !== "SUCCESS" || !data.result)
+      return { urls: [], uniqueLocations: [], formattedVehicleData: [] };
 
-    const formattedVehicleData = data.result.map((state: any) => state.vehicles).flat();
+    const formattedVehicleData = data.result
+      .map((state: any) => state.vehicles)
+      .flat();
 
     // Transform the response into a simplified structure
     const formattedData = data.result.map((state: any) => {
       const location = state.stateValue.toLowerCase();
-      const categorySet = new Set(state.vehicles.map((vehicle: any) => vehicle.category));
+      const categorySet = new Set(
+        state.vehicles.map((vehicle: any) => vehicle.category),
+      );
       const categoryArray = Array.from(categorySet);
 
       return {
         location,
-        categories: (categoryArray as string[]).map((c: string) => c.toLowerCase()),
+        categories: (categoryArray as string[]).map((c: string) =>
+          c.toLowerCase(),
+        ),
       };
     });
 
@@ -68,25 +77,34 @@ async function fetchAllData(baseUrl) {
     const siteBaseUrl = `https://ride.rent/ae`;
     const urls: string[] = [];
 
-    formattedData.forEach(({ location, categories }:{location: string; categories: string[]}) => {
-      
-      categories.forEach((category: string) => {
-        urls.push(`${siteBaseUrl}/${location}/${category}`);
-        urls.push(`${siteBaseUrl}/${location}/listing?category=${category}`);
-        urls.push(`${siteBaseUrl}/${location}/vehicle-rentals/${category}-for-rent`);
-      });
-    });
+    formattedData.forEach(
+      ({
+        location,
+        categories,
+      }: {
+        location: string;
+        categories: string[];
+      }) => {
+        categories.forEach((category: string) => {
+          urls.push(`${siteBaseUrl}/${location}/${category}`);
+          urls.push(`${siteBaseUrl}/${location}/listing?category=${category}`);
+          urls.push(
+            `${siteBaseUrl}/${location}/vehicle-rentals/${category}-for-rent`,
+          );
+        });
+      },
+    );
 
     const locationSet = new Set<string>();
-    formattedData.forEach(({ location }:{location: string}) => {
+    formattedData.forEach(({ location }: { location: string }) => {
       locationSet.add(location);
     });
     const uniqueLocations = Array.from(locationSet);
 
-    return { urls, uniqueLocations, formattedVehicleData};
+    return { urls, uniqueLocations, formattedVehicleData };
   } catch (error) {
     console.error("Error fetching sitemap data:", error);
-    return {urls: [], uniqueLocations: [], formattedVehicleData:[]};
+    return { urls: [], uniqueLocations: [], formattedVehicleData: [] };
   }
 }
 
@@ -141,19 +159,26 @@ export async function GET() {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    {
+      url: "https://ride.rent/ae",
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
   ];
 
   const vehicleSeries = await fetchVehicleSeries(baseUrl);
   const companyProfiles = await fetchCompanies(baseUrl);
-  const allDatas:{urls, uniqueLocations, formattedVehicleData} = await fetchAllData(baseUrl);
-  const {urls, uniqueLocations, formattedVehicleData} = allDatas
+  const allDatas: { urls; uniqueLocations; formattedVehicleData } =
+    await fetchAllData(baseUrl);
+  const { urls, uniqueLocations, formattedVehicleData } = allDatas;
 
   const allDataUrl = urls.map((url) => ({
     url: url,
     lastModified: new Date().toISOString(),
     changeFrequency: "monthly",
     priority: 0.7,
-  }))
+  }));
 
   const faqPages = uniqueLocations.map((stateValue) => ({
     url: `https://ride.rent/ae/faq/${stateValue}`,
@@ -162,15 +187,22 @@ export async function GET() {
     priority: 0.7,
   }));
 
+  const statePage = uniqueLocations.map((stateValue) => ({
+    url: `https://ride.rent/ae/${stateValue}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
   const vehiclePages = formattedVehicleData.map((vehicle) => ({
     url: `https://ride.rent${generateVehicleDetailsUrl({
-            vehicleTitle: vehicle.vehicleTitle,
-            state: vehicle.state,
-            vehicleCategory: vehicle.category,
-            vehicleCode: vehicle.vehicleCode,
-            country: "ae"
-          })}`,
-    images:[vehicle.vehiclePhoto],
+      vehicleTitle: vehicle.vehicleTitle,
+      state: vehicle.state,
+      vehicleCategory: vehicle.category,
+      vehicleCode: vehicle.vehicleCode,
+      country: "ae",
+    })}`,
+    images: [vehicle.vehiclePhoto],
     lastModified: new Date().toISOString(),
     changeFrequency: "monthly",
     priority: 0.7,
@@ -178,7 +210,8 @@ export async function GET() {
 
   // Combine all entries
   const sitemapEntries = [
-   ...staticPages,
+    ...staticPages,
+    ...statePage,
     ...faqPages,
     ...companyProfiles,
     ...allDataUrl,

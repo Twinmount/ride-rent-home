@@ -14,11 +14,14 @@ type VehicleData = {
   category: string;
   vehiclePhoto: string;
   state: string;
-}
+};
 
 async function fetchCompanies(country: string) {
   try {
-    const baseUrl = country === "in" ? process.env.API_URL_INDIA || process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+    const baseUrl =
+      country === "in"
+        ? process.env.API_URL_INDIA || process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
     const response = await fetch(
       `${baseUrl}/company/site-map?page=0&limit=5000&sortOrder=DESC`,
@@ -44,7 +47,10 @@ async function fetchCompanies(country: string) {
 
 async function fetchVehicleSeries(country: string) {
   try {
-    const baseUrl = country === "in" ? process.env.API_URL_INDIA || process.env.NEXT_PUBLIC_API_URL_INDIA : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+    const baseUrl =
+      country === "in"
+        ? process.env.API_URL_INDIA || process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
     const response = await fetch(
       `${baseUrl}/vehicle-series/site-map?page=0&limit=5000&sortOrder=DESC`,
@@ -68,7 +74,11 @@ async function fetchVehicleSeries(country: string) {
   return [];
 }
 
-async function fetchAllData(country: string): Promise<{ urls: string[]; uniqueLocations: string[]; formattedVehicleData: VehicleData[] }> {
+async function fetchAllData(country: string): Promise<{
+  urls: string[];
+  uniqueLocations: string[];
+  formattedVehicleData: VehicleData[];
+}> {
   try {
     // Choose the correct API base URL based on the country
     const baseApiUrl =
@@ -83,22 +93,31 @@ async function fetchAllData(country: string): Promise<{ urls: string[]; uniqueLo
         : "ee8a7c95-303d-4f55-bd6c-85063ff1cf48";
 
     // Fetch state and vehicle data for the sitemap
-    const response = await fetch(`${baseApiUrl}/states/list/sitemap?countryId=${countryId}&hasVehicle=true`);
+    const response = await fetch(
+      `${baseApiUrl}/states/list/sitemap?countryId=${countryId}&hasVehicle=true`,
+    );
     const data = await response.json();
 
-    if (data.status !== "SUCCESS" || !data.result) return {urls: [], uniqueLocations: [], formattedVehicleData: []};
+    if (data.status !== "SUCCESS" || !data.result)
+      return { urls: [], uniqueLocations: [], formattedVehicleData: [] };
 
-    const formattedVehicleData:VehicleData[] = data.result.map((state: any) => state.vehicles).flat();
+    const formattedVehicleData: VehicleData[] = data.result
+      .map((state: any) => state.vehicles)
+      .flat();
 
     // Transform the response into a simplified structure
     const formattedData = data.result.map((state: any) => {
       const location = state.stateValue.toLowerCase();
-      const categorySet = new Set(state.vehicles.map((vehicle: any) => vehicle.category));
+      const categorySet = new Set(
+        state.vehicles.map((vehicle: any) => vehicle.category),
+      );
       const categoryArray = Array.from(categorySet);
 
       return {
         location,
-        categories: (categoryArray as string[]).map((c: string) => c.toLowerCase()),
+        categories: (categoryArray as string[]).map((c: string) =>
+          c.toLowerCase(),
+        ),
       };
     });
 
@@ -106,25 +125,34 @@ async function fetchAllData(country: string): Promise<{ urls: string[]; uniqueLo
     const siteBaseUrl = `https://ride.rent/${country === "in" ? "in" : "ae"}`;
     const urls: string[] = [];
 
-    formattedData.forEach(({ location, categories }:{location: string; categories: string[]}) => {
-      
-      categories.forEach((category: string) => {
-        urls.push(`${siteBaseUrl}/${location}/${category}`);
-        urls.push(`${siteBaseUrl}/${location}/listing?category=${category}`);
-        urls.push(`${siteBaseUrl}/${location}/vehicle-rentals/${category}-for-rent`);
-      });
-    });
+    formattedData.forEach(
+      ({
+        location,
+        categories,
+      }: {
+        location: string;
+        categories: string[];
+      }) => {
+        categories.forEach((category: string) => {
+          urls.push(`${siteBaseUrl}/${location}/${category}`);
+          urls.push(`${siteBaseUrl}/${location}/listing?category=${category}`);
+          urls.push(
+            `${siteBaseUrl}/${location}/vehicle-rentals/${category}-for-rent`,
+          );
+        });
+      },
+    );
 
     const locationSet = new Set<string>();
-    formattedData.forEach(({ location }:{location: string}) => {
+    formattedData.forEach(({ location }: { location: string }) => {
       locationSet.add(location);
     });
     const uniqueLocations = Array.from(locationSet);
 
-    return { urls, uniqueLocations, formattedVehicleData};
+    return { urls, uniqueLocations, formattedVehicleData };
   } catch (error) {
     console.error("Error fetching sitemap data:", error);
-    return {urls: [], uniqueLocations: [], formattedVehicleData:[]};
+    return { urls: [], uniqueLocations: [], formattedVehicleData: [] };
   }
 }
 
@@ -132,49 +160,59 @@ async function fetchAllData(country: string): Promise<{ urls: string[]; uniqueLo
 async function generateSitemapEntries(
   country: string,
 ): Promise<MetadataRoute.Sitemap> {
- 
-
   const staticPages = [
     { url: "https://ride.rent/about-us" },
     { url: "https://ride.rent/privacy-policy" },
     { url: "https://ride.rent/terms-condition" },
+    { url: country === "in" ? "https://ride.rent/in" : "https://ride.rent/ae" },
   ];
 
   const vehicleSeries = await fetchVehicleSeries(country);
   const companyProfiles = await fetchCompanies(country);
-  const allDatas:{urls: string[], uniqueLocations: string[], formattedVehicleData:VehicleData[]} = await fetchAllData(country);
-  const {urls, uniqueLocations, formattedVehicleData} = allDatas
+  const allDatas: {
+    urls: string[];
+    uniqueLocations: string[];
+    formattedVehicleData: VehicleData[];
+  } = await fetchAllData(country);
+  const { urls, uniqueLocations, formattedVehicleData } = allDatas;
 
   const allDataUrl = urls.map((url) => ({
     url: url,
     lastModified: new Date().toISOString(),
     changeFrequency: "monthly",
     priority: 0.7,
-  }))
+  }));
 
-  const faqPages = uniqueLocations.map((stateValue : string) => ({
+  const statePage = uniqueLocations.map((stateValue) => ({
+    url: `https://ride.rent/${country}/${stateValue}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  const faqPages = uniqueLocations.map((stateValue: string) => ({
     url: `https://ride.rent/${country}/faq/${stateValue}`,
     lastModified: new Date().toISOString(),
     changeFrequency: "monthly",
     priority: 0.7,
   }));
 
-  const vehiclePages = formattedVehicleData.map((vehicle : VehicleData) => ({
-     url: `https://ride.rent${generateVehicleDetailsUrl({
-            vehicleTitle: vehicle.vehicleTitle,
-            state: vehicle.state,
-            vehicleCategory: vehicle.category,
-            vehicleCode: vehicle.vehicleCode,
-            country,
-          })}`,
+  const vehiclePages = formattedVehicleData.map((vehicle: VehicleData) => ({
+    url: `https://ride.rent${generateVehicleDetailsUrl({
+      vehicleTitle: vehicle.vehicleTitle,
+      state: vehicle.state,
+      vehicleCategory: vehicle.category,
+      vehicleCode: vehicle.vehicleCode,
+      country,
+    })}`,
     lastModified: new Date().toISOString(),
     changeFrequency: "monthly",
     priority: 0.7,
   }));
 
-
   return [
     ...staticPages,
+    ...statePage,
     ...faqPages,
     ...companyProfiles,
     ...allDataUrl,
@@ -194,8 +232,10 @@ export default async function SitemapPage(props: PropsType) {
     (acc, entry) => {
       const url = new URL(entry.url);
       const pathSegments = url.pathname.split("/").filter(Boolean); // Split path and remove empty strings
-      let staticBasepath = ['about-us', 'privacy-policy', 'terms-condition'];
-      const basePath = staticBasepath.includes(pathSegments[0]) ? `/${pathSegments[0]}` : `/${pathSegments[1]}`; // Get the base path (e.g., "/dubai")
+      let staticBasepath = ["about-us", "privacy-policy", "terms-condition"];
+      const basePath = staticBasepath.includes(pathSegments[0])
+        ? `/${pathSegments[0]}`
+        : `/${pathSegments[1]}`; // Get the base path (e.g., "/dubai")
 
       if (!acc[basePath]) {
         acc[basePath] = [];
