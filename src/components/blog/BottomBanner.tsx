@@ -45,7 +45,7 @@ export default async function BottomBanner() {
             key={item.promotionId}
             href={item.promotionLink}
             target="_blank"
-            className="group relative mb-1 flex h-80 w-full min-w-full items-center gap-2 overflow-hidden rounded-xl border border-b border-gray-200 p-0 shadow transition duration-200 hover:bg-gray-100"
+            className="group relative mb-1 flex h-24 w-full min-w-full items-center gap-2 overflow-hidden rounded-xl border border-b border-gray-200 p-0 shadow transition duration-200 hover:bg-gray-100 sm:h-32 md:h-48 lg:h-64 xl:h-72 2xl:h-80"
           >
             {/* Blog Image */}
             <Image
