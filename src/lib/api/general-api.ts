@@ -661,3 +661,95 @@ export const fetchFAQ = async (
     return undefined;
   }
 };
+
+
+
+// Fetches a list of related vehicle series based on specified filters
+
+export const fetchRelatedSeriesList = async (
+  category: string,
+  brand: string,
+  state: string,
+  country: string,
+  series: string
+): Promise<{ result: { relatedSeries: string[] } }> => {
+  // Determine base URL based on country
+  const BASE_URL = country === "in" 
+    ? process.env.NEXT_PUBLIC_API_URL_INDIA 
+    : process.env.NEXT_PUBLIC_API_URL;
+
+  if (!BASE_URL) {
+    throw new Error("Base URL is not defined in environment variables");
+  }
+
+  // Construct query parameters
+  const queryParams = new URLSearchParams({
+    page: "1",
+    limit: "1000",
+    sortOrder: "DESC",
+    state: state,
+    category: category,
+    brand: brand
+  });
+
+  const fullUrl = `${BASE_URL}/vehicle-series/list/all?${queryParams}`;
+
+  try {
+    const response = await fetch(fullUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    }
+
+    const data = await response.json();
+    
+    // Extract series data from API response
+    let seriesData: string[] = [];
+    
+    if (data.status === "SUCCESS" && data.result && data.result.list) {
+      seriesData = data.result.list;
+    } else if (data.success && data.result && data.result.list) {
+      seriesData = data.result.list;
+    }
+
+    // Return empty array if no valid data found
+    if (!Array.isArray(seriesData) || seriesData.length === 0) {
+      return {
+        result: {
+          relatedSeries: []
+        }
+      };
+    }
+
+    // Filter out the current series (case-insensitive)
+    const filteredSeries = seriesData.filter(
+      (seriesItem: string) => {
+        const itemLower = String(seriesItem).toLowerCase().trim();
+        const seriesToExcludeLower = series.toLowerCase().trim();
+        return itemLower !== seriesToExcludeLower;
+      }
+    );
+
+    return {
+      result: {
+        relatedSeries: filteredSeries
+      }
+    };
+
+  } catch (error) {
+    // Handle specific error types
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error("Network error: Unable to connect to the API");
+    } else if (error instanceof SyntaxError) {
+      throw new Error("Invalid JSON response from API");
+    } else {
+      throw new Error(`Failed to fetch related series list: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+};

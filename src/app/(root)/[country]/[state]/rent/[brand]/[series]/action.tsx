@@ -1,6 +1,5 @@
 "use server";
 
-import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
 import { ENV } from "@/config/env";
 
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
@@ -27,8 +26,6 @@ export const fetchVehicleSeriesData = async ({
   });
 
   const API_URL = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-
-  // Construct the full URL
   const url = `${API_URL}/vehicle/vehicle-series/list?${params.toString()}`;
 
   const response = await fetch(`${url}`, {
@@ -38,24 +35,12 @@ export const fetchVehicleSeriesData = async ({
 
   const data: FetchVehicleCardsResponse = await response.json();
 
-  const vehicles = data.result.list || [];
-
-  const hasMore = parseInt(data.result.page) < data.result.totalNumberOfPages;
-
+  // Return raw data in the same structure 
   return {
-    vehicles: vehicles.map((vehicle, index) => {
-      const animationIndex = index % 8;
-      return (
-        <VehicleMainCard
-          key={vehicle.vehicleId}
-          vehicle={vehicle}
-          index={animationIndex}
-          country={country}
-        />
-      );
-    }),
-
-    hasMore,
-    totalNumberOfPages: data.result.totalNumberOfPages,
+    result: {
+      list: data.result.list || [],
+      page: data.result.page,
+      totalNumberOfPages: data.result.totalNumberOfPages,
+    }
   };
 };
