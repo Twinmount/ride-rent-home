@@ -19,146 +19,9 @@ import {
   adjustOverlappingPositions,
   calculateBounds,
   areLocationsClose,
-  vehiclesListss,
+  minimalTheme,
 } from "@/helpers/map-helpers";
-
-interface Vehicle {
-  vehicleModel: string;
-  rentalDetails: {
-    day: string | null;
-    week: string | null;
-    month: string | null;
-    hour: string | null;
-  };
-  vehicleCode: string;
-  location: {
-    lat: number;
-    lng: number;
-    address: string;
-  };
-  companyShortId: string;
-  companyName: string;
-  originalLocation?: {
-    lat: number;
-    lng: number;
-    address: string;
-  };
-  isAdjusted?: boolean;
-}
-
-interface Company {
-  companyName: string;
-  companyShortId: string;
-  companyLogo: string;
-  location: {
-    lat: number;
-    lng: number;
-    address: string;
-  };
-}
-
-const minimalTheme = [
-  {
-    featureType: "all",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#7c7c7c" }],
-  },
-  {
-    featureType: "all",
-    elementType: "labels.text.stroke",
-    stylers: [{ color: "#ffffff" }],
-  },
-  {
-    featureType: "administrative",
-    elementType: "geometry.fill",
-    stylers: [{ color: "#000000" }],
-  },
-  {
-    featureType: "administrative",
-    elementType: "geometry.stroke",
-    stylers: [{ color: "#144b53" }],
-  },
-  {
-    featureType: "landscape",
-    elementType: "geometry.fill",
-    stylers: [{ color: "#f5f5f2" }],
-  },
-  {
-    featureType: "poi",
-    elementType: "geometry.fill",
-    stylers: [{ color: "#d0d0d0" }],
-  },
-  {
-    featureType: "poi",
-    elementType: "labels",
-    stylers: [{ visibility: "off" }],
-  },
-  {
-    featureType: "poi.park",
-    elementType: "geometry.fill",
-    stylers: [{ color: "#bae5ce" }],
-  },
-  {
-    featureType: "road",
-    elementType: "geometry.fill",
-    stylers: [{ color: "#ffffff" }],
-  },
-  {
-    featureType: "road",
-    elementType: "geometry.stroke",
-    stylers: [{ color: "#e0e0e0" }],
-  },
-  {
-    featureType: "road",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#696969" }],
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry.fill",
-    stylers: [{ color: "#ffffff" }],
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry.stroke",
-    stylers: [{ color: "#e0e0e0" }],
-  },
-  {
-    featureType: "road.arterial",
-    elementType: "geometry.fill",
-    stylers: [{ color: "#ffffff" }],
-  },
-  {
-    featureType: "road.arterial",
-    elementType: "geometry.stroke",
-    stylers: [{ color: "#e0e0e0" }],
-  },
-  {
-    featureType: "road.local",
-    elementType: "geometry.fill",
-    stylers: [{ color: "#ffffff" }],
-  },
-  {
-    featureType: "road.local",
-    elementType: "geometry.stroke",
-    stylers: [{ color: "#e0e0e0" }],
-  },
-  {
-    featureType: "transit",
-    elementType: "geometry.fill",
-    stylers: [{ color: "#d0d0d0" }],
-  },
-  {
-    featureType: "water",
-    elementType: "geometry.fill",
-    stylers: [{ color: "#a2daf2" }],
-  },
-  {
-    featureType: "water",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#92998d" }],
-  },
-];
+import { useGlobalContext } from "@/context/GlobalContext";
 
 const MapClient = () => {
   const mapRef = useRef(null);
@@ -170,9 +33,10 @@ const MapClient = () => {
   const [restrictionCircle, setRestrictionCircle] = useState(null);
   const searchParams = useSearchParams();
   const { state, category } = useStateAndCategory();
-  const [companiesList, setCompaniesList] = useImmer<Company[]>([]);
-  const [vehiclesList, setVehiclesList] = useImmer<Vehicle[]>([]);
+  const [companiesList, setCompaniesList] = useImmer([]);
   const [center, setCenter] = useImmer({ lat: 0.001, lng: 0.001 });
+
+  const { vehicleListVisible } = useGlobalContext();
 
   const params = useParams();
   const country = Array.isArray(params.country)
@@ -194,58 +58,53 @@ const MapClient = () => {
 
   const limit = 200;
 
-  const RADIUS_KM = 100;
-
-  const { vehiclesGPS, coordinatesForUi, isFetching } =
-    useFetchListingVehiclesGPS({
-      searchParams: searchParams.toString(),
-      state,
-      limit,
-      country,
-      coordinates: parsedCoordinates,
-    });
+  const RADIUS_KM = 1000;
 
   const { convert } = usePriceConverter();
 
-  const memoizedData = useMemo(() => {
-    if (!vehiclesGPS) return { companies: [], vehicles: [] };
-
-    const companyMap = new Map();
-    const companies: Company[] = [];
-    const vehicles: Vehicle[] = [];
-
-    for (const item of vehiclesGPS) {
-      const { company, ...vehicle } = item;
-      const key = `${company.companyShortId}-${company.location.lat}-${company.location.lng}`;
-
-      if (!companyMap.has(key)) {
-        companyMap.set(key, true);
-        companies.push(company);
-      }
-
-      vehicles.push({
-        ...vehicle,
-        companyShortId: company.companyShortId,
-        companyName: company.companyName,
-        companyLogo: company.companyLogo,
-      });
+  // Calculate center point from all vehicles using useMemo for optimization
+  const calculatedCenter = useMemo(() => {
+    if (!vehicleListVisible || vehicleListVisible.length === 0) {
+      return { lat: 0.001, lng: 0.001 };
     }
 
-    return { companies, vehicles };
-  }, [vehiclesGPS]);
+    // Calculate geometric center (centroid) of all vehicle locations
+    const validVehicles = vehicleListVisible.filter(
+      (vehicle) =>
+        vehicle.location &&
+        typeof vehicle.location.lat === "number" &&
+        typeof vehicle.location.lng === "number" &&
+        !isNaN(vehicle.location.lat) &&
+        !isNaN(vehicle.location.lng),
+    );
 
-  useEffect(() => {
-    if (coordinatesForUi) {
-      setCenter({ lat: coordinatesForUi.lat, lng: coordinatesForUi.lng });
+    if (validVehicles.length === 0) {
+      return { lat: 0.001, lng: 0.001 };
     }
-  }, [coordinatesForUi]);
 
+    const totalLat = validVehicles.reduce(
+      (sum, vehicle) => sum + vehicle.location.lat,
+      0,
+    );
+    const totalLng = validVehicles.reduce(
+      (sum, vehicle) => sum + vehicle.location.lng,
+      0,
+    );
+
+    return {
+      lat: totalLat / validVehicles.length,
+      lng: totalLng / validVehicles.length,
+    };
+  }, [vehicleListVisible]);
+
+  // Update center when calculatedCenter changes
   useEffect(() => {
-    setCompaniesList(memoizedData.companies);
-    setVehiclesList([...memoizedData.vehicles, ...vehiclesListss]);
-  }, [memoizedData]);
+    if (calculatedCenter.lat !== 0.001 && calculatedCenter.lng !== 0.001) {
+      setCenter(calculatedCenter);
+    }
+  }, [calculatedCenter, setCenter]);
 
-  // Load Google Maps API
+  // Load Google Maps API - Optimized to load only once
   useEffect(() => {
     if (!apiKey) {
       setError("Google Maps API key is required");
@@ -260,6 +119,7 @@ const MapClient = () => {
     }
 
     const script = document.createElement("script");
+    // Minimal libraries to reduce API usage
     script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=geometry`;
     script.async = true;
     script.defer = true;
@@ -295,8 +155,7 @@ const MapClient = () => {
     };
   }, [apiKey]);
 
-  // Initialize map
-
+  // Initialize map with optimizations
   useEffect(() => {
     let initializationAttempted = false;
     let timeoutId;
@@ -312,12 +171,12 @@ const MapClient = () => {
         initializationAttempted = true;
 
         try {
-          // Calculate bounds for 200km restriction
+          // Calculate bounds for restriction
           const bounds = calculateBounds(center.lat, center.lng, RADIUS_KM);
 
           const mapInstance = new window.google.maps.Map(mapRef.current, {
             center: center,
-            zoom: 12, // Adjusted zoom to better show 200km area
+            zoom: 12,
             restriction: {
               latLngBounds: {
                 north: bounds.north,
@@ -325,15 +184,21 @@ const MapClient = () => {
                 east: bounds.east,
                 west: bounds.west,
               },
-              strictBounds: true, // Prevent panning outside bounds
+              strictBounds: true,
             },
             styles: minimalTheme,
-            // Additional map options to enhance restriction
-            minZoom: 8, // Prevent zooming out too far
+            minZoom: 8,
             maxZoom: 18,
+            // Optimization settings to reduce API calls
+            gestureHandling: "greedy", // Prevents accidental zooming
+            disableDoubleClickZoom: false,
+            scrollwheel: true,
+            disableDefaultUI: false, // Keep default UI for user convenience
+            mapTypeControl: false, // Disable satellite/terrain to save credits
+            streetViewControl: false, // Disable street view to save credits
           });
 
-          // Create visual circle to show the restriction area
+          // Create visual circle with optimized settings
           const circle = new window.google.maps.Circle({
             strokeColor: "#FF6B6B",
             strokeOpacity: 0.8,
@@ -342,74 +207,67 @@ const MapClient = () => {
             fillOpacity: 0.1,
             map: mapInstance,
             center: center,
-            radius: RADIUS_KM * 1000, // Convert km to meters
+            radius: RADIUS_KM * 1000,
             clickable: false,
           });
 
           setRestrictionCircle(circle);
 
-          // Add debug event listeners
-          mapInstance.addListener("tilesloaded", () => {
-            console.log("Map tiles fully loaded");
-          });
-
+          // Optimized event listeners - reduced frequency
+          let idleTimeout;
           mapInstance.addListener("idle", () => {
-            if (!document.querySelector(".gm-style")) {
-              console.warn("Map container empty - triggering recovery");
-              google.maps.event.trigger(mapInstance, "resize");
-              mapInstance.setCenter(center);
-            }
+            clearTimeout(idleTimeout);
+            idleTimeout = setTimeout(() => {
+              if (!document.querySelector(".gm-style")) {
+                console.warn("Map container empty - triggering recovery");
+                google.maps.event.trigger(mapInstance, "resize");
+                mapInstance.setCenter(center);
+              }
+            }, 100); // Debounce idle events
           });
 
-          // Add boundary enforcement listener
+          // Optimized boundary enforcement with debouncing
+          let centerChangeTimeout;
           mapInstance.addListener("center_changed", () => {
-            const currentCenter = mapInstance.getCenter();
-            const distance = calculateDistance(
-              center.lat,
-              center.lng,
-              currentCenter.lat(),
-              currentCenter.lng(),
-            );
-
-            // If user tries to pan outside 200km, snap back to edge
-            if (distance > RADIUS_KM) {
-              const bearing = Math.atan2(
-                currentCenter.lng() - center.lng,
-                currentCenter.lat() - center.lat,
+            clearTimeout(centerChangeTimeout);
+            centerChangeTimeout = setTimeout(() => {
+              const currentCenter = mapInstance.getCenter();
+              const distance = calculateDistance(
+                center.lat,
+                center.lng,
+                currentCenter.lat(),
+                currentCenter.lng(),
               );
 
-              const maxDistance = RADIUS_KM - 10; // 10km buffer from edge
-              const maxLat =
-                center.lat + (maxDistance / 111.32) * Math.cos(bearing);
-              const maxLng =
-                center.lng +
-                (maxDistance /
-                  (111.32 * Math.cos((center.lat * Math.PI) / 180))) *
-                  Math.sin(bearing);
+              if (distance > RADIUS_KM) {
+                const bearing = Math.atan2(
+                  currentCenter.lng() - center.lng,
+                  currentCenter.lat() - center.lat,
+                );
 
-              mapInstance.setCenter({ lat: maxLat, lng: maxLng });
-            }
+                const maxDistance = RADIUS_KM - 10;
+                const maxLat =
+                  center.lat + (maxDistance / 111.32) * Math.cos(bearing);
+                const maxLng =
+                  center.lng +
+                  (maxDistance /
+                    (111.32 * Math.cos((center.lat * Math.PI) / 180))) *
+                    Math.sin(bearing);
+
+                mapInstance.setCenter({ lat: maxLat, lng: maxLng });
+              }
+            }, 50); // Debounce center changes
           });
 
           setMap(mapInstance);
         } catch (err) {
           console.error("Map initialization failed:", err);
         }
-      } else if (!initializationAttempted) {
-        console.log("Initialization skipped because:", {
-          isLoading,
-          error,
-          hasMapRef: !!mapRef.current,
-          mapExists: !!map,
-          validCenter: center.lat !== 0.001,
-        });
       }
     };
 
-    // First attempt (immediate)
     initMap();
 
-    // Fallback attempt after delay if not initialized
     if (!initializationAttempted) {
       timeoutId = setTimeout(() => {
         console.log("Fallback initialization attempt");
@@ -428,6 +286,33 @@ const MapClient = () => {
     };
   }, [isLoading, error, map, center]);
 
+  // Update map center when center changes (smooth transition)
+  useEffect(() => {
+    if (map && center.lat !== 0.001 && center.lng !== 0.001) {
+      // Use panTo for smooth transition instead of setCenter
+      map.panTo(center);
+
+      // Update restriction circle center if it exists
+      if (restrictionCircle) {
+        restrictionCircle.setCenter(center);
+
+        // Recalculate bounds for new center
+        const bounds = calculateBounds(center.lat, center.lng, RADIUS_KM);
+        map.setOptions({
+          restriction: {
+            latLngBounds: {
+              north: bounds.north,
+              south: bounds.south,
+              east: bounds.east,
+              west: bounds.west,
+            },
+            strictBounds: true,
+          },
+        });
+      }
+    }
+  }, [map, center, restrictionCircle]);
+
   // Helper function to get best available price and period
   const getBestPrice = (rentalDetails) => {
     if (rentalDetails.day) return { price: rentalDetails.day, period: "day" };
@@ -442,7 +327,13 @@ const MapClient = () => {
 
   // Enhanced marker creation with overlap prevention and hover effects
   useEffect(() => {
-    if (!map || !window.google) return;
+    if (
+      !map ||
+      !window.google ||
+      !vehicleListVisible ||
+      vehicleListVisible.length === 0
+    )
+      return;
 
     // Clear existing markers
     if (markerClusterer) {
@@ -450,7 +341,7 @@ const MapClient = () => {
     }
 
     // Adjust positions for overlapping vehicles
-    const adjustedVehicles = adjustOverlappingPositions(vehiclesList);
+    const adjustedVehicles = adjustOverlappingPositions(vehicleListVisible);
 
     // Create markers for each vehicle with enhanced styling
     const markers = adjustedVehicles.map((vehicle, index) => {
@@ -480,7 +371,9 @@ const MapClient = () => {
           scaledSize: new window.google.maps.Size(65, 35),
           anchor: new window.google.maps.Point(32.5, 17),
         },
-        zIndex: vehicle.isAdjusted ? 200 : 100, // Higher z-index for adjusted markers
+        zIndex: vehicle.isAdjusted ? 200 : 100,
+        // Optimization: Use optimized rendering
+        optimized: true,
       });
 
       // Enhanced click listener
@@ -488,41 +381,42 @@ const MapClient = () => {
         setSelectedVehicles([vehicle]);
       });
 
-      // Add hover effect using mouseover/mouseout
+      // Optimized hover effects with debouncing
+      let hoverTimeout;
       marker.addListener("mouseover", () => {
-        // Increase z-index on hover
-        marker.setZIndex(1000 + index);
+        clearTimeout(hoverTimeout);
+        hoverTimeout = setTimeout(() => {
+          marker.setZIndex(1000 + index);
 
-        // Create hover icon with different styling
-        const hoverIcon = {
-          url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg" width="75" height="40" viewBox="0 0 75 40">
-              <defs>
-                <filter id="glow${index}" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                  <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(59, 130, 246, 0.5)"/>
-                </filter>
-              </defs>
-              <rect x="3" y="3" width="69" height="34" rx="17" ry="17" 
-                    fill="#3B82F6" stroke="white" stroke-width="3" 
-                    filter="url(#glow${index})"/>
-              <text x="37.5" y="24" font-family="Arial, sans-serif" 
-                    font-size="12" font-weight="bold" text-anchor="middle" 
-                    fill="white">${convertPrice}</text>
-            </svg>
-          `)}`,
-          scaledSize: new window.google.maps.Size(75, 40),
-          anchor: new window.google.maps.Point(37.5, 20),
-        };
+          const hoverIcon = {
+            url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+              <svg xmlns="http://www.w3.org/2000/svg" width="75" height="40" viewBox="0 0 75 40">
+                <defs>
+                  <filter id="glow${index}" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(59, 130, 246, 0.5)"/>
+                  </filter>
+                </defs>
+                <rect x="3" y="3" width="69" height="34" rx="17" ry="17" 
+                      fill="#3B82F6" stroke="white" stroke-width="3" 
+                      filter="url(#glow${index})"/>
+                <text x="37.5" y="24" font-family="Arial, sans-serif" 
+                      font-size="12" font-weight="bold" text-anchor="middle" 
+                      fill="white">${convertPrice}</text>
+              </svg>
+            `)}`,
+            scaledSize: new window.google.maps.Size(75, 40),
+            anchor: new window.google.maps.Point(37.5, 20),
+          };
 
-        marker.setIcon(hoverIcon);
+          marker.setIcon(hoverIcon);
+        }, 100); // Debounce hover events
       });
 
       marker.addListener("mouseout", () => {
-        // Reset z-index
+        clearTimeout(hoverTimeout);
         marker.setZIndex(vehicle.isAdjusted ? 200 : 100);
 
-        // Reset to original icon
         const originalIcon = {
           url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
             <svg xmlns="http://www.w3.org/2000/svg" width="65" height="35" viewBox="0 0 65 35">
@@ -546,19 +440,17 @@ const MapClient = () => {
         marker.setIcon(originalIcon);
       });
 
-      // Store vehicle data with marker
       marker.vehicleData = vehicle;
       return marker;
     });
 
-    // Create clusterer if MarkerClusterer is available
+    // Create clusterer with optimized settings
     if (window.markerClusterer && window.markerClusterer.MarkerClusterer) {
       const clusterer = new window.markerClusterer.MarkerClusterer({
         map,
         markers,
         renderer: {
           render: ({ count, position, markers }) => {
-            // Calculate price range for the cluster based on day prices only
             const vehicles = markers
               .map((marker) => marker.vehicleData)
               .filter(Boolean);
@@ -575,7 +467,6 @@ const MapClient = () => {
               maxPrice = convert(Number(Math.max(...dayPrices)));
               priceText = minPrice === maxPrice ? `${minPrice}` : `${minPrice}`;
             } else {
-              // If no day prices, use the best available prices
               const bestPrices = vehicles.map((v) => {
                 const { price } = getBestPrice(v.rentalDetails);
                 return parseInt(price);
@@ -585,19 +476,18 @@ const MapClient = () => {
               priceText = minPrice === maxPrice ? `${minPrice}` : `${minPrice}`;
             }
 
-            // Determine color and size based on count
             let color,
               size,
               textColor = "white";
 
             if (count >= 20) {
-              color = "#EF4444"; // Red for 20+ vehicles
+              color = "#EF4444";
               size = 80;
             } else if (count >= 10) {
-              color = "#EA580C"; // Orange for 10-19 vehicles
+              color = "#EA580C";
               size = 80;
             } else {
-              color = "#F97316"; // Light orange for 5-9 vehicles
+              color = "#F97316";
               size = 80;
             }
 
@@ -633,12 +523,12 @@ const MapClient = () => {
                 anchor: new window.google.maps.Point(size / 2, size / 2),
               },
               zIndex: 1000 + count,
+              optimized: true, // Optimization
             });
           },
         },
       });
 
-      // Add cluster click listener
       clusterer.addListener("clusterclick", (event, cluster) => {
         const clusterMarkers = cluster.markers;
         const vehicles = clusterMarkers
@@ -651,7 +541,6 @@ const MapClient = () => {
 
       setMarkerClusterer(clusterer);
     } else {
-      // Fallback: add markers directly to map without clustering
       markers.forEach((marker) => marker.setMap(map));
     }
 
@@ -661,7 +550,7 @@ const MapClient = () => {
       }
       markers.forEach((marker) => marker.setMap(null));
     };
-  }, [map, vehiclesList]);
+  }, [map, vehicleListVisible]);
 
   const [open, setOpen] = useState(false);
 
@@ -694,14 +583,15 @@ const MapClient = () => {
     );
   }
 
-  if (isLoading || isFetching || center.lat === 0.001) {
+  if (isLoading || center.lat === 0.001) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-gray-100">
         <div className="text-center">
           <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500"></div>
           <p className="font-medium text-gray-600">Loading Google Maps...</p>
           <p className="mt-2 text-sm text-gray-500">
-            Initializing map and vehicle data
+            Calculating optimal center point from{" "}
+            {vehicleListVisible?.length || 0} vehicles
           </p>
         </div>
       </div>
@@ -742,10 +632,14 @@ const MapClient = () => {
           <li>• Orange/Red clusters: Multiple vehicles</li>
           <li>• Click any marker to see details</li>
           <li>• Zoom to see different clustering levels</li>
+          <li>• Map auto-centers on vehicle locations</li>
         </ul>
         <div className="mt-3 border-t border-gray-200 pt-3">
           <p className="text-xs text-gray-500">
-            Total vehicles: {vehiclesList.length}
+            Total vehicles: {vehicleListVisible?.length || 0}
+          </p>
+          <p className="text-xs text-gray-500">
+            Center: {center.lat.toFixed(4)}, {center.lng.toFixed(4)}
           </p>
         </div>
       </div>

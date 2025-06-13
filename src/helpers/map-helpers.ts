@@ -292,3 +292,106 @@ export const vehiclesListss = [
     companyName: "Company 2",
   },
 ];
+
+export const minimalTheme = [
+  {
+    featureType: "all",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#7c7c7c" }],
+  },
+  {
+    featureType: "all",
+    elementType: "labels.text.stroke",
+    stylers: [{ color: "#ffffff" }],
+  },
+  {
+    featureType: "administrative",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#000000" }],
+  },
+  {
+    featureType: "administrative",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#144b53" }],
+  },
+  {
+    featureType: "landscape",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#f5f5f2" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#d0d0d0" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "labels",
+    stylers: [{ visibility: "off" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#bae5ce" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#ffffff" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#e0e0e0" }],
+  },
+  {
+    featureType: "road",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#696969" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#ffffff" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#e0e0e0" }],
+  },
+  {
+    featureType: "road.arterial",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#ffffff" }],
+  },
+  {
+    featureType: "road.arterial",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#e0e0e0" }],
+  },
+  {
+    featureType: "road.local",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#ffffff" }],
+  },
+  {
+    featureType: "road.local",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#e0e0e0" }],
+  },
+  {
+    featureType: "transit",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#d0d0d0" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry.fill",
+    stylers: [{ color: "#a2daf2" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#92998d" }],
+  },
+];

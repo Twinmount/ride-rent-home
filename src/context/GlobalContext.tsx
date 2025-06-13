@@ -13,6 +13,8 @@ type GlobalContextType = {
   setCurrency: React.Dispatch<React.SetStateAction<string>>;
   exchangeRates: { [key: string]: number };
   country: string;
+  vehicleListVisible: any;
+  setVehiclesListVisible: React.Dispatch<React.SetStateAction<any>>;
 };
 
 type ExchangeValue = {
@@ -28,6 +30,7 @@ export const GlobalContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [isPageLoading, setIsPageLoading] = useState(false);
+  const [vehicleListVisible, setVehiclesListVisible] = useImmer([]);
   const [exchangeRates, setExchangeRates] = useImmer<{ [key: string]: number }>(
     {
       AED: 1,
@@ -72,7 +75,9 @@ export const GlobalContextProvider = ({
         currency,
         setCurrency,
         exchangeRates,
-        country
+        country,
+        vehicleListVisible,
+        setVehiclesListVisible,
       }}
     >
       <VehicleCardContextProvider>{children}</VehicleCardContextProvider>
