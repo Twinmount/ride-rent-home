@@ -11,25 +11,25 @@ import { useImmer } from "use-immer";
 import { convertToLabel } from "@/helpers";
 import { useQuery } from "@tanstack/react-query";
 import { fetchRelatedSeriesList } from "@/lib/api/general-api";
-
 import { useFetchListingVehiclesBySeries } from "@/hooks/useFetchListingVehiclesBySeries";
-
 
 type SeriesListingGridProps = {
   series: string;
   state: string;
   brand: string;
   country: string;
+  category: string;
 };
 
 const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({ 
     series, 
     state, 
     country,
-    brand
+    brand,
+    category
 }) => {
   const searchParams = useSearchParams();
-  const category = "cars";
+  // const category = "cars";
 
   // State variables
   const [seriesValue, setSeriesValue] = useState(series);
@@ -41,7 +41,6 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
   const [hasTriggeredSwitch, setHasTriggeredSwitch] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useImmer(true);
   const [apiCallDelay, setApiCallDelay] = useImmer(false);
-
 
   // Hooks
   const { ref, inView } = useInView();
@@ -56,6 +55,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
     series: seriesValue,
     state,
     country,
+    category,
   });
 
   const { data: relatedSeries } = useQuery({
@@ -66,6 +66,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
   });
 
   console.log("Related Series:", relatedSeries);
+  
   // Computed values for JSX conditions
   const shouldFetchNextPage = inView && hasNextPage && !isFetching && !apiCallDelay && !isSwitchingSeries;
   const currentSeriesVehicles = vehicles[seriesValue]?.length || 0;
@@ -82,12 +83,10 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
     return 0;
   });
 
-
   // Auto-scroll to top on mount
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
-
 
   // Update related series list from API
   useEffect(() => {
@@ -96,7 +95,6 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
     }
   }, [relatedSeries]);
 
-
   // Handle infinite scroll for current series
   useEffect(() => {
     if (shouldFetchNextPage) {
@@ -104,7 +102,6 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
       setApiCallDelay(true);
     }
   }, [shouldFetchNextPage, fetchNextPage, setApiCallDelay]);
-
 
   // Handle series switching logic
   useEffect(() => {
@@ -122,12 +119,10 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
     }
   }, [shouldSwitchSeries, seriesValue, setProcessedSeries]);
 
-
   // Reset switch trigger when series changes
   useEffect(() => {
     setHasTriggeredSwitch(false);
   }, [seriesValue]);
-
 
   // Throttle API calls
   useEffect(() => {
@@ -139,7 +134,6 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
     }
     return undefined;
   }, [apiCallDelay, setApiCallDelay]);
-
 
   // Update vehicles state when new data is fetched
   useEffect(() => {
@@ -168,7 +162,6 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
       setIsSwitchingSeries(false);
     }
   }, [isFetching, fetchedVehicles, seriesValue, setVehicles, setIsInitialLoad]);
-
 
   return (
     <>

@@ -42,39 +42,41 @@ export async function generateSeriesListingPageMetadata({
   state,
   series,
   brand,
+  category, // Add category parameter
   country,
 }: {
   state: string;
   series: string;
   brand: string;
+  category: string; // Add category type
   country: string;
 }): Promise<Metadata> {
   const data = await fetchVehicleSeriesMetadata({ state, series, brand, country });
-
-  const canonicalUrl = `https://ride.rent/${country}/${state}/rent/${brand}/${series}`;
+  
+  const canonicalUrl = `https://ride.rent/${country}/${state}/rent/${category}/${brand}/${series}`;
   if (!data || !data.result) {
     return getDefaultMetadata(canonicalUrl);
   }
-
+  
   const {
     vehicleSeriesMetaTitle,
     vehicleSeriesMetaDescription,
     vehicleSeriesPageHeading,
     vehicleSeriesPageSubheading,
   } = data.result;
-
+  
   const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
-
+  
   const shortTitle =
     vehicleSeriesPageHeading.length > 60
       ? `${vehicleSeriesPageHeading.substring(0, 57)}...`
       : vehicleSeriesPageHeading;
-
+  
   const shortDescription =
     vehicleSeriesPageSubheading.length > 155
       ? `${vehicleSeriesPageSubheading.substring(0, 152)}...`
       : vehicleSeriesPageSubheading;
-
+  
   return {
     title: vehicleSeriesMetaTitle,
     description: vehicleSeriesMetaDescription,
@@ -84,6 +86,7 @@ export async function generateSeriesListingPageMetadata({
       `${series} rent in ${state}`,
       `${series} vehicle rental`,
       `${brand} rental near me`,
+      `${category} rental`, // You can now use category in keywords
     ],
     openGraph: {
       title: shortTitle,
@@ -137,17 +140,18 @@ export function getSeriesListingPageJsonLd(
   brand: string,
   series: string,
   country: string,
+  category: string, // Add category parameter
 ) {
   const seriesListingUrl = getAbsoluteUrl(
-    `/${country}/${state}/rent/${brand}/${series}`,
+    `/${country}/${state}/rent/${category}/${brand}/${series}`, // Include category in URL
   );
   const siteImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
 
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `Explore ${convertToLabel(series)} Rentals in ${convertToLabel(state)} | Ride Rent`,
-    description: `Find the best ${convertToLabel(series)} (${convertToLabel(brand)}) rentals in ${convertToLabel(state)}. Compare prices, book easily, and enjoy the ride.`,
+    name: `Explore ${convertToLabel(series)} ${convertToLabel(category)} Rentals in ${convertToLabel(state)} | Ride Rent`,
+    description: `Find the best ${convertToLabel(series)} (${convertToLabel(brand)}) ${convertToLabel(category)} rentals in ${convertToLabel(state)}. Compare prices, book easily, and enjoy the ride.`,
     url: seriesListingUrl,
     image: siteImage,
     breadcrumb: {
@@ -162,6 +166,30 @@ export function getSeriesListingPageJsonLd(
         {
           "@type": "ListItem",
           position: 2,
+          name: convertToLabel(country),
+          item: getAbsoluteUrl(`/${country}`),
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: convertToLabel(state),
+          item: getAbsoluteUrl(`/${country}/${state}`),
+        },
+        {
+          "@type": "ListItem",
+          position: 4,
+          name: convertToLabel(category),
+          item: getAbsoluteUrl(`/${country}/${state}/rent/${category}`),
+        },
+        {
+          "@type": "ListItem",
+          position: 5,
+          name: convertToLabel(brand),
+          item: getAbsoluteUrl(`/${country}/${state}/rent/${category}/${brand}`),
+        },
+        {
+          "@type": "ListItem",
+          position: 6,
           name: convertToLabel(series),
           item: seriesListingUrl,
         },

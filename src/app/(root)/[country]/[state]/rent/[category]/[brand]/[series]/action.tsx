@@ -9,6 +9,7 @@ type Props = {
   state: string;
   vehicleSeries: string;
   country: string;
+  category: string;
 };
 
 export const fetchVehicleSeriesData = async ({
@@ -16,12 +17,14 @@ export const fetchVehicleSeriesData = async ({
   state,
   vehicleSeries,
   country,
+  category,
 }: Props) => {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: "8",
     state,
     vehicleSeries,
+    category,
     sortOrder: "DESC",
   });
 

@@ -5,18 +5,20 @@ type SeriesListLinkProps = {
   state: string;
   brandValue: string;
   series: VehicleSeriesWithCount;
-  country: string
+  country: string,
+  category?: string;
 };
 export default function SeriesListLink({
   state,
   brandValue,
   series,
-  country
+  country,
+  category
 }: SeriesListLinkProps) {
   return (
     <li className="h-fit">
       <Link
-        href={`/${country}/${state}/rent/${brandValue}/${series.seriesName}`}
+        href={`/${country}/${state}/rent/${category}/${brandValue}/${series.seriesName}`}
         key={series.seriesName}
         className="group flex w-fit items-center text-base font-[500] text-gray-700 transition-all hover:translate-x-2 hover:text-yellow"
       >

@@ -78,7 +78,7 @@ export default async function BrandSeriesPage(props: PageProps) {
         country={country}
       />
 
-      <AllSeriesList state={state} list={list} brand={brand} country={country} />
+      <AllSeriesList state={state} list={list} brand={brand} country={country} category={categoryValue} />
 
       <Suspense fallback={<div>Loading Pagination...</div>}>
         <Pagination page={page} totalPages={totalPages} />

@@ -1,5 +1,5 @@
 // Updated hook to use the raw data function
-import { fetchVehicleSeriesData } from "@/app/(root)/[country]/[state]/rent/[brand]/[series]/action";
+import { fetchVehicleSeriesData } from "@/app/(root)/[country]/[state]/rent/[category]/[brand]/[series]/action";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 interface UseFetchListingVehiclesBySeriesParams {
@@ -7,6 +7,7 @@ interface UseFetchListingVehiclesBySeriesParams {
   series: string;
   state: string;
   country: string;
+  category:string;
 }
 
 export const useFetchListingVehiclesBySeries = ({
@@ -14,6 +15,7 @@ export const useFetchListingVehiclesBySeries = ({
   series,
   state,
   country,
+  category, 
 }: UseFetchListingVehiclesBySeriesParams) => {
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useInfiniteQuery({
@@ -25,6 +27,7 @@ export const useFetchListingVehiclesBySeries = ({
           state,
           vehicleSeries: series,
           country,
+          category,
         });
       },
       initialPageParam: 1,
