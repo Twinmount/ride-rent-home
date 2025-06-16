@@ -13,7 +13,7 @@ type GlobalContextType = {
   setCurrency: React.Dispatch<React.SetStateAction<string>>;
   exchangeRates: { [key: string]: number };
   country: string;
-  vehicleListVisible: any;
+  vehicleListVisible: any[];
   setVehiclesListVisible: React.Dispatch<React.SetStateAction<any>>;
 };
 

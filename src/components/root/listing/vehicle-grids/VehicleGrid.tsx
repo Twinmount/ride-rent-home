@@ -204,6 +204,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
           ]),
         );
         return {
+          ...vehicle,
           companyLogo: vehicle.companyLogo,
           companyName: vehicle.companyName,
           companyShortId: vehicle.companyShortId,
