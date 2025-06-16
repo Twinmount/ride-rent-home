@@ -54,7 +54,7 @@ const VehicleMainMapCard = ({
   });
 
   return (
-    <MotionStaggeredDiv index={index} className="main-card-container">
+    <div className="main-card-container">
       {/* card top */}
       <div className="card-top">
         <div className="image-container">
@@ -124,7 +124,7 @@ const VehicleMainMapCard = ({
           />
         </div>
       </div>
-    </MotionStaggeredDiv>
+    </div>
   );
 };
 
