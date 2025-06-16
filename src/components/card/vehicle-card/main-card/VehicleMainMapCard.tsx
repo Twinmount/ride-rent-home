@@ -15,20 +15,17 @@ import VehicleThumbnail from "../VehicleThumbnail";
 import HourlyRentalBadge from "./hourly-rental-badge/HourlyRentalBadge";
 import RentalDetails from "../RentalDetails";
 
-import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
 // import EnquireBestPrice from "../EnquireBestPrice";
 import { MapPin } from "lucide-react";
 import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
 
 type VehicleMainMapCardProps = {
   vehicle: VehicleCardType;
-  index: number;
   country: string;
 };
 
 const VehicleMainMapCard = ({
   vehicle,
-  index,
   country = "ae",
 }: VehicleMainMapCardProps) => {
   const formattedPhoneNumber = getFormattedPhoneNumber(

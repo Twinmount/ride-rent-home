@@ -40,7 +40,7 @@ export function VehicleDetailsDialog({
           </DialogHeader>
 
           <div>
-            {vehicles.map((vehicle, index) => {
+            {vehicles.map((vehicle) => {
               const vehicleDetailsPageLink = generateVehicleDetailsUrl({
                 vehicleTitle: vehicle.model,
                 state: state,
@@ -54,11 +54,7 @@ export function VehicleDetailsDialog({
                     target="_blank"
                     href={`https://dev.ride.rent${vehicleDetailsPageLink}`}
                   >
-                    <VehicleMainMapCard
-                      vehicle={vehicle}
-                      index={index}
-                      country={country}
-                    />
+                    <VehicleMainMapCard vehicle={vehicle} country={country} />
                   </Link>
                 </div>
               );
