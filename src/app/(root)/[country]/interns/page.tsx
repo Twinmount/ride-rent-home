@@ -120,10 +120,10 @@ const InternsPage = () => {
             </div>
             <div className="relative z-[5] mx-auto px-5 md:max-w-[700px]">
               <div className="relative text-center">
-                <h2 className="mb-3 text-[28px] font-medium text-white">
+                <h2 className="mb-3 text-[28px] font-semibold text-white drop-shadow-lg md:text-[34px]">
                   Intern opportunities open for 25 batches
                 </h2>
-                <p className="text-md mb-0 inline-block text-white">
+                <p className="text-md mb-0 inline-block text-white drop-shadow-lg">
                   Our internships are for final-year students and recent
                   graduates with a degree in computer science or business. The
                   program lasts for 3 months.
@@ -220,7 +220,7 @@ const InternsPage = () => {
                     name="resume-cv"
                     className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
                   />
-                  <p className="mt-2 text-sm text-gray-500">
+                  <p className="mt-2 select-none text-sm text-gray-500">
                     Accepted file types: .pdf , .doc, .docx
                   </p>
                 </div>

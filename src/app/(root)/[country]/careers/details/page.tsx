@@ -225,7 +225,7 @@ const CareersDetailsPage = () => {
                           name="resume-cv"
                           className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
                         />
-                        <p className="mt-2 text-sm text-gray-500">
+                        <p className="mt-2 select-none text-sm text-gray-500">
                           Accepted file types: .pdf , .doc, .docx
                         </p>
                       </div>
