@@ -29,6 +29,7 @@ export default function BrandSeriesSubList({
             brandValue={brand.brandValue}
             series={series}
             country={country}
+            category={category}
           />
         ))}
       </ul>

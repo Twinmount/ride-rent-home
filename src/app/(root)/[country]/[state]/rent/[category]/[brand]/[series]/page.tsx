@@ -34,16 +34,18 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   });
 }
 
+
 export default async function VehicleSeriesPage(props: PageProps) {
   const params = await props.params;
  
   const { country, state, category, brand, series } = params;
+
  
   const categoryValue = extractCategory(category);
  
   // Generate JSON-LD
   const jsonLdData = getSeriesListingPageJsonLd(state, brand, series, country, categoryValue);
-  
+
   return (
     <>
       {/* Inject JSON-LD into the <head> */}

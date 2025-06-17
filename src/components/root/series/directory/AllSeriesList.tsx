@@ -6,7 +6,7 @@ type AllSeriesListProps = {
   brand: string;
   list: VehicleBrandSeriesWithCount[];
   country: string;
-  category?: string;
+  category: string;
 };
 export default function AllSeriesList({
   state,

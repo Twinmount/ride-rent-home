@@ -65,7 +65,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
     staleTime: 0,
   });
 
-  console.log("Related Series:", relatedSeries);
+
   
   // Computed values for JSX conditions
   const shouldFetchNextPage = inView && hasNextPage && !isFetching && !apiCallDelay && !isSwitchingSeries;

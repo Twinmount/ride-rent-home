@@ -6,7 +6,7 @@ type SeriesListLinkProps = {
   brandValue: string;
   series: VehicleSeriesWithCount;
   country: string,
-  category?: string;
+  category: string;
 };
 export default function SeriesListLink({
   state,

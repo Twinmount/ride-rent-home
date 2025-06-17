@@ -1,262 +1,357 @@
 // @ts-nocheck
+import { ENV } from "@/config/env";
 import {
+  generateBlogUrlTitle,
   generateCompanyProfilePageLink,
   generateVehicleDetailsUrl,
 } from "@/helpers";
+import { API } from "@/utils/API";
 import { NextResponse } from "next/server";
 
-async function fetchCompanies(baseUrl) {
+// Constants
+const SITE_URL = ENV.SITE_URL || ENV.NEXT_PUBLIC_SITE_URL;
+const COUNTRY = "in";
+const COUNTRY_ID = "68ea1314-08ed-4bba-a2b1-af549946523d";
+const ASSETS_BASE_URL = ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL;
+
+/**
+ * Fetches company data for sitemap generation
+ */
+async function fetchCompaniesSitemap() {
   try {
-    const response = await fetch(
-      `${baseUrl}/company/site-map?page=0&limit=500&sortOrder=DESC`,
-    );
+    const response = await API({
+      path: `/company/site-map?page=0&limit=500&sortOrder=DESC`,
+      options: {},
+      country: COUNTRY,
+    });
+
     const data = await response.json();
 
     if (data.status === "SUCCESS" && data.result?.list) {
-      return data.result.list.map(
-        (company: {
-          companyName: string;
-          companyId: string;
-          companyLogo: any;
-        }) => ({
-          url: `https://ride.rent${generateCompanyProfilePageLink(
-            company.companyName,
-            company.companyId,
-            "in",
-          )}`,
-          lastModified: new Date().toISOString(),
-          changeFrequency: "weekly",
-          priority: 0.8,
-          images: !!company.companyLogo
-            ? [`${baseUrl}/file/stream?path=${company.companyLogo}`]
-            : [],
-        }),
-      );
+      return data.result.list.map((company) => ({
+        url: `${SITE_URL}${generateCompanyProfilePageLink(
+          company.companyName,
+          company.companyId,
+          COUNTRY,
+        )}`,
+        lastModified: new Date().toISOString(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+        images: company.companyLogo
+          ? [`${ASSETS_BASE_URL}/file/stream?path=${company.companyLogo}`]
+          : [],
+      }));
     }
   } catch (error) {
-    console.error("Error fetching companies:", error);
+    console.error("Error fetching companies sitemap:", error);
   }
   return [];
 }
 
-async function fetchAllData(baseUrl) {
+/**
+ * Fetches blog data for sitemap generation
+ */
+async function fetchBlogsSitemap() {
   try {
-    // Set the countryId based on the selected country
-    const countryId = "68ea1314-08ed-4bba-a2b1-af549946523d";
-    // country === "in"
-    //   ? "68ea1314-08ed-4bba-a2b1-af549946523d"
-    //   : "ee8a7c95-303d-4f55-bd6c-85063ff1cf48";
+    const response = await API({
+      path: `/blogs/site-map?page=0&limit=500&sortOrder=DESC`,
+      options: {},
+      country: COUNTRY,
+    });
 
-    // Fetch state and vehicle data for the sitemap
-    const response = await fetch(
-      `${baseUrl}/states/list/sitemap?countryId=${countryId}&hasVehicle=true`,
-    );
     const data = await response.json();
 
-    if (data.status !== "SUCCESS" || !data.result)
-      return { urls: [], uniqueLocations: [], formattedVehicleData: [] };
+    if (data.status === "SUCCESS" && data.result?.list) {
+      return data.result.list.map((blog) => ({
+        url: `${SITE_URL}/blog/${generateBlogUrlTitle(blog.blogTitle)}/${blog.blogId}`,
+        lastModified: new Date().toISOString(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching blogs sitemap:", error);
+  }
+  return [];
+}
 
-    const formattedVehicleData = data.result
-      .map((state: any) => state.vehicles)
+/**
+ * Fetches vehicle series data for sitemap generation
+ */
+async function fetchVehicleSeriesSitemap() {
+  try {
+    const response = await API({
+      path: `/vehicle-series/site-map?page=0&limit=5000&sortOrder=DESC`,
+      options: {},
+      country: COUNTRY,
+    });
+
+    const data = await response.json();
+
+    if (data.status === "SUCCESS" && data.result?.list) {
+      return data.result.list.map((vehicle) => ({
+        url: `${SITE_URL}/${COUNTRY}/${vehicle.stateValue}/rent/${vehicle.category || 'vehicles'}/${vehicle.brandValue}/${vehicle.vehicleSeries}`,
+        lastModified: new Date().toISOString(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching vehicle series sitemap:", error);
+  }
+  return [];
+}
+
+/**
+ * Fetches states and vehicles data for sitemap generation
+ */
+async function fetchStatesAndVehiclesSitemap() {
+  try {
+    const response = await API({
+      path: `/states/list/sitemap?countryId=${COUNTRY_ID}&hasVehicle=true`,
+      options: {},
+      country: COUNTRY,
+    });
+
+    const data = await response.json();
+
+    if (data.status !== "SUCCESS" || !data.result || data.result.length === 0) {
+      return {
+        locationUrls: [],
+        categoryUrls: [],
+        faqUrls: [],
+        vehicleUrls: [],
+        uniqueLocations: [],
+      };
+    }
+
+    // Extract all vehicles and format them
+    const allVehicles = data.result
+      .map((state) => state.vehicles || [])
       .flat();
 
-    // Transform the response into a simplified structure
-    const formattedData = data.result.map((state: any) => {
+    // Create location-category mapping
+    const locationCategoryMap = new Map();
+    const locationSet = new Set();
+
+    data.result.forEach((state) => {
       const location = state.stateValue.toLowerCase();
-      const categorySet = new Set(
-        state.vehicles.map((vehicle: any) => vehicle.category),
-      );
-      const categoryArray = Array.from(categorySet);
-
-      return {
-        location,
-        categories: (categoryArray as string[]).map((c: string) =>
-          c.toLowerCase(),
-        ),
-      };
-    });
-
-    // Generate URLs for the sitemap
-    const siteBaseUrl = `https://ride.rent/in`;
-    const urls: string[] = [];
-
-    formattedData.forEach(
-      ({
-        location,
-        categories,
-      }: {
-        location: string;
-        categories: string[];
-      }) => {
-        categories.forEach((category: string) => {
-          urls.push(`${siteBaseUrl}/${location}/${category}`);
-          urls.push(`${siteBaseUrl}/${location}/listing?category=${category}`);
-          urls.push(
-            `${siteBaseUrl}/${location}/vehicle-rentals/${category}-for-rent`,
-          );
-        });
-      },
-    );
-
-    const locationSet = new Set<string>();
-    formattedData.forEach(({ location }: { location: string }) => {
       locationSet.add(location);
+
+      if (state.vehicles && state.vehicles.length > 0) {
+        state.vehicles.forEach((vehicle) => {
+          if (!locationCategoryMap.has(location)) {
+            locationCategoryMap.set(location, new Set());
+          }
+          locationCategoryMap.get(location).add(vehicle.category.toLowerCase());
+        });
+      }
     });
+
     const uniqueLocations = Array.from(locationSet);
 
-    return { urls, uniqueLocations, formattedVehicleData };
+    // Generate category URLs
+    const categoryUrls = [];
+    locationCategoryMap.forEach((categories, location) => {
+      categories.forEach((category) => {
+        const baseUrl = `${SITE_URL}/${COUNTRY}`;
+        const urls = [
+          `${baseUrl}/${location}/${category}`,
+          `${baseUrl}/${location}/listing?category=${category}`,
+          `${baseUrl}/${location}/vehicle-rentals/${category}-for-rent`,
+        ];
+        
+        urls.forEach((url) => {
+          categoryUrls.push({
+            url,
+            lastModified: new Date().toISOString(),
+            changeFrequency: "monthly",
+            priority: 0.7,
+          });
+        });
+      });
+    });
+
+    // Generate location URLs
+    const locationUrls = uniqueLocations.map((location) => ({
+      url: `${SITE_URL}/${COUNTRY}/${location}`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    }));
+
+    // Generate FAQ URLs
+    const faqUrls = uniqueLocations.map((location) => ({
+      url: `${SITE_URL}/${COUNTRY}/faq/${location}`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    }));
+
+    // Generate individual vehicle URLs
+    const vehicleUrls = allVehicles.map((vehicle) => ({
+      url: `${SITE_URL}${generateVehicleDetailsUrl({
+        vehicleTitle: vehicle.vehicleTitle,
+        state: vehicle.state,
+        vehicleCategory: vehicle.category,
+        vehicleCode: vehicle.vehicleCode,
+        country: COUNTRY,
+      })}`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+      images: vehicle.vehiclePhoto ? [vehicle.vehiclePhoto] : [],
+    }));
+
+    return {
+      locationUrls,
+      categoryUrls,
+      faqUrls,
+      vehicleUrls,
+      uniqueLocations,
+    };
   } catch (error) {
-    console.error("Error fetching sitemap data:", error);
-    return { urls: [], uniqueLocations: [], formattedVehicleData: [] };
+    console.error("Error fetching states and vehicles sitemap:", error);
+    return {
+      locationUrls: [],
+      categoryUrls: [],
+      faqUrls: [],
+      vehicleUrls: [],
+      uniqueLocations: [],
+    };
   }
 }
 
-async function fetchVehicleSeries(baseUrl) {
-  try {
-    const response = await fetch(
-      `${baseUrl}/vehicle-series/site-map?page=0&limit=5000&sortOrder=DESC`,
-    );
-    const data = await response.json();
-
-    const siteBaseUrl = `https://ride.rent/in`;
-
-    if (data.status === "SUCCESS" && data.result?.list) {
-      return data.result.list.map(
-        (vehicle: {
-          vehicleSeries: string;
-          brandValue: string;
-          stateValue: string;
-          category: string;
-        }) => ({
-          url: `${siteBaseUrl}/${vehicle?.stateValue}/rent/${vehicle?.category}/${vehicle?.brandValue}/${vehicle?.vehicleSeries}`,
-          lastModified: new Date().toISOString(),
-          changeFrequency: "weekly",
-          priority: 0.8,
-        }),
-      );
-    }
-  } catch (error) {
-    console.error("Error fetching vehicle series:", error);
-  }
-  return [];
-}
-
-export async function GET() {
-  const baseUrl =
-    process.env.API_URL_INDIA || process.env.NEXT_PUBLIC_API_URL_INDIA;
-
+/**
+ * Creates static page entries for the sitemap
+ */
+function createStaticPageEntries() {
   const staticPages = [
-    {
-      url: "https://ride.rent/about-us",
-      lastModified: new Date().toISOString(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: "https://ride.rent/privacy-policy",
-      lastModified: new Date().toISOString(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: "https://ride.rent/terms-condition",
-      lastModified: new Date().toISOString(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: "https://ride.rent/in",
-      lastModified: new Date().toISOString(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
+    { path: "/about-us", priority: 0.7, changeFrequency: "monthly" },
+    { path: "/privacy-policy", priority: 0.7, changeFrequency: "monthly" },
+    { path: "/terms-condition", priority: 0.7, changeFrequency: "monthly" },
+    { path: `/${COUNTRY}`, priority: 0.9, changeFrequency: "weekly" },
+    { path: "/blog", priority: 0.8, changeFrequency: "weekly" },
   ];
 
-  const vehicleSeries = await fetchVehicleSeries(baseUrl);
-  const companyProfiles = await fetchCompanies(baseUrl);
-  const allDatas: { urls; uniqueLocations; formattedVehicleData } =
-    await fetchAllData(baseUrl);
-  const { urls, uniqueLocations, formattedVehicleData } = allDatas;
-
-  const allDataUrl = urls.map((url) => ({
-    url: url,
+  return staticPages.map((page) => ({
+    url: `${SITE_URL}${page.path}`,
     lastModified: new Date().toISOString(),
-    changeFrequency: "monthly",
-    priority: 0.7,
+    changeFrequency: page.changeFrequency,
+    priority: page.priority,
   }));
+}
 
-  const statePage = uniqueLocations.map((stateValue) => ({
-    url: `https://ride.rent/ae/${stateValue}`,
-    lastModified: new Date().toISOString(),
-    changeFrequency: "monthly",
-    priority: 0.7,
-  }));
+/**
+ * Generates XML sitemap string from entries
+ */
+function generateSitemapXML(entries) {
+  const xmlEntries = entries
+    .map((entry) => {
+      const images = entry.images
+        ?.map(
+          (img) => `
+            <image:image>
+              <image:loc>${escapeXml(img)}</image:loc>
+            </image:image>`
+        )
+        .join("") || "";
 
-  const faqPages = uniqueLocations.map((stateValue) => ({
-    url: `https://ride.rent/in/faq/${stateValue}`,
-    lastModified: new Date().toISOString(),
-    changeFrequency: "monthly",
-    priority: 0.7,
-  }));
+      return `
+        <url>
+          <loc>${escapeXml(entry.url)}</loc>
+          <lastmod>${entry.lastModified}</lastmod>
+          <changefreq>${entry.changeFrequency}</changefreq>
+          <priority>${entry.priority}</priority>${images}
+        </url>`;
+    })
+    .join("");
 
-  const vehiclePages = formattedVehicleData.map((vehicle) => ({
-    url: `https://ride.rent${generateVehicleDetailsUrl({
-      vehicleTitle: vehicle.vehicleTitle,
-      state: vehicle.state,
-      vehicleCategory: vehicle.category,
-      vehicleCode: vehicle.vehicleCode,
-      country: "in",
-    })}`,
-    images: [vehicle.vehiclePhoto],
-    lastModified: new Date().toISOString(),
-    changeFrequency: "monthly",
-    priority: 0.7,
-  }));
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">${xmlEntries}
+</urlset>`;
+}
 
-  // Combine all entries
-  const sitemapEntries = [
-    ...staticPages,
-    ...statePage,
-    ...faqPages,
-    ...companyProfiles,
-    ...allDataUrl,
-    ...vehiclePages,
-    ...vehicleSeries,
-    ...vehicleSeries,
-  ];
-
-  // Generate XML
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
-              xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-        ${sitemapEntries
-          .map(
-            (entry) => `
-          <url>
-            <loc>${entry.url}</loc>
-            <lastmod>${entry.lastModified}</lastmod>
-            <changefreq>${entry.changeFrequency}</changefreq>
-            <priority>${entry.priority}</priority>
-            ${
-              entry?.images
-                ?.map(
-                  (img: any) => `
-              <image:image>
-                <image:loc>${img}</image:loc>
-              </image:image>
-            `,
-                )
-                .join("") || ""
-            }
-          </url>
-        `,
-          )
-          .join("")}
-      </urlset>`;
-
-  return new NextResponse(xml, {
-    headers: {
-      "Content-Type": "application/xml",
-    },
+/**
+ * Escapes XML special characters
+ */
+function escapeXml(unsafe) {
+  return unsafe.replace(/[<>&'"]/g, (c) => {
+    switch (c) {
+      case "<": return "&lt;";
+      case ">": return "&gt;";
+      case "&": return "&amp;";
+      case "'": return "&apos;";
+      case '"': return "&quot;";
+      default: return c;
+    }
   });
+}
+
+/**
+ * Main GET handler for sitemap generation
+ */
+export async function GET() {
+  try {
+    console.log("Starting sitemap generation...");
+
+    // Fetch all data concurrently for better performance
+    const [
+      staticPages,
+      companyProfiles,
+      blogPosts,
+      vehicleSeries,
+      statesAndVehicles,
+    ] = await Promise.all([
+      Promise.resolve(createStaticPageEntries()),
+      fetchCompaniesSitemap(),
+      fetchBlogsSitemap(),
+      fetchVehicleSeriesSitemap(),
+      fetchStatesAndVehiclesSitemap(),
+    ]);
+
+    const {
+      locationUrls,
+      categoryUrls,
+      faqUrls,
+      vehicleUrls,
+    } = statesAndVehicles;
+
+    // Combine all sitemap entries
+    const allEntries = [
+      ...staticPages,
+      ...locationUrls,
+      ...faqUrls,
+      ...companyProfiles,
+      ...categoryUrls,
+      ...vehicleUrls,
+      ...vehicleSeries,
+      ...blogPosts,
+    ];
+
+    console.log(`Generated ${allEntries.length} sitemap entries`);
+
+    // Generate and return XML sitemap
+    const xml = generateSitemapXML(allEntries);
+
+    return new NextResponse(xml, {
+      headers: {
+        "Content-Type": "application/xml",
+        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      },
+    });
+  } catch (error) {
+    console.error("Error generating sitemap:", error);
+    
+    // Return a minimal sitemap on error
+    const fallbackXml = generateSitemapXML(createStaticPageEntries());
+    
+    return new NextResponse(fallbackXml, {
+      status: 500,
+      headers: {
+        "Content-Type": "application/xml",
+      },
+    });
+  }
 }
