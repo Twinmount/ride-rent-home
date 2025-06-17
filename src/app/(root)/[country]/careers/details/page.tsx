@@ -238,7 +238,7 @@ const CareersDetailsPage = () => {
                             })}
                           />
                           {errors.firstname && (
-                            <p className="text-red-500">
+                            <p className="mt-1 text-xs text-red-500">
                               {errors.firstname.message}
                             </p>
                           )}
@@ -291,7 +291,7 @@ const CareersDetailsPage = () => {
                             })}
                           />
                           {errors.email && (
-                            <p className="text-red-500">
+                            <p className="mt-1 text-xs text-red-500">
                               {errors.email.message}
                             </p>
                           )}
@@ -318,7 +318,7 @@ const CareersDetailsPage = () => {
                             })}
                           />
                           {errors.phone && (
-                            <p className="text-red-500">
+                            <p className="mt-1 text-xs text-red-500">
                               {errors.phone.message}
                             </p>
                           )}
@@ -345,7 +345,7 @@ const CareersDetailsPage = () => {
                           Accepted file types: .pdf , .doc, .docx
                         </p>
                         {errors.resume && (
-                          <p className="text-red-500">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors.resume.message}
                           </p>
                         )}
@@ -398,7 +398,7 @@ const CareersDetailsPage = () => {
                           </div>
                         </div>
                         {errors.experience && (
-                          <p className="text-red-500">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors.experience.message}
                           </p>
                         )}
@@ -434,7 +434,7 @@ const CareersDetailsPage = () => {
                           </div>
                         </div>
                         {errors.currentCompensation && (
-                          <p className="text-red-500">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors.currentCompensation.message}
                           </p>
                         )}
@@ -469,7 +469,7 @@ const CareersDetailsPage = () => {
                           </div>
                         </div>
                         {errors.gender && (
-                          <p className="text-red-500">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors.gender.message}
                           </p>
                         )}
@@ -495,7 +495,7 @@ const CareersDetailsPage = () => {
                           })}
                         />
                         {errors.expectedCTC && (
-                          <p className="text-red-500">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors.expectedCTC.message}
                           </p>
                         )}

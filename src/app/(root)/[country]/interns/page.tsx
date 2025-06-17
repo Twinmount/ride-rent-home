@@ -189,7 +189,9 @@ const InternsPage = () => {
                       })}
                     />
                     {errors.firstname && (
-                      <p className="text-red-500">{errors.firstname.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.firstname.message}
+                      </p>
                     )}
                   </div>
 
@@ -213,7 +215,9 @@ const InternsPage = () => {
                       })}
                     />
                     {errors.lastname && (
-                      <p className="text-red-500">{errors.lastname.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.lastname.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -239,7 +243,9 @@ const InternsPage = () => {
                       })}
                     />
                     {errors.email && (
-                      <p className="text-red-500">{errors.email.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.email.message}
+                      </p>
                     )}
                   </div>
 
@@ -263,7 +269,9 @@ const InternsPage = () => {
                       })}
                     />
                     {errors.phone && (
-                      <p className="text-red-500">{errors.phone.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.phone.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -286,7 +294,9 @@ const InternsPage = () => {
                     Accepted file types: .pdf , .doc, .docx
                   </p>
                   {errors.resume && (
-                    <p className="text-red-500">{errors.resume.message}</p>
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.resume.message}
+                    </p>
                   )}
                 </div>
 
@@ -303,8 +313,15 @@ const InternsPage = () => {
                     type="text"
                     id="collegeName"
                     className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-                    {...register("collegename")}
+                    {...register("collegename", {
+                      required: "College name is required",
+                    })}
                   />
+                  {errors.collegename && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.collegename.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -318,8 +335,15 @@ const InternsPage = () => {
                     type="text"
                     id="placementOfficer"
                     className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-                    {...register("placementofficer")}
+                    {...register("placementofficer", {
+                      required: "POC / HOD / Placement Officer is required",
+                    })}
                   />
+                  {errors.placementofficer && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.placementofficer.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
