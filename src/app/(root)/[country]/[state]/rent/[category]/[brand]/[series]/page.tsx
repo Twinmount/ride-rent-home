@@ -43,7 +43,7 @@ export default async function VehicleSeriesPage(props: PageProps) {
  
   // Generate JSON-LD
   const jsonLdData = getSeriesListingPageJsonLd(state, brand, series, country, categoryValue);
- 
+  
   return (
     <>
       {/* Inject JSON-LD into the <head> */}

@@ -1,9 +1,12 @@
 // @ts-nocheck
 import {
+  generateBlogUrlTitle,
   generateCompanyProfilePageLink,
   generateVehicleDetailsUrl,
 } from "@/helpers";
 import { NextResponse } from "next/server";
+
+
 
 async function fetchCompanies(baseUrl) {
   try {
@@ -35,6 +38,34 @@ async function fetchCompanies(baseUrl) {
     }
   } catch (error) {
     console.error("Error fetching companies:", error);
+  }
+  return [];
+}
+
+async function fetchBlogs(baseUrl) {
+  try {
+    const response = await fetch(
+      `${baseUrl}/blogs/site-map?page=0&limit=500&sortOrder=DESC`,
+    );
+    const data = await response.json();
+
+    if (data.status === "SUCCESS" && data.result?.list) {
+      return data.result.list.map(
+        (blog: {
+          blogTitle: string;
+          blogId: string;
+        }) => ({
+          url: `https://ride.rent/blog/${generateBlogUrlTitle(
+            blog.blogTitle,
+          )}/${blog.blogId}`,
+          lastModified: new Date().toISOString(),
+          changeFrequency: "weekly",
+          priority: 0.8,
+        }),
+      );
+    }
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
   }
   return [];
 }
@@ -123,8 +154,9 @@ async function fetchVehicleSeries(baseUrl) {
           vehicleSeries: string;
           brandValue: string;
           stateValue: string;
+          category: string; 
         }) => ({
-          url: `${siteBaseUrl}/${vehicle?.stateValue}/rent/${vehicle?.brandValue}/${vehicle?.vehicleSeries}`,
+          url: `${siteBaseUrl}/${vehicle?.stateValue}/rent/${vehicle?.category}/${vehicle?.brandValue}/${vehicle?.vehicleSeries}`,
           lastModified: new Date().toISOString(),
           changeFrequency: "weekly",
           priority: 0.8,
@@ -165,10 +197,17 @@ export async function GET() {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    {
+      url: "https://ride.rent/blog",
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
   ];
 
   const vehicleSeries = await fetchVehicleSeries(baseUrl);
   const companyProfiles = await fetchCompanies(baseUrl);
+  const blogPosts = await fetchBlogs(baseUrl);
   const allDatas: { urls; uniqueLocations; formattedVehicleData } =
     await fetchAllData(baseUrl);
   const { urls, uniqueLocations, formattedVehicleData } = allDatas;
@@ -217,7 +256,7 @@ export async function GET() {
     ...allDataUrl,
     ...vehiclePages,
     ...vehicleSeries,
-    ...vehicleSeries,
+    ...blogPosts,
   ];
 
   // Generate XML

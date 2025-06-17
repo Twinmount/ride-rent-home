@@ -126,8 +126,9 @@ async function fetchVehicleSeries(baseUrl) {
           vehicleSeries: string;
           brandValue: string;
           stateValue: string;
+          category: string;
         }) => ({
-          url: `${siteBaseUrl}/${vehicle?.stateValue}/rent/${vehicle?.brandValue}/${vehicle?.vehicleSeries}`,
+          url: `${siteBaseUrl}/${vehicle?.stateValue}/rent/${vehicle?.category}/${vehicle?.brandValue}/${vehicle?.vehicleSeries}`,
           lastModified: new Date().toISOString(),
           changeFrequency: "weekly",
           priority: 0.8,

@@ -140,7 +140,7 @@ export function getSeriesListingPageJsonLd(
   brand: string,
   series: string,
   country: string,
-  category: string, // Add category parameter
+  category: string, 
 ) {
   const seriesListingUrl = getAbsoluteUrl(
     `/${country}/${state}/rent/${category}/${brand}/${series}`, // Include category in URL
