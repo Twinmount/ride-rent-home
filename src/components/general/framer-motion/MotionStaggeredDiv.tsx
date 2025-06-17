@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, easeOut } from "framer-motion";
 import React, { CSSProperties, FC, ReactNode } from "react";
 
 interface MotionStaggeredDivProps {
@@ -29,7 +29,7 @@ const MotionStaggeredDiv: FC<MotionStaggeredDivProps> = ({
       transition: {
         delay: index * delay,
         duration: 0.5,
-        ease: "easeOut",
+        ease: easeOut,
       },
     }),
   };
