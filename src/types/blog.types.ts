@@ -50,3 +50,27 @@ export interface FetchSpecificBlogResponse {
   status: string;
   statusCode: number;
 }
+
+
+export interface FetchSpecificBlogResponse {
+  result: BlogType;
+  status: string;
+  statusCode: number;
+}
+
+export type SitemapType = {
+  blogTitle: string;
+  blogId: string;
+}[];
+
+export type SitemapResponseType = {
+  status: "SUCCESS" | "NOT_SUCCESS";
+  statusCode: number;
+  result: {
+    list: SitemapType;
+    page: number;
+    limit: number;
+    total: number;
+    totalNumberOfPages: number;
+  };
+};

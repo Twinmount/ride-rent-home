@@ -6,12 +6,14 @@ type AllSeriesListProps = {
   brand: string;
   list: VehicleBrandSeriesWithCount[];
   country: string;
+  category: string;
 };
 export default function AllSeriesList({
   state,
   brand,
   list,
-  country
+  country,
+  category
 }: AllSeriesListProps) {
   return (
     <div className="mt-12 h-[90vh]">
@@ -27,6 +29,7 @@ export default function AllSeriesList({
               vehicleCount: series.vehicleCount,
             }}
             country={country}
+            category={category}
           />
         ))}
       </ul>

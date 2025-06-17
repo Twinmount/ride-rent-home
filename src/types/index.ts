@@ -465,3 +465,19 @@ export interface FetchAllSeriesUnderBrandResponse {
   status: string;
   statusCode: number;
 }
+
+
+export type VehicleData = {
+  vehicleTitle: string;
+  vehicleCode: string;
+  category: string;
+  vehiclePhoto: string;
+  state: string;
+};
+
+export type BlogData = {
+  blogTitle: string;
+  blogId: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
