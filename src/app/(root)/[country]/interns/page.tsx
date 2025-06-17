@@ -1,11 +1,35 @@
+"use client";
+
 import React from "react";
+import { useHookForm } from "@/hooks/useHookForm";
+import { InternFormFields } from "@/types/interns";
 
 const InternsPage = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useHookForm<InternFormFields>({
+    defaultValues: {
+      firstname: "",
+      lastname: "",
+      email: "",
+      phone: "",
+      resume: null,
+      collegename: "",
+      placementofficer: "",
+    },
+  });
+
+  const onSubmit = (data: InternFormFields) => {
+    console.log(data);
+  };
+
   return (
     <div className="interns bg-white">
       <div className="mx-auto w-full pb-8 md:max-w-[90%] lg:max-w-[80%] xl:max-w-[70%]">
         <section className="px-8 py-4">
-          <div className="relative flex h-[500px] items-end justify-end overflow-hidden rounded-[16px]">
+          <div className="relative flex items-end justify-end overflow-hidden rounded-[16px] md:h-[500px]">
             <div className="absolute left-0 top-0 z-[1] h-full w-full">
               <img
                 src="https://images.unsplash.com/photo-1552960366-b330a2f83823?q=80&w=1200"
@@ -14,7 +38,7 @@ const InternsPage = () => {
                 loading="lazy"
               />
             </div>
-            <div className="relative z-[5] mb-4 me-4 ms-4 md:mb-0 md:me-0 md:ms-0 md:max-w-[50%]">
+            <div className="relative z-[5] mb-4 me-4 ms-4 mt-4 md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[50%]">
               <div className="relative rounded-[16px] bg-white px-[60px] py-[80px] md:rounded-[0] md:rounded-tl-[16px]">
                 <h1 className="mb-3 text-[28px] font-medium text-black">
                   Interns of Ride
@@ -142,7 +166,7 @@ const InternsPage = () => {
               </p>
             </div>
             <div className="mt-4">
-              <form className="space-y-4">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="flex flex-wrap gap-5 md:flex-nowrap">
                   <div className="basis-full md:basis-1/2">
                     <label
@@ -154,9 +178,19 @@ const InternsPage = () => {
                     <input
                       type="text"
                       id="firstname"
-                      name="firstname"
                       className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+                      {...register("firstname", {
+                        required: "First name is required",
+                        maxLength: { value: 50, message: "Max 50 characters" },
+                        pattern: {
+                          value: /^[A-Za-z\s]+$/,
+                          message: "Only alphabets allowed",
+                        },
+                      })}
                     />
+                    {errors.firstname && (
+                      <p className="text-red-500">{errors.firstname.message}</p>
+                    )}
                   </div>
 
                   <div className="basis-full md:basis-1/2">
@@ -164,14 +198,23 @@ const InternsPage = () => {
                       htmlFor="lastname"
                       className="mb-1 block text-sm font-medium text-gray-700"
                     >
-                      Last Name <span className="text-red-500">*</span>
+                      Last Name
                     </label>
                     <input
                       type="text"
                       id="lastname"
-                      name="lastname"
                       className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+                      {...register("lastname", {
+                        maxLength: { value: 50, message: "Max 50 characters" },
+                        pattern: {
+                          value: /^[A-Za-z\s]+$/,
+                          message: "Only alphabets allowed",
+                        },
+                      })}
                     />
+                    {errors.lastname && (
+                      <p className="text-red-500">{errors.lastname.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -184,11 +227,20 @@ const InternsPage = () => {
                       Email Address <span className="text-red-500">*</span>
                     </label>
                     <input
-                      type="text"
+                      type="email"
                       id="email"
-                      name="email"
                       className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+                      {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                          message: "Invalid email",
+                        },
+                      })}
                     />
+                    {errors.email && (
+                      <p className="text-red-500">{errors.email.message}</p>
+                    )}
                   </div>
 
                   <div className="basis-full md:basis-1/2">
@@ -201,59 +253,72 @@ const InternsPage = () => {
                     <input
                       type="text"
                       id="phonenumber"
-                      name="phonenumber"
                       className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+                      {...register("phone", {
+                        required: "Phone number is required",
+                        pattern: {
+                          value: /^[0-9]+$/,
+                          message: "Only numbers allowed",
+                        },
+                      })}
                     />
+                    {errors.phone && (
+                      <p className="text-red-500">{errors.phone.message}</p>
+                    )}
                   </div>
                 </div>
 
                 <div>
                   <label
-                    htmlFor="resume-cv"
+                    htmlFor="resume"
                     className="mb-1 block text-sm font-medium text-gray-700"
                   >
                     Resume/CV <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="file"
-                    id="resume-cv"
-                    name="resume-cv"
+                    id="resume"
                     className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+                    {...register("resume", { required: "Resume is required" })}
+                    accept=".pdf,.doc,.docx"
                   />
                   <p className="mt-2 select-none text-sm text-gray-500">
                     Accepted file types: .pdf , .doc, .docx
                   </p>
+                  {errors.resume && (
+                    <p className="text-red-500">{errors.resume.message}</p>
+                  )}
                 </div>
 
                 <div className="!mt-5 inline-block h-[1px] w-full bg-gray-200" />
 
                 <div>
                   <label
-                    htmlFor="college-name"
+                    htmlFor="collegeName"
                     className="mb-1 block text-sm font-medium text-gray-700"
                   >
                     College Name
                   </label>
                   <input
                     type="text"
-                    id="college-name"
-                    name="college-name"
+                    id="collegeName"
                     className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+                    {...register("collegename")}
                   />
                 </div>
 
                 <div>
                   <label
-                    htmlFor="college-name"
+                    htmlFor="placementOfficer"
                     className="mb-1 block text-sm font-medium text-gray-700"
                   >
                     POC / HOD / Placement Officer
                   </label>
                   <input
                     type="text"
-                    id="college-name"
-                    name="college-name"
+                    id="placementOfficer"
                     className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+                    {...register("placementofficer")}
                   />
                 </div>
 

@@ -6,7 +6,7 @@ const CareersPage = () => {
     <div className="careers bg-white">
       <div className="mx-auto w-full pb-8 md:max-w-[90%] lg:max-w-[80%] xl:max-w-[70%]">
         <section className="careers__banner px-8 py-4">
-          <div className="relative flex h-[400px] items-end justify-end overflow-hidden rounded-[16px]">
+          <div className="relative flex items-end justify-end overflow-hidden rounded-[16px] md:h-[400px]">
             <div className="absolute left-0 top-0 z-[1] h-full w-full">
               <img
                 src="https://images.unsplash.com/photo-1553028826-f4804a6dba3b?q=80&w=1200"
@@ -15,7 +15,7 @@ const CareersPage = () => {
                 loading="lazy"
               />
             </div>
-            <div className="relative z-[5] mb-4 me-4 ms-4 md:mb-0 md:me-0 md:ms-0 md:max-w-[360px]">
+            <div className="relative z-[5] mb-4 me-4 ms-4 mt-4 md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[360px]">
               <div className="relative rounded-[16px] bg-white p-[40px] md:rounded-[0] md:rounded-tl-[16px]">
                 <h1 className="mb-3 text-[28px] font-medium text-black">
                   Join Our Journey
