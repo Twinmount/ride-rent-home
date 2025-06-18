@@ -13,10 +13,10 @@ export default function AllSeriesList({
   brand,
   list,
   country,
-  category
+  category,
 }: AllSeriesListProps) {
   return (
-    <div className="mt-12 h-[90vh]">
+    <div className="mt-12 h-auto">
       <ul className="mt-3 grid grid-cols-1 gap-3 max-md:pl-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {list.map((series) => (
           <SeriesListLink

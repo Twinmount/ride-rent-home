@@ -1,4 +1,4 @@
-import BrandsWithSeriesGrid from "@/components/root/series/directory/BrandsWithSeriesGrid";
+import VehicleSeriesGrid from "@/components/root/series/directory/VehicleSeriesGrid";
 import CategoryDirectoryHeading from "@/components/root/series/directory/CategoryDirectoryHeading";
 
 import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
@@ -43,11 +43,15 @@ export default async function CategoryDirectoryPage(props: PageProps) {
 
   return (
     <div className="wrapper h-auto min-h-screen pt-6">
-      <CategoryDirectoryHeading state={state} category={categoryValue} country={country} />
+      <CategoryDirectoryHeading
+        state={state}
+        category={categoryValue}
+        country={country}
+      />
 
       <Suspense fallback={<SectionLoading />}>
         {/* Async Server Component */}
-        <BrandsWithSeriesGrid
+        <VehicleSeriesGrid
           state={state}
           category={categoryValue}
           page={page}
