@@ -21,9 +21,8 @@ type ListingPageRendererProps = {
 };
 
 /**
- * Centralized renderer for all vehicle listing pages, shared across category, type, and brand routes.
+ * This centralized component renders the page content on all types of listing pages.
  */
-
 const ListingPageRenderer = async ({
   category,
   vehicleType,
@@ -74,12 +73,19 @@ const ListingPageRenderer = async ({
 
             <PriceFilterTag />
 
-            <VehicleGrid key={JSON.stringify(searchParams)} state={state} />
+            <VehicleGrid
+              key={JSON.stringify(searchParams)}
+              country={country}
+              state={state}
+              category={category}
+              vehicleType={vehicleType}
+              brand={brand}
+            />
           </div>
         </div>
 
         {/* RIGHT: Map */}
-        <div className="hidden w-full px-2 lg:block lg:w-1/2">
+        {/* <div className="hidden w-full px-2 lg:block lg:w-1/2">
           <div
             className="sticky top-[4rem] p-3"
             style={{ height: "calc(100vh - 4rem)" }}
@@ -94,7 +100,7 @@ const ListingPageRenderer = async ({
               <MapClientWrapper />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

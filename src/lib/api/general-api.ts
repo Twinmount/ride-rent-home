@@ -14,15 +14,30 @@ import {
   FetchTypesResponse,
 } from "@/types";
 
+interface FetchVehicleByFiltersParams {
+  query: string;
+  state?: string;
+  pageParam?: number;
+  limit?: string;
+  country: string;
+  coordinates: { latitude: number; longitude: number } | null;
+  category: string;
+  vehicleType?: string;
+  brand?: string;
+}
+
 // Function to fetch vehicles based on filters using a POST request
-export const FetchVehicleByFilters = async (
-  query: string,
-  state: string = "dubai",
-  pageParam: number = 1,
-  limit: string = "8", // Accept pageParam here directly
-  country: string,
-  coordinates: { latitude: number; longitude: number } | null,
-): Promise<FetchVehicleCardsResponse> => {
+export const FetchVehicleByFilters = async ({
+  query,
+  state = "dubai",
+  pageParam = 1,
+  limit = "8",
+  country,
+  coordinates,
+  category,
+  vehicleType,
+  brand,
+}: FetchVehicleByFiltersParams): Promise<FetchVehicleCardsResponse> => {
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);
 
@@ -47,7 +62,7 @@ export const FetchVehicleByFilters = async (
     page: pageParam.toString(), // Use the pageParam directly
     limit, // Ensure it's a string
     sortOrder: "DESC",
-    category: getParamValue("category") || "cars",
+    category: category || "cars",
     state: getParamValue("state", state),
     coordinates,
   };
@@ -69,17 +84,22 @@ export const FetchVehicleByFilters = async (
 
   // Add optional fields only if they are non-empty
   const optionalFields = {
-    category: getParamValue("category"),
-    brand: getParamArray("brand"),
     color: getParamArray("color"),
     fuelType: getParamArray("fuelType"),
     modelYear: getParamValue("modelYear"),
     seats: getParamValue("seats"),
     transmission: getParamArray("transmission"),
-    vehicleTypes: getParamArray("vehicleTypes"),
     filter: getParamValue("filter"),
     city: getParamValue("city"),
   };
+
+  if (vehicleType) {
+    payload.vehicleTypes = [vehicleType];
+  }
+
+  if (brand) {
+    payload.brand = [brand];
+  }
 
   Object.entries(optionalFields).forEach(([key, value]) => {
     if (Array.isArray(value) && value.length > 0) {
@@ -555,7 +575,7 @@ export const fetchVehicleBrandsByValue = async (
   }
 };
 
-export const fetcheRealatedStateList = async (
+export const fetchRelatedStateList = async (
   state: string,
   country: string,
 ): Promise<FetchRelatedStateResponse | undefined> => {
@@ -662,8 +682,6 @@ export const fetchFAQ = async (
   }
 };
 
-
-
 // Fetches a list of related vehicle series based on specified filters
 
 export const fetchRelatedSeriesList = async (
@@ -671,12 +689,13 @@ export const fetchRelatedSeriesList = async (
   brand: string,
   state: string,
   country: string,
-  series: string
+  series: string,
 ): Promise<{ result: { relatedSeries: string[] } }> => {
   // Determine base URL based on country
-  const BASE_URL = country === "in" 
-    ? process.env.NEXT_PUBLIC_API_URL_INDIA 
-    : process.env.NEXT_PUBLIC_API_URL;
+  const BASE_URL =
+    country === "in"
+      ? process.env.NEXT_PUBLIC_API_URL_INDIA
+      : process.env.NEXT_PUBLIC_API_URL;
 
   if (!BASE_URL) {
     throw new Error("Base URL is not defined in environment variables");
@@ -689,7 +708,7 @@ export const fetchRelatedSeriesList = async (
     sortOrder: "DESC",
     state: state,
     category: category,
-    brand: brand
+    brand: brand,
   });
 
   const fullUrl = `${BASE_URL}/vehicle-series/list/all?${queryParams}`;
@@ -704,14 +723,16 @@ export const fetchRelatedSeriesList = async (
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${errorText}`,
+      );
     }
 
     const data = await response.json();
-    
+
     // Extract series data from API response
     let seriesData: string[] = [];
-    
+
     if (data.status === "SUCCESS" && data.result && data.result.list) {
       seriesData = data.result.list;
     } else if (data.success && data.result && data.result.list) {
@@ -722,34 +743,33 @@ export const fetchRelatedSeriesList = async (
     if (!Array.isArray(seriesData) || seriesData.length === 0) {
       return {
         result: {
-          relatedSeries: []
-        }
+          relatedSeries: [],
+        },
       };
     }
 
     // Filter out the current series (case-insensitive)
-    const filteredSeries = seriesData.filter(
-      (seriesItem: string) => {
-        const itemLower = String(seriesItem).toLowerCase().trim();
-        const seriesToExcludeLower = series.toLowerCase().trim();
-        return itemLower !== seriesToExcludeLower;
-      }
-    );
+    const filteredSeries = seriesData.filter((seriesItem: string) => {
+      const itemLower = String(seriesItem).toLowerCase().trim();
+      const seriesToExcludeLower = series.toLowerCase().trim();
+      return itemLower !== seriesToExcludeLower;
+    });
 
     return {
       result: {
-        relatedSeries: filteredSeries
-      }
+        relatedSeries: filteredSeries,
+      },
     };
-
   } catch (error) {
     // Handle specific error types
-    if (error instanceof TypeError && error.message.includes('fetch')) {
+    if (error instanceof TypeError && error.message.includes("fetch")) {
       throw new Error("Network error: Unable to connect to the API");
     } else if (error instanceof SyntaxError) {
       throw new Error("Invalid JSON response from API");
     } else {
-      throw new Error(`Failed to fetch related series list: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch related series list: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   }
 };

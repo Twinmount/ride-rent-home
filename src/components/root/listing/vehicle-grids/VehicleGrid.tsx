@@ -13,7 +13,7 @@ import VehicleListingGridWrapper from "@/components/common/VehicleListingGridWra
 import { useImmer } from "use-immer";
 import { convertToLabel } from "@/helpers";
 import { useQuery } from "@tanstack/react-query";
-import { fetcheRealatedStateList } from "@/lib/api/general-api";
+import { fetchRelatedStateList } from "@/lib/api/general-api";
 import { motion } from "framer-motion";
 import MapClientWrapper from "@/components/listing/MapClientWrapper";
 import { List, Map } from "lucide-react";
@@ -57,20 +57,27 @@ const VisibilityObserver: React.FC<VisibilityObserverProps> = ({
 };
 
 type VehicleGridProps = {
+  country: string;
   state: string;
+  category: string;
+  vehicleType?: string;
+  brand?: string;
 };
 
-const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
+const VehicleGrid: React.FC<VehicleGridProps> = ({
+  country = "ae",
+  state,
+  category = "cars",
+  vehicleType,
+  brand,
+}) => {
   const searchParams = useSearchParams();
   const [stateValue, setStateValue] = useState(state);
   const [vehicles, setVehicles] = useImmer<Record<string, any[]>>({});
   const [allVehicles, setAllVehicles] = useImmer<any[]>([]);
   const [relatedStateList, setRelatedStateList] = useState<any>([]);
-  const params = useParams();
+
   const { setVehiclesListVisible } = useGlobalContext();
-  const country = Array.isArray(params.country)
-    ? params.country[0]
-    : params.country || "ae";
 
   const { ref, inView } = useInView();
 
@@ -96,23 +103,24 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
     hasNextPage,
     isFetching,
   } = useFetchListingVehicles({
-    searchParams: searchParams.toString(),
-    state: stateValue,
-    limit,
     country,
+    state: stateValue,
+    category,
+    vehicleType,
+    brand,
+    limit,
+    searchParams: searchParams.toString(),
     coordinates: stateValue === state ? parsedCoordinates : null,
   });
 
-  const category = searchParams.get("category") || "cars";
-
-  const [isIntitalLoad, setIsIntitalLoad] = useImmer(true);
+  const [isInitialLoad, setIsInitialLoad] = useImmer(true);
   const [apiCallDelay, setApiCallDelay] = useImmer(false);
   const [showMap, setShowMap] = useImmer(false);
   const [mountMap, setMountMap] = useImmer(false);
 
   const { data: relatedState } = useQuery({
     queryKey: ["related-state", state],
-    queryFn: () => fetcheRealatedStateList(state, country),
+    queryFn: () => fetchRelatedStateList(state, country),
     enabled: true,
     staleTime: 0,
   });
@@ -164,9 +172,13 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   }, [apiCallDelay]);
 
   useEffect(() => {
+    if (!isFetching) {
+      setIsInitialLoad(false); // Always disable skeleton after first fetch
+    }
+
     if (isFetching) return;
     if (fetchedVehicles.length > 0) {
-      setIsIntitalLoad(false);
+      setIsInitialLoad(false);
       setVehicles((draft: any) => {
         draft[stateValue] = fetchedVehicles;
         return draft;
@@ -177,7 +189,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
     }
   }, [isFetching]);
 
-  const toogleMap = () => {
+  const toggleMap = () => {
     setShowMap((prev) => !prev);
     if (!mountMap) {
       setMountMap(true);
@@ -224,7 +236,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
   return (
     <>
       <div className="relative mt-8 flex min-h-screen w-full flex-col gap-8">
-        {isIntitalLoad ? (
+        {isInitialLoad ? (
           <AnimatedSkelton />
         ) : (
           <>
@@ -342,7 +354,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
         <div className="sticky bottom-[10%] z-50 mt-auto flex justify-center lg:hidden">
           <button
             className="flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-gray-800"
-            onClick={toogleMap}
+            onClick={toggleMap}
           >
             {!showMap ? (
               <>

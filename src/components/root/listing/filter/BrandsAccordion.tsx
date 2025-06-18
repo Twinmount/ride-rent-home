@@ -17,19 +17,19 @@ import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 type BrandsAccordionProps = {
   category: string;
-  brands: string[];
+  brand: string; // ✅ single string now
   handleFilterChange: (filterName: keyof FiltersType, value: string) => void;
 };
 
 export const BrandsAccordion = ({
   category,
-  brands,
+  brand,
   handleFilterChange,
 }: BrandsAccordionProps) => {
   const [brandSearchTerm, setBrandSearchTerm] = useState("");
   const [debouncedBrandSearchTerm, setDebouncedBrandSearchTerm] = useState("");
-  const {country} = useStateAndCategory();
-  // Fetch brands
+  const { country } = useStateAndCategory();
+
   const { data: brandsData, isLoading: brandsLoading } = useQuery({
     queryKey: ["brands", category, debouncedBrandSearchTerm],
     queryFn: () =>
@@ -38,34 +38,29 @@ export const BrandsAccordion = ({
     staleTime: 0,
   });
 
-  // Debounce the search input to limit API calls
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedBrandSearchTerm(brandSearchTerm);
-    }, 300); // 300ms delay
-    return () => {
-      clearTimeout(handler);
-    };
+    }, 300);
+    return () => clearTimeout(handler);
   }, [brandSearchTerm]);
 
-  // Combine already selected brands with fetched brands, ensuring no duplicates
-  const selectedBrands = brands || [];
   const fetchedBrands =
-    brandsData?.result.list.map((brand: BrandType) => ({
-      label: brand.brandName,
-      value: brand.brandValue,
+    brandsData?.result.list.map((b: BrandType) => ({
+      label: b.brandName,
+      value: b.brandValue,
     })) || [];
 
+  // Ensure the selected brand is shown even if not in the fetched results
   const combinedBrands = [
-    ...selectedBrands
-      .map((brand) => ({
-        label: convertToLabel(brand),
-        value: brand,
-      }))
-      .filter(
-        (selectedBrand) =>
-          !fetchedBrands.some((option) => option.value === selectedBrand.value),
-      ),
+    ...(brand && !fetchedBrands.some((b) => b.value === brand)
+      ? [
+          {
+            label: convertToLabel(brand),
+            value: brand,
+          },
+        ]
+      : []),
     ...fetchedBrands,
   ];
 
@@ -80,7 +75,7 @@ export const BrandsAccordion = ({
           onChange={(e) => setBrandSearchTerm(e.target.value)}
           className="bg-grey-100 placeholder:text-grey-500 mb-1 h-10 w-full rounded-full border-gray-400 px-2 py-1 ring-0 focus-visible:ring-transparent"
         />
-        {brandSearchTerm.length === 0 && selectedBrands.length === 0 ? (
+        {brandSearchTerm.length === 0 && !brand ? (
           <span className="ml-2 text-sm text-gray-600">
             Please search for brands.
           </span>
@@ -93,9 +88,10 @@ export const BrandsAccordion = ({
         ) : (
           <FilterAccordionContent
             options={combinedBrands}
-            selected={brands}
-            onChange={(value) => handleFilterChange("brand", value)}
-            isMultipleChoice={true}
+            selected={brand} // ✅ single value
+            onChange={(value) => handleFilterChange("brand", value)} // ✅ single value handler
+            isMultipleChoice={false}
+            allowUncheck={true}
           />
         )}
       </AccordionContent>

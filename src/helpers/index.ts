@@ -124,14 +124,18 @@ export function convertToLabel(value: string | undefined): string {
   if (!value) {
     return ""; // Return an empty string if value is undefined, null, or an empty string
   }
-  if (value.toLowerCase() === "suvs") {
-    return "SUV's";
+  // if (value.toLowerCase() === "suvs") {
+  //   return "SUV's";
+  // }
+
+  if (typeof value === "string") {
+    return value
+      .split("-") // Split the value by hyphen
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+      .join(" "); // Join the words back with spaces
   }
 
-  return value
-    .split("-") // Split the value by hyphen
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
-    .join(" "); // Join the words back with spaces
+  return "";
 }
 
 // Helper function to determine which rental period is available
