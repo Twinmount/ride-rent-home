@@ -6,7 +6,13 @@ import {
 } from "./vehicle-types";
 
 export type PageProps = {
-  params: Promise<{ country: string; state: string; category: string }>;
+  params: Promise<{
+    country: string;
+    state: string;
+    category: string;
+    vehicleType: string;
+    brand: string;
+  }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
@@ -465,7 +471,6 @@ export interface FetchAllSeriesUnderBrandResponse {
   status: string;
   statusCode: number;
 }
-
 
 export type VehicleData = {
   vehicleTitle: string;

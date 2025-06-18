@@ -223,7 +223,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({ state }) => {
 
   return (
     <>
-      <div className="relative flex min-h-screen w-full flex-col">
+      <div className="relative mt-8 flex min-h-screen w-full flex-col gap-8">
         {isIntitalLoad ? (
           <AnimatedSkelton />
         ) : (
