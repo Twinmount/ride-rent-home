@@ -64,7 +64,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
     enabled: true,
     staleTime: 0,
   });
-
+  
 
   
   // Computed values for JSX conditions

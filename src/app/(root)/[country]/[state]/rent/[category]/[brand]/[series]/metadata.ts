@@ -203,3 +203,96 @@ export function getSeriesListingPageJsonLd(
     },
   };
 }
+
+
+export function generateBlogMetaData(country: string): Metadata {
+  const countryName = country === "ae" ? "UAE" : "India";
+  return {
+    title: "Ride.Rent Blog | Travel Tips & Vehicle Rental Guides",
+    description:
+      "Get quick tips, reviews, and deals on vehicle rentals. Explore expert guides from the Ride.Rent zero-commission marketplace.",
+    manifest: "/manifest.webmanifest",
+    
+    robots: {
+      index: true,
+      follow: true,
+      nocache: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        noimageindex: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+    
+    alternates: {
+      canonical: getAbsoluteUrl(`/${country}/blog`),
+    },
+  };
+}
+
+export function getBlogPageJsonLd(country: string) {
+  const blogUrl = getAbsoluteUrl(`/${country}/blog`);
+  const homeUrl = getAbsoluteUrl(`/${country}`);
+  
+  const rootImage = getAbsoluteUrl("/assets/logo/blog-logo-white.png");
+  
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Ride.Rent Blog",
+    description: "Get quick tips, reviews, and deals on vehicle rentals. Explore expert guides from the Ride.Rent zero-commission marketplace.",
+    url: blogUrl,
+    inLanguage: "en",
+    about: {
+      "@type": "Thing",
+      name: "Vehicle Rental and Travel",
+      description: "Tips, guides, and insights about vehicle rentals and travel"
+    },
+    keywords: ["vehicle rental", "travel tips", "car rental", "travel guides", "transportation"],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      bestRating: "5",
+      ratingCount: "520",
+      itemReviewed: {
+        "@type": "Service",
+        name: "Ride.Rent Blog",
+      },
+    },
+    image: rootImage,
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: homeUrl,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Blog",
+          item: blogUrl,
+        },
+      ],
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Ride.Rent",
+      url: getAbsoluteUrl("/"),
+      logo: {
+        "@type": "ImageObject",
+        url: rootImage,
+      },
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      name: "Blog Posts",
+      description: "Collection of travel tips and vehicle rental guides"
+    }
+  };
+}
