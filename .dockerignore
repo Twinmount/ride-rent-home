@@ -1,0 +1,23 @@
+# Node modules and build output
+node_modules
+.next
+dist
+coverage
+
+# Git
+.git
+.gitignore
+
+# Docker and Compose files
+Dockerfile
+Dockerfile-dev
+Dockerfile-Prod
+docker-compose-dev.yml
+docker-compose-prod.yml
+
+# Logs
+*.log
+
+# IDE/config files
+.vscode
+*.tsbuildinfo
