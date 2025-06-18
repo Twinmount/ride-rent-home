@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { GPSLocation } from "@/types/vehicle-details-types";
 
 type LocationMapProps = {
@@ -9,14 +10,30 @@ type LocationMapProps = {
 
 function LocationMap({ location, mapImage }: LocationMapProps) {
   const { lat, lng } = location;
+  const [distanceFromMe, setDistanceFromMe] = useState<number | null>(null);
 
-  const coordinatesString = sessionStorage.getItem("userLocation") ?? null;
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const coordinatesString = sessionStorage.getItem("userLocation");
 
-  let parsedCoordinates = null;
+      if (coordinatesString) {
+        try {
+          const parsedCoordinates = JSON.parse(coordinatesString);
 
-  if (coordinatesString) {
-    parsedCoordinates = JSON.parse(coordinatesString);
-  }
+          const distance = getDistanceFromLatLonInKm(
+            parsedCoordinates?.latitude,
+            parsedCoordinates?.longitude,
+            lat,
+            lng,
+          );
+
+          setDistanceFromMe(distance);
+        } catch (err) {
+          console.warn("Failed to parse userLocation:", err);
+        }
+      }
+    }
+  }, [lat, lng]);
 
   function getDistanceFromLatLonInKm(
     lat1: number,
@@ -35,6 +52,7 @@ function LocationMap({ location, mapImage }: LocationMapProps) {
       isNaN(lon2)
     )
       return 0;
+
     const R = 6371; // Radius of the Earth in kilometers
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
@@ -45,26 +63,18 @@ function LocationMap({ location, mapImage }: LocationMapProps) {
         Math.sin(dLon / 2) *
         Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // Distance in km
-    return distance;
+    return R * c;
   }
 
   function toRad(degrees: number) {
     return degrees * (Math.PI / 180);
   }
 
-  const distanceFromMe = getDistanceFromLatLonInKm(
-    parsedCoordinates?.latitude,
-    parsedCoordinates?.longitude,
-    lat,
-    lng,
-  );
-
   return (
     <div className="profile-card mt-4">
       <div className="profile-heading">
         <h2 className="custom-heading">
-          {distanceFromMe
+          {distanceFromMe !== null
             ? `${Math.round(distanceFromMe)} km away from your location`
             : "Location"}
         </h2>

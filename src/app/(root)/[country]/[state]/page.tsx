@@ -1,7 +1,17 @@
-import React from "react";
+import { redirect } from "next/navigation";
 
-const CountryPage = () => {
-  return <div>StatePage</div>;
+export type PageProps = {
+  params: Promise<{ country: string; state: string }>;
 };
 
-export default CountryPage;
+const StatePage = async (props: PageProps) => {
+  const { country, state } = await props.params;
+
+  const vehicleType = country === "ae" ? "cars" : "buses";
+
+  redirect(`/${country}/${state}/${vehicleType}`);
+
+  return null;
+};
+
+export default StatePage;
