@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useHookForm } from "@/hooks/useHookForm";
 import { ApplicationFormValues } from "@/types/careers";
+import { sendCareerForm } from "@/lib/api/careers-api";
 
 const CareersDetailsPage = () => {
   const {
@@ -22,11 +23,14 @@ const CareersDetailsPage = () => {
       currentCompensation: "",
       gender: "",
       expectedCTC: "",
+      type: "career",
     },
   });
 
   const onSubmit = (data: ApplicationFormValues) => {
-    console.log(data);
+    const formData = { ...data, resume: "career-resume-test.pdf" };
+    console.log(formData);
+    sendCareerForm(JSON.stringify(formData), "UAE");
   };
 
   const experienceOptions = [

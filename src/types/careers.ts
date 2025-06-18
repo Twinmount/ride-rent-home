@@ -9,4 +9,5 @@ export type ApplicationFormValues = {
   currentCompensation: string;
   gender: string;
   expectedCTC: string;
+  type: string;
 };

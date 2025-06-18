@@ -6,4 +6,5 @@ export interface InternFormFields {
   resume: File | null;
   collegename?: string;
   placementofficer?: string;
+  type: string;
 }

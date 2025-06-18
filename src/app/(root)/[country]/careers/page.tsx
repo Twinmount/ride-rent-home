@@ -15,7 +15,7 @@ const CareersPage = () => {
                 loading="lazy"
               />
             </div>
-            <div className="relative z-[5] mb-4 me-4 ms-4 mt-4 md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[360px]">
+            <div className="relative z-[5] mb-4 me-4 ms-4 mt-60 w-full md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[360px]">
               <div className="relative rounded-[16px] bg-white p-[40px] md:rounded-[0] md:rounded-tl-[16px]">
                 <h1 className="mb-3 text-[28px] font-medium text-black">
                   Join Our Journey
@@ -23,12 +23,14 @@ const CareersPage = () => {
                 <p className="text-md mb-6 inline-block text-black">
                   Be part of the team redefining rentals across the world.
                 </p>
-                <Link
-                  className="inline-block rounded bg-yellow px-4 py-3 font-medium text-white"
-                  href={"/"}
-                >
-                  Open positions
-                </Link>
+                <div>
+                  <Link
+                    className="inline-block rounded bg-yellow px-4 py-3 font-medium text-white"
+                    href={"/"}
+                  >
+                    Open positions
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -51,7 +53,7 @@ const CareersPage = () => {
                 alt=""
                 className="h-full w-full object-cover"
               />
-              <div className="absolute left-0 top-0 flex h-full w-full items-end bg-black/30 p-6 text-white">
+              <div className="absolute left-0 top-0 flex h-full w-full items-end bg-gradient-to-t from-black/70 via-black/20 to-transparent p-6 text-white">
                 <div>
                   <h3 className="mb-3 text-[22px] font-medium text-white">
                     People First
@@ -71,7 +73,7 @@ const CareersPage = () => {
                 className="h-full w-full object-cover"
                 loading="lazy"
               />
-              <div className="absolute left-0 top-0 flex h-full w-full items-end bg-black/30 p-6 text-white">
+              <div className="absolute left-0 top-0 flex h-full w-full items-end bg-gradient-to-t from-black/70 via-black/20 to-transparent p-6 text-white">
                 <div>
                   <h3 className="mb-3 text-[22px] font-medium text-white">
                     Think Beyond Limits
@@ -91,7 +93,7 @@ const CareersPage = () => {
                 className="h-full w-full object-cover"
                 loading="lazy"
               />
-              <div className="absolute left-0 top-0 flex h-full w-full items-end bg-black/30 p-6 text-white">
+              <div className="absolute left-0 top-0 flex h-full w-full items-end bg-gradient-to-t from-black/70 via-black/20 to-transparent p-6 text-white">
                 <div>
                   <h3 className="mb-3 text-[22px] font-medium text-white">
                     Honor the Milestones
@@ -115,7 +117,7 @@ const CareersPage = () => {
               className="absolute left-0 top-0 z-[1] h-full w-full object-cover"
               loading="lazy"
             />
-            <div className="relative z-[5] mb-4 me-4 ms-4 mt-4 rounded-[16px] bg-white p-[40px] md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[360px] md:rounded-[0] md:rounded-tl-[16px]">
+            <div className="relative z-[5] mb-4 me-4 ms-4 mt-60 w-full rounded-[16px] bg-white p-[40px] md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[360px] md:rounded-[0] md:rounded-tl-[16px]">
               <h3 className="mb-3 text-[28px] font-medium text-black">
                 Our Hiring Journey
               </h3>
@@ -123,16 +125,18 @@ const CareersPage = () => {
                 Every great team starts with the right people, here’s how we
                 find and welcome ours.
               </p>
-              <Link
-                className="inline-block rounded bg-yellow px-4 py-3 font-medium text-white"
-                href={"/"}
-              >
-                Open positions
-              </Link>
+              <div>
+                <Link
+                  className="inline-block rounded bg-yellow px-4 py-3 font-medium text-white"
+                  href={"/"}
+                >
+                  Open positions
+                </Link>
+              </div>
             </div>
           </div>
           <div className="hire-steps__section mt-10 md:basis-1/2">
-            <ul className="hire-steps__list ps-8 md:ps-12">
+            <ul className="hire-steps__list ps-8 md:ps-20">
               <li className="relative border-s-[1px] border-solid border-gray-300 pb-14 ps-9">
                 <div className="absolute left-0 top-0 z-[1] -ms-6 flex h-[58px] w-[46px] items-center justify-center bg-white">
                   <img
@@ -226,7 +230,7 @@ const CareersPage = () => {
                 Open Positions
               </h2>
               <div className="job-more">
-                <a className="text-sm text-gray-700" href="/">
+                <a className="text-sm text-yellow" href="/">
                   View all
                 </a>
               </div>
@@ -244,7 +248,7 @@ const CareersPage = () => {
                   </div>
                   <div className="job-apply-action mt-5 md:mt-0">
                     <Link
-                      className="inline-block rounded bg-amber-100 px-6 py-4 text-sm text-yellow"
+                      className="inline-block rounded bg-amber-100 px-6 py-2 text-sm text-yellow"
                       href={"/"}
                     >
                       Apply Now
@@ -262,7 +266,7 @@ const CareersPage = () => {
                   </div>
                   <div className="job-apply-action mt-5 md:mt-0">
                     <Link
-                      className="inline-block rounded bg-amber-100 px-6 py-4 text-sm text-yellow"
+                      className="inline-block rounded bg-amber-100 px-6 py-2 text-sm text-yellow"
                       href={"/"}
                     >
                       Apply Now
@@ -280,7 +284,7 @@ const CareersPage = () => {
                   </div>
                   <div className="job-apply-action mt-5 md:mt-0">
                     <Link
-                      className="inline-block rounded bg-amber-100 px-6 py-4 text-sm text-yellow"
+                      className="inline-block rounded bg-amber-100 px-6 py-2 text-sm text-yellow"
                       href={"/"}
                     >
                       Apply Now

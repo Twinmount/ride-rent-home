@@ -3,8 +3,20 @@
 import React from "react";
 import { useHookForm } from "@/hooks/useHookForm";
 import { InternFormFields } from "@/types/interns";
+// import { Metadata } from "next";
+// import { PageProps } from "@/types";
+import { sendInternForm } from "@/lib/api/careers-api";
+
+// export const metadata: Metadata = {
+//   title: "Ride.Rent Blog | Travel Tips & Vehicle Rental Guides",
+//   description:
+//     "Get quick tips, reviews, and deals on vehicle rentals. Explore expert guides from the Ride.Rent zero-commission marketplace.",
+// };
 
 const InternsPage = () => {
+  // props: PageProps // add to props
+  // const { country } = await props.params;
+
   const {
     register,
     handleSubmit,
@@ -18,11 +30,14 @@ const InternsPage = () => {
       resume: null,
       collegename: "",
       placementofficer: "",
+      type: "intern",
     },
   });
 
   const onSubmit = (data: InternFormFields) => {
-    console.log(data);
+    const formData = { ...data, resume: "intern-resume-test" };
+    console.log(formData);
+    sendInternForm(JSON.stringify(formData), "UAE");
   };
 
   return (
@@ -38,8 +53,8 @@ const InternsPage = () => {
                 loading="lazy"
               />
             </div>
-            <div className="relative z-[5] mb-4 me-4 ms-4 mt-4 md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[50%]">
-              <div className="relative rounded-[16px] bg-white px-[60px] py-[80px] md:rounded-[0] md:rounded-tl-[16px]">
+            <div className="relative z-[5] mb-4 me-4 ms-4 mt-60 md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[50%]">
+              <div className="relative rounded-[16px] bg-white px-[30px] py-[30px] md:rounded-[0] md:rounded-tl-[16px] md:px-[60px] md:py-[80px]">
                 <h1 className="mb-3 text-[28px] font-medium text-black">
                   Interns of Ride
                 </h1>
@@ -181,7 +196,10 @@ const InternsPage = () => {
                       className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
                       {...register("firstname", {
                         required: "First name is required",
-                        maxLength: { value: 50, message: "Max 50 characters" },
+                        maxLength: {
+                          value: 50,
+                          message: "Max 50 characters",
+                        },
                         pattern: {
                           value: /^[A-Za-z\s]+$/,
                           message: "Only alphabets allowed",
@@ -207,7 +225,10 @@ const InternsPage = () => {
                       id="lastname"
                       className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
                       {...register("lastname", {
-                        maxLength: { value: 50, message: "Max 50 characters" },
+                        maxLength: {
+                          value: 50,
+                          message: "Max 50 characters",
+                        },
                         pattern: {
                           value: /^[A-Za-z\s]+$/,
                           message: "Only alphabets allowed",
@@ -287,7 +308,9 @@ const InternsPage = () => {
                     type="file"
                     id="resume"
                     className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-                    {...register("resume", { required: "Resume is required" })}
+                    {...register("resume", {
+                      required: "Resume is required",
+                    })}
                     accept=".pdf,.doc,.docx"
                   />
                   <p className="mt-2 select-none text-sm text-gray-500">
