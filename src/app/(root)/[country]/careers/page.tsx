@@ -1,7 +1,67 @@
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
+import { PageProps } from "@/types";
 
-const CareersPage = () => {
+export async function generateMetadata(props: PageProps) {
+  const { country } = await props.params;
+
+  const canonicalUrl = `https://ride.rent/${country}/careers`;
+  const title = `Ride.Rent India Careers | Work With Us, Innovate In Mobility.`;
+  const description = `Build your career with Ride.Rent India, the fastest-growing vehicle rental marketplace. Find job openings, internships, opportunities to innovate in mobility.`;
+
+  return {
+    title,
+    description,
+    keywords: `Ride Rent, career, job, apply job`,
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    alternates: {
+      canonical: canonicalUrl,
+    },
+  };
+}
+
+// Get Job list
+
+type Job = {
+  _id: string;
+  jobtitle: string;
+  location: string;
+  level: string;
+  experience: string;
+};
+
+type ResponseType = {
+  result: Job[];
+  status: string;
+  statusCode: number;
+};
+
+async function getJobs(): Promise<ResponseType> {
+  const res = await fetch(`${process.env.API_URL}/jobs/minimal-list`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch jobs");
+  }
+
+  return res.json();
+}
+
+const CareersPage = async (props: PageProps) => {
+  const { country } = await props.params;
+  const jobs = await getJobs();
+
   return (
     <div className="careers bg-white">
       <div className="mx-auto w-full pb-8 md:max-w-[90%] lg:max-w-[80%] xl:max-w-[70%]">
@@ -237,60 +297,33 @@ const CareersPage = () => {
             </div>
             <div className="open-job-positions__list-block">
               <ul className="open-job-positions__list flex flex-col gap-6">
-                <li className="flex flex-col justify-between rounded-[6px] border-[1px] border-solid border-gray-200 p-5 text-left md:flex-row md:items-center">
-                  <div className="position-infos">
-                    <h4 className="mb-1 font-medium text-black">
-                      Assistant Category Manager
-                    </h4>
-                    <p className="text-sm text-gray-500">
-                      Product / Full Time / Lake Colby / UK
-                    </p>
-                  </div>
-                  <div className="job-apply-action mt-5 md:mt-0">
-                    <Link
-                      className="inline-block rounded bg-amber-100 px-6 py-2 text-sm text-yellow"
-                      href={"/"}
-                    >
-                      Apply Now
-                    </Link>
-                  </div>
-                </li>
-                <li className="flex flex-col justify-between rounded-[6px] border-[1px] border-solid border-gray-200 p-5 text-left md:flex-row md:items-center">
-                  <div className="position-infos">
-                    <h4 className="mb-1 font-medium text-black">
-                      Assistant Category Manager
-                    </h4>
-                    <p className="text-sm text-gray-500">
-                      Product / Full Time / Lake Colby / UK
-                    </p>
-                  </div>
-                  <div className="job-apply-action mt-5 md:mt-0">
-                    <Link
-                      className="inline-block rounded bg-amber-100 px-6 py-2 text-sm text-yellow"
-                      href={"/"}
-                    >
-                      Apply Now
-                    </Link>
-                  </div>
-                </li>
-                <li className="flex flex-col justify-between rounded-[6px] border-[1px] border-solid border-gray-200 p-5 text-left md:flex-row md:items-center">
-                  <div className="position-infos">
-                    <h4 className="mb-1 font-medium text-black">
-                      Assistant Category Manager
-                    </h4>
-                    <p className="text-sm text-gray-500">
-                      Product / Full Time / Lake Colby / UK
-                    </p>
-                  </div>
-                  <div className="job-apply-action mt-5 md:mt-0">
-                    <Link
-                      className="inline-block rounded bg-amber-100 px-6 py-2 text-sm text-yellow"
-                      href={"/"}
-                    >
-                      Apply Now
-                    </Link>
-                  </div>
-                </li>
+                {jobs?.result?.map(
+                  ({ _id: jobId, jobtitle, location, level, experience }) => {
+                    return (
+                      <li
+                        key={jobId}
+                        className="flex flex-col justify-between rounded-[6px] border-[1px] border-solid border-gray-200 p-5 text-left md:flex-row md:items-center"
+                      >
+                        <div className="position-infos">
+                          <h4 className="mb-1 font-medium text-black">
+                            {jobtitle}
+                          </h4>
+                          <p className="text-sm text-gray-500">
+                            {`${location} | ${level} | ${experience}`}
+                          </p>
+                        </div>
+                        <div className="job-apply-action mt-5 md:mt-0">
+                          <Link
+                            className="inline-block rounded bg-amber-100 px-6 py-2 text-sm text-yellow"
+                            href={`/${country}/careers/job-details?jobId=${jobId}`}
+                          >
+                            Apply Now
+                          </Link>
+                        </div>
+                      </li>
+                    );
+                  },
+                )}
               </ul>
             </div>
           </div>
