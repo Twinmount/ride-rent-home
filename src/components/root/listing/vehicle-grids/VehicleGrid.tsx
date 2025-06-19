@@ -1,60 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import NoResultsFound from "./NoResultsFound";
-import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
 import PriceEnquireDialog from "../../../dialog/price-filter-dialog/PriceEnquireDialog";
 import { useInView } from "react-intersection-observer";
 import { useFetchListingVehicles } from "@/hooks/useFetchListingVehicles";
 import LoadingWheel from "@/components/common/LoadingWheel";
-import VehicleListingGridWrapper from "@/components/common/VehicleListingGridWrapper";
 import { useImmer } from "use-immer";
 import { convertToLabel } from "@/helpers";
 import { useQuery } from "@tanstack/react-query";
 import { fetchRelatedStateList } from "@/lib/api/general-api";
-import { motion } from "framer-motion";
 import MapClientWrapper from "@/components/listing/MapClientWrapper";
-import { List, Map } from "lucide-react";
 import { useGlobalContext } from "@/context/GlobalContext";
-type VisibilityObserverProps = {
-  vehicle: any;
-  onVisible: (vehicleId: string) => void;
-  onHidden: (vehicleId: string) => void;
-  children: React.ReactNode;
-};
-
-const VisibilityObserver: React.FC<VisibilityObserverProps> = ({
-  vehicle,
-  onVisible,
-  onHidden,
-  children,
-}) => {
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          onVisible(vehicle.vehicleId);
-        } else {
-          onHidden(vehicle.vehicleId);
-        }
-      },
-      { threshold: 0.25 }, // 25% visible
-    );
-
-    const node = ref.current;
-    if (node) observer.observe(node);
-
-    return () => {
-      if (node) observer.unobserve(node);
-    };
-  }, [vehicle.vehicleId]);
-
-  return <div ref={ref}>{children}</div>;
-};
+import { useUserLocation } from "@/hooks/useUserLocation";
+import VehicleListSection from "./VehicleListSection";
+import MapToggleButton from "./MapToggleButton";
 
 type VehicleGridProps = {
   country: string;
@@ -76,26 +38,14 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
   const [vehicles, setVehicles] = useImmer<Record<string, any[]>>({});
   const [allVehicles, setAllVehicles] = useImmer<any[]>([]);
   const [relatedStateList, setRelatedStateList] = useState<any>([]);
-
-  const { setVehiclesListVisible } = useGlobalContext();
+  const [visibleVehicleIds, setVisibleVehicleIds] = useState<string[]>([]);
 
   const { ref, inView } = useInView();
 
-  const [parsedCoordinates, setParsedCoordinates] = useState(null);
-  const [visibleVehicleIds, setVisibleVehicleIds] = useState<string[]>([]);
+  const { setVehiclesListVisible } = useGlobalContext();
 
-  useEffect(() => {
-    const coordinatesString = sessionStorage.getItem("userLocation");
-    if (coordinatesString) {
-      try {
-        setParsedCoordinates(JSON.parse(coordinatesString));
-      } catch (err) {
-        console.error("Failed to parse coordinates:", err);
-      }
-    }
-  }, []);
-
-  const limit = "8";
+  // fetch user location from session storage
+  const parsedCoordinates = useUserLocation();
 
   const {
     vehicles: fetchedVehicles,
@@ -108,7 +58,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
     category,
     vehicleType,
     brand,
-    limit,
+    limit: "8",
     searchParams: searchParams.toString(),
     coordinates: stateValue === state ? parsedCoordinates : null,
   });
@@ -137,16 +87,22 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
     }
   }, [relatedState]);
 
+  // Effect: Trigger infinite scroll loading and fallback to related states if needed
   useEffect(() => {
     if (isFetching || apiCallDelay) return;
-    if (inView && hasNextPage && !apiCallDelay) {
+
+    // Load next page when scrolled into view
+    if (inView && hasNextPage) {
       fetchNextPage();
       setApiCallDelay(true);
     }
+
+    // If no more pages and current state is exhausted, load from next related state
     const totalVehicles: number = Object.values(vehicles).reduce(
       (sum, arr: any[]) => sum + arr.length,
       0,
     );
+
     if (
       !hasNextPage &&
       !isFetching &&
@@ -171,18 +127,24 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
     }
   }, [apiCallDelay]);
 
+  // Effect: Handle vehicle data after fetch
   useEffect(() => {
     if (!isFetching) {
-      setIsInitialLoad(false); // Always disable skeleton after first fetch
+      setIsInitialLoad(false);
     }
 
     if (isFetching) return;
+
     if (fetchedVehicles.length > 0) {
       setIsInitialLoad(false);
+
+      // Group by current state
       setVehicles((draft: any) => {
         draft[stateValue] = fetchedVehicles;
         return draft;
       });
+
+      // Add to global list
       setAllVehicles((draft: any) => {
         draft.push(...fetchedVehicles);
       });
@@ -196,25 +158,32 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
     }
   };
 
+  // When the set of visible vehicle IDs changes, update the visible vehicle list for the map
   useEffect(() => {
+    // Filter all fetched vehicles to only those currently visible in viewport
     const activeVehicles = allVehicles.filter((vehicle: any) =>
       visibleVehicleIds.includes(vehicle.vehicleId),
     );
 
-    let data = activeVehicles
+    // Normalize each visible vehicle’s structure
+    const data = activeVehicles
       .map((vehicle: any) => {
+        // Skip vehicles without valid location data
         if (
           vehicle.location === null ||
           vehicle.location.lat === null ||
           vehicle.location.lng === null
         )
           return null;
+
+        // Flatten rental details to a simple key/value map of enabled rents
         const rentalDetails = Object.fromEntries(
           Object.entries(vehicle.rentalDetails).map(([key, value]: any) => [
             key,
             value.enabled ? value.rentInAED : null,
           ]),
         );
+
         return {
           ...vehicle,
           companyLogo: vehicle.companyLogo,
@@ -228,10 +197,18 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
           location: vehicle.location,
         };
       })
-      .filter(Boolean);
+      .filter(Boolean); // Remove any nulls
 
+    // Send to global context for rendering on map
     setVehiclesListVisible(data);
   }, [visibleVehicleIds]);
+
+  //  boolean to determine whether to show loading trigger or not
+  const showLoadingTrigger =
+    hasNextPage || relatedStateList.length > 0 || isFetching;
+
+  //  boolean to determine whether to show end of results or not
+  const showEndOfResults = !hasNextPage && !isFetching;
 
   return (
     <>
@@ -269,69 +246,18 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
                     </p>
                   )}
 
-                  {Object.entries(vehicles).map(
-                    ([location, vehiclesInLocation]) => {
-                      const locationVehicles = vehiclesInLocation as Array<{
-                        vehicleId: string;
-                      }>;
-                      const isFromRelatedState = location !== state;
-
-                      return (
-                        <div key={location} className="mb-8">
-                          {isFromRelatedState && (
-                            <h3 className="relative mb-6 inline-block break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
-                              Discover more{" "}
-                              <span className="capitalize">{category}</span>{" "}
-                              from{" "}
-                              <span className="capitalize">
-                                {convertToLabel(location.replace(/-/g, " "))}
-                              </span>
-                              <motion.div
-                                className="absolute bottom-0 left-0 h-[2px] bg-black"
-                                initial={{ width: 0 }}
-                                animate={{ width: "100%" }}
-                                transition={{
-                                  duration: 0.5,
-                                  ease: "easeOut",
-                                }}
-                              />
-                            </h3>
-                          )}
-                          <VehicleListingGridWrapper>
-                            {locationVehicles.map((vehicle: any, index) => {
-                              const animationIndex = index % 8;
-                              return (
-                                <VisibilityObserver
-                                  key={vehicle.vehicleId}
-                                  vehicle={vehicle}
-                                  onVisible={(id) => {
-                                    setVisibleVehicleIds((prev) =>
-                                      prev.includes(id) ? prev : [...prev, id],
-                                    );
-                                  }}
-                                  onHidden={(id) => {
-                                    setVisibleVehicleIds((prev) =>
-                                      prev.filter((v) => v !== id),
-                                    );
-                                  }}
-                                >
-                                  <VehicleMainCard
-                                    vehicle={vehicle}
-                                    index={animationIndex}
-                                    country={country}
-                                  />
-                                </VisibilityObserver>
-                              );
-                            })}
-                          </VehicleListingGridWrapper>
-                        </div>
-                      );
-                    },
-                  )}
+                  {/* List all the vehicles in the grid */}
+                  <VehicleListSection
+                    vehicles={vehicles}
+                    state={state}
+                    category={category}
+                    country={country}
+                    setVisibleVehicleIds={setVisibleVehicleIds}
+                  />
                 </>
               )}
 
-              {(hasNextPage || relatedStateList.length > 0 || isFetching) && (
+              {showLoadingTrigger && (
                 <div ref={ref} className="z-10 w-full py-4 text-center">
                   {isFetching && (
                     <div className="flex-center h-12">
@@ -341,7 +267,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
                 </div>
               )}
 
-              {!hasNextPage && !isFetching && (
+              {showEndOfResults && (
                 <span className="mt-16 block text-center text-base italic text-gray-500">
                   You have reached the end
                 </span>
@@ -351,24 +277,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
         )}
 
         {/* Toggle Button (mobile) */}
-        <div className="sticky bottom-[10%] z-50 mt-auto flex justify-center lg:hidden">
-          <button
-            className="flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-gray-800"
-            onClick={toggleMap}
-          >
-            {!showMap ? (
-              <>
-                Show map
-                <Map size={16} className="text-white" />
-              </>
-            ) : (
-              <>
-                Show list
-                <List size={16} className="text-white" />
-              </>
-            )}
-          </button>
-        </div>
+        <MapToggleButton showMap={showMap} toggleMap={toggleMap} />
 
         {/* Dialog */}
         <PriceEnquireDialog />

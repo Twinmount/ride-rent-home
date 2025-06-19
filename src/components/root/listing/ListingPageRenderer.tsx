@@ -85,7 +85,7 @@ const ListingPageRenderer = async ({
         </div>
 
         {/* RIGHT: Map */}
-        {/* <div className="hidden w-full px-2 lg:block lg:w-1/2">
+        <div className="hidden w-full px-2 lg:block lg:w-1/2">
           <div
             className="sticky top-[4rem] p-3"
             style={{ height: "calc(100vh - 4rem)" }}
@@ -100,7 +100,7 @@ const ListingPageRenderer = async ({
               <MapClientWrapper />
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
     </>
   );
