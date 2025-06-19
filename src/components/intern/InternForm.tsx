@@ -5,7 +5,9 @@ import { useHookForm } from "@/hooks/useHookForm";
 import { InternFormFields } from "@/types/interns";
 import { sendInternForm } from "@/lib/api/careers-api";
 
-export default function InternForm() {
+export default function InternForm({ country }: { country: string }) {
+  const selectedCountry = country === "ae" ? "UAE" : "IN";
+
   const {
     register,
     handleSubmit,
@@ -25,8 +27,13 @@ export default function InternForm() {
 
   const onSubmit = (data: InternFormFields) => {
     const formData = { ...data, resume: "intern-resume-test" };
-    console.log(formData);
-    sendInternForm(JSON.stringify(formData), "UAE");
+
+    try {
+      sendInternForm(JSON.stringify(formData), selectedCountry);
+      alert("Form sent successfully!");
+    } catch (err) {
+      alert("Error occured, Form not sent!");
+    }
   };
 
   return (

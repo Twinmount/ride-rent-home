@@ -3,7 +3,8 @@ import Link from "next/link";
 import CareerForm from "@/components/career/CareerForm";
 
 type Props = {
-  searchParams: { jobId?: string };
+  params: { country: string; state?: string; category?: string };
+  searchParams: { [key: string]: string | undefined };
 };
 
 type Section = {
@@ -41,11 +42,11 @@ async function getJobDetails(jobId: string): Promise<ResponseType> {
   return res.json();
 }
 
-const CareersDetailsPage = async ({ searchParams }: Props) => {
+const CareersDetailsPage = async ({ searchParams, params }: Props) => {
   const jobId = searchParams.jobId;
-  const job = await getJobDetails(jobId as string);
+  const country = params.country;
 
-  console.log("job :>> ", job);
+  const job = await getJobDetails(jobId as string);
 
   const { result } = job;
 
@@ -56,18 +57,18 @@ const CareersDetailsPage = async ({ searchParams }: Props) => {
           <div className="flex gap-8">
             <div className="w-full md:w-[70%]">
               <div className="mb-5 flex items-center justify-between">
-                <h2 className="m-0 text-[26px] font-medium text-black">
+                <h2 className="m-0 text-[24px] font-medium text-black">
                   {result?.jobtitle}
                 </h2>
                 <div className="flex items-center gap-4">
                   <Link
-                    className="inline-block whitespace-nowrap rounded bg-yellow px-4 py-3 text-sm text-white"
+                    className="px-23 inline-block whitespace-nowrap rounded bg-yellow px-3 py-2 text-sm text-white"
                     href={"#apply-job"}
                   >
                     Apply this job
                   </Link>
                   <Link
-                    className="inline-block whitespace-nowrap rounded bg-amber-100 px-4 py-3 text-sm text-yellow"
+                    className="inline-block whitespace-nowrap rounded bg-amber-100 px-3 py-2 text-sm text-yellow"
                     href={"/"}
                   >
                     Share to a friend
@@ -142,7 +143,7 @@ const CareersDetailsPage = async ({ searchParams }: Props) => {
 
                 <div className="mb-0 mt-6 inline-block w-full" id="apply-job">
                   {/* Career form */}
-                  <CareerForm />
+                  <CareerForm country={country} />
                 </div>
               </div>
             </div>

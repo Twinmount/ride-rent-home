@@ -30,7 +30,9 @@ export async function generateMetadata(props: PageProps) {
   };
 }
 
-const InternsPage = async () => {
+const InternsPage = async (props: PageProps) => {
+  const { country } = await props.params;
+
   return (
     <div className="interns bg-white">
       <div className="mx-auto w-full pb-8 md:max-w-[90%] lg:max-w-[80%] xl:max-w-[70%]">
@@ -163,7 +165,7 @@ const InternsPage = async () => {
           </div>
           <div className="relative z-[7] -mt-24 ml-auto mr-auto w-full rounded-[12px] border bg-white p-5 md:max-w-[700px] md:p-10">
             {/* intern form */}
-            <InternForm />
+            <InternForm country={country} />
           </div>
         </section>
       </div>

@@ -5,7 +5,9 @@ import { useHookForm } from "@/hooks/useHookForm";
 import { ApplicationFormValues } from "@/types/careers";
 import { sendCareerForm } from "@/lib/api/careers-api";
 
-export default function CareerForm() {
+export default function CareerForm({ country }: { country: string }) {
+  const selectedCountry = country === "ae" ? "UAE" : "IN";
+
   const {
     register,
     handleSubmit,
@@ -28,8 +30,12 @@ export default function CareerForm() {
 
   const onSubmit = (data: ApplicationFormValues) => {
     const formData = { ...data, resume: "career-resume-test.pdf" };
-    console.log(formData);
-    sendCareerForm(JSON.stringify(formData), "UAE");
+    try {
+      sendCareerForm(JSON.stringify(formData), selectedCountry);
+      alert("Form sent successfully!");
+    } catch (err) {
+      alert("Error occured, Form not sent!");
+    }
   };
 
   const experienceOptions = [
