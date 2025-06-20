@@ -8,6 +8,7 @@ import {
   fetchListingMetadata,
   getListingPageJsonLd,
 } from "@/app/(root)/[country]/[state]/listing/listing-metadata";
+import ListingPageBreadcrumb from "./ListingPageBreadcrumb";
 
 type ListingPageRendererProps = {
   category: string;
@@ -69,6 +70,14 @@ const ListingPageRenderer = async ({
               heading={data?.result?.h1}
               subheading={data?.result?.h2}
               oneVehicleType={oneVehicleType}
+            />
+
+            <ListingPageBreadcrumb
+              country={country}
+              state={state}
+              category={category}
+              vehicleType={vehicleType}
+              brand={brand}
             />
 
             <PriceFilterTag />

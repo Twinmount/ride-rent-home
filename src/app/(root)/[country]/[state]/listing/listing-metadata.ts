@@ -128,7 +128,7 @@ export function getListingPageJsonLd(
   country: string,
 ) {
   const listingPageUrl = getAbsoluteUrl(
-    `${country}/${state}/listing?category=${category}`,
+    `${country}/${state}/listing/${category}`,
   );
   const siteImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
 

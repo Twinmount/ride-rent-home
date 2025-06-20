@@ -12,7 +12,7 @@ export default function CitiesGrid({
   state,
   category = "cars",
   cities,
-  country
+  country,
 }: PropType) {
   if (cities.length === 0)
     return <div className="flex-center my-32">Oops! No Cities Found!</div>;
@@ -22,7 +22,7 @@ export default function CitiesGrid({
       {cities.map((city) => (
         <li key={city.cityValue}>
           <Link
-            href={`/${country}/${state}/listing?category=${category}&city=${city.cityValue}`}
+            href={`/${country}/${state}/listing/${category}?city=${city.cityValue}`}
             className="flex items-center gap-x-1 transition-colors hover:text-yellow"
             prefetch={false}
           >
