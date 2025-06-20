@@ -143,7 +143,11 @@ const CareersDetailsPage = async ({ searchParams, params }: Props) => {
 
                 <div className="mb-0 mt-6 inline-block w-full" id="apply-job">
                   {/* Career form */}
-                  <CareerForm country={country} />
+                  <CareerForm
+                    country={country as string}
+                    jobId={jobId as string}
+                    jobTitle={result?.jobtitle as string}
+                  />
                 </div>
               </div>
             </div>

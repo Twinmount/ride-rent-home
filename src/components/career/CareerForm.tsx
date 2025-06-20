@@ -7,7 +7,15 @@ import { sendCareerForm } from "@/lib/api/careers-api";
 import { GcsFilePaths } from "@/constants/fileUpload";
 import { uploadSingleFile } from "@/lib/api/fileUpload-api";
 
-export default function CareerForm({ country }: { country: string }) {
+export default function CareerForm({
+  country,
+  jobId,
+  jobTitle,
+}: {
+  country: string;
+  jobId?: string;
+  jobTitle?: string;
+}) {
   const selectedCountry = country === "ae" ? "UAE" : "IN";
 
   const [isUploading, setIsUploading] = useState(false);
@@ -38,7 +46,10 @@ export default function CareerForm({ country }: { country: string }) {
 
   const onSubmit = (data: ApplicationFormValues) => {
     try {
-      sendCareerForm(JSON.stringify(data), selectedCountry);
+      sendCareerForm(
+        JSON.stringify({ ...data, jobId, jobTitle }),
+        selectedCountry,
+      );
       reset();
       setIsUploaded(false);
       alert("Form sent successfully!");
@@ -304,8 +315,19 @@ export default function CareerForm({ country }: { country: string }) {
               type="text"
               id="linkedin-link"
               className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-              {...register("linkedinprofile")}
+              {...register("linkedinprofile", {
+                pattern: {
+                  value:
+                    /^https?:\/\/([a-z]{2,3}\.)?linkedin\.com\/in\/[A-Za-z0-9-_%]+\/?$/,
+                  message: "Enter a valid LinkedIn profile link",
+                },
+              })}
             />
+            {errors.linkedinprofile && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors.linkedinprofile.message}
+              </p>
+            )}
           </div>
 
           <div>
