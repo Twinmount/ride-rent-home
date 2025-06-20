@@ -13,7 +13,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
-  const { country, state, category } = params;
+  const { country, state, category, brand } = params;
 
   const vehicleType = "other";
 

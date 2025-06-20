@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter, useParams } from "next/navigation";
-import { removeKeysFromQuery } from "@/helpers";
 import qs from "query-string";
 import {
-  generateUpdatedUrl,
   getDefaultFilters,
   parseFiltersFromUrl,
 } from "@/helpers/filter-helper";
@@ -35,7 +33,6 @@ export interface FiltersType {
  * - applyFilters: Constructs the correct route + query and navigates to it.
  * - resetFilters: Clears all filters and resets URL.
  */
-
 const useFilters = () => {
   // Local state for filter changes
   const [selectedFilters, setSelectedFilters] = useState<FiltersType>({
@@ -63,6 +60,7 @@ const useFilters = () => {
 
   const searchParams = useSearchParams();
   const router = useRouter();
+
   const { country, state, category, vehicleType, brand } = useParams<{
     country: string;
     state: string;

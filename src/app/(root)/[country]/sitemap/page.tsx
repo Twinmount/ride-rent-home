@@ -6,10 +6,18 @@ import {
 import { MetadataRoute } from "next";
 import { API } from "@/utils/API";
 import { BlogData, VehicleData } from "@/types";
+import { FetchListingPageSitemapResponse } from "@/types/sitemap";
+import {
+  generateListingPageUrls,
+  groupListingCombinations,
+} from "@/helpers/sitemap-helper";
+import { ENV } from "@/config/env";
 
 type PropsType = {
   params: Promise<{ country: string }>;
 };
+
+const SITE_URL = ENV.SITE_URL || ENV.NEXT_PUBLIC_SITE_URL;
 
 // Fetch companies data for sitemap
 async function fetchCompanies(country: string) {
@@ -49,13 +57,11 @@ async function fetchBlogs(country: string) {
     const data = await response.json();
 
     if (data.status === "SUCCESS" && data.result?.list) {
-      return data.result.list.map(
-        (blog: BlogData) => ({
-          url: `https://ride.rent/blog/${generateBlogUrlTitle(blog.blogTitle)}/${blog.blogId}`,
-          title: blog.blogTitle,
-          blogId: blog.blogId,
-        }),
-      );
+      return data.result.list.map((blog: BlogData) => ({
+        url: `https://ride.rent/blog/${generateBlogUrlTitle(blog.blogTitle)}/${blog.blogId}`,
+        title: blog.blogTitle,
+        blogId: blog.blogId,
+      }));
     }
   } catch (error) {
     console.error("Error fetching blogs:", error);
@@ -81,7 +87,7 @@ async function fetchVehicleSeries(country: string) {
           stateValue: string;
           category?: string;
         }) => ({
-          url: `https://ride.rent/${country}/${vehicle?.stateValue}/rent/${vehicle?.category || 'vehicles'}/${vehicle?.brandValue}/${vehicle?.vehicleSeries}`,
+          url: `https://ride.rent/${country}/${vehicle?.stateValue}/rent/${vehicle?.category || "vehicles"}/${vehicle?.brandValue}/${vehicle?.vehicleSeries}`,
         }),
       );
     }
@@ -150,7 +156,6 @@ async function fetchAllData(country: string): Promise<{
       }) => {
         categories.forEach((category: string) => {
           urls.push(`${siteBaseUrl}/${location}/${category}`);
-          urls.push(`${siteBaseUrl}/${location}/listing?category=${category}`);
           urls.push(
             `${siteBaseUrl}/${location}/vehicle-rentals/${category}-for-rent`,
           );
@@ -172,6 +177,50 @@ async function fetchAllData(country: string): Promise<{
   }
 }
 
+async function fetchVehicleListingPageSitemap(country: string) {
+  try {
+    const COUNTRY_ID =
+      country === "in"
+        ? "68ea1314-08ed-4bba-a2b1-af549946523d"
+        : "ee8a7c95-303d-4f55-bd6c-85063ff1cf48";
+
+    const response = await API({
+      path: `/vehicle/listing/sitemap?page=0&limit=5000&sortOrder=DESC&countryId=${COUNTRY_ID}`,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country: country,
+    });
+
+    const data: FetchListingPageSitemapResponse = await response.json();
+
+    const flatList = data?.result?.list || [];
+
+    // Group vehicle combinations by state → category → type → brands
+    const nestedVehicleStructure = groupListingCombinations(flatList);
+
+    // Generate all valid relative listing page URL paths
+    const relativeListingPageUrls = generateListingPageUrls(
+      nestedVehicleStructure,
+    );
+
+    // Create full sitemap entries
+    const fullSitemapEntries = relativeListingPageUrls.map((url) => ({
+      url: `${SITE_URL}/${country}${url}`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    }));
+
+    return fullSitemapEntries;
+  } catch (error) {
+    console.error("Error fetching vehicle listing page sitemap:", error);
+  }
+
+  return [];
+}
+
 // Generate all sitemap entries combining static and dynamic content
 async function generateSitemapEntries(
   country: string,
@@ -182,16 +231,24 @@ async function generateSitemapEntries(
     { url: "https://ride.rent/privacy-policy" },
     { url: "https://ride.rent/terms-condition" },
     { url: country === "in" ? "https://ride.rent/in" : "https://ride.rent/ae" },
-    { url: country === "in" ? "https://ride.rent/in/blog" : "https://ride.rent/ae/blog" },
+    {
+      url:
+        country === "in"
+          ? "https://ride.rent/in/blog"
+          : "https://ride.rent/ae/blog",
+    },
   ];
 
   // Fetch all dynamic content concurrently for better performance
-  const [vehicleSeries, companyProfiles, blogPosts, allDatas] = await Promise.all([
-    fetchVehicleSeries(country),
-    fetchCompanies(country),
-    fetchBlogs(country),
-    fetchAllData(country),
-  ]);
+  const [vehicleSeries, companyProfiles, blogPosts, allDatas] =
+    await Promise.all([
+      fetchVehicleSeries(country),
+      fetchCompanies(country),
+      fetchBlogs(country),
+      fetchAllData(country),
+    ]);
+
+  const listingPageUrls = await fetchVehicleListingPageSitemap(country);
 
   const { urls, uniqueLocations, formattedVehicleData } = allDatas;
 
@@ -240,6 +297,7 @@ async function generateSitemapEntries(
     ...companyProfiles,
     ...allDataUrl,
     ...vehiclePages,
+    ...listingPageUrls,
     ...vehicleSeries,
     ...blogPosts,
   ];
@@ -256,8 +314,13 @@ export default async function SitemapPage(props: PropsType) {
     (acc, entry) => {
       const url = new URL(entry.url);
       const pathSegments = url.pathname.split("/").filter(Boolean);
-      let staticBasepath = ["about-us", "privacy-policy", "terms-condition", "blog"];
-      
+      let staticBasepath = [
+        "about-us",
+        "privacy-policy",
+        "terms-condition",
+        "blog",
+      ];
+
       const basePath = staticBasepath.includes(pathSegments[0])
         ? `/${pathSegments[0]}`
         : `/${pathSegments[1]}`;
@@ -309,8 +372,8 @@ export default async function SitemapPage(props: PropsType) {
       }
       if (url.includes("/blog/") && !url.endsWith("/blog")) {
         // For individual blog posts, use the title if available
-        const blogEntry = sitemapEntries.find(entry => entry.url === url);
-        if (blogEntry && 'title' in blogEntry) {
+        const blogEntry = sitemapEntries.find((entry) => entry.url === url);
+        if (blogEntry && "title" in blogEntry) {
           return (blogEntry as any).title;
         }
       }
@@ -325,19 +388,19 @@ export default async function SitemapPage(props: PropsType) {
   return (
     <div className="container mx-auto p-4">
       <h1 className="mb-4 text-2xl font-bold">Sitemap</h1>
-      
+
       <ul className="space-y-4">
         {Object.entries(groupedUrls).map(([basePath, entries]) => {
           let parentlabel = getCategoryFromUrl(entries[0].url);
-          
+
           // Skip undefined or invalid categories
           if (parentlabel === "undefined" || basePath.slice(1) === "undefined")
             return null;
-            
+
           return (
             <li key={basePath} className="relative pl-4">
               <div className="absolute left-0 top-0 h-full w-px bg-gray-300"></div>
-              
+
               {entries.length === 1 ? (
                 // Single entry - make basePath clickable directly
                 <a
@@ -354,23 +417,26 @@ export default async function SitemapPage(props: PropsType) {
                   <h2 className="mb-2 text-xl font-semibold capitalize">
                     {basePath.slice(1)}
                   </h2>
-                  
+
                   <ul className="ml-4 space-y-2">
                     {entries.map((entry, index) => {
                       const label = getCategoryFromUrl(entry.url);
-                      
+
                       // Skip undefined or invalid labels
                       if (
                         label === "undefined" ||
                         basePath.slice(1) === "undefined"
                       )
                         return null;
-                        
+
                       return (
-                        <li key={`${basePath}-${index}-${entry.url}`} className="relative pl-4">
+                        <li
+                          key={`${basePath}-${index}-${entry.url}`}
+                          className="relative pl-4"
+                        >
                           <div className="absolute left-0 top-0 h-full w-px bg-gray-300"></div>
                           <div className="absolute left-0 top-1/2 h-px w-4 bg-gray-300"></div>
-                          
+
                           <a
                             href={entry.url}
                             className="text-black-600 capitalize hover:underline"
@@ -378,10 +444,11 @@ export default async function SitemapPage(props: PropsType) {
                             rel="noopener noreferrer"
                           >
                             {`${label} ${
-                              basePath.slice(1) === "faq" || 
+                              basePath.slice(1) === "faq" ||
                               basePath.slice(1) === "blog" ||
-                              basePath.slice(1).toUpperCase() === label.toUpperCase() 
-                                ? "" 
+                              basePath.slice(1).toUpperCase() ===
+                                label.toUpperCase()
+                                ? ""
                                 : `in ${basePath.slice(1)}`
                             }`}
                           </a>

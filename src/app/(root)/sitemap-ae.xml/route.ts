@@ -5,6 +5,11 @@ import {
   generateCompanyProfilePageLink,
   generateVehicleDetailsUrl,
 } from "@/helpers";
+import {
+  generateListingPageUrls,
+  groupListingCombinations,
+} from "@/helpers/sitemap-helper";
+import { FetchListingPageSitemapResponse } from "@/types/sitemap";
 import { API } from "@/utils/API";
 import { NextResponse } from "next/server";
 
@@ -90,7 +95,7 @@ async function fetchVehicleSeriesSitemap() {
 
     if (data.status === "SUCCESS" && data.result?.list) {
       return data.result.list.map((vehicle) => ({
-        url: `${SITE_URL}/${COUNTRY}/${vehicle.stateValue}/rent/${vehicle.category || 'vehicles'}/${vehicle.brandValue}/${vehicle.vehicleSeries}`,
+        url: `${SITE_URL}/${COUNTRY}/${vehicle.stateValue}/rent/${vehicle.category || "vehicles"}/${vehicle.brandValue}/${vehicle.vehicleSeries}`,
         lastModified: new Date().toISOString(),
         changeFrequency: "weekly",
         priority: 0.8,
@@ -102,8 +107,47 @@ async function fetchVehicleSeriesSitemap() {
   return [];
 }
 
+async function fetchVehicleListingPageSitemap() {
+  try {
+    const response = await API({
+      path: `/vehicle/listing/sitemap?page=0&limit=5000&sortOrder=DESC&countryId=${COUNTRY_ID}`,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country: COUNTRY,
+    });
+
+    const data: FetchListingPageSitemapResponse = await response.json();
+
+    const flatList = data?.result?.list || [];
+
+    // Group vehicle combinations by state → category → type → brands
+    const nestedVehicleStructure = groupListingCombinations(flatList);
+
+    // Generate all valid relative listing page URL paths
+    const relativeListingPageUrls = generateListingPageUrls(
+      nestedVehicleStructure,
+    );
+
+    // Create full sitemap entries
+    const fullSitemapEntries = relativeListingPageUrls.map((url) => ({
+      url: `${SITE_URL}/${COUNTRY}${url}`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    }));
+
+    return fullSitemapEntries;
+  } catch (error) {
+    console.error("Error fetching vehicle listing page sitemap:", error);
+  }
+
+  return [];
+}
+
 /**
- * Fetches states and vehicles data for sitemap generation
+ * Fetches states and vehicles data for sitemap generation for various pages
  */
 async function fetchStatesAndVehiclesSitemap() {
   try {
@@ -126,9 +170,7 @@ async function fetchStatesAndVehiclesSitemap() {
     }
 
     // Extract all vehicles and format them
-    const allVehicles = data.result
-      .map((state) => state.vehicles || [])
-      .flat();
+    const allVehicles = data.result.map((state) => state.vehicles || []).flat();
 
     // Create location-category mapping
     const locationCategoryMap = new Map();
@@ -143,7 +185,7 @@ async function fetchStatesAndVehiclesSitemap() {
           if (!locationCategoryMap.has(location)) {
             locationCategoryMap.set(location, new Set());
           }
-          locationCategoryMap.get(location).add(vehicle.category.toLowerCase());
+          locationCategoryMap.get(location).add(vehicle.category);
         });
       }
     });
@@ -157,10 +199,9 @@ async function fetchStatesAndVehiclesSitemap() {
         const baseUrl = `${SITE_URL}/${COUNTRY}`;
         const urls = [
           `${baseUrl}/${location}/${category}`,
-          `${baseUrl}/${location}/listing?category=${category}`,
           `${baseUrl}/${location}/vehicle-rentals/${category}-for-rent`,
         ];
-        
+
         urls.forEach((url) => {
           categoryUrls.push({
             url,
@@ -248,14 +289,15 @@ function createStaticPageEntries() {
 function generateSitemapXML(entries) {
   const xmlEntries = entries
     .map((entry) => {
-      const images = entry.images
-        ?.map(
-          (img) => `
+      const images =
+        entry.images
+          ?.map(
+            (img) => `
             <image:image>
               <image:loc>${escapeXml(img)}</image:loc>
-            </image:image>`
-        )
-        .join("") || "";
+            </image:image>`,
+          )
+          .join("") || "";
 
       return `
         <url>
@@ -279,12 +321,18 @@ function generateSitemapXML(entries) {
 function escapeXml(unsafe) {
   return unsafe.replace(/[<>&'"]/g, (c) => {
     switch (c) {
-      case "<": return "&lt;";
-      case ">": return "&gt;";
-      case "&": return "&amp;";
-      case "'": return "&apos;";
-      case '"': return "&quot;";
-      default: return c;
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case "&":
+        return "&amp;";
+      case "'":
+        return "&apos;";
+      case '"':
+        return "&quot;";
+      default:
+        return c;
     }
   });
 }
@@ -311,12 +359,11 @@ export async function GET() {
       fetchStatesAndVehiclesSitemap(),
     ]);
 
-    const {
-      locationUrls,
-      categoryUrls,
-      faqUrls,
-      vehicleUrls,
-    } = statesAndVehicles;
+    // fetching vehicle listing page sitemap
+    const listingPageUrls = await fetchVehicleListingPageSitemap();
+
+    const { locationUrls, categoryUrls, faqUrls, vehicleUrls } =
+      statesAndVehicles;
 
     // Combine all sitemap entries
     const allEntries = [
@@ -326,6 +373,7 @@ export async function GET() {
       ...companyProfiles,
       ...categoryUrls,
       ...vehicleUrls,
+      ...listingPageUrls,
       ...vehicleSeries,
       ...blogPosts,
     ];
@@ -343,10 +391,10 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error generating sitemap:", error);
-    
+
     // Return a minimal sitemap on error
     const fallbackXml = generateSitemapXML(createStaticPageEntries());
-    
+
     return new NextResponse(fallbackXml, {
       status: 500,
       headers: {

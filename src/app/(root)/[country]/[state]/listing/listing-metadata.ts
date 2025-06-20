@@ -14,10 +14,12 @@ export async function fetchListingMetadata(
   state: string,
   category: string,
   vehicleType: string,
-  country: string
+  country: string,
 ): Promise<ListingPageMetaResponse | null> {
-
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA || ENV.NEXT_PUBLIC_API_URL_INDIA : ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
+  const baseUrl =
+    country === "in"
+      ? ENV.API_URL_INDIA || ENV.NEXT_PUBLIC_API_URL_INDIA
+      : ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
 
   let url = `${baseUrl}/metadata/listing?state=${state}`;
 

@@ -13,7 +13,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
-  const { country, state, category, vehicleType } = params;
+  const { country, state, category, vehicleType, brand } = params;
 
   const host = "https://ride.rent";
   const canonicalUrl = `${host}/${country}/${state}/listing${
