@@ -1,16 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useHookForm } from "@/hooks/useHookForm";
 import { ApplicationFormValues } from "@/types/careers";
 import { sendCareerForm } from "@/lib/api/careers-api";
+import { GcsFilePaths } from "@/constants/fileUpload";
+import { uploadSingleFile } from "@/lib/api/fileUpload-api";
 
 export default function CareerForm({ country }: { country: string }) {
   const selectedCountry = country === "ae" ? "UAE" : "IN";
 
+  const [isUploading, setIsUploading] = useState(false);
+  const [isUploaded, setIsUploaded] = useState(false);
+
   const {
     register,
     handleSubmit,
+    setValue,
+    clearErrors,
+    reset,
     formState: { errors },
   } = useHookForm<ApplicationFormValues>({
     defaultValues: {
@@ -18,7 +26,7 @@ export default function CareerForm({ country }: { country: string }) {
       lastname: "",
       email: "",
       phone: "",
-      resume: null,
+      resume: "",
       linkedinprofile: "",
       experience: "",
       currentCompensation: "",
@@ -29,9 +37,10 @@ export default function CareerForm({ country }: { country: string }) {
   });
 
   const onSubmit = (data: ApplicationFormValues) => {
-    const formData = { ...data, resume: "career-resume-test.pdf" };
     try {
-      sendCareerForm(JSON.stringify(formData), selectedCountry);
+      sendCareerForm(JSON.stringify(data), selectedCountry);
+      reset();
+      setIsUploaded(false);
       alert("Form sent successfully!");
     } catch (err) {
       alert("Error occured, Form not sent!");
@@ -73,6 +82,51 @@ export default function CareerForm({ country }: { country: string }) {
     { value: "Other", label: "Other" },
     { value: "Prefer not to say", label: "Prefer not to say" },
   ];
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size
+    const maxSizeMB = 5;
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      alert(`File is too large. Maximum ${maxSizeMB}MB allowed.`);
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword", // .doc
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Invalid file type. Only .pdf, .doc, and .docx files are allowed.");
+      return;
+    }
+
+    // Proceed with the upload
+    setIsUploading(true);
+    try {
+      const uploadResponse = await uploadSingleFile(
+        GcsFilePaths.CAREERS_RESUMES,
+        file,
+        country,
+      );
+      const uploadedFilePath = uploadResponse.result.path;
+
+      setValue("resume", uploadedFilePath);
+      setIsUploaded(!!uploadedFilePath);
+      clearErrors("resume");
+    } catch (error) {
+      console.error(error);
+      alert("File upload failed. Try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   return (
     <div>
@@ -203,19 +257,23 @@ export default function CareerForm({ country }: { country: string }) {
 
           <div>
             <label
-              htmlFor="resume-cv"
+              htmlFor="resume"
               className="mb-1 block text-sm font-medium text-gray-700"
             >
               Resume/CV <span className="text-red-500">*</span>
             </label>
             <input
               type="file"
-              id="resume-cv"
-              className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-              {...register("resume", {
-                required: "Resume/CV required",
-              })}
+              id="resumeFile"
               accept=".pdf,.doc,.docx"
+              onChange={handleFileChange}
+              className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+            />
+            <input
+              type="hidden"
+              {...register("resume", {
+                required: "Resume is required",
+              })}
             />
             <p className="mt-2 select-none text-sm text-gray-500">
               Accepted file types: .pdf , .doc, .docx
@@ -224,6 +282,12 @@ export default function CareerForm({ country }: { country: string }) {
               <p className="mt-1 text-xs text-red-500">
                 {errors.resume.message}
               </p>
+            )}
+            {isUploading && (
+              <p className="mt-1 text-sm text-blue-500">Uploading...</p>
+            )}
+            {isUploaded && (
+              <p className="mt-1 text-sm text-green-500">File uploaded</p>
             )}
           </div>
 
@@ -378,6 +442,7 @@ export default function CareerForm({ country }: { country: string }) {
           </div>
           <div>
             <button
+              disabled={isUploading}
               type="submit"
               className="w-full rounded-[6px] bg-yellow p-4 font-medium text-white transition hover:bg-amber-400"
             >

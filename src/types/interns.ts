@@ -3,7 +3,7 @@ export interface InternFormFields {
   lastname: string;
   email: string;
   phone: string;
-  resume: File | null;
+  resume: string;
   collegename?: string;
   placementofficer?: string;
   type: string;

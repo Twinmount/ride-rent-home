@@ -3,7 +3,7 @@ export type ApplicationFormValues = {
   lastname: string;
   email: string;
   phone: string;
-  resume: File | null;
+  resume: string;
   linkedinprofile?: string;
   experience: string;
   currentCompensation: string;

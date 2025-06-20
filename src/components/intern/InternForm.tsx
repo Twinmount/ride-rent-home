@@ -1,16 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useHookForm } from "@/hooks/useHookForm";
 import { InternFormFields } from "@/types/interns";
 import { sendInternForm } from "@/lib/api/careers-api";
+import { uploadSingleFile } from "@/lib/api/fileUpload-api";
+import { GcsFilePaths } from "@/constants/fileUpload";
 
 export default function InternForm({ country }: { country: string }) {
   const selectedCountry = country === "ae" ? "UAE" : "IN";
 
+  const [isUploading, setIsUploading] = useState(false);
+  const [isUploaded, setIsUploaded] = useState(false);
+
   const {
     register,
     handleSubmit,
+    setValue,
+    clearErrors,
+    reset,
     formState: { errors },
   } = useHookForm<InternFormFields>({
     defaultValues: {
@@ -18,7 +26,7 @@ export default function InternForm({ country }: { country: string }) {
       lastname: "",
       email: "",
       phone: "",
-      resume: null,
+      resume: "",
       collegename: "",
       placementofficer: "",
       type: "intern",
@@ -26,13 +34,58 @@ export default function InternForm({ country }: { country: string }) {
   });
 
   const onSubmit = (data: InternFormFields) => {
-    const formData = { ...data, resume: "intern-resume-test" };
-
     try {
-      sendInternForm(JSON.stringify(formData), selectedCountry);
+      sendInternForm(JSON.stringify(data), selectedCountry);
+      reset();
+      setIsUploaded(false);
       alert("Form sent successfully!");
     } catch (err) {
       alert("Error occured, Form not sent!");
+    }
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size
+    const maxSizeMB = 5;
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      alert(`File is too large. Maximum ${maxSizeMB}MB allowed.`);
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword", // .doc
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Invalid file type. Only .pdf, .doc, and .docx files are allowed.");
+      return;
+    }
+
+    // Proceed with the upload
+    setIsUploading(true);
+    try {
+      const uploadResponse = await uploadSingleFile(
+        GcsFilePaths.INTERNS_RESUMES,
+        file,
+        country,
+      );
+      const uploadedFilePath = uploadResponse.result.path;
+
+      setValue("resume", uploadedFilePath);
+      setIsUploaded(!!uploadedFilePath);
+      clearErrors("resume");
+    } catch (error) {
+      console.error(error);
+      alert("File upload failed. Try again.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -172,12 +225,16 @@ export default function InternForm({ country }: { country: string }) {
             </label>
             <input
               type="file"
-              id="resume"
+              id="resumeFile"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFileChange}
               className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+            />
+            <input
+              type="hidden"
               {...register("resume", {
                 required: "Resume is required",
               })}
-              accept=".pdf,.doc,.docx"
             />
             <p className="mt-2 select-none text-sm text-gray-500">
               Accepted file types: .pdf , .doc, .docx
@@ -186,6 +243,12 @@ export default function InternForm({ country }: { country: string }) {
               <p className="mt-1 text-xs text-red-500">
                 {errors.resume.message}
               </p>
+            )}
+            {isUploading && (
+              <p className="mt-1 text-sm text-blue-500">Uploading...</p>
+            )}
+            {isUploaded && (
+              <p className="mt-1 text-sm text-green-500">File uploaded</p>
             )}
           </div>
 
@@ -237,6 +300,7 @@ export default function InternForm({ country }: { country: string }) {
 
           <div>
             <button
+              disabled={isUploading}
               type="submit"
               className="w-full rounded-[6px] bg-yellow p-4 font-medium text-white transition hover:bg-amber-400"
             >
