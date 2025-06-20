@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 // import StatesDropdown from "./StatesDropdown";
 import { motion } from "framer-motion";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
 import { extractCategory } from "@/helpers";
@@ -16,6 +16,8 @@ import { LocationDialog } from "../dialog/location-dialog/LocationDialog";
 import { useEffect, useState } from "react";
 import { AlignRight } from "lucide-react";
 import { Button } from "../ui/button";
+import * as Avatar from "@radix-ui/react-avatar";
+import src from '../../app/profile.png'
 
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
@@ -89,6 +91,11 @@ export const Navbar = () => {
 
   const isMobile = useIsMobile(640);
 
+  const router = useRouter();
+  const handleClick = () => {
+    router.push("/login")
+    console.log("clicked")
+  }
   return (
     <NavbarWrapper>
       <nav className={`flex-between w-full`}>
@@ -139,7 +146,17 @@ export const Navbar = () => {
                 List your vehicle for FREE
               </Link>
             </li>
-
+            <li>
+              <Avatar.Root 
+              onClick={handleClick}
+              className="inline-flex h-10 w-10 select-none items-center justify-center overflow-hidden rounded-full align-middle bg-gray-200">
+                <Avatar.Image
+                  className="h-full w-full object-cover"
+                  src={src.src}
+                  alt={'profile image'}
+                />
+              </Avatar.Root>
+            </li>
             {/* <li className="max-sm:hidden">
               <ProfileDropdown />
             </li> */}
