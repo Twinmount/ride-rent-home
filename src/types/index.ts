@@ -315,11 +315,10 @@ export interface HomePageMetaResponse {
 
 // listing page meta
 export interface ListingPageMeta {
-  metaDataId: string;
-  stateId: string;
-  state: string;
   metaTitle: string;
   metaDescription: string;
+  h1: string;
+  h2: string;
 }
 
 //  listing page meta response

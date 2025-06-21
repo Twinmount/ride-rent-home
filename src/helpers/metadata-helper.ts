@@ -1,3 +1,5 @@
+import { ENV } from "@/config/env";
+
 /**
  * Converts a relative URL to an absolute URL using the site domain from ENV.
  *
@@ -5,6 +7,12 @@
  * @returns {string} The absolute URL (e.g., "https://ride.rent/rent/car/123").
  */
 export function getAbsoluteUrl(relativePath: string): string {
-  const baseUrl = process.env.SITE_URL || "https://ride.rent"; // Fallback URL
-  return `${baseUrl}${relativePath.startsWith("/") ? relativePath : `/${relativePath}`}`;
+  const baseUrl =
+    ENV.SITE_URL || ENV.NEXT_PUBLIC_SITE_URL || "https://ride.rent";
+
+  const remainingUrl = relativePath.startsWith("/")
+    ? relativePath
+    : `/${relativePath}`;
+
+  return `${baseUrl}${remainingUrl}`;
 }

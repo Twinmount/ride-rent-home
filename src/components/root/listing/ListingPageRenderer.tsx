@@ -1,5 +1,4 @@
 import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
-import { convertToLabel, singularizeType } from "@/helpers";
 import PriceFilterTag from "@/components/root/listing/PriceFilterTag";
 import JsonLd from "@/components/common/JsonLd";
 import MapClientWrapper from "@/components/listing/MapClientWrapper";
@@ -32,44 +31,40 @@ const ListingPageRenderer = async ({
   country,
   searchParams,
 }: ListingPageRendererProps) => {
-  // Format display labels
-  const formattedCategory = singularizeType(convertToLabel(category));
-  const formattedState = convertToLabel(state);
-  const formattedBrand = brand ? convertToLabel(brand) : "";
-
-  // Prepare vehicleTypes array
-  const vehicleTypes = vehicleType ? [convertToLabel(vehicleType)] : [];
-  const oneVehicleType = vehicleTypes.length === 1;
-
-  // Fetch metadata
-  const data: any = await fetchListingMetadata(
+  // Fetch metadata for heading h1 and h2
+  const data = await fetchListingMetadata({
+    country,
     state,
     category,
-    vehicleType ?? "other",
-    country,
-  );
+    vehicleType: vehicleType || "other",
+  });
 
   // Prepare JSON-LD schema
-  const jsonLdData = getListingPageJsonLd(state, formattedCategory, country);
+  const jsonLdData = getListingPageJsonLd({
+    country,
+    state,
+    category,
+    vehicleType,
+    brand,
+  });
+
+  const jsonLdId = `json-ld-listing-${country}-${state}-${category}-${vehicleType || "all"}-${brand || "all"}`;
 
   return (
     <>
-      <JsonLd
-        id={`json-ld-listing-${state}-${category}`}
-        jsonLdData={jsonLdData}
-      />
+      <JsonLd id={jsonLdId} key={jsonLdId} jsonLdData={jsonLdData} />
       <div className="-mx-2 flex flex-wrap">
         {/* LEFT: Listing & Filters */}
         <div className="w-full px-2 lg:w-1/2">
           <div className="relative h-auto min-h-screen bg-lightGray px-3 pb-8 pt-4">
             <ListingHeading
-              formattedCategory={formattedCategory}
-              formattedState={formattedState}
-              formattedBrand={formattedBrand}
-              vehicleTypes={vehicleTypes}
+              country={country}
+              state={state}
+              category={category}
+              vehicleType={vehicleType}
+              brand={brand}
               heading={data?.result?.h1}
               subheading={data?.result?.h2}
-              oneVehicleType={oneVehicleType}
             />
 
             <ListingPageBreadcrumb

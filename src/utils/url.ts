@@ -22,3 +22,21 @@ export function normalizeSingleQueryParam(
 
   return val.includes(",") ? null : val;
 }
+
+type CountryCode = "ae" | "in" | string;
+/**
+ * Given a country code (e.g. "ae", "in"), returns the human-readable full name of the country.
+ * If the code is not recognized, returns the code in uppercase as a fallback.
+ * @param code - The country code (e.g. "ae", "in")
+ * @returns The full name of the country (e.g. "UAE", "India")
+ */
+export function getCountryName(code: CountryCode): string {
+  switch (code.toLowerCase()) {
+    case "ae":
+      return "UAE";
+    case "in":
+      return "India";
+    default:
+      return code.toUpperCase(); // fallback,
+  }
+}

@@ -10,36 +10,24 @@ import { getDefaultMetadata } from "@/app/root-metadata";
 import ListingPageRenderer from "@/components/root/listing/ListingPageRenderer";
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
-  const searchParams = await props.searchParams;
   const params = await props.params;
 
   const { country, state, category, vehicleType, brand } = params;
 
-  const host = "https://ride.rent";
-  const canonicalUrl = `${host}/${country}/${state}/listing${
-    searchParams
-      ? `?${new URLSearchParams(searchParams as Record<string, string>)}`
-      : ""
-  }`;
-
-  const data = await fetchListingMetadata(
-    state,
-    category,
-    vehicleType,
+  const data = await fetchListingMetadata({
     country,
-  );
+    state,
+    category,
+    vehicleType: vehicleType || "other",
+  });
 
-  if (!data) {
-    return getDefaultMetadata();
-  }
-
-  return generateListingMetadata(
-    data,
+  return generateListingMetadata(data, {
+    country,
     state,
     category,
     vehicleType,
-    canonicalUrl,
-  );
+    brand,
+  });
 }
 
 const ListingCategoryTypeBrandPage: FC<PageProps> = async (props) => {
