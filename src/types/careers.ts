@@ -11,3 +11,40 @@ export type ApplicationFormValues = {
   expectedCTC: string;
   type: string;
 };
+
+export type JobResponse = {
+  _id: string;
+  jobtitle: string;
+  location: string;
+  level: string;
+  experience: string;
+};
+
+export type JobsResponseType = {
+  result: JobResponse[];
+  status: string;
+  statusCode: number;
+};
+
+type JobSection = {
+  title: string;
+  points: string[];
+};
+
+export type JobDetailsResponse = {
+  _id: string;
+  jobtitle: string;
+  jobdescription: string;
+  aboutCompany: string;
+  location: string;
+  level: string;
+  experience: string;
+  date: string;
+  sections: JobSection[];
+};
+
+export type JobDetailsResponseType = {
+  result: JobDetailsResponse;
+  status: string;
+  statusCode: number;
+};

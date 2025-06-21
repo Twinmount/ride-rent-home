@@ -1,6 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { PageProps } from "@/types";
+import JobList from "@/components/career/JobList";
+import { JobsResponseType } from "@/types/careers";
 
 export async function generateMetadata(props: PageProps) {
   const { country } = await props.params;
@@ -32,21 +34,7 @@ export async function generateMetadata(props: PageProps) {
 
 // Get Job list
 
-type Job = {
-  _id: string;
-  jobtitle: string;
-  location: string;
-  level: string;
-  experience: string;
-};
-
-type ResponseType = {
-  result: Job[];
-  status: string;
-  statusCode: number;
-};
-
-async function getJobs(): Promise<ResponseType> {
+async function getJobs(): Promise<JobsResponseType> {
   const res = await fetch(`${process.env.API_URL}/jobs/minimal-list`, {
     cache: "no-store",
   });
@@ -283,51 +271,7 @@ const CareersPage = async (props: PageProps) => {
           </div>
         </section>
 
-        <section className="open-job-positions px-8 py-8 md:py-16">
-          <div className="mx-auto max-w-[700px]">
-            <div className="mb-10 flex items-center justify-between">
-              <h2 className="mb-0 text-[22px] font-medium text-black">
-                Open Positions
-              </h2>
-              <div className="job-more">
-                <a className="text-sm text-yellow" href="/">
-                  View all
-                </a>
-              </div>
-            </div>
-            <div className="open-job-positions__list-block">
-              <ul className="open-job-positions__list flex flex-col gap-6">
-                {jobs?.result?.map(
-                  ({ _id: jobId, jobtitle, location, level, experience }) => {
-                    return (
-                      <li
-                        key={jobId}
-                        className="flex flex-col justify-between rounded-[6px] border-[1px] border-solid border-gray-200 p-5 text-left md:flex-row md:items-center"
-                      >
-                        <div className="position-infos">
-                          <h4 className="mb-1 font-medium text-black">
-                            {jobtitle}
-                          </h4>
-                          <p className="text-sm text-gray-500">
-                            {`${location} | ${level} | ${experience}`}
-                          </p>
-                        </div>
-                        <div className="job-apply-action mt-5 md:mt-0">
-                          <Link
-                            className="inline-block rounded bg-amber-100 px-6 py-2 text-sm text-yellow"
-                            href={`/${country}/careers/job-details?jobId=${jobId}`}
-                          >
-                            Apply Now
-                          </Link>
-                        </div>
-                      </li>
-                    );
-                  },
-                )}
-              </ul>
-            </div>
-          </div>
-        </section>
+        <JobList title="Open Positions" country={country} data={jobs?.result} />
       </div>
     </div>
   );

@@ -1,36 +1,15 @@
 import React from "react";
 import Link from "next/link";
 import CareerForm from "@/components/career/CareerForm";
+import JobList from "@/components/career/JobList";
+import { JobDetailsResponseType, JobsResponseType } from "@/types/careers";
 
 type Props = {
   params: { country: string; state?: string; category?: string };
   searchParams: { [key: string]: string | undefined };
 };
 
-type Section = {
-  title: string;
-  points: string[];
-};
-
-type Job = {
-  _id: string;
-  jobtitle: string;
-  jobdescription: string;
-  aboutCompany: string;
-  location: string;
-  level: string;
-  experience: string;
-  date: string;
-  sections: Section[];
-};
-
-type ResponseType = {
-  result: Job;
-  status: string;
-  statusCode: number;
-};
-
-async function getJobDetails(jobId: string): Promise<ResponseType> {
+async function getJobDetails(jobId: string): Promise<JobDetailsResponseType> {
   const res = await fetch(`${process.env.API_URL}/jobs/${jobId}`, {
     cache: "no-store",
   });
@@ -42,12 +21,27 @@ async function getJobDetails(jobId: string): Promise<ResponseType> {
   return res.json();
 }
 
+async function getJobs(): Promise<JobsResponseType> {
+  const res = await fetch(`${process.env.API_URL}/jobs/minimal-list`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch jobs");
+  }
+
+  return res.json();
+}
+
 const CareersDetailsPage = async ({ searchParams, params }: Props) => {
   const jobId = searchParams.jobId;
   const country = params.country;
 
-  const job = await getJobDetails(jobId as string);
+  const jobs = await getJobs();
+  // Ignore current job
+  const otherJobs = jobs?.result?.filter((job) => job?._id !== jobId);
 
+  const job = await getJobDetails(jobId as string);
   const { result } = job;
 
   return (
@@ -149,6 +143,14 @@ const CareersDetailsPage = async ({ searchParams, params }: Props) => {
                     jobTitle={result?.jobtitle as string}
                   />
                 </div>
+
+                {/* OTHER JOBS LIST */}
+
+                <JobList
+                  title="Open Positions"
+                  country={country}
+                  data={otherJobs}
+                />
               </div>
             </div>
             <div className="hidden w-full ps-5 md:block md:w-[30%]">
