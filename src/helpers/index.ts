@@ -428,13 +428,14 @@ export const generateListingUrl = (
   values: number[],
   state: string,
   category: string,
+  country: string,
   selectedPeriod: "hour" | "day" | "week" | "month" | null, // Accept null
 ): string => {
   if (!selectedPeriod) return "/"; // Fallback if no period
 
   const [minPrice, maxPrice] = values;
 
-  return `/${state}/listing?category=${category}&price=${minPrice}-${maxPrice}&period=${selectedPeriod}`;
+  return `/${country}/${state}/listing/${category}?price=${minPrice}-${maxPrice}&period=${selectedPeriod}`;
 };
 
 type PeriodType = "hour" | "day" | "week" | "month";

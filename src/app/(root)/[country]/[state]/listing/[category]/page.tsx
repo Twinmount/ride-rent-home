@@ -6,7 +6,6 @@ import {
   generateListingMetadata,
 } from "../listing-metadata";
 
-import { getDefaultMetadata } from "@/app/root-metadata";
 import ListingPageRenderer from "@/components/root/listing/ListingPageRenderer";
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {

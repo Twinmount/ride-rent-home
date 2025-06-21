@@ -65,7 +65,7 @@ export default async function NewlyArrived({
         ))}
       </CarouselWrapper>
       <ViewAllButton
-        link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.LATEST_MODELS}`}
+        link={`/${country}/${state}/listing/${category}?filter=${VehicleHomeFilter.LATEST_MODELS}`}
       />
     </MotionSection>
   );

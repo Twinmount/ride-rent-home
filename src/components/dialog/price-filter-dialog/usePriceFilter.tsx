@@ -7,7 +7,7 @@ import { useFetchPriceFilter } from "./useFetchPriceFilter";
 type PeriodType = "hour" | "day" | "week" | "month";
 
 export function usePriceFilter() {
-  const { state, category } = useStateAndCategory();
+  const { state, category, country } = useStateAndCategory();
 
   // Fetch price range
   const { data, isLoading } = useFetchPriceFilter();
@@ -53,6 +53,7 @@ export function usePriceFilter() {
   return {
     state,
     category,
+    country,
     selectedPeriod,
     setSelectedPeriod,
     values,

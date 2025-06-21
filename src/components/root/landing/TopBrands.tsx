@@ -6,24 +6,27 @@ import Link from "next/link";
 import { convertToLabel } from "@/helpers";
 import Image from "next/image";
 import { ENV } from "@/config/env";
+import { API } from "@/utils/API";
 
 export const revalidate = 3600;
 
 export default async function TopBrands({
   category,
   state,
-  country
+  country,
 }: {
   category: string | undefined;
   state: string | undefined;
   country: string | undefined;
 }) {
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-
-  const url = `${baseUrl}/vehicle-brand/top-brands?categoryValue=${category}`;
+  const url = `/vehicle-brand/top-brands?categoryValue=${category}`;
 
   // Fetch brand data from your API endpoint
-  const response = await fetch(url);
+  const response = await API({
+    path: url,
+    options: {},
+    country: country,
+  });
 
   // Parse the JSON response
   const data: FetchTopBrandsResponse = await response.json();
@@ -51,6 +54,7 @@ export default async function TopBrands({
             brand={brand}
             category={category!}
             state={state!}
+            country={country!}
           />
         ))}
       </CarouselWrapper>
@@ -65,16 +69,18 @@ export function BrandCard({
   brand,
   category,
   state,
+  country,
 }: {
   brand: BrandType;
   category: string;
   state: string;
+  country: string;
 }) {
   const baseAssetsUrl = ENV.ASSETS_URL;
 
   return (
     <Link
-      href={`/${state}/listing?brand=${brand.brandValue}&category=${category}`}
+      href={`/${country}/${state}/listing/${category}/brand/${brand.brandValue}`}
       key={brand.id}
       className="flex aspect-square h-[8rem] max-h-[8rem] min-h-[8rem] w-[8rem] min-w-[8rem] max-w-[8rem] cursor-pointer flex-col items-center justify-between rounded-[1rem] border border-black/10 bg-white p-2 shadow-[0px_2px_2px_rgba(0,0,0,0.2)] transition-transform duration-200 ease-out hover:scale-105 hover:shadow-[0px_2px_2px_rgba(0,0,0,0.5)]"
     >

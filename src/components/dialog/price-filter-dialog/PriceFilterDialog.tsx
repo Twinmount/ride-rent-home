@@ -38,6 +38,7 @@ export default function PriceFilterDialog({
   const {
     state,
     category,
+    country,
     selectedPeriod,
     setSelectedPeriod,
     values,
@@ -52,6 +53,7 @@ export default function PriceFilterDialog({
     values,
     state,
     category ? category : "cars",
+    country,
     selectedPeriod,
   );
 

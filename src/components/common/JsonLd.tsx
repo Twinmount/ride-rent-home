@@ -1,5 +1,4 @@
 import Script from "next/script";
-import Head from "next/head";
 
 type JsonLdProps = {
   jsonLdData: object | null;
@@ -22,15 +21,13 @@ export default function JsonLd({
   }
 
   return (
-    <Head>
-      <Script
-        id={id}
-        type="application/ld+json"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLdData, null, 2),
-        }}
-      />
-    </Head>
+    <Script
+      id={id}
+      type="application/ld+json"
+      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(jsonLdData, null, 2),
+      }}
+    />
   );
 }

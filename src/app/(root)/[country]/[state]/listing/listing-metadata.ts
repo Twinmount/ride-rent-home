@@ -1,6 +1,6 @@
 import { ENV } from "@/config/env";
 import { convertToLabel } from "@/helpers";
-import { getAbsoluteUrl } from "@/helpers/metadata-helper";
+import { getAbsoluteUrl, injectBrandKeyword } from "@/helpers/metadata-helper";
 import { ListingPageMetaResponse } from "@/types";
 import { API } from "@/utils/API";
 import { getCountryName } from "@/utils/url";
@@ -70,6 +70,7 @@ export function generateListingMetadata(
   const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : "";
   const formattedBrand = brand ? convertToLabel(brand) : "";
   const formattedState = convertToLabel(state);
+  const countryName = getCountryName(country);
 
   // Dynamically build canonical URL
   const parts = [
@@ -83,14 +84,22 @@ export function generateListingMetadata(
   const canonicalPath = "/" + parts.join("/");
   const canonicalUrl = getAbsoluteUrl(canonicalPath);
 
-  // Use backend response if present
-  const metaTitle =
-    data?.result?.metaTitle ||
-    `Rent ${formattedBrand ? formattedBrand + " " : ""}${formattedVehicleType ? formattedVehicleType + " " : ""}${formattedCategory} in ${formattedState} | Ride Rent`;
+  const fallbackMetaTitle = `Rent ${formattedBrand ? formattedBrand + " " : ""}${formattedVehicleType ? formattedVehicleType + " " : ""}${formattedCategory} in ${formattedState} | Ride Rent - ${countryName}`;
 
-  const metaDescription =
-    data?.result?.metaDescription ||
-    `Discover and rent ${formattedBrand ? `${formattedBrand} ` : ""}${formattedVehicleType ? `${formattedVehicleType} ` : ""}${formattedCategory} vehicles in ${formattedState}, UAE. Best prices, easy booking on Ride Rent.`;
+  const fallbackMetaDescription = `Discover and rent ${formattedBrand ? `${formattedBrand} ` : ""}${formattedVehicleType ? `${formattedVehicleType} ` : ""}${formattedCategory} vehicles in ${formattedState}, ${countryName}. Best prices, easy booking on Ride Rent.`;
+
+  const metaTitleRaw = data?.result?.metaTitle ?? fallbackMetaTitle;
+  const metaDescriptionRaw =
+    data?.result?.metaDescription ?? fallbackMetaDescription;
+
+  // Only inject brand if using backend-provided meta (which is missing brand)
+  const metaTitle = data?.result?.metaTitle
+    ? injectBrandKeyword(metaTitleRaw, brand)
+    : metaTitleRaw;
+
+  const metaDescription = data?.result?.metaDescription
+    ? injectBrandKeyword(metaDescriptionRaw, brand)
+    : metaDescriptionRaw;
 
   const ogImage = "/assets/icons/ride-rent.png";
 
