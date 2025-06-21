@@ -6,7 +6,13 @@ import {
 } from "./vehicle-types";
 
 export type PageProps = {
-  params: Promise<{ country: string; state: string; category: string }>;
+  params: Promise<{
+    country: string;
+    state: string;
+    category: string;
+    vehicleType: string;
+    brand: string;
+  }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
@@ -309,11 +315,10 @@ export interface HomePageMetaResponse {
 
 // listing page meta
 export interface ListingPageMeta {
-  metaDataId: string;
-  stateId: string;
-  state: string;
   metaTitle: string;
   metaDescription: string;
+  h1: string;
+  h2: string;
 }
 
 //  listing page meta response
@@ -465,7 +470,6 @@ export interface FetchAllSeriesUnderBrandResponse {
   status: string;
   statusCode: number;
 }
-
 
 export type VehicleData = {
   vehicleTitle: string;

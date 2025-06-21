@@ -28,11 +28,11 @@ const MainVehicleGrid = async ({
   const hasVehicles = !!data.vehicles?.length;
 
   // view all link
-  let viewAllLink = `/${country}/${state}/listing?category=${category}`;
+  let viewAllLink = `/${country}/${state}/listing/${category}`;
 
   // if vehicleType exists, add it in the link
   if (vehicleType) {
-    viewAllLink += `&vehicleTypes=${vehicleType}`;
+    viewAllLink += `/${vehicleType}`;
   }
 
   return (

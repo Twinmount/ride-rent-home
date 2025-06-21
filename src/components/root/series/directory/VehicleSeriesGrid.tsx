@@ -64,7 +64,7 @@ export default async function VehicleSeriesGrid({
             >
               {/* Brand Logo and title */}
               <Link
-                href={`/${country}/${state}/listing?category=${category}&brand=${brand.brandValue}`}
+                href={`/${country}/${state}/listing/${category}/brand/${brand.brandValue}`}
                 className="group flex items-center justify-start gap-x-4 border-b pb-3 transition-colors"
               >
                 <div className="flex-center h-10 w-10 overflow-hidden rounded-full border border-gray-300 bg-white p-1 group-hover:border-yellow">

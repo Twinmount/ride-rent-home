@@ -37,14 +37,14 @@ export default function Filter({
           {/* Vehicle Types Accordion (SUV, Airport pickup, etc) */}
           <VehicleTypeAccordion
             category={selectedFilters.category}
-            vehicleTypes={selectedFilters.vehicleTypes}
+            vehicleType={selectedFilters.vehicleType}
             handleFilterChange={handleFilterChange}
           />
 
           {/* Vehicle Brand Accordion */}
           <BrandsAccordion
             category={selectedFilters.category}
-            brands={selectedFilters.brand}
+            brand={selectedFilters.brand}
             handleFilterChange={handleFilterChange}
           />
 

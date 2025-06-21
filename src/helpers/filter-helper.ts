@@ -11,12 +11,10 @@ export const parseFiltersFromUrl = (urlParams: string): FiltersType => {
   const params = qs.parse(urlParams);
 
   return {
+    category: "",
+    vehicleType: "",
+    brand: "",
     modelYear: typeof params.modelYear === "string" ? params.modelYear : "",
-    category: typeof params.category === "string" ? params.category : "",
-    vehicleTypes:
-      typeof params.vehicleTypes === "string"
-        ? params.vehicleTypes.split(",")
-        : [],
     seats: typeof params.seats === "string" ? params.seats : "",
     transmission:
       typeof params.transmission === "string"
@@ -25,7 +23,6 @@ export const parseFiltersFromUrl = (urlParams: string): FiltersType => {
     fuelType:
       typeof params.fuelType === "string" ? params.fuelType.split(",") : [],
     color: typeof params.color === "string" ? params.color.split(",") : [],
-    brand: typeof params.brand === "string" ? params.brand.split(",") : [],
   };
 };
 
@@ -67,10 +64,10 @@ export const generateUpdatedUrl = (
 export const getDefaultFilters = (): FiltersType => ({
   modelYear: "",
   category: "cars",
-  vehicleTypes: [],
+  vehicleType: "",
   seats: "",
   transmission: [],
   fuelType: [],
   color: [],
-  brand: [],
+  brand: "",
 });

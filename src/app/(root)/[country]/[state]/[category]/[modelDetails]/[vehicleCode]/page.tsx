@@ -158,8 +158,12 @@ export default async function VehicleDetails(props: ParamsProps) {
       type: "image",
     });
   }
-  const brandValue = vehicle?.brand?.value ?? "";
-  const href = `/${country || ""}/${state || ""}/listing?category=${category || ""}&brand=${brandValue}`;
+  const brandValue = vehicle?.brand?.value;
+  let brandListingPageHref = `/${country}/${state}/listing/${category}`;
+
+  if (!!brandValue) {
+    brandListingPageHref += `/brand/${brandValue}`;
+  }
 
   return (
     <>
@@ -175,7 +179,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         <MotionDiv className="heading-box">
           <div className="flex items-center gap-2">
             {/* brand logo */}
-            <Link href={href}>
+            <Link href={brandListingPageHref}>
               <BrandImage
                 category={category}
                 brandValue={vehicle?.brand.value}

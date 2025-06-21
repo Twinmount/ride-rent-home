@@ -38,6 +38,7 @@ export default function PriceFilterDialog({
   const {
     state,
     category,
+    country,
     selectedPeriod,
     setSelectedPeriod,
     values,
@@ -52,6 +53,7 @@ export default function PriceFilterDialog({
     values,
     state,
     category ? category : "cars",
+    country,
     selectedPeriod,
   );
 
@@ -76,7 +78,10 @@ export default function PriceFilterDialog({
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger disabled={isPriceRangeEmpty || isLoading}>
+      <DialogTrigger
+        disabled={isPriceRangeEmpty || isLoading}
+        className="me-0 max-sm:hidden md:me-2"
+      >
         {isVisible && (
           <PriceDialogTrigger
             isMobileNav={isMobileNav}

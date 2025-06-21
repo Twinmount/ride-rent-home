@@ -2,27 +2,52 @@ import { FetchVehicleByFilters } from "@/lib/api/general-api";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 interface UseFetchListingVehiclesParams {
-  searchParams: string;
+  country: string;
   state: string;
   limit: string;
-  country: string
-  coordinates: { latitude: number; longitude: number } | null
+  category: string;
+  vehicleType?: string;
+  brand?: string;
+  searchParams: string;
+  coordinates: { latitude: number; longitude: number } | null;
 }
 
 export const useFetchListingVehicles = ({
-  searchParams,
-  state,
-  limit,
   country,
-  coordinates
+  state,
+  category,
+  vehicleType,
+  brand,
+  searchParams,
+  limit,
+  coordinates,
 }: UseFetchListingVehiclesParams) => {
   // Fetch vehicles using react-query and useInfiniteQuery logic
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useInfiniteQuery({
-      queryKey: ["vehicles", state, searchParams, coordinates],
+      queryKey: [
+        "vehicles",
+        state,
+        country,
+        category,
+        vehicleType,
+        brand,
+        searchParams,
+        coordinates,
+      ],
       queryFn: ({ pageParam = 1 }) => {
         // Fetch data using api helper function
-        return FetchVehicleByFilters(searchParams, state, pageParam, limit, country, coordinates);
+        return FetchVehicleByFilters({
+          query: searchParams,
+          state,
+          pageParam,
+          limit: "8",
+          country,
+          coordinates,
+          category,
+          vehicleType,
+          brand,
+        });
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage) => {

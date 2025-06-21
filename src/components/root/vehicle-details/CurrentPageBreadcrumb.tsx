@@ -66,7 +66,7 @@ export default function CurrentPageBreadcrumb({
               asChild
             >
               <Link
-                href={`/${country}/${state}/listing?category=${category}&brand=${brand.value}`}
+                href={`/${country}/${state}/listing/${category}/brand/${brand.value}`}
               >
                 {brand.label}
               </Link>

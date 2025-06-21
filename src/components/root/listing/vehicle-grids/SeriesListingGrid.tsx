@@ -21,12 +21,12 @@ type SeriesListingGridProps = {
   category: string;
 };
 
-const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({ 
-    series, 
-    state, 
-    country,
-    brand,
-    category
+const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
+  series,
+  state,
+  country,
+  brand,
+  category,
 }) => {
   const searchParams = useSearchParams();
   // const category = "cars";
@@ -37,7 +37,9 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
   const [relatedSeriesList, setRelatedSeriesList] = useState<any>([]);
   const [isSwitchingSeries, setIsSwitchingSeries] = useState(false);
   const [originalSeries] = useState(series);
-  const [processedSeries, setProcessedSeries] = useState<Set<string>>(new Set());
+  const [processedSeries, setProcessedSeries] = useState<Set<string>>(
+    new Set(),
+  );
   const [hasTriggeredSwitch, setHasTriggeredSwitch] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useImmer(true);
   const [apiCallDelay, setApiCallDelay] = useImmer(false);
@@ -60,23 +62,44 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
 
   const { data: relatedSeries } = useQuery({
     queryKey: ["related-series", series],
-    queryFn: () => fetchRelatedSeriesList(category, brand, state, country, series), 
+    queryFn: () =>
+      fetchRelatedSeriesList(category, brand, state, country, series),
     enabled: true,
     staleTime: 0,
   });
-  
 
-  
   // Computed values for JSX conditions
-  const shouldFetchNextPage = inView && hasNextPage && !isFetching && !apiCallDelay && !isSwitchingSeries;
+  const shouldFetchNextPage =
+    inView && hasNextPage && !isFetching && !apiCallDelay && !isSwitchingSeries;
+
   const currentSeriesVehicles = vehicles[seriesValue]?.length || 0;
-  const shouldSwitchSeries = !hasNextPage && !isFetching && (inView || currentSeriesVehicles < 4) && 
-                           relatedSeriesList.length > 0 && !processedSeries.has(seriesValue) && 
-                           !isSwitchingSeries && !hasTriggeredSwitch;
+
+  const shouldSwitchSeries =
+    !hasNextPage &&
+    !isFetching &&
+    (inView || currentSeriesVehicles < 4) &&
+    relatedSeriesList.length > 0 &&
+    !processedSeries.has(seriesValue) &&
+    !isSwitchingSeries &&
+    !hasTriggeredSwitch;
+
   const hasNoVehicles = Object.keys(vehicles).length === 0;
-  const hasNoOriginalSeriesVehicles = (!vehicles[originalSeries] || vehicles[originalSeries]?.length === 0);
-  const shouldShowLoadingIndicator = hasNextPage || relatedSeriesList.length > 0 || isFetching || isSwitchingSeries;
-  const shouldShowEndMessage = !hasNextPage && !isFetching && !isSwitchingSeries && relatedSeriesList.length === 0;
+
+  const hasNoOriginalSeriesVehicles =
+    !vehicles[originalSeries] || vehicles[originalSeries]?.length === 0;
+
+  const shouldShowLoadingIndicator =
+    hasNextPage ||
+    relatedSeriesList.length > 0 ||
+    isFetching ||
+    isSwitchingSeries;
+
+  const shouldShowEndMessage =
+    !hasNextPage &&
+    !isFetching &&
+    !isSwitchingSeries &&
+    relatedSeriesList.length === 0;
+
   const orderedSeriesKeys = Object.keys(vehicles).sort((a, b) => {
     if (a === originalSeries) return -1;
     if (b === originalSeries) return 1;
@@ -108,8 +131,8 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
     if (shouldSwitchSeries) {
       setHasTriggeredSwitch(true);
       setIsSwitchingSeries(true);
-      setProcessedSeries(prev => new Set([...prev, seriesValue]));
-      
+      setProcessedSeries((prev) => new Set([...prev, seriesValue]));
+
       setRelatedSeriesList((prevList: any) => {
         if (prevList.length === 0) return prevList;
         const [nextSeries, ...remainingSeries] = prevList;
@@ -138,23 +161,27 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
   // Update vehicles state when new data is fetched
   useEffect(() => {
     if (isFetching) return;
-    
+
     if (fetchedVehicles.length > 0) {
       setIsInitialLoad(false);
       setIsSwitchingSeries(false);
-      
+
       setVehicles((draft: any) => {
         if (!draft[seriesValue]) {
           draft[seriesValue] = [];
         }
-        
-        const existingIds = new Set(draft[seriesValue].map((v: any) => v.vehicleId));
-        const newVehicles = fetchedVehicles.filter((v: any) => !existingIds.has(v.vehicleId));
-        
+
+        const existingIds = new Set(
+          draft[seriesValue].map((v: any) => v.vehicleId),
+        );
+        const newVehicles = fetchedVehicles.filter(
+          (v: any) => !existingIds.has(v.vehicleId),
+        );
+
         if (newVehicles.length > 0) {
           draft[seriesValue] = [...draft[seriesValue], ...newVehicles];
         }
-        
+
         return draft;
       });
     } else if (!isFetching && fetchedVehicles.length === 0) {
@@ -184,7 +211,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
 
                 {orderedSeriesKeys.map((currentSeriesKey) => {
                   const seriesVehicles = vehicles[currentSeriesKey];
-                  
+
                   if (!seriesVehicles || seriesVehicles.length === 0) {
                     return null;
                   }
@@ -192,7 +219,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
                   const vehicleList = seriesVehicles as Array<{
                     vehicleId: string;
                   }>;
-                  
+
                   const isRelatedSeries = currentSeriesKey !== originalSeries;
 
                   return (
@@ -201,25 +228,26 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
                         <div className="mb-8">
                           <div className="flex items-center gap-4">
                             <h3 className="text-lg font-medium text-gray-800">
-                              More {" "} 
-                              <span className="text-gray-900 capitalize">
+                              More{" "}
+                              <span className="capitalize text-gray-900">
                                 {convertToLabel(category.replace(/-/g, " "))}
-                              </span>
-
-                              {" "}from {" "}
+                              </span>{" "}
+                              from{" "}
                               <span className="font-semibold text-gray-900">
                                 {convertToLabel(brand.replace(/-/g, " "))}
                               </span>{" "}
                               <span className="font-semibold text-gray-900">
-                                {convertToLabel(currentSeriesKey.replace(/-/g, " "))}
+                                {convertToLabel(
+                                  currentSeriesKey.replace(/-/g, " "),
+                                )}
                               </span>
                             </h3>
-                            <div className="h-px bg-gradient-to-r from-gray-300 to-transparent flex-1"></div>
+                            <div className="h-px flex-1 bg-gradient-to-r from-gray-300 to-transparent"></div>
                           </div>
                         </div>
                       )}
-                      
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 mt-4">
+
+                      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
                         {vehicleList.map((vehicle: any, index) => {
                           const animationIndex = index % 8;
                           return (
@@ -242,10 +270,12 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
             {shouldShowLoadingIndicator && (
               <div ref={ref} className="z-10 w-full py-4 text-center">
                 {(isFetching || isSwitchingSeries) && (
-                  <div className="flex items-center justify-center h-12">
+                  <div className="flex h-12 items-center justify-center">
                     <LoadingWheel />
                     {isSwitchingSeries && (
-                      <p className="ml-2 text-sm text-gray-600">Loading next series...</p>
+                      <p className="ml-2 text-sm text-gray-600">
+                        Loading next series...
+                      </p>
                     )}
                   </div>
                 )}

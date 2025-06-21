@@ -5,6 +5,7 @@ import { useFetchCities } from "@/hooks/useFetchCities";
 import { StateType } from "@/types";
 import LocationsSkelton from "@/components/skelton/LocationsSkelton";
 import { ArrowRight } from "lucide-react";
+import { useParams } from "next/navigation";
 
 interface CitiesProps {
   selectedState: StateType;
@@ -18,6 +19,8 @@ const Cities = ({ selectedState, category }: CitiesProps) => {
     limit: 20,
   });
 
+  const { country } = useParams<{ country: string }>();
+
   return (
     <div className="flex flex-col items-center">
       <div className="mx-auto flex w-full flex-wrap justify-center gap-2 gap-x-4 md:max-w-[90%] lg:max-w-[80%]">
@@ -28,7 +31,7 @@ const Cities = ({ selectedState, category }: CitiesProps) => {
             {cities.map((city) => (
               <li key={city.cityValue} className="">
                 <Link
-                  href={`/${selectedState.stateValue}/listing?category=${category}&city=${city.cityValue}`}
+                  href={`/${country}/${selectedState.stateValue}/listing/${category}?city=${city.cityValue}`}
                   className="flex-center gap-x-1 rounded-xl bg-gray-200 px-2 text-sm text-black hover:bg-gray-300"
                   prefetch={false}
                 >
