@@ -7,4 +7,5 @@ export interface InternFormFields {
   collegename?: string;
   placementofficer?: string;
   type: string;
+  country: string;
 }

@@ -10,6 +10,7 @@ export type ApplicationFormValues = {
   gender: string;
   expectedCTC: string;
   type: string;
+  country: string;
 };
 
 export type JobResponse = {
@@ -18,6 +19,7 @@ export type JobResponse = {
   location: string;
   level: string;
   experience: string;
+  country: string;
 };
 
 export type JobsResponseType = {
@@ -41,6 +43,7 @@ export type JobDetailsResponse = {
   experience: string;
   date: string;
   sections: JobSection[];
+  country: string;
 };
 
 export type JobDetailsResponseType = {

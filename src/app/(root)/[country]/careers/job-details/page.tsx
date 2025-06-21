@@ -36,6 +36,7 @@ async function getJobs(): Promise<JobsResponseType> {
 
 const CareersDetailsPage = async ({ searchParams, params }: Props) => {
   const jobId = searchParams.jobId;
+  const jobCountry = searchParams.j_country;
   const country = params.country;
 
   const jobs = await getJobs();
@@ -72,6 +73,7 @@ const CareersDetailsPage = async ({ searchParams, params }: Props) => {
                   <p>{result?.date}</p>
                   <p>{result?.level}</p>
                   <p>{result?.experience}</p>
+                  <p>{result?.country}</p>
                 </div>
 
                 {result?.aboutCompany && (
@@ -137,6 +139,7 @@ const CareersDetailsPage = async ({ searchParams, params }: Props) => {
                     country={country as string}
                     jobId={jobId as string}
                     jobTitle={result?.jobtitle as string}
+                    jobCountry={jobCountry as string}
                   />
                 </div>
 

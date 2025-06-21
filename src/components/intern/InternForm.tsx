@@ -7,6 +7,17 @@ import { sendInternForm } from "@/lib/api/careers-api";
 import { uploadSingleFile } from "@/lib/api/fileUpload-api";
 import { GcsFilePaths } from "@/constants/fileUpload";
 
+const countryOptions = [
+  {
+    value: "UAE",
+    label: "UAE",
+  },
+  {
+    value: "INDIA",
+    label: "INDIA",
+  },
+];
+
 export default function InternForm({ country }: { country: string }) {
   const selectedCountry = country === "ae" ? "UAE" : "IN";
 
@@ -249,6 +260,42 @@ export default function InternForm({ country }: { country: string }) {
             )}
             {isUploaded && (
               <p className="mt-1 text-sm text-green-500">File uploaded</p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="experience-options"
+              className="mb-1 block text-sm font-medium text-gray-700"
+            >
+              Preferred country
+              <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <select
+                id="experience-options"
+                className="w-full appearance-none rounded-[6px] border border-gray-300 p-3 pr-8 focus:outline-none"
+                {...register("country", {
+                  required: "Preferred country required",
+                })}
+              >
+                <option value="">Select an option</option>
+                {countryOptions?.map(({ value, label }) => {
+                  return (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  );
+                })}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+                <img src="/assets/icons/down-arrow-5.svg" alt="" />
+              </div>
+            </div>
+            {errors.country && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors.country.message}
+              </p>
             )}
           </div>
 

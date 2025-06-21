@@ -11,10 +11,12 @@ export default function CareerForm({
   country,
   jobId,
   jobTitle,
+  jobCountry,
 }: {
   country: string;
   jobId?: string;
   jobTitle?: string;
+  jobCountry?: string;
 }) {
   const selectedCountry = country === "ae" ? "UAE" : "IN";
 
@@ -40,6 +42,7 @@ export default function CareerForm({
       currentCompensation: "",
       gender: "",
       expectedCTC: "",
+      country: "",
       type: "career",
     },
   });
@@ -47,7 +50,7 @@ export default function CareerForm({
   const onSubmit = (data: ApplicationFormValues) => {
     try {
       sendCareerForm(
-        JSON.stringify({ ...data, jobId, jobTitle }),
+        JSON.stringify({ ...data, jobId, jobTitle, country: jobCountry }),
         selectedCountry,
       );
       reset();
@@ -141,7 +144,6 @@ export default function CareerForm({
 
   return (
     <div>
-      {" "}
       <div className="flex items-center justify-between">
         <h3 className="mb-4 text-[20px] font-medium text-black">
           Apply for this job

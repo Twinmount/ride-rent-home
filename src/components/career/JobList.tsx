@@ -36,7 +36,14 @@ function JobList({
         <div className="open-job-positions__list-block">
           <ul className="open-job-positions__list flex flex-col gap-6">
             {jobList?.map(
-              ({ _id: jobId, jobtitle, location, level, experience }) => {
+              ({
+                _id: jobId,
+                jobtitle,
+                location,
+                level,
+                experience,
+                country: jobCountry,
+              }) => {
                 return (
                   <li
                     key={jobId}
@@ -47,13 +54,13 @@ function JobList({
                         {jobtitle}
                       </h4>
                       <p className="text-sm text-gray-500">
-                        {`${location} | ${level} | ${experience}`}
+                        {`${location} | ${level} | ${experience} | ${jobCountry}`}
                       </p>
                     </div>
                     <div className="job-apply-action mt-5 md:mt-0">
                       <Link
                         className="inline-block rounded bg-amber-100 px-6 py-2 text-sm text-yellow"
-                        href={`/${country}/careers/job-details?jobId=${jobId}`}
+                        href={`/${country}/careers/job-details?jobId=${jobId}&j_country=${jobCountry}`}
                       >
                         Apply Now
                       </Link>
