@@ -599,12 +599,11 @@ const MapClient = () => {
   }
 
   return (
-    <div className="relative w-full" style={{ height: "calc(100vh - 4rem)" }}>
+    <div className="relative w-full h-full">
       {/* Google Maps Container */}
       <div
         ref={mapRef}
         className="h-full w-full"
-        style={{ minHeight: "calc(100vh - 4rem)" }}
       />
 
       {/* Vehicle Details Popup */}

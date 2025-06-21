@@ -2,6 +2,7 @@ import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
 import Image from "next/image";
 import { VehicleTypeType } from "@/types";
 import { ENV } from "@/config/env";
+import { easeOut } from "framer-motion";
 
 export function VehicleTypeCard({
   type,
@@ -27,7 +28,7 @@ export function VehicleTypeCard({
       transition: {
         delay: index * 0.07,
         duration: 0.5,
-        ease: "easeOut",
+        ease: easeOut,
       },
     }),
   };

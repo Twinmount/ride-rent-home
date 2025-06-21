@@ -528,3 +528,15 @@ export const debounce = <T extends any[]>(
 export const extractCategory = (category: string): string => {
   return category.replace(/-for-rent$/, "");
 };
+
+// Generate blog URL title helper function
+export function generateBlogUrlTitle(title: string): string {
+  return title
+    .trim() // Remove leading/trailing spaces
+    .toLowerCase() // Convert to lowercase
+    .replace(/[^\w\s&!-]/g, "") // Allow letters, numbers, spaces, &, hyphens, and !
+    .replace(/\s*-\s*/g, "-") // Replace spaces around hyphens with a single hyphen
+    .replace(/\s+/g, "-") // Replace remaining spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple consecutive hyphens with a single one
+    .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+}

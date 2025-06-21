@@ -135,11 +135,12 @@ const ListingPage: FC<PageProps> = async (props) => {
           </div>
         </div>
         <div className="hidden w-full px-2 lg:block lg:w-1/2">
-          <div className="h-[100vh - 6rem] sticky top-[4rem] p-3">
+          <div className="sticky top-[4rem] p-3" style={{height: "calc(100vh - 4rem)"}}>
             <div
               style={{
                 borderRadius: "20px",
                 overflow: "hidden",
+                height: "100%",
               }}
             >
               <MapClientWrapper />

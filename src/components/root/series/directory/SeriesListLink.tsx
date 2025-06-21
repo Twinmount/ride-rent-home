@@ -5,18 +5,26 @@ type SeriesListLinkProps = {
   state: string;
   brandValue: string;
   series: VehicleSeriesWithCount;
-  country: string
+  country: string;
+  category: string;
 };
+
+/**
+ * A component that renders a link for a series of vehicles under a brand.
+ * The component is used in the /vehicle-rentals/[category]/page.tsx
+ * as well as  in the /vehicle-rentals/[category]/[brand]/page.tsx.
+ */
 export default function SeriesListLink({
   state,
   brandValue,
   series,
-  country
+  country,
+  category,
 }: SeriesListLinkProps) {
   return (
     <li className="h-fit">
       <Link
-        href={`/${country}/${state}/rent/${brandValue}/${series.seriesName}`}
+        href={`/${country}/${state}/rent/${category}/${brandValue}/${series.seriesName}`}
         key={series.seriesName}
         className="group flex w-fit items-center text-base font-[500] text-gray-700 transition-all hover:translate-x-2 hover:text-yellow"
       >
