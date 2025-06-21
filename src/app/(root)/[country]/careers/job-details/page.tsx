@@ -3,6 +3,7 @@ import Link from "next/link";
 import CareerForm from "@/components/career/CareerForm";
 import JobList from "@/components/career/JobList";
 import { JobDetailsResponseType, JobsResponseType } from "@/types/careers";
+import { JobShareModal } from "@/components/career/JobShareModal";
 
 type Props = {
   params: { country: string; state?: string; category?: string };
@@ -50,8 +51,8 @@ const CareersDetailsPage = async ({ searchParams, params }: Props) => {
         <section className="px-8 py-8">
           <div className="flex gap-8">
             <div className="w-full md:w-[70%]">
-              <div className="mb-5 flex items-center justify-between">
-                <h2 className="m-0 text-[24px] font-medium text-black">
+              <div className="mb-5 flex flex-col md:flex-row md:items-center md:justify-between">
+                <h2 className="m-0 mb-2 text-[24px] font-medium text-black md:mb-0">
                   {result?.jobtitle}
                 </h2>
                 <div className="flex items-center gap-4">
@@ -61,17 +62,12 @@ const CareersDetailsPage = async ({ searchParams, params }: Props) => {
                   >
                     Apply this job
                   </Link>
-                  <Link
-                    className="inline-block whitespace-nowrap rounded bg-amber-100 px-3 py-2 text-sm text-yellow"
-                    href={"/"}
-                  >
-                    Share to a friend
-                  </Link>
+                  <JobShareModal />
                 </div>
               </div>
 
               <div className="careers__details-content">
-                <div className="mb-7 flex items-center gap-12 py-1 text-sm">
+                <div className="mb-7 flex flex-col gap-2 py-1 text-sm md:flex-row md:items-center md:gap-12">
                   <p>{result?.location}</p>
                   <p>{result?.date}</p>
                   <p>{result?.level}</p>
