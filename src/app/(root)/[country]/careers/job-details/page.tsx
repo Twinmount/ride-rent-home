@@ -147,7 +147,7 @@ const CareersDetailsPage = async ({ searchParams, params }: Props) => {
                 {/* OTHER JOBS LIST */}
 
                 <JobList
-                  title="Open Positions"
+                  title="Other Job Positions"
                   country={country}
                   data={otherJobs}
                 />
