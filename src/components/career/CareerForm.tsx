@@ -18,7 +18,7 @@ export default function CareerForm({
   jobTitle?: string;
   jobCountry?: string;
 }) {
-  const selectedCountry = country === "ae" ? "UAE" : "IN";
+  // const selectedCountry = country === "ae" ? "uae" : "in";
 
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
@@ -51,7 +51,7 @@ export default function CareerForm({
     try {
       sendCareerForm(
         JSON.stringify({ ...data, jobId, jobTitle, country: jobCountry }),
-        selectedCountry,
+        country,
       );
       reset();
       setIsUploaded(false);

@@ -4,15 +4,21 @@ import CareerForm from "@/components/career/CareerForm";
 import JobList from "@/components/career/JobList";
 import { JobDetailsResponseType, JobsResponseType } from "@/types/careers";
 import { JobShareModal } from "@/components/career/JobShareModal";
+import { API } from "@/utils/API";
 
 type Props = {
   params: { country: string; state?: string; category?: string };
   searchParams: { [key: string]: string | undefined };
 };
 
-async function getJobDetails(jobId: string): Promise<JobDetailsResponseType> {
-  const res = await fetch(`${process.env.API_URL}/jobs/${jobId}`, {
-    cache: "no-store",
+async function getJobDetails(
+  jobId: string,
+  country: string,
+): Promise<JobDetailsResponseType> {
+  const res = await API({
+    path: `/jobs/${jobId}`,
+    options: { cache: "no-store" },
+    country,
   });
 
   if (!res.ok) {
@@ -22,9 +28,11 @@ async function getJobDetails(jobId: string): Promise<JobDetailsResponseType> {
   return res.json();
 }
 
-async function getJobs(): Promise<JobsResponseType> {
-  const res = await fetch(`${process.env.API_URL}/jobs/minimal-list`, {
-    cache: "no-store",
+async function getJobs(country: string): Promise<JobsResponseType> {
+  const res = await API({
+    path: "/jobs/client-job-list",
+    options: { cache: "no-store" },
+    country,
   });
 
   if (!res.ok) {
@@ -39,11 +47,11 @@ const CareersDetailsPage = async ({ searchParams, params }: Props) => {
   const jobCountry = searchParams.j_country;
   const country = params.country;
 
-  const jobs = await getJobs();
+  const jobs = await getJobs(country);
   // Ignore current job
   const otherJobs = jobs?.result?.filter((job) => job?._id !== jobId);
 
-  const job = await getJobDetails(jobId as string);
+  const job = await getJobDetails(jobId as string, country);
   const { result } = job;
 
   return (

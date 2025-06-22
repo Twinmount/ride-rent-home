@@ -1,18 +1,18 @@
-// import { ApplicationFormValues } from "@/types/careers";
+import { API } from "@/utils/API";
 
 export const sendCareerForm = async (payload: any, country: string) => {
   try {
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-
-    const response = await fetch(`${BASE_URL}/applications/career`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await API({
+      path: "/applications/career",
+      options: {
+        method: "POST",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: payload,
       },
-      body: payload,
+      country,
     });
 
     // Check if the response was successful
@@ -35,17 +35,17 @@ export const sendCareerForm = async (payload: any, country: string) => {
 
 export const sendInternForm = async (payload: any, country: string) => {
   try {
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-
-    const response = await fetch(`${BASE_URL}/applications/intern`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await API({
+      path: "/applications/intern",
+      options: {
+        method: "POST",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: payload,
       },
-      body: payload,
+      country,
     });
 
     // Check if the response was successful

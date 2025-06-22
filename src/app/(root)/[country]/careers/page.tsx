@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PageProps } from "@/types";
 import JobList from "@/components/career/JobList";
 import { JobsResponseType } from "@/types/careers";
+import { API } from "@/utils/API";
 
 export async function generateMetadata(props: PageProps) {
   const { country } = await props.params;
@@ -34,9 +35,11 @@ export async function generateMetadata(props: PageProps) {
 
 // Get Job list
 
-async function getJobs(): Promise<JobsResponseType> {
-  const res = await fetch(`${process.env.API_URL}/jobs/minimal-list`, {
-    cache: "no-store",
+async function getJobs(country: string): Promise<JobsResponseType> {
+  const res = await API({
+    path: "/jobs/client-job-list",
+    options: { cache: "no-store" },
+    country,
   });
 
   if (!res.ok) {
@@ -48,7 +51,7 @@ async function getJobs(): Promise<JobsResponseType> {
 
 const CareersPage = async (props: PageProps) => {
   const { country } = await props.params;
-  const jobs = await getJobs();
+  const jobs = await getJobs(country);
 
   return (
     <div className="careers bg-white">

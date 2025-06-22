@@ -19,8 +19,6 @@ const countryOptions = [
 ];
 
 export default function InternForm({ country }: { country: string }) {
-  const selectedCountry = country === "ae" ? "UAE" : "IN";
-
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
 
@@ -46,7 +44,7 @@ export default function InternForm({ country }: { country: string }) {
 
   const onSubmit = (data: InternFormFields) => {
     try {
-      sendInternForm(JSON.stringify(data), selectedCountry);
+      sendInternForm(JSON.stringify(data), country);
       reset();
       setIsUploaded(false);
       alert("Form sent successfully!");
