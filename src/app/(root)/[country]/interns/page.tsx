@@ -153,13 +153,11 @@ const InternsPage = async (props: PageProps) => {
         <section className="px-8 py-8 md:py-10">
           <div className="relative overflow-hidden rounded-[16px] pb-[160px] pt-[100px]">
             <div className="absolute left-0 top-0 z-[1] h-full w-full">
-              <Image
+              <img
                 src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200"
                 alt="interns form banner"
                 className="h-full w-full object-cover"
                 loading="lazy"
-                width={1200}
-                height={400}
               />
               <div className="absolute left-0 top-0 z-[2] h-full w-full bg-yellow bg-opacity-30"></div>
             </div>

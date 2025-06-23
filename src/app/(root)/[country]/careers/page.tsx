@@ -60,13 +60,11 @@ const CareersPage = async (props: PageProps) => {
         <section className="careers__banner px-8 py-4">
           <div className="relative flex items-end justify-end overflow-hidden rounded-[16px] md:h-[400px]">
             <div className="absolute left-0 top-0 z-[1] h-full w-full">
-              <Image
+              <img
                 src="https://images.unsplash.com/photo-1553028826-f4804a6dba3b?q=80&w=1200"
                 alt="career banner"
                 className="h-full w-full object-cover"
                 loading="lazy"
-                width={1200}
-                height={600}
               />
             </div>
             <div className="relative z-[5] mb-4 me-4 ms-4 mt-60 w-full md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[360px]">
@@ -171,13 +169,11 @@ const CareersPage = async (props: PageProps) => {
 
         <section className="hire-steps-section flex flex-col gap-3 px-8 py-8 md:flex-row md:py-16">
           <div className="relative flex items-end justify-end overflow-hidden rounded-[16px] md:basis-1/2">
-            <Image
-              src="https://images.unsplash.com/photo-1572021335469-31706a17aaef?q=80&w=1000"
+            <img
+              src="https://images.unsplash.com/photo-1572021335469-31706a17aaef?q=80&h=1000"
               alt=""
               className="absolute left-0 top-0 z-[1] h-full w-full object-cover"
               loading="lazy"
-              width={1000}
-              height={1000}
             />
             <div className="relative z-[5] mb-4 me-4 ms-4 mt-60 w-full rounded-[16px] bg-white p-[40px] md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[360px] md:rounded-[0] md:rounded-tl-[16px]">
               <h3 className="mb-3 text-[28px] font-medium text-black">
