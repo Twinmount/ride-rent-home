@@ -62,7 +62,7 @@ export function LocationDialog() {
 
   const selectedCategory = extractCategory(category || "cars");
 
-  const { states, isLoading } = useFetchStates({
+  const { states, isLoading, isStatesFetching } = useFetchStates({
     countryId: selectedCountry,
   });
 
@@ -100,7 +100,7 @@ export function LocationDialog() {
   }, [states]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || isStatesFetching || states.length === 0) return;
 
     const shouldSkipRedirect =
       pathname?.startsWith(`/${country}${"/blog"}`) ||
@@ -124,7 +124,7 @@ export function LocationDialog() {
     } else {
       notFound();
     }
-  }, [state, states, isLoading, selectedCategory]);
+  }, [state, states, isLoading, isStatesFetching, selectedCategory]);
 
   const handleStateSelect = async (stateValue: string) => {
     setIsFetching(true);

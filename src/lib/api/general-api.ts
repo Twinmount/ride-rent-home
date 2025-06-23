@@ -416,8 +416,8 @@ export const fetchStates = async ({
 
     return data;
   } catch (error) {
-    handleError(error);
-    return undefined;
+    console.error("Error fetching states/locations:", error);
+    throw error;
   }
 };
 
