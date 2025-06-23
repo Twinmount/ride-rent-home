@@ -55,10 +55,10 @@ const InternsPage = async (props: PageProps) => {
                   Interns of Ride
                 </h1>
                 <p className="text-md mb-0 inline-block text-black">
-                  Our internship program provides practical exposure in a
+                  {`Our internship program provides practical exposure in a
                   dynamic work setting. You'll transform academic knowledge into
                   real-world contributions, receive guided mentorship, and
-                  develop essential skills to advance your professional journey.
+                  develop essential skills to advance your professional journey.`}
                 </p>
               </div>
             </div>

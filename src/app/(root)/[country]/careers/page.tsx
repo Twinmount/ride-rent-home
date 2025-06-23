@@ -113,9 +113,9 @@ const CareersPage = async (props: PageProps) => {
                     People First
                   </h3>
                   <p className="inline-block text-sm text-white">
-                    We believe every person counts. Whether it's our users,
+                    {`We believe every person counts. Whether it's our users,
                     partners, or teammates, mutual respect and inclusion drive
-                    our culture.
+                    our culture.`}
                   </p>
                 </div>
               </div>
@@ -180,8 +180,8 @@ const CareersPage = async (props: PageProps) => {
                 Our Hiring Journey
               </h3>
               <p className="text-md mb-6 inline-block text-black">
-                Every great team starts with the right people, here's how we
-                find and welcome ours.
+                {`Every great team starts with the right people, here's how we
+                find and welcome ours.`}
               </p>
               <div>
                 <Link
@@ -208,8 +208,8 @@ const CareersPage = async (props: PageProps) => {
                 <div className="mb-1 text-sm text-yellow">Step 1</div>
                 <h3 className="mb-2 text-base font-medium">Apply</h3>
                 <p className="text-sm text-gray-700">
-                  We'll review your CV and get in touch to schedule an initial
-                  call with one of our recruiters.
+                  {`We'll review your CV and get in touch to schedule an initial
+                  call with one of our recruiters.`}
                 </p>
               </li>
               <li className="relative border-s-[1px] border-solid border-gray-300 pb-14 ps-9">
@@ -227,9 +227,9 @@ const CareersPage = async (props: PageProps) => {
                   Introductory Call
                 </h3>
                 <p className="text-sm text-gray-700">
-                  You'll have a casual conversation with our recruiter to
+                  {`You'll have a casual conversation with our recruiter to
                   discuss the role, learn more about Ride.Rent, and explore
-                  whether there's a strong cultural fit.
+                  whether there's a strong cultural fit.`}
                 </p>
               </li>
               <li className="relative border-s-[1px] border-solid border-gray-300 pb-14 ps-9">
@@ -245,9 +245,9 @@ const CareersPage = async (props: PageProps) => {
                 <div className="mb-1 text-sm text-yellow">Step 3</div>
                 <h3 className="mb-2 text-base font-medium">Interview</h3>
                 <p className="text-sm text-gray-700">
-                  You'll meet with your potential manager for a role-specific
+                  {`You'll meet with your potential manager for a role-specific
                   discussion. This is your chance to showcase your experience
-                  and how you solve real challenges.
+                  and how you solve real challenges.`}
                 </p>
               </li>
               <li className="relative border-s-[1px] border-solid border-gray-300 pb-14 ps-9">
@@ -265,9 +265,9 @@ const CareersPage = async (props: PageProps) => {
                   Take-Home Assignment
                 </h3>
                 <p className="text-sm text-gray-700">
-                  You'll receive a short task that reflects the kind of work
+                  {`You'll receive a short task that reflects the kind of work
                   you'd do with us. This helps us understand your
-                  problem-solving approach and creativity.
+                  problem-solving approach and creativity.`}
                 </p>
               </li>
               <li className="relative border-s-[1px] border-solid border-gray-300 pb-14 ps-9">
@@ -283,8 +283,8 @@ const CareersPage = async (props: PageProps) => {
                 <div className="mb-1 text-sm text-yellow">Step 5</div>
                 <h3 className="mb-2 text-base font-medium">Final Offer</h3>
                 <p className="text-sm text-gray-700">
-                  If everything aligns, we'll schedule a call to walk you
-                  through the offer details and next steps.
+                  {`If everything aligns, we'll schedule a call to walk you
+                  through the offer details and next steps.`}
                 </p>
               </li>
             </ul>
