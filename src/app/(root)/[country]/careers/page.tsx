@@ -113,7 +113,7 @@ const CareersPage = async (props: PageProps) => {
                     People First
                   </h3>
                   <p className="inline-block text-sm text-white">
-                    We believe every person counts. Whether it’s our users,
+                    We believe every person counts. Whether it's our users,
                     partners, or teammates, mutual respect and inclusion drive
                     our culture.
                   </p>
@@ -180,7 +180,7 @@ const CareersPage = async (props: PageProps) => {
                 Our Hiring Journey
               </h3>
               <p className="text-md mb-6 inline-block text-black">
-                Every great team starts with the right people, here’s how we
+                Every great team starts with the right people, here's how we
                 find and welcome ours.
               </p>
               <div>
@@ -208,7 +208,7 @@ const CareersPage = async (props: PageProps) => {
                 <div className="mb-1 text-sm text-yellow">Step 1</div>
                 <h3 className="mb-2 text-base font-medium">Apply</h3>
                 <p className="text-sm text-gray-700">
-                  We’ll review your CV and get in touch to schedule an initial
+                  We'll review your CV and get in touch to schedule an initial
                   call with one of our recruiters.
                 </p>
               </li>
@@ -265,7 +265,7 @@ const CareersPage = async (props: PageProps) => {
                   Take-Home Assignment
                 </h3>
                 <p className="text-sm text-gray-700">
-                  You’ll receive a short task that reflects the kind of work
+                  You'll receive a short task that reflects the kind of work
                   you'd do with us. This helps us understand your
                   problem-solving approach and creativity.
                 </p>
@@ -283,7 +283,7 @@ const CareersPage = async (props: PageProps) => {
                 <div className="mb-1 text-sm text-yellow">Step 5</div>
                 <h3 className="mb-2 text-base font-medium">Final Offer</h3>
                 <p className="text-sm text-gray-700">
-                  If everything aligns, we’ll schedule a call to walk you
+                  If everything aligns, we'll schedule a call to walk you
                   through the offer details and next steps.
                 </p>
               </li>
