@@ -7,6 +7,7 @@ import { sendCareerForm } from "@/lib/api/careers-api";
 import { GcsFilePaths } from "@/constants/fileUpload";
 import { uploadSingleFile } from "@/lib/api/fileUpload-api";
 import { ImAttachment } from "react-icons/im";
+import Image from "next/image";
 
 export default function CareerForm({
   country,
@@ -371,7 +372,12 @@ export default function CareerForm({
                 })}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                <img src="/assets/icons/down-arrow-5.svg" alt="" />
+                <Image
+                  width={26}
+                  height={26}
+                  src="/assets/icons/down-arrow-5.svg"
+                  alt=""
+                />
               </div>
             </div>
             {errors.experience && (
@@ -407,7 +413,12 @@ export default function CareerForm({
                 })}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                <img src="/assets/icons/down-arrow-5.svg" alt="" />
+                <Image
+                  width={26}
+                  height={26}
+                  src="/assets/icons/down-arrow-5.svg"
+                  alt=""
+                />
               </div>
             </div>
             {errors.currentCompensation && (
@@ -442,7 +453,12 @@ export default function CareerForm({
                 })}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                <img src="/assets/icons/down-arrow-5.svg" alt="" />
+                <Image
+                  width={26}
+                  height={26}
+                  src="/assets/icons/down-arrow-5.svg"
+                  alt=""
+                />
               </div>
             </div>
             {errors.gender && (
