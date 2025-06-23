@@ -52,7 +52,7 @@ export async function generateCompanyMetadata(
   const metaDescription = companyDetails?.companyMetaDescription || description;
 
   const formattedCompanyName = formatToUrlFriendly(companyName);
-  const companyProfilePageLink = `/profile/${formattedCompanyName}/${companyId}`;
+  const companyProfilePageLink = `profile/${formattedCompanyName}/${companyId}`;
 
   const canonicalUrl = `https://ride.rent/${companyProfilePageLink}`;
   const ogImage = companyDetails?.companyLogo || "/assets/icons/ride-rent.png";
