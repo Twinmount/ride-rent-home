@@ -56,7 +56,7 @@ export async function generateCompanyMetadata(
   const formattedCompanyName = convertToValue(companyName);
   const companyProfilePageLink = `/profile/${formattedCompanyName}/${companyId}`;
 
-  const canonicalUrl = `https://ride.rent/${country}/${companyProfilePageLink}`;
+  const canonicalUrl = `https://ride.rent/${country}${companyProfilePageLink}`;
   const ogImage = companyDetails?.companyLogo || "/assets/icons/ride-rent.png";
 
   return {
