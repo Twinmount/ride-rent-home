@@ -6,6 +6,7 @@ import { JobDetailsResponseType, JobsResponseType } from "@/types/careers";
 import { JobShareModal } from "@/components/career/JobShareModal";
 import { API } from "@/utils/API";
 import Image from "next/image";
+import { PageProps } from "@/types";
 
 type Props = {
   params: { country: string; state?: string; category?: string };
@@ -43,10 +44,11 @@ async function getJobs(country: string): Promise<JobsResponseType> {
   return res.json();
 }
 
-const CareersDetailsPage = async ({ searchParams, params }: Props) => {
+const CareersDetailsPage = async (props: PageProps) => {
+  const { country } = await props.params;
+  const searchParams = await props.searchParams;
   const jobId = searchParams.jobId;
   const jobCountry = searchParams.j_country;
-  const country = params.country;
 
   const jobs = await getJobs(country);
   // Ignore current job
