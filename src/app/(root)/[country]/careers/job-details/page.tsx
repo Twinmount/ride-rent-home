@@ -5,6 +5,7 @@ import JobList from "@/components/career/JobList";
 import { JobDetailsResponseType, JobsResponseType } from "@/types/careers";
 import { JobShareModal } from "@/components/career/JobShareModal";
 import { API } from "@/utils/API";
+import Image from "next/image";
 
 type Props = {
   params: { country: string; state?: string; category?: string };
@@ -162,10 +163,12 @@ const CareersDetailsPage = async ({ searchParams, params }: Props) => {
             </div>
             <div className="hidden w-full ps-5 md:block md:w-[30%]">
               <div className="relative flex h-[320px] items-center justify-center overflow-hidden rounded-[8px]">
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1550850395-c17a8e90ad0a?q=80&w=500"
                   alt=""
                   className="absolute left-0 top-0 h-full w-full object-cover"
+                  width={300}
+                  height={300}
                 />
                 <h4 className="relative z-[2] p-4 text-[26px] text-white">
                   Some advertisements goes here

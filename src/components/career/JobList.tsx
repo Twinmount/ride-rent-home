@@ -18,7 +18,10 @@ function JobList({
   const jobList = showAll ? data : data?.slice(0, 4);
 
   return (
-    <section className="open-job-positions px-8 py-8 md:py-16">
+    <section
+      className="open-job-positions px-8 py-8 md:py-16"
+      id="open-positions"
+    >
       <div className="mx-auto max-w-[700px]">
         <div className="mb-10 flex items-center justify-between">
           <h2 className="mb-0 text-[22px] font-medium text-black">{title}</h2>

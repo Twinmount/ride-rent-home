@@ -6,6 +6,7 @@ import { InternFormFields } from "@/types/interns";
 import { sendInternForm } from "@/lib/api/careers-api";
 import { uploadSingleFile } from "@/lib/api/fileUpload-api";
 import { GcsFilePaths } from "@/constants/fileUpload";
+import { ImAttachment } from "react-icons/im";
 
 const countryOptions = [
   {
@@ -21,6 +22,7 @@ const countryOptions = [
 export default function InternForm({ country }: { country: string }) {
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
+  const [fileName, setFileName] = useState("");
 
   const {
     register,
@@ -56,6 +58,8 @@ export default function InternForm({ country }: { country: string }) {
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
+    setFileName("");
+    setIsUploaded(false);
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -65,6 +69,8 @@ export default function InternForm({ country }: { country: string }) {
       alert(`File is too large. Maximum ${maxSizeMB}MB allowed.`);
       return;
     }
+
+    setFileName(file.name);
 
     // Validate file type
     const allowedTypes = [
@@ -226,25 +232,31 @@ export default function InternForm({ country }: { country: string }) {
           </div>
 
           <div>
-            <label
-              htmlFor="resume"
-              className="mb-1 block text-sm font-medium text-gray-700"
-            >
+            <div className="mb-1 block text-sm font-medium text-gray-700">
               Resume/CV <span className="text-red-500">*</span>
+            </div>
+            <label
+              htmlFor="resumeFile"
+              className="flex h-[50px] w-full cursor-pointer items-center rounded-[6px] border border-gray-300 p-3 text-sm text-gray-600 focus:outline-none"
+            >
+              <span className="m-0 flex items-center gap-3">
+                <ImAttachment size={20} color="grey" />
+                {fileName ? fileName : "Upload your resume here"}
+              </span>
+              <input
+                type="file"
+                id="resumeFile"
+                accept=".pdf,.doc,.docx"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <input
+                type="hidden"
+                {...register("resume", {
+                  required: "Resume is required",
+                })}
+              />
             </label>
-            <input
-              type="file"
-              id="resumeFile"
-              accept=".pdf,.doc,.docx"
-              onChange={handleFileChange}
-              className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-            />
-            <input
-              type="hidden"
-              {...register("resume", {
-                required: "Resume is required",
-              })}
-            />
             <p className="mt-2 select-none text-sm text-gray-500">
               Accepted file types: .pdf , .doc, .docx
             </p>

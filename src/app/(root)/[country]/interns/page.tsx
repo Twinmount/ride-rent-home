@@ -1,6 +1,7 @@
 import React from "react";
 import InternForm from "@/components/intern/InternForm";
 import { PageProps } from "@/types";
+import Image from "next/image";
 
 export async function generateMetadata(props: PageProps) {
   const { country } = await props.params;
@@ -39,11 +40,13 @@ const InternsPage = async (props: PageProps) => {
         <section className="px-8 py-4">
           <div className="relative flex items-end justify-end overflow-hidden rounded-[16px] md:h-[500px]">
             <div className="absolute left-0 top-0 z-[1] h-full w-full">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1552960366-b330a2f83823?q=80&w=1200"
                 alt="interns banner"
                 className="h-full w-full object-cover"
                 loading="lazy"
+                width={1200}
+                height={600}
               />
             </div>
             <div className="relative z-[5] mb-4 me-4 ms-4 mt-60 md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[50%]">
@@ -71,10 +74,12 @@ const InternsPage = async (props: PageProps) => {
           <ul className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <li className="relative rounded-[12px] border p-6 md:p-8">
               <div className="mb-2 h-[50px] w-[50px]">
-                <img
+                <Image
                   className="h-[50px] w-[50px] align-middle"
                   src="/assets/icons/interns/grid-4.svg"
                   alt=""
+                  width={100}
+                  height={100}
                 />
               </div>
               <h3 className="mb-3 text-base font-medium">
@@ -88,10 +93,12 @@ const InternsPage = async (props: PageProps) => {
             </li>
             <li className="relative rounded-[12px] border p-6 md:p-8">
               <div className="mb-2 h-[50px] w-[50px]">
-                <img
+                <Image
                   className="h-[50px] w-[50px] align-middle"
                   src="/assets/icons/interns/suitcase.svg"
                   alt=""
+                  width={100}
+                  height={100}
                 />
               </div>
               <h3 className="mb-3 text-base font-medium">
@@ -105,10 +112,12 @@ const InternsPage = async (props: PageProps) => {
             </li>
             <li className="relative rounded-[12px] border p-6 md:p-8">
               <div className="mb-2 h-[50px] w-[50px]">
-                <img
+                <Image
                   className="h-[50px] w-[50px] align-middle"
                   src="/assets/icons/interns/globe-1.svg"
                   alt=""
+                  width={100}
+                  height={100}
                 />
               </div>
               <h3 className="mb-3 text-base font-medium">
@@ -121,10 +130,12 @@ const InternsPage = async (props: PageProps) => {
             </li>
             <li className="relative rounded-[12px] border p-6">
               <div className="mb-2 h-[50px] w-[50px]">
-                <img
+                <Image
                   className="h-[50px] w-[50px] align-middle"
                   src="/assets/icons/interns/like.svg"
                   alt=""
+                  width={100}
+                  height={100}
                 />
               </div>
               <h3 className="mb-3 text-base font-medium">
@@ -142,11 +153,13 @@ const InternsPage = async (props: PageProps) => {
         <section className="px-8 py-8 md:py-10">
           <div className="relative overflow-hidden rounded-[16px] pb-[160px] pt-[100px]">
             <div className="absolute left-0 top-0 z-[1] h-full w-full">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200"
                 alt="interns form banner"
                 className="h-full w-full object-cover"
                 loading="lazy"
+                width={1200}
+                height={400}
               />
               <div className="absolute left-0 top-0 z-[2] h-full w-full bg-yellow bg-opacity-30"></div>
             </div>
