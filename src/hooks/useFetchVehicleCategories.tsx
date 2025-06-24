@@ -1,14 +1,19 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fetchCategories } from "@/lib/api/general-api";
 import { useQuery } from "@tanstack/react-query";
 import { sortCategories } from "@/helpers";
 import { ENV } from "@/config/env";
 import { useStateAndCategory } from "./useStateAndCategory";
 import { notFound, usePathname } from "next/navigation";
+import { CategoryType } from "@/types";
 
 const NO_CATEGORY_PATHS = ["/blog"];
+
+// Local storage key based on country and state
+const getCategoryStorageKey = (country: string, state: string) =>
+  `cachedCategories_${country}_${state}`;
 
 export function useFetchVehicleCategories({
   needRedirection = true,
@@ -16,7 +21,11 @@ export function useFetchVehicleCategories({
   needRedirection?: boolean;
 } = {}) {
   const { state, category, country } = useStateAndCategory();
+  const [cachedCategories, setCachedCategories] = useState<CategoryType[]>([]);
+
   const pathname = usePathname();
+
+  const storageKey = getCategoryStorageKey(country, state);
 
   // Fetch categories using react-query
   const { data, isLoading, isFetching } = useQuery({
@@ -25,14 +34,52 @@ export function useFetchVehicleCategories({
     staleTime: 0,
   });
 
-  const categories = data?.result?.list || [];
+  // Load from localStorage if API data is missing
+  useEffect(() => {
+    if (data?.result?.list?.length) return;
 
-  const isCategoriesLoaded = !isLoading && !isFetching;
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setCachedCategories(parsed);
+        }
+      } catch (e) {
+        console.warn("Failed to parse cached categories:", e);
+      }
+    }
+  }, [storageKey, data]);
 
-  // Sort categories once fetched
-  const sortedCategories = useMemo(() => {
-    return sortCategories(categories);
-  }, [categories]);
+  const fetchedCategories = data?.result?.list || [];
+
+  // Use categories from localStorage if API returned nothing
+  const finalCategories =
+    fetchedCategories.length > 0
+      ? fetchedCategories
+      : cachedCategories.length > 0
+        ? cachedCategories
+        : [];
+
+  // Load categories from localStorage if API returned nothing
+  useEffect(() => {
+    if (fetchedCategories.length > 0) {
+      const isSame =
+        JSON.stringify(fetchedCategories) === JSON.stringify(cachedCategories);
+      if (!isSame) {
+        localStorage.setItem(storageKey, JSON.stringify(fetchedCategories));
+        setCachedCategories(fetchedCategories);
+      }
+    }
+  }, [fetchedCategories, isLoading, cachedCategories, storageKey]);
+
+  // Sort categories
+  const sortedCategories = useMemo(
+    () => sortCategories(finalCategories),
+    [finalCategories],
+  );
+
+  const isDataReady = !isLoading && !isFetching && finalCategories.length > 0;
 
   // if current path starts with one of the specified paths, skip 404
   const shouldSkip404 = NO_CATEGORY_PATHS.some((safePath) =>
@@ -42,22 +89,24 @@ export function useFetchVehicleCategories({
   // if no categories, return 404 not found
   if (
     sortedCategories.length === 0 &&
-    isCategoriesLoaded &&
+    isDataReady &&
     !shouldSkip404 &&
     needRedirection
   ) {
+    console.warn("triggering not found");
     return notFound();
   }
 
   // if category exists in the params, but not matching with the fetched categories, return 404 not found
   if (
     category &&
-    isCategoriesLoaded &&
+    isDataReady &&
     sortedCategories.length > 0 &&
     !shouldSkip404
   ) {
-    const foundCategory = categories.find((cat) => cat.value === category);
+    const foundCategory = finalCategories.find((cat) => cat.value === category);
     if (!foundCategory && needRedirection) {
+      console.warn("triggering not found");
       return notFound();
     }
   }
@@ -67,7 +116,7 @@ export function useFetchVehicleCategories({
   const isCategoriesLoading = isFetching || isLoading;
 
   return {
-    categories,
+    categories: finalCategories,
     sortedCategories,
     isCategoriesLoading,
     baseAssetsUrl,

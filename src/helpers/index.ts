@@ -254,7 +254,18 @@ export const createFeatureCards = (state: string) => [
   },
 ];
 
-export function rearrangeStates(states: StateType[]): StateType[] {
+/**
+ * Rearranges an array of states in the order of:
+ * Dubai, Abu Dhabi, Sharjah, Ras Al Khaimah, Ajman, Al Ain, Fujairah, Umm Al Quwain.
+ * @param states - the array of states to be rearranged
+ * @returns a new array with the states in the desired order
+ */
+export function rearrangeStates(
+  states: StateType[],
+  country: string,
+): StateType[] {
+  if (country != "ae") return states;
+
   const order = [
     "dubai",
     "abu-dhabi",

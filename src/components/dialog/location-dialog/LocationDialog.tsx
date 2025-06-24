@@ -10,7 +10,7 @@ import {
 import { SearchResults } from "./SearchResults";
 import { SearchInput } from "./SearchInput";
 import { FaLocationDot } from "react-icons/fa6";
-import { useParams, useRouter, notFound, usePathname } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { extractCategory } from "@/helpers";
 import useFetchStates from "@/hooks/useFetchStates";
 import { StateType } from "@/types";
@@ -18,22 +18,7 @@ import Image from "next/image";
 import ListGrid from "./ListGrid";
 import { fetchCategories } from "@/lib/api/general-api";
 import FavouriteListSkeleton from "./FavouriteListSkeleton";
-
-// COUNTRY LIST
-const countries = [
-  {
-    id: "ee8a7c95-303d-4f55-bd6c-85063ff1cf48",
-    name: "UAE",
-    value: "ae",
-    icon: "/assets/icons/country-flags/uae-flag.png",
-  },
-  {
-    id: "68ea1314-08ed-4bba-a2b1-af549946523d",
-    name: "India",
-    value: "in",
-    icon: "/assets/icons/country-flags/india-flag.png",
-  },
-];
+import { COUNTRIES } from "@/data";
 
 export function LocationDialog() {
   const router = useRouter();
@@ -53,7 +38,7 @@ export function LocationDialog() {
   }>();
 
   const [selectedCountry, setSelectedCountry] = useState(
-    country === "in" ? "68ea1314-08ed-4bba-a2b1-af549946523d" : countries[0].id,
+    country === "in" ? "68ea1314-08ed-4bba-a2b1-af549946523d" : COUNTRIES[0].id,
   ); // default to India
 
   const [selectedState, setSelectedState] = useState<StateType | undefined>(
@@ -64,6 +49,7 @@ export function LocationDialog() {
 
   const { states, isLoading, isStatesFetching } = useFetchStates({
     countryId: selectedCountry,
+    country,
   });
 
   const getMatchScore = (itemName: string, query: string): number => {
@@ -114,21 +100,19 @@ export function LocationDialog() {
       } else {
         if (selectedState || shouldSkipRedirect) return;
         setSelectedState(states[0]);
-        let selectedCountryURL = countries.find(
+        let selectedCountryURL = COUNTRIES.find(
           (country) => country.id === selectedCountry,
         )?.value;
         router.push(
           `/${selectedCountryURL}/${states[0].stateValue}/${selectedCategory}`,
         );
       }
-    } else {
-      notFound();
     }
   }, [state, states, isLoading, isStatesFetching, selectedCategory]);
 
   const handleStateSelect = async (stateValue: string) => {
     setIsFetching(true);
-    let selectedCountryURL = countries.find(
+    let selectedCountryURL = COUNTRIES.find(
       (country) => country.id === selectedCountry,
     )?.value;
     let country =
@@ -205,7 +189,7 @@ export function LocationDialog() {
             <h2 className="mb-3 text-sm font-bold">COUNTRIES</h2>
             <div>
               <ul className="flex gap-4">
-                {countries.map((country) => (
+                {COUNTRIES.map((country) => (
                   <li
                     className={`flex cursor-pointer gap-2 rounded border border-neutral-50 px-2 py-2 align-middle text-sm transition ${
                       selectedCountry === country?.id ? "!border-orange" : ""

@@ -6,13 +6,11 @@ import { StateType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
-const getStorageKey = (country: string) => `cachedLocations_${country}`;
+const getStatesStorageKey = (country: string) => `cachedLocations_${country}`;
 
-const COUNTRY_ID = "68ea1314-08ed-4bba-a2b1-af549946523d";
+type Props = { countryId: string; country: string };
 
-export default function useFetchStates({ countryId }: { countryId: string }) {
-  const country = countryId === COUNTRY_ID ? "in" : "ae";
-
+export default function useFetchStates({ countryId, country }: Props) {
   const [cachedData, setCachedData] = useState<StateType[]>([]);
 
   const { data, isLoading, isFetching } = useQuery({
@@ -22,7 +20,7 @@ export default function useFetchStates({ countryId }: { countryId: string }) {
     refetchOnWindowFocus: false,
   });
 
-  const storageKey = getStorageKey(country);
+  const storageKey = getStatesStorageKey(country);
 
   // Save successful API result to localStorage
   useEffect(() => {
@@ -52,7 +50,7 @@ export default function useFetchStates({ countryId }: { countryId: string }) {
   // Use the most valid source of truth
   const states: StateType[] = useMemo(() => {
     const source = data?.result || cachedData || [];
-    return rearrangeStates(source);
+    return rearrangeStates(source, country);
   }, [data, cachedData]);
 
   return { states, isLoading, isStatesFetching: isFetching };

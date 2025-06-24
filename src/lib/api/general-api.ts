@@ -13,6 +13,7 @@ import {
   FetchStatesResponse,
   FetchTypesResponse,
 } from "@/types";
+import { API } from "@/utils/API";
 
 interface FetchVehicleByFiltersParams {
   query: string;
@@ -395,18 +396,14 @@ export const fetchStates = async ({
   country: string;
 }): Promise<FetchStatesResponse | undefined> => {
   try {
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-
-    const res = await fetch(
-      `${BASE_URL}/states/list?hasVehicle=true&countryId=${countryId}`,
-      {
+    const res = await API({
+      path: `/states/list?hasVehicle=true&countryId=${countryId}`,
+      options: {
         method: "GET",
         cache: "no-cache",
       },
-    );
+      country,
+    });
 
     if (!res.ok) {
       throw new Error(`Failed to fetch states`);
@@ -485,15 +482,13 @@ export const fetchCategories = async (
   country: string,
 ): Promise<FetchCategoriesResponse | undefined> => {
   try {
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-    const url = `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`;
-
-    const response = await fetch(url, {
-      method: "GET",
-      cache: "no-cache",
+    const response = await API({
+      path: `/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country,
     });
 
     if (!response.ok) {

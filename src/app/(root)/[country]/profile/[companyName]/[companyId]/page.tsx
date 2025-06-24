@@ -55,6 +55,7 @@ export default async function AgentProfilePage(props: PropsType) {
   // Handle API errors or invalid data
   if (!response.ok || !data.result) {
     console.error("Invalid API response:", response.statusText);
+    console.warn("triggering not found");
     return notFound();
   }
 
