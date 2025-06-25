@@ -8,6 +8,8 @@ import { GcsFilePaths } from "@/constants/fileUpload";
 import { uploadSingleFile } from "@/lib/api/fileUpload-api";
 import { ImAttachment } from "react-icons/im";
 import Image from "next/image";
+import { FormModalState } from "../dialog/form-submit-dialog/types";
+import { FormSubmitModal } from "../dialog/form-submit-dialog/FormSubmitModal";
 
 export default function CareerForm({
   country,
@@ -20,11 +22,17 @@ export default function CareerForm({
   jobTitle?: string;
   jobCountry?: string;
 }) {
-  // const selectedCountry = country === "ae" ? "uae" : "in";
-
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modalState, setModalState] = useState<FormModalState>({
+    isOpen: false,
+    type: "",
+    title: "",
+    description: "",
+    buttonText: "",
+  });
 
   const {
     register,
@@ -51,23 +59,45 @@ export default function CareerForm({
     },
   });
 
-  const onSubmit = (data: ApplicationFormValues) => {
+  const onSubmit = async (data: ApplicationFormValues) => {
     if (data.hiddenField) {
       console.warn("Suspicious activity detected. Submission rejected.");
       return;
     }
 
     try {
-      sendCareerForm(
+      setIsSubmitting(true);
+      const response = await sendCareerForm(
         JSON.stringify({ ...data, jobId, jobTitle, country: jobCountry }),
         country,
       );
-      reset();
-      setIsUploaded(false);
-      setFileName("");
-      alert("Form sent successfully!");
+
+      if (response?.status === "SUCCESS") {
+        setModalState({
+          isOpen: true,
+          type: "success",
+          title: "Application Received",
+          description:
+            "Your application has been successfully submitted. Our team will review your details and get back to you soon!",
+          buttonText: "Got it!",
+        });
+        reset();
+        setIsUploaded(false);
+        setFileName("");
+      } else {
+        setModalState({
+          isOpen: true,
+          type: "error",
+          title: "Submission Failed",
+          description:
+            "Something went wrong while submitting your application. Please check the form and try again.",
+          buttonText: "Try again",
+        });
+      }
+      setIsSubmitting(false);
     } catch (err) {
-      alert("Error occured, Form not sent!");
+      console.error("Something went wrong: ", err);
+      setIsSubmitting(false);
     }
   };
 
@@ -158,369 +188,375 @@ export default function CareerForm({
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-between">
-        <h3 className="mb-4 text-[20px] font-medium text-black">
-          Apply for this job
-        </h3>
-        <p className="text-sm text-gray-500">
-          <span className="text-red-500">*</span> Indicates a required field
-        </p>
-      </div>
-      <div className="mt-4">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-4 rounded-[8px] border bg-white p-8"
-        >
-          <div className="flex flex-wrap gap-5 md:flex-nowrap">
-            <div className="basis-full md:basis-1/2">
+    <>
+      <div>
+        <div className="flex items-center justify-between">
+          <h3 className="mb-4 text-[20px] font-medium text-black">
+            Apply for this job
+          </h3>
+          <p className="text-sm text-gray-500">
+            <span className="text-red-500">*</span> Indicates a required field
+          </p>
+        </div>
+        <div className="mt-4">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4 rounded-[8px] border bg-white p-8"
+          >
+            <div className="flex flex-wrap gap-5 md:flex-nowrap">
+              <div className="basis-full md:basis-1/2">
+                <label
+                  htmlFor="firstname"
+                  className="mb-1 block text-sm font-medium text-gray-700"
+                >
+                  First Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="firstname"
+                  className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+                  {...register("firstname", {
+                    required: "Firstname is required",
+                    maxLength: {
+                      value: 50,
+                      message: "Must be under 50 characters",
+                    },
+                    pattern: {
+                      value: /^[A-Za-z\s]+$/,
+                      message: "Only letters and spaces are allowed",
+                    },
+                  })}
+                />
+                {errors.firstname && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.firstname.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="basis-full md:basis-1/2">
+                <label
+                  htmlFor="lastname"
+                  className="mb-1 block text-sm font-medium text-gray-700"
+                >
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  id="lastname"
+                  className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+                  {...register("lastname", {
+                    maxLength: {
+                      value: 50,
+                      message: "Must be under 50 characters",
+                    },
+                    pattern: {
+                      value: /^[A-Za-z\s]+$/,
+                      message: "Only letters and spaces are allowed",
+                    },
+                  })}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-5 md:flex-nowrap">
+              <div className="basis-full md:basis-1/2">
+                <label
+                  htmlFor="email"
+                  className="mb-1 block text-sm font-medium text-gray-700"
+                >
+                  Email Address
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Enter a valid email address",
+                    },
+                  })}
+                />
+                {errors.email && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="basis-full md:basis-1/2">
+                <label
+                  htmlFor="phonenumber"
+                  className="mb-1 block text-sm font-medium text-gray-700"
+                >
+                  Phone Number <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="phonenumber"
+                  className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
+                  {...register("phone", {
+                    required: "Phone number is required",
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: "Phone number must contain only digits",
+                    },
+                  })}
+                />
+                {errors.phone && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.phone.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-1 block text-sm font-medium text-gray-700">
+                Resume/CV <span className="text-red-500">*</span>
+              </div>
               <label
-                htmlFor="firstname"
+                htmlFor="resumeFile"
+                className="flex h-[50px] w-full cursor-pointer items-center rounded-[6px] border border-gray-300 p-3 text-sm text-gray-600 focus:outline-none"
+              >
+                <span className="m-0 flex items-center gap-3">
+                  <ImAttachment size={20} color="grey" />
+                  {fileName ? fileName : "Upload your resume here"}
+                </span>
+                <input
+                  type="file"
+                  id="resumeFile"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <input
+                  type="hidden"
+                  {...register("resume", {
+                    required: "Resume is required",
+                  })}
+                />
+              </label>
+              <p className="mt-2 select-none text-sm text-gray-500">
+                Accepted file types: .pdf , .doc, .docx
+              </p>
+              {errors.resume && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.resume.message}
+                </p>
+              )}
+              {isUploading && (
+                <p className="mt-1 text-sm text-blue-500">Uploading...</p>
+              )}
+              {isUploaded && (
+                <p className="mt-1 text-sm text-green-500">File uploaded</p>
+              )}
+            </div>
+
+            <div className="!mt-5 inline-block h-[1px] w-full bg-gray-200" />
+
+            <div>
+              <label
+                htmlFor="linkedin-link"
                 className="mb-1 block text-sm font-medium text-gray-700"
               >
-                First Name <span className="text-red-500">*</span>
+                Linkedin Profile
               </label>
               <input
                 type="text"
-                id="firstname"
+                id="linkedin-link"
                 className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-                {...register("firstname", {
-                  required: "Firstname is required",
-                  maxLength: {
-                    value: 50,
-                    message: "Must be under 50 characters",
-                  },
+                {...register("linkedinprofile", {
                   pattern: {
-                    value: /^[A-Za-z\s]+$/,
-                    message: "Only letters and spaces are allowed",
+                    value:
+                      /^https?:\/\/([a-z]{2,3}\.)?linkedin\.com\/in\/[A-Za-z0-9-_%]+\/?$/,
+                    message: "Enter a valid LinkedIn profile link",
                   },
                 })}
               />
-              {errors.firstname && (
+              {errors.linkedinprofile && (
                 <p className="mt-1 text-xs text-red-500">
-                  {errors.firstname.message}
+                  {errors.linkedinprofile.message}
                 </p>
               )}
             </div>
 
-            <div className="basis-full md:basis-1/2">
+            <div>
               <label
-                htmlFor="lastname"
+                htmlFor="experience-options"
                 className="mb-1 block text-sm font-medium text-gray-700"
               >
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lastname"
-                className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-                {...register("lastname", {
-                  maxLength: {
-                    value: 50,
-                    message: "Must be under 50 characters",
-                  },
-                  pattern: {
-                    value: /^[A-Za-z\s]+$/,
-                    message: "Only letters and spaces are allowed",
-                  },
-                })}
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-5 md:flex-nowrap">
-            <div className="basis-full md:basis-1/2">
-              <label
-                htmlFor="email"
-                className="mb-1 block text-sm font-medium text-gray-700"
-              >
-                Email Address
+                Years of experience
                 <span className="text-red-500">*</span>
               </label>
-              <input
-                type="email"
-                id="email"
-                className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Enter a valid email address",
-                  },
-                })}
-              />
-              {errors.email && (
+              <div className="relative">
+                <select
+                  id="experience-options"
+                  className="w-full appearance-none rounded-[6px] border border-gray-300 p-3 pr-8 focus:outline-none"
+                  {...register("experience", {
+                    required: "Experience required",
+                  })}
+                >
+                  <option value="">Select an option</option>
+                  {experienceOptions?.map(({ value, label }) => {
+                    return (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    );
+                  })}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+                  <Image
+                    width={26}
+                    height={26}
+                    src="/assets/icons/down-arrow-5.svg"
+                    alt=""
+                  />
+                </div>
+              </div>
+              {errors.experience && (
                 <p className="mt-1 text-xs text-red-500">
-                  {errors.email.message}
+                  {errors.experience.message}
                 </p>
               )}
             </div>
 
-            <div className="basis-full md:basis-1/2">
+            <div>
               <label
-                htmlFor="phonenumber"
+                htmlFor="compensation-options"
                 className="mb-1 block text-sm font-medium text-gray-700"
               >
-                Phone Number <span className="text-red-500">*</span>
+                Current compensation
+                <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <select
+                  id="compensation-options"
+                  className="w-full appearance-none rounded-[6px] border border-gray-300 p-3 pr-8 focus:outline-none"
+                  {...register("currentCompensation", {
+                    required: "Current compensation required",
+                  })}
+                >
+                  <option value="">Select an option</option>
+                  {compensationOptions?.map(({ value, label }) => {
+                    return (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    );
+                  })}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+                  <Image
+                    width={26}
+                    height={26}
+                    src="/assets/icons/down-arrow-5.svg"
+                    alt=""
+                  />
+                </div>
+              </div>
+              {errors.currentCompensation && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.currentCompensation.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="gender-options"
+                className="mb-1 block text-sm font-medium text-gray-700"
+              >
+                Gender <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <select
+                  id="gender-options"
+                  className="w-full appearance-none rounded-[6px] border border-gray-300 p-3 pr-8 focus:outline-none"
+                  {...register("gender", {
+                    required: "Gender required",
+                  })}
+                >
+                  <option value="">Select an option</option>
+                  {genderOptions?.map(({ value, label }) => {
+                    return (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    );
+                  })}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+                  <Image
+                    width={26}
+                    height={26}
+                    src="/assets/icons/down-arrow-5.svg"
+                    alt=""
+                  />
+                </div>
+              </div>
+              {errors.gender && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.gender.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="expected-ctc"
+                className="mb-1 block text-sm font-medium text-gray-700"
+              >
+                Expected CTC <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                id="phonenumber"
+                id="expected-ctc"
                 className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-                {...register("phone", {
-                  required: "Phone number is required",
+                {...register("expectedCTC", {
+                  required: "Expected CTC is required",
                   pattern: {
                     value: /^[0-9]+$/,
-                    message: "Phone number must contain only digits",
+                    message: "Only numbers are allowed",
                   },
                 })}
               />
-              {errors.phone && (
+              {errors.expectedCTC && (
                 <p className="mt-1 text-xs text-red-500">
-                  {errors.phone.message}
+                  {errors.expectedCTC.message}
                 </p>
               )}
             </div>
-          </div>
 
-          <div>
-            <div className="mb-1 block text-sm font-medium text-gray-700">
-              Resume/CV <span className="text-red-500">*</span>
-            </div>
-            <label
-              htmlFor="resumeFile"
-              className="flex h-[50px] w-full cursor-pointer items-center rounded-[6px] border border-gray-300 p-3 text-sm text-gray-600 focus:outline-none"
-            >
-              <span className="m-0 flex items-center gap-3">
-                <ImAttachment size={20} color="grey" />
-                {fileName ? fileName : "Upload your resume here"}
-              </span>
+            <div>
               <input
-                type="file"
-                id="resumeFile"
-                accept=".pdf,.doc,.docx"
-                onChange={handleFileChange}
-                className="hidden"
+                {...register("hiddenField")}
+                style={{ position: "absolute", left: "-9999px", opacity: 0 }}
+                tabIndex={-1}
+                autoComplete="off"
               />
-              <input
-                type="hidden"
-                {...register("resume", {
-                  required: "Resume is required",
-                })}
-              />
-            </label>
-            <p className="mt-2 select-none text-sm text-gray-500">
-              Accepted file types: .pdf , .doc, .docx
-            </p>
-            {errors.resume && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.resume.message}
-              </p>
-            )}
-            {isUploading && (
-              <p className="mt-1 text-sm text-blue-500">Uploading...</p>
-            )}
-            {isUploaded && (
-              <p className="mt-1 text-sm text-green-500">File uploaded</p>
-            )}
-          </div>
-
-          <div className="!mt-5 inline-block h-[1px] w-full bg-gray-200" />
-
-          <div>
-            <label
-              htmlFor="linkedin-link"
-              className="mb-1 block text-sm font-medium text-gray-700"
-            >
-              Linkedin Profile
-            </label>
-            <input
-              type="text"
-              id="linkedin-link"
-              className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-              {...register("linkedinprofile", {
-                pattern: {
-                  value:
-                    /^https?:\/\/([a-z]{2,3}\.)?linkedin\.com\/in\/[A-Za-z0-9-_%]+\/?$/,
-                  message: "Enter a valid LinkedIn profile link",
-                },
-              })}
-            />
-            {errors.linkedinprofile && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.linkedinprofile.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="experience-options"
-              className="mb-1 block text-sm font-medium text-gray-700"
-            >
-              Years of experience
-              <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <select
-                id="experience-options"
-                className="w-full appearance-none rounded-[6px] border border-gray-300 p-3 pr-8 focus:outline-none"
-                {...register("experience", {
-                  required: "Experience required",
-                })}
-              >
-                <option value="">Select an option</option>
-                {experienceOptions?.map(({ value, label }) => {
-                  return (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  );
-                })}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                <Image
-                  width={26}
-                  height={26}
-                  src="/assets/icons/down-arrow-5.svg"
-                  alt=""
-                />
-              </div>
             </div>
-            {errors.experience && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.experience.message}
-              </p>
-            )}
-          </div>
 
-          <div>
-            <label
-              htmlFor="compensation-options"
-              className="mb-1 block text-sm font-medium text-gray-700"
-            >
-              Current compensation
-              <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <select
-                id="compensation-options"
-                className="w-full appearance-none rounded-[6px] border border-gray-300 p-3 pr-8 focus:outline-none"
-                {...register("currentCompensation", {
-                  required: "Current compensation required",
-                })}
+            <div>
+              <button
+                disabled={isUploading || isSubmitting}
+                type="submit"
+                className="w-full rounded-[6px] bg-yellow p-4 font-medium text-white transition hover:bg-amber-400"
               >
-                <option value="">Select an option</option>
-                {compensationOptions?.map(({ value, label }) => {
-                  return (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  );
-                })}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                <Image
-                  width={26}
-                  height={26}
-                  src="/assets/icons/down-arrow-5.svg"
-                  alt=""
-                />
-              </div>
+                Submit Application
+              </button>
             </div>
-            {errors.currentCompensation && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.currentCompensation.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="gender-options"
-              className="mb-1 block text-sm font-medium text-gray-700"
-            >
-              Gender <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <select
-                id="gender-options"
-                className="w-full appearance-none rounded-[6px] border border-gray-300 p-3 pr-8 focus:outline-none"
-                {...register("gender", {
-                  required: "Gender required",
-                })}
-              >
-                <option value="">Select an option</option>
-                {genderOptions?.map(({ value, label }) => {
-                  return (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  );
-                })}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                <Image
-                  width={26}
-                  height={26}
-                  src="/assets/icons/down-arrow-5.svg"
-                  alt=""
-                />
-              </div>
-            </div>
-            {errors.gender && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.gender.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="expected-ctc"
-              className="mb-1 block text-sm font-medium text-gray-700"
-            >
-              Expected CTC <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="expected-ctc"
-              className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
-              {...register("expectedCTC", {
-                required: "Expected CTC is required",
-                pattern: {
-                  value: /^[0-9]+$/,
-                  message: "Only numbers are allowed",
-                },
-              })}
-            />
-            {errors.expectedCTC && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.expectedCTC.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <input
-              {...register("hiddenField")}
-              style={{ position: "absolute", left: "-9999px", opacity: 0 }}
-              tabIndex={-1}
-              autoComplete="off"
-            />
-          </div>
-
-          <div>
-            <button
-              disabled={isUploading}
-              type="submit"
-              className="w-full rounded-[6px] bg-yellow p-4 font-medium text-white transition hover:bg-amber-400"
-            >
-              Submit Application
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+
+      {/* Submit status modal */}
+
+      <FormSubmitModal modalState={modalState} setModalState={setModalState} />
+    </>
   );
 }
