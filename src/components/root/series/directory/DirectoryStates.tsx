@@ -5,7 +5,11 @@ import { FetchStatesResponse, StateType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function DirectoryStates({country}: {country: string}) {
+export default async function DirectoryStates({
+  country,
+}: {
+  country: string;
+}) {
   const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Fetch the states data from the API
@@ -21,7 +25,7 @@ export default async function DirectoryStates({country}: {country: string}) {
   if (states.length === 0) return null;
 
   //
-  states = rearrangeStates(states);
+  states = rearrangeStates(states, country);
 
   return (
     <section className="my-10">
@@ -30,7 +34,12 @@ export default async function DirectoryStates({country}: {country: string}) {
       </h4>
       <ul className="mx-auto mb-[1.5rem] flex flex-wrap items-center gap-4 max-sm:justify-center">
         {states.map((state, index) => (
-          <StateCard state={state} index={index} country={country} key={state.stateId} />
+          <StateCard
+            state={state}
+            index={index}
+            country={country}
+            key={state.stateId}
+          />
         ))}
       </ul>
     </section>
@@ -38,7 +47,15 @@ export default async function DirectoryStates({country}: {country: string}) {
 }
 
 // individual state card
-function StateCard({ state, index, country }: { state: StateType; index: number, country: string }) {
+function StateCard({
+  state,
+  index,
+  country,
+}: {
+  state: StateType;
+  index: number;
+  country: string;
+}) {
   return (
     <MotionStaggeredDiv index={index} delay={0.1}>
       <Link

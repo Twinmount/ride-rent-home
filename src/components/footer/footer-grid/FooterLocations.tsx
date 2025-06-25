@@ -39,7 +39,9 @@ export default function FooterLocations() {
         );
         const data: FetchStatesResponse = await response.json();
         let result =
-          country === "in" ? data.result : rearrangeStates(data.result);
+          country === "in"
+            ? data.result
+            : rearrangeStates(data.result, country);
         setStates(result);
       } catch (error) {
         console.error("Failed to fetch states:", error);

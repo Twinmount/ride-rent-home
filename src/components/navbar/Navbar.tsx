@@ -3,7 +3,6 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-// import StatesDropdown from "./StatesDropdown";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
@@ -123,7 +122,6 @@ export const Navbar = () => {
             {/* Location */}
             {!shouldRenderDropdowns && (
               <li className="mr-2">
-                {/* <StatesDropdown /> */}
                 <LocationDialog />
               </li>
             )}

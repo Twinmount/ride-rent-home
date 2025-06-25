@@ -4,7 +4,13 @@ import { rearrangeStates } from "@/helpers";
 import StateCardList from "./StateCardList";
 import { ENV } from "@/config/env";
 
-export default async function States({ category, country }: { category: string, country: string }) {
+export default async function States({
+  category,
+  country,
+}: {
+  category: string;
+  country: string;
+}) {
   const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Fetch the states data from the API
@@ -18,7 +24,7 @@ export default async function States({ category, country }: { category: string, 
   let states = data.result;
 
   //reordering the states array
-  states = rearrangeStates(states);
+  states = rearrangeStates(states, country);
 
   if (states.length === 0) return null;
 

@@ -12,13 +12,20 @@ import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 import { VehicleTypeType } from "@/types";
 import VehicleTypesCarouselSkelton from "@/components/skelton/VehicleTypesCarouselSkelton";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { formUrlQuery, removeKeysFromQuery } from "@/helpers";
 import { VehicleTypeCard } from "./VehicleTypeCard";
 import { useTopLoader } from "nextjs-toploader";
 
 export default function VehicleTypesCarousel() {
   const { state, category, country } = useStateAndCategory();
+
+  //
+  const [cachedVehicleTypes, setCachedVehicleTypes] = useState<
+    VehicleTypeType[]
+  >([]);
+  const storageKey = `cachedVehicleTypes_${category}_${state}`;
+
   const router = useRouter();
   const searchParams = useSearchParams();
   // top page load progress hook
@@ -32,6 +39,50 @@ export default function VehicleTypesCarousel() {
   });
 
   const vehicleTypes: VehicleTypeType[] = data?.result?.list || [];
+
+  // Save vehicleTypes to localStorage
+  useEffect(() => {
+    if (vehicleTypes.length === 0) return;
+
+    const cached = localStorage.getItem(storageKey);
+    let shouldUpdate = true;
+
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (
+          Array.isArray(parsed) &&
+          JSON.stringify(parsed) === JSON.stringify(vehicleTypes)
+        ) {
+          shouldUpdate = false;
+        }
+      } catch (e) {
+        console.warn("Failed to parse cached vehicle types:", e);
+      }
+    }
+
+    if (shouldUpdate) {
+      localStorage.setItem(storageKey, JSON.stringify(vehicleTypes));
+      setCachedVehicleTypes(vehicleTypes);
+    }
+  }, [vehicleTypes, storageKey]);
+
+  // Load from localStorage if API data is missing
+  useEffect(() => {
+    if (vehicleTypes.length > 0) return;
+
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setCachedVehicleTypes(parsed);
+        }
+      } catch (e) {
+        console.warn("Failed to parse cached vehicle types:", e);
+      }
+    }
+  }, [storageKey]);
 
   //
   const updateUrlType = useCallback(
@@ -73,11 +124,20 @@ export default function VehicleTypesCarousel() {
 
   const currentlySelectedType = searchParams.get("type");
 
+  const list =
+    vehicleTypes.length > 0
+      ? vehicleTypes
+      : cachedVehicleTypes.length > 0
+        ? cachedVehicleTypes
+        : [];
+
+  if (list.length === 0) return null;
+
   return (
     <VehicleTypesCarouselWrapper>
       <Carousel className="w-full max-w-full p-0">
         <CarouselContent className="flex h-fit gap-x-3 px-1 py-0 lg:gap-x-4">
-          {vehicleTypes.map((type, index) => (
+          {list.map((type, index) => (
             <VehicleTypeCard
               key={type.typeId}
               type={type}

@@ -9,7 +9,11 @@ type PropType = {
   country: string;
 };
 
-export default async function StatesForCities({ state, category, country }: PropType) {
+export default async function StatesForCities({
+  state,
+  category,
+  country,
+}: PropType) {
   const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Fetch the states data from the API
@@ -23,7 +27,7 @@ export default async function StatesForCities({ state, category, country }: Prop
   let states = data.result;
 
   //reordering the states array
-  states = rearrangeStates(states);
+  states = rearrangeStates(states, country);
 
   if (states.length === 0) return null;
 
