@@ -42,14 +42,20 @@ export default function InternForm({ country }: { country: string }) {
       collegename: "",
       placementofficer: "",
       type: "intern",
+      hiddenField: "",
     },
   });
 
   const onSubmit = (data: InternFormFields) => {
+    if (data.hiddenField) {
+      console.warn("Suspicious activity detected. Submission rejected.");
+      return;
+    }
     try {
       sendInternForm(JSON.stringify(data), country);
       reset();
       setIsUploaded(false);
+      setFileName("");
       alert("Form sent successfully!");
     } catch (err) {
       alert("Error occured, Form not sent!");
@@ -359,6 +365,15 @@ export default function InternForm({ country }: { country: string }) {
                 {errors.placementofficer.message}
               </p>
             )}
+          </div>
+
+          <div>
+            <input
+              {...register("hiddenField")}
+              style={{ position: "absolute", left: "-9999px", opacity: 0 }}
+              tabIndex={-1}
+              autoComplete="off"
+            />
           </div>
 
           <div>

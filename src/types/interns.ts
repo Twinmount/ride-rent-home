@@ -8,4 +8,5 @@ export interface InternFormFields {
   placementofficer?: string;
   type: string;
   country: string;
+  hiddenField?: string;
 }

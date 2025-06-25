@@ -11,6 +11,7 @@ export type ApplicationFormValues = {
   expectedCTC: string;
   type: string;
   country: string;
+  hiddenField?: string;
 };
 
 export type JobResponse = {

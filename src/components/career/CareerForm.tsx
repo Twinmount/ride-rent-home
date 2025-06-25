@@ -47,10 +47,16 @@ export default function CareerForm({
       expectedCTC: "",
       country: "",
       type: "career",
+      hiddenField: "",
     },
   });
 
   const onSubmit = (data: ApplicationFormValues) => {
+    if (data.hiddenField) {
+      console.warn("Suspicious activity detected. Submission rejected.");
+      return;
+    }
+
     try {
       sendCareerForm(
         JSON.stringify({ ...data, jobId, jobTitle, country: jobCountry }),
@@ -58,6 +64,7 @@ export default function CareerForm({
       );
       reset();
       setIsUploaded(false);
+      setFileName("");
       alert("Form sent successfully!");
     } catch (err) {
       alert("Error occured, Form not sent!");
@@ -493,6 +500,16 @@ export default function CareerForm({
               </p>
             )}
           </div>
+
+          <div>
+            <input
+              {...register("hiddenField")}
+              style={{ position: "absolute", left: "-9999px", opacity: 0 }}
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </div>
+
           <div>
             <button
               disabled={isUploading}
