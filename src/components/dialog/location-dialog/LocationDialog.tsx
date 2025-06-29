@@ -49,7 +49,8 @@ export function LocationDialog() {
 
   const { states, isLoading, isStatesFetching } = useFetchStates({
     countryId: selectedCountry,
-    country,
+    country:
+      selectedCountry === "68ea1314-08ed-4bba-a2b1-af549946523d" ? "in" : "ae",
   });
 
   const getMatchScore = (itemName: string, query: string): number => {
