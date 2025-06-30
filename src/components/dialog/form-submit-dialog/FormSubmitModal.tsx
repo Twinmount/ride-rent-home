@@ -19,10 +19,7 @@ export function FormSubmitModal({ modalState, setModalState }: ModalProps) {
   const closeModal = () => {
     setModalState({
       isOpen: false,
-      type: "",
-      title: "",
-      description: "",
-      buttonText: "",
+      type: modalState?.type,
     });
   };
 
@@ -42,7 +39,9 @@ export function FormSubmitModal({ modalState, setModalState }: ModalProps) {
               src={
                 modalState?.type === "success"
                   ? "/assets/icons/verify-circle.svg"
-                  : "/assets/icons/info-circle.svg"
+                  : modalState?.type === "error"
+                    ? "/assets/icons/info-circle.svg"
+                    : ""
               }
               alt="modal icon"
               height={100}
