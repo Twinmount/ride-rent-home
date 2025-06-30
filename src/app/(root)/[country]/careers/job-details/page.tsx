@@ -156,11 +156,13 @@ const CareersDetailsPage = async (props: PageProps) => {
 
                 {/* OTHER JOBS LIST */}
 
-                <JobList
-                  title="Other Job Positions"
-                  country={country}
-                  data={otherJobs}
-                />
+                {otherJobs?.length > 0 && (
+                  <JobList
+                    title="Other Job Positions"
+                    country={country}
+                    data={otherJobs}
+                  />
+                )}
               </div>
             </div>
             <div className="hidden w-full ps-5 md:block md:w-[30%]">

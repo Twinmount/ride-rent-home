@@ -291,7 +291,13 @@ const CareersPage = async (props: PageProps) => {
           </div>
         </section>
 
-        <JobList title="Open Positions" country={country} data={jobs?.result} />
+        {jobs?.result?.length > 0 && (
+          <JobList
+            title="Open Positions"
+            country={country}
+            data={jobs?.result}
+          />
+        )}
       </div>
     </div>
   );
