@@ -34,6 +34,8 @@ export async function generateMetadata(props: PageProps) {
 const InternsPage = async (props: PageProps) => {
   const { country } = await props.params;
 
+  const STATIC_FILES_URL = process.env.STATIC_FILES_URL;
+
   return (
     <div className="interns bg-white">
       <div className="mx-auto w-full pb-8 md:max-w-[90%] lg:max-w-[80%] xl:max-w-[70%]">
@@ -41,7 +43,7 @@ const InternsPage = async (props: PageProps) => {
           <div className="relative flex items-end justify-end overflow-hidden rounded-[16px] md:h-[500px]">
             <div className="absolute left-0 top-0 z-[1] h-full w-full">
               <Image
-                src="https://images.unsplash.com/photo-1552960366-b330a2f83823?q=80&w=1200"
+                src={`${STATIC_FILES_URL}/intern-page-banner.jpg`}
                 alt="interns banner"
                 className="h-full w-full object-cover"
                 loading="lazy"
@@ -154,16 +156,16 @@ const InternsPage = async (props: PageProps) => {
           <div className="relative overflow-hidden rounded-[16px] pb-[160px] pt-[100px]">
             <div className="absolute left-0 top-0 z-[1] h-full w-full">
               <img
-                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200"
+                src={`${STATIC_FILES_URL}/intern-application-form-banner.jpg`}
                 alt="interns form banner"
                 className="h-full w-full object-cover"
                 loading="lazy"
               />
-              <div className="absolute left-0 top-0 z-[2] h-full w-full bg-yellow bg-opacity-30"></div>
+              <div className="absolute left-0 top-0 z-[2] h-full w-full bg-black bg-opacity-30"></div>
             </div>
             <div className="relative z-[5] mx-auto px-5 md:max-w-[700px]">
               <div className="relative text-center">
-                <h2 className="mb-3 text-[28px] font-semibold text-white drop-shadow-lg md:text-[34px]">
+                <h2 className="mb-3 text-[28px] font-semibold text-white drop-shadow-lg md:text-[40px]">
                   Intern opportunities open for 25 batches
                 </h2>
                 <p className="text-md mb-0 inline-block text-white drop-shadow-lg">

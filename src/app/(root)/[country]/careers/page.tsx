@@ -54,6 +54,8 @@ const CareersPage = async (props: PageProps) => {
   const { country } = await props.params;
   const jobs = await getJobs(country);
 
+  const STATIC_FILES_URL = process.env.STATIC_FILES_URL;
+
   return (
     <div className="careers bg-white">
       <div className="mx-auto w-full pb-8 md:max-w-[90%] lg:max-w-[80%] xl:max-w-[70%]">
@@ -61,7 +63,7 @@ const CareersPage = async (props: PageProps) => {
           <div className="relative flex items-end justify-end overflow-hidden rounded-[16px] md:h-[400px]">
             <div className="absolute left-0 top-0 z-[1] h-full w-full">
               <img
-                src="https://images.unsplash.com/photo-1553028826-f4804a6dba3b?q=80&w=1200"
+                src={`${STATIC_FILES_URL}/career-page-banner.jpg`}
                 alt="career banner"
                 className="h-full w-full object-cover"
                 loading="lazy"
@@ -101,7 +103,7 @@ const CareersPage = async (props: PageProps) => {
           <div className="careers__features-list flex flex-col gap-10 md:flex-row">
             <div className="careers__feature relative basis-1/3 overflow-hidden rounded-[16px] md:min-h-[300px]">
               <Image
-                src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=800"
+                src={`${STATIC_FILES_URL}/career-feature-image-1.jpg`}
                 alt=""
                 className="h-full w-full object-cover"
                 width={800}
@@ -122,7 +124,7 @@ const CareersPage = async (props: PageProps) => {
             </div>
             <div className="careers__feature relative basis-1/3 overflow-hidden rounded-[16px] md:min-h-[300px]">
               <Image
-                src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=800"
+                src={`${STATIC_FILES_URL}/career-feature-image-2.jpg`}
                 alt=""
                 className="h-full w-full object-cover"
                 loading="lazy"
@@ -144,7 +146,7 @@ const CareersPage = async (props: PageProps) => {
             </div>
             <div className="careers__feature relative basis-1/3 overflow-hidden rounded-[16px] md:min-h-[300px]">
               <Image
-                src="https://images.unsplash.com/photo-1554902843-260acd0993f8?q=80&w=800"
+                src={`${STATIC_FILES_URL}/career-feature-image-3.jpg`}
                 alt=""
                 className="h-full w-full object-cover"
                 loading="lazy"
@@ -170,7 +172,7 @@ const CareersPage = async (props: PageProps) => {
         <section className="hire-steps-section flex flex-col gap-3 px-8 py-8 md:flex-row md:py-16">
           <div className="relative flex items-end justify-end overflow-hidden rounded-[16px] md:basis-1/2">
             <img
-              src="https://images.unsplash.com/photo-1572021335469-31706a17aaef?q=80&h=1000"
+              src={`${STATIC_FILES_URL}/hiring-process-side-image.jpg`}
               alt=""
               className="absolute left-0 top-0 z-[1] h-full w-full object-cover"
               loading="lazy"
