@@ -27,7 +27,7 @@ export function JobShareModal() {
         <DialogTrigger asChild>
           <button
             aria-label="Job share dialog"
-            className="inline-block whitespace-nowrap rounded bg-amber-100 px-3 py-2 text-sm text-yellow"
+            className="inline-block whitespace-nowrap rounded bg-gray-100 px-3 py-2 text-sm text-black"
           >
             Share to a friend
           </button>

@@ -77,7 +77,7 @@ const CareersPage = async (props: PageProps) => {
                 </p>
                 <div>
                   <Link
-                    className="inline-block rounded bg-yellow px-4 py-3 font-medium text-white"
+                    className="inline-block rounded bg-yellow px-4 py-3 font-medium text-black"
                     href="#open-positions"
                   >
                     Open positions
@@ -185,7 +185,7 @@ const CareersPage = async (props: PageProps) => {
               </p>
               <div>
                 <Link
-                  className="inline-block rounded bg-yellow px-4 py-3 font-medium text-white"
+                  className="inline-block rounded bg-yellow px-4 py-3 font-medium text-black"
                   href="#open-positions"
                 >
                   Open positions

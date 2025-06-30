@@ -90,6 +90,8 @@ export function LocationDialog() {
 
     const shouldSkipRedirect =
       pathname?.startsWith(`/${country}${"/blog"}`) ||
+      pathname?.startsWith(`/${country}${"/careers"}`) ||
+      pathname?.startsWith(`/${country}${"/interns"}`) ||
       pathname === "/in" ||
       pathname === "/ae";
 

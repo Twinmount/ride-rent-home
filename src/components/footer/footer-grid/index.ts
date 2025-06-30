@@ -21,8 +21,8 @@ export const company = [
   { id: 4, title: "Terms & Conditions", link: "/terms-condition" },
   { id: 5, title: "FAQ", link: "/faq" },
   { id: 6, title: "Our Blogs", link: "/blog" },
-  { id: 7, title: "Careers", link: "/ae/careers", linkIndia: "/in/careers" },
-  { id: 78, title: "Interns", link: "/ae/interns", linkIndia: "/in/interns" },
+  { id: 7, title: "Careers", link: "/careers" },
+  { id: 8, title: "Interns", link: "/interns" },
 ];
 
 export const vehicles = [

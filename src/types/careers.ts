@@ -21,6 +21,7 @@ export type JobResponse = {
   level: string;
   experience: string;
   country: string;
+  jobId: string;
 };
 
 export type JobsResponseType = {

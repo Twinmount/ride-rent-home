@@ -40,7 +40,7 @@ function JobList({
           <ul className="open-job-positions__list flex flex-col gap-6">
             {jobList?.map(
               ({
-                _id: jobId,
+                jobId,
                 jobtitle,
                 location,
                 level,
@@ -65,7 +65,7 @@ function JobList({
                         className="inline-block rounded bg-amber-100 px-6 py-2 text-sm text-yellow"
                         href={`/${country}/careers/job-details?jobId=${jobId}&j_country=${jobCountry}`}
                       >
-                        Apply Now
+                        View Job
                       </Link>
                     </div>
                   </li>

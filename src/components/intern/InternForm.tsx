@@ -382,7 +382,7 @@ export default function InternForm({ country }: { country: string }) {
                 htmlFor="placementOfficer"
                 className="mb-1 block text-sm font-medium text-gray-700"
               >
-                POC / HOD / Placement Officer
+                POC / HOD / Placement Officer Contact
                 <span className="text-red-500">*</span>
               </label>
               <input
@@ -390,7 +390,7 @@ export default function InternForm({ country }: { country: string }) {
                 id="placementOfficer"
                 className="w-full rounded-[6px] border border-gray-300 p-3 focus:outline-none"
                 {...register("placementofficer", {
-                  required: "POC / HOD / Placement Officer is required",
+                  required: "POC / HOD / Placement Officer Contact is required",
                 })}
               />
               {errors.placementofficer && (

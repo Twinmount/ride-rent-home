@@ -17,6 +17,12 @@ export const CompanyLinks = () => {
     if (item.title === "Our Blogs") {
       return `/${defaultCountry}/blog`;
     }
+    if (item.title === "Careers") {
+      return `/${defaultCountry}/careers`;
+    }
+    if (item.title === "Interns") {
+      return `/${defaultCountry}/interns`;
+    }
     return item.link;
   };
 

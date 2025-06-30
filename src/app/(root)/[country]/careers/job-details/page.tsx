@@ -52,7 +52,7 @@ const CareersDetailsPage = async (props: PageProps) => {
 
   const jobs = await getJobs(country);
   // Ignore current job
-  const otherJobs = jobs?.result?.filter((job) => job?._id !== jobId);
+  const otherJobs = jobs?.result?.filter((job) => job?.jobId !== jobId);
 
   const job = await getJobDetails(jobId as string, country);
   const { result } = job;
@@ -69,7 +69,7 @@ const CareersDetailsPage = async (props: PageProps) => {
                 </h2>
                 <div className="flex items-center gap-4">
                   <Link
-                    className="px-23 inline-block whitespace-nowrap rounded bg-yellow px-3 py-2 text-sm text-white"
+                    className="px-23 inline-block whitespace-nowrap rounded bg-yellow px-3 py-2 text-sm text-black"
                     href={"#apply-job"}
                   >
                     Apply this job
