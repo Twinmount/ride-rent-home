@@ -10,48 +10,65 @@ export default function BannerSlider({
 }: {
   bannerImages: ImageSrc[];
 }) {
+  /* Slider configuration */
   const settings = {
     dots: true,
     infinite: bannerImages?.length > 1,
     autoplay: bannerImages?.length > 1,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 4000,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true,
+    arrows: false,
+    fade: false,
+    speed: 600,
+    cssEase: "ease-in-out",
+    pauseOnHover: true,
+    /* Custom dot styling */
+    customPaging: (i: number) => (
+      <div className="w-2 h-2 bg-white/40 rounded-full hover:bg-white/80 transition-all duration-300 cursor-pointer">
+        <span className="sr-only">Slide {i + 1}</span>
+      </div>
+    ),
   };
 
   return (
-    <div className="wrapper banner-slider">
+    <div className="modern-banner-slider">
       <Slider {...settings}>
         {bannerImages?.length > 0 &&
           bannerImages?.map((image, index) => {
+            /* Slide content structure */
+            const slideContent = (
+              <div className="relative w-full h-full">
+                <img
+                  src={image?.src}
+                  alt={`Banner ${index + 1}`}
+                  className="w-full h-full object-cover object-center"
+                  loading="lazy"
+                  onDragStart={(e) => e.preventDefault()}
+                />
+              </div>
+            );
+
+            /* Conditional link wrapper */
             if (!!image?.link) {
               return (
                 <a
                   key={`dashboard-banner-item__${index + 1}`}
-                  className="slick-slide-link"
+                  className="block w-full h-full"
                   href={image?.link}
                   target="_blank"
-                  onDragStart={(e) => e.preventDefault()}
+                  rel="noopener noreferrer"
                 >
-                  <img
-                    src={image?.src}
-                    alt={`Banner ${index + 1}`}
-                    className="mw-100"
-                    loading="lazy"
-                  />
+                  {slideContent}
                 </a>
               );
             }
 
+            /* Default slide without link */
             return (
-              <img
-                src={image?.src}
-                alt={`Banner ${index + 1}`}
-                className="mw-100"
-                key={`dashboard-banner-item__${index + 1}`}
-                loading="lazy"
-              />
+              <div key={`dashboard-banner-item__${index + 1}`} className="w-full h-full">
+                {slideContent}
+              </div>
             );
           })}
       </Slider>

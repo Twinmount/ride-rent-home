@@ -3,6 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global reset and base styles */
 *,
 *::before,
 *::after {
@@ -28,6 +29,7 @@ body {
   overflow-x: hidden !important;
 }
 
+/* Reset typography and list styles */
 ul,
 ol,
 p,
@@ -56,6 +58,7 @@ a {
   color: black;
 }
 
+/* Disable image dragging */
 img {
   -webkit-user-drag: none;
   -moz-user-drag: none;
@@ -65,8 +68,7 @@ img {
   user-drag: none;
 }
 
-/* scrollbar styling */
-/* For Chrome, Safari, and Opera */
+/* Custom scrollbar styling */
 ::-webkit-scrollbar {
   width: 12px;
   border-radius: 10px !important;
@@ -86,13 +88,13 @@ img {
   background-color: #ffa733;
 }
 
-/* For Internet Explorer and Edge */
+/* IE and Edge scrollbar */
 body {
   scrollbar-face-color: #888;
   scrollbar-track-color: #f5f5f5;
 }
 
-// custom yellow underline for heading
+/* Custom heading with yellow underline */
 .custom-heading {
   position: relative;
   margin-bottom: 1rem;
@@ -112,6 +114,7 @@ body {
   }
 }
 
+/* Default button styling */
 .default-btn {
   padding: 0.5rem;
   padding-left: 1rem;
@@ -130,35 +133,33 @@ body {
   background: $gradient;
 }
 
+/* Responsive global padding */
 .global__padding {
   padding-left: 1rem !important;
   padding-right: 1rem !important;
 
-  // Small screens (sm)
   @media (min-width: 576px) {
     padding-left: 1.6rem;
     padding-right: 1.6rem;
   }
 
-  // Medium screens (md)
   @media (min-width: 768px) {
     padding-left: 2rem;
     padding-right: 2rem;
   }
 
-  // Large screens (lg)
   @media (min-width: 992px) {
     padding-left: 3rem !important;
     padding-right: 3rem !important;
   }
 
-  // Extra large screens (xl)
   @media (min-width: 1200px) {
     padding-left: 4rem !important;
     padding-right: 4rem !important;
   }
 }
 
+/* Main wrapper with max-width and centering */
 .wrapper {
   @extend .global__padding;
   max-width: 100rem !important;
@@ -166,6 +167,7 @@ body {
   margin-right: auto !important;
 }
 
+/* Tailwind utility classes */
 @layer utilities {
   .flex-center {
     @apply flex items-center justify-center;
@@ -184,12 +186,12 @@ body {
   }
 }
 
+/* Google Translate customizations */
 .skiptranslate iframe,
 .goog-te-banner-frame {
   display: none !important;
 }
 
-/* Style the select box */
 .goog-te-combo {
   @apply cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-1 text-sm text-black focus:outline-none;
 }
@@ -204,7 +206,6 @@ body {
   font-size: 0 !important;
 }
 
-/* Remove Google Translate Banner */
 .goog-te-banner-frame {
   display: none !important;
 }
@@ -218,15 +219,16 @@ body {
   background: none !important;
   box-shadow: none !important;
 }
+
 #goog-gt-tt {
   display: none !important;
 }
 
-/* Prevent extra space from appearing */
 body {
   top: 0px !important;
 }
 
+/* Listing page filter positioning */
 .listing-page-filter-div {
   position: fixed;
   right: calc(100vw - 48%);
@@ -236,68 +238,110 @@ body {
   }
 }
 
-// SLICK CUSTOM STYLES
+/* Modern banner slider styles */
+.modern-banner-slider {
+  @apply relative w-full overflow-hidden bg-black;
+  height: 7.75rem;
+  
+  /* Ensure full height for slider elements */
+  .slick-slider,
+  .slick-list,
+  .slick-track {
+    height: 100% !important;
+  }
 
-.banner-slider {
+  .slick-slide {
+    height: 100% !important;
+    
+    > div {
+      height: 100% !important;
+    }
+  }
+
+  /* Mobile image styling */
   .slick-slide img {
     border-radius: 5px;
     overflow: hidden;
   }
-  .slick-next {
-    right: 10px !important;
-    z-index: 40;
-  }
-  .slick-prev {
-    left: 10px !important;
-    z-index: 40;
-  }
+
+  /* Modern dot navigation */
   .slick-dots {
-    bottom: 5px;
-    z-index: 40;
-  }
-  .slick-dots li {
-    margin: 0 2px;
-  }
-  .slick-dots li button:before {
-    font-size: 8px;
-    opacity: 0.7;
-    color: #ffffff;
-  }
-  .slick-dots li.slick-active button:before {
-    opacity: 1;
-    color: #ea7b0b;
-  }
-  .slick-slide-link {
-    display: block;
-    user-select: none;
-    outline: 0;
+    @apply absolute bottom-3 left-1/2 transform -translate-x-1/2 flex justify-center items-center gap-2 m-0 p-0 z-10;
+    
+    li {
+      @apply m-0 p-0 w-auto h-auto;
+      margin: 0 3px;
+      
+      button {
+        display: none !important;
+      }
+      
+      > div {
+        @apply w-1.5 h-1.5 bg-white/40 rounded-full transition-all duration-300 cursor-pointer;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      
+      &.slick-active > div {
+        @apply bg-white w-6 h-1.5;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+      }
+    }
   }
 
+  /* Hide navigation arrows */
+  .slick-next,
+  .slick-prev {
+    display: none !important;
+  }
+
+  /* Desktop responsive design */
   @media screen and (min-width: 768px) {
-    padding-top: 10px;
-    user-select: none;
-
-    .slick-list {
-      overflow: unset !important;
-    }
-    .slick-slide {
-      padding-left: 20px;
-      padding-right: 20px;
-    }
+    height: 26.25rem;
+    
+    /* Full width banner */
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    width: 100vw;
+    max-width: none;
+    
+    /* Rectangular design for desktop */
     .slick-slide img {
-      border-radius: 30px;
+      border-radius: 0 !important;
     }
-    .slick-next {
-      right: 30px !important;
-    }
-    .slick-prev {
-      left: 30px !important;
-    }
+
+    /* Enhanced dot styling */
     .slick-dots {
-      bottom: 10px;
+      @apply bottom-6 gap-2;
+      
+      li {
+        margin: 0 3px;
+        
+        > div {
+          @apply w-2 h-2 bg-white/40;
+        }
+        
+        &.slick-active > div {
+          @apply bg-white w-4 h-2;
+          border-radius: 12px;
+        }
+      }
     }
-    .slick-dots li button:before {
-      font-size: 12px;
+  }
+
+  /* Large desktop styling */
+  @media (min-width: 1024px) {
+    height: 26.25rem;
+  }
+}
+
+/* Optional contained banner variant */
+.banner-contained {
+  .modern-banner-slider {
+    @media screen and (min-width: 768px) {
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
     }
   }
 }
