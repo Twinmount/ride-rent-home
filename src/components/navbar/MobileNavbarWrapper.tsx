@@ -30,7 +30,7 @@ export default function MobileNavbarWrapper({
       animate={isHidden ? "hidden" : "visible"}
       transition={{ duration: 0.3, ease: "linear" }}
       // hidden on small devices and above.
-      className={`global__padding fixed bottom-2 left-2 right-2 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 rounded-xl border border-t border-gray-200 bg-white shadow-md shadow-black/30 transition-all duration-200 ease-in-out sm:hidden`}
+      className={`fixed bottom-2 left-2 right-2 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 rounded-xl border border-t border-gray-200 bg-white shadow-md shadow-black/30 transition-all duration-200 ease-in-out sm:hidden`}
       role="navigation"
     >
       {children}

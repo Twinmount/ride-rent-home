@@ -1,10 +1,10 @@
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import DocumentsRequired from "./DocumentsRequired";
-import { convertToLabel, singularizeType } from "@/helpers";
+import { convertToLabel, singularizeValue } from "@/helpers";
 import { StateCategoryProps } from "@/types";
 
 const Documents = ({ state, category }: StateCategoryProps) => {
-  const formattedCategory = singularizeType(convertToLabel(category));
+  const formattedCategory = singularizeValue(convertToLabel(category));
 
   return (
     <MotionSection className="section-container wrapper">

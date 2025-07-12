@@ -20,7 +20,7 @@ export function SidebarAccordion() {
         href={`https://agent.ride.rent/${country}/register`}
         target="_blank"
         rel="noopener noreferrer"
-        className="yellow-gradient default-btn"
+        className="bg-theme-gradient default-btn"
       >
         List your vehicle for FREE
       </Link>

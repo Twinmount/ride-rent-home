@@ -32,7 +32,7 @@ export default function VehicleCategories() {
         <NavigationMenuItem>
           <NavigationMenuTrigger
             disabled={isCategoriesLoading}
-            className={`flex-center h-12 gap-2 rounded-[0.5em] border px-3 py-1 text-sm font-semibold text-black hover:text-black ${isCategoriesLoading ? "cursor-default text-gray-500" : "yellow-gradient hover:yellow-gradient"}`}
+            className={`flex-center h-12 gap-2 rounded border px-3 py-1 text-sm font-semibold text-black hover:text-black ${isCategoriesLoading ? "cursor-default text-gray-500" : "bg-theme-gradient hover:bg-theme-gradient"}`}
           >
             <Image
               src={`${baseAssetsUrl}/icons/vehicle-categories/${category}.png`}
@@ -123,7 +123,7 @@ function VehicleCategoryCard({
         <NavigationMenuLink>
           <div
             className={`flex h-[3.6rem] w-full items-center justify-center rounded-[0.4rem] bg-gray-100 hover:bg-gray-200 ${
-              selectedCategory === cat.value ? "yellow-gradient" : ""
+              selectedCategory === cat.value ? "bg-theme-gradient" : ""
             }`}
           >
             <Image

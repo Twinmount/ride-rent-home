@@ -89,8 +89,10 @@ export const Navbar = () => {
   const isMobile = useIsMobile(640);
 
   return (
-    <NavbarWrapper>
-      <nav className={`flex-between w-full`}>
+    <header
+      className={`fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-white transition-all duration-200 ease-in-out`}
+    >
+      <nav className={`flex-between global-padding container`}>
         <div className="flex w-fit items-center justify-center">
           <div className="w-fit p-0">
             <a
@@ -132,7 +134,7 @@ export const Navbar = () => {
                 href={`https://agent.ride.rent/${country}/register`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="yellow-gradient default-btn !font-[500]"
+                className="default-btn bg-theme-gradient !font-[500]"
               >
                 List your vehicle for FREE
               </Link>
@@ -146,20 +148,6 @@ export const Navbar = () => {
           </ul>
         </div>
       </nav>
-    </NavbarWrapper>
-  );
-};
-
-/**
- * NavbarWrapper component with motion effects based on the isHidden state.
- *
- */
-const NavbarWrapper = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <motion.header
-      className={`global__padding fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-lightGray transition-all duration-200 ease-in-out`}
-    >
-      {children}
-    </motion.header>
+    </header>
   );
 };

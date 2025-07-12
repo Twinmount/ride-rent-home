@@ -194,6 +194,8 @@ export interface PromotionType {
   promotionId: string;
   promotionImage: string;
   promotionLink: string;
+  title: string; // e.g., "Offer Upto 25%"
+  description: string;
 }
 
 //  get-all-promotions  API response

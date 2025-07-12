@@ -8,7 +8,7 @@ export default function BrandsCarouselSkeleton({ state }: { state: string }) {
     <MotionSection className="section-container wrapper">
       <h2 className="section-heading">
         Rent from top brands in{" "}
-        <span className="yellow-gradient rounded-xl px-2 capitalize">
+        <span className="bg-theme-gradient rounded-xl px-2 capitalize">
           {convertToLabel(state as string)}
         </span>
       </h2>

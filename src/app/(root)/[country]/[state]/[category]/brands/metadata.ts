@@ -1,4 +1,4 @@
-import { singularizeType } from "@/helpers";
+import { singularizeValue } from "@/helpers";
 
 export async function generateBrandsListingPageMetadata({
   state,
@@ -10,17 +10,17 @@ export async function generateBrandsListingPageMetadata({
   country: string;
 }) {
   const canonicalUrl = `https://ride.rent/${country}/${state}/${category}/brands`;
-  const title = `Explore Vehicle Brands - ${singularizeType(
+  const title = `Explore Vehicle Brands - ${singularizeValue(
     category,
   )} in ${state}`;
-  const description = `Browse and explore top vehicle brands for ${singularizeType(
+  const description = `Browse and explore top vehicle brands for ${singularizeValue(
     category,
   )} rentals in ${state}. Find the perfect brand to suit your needs.`;
 
   return {
     title,
     description,
-    keywords: `vehicle brands, ${singularizeType(
+    keywords: `vehicle brands, ${singularizeValue(
       category,
     )}, ${state}, vehicle rental brands`,
     openGraph: {

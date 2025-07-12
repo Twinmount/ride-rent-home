@@ -45,7 +45,7 @@ export function VehicleTypeCard({
     >
       <div
         onClick={() => handleTypeClick(type.value)}
-        className={`group relative flex aspect-square h-[70%] w-[4rem] min-w-[4rem] cursor-pointer flex-col justify-center gap-[0.2rem] overflow-hidden rounded-[0.4rem] lg:w-[5.2rem] lg:min-w-[5.2rem]`}
+        className={`border-border-default group relative flex aspect-square h-[4.5rem] w-[5.75rem] min-w-[4rem] cursor-pointer flex-col justify-center gap-[0.2rem] rounded-[0.5rem] border lg:h-[6.625rem] lg:w-[7.125rem] lg:min-w-[5.2rem]`}
       >
         <div
           className={`mx-auto flex h-[55%] w-[80%] items-center justify-center rounded-[0.4rem] bg-gray-100`}

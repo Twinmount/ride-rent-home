@@ -639,15 +639,13 @@ export const fetchFAQ = async (
   country: string,
 ): Promise<FetcFAQResponse | undefined> => {
   try {
-    // generating api URL
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-    const apiUrl = `${BASE_URL}/state-faq/client/${stateValue}`;
-
-    const response = await fetch(apiUrl, {
-      method: "GET",
+    const response = await API({
+      path: `/state-faq/client/${stateValue}`,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country,
     });
 
     // Check if the response is OK
