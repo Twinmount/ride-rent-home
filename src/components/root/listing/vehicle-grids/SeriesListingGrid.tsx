@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import NoResultsFound from "./NoResultsFound";
-import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
+import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
 import { useInView } from "react-intersection-observer";
 import LoadingWheel from "@/components/common/LoadingWheel";
 import { useImmer } from "use-immer";
@@ -252,7 +252,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
                           const animationIndex = index % 8;
                           return (
                             <div key={vehicle.vehicleId} className="w-full">
-                              <VehicleMainCard
+                              <VehicleCard
                                 vehicle={vehicle}
                                 index={animationIndex}
                                 country={country}

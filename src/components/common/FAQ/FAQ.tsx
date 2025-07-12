@@ -1,56 +1,65 @@
 import Image from "next/image";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { fetchFAQ } from "@/lib/api/general-api";
+import { SectionHeading } from "../SectionHeading";
+import ViewAllButton from "../ViewAllButton";
 
 type FAQStateProps = {
-  stateValue: string;
-  country: string
+  state: string;
+  country: string;
 };
 
 type faqType = { question: string; answer: string }[];
 
 // Server Component
-export default async function FAQ({ stateValue, country }: FAQStateProps) {
+export default async function FAQ({ state, country }: FAQStateProps) {
   let faqData: faqType = [];
 
   try {
-    const response = await fetchFAQ(stateValue, country);
+    const response = await fetchFAQ(state, country);
     faqData = response?.result?.faqs || [];
   } catch (error) {
     faqData = [];
   }
 
-  return (
-    <div className="section-container wrapper">
-      <div className="relative mb-8 text-xl">
-        <h2 className="section-heading">Frequently Asked Questions</h2>
-        <Image
-          width={50}
-          height={50}
-          src={"/assets/img/general/title-head.png"}
-          alt="Custom Underline Image"
-          className="absolute bottom-[0.8rem] left-1/2 h-auto w-16 -translate-x-1/2 transform"
-        />
-      </div>
+  if (faqData.length === 0) {
+    return null;
+  }
 
-      {faqData.length === 0 ? (
-        <p className="text-center text-gray-500">No FAQ found.</p>
-      ) : (
-        <Accordion type="single" collapsible className="mx-auto w-full md:w-3/4">
-          {faqData.map((item, index) => (
-            <AccordionItem
-              key={index}
-              value={`item-${index + 1}`}
-              className="mb-1 rounded-lg bg-white p-1 px-4 shadow"
-            >
-              <AccordionTrigger className="text-start hover:no-underline">
-                {item.question}
-              </AccordionTrigger>
-              <AccordionContent>{item.answer}</AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      )}
-    </div>
+  return (
+    <section className="section-container wrapper">
+      <SectionHeading title={`Frequently Asked Questions `} />
+
+      {/* <Accordion
+        type="single"
+        collapsible
+        className="mx-auto grid w-full grid-cols-1 items-start gap-3 gap-x-6 lg:grid-cols-2"
+      > */}
+      <Accordion
+        type="single"
+        collapsible
+        className="mx-auto w-full lg:max-w-[80%]"
+      >
+        {faqData.map((item, index) => (
+          <AccordionItem
+            key={index}
+            value={`item-${index + 1}`}
+            className="mb-1 rounded-lg bg-white p-1 px-4 shadow"
+          >
+            <AccordionTrigger className="text-start hover:no-underline">
+              {item.question}
+            </AccordionTrigger>
+            <AccordionContent>{item.answer}</AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+
+      <ViewAllButton link={`/${country}/${state}`} />
+    </section>
   );
 }

@@ -1,4 +1,4 @@
-import "./VehicleMainCard.scss";
+import "./VehicleCard.scss";
 import { VehicleCardType } from "@/types/vehicle-types";
 import {
   convertToLabel,
@@ -21,17 +21,13 @@ import { MapPin } from "lucide-react";
 import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
 import LinkWrapper from "../LinkWrapper";
 
-type VehicleMainCardProps = {
+type VehicleCardProps = {
   vehicle: VehicleCardType;
   index: number;
   country: string;
 };
 
-const VehicleMainCard = ({
-  vehicle,
-  index,
-  country = "ae",
-}: VehicleMainCardProps) => {
+const VehicleCard = ({ vehicle, index, country = "ae" }: VehicleCardProps) => {
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,
     vehicle.phoneNumber,
@@ -129,4 +125,4 @@ const VehicleMainCard = ({
   );
 };
 
-export default VehicleMainCard;
+export default VehicleCard;

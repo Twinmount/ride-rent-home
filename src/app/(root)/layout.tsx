@@ -7,7 +7,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
-      <main className="mt-[4rem]">{children}</main>
+      <main className="global-padding container mt-[4rem] bg-background">
+        {children}
+      </main>
       <MobileNavbar />
       <Footer />
 

@@ -135,8 +135,13 @@ export default function VehicleTypesCarousel() {
 
   return (
     <VehicleTypesCarouselWrapper>
-      <Carousel className="w-full max-w-full p-0">
-        <CarouselContent className="flex h-fit gap-x-3 px-1 py-0 lg:gap-x-4">
+      <Carousel
+        className="w-full max-w-full p-0"
+        opts={{
+          align: "start",
+        }}
+      >
+        <CarouselContent className="ap-x-3 mx-auto flex h-fit px-1 py-0 lg:gap-x-4">
           {list.map((type, index) => (
             <VehicleTypeCard
               key={type.typeId}
@@ -166,7 +171,7 @@ export const VehicleTypesCarouselWrapper = ({
 }) => {
   return (
     <div
-      className="sm: h-fit w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[53%] md:ml-6 md:mr-8 md:max-w-[55%] lg:max-w-[64%] xl:max-w-[68%] 2xl:max-w-[72%]"
+      className="h-fit w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[53%] md:ml-6 md:mr-8 md:max-w-[55%] lg:max-w-[64%] xl:max-w-[60%] 2xl:max-w-[60%]"
       id="categories"
     >
       {children}

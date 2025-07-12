@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
+import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
 import VehicleListingGridWrapper from "@/components/common/VehicleListingGridWrapper";
 import VisibilityObserver from "@/components/common/VisibilityObserver";
 import { convertToLabel } from "@/helpers";
@@ -83,7 +83,7 @@ const VehicleListSection: React.FC<VehicleListSectionProps> = ({
                       )
                     }
                   >
-                    <VehicleMainCard
+                    <VehicleCard
                       vehicle={vehicle}
                       index={animationIndex}
                       country={country}

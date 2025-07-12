@@ -45,7 +45,7 @@ export default function EnquirePriceDialogCard({
         />
         <Button
           type="submit"
-          className="yellow-gradient flex-center w-full rounded-xl py-1 text-black"
+          className="bg-theme-gradient flex-center w-full rounded-xl py-1 text-black"
         >
           Start the chat
         </Button>

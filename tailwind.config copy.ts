@@ -18,41 +18,25 @@ const config = {
   theme: {
     container: {
       center: true,
-      // padding: {
-      //   DEFAULT: "1rem", // Mobile
-      //   sm: "1.6rem", // >=576px
-      //   md: "2rem", // >=768px
-      //   lg: "3rem", // >=992px
-      //   xl: "4rem", // >=1200px
-      //   "2xl": "4rem", // >=1536px
-      // },
+      padding: "2rem",
       screens: {
-        "2xl": "1920px",
+        "2xl": "1400px",
       },
     },
     extend: {
       colors: {
-        // **************redesign colors start***************
-        background: "#F8F8F8", // Base page background
-        footer: "#232323", // Footer background
-        accent: "#F57F17", // Orange theme color
-        "accent-light": "#F9A825", // Lighter orange
-        "text-primary": "#1C2122", // Main text color
-        "text-secondary": "#6C727C", // Secondary gray text
-        "text-tertiary": "#7D8487", // Tertiary gray text
-        "text-muted": "#C2C2C2", // Muted gray text
-        "border-default": "#E3EBEF", // Default borders
-        "gradient-from": "#F9A825", // Gradient start
-        "gradient-to": "#F57F17", // Gradient end
-
-        //  ***************redesign colors end***************
-
         yellow: "#ffa733",
         orange: "#ea7b0b",
         lightGray: "#f5f5f5", //bg light gray
+        border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
@@ -64,6 +48,10 @@ const config = {
         mutedd: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -84,11 +72,6 @@ const config = {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
-      backgroundImage: {
-        "theme-gradient":
-          "linear-gradient(255.26deg, #F9A825 29.45%, #F57F17 88.69%)",
-      },
-
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -156,34 +139,7 @@ const config = {
       },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    function ({ matchUtilities, theme }: any) {
-      matchUtilities(
-        {
-          "bg-grid": (value: any) => ({
-            backgroundImage: `url("${svgToDataUri(
-              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`,
-            )}")`,
-          }),
-          "bg-grid-small": (value: any) => ({
-            backgroundImage: `url("${svgToDataUri(
-              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="8" height="8" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`,
-            )}")`,
-          }),
-          "bg-dot": (value: any) => ({
-            backgroundImage: `url("${svgToDataUri(
-              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="none"><circle fill="${value}" id="pattern-circle" cx="10" cy="10" r="1.6257413380501518"></circle></svg>`,
-            )}")`,
-          }),
-        },
-        {
-          values: flattenColorPalette(theme("backgroundColor")),
-          type: "color",
-        },
-      );
-    },
-  ],
+  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
 
 export default config;

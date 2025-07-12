@@ -105,7 +105,7 @@ export const formatPhoneNumber = (countryCode: string, phoneNumber: string) => {
 };
 
 // change to singular
-export const singularizeType = (type: string) => {
+export const singularizeValue = (type: string) => {
   if (type.toLowerCase() === "buses") {
     return "Bus";
   } else if (type.toLowerCase() === "buggies") {

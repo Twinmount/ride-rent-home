@@ -1,5 +1,5 @@
 import BrandImage from "@/components/common/BrandImage";
-import { convertToLabel, singularizeType } from "@/helpers";
+import { convertToLabel, singularizeValue } from "@/helpers";
 import Link from "next/link";
 
 type PropsType = {
@@ -15,7 +15,7 @@ export default async function AllSeriesPageHeading({
   brand,
   country,
 }: PropsType) {
-  const formattedCategory = singularizeType(convertToLabel(category));
+  const formattedCategory = singularizeValue(convertToLabel(category));
   return (
     <div className="custom-heading group mb-6 flex items-center gap-x-3">
       <Link
