@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import BrandSearch from "@/components/root/brand/BrandSearch";
 import { FetchBrandsResponse } from "@/types";
 import Pagination from "@/components/common/Pagination";
-import { singularizeType } from "@/helpers";
+import { singularizeValue } from "@/helpers";
 import BackButton from "@/components/common/BackButton";
 import { ENV } from "@/config/env";
 import BrandsList from "@/components/root/brand/BrandsList";
@@ -67,7 +67,7 @@ export default async function Brands(props: ParamsProps) {
         <div className="mt-24 flex items-center justify-start gap-x-4">
           <BackButton />
           <h1 className="mb-4 text-2xl font-semibold uppercase lg:text-4xl">
-            <span className="text-yellow"> {singularizeType(category)}</span>{" "}
+            <span className="text-yellow"> {singularizeValue(category)}</span>{" "}
             Brands
           </h1>
         </div>

@@ -7,6 +7,7 @@ import { convertToLabel } from "@/helpers";
 import Image from "next/image";
 import { ENV } from "@/config/env";
 import { API } from "@/utils/API";
+import { SectionHeading } from "@/components/common/SectionHeading";
 
 export const revalidate = 3600;
 
@@ -36,16 +37,14 @@ export default async function TopBrands({
 
   if (brands.length === 0) return null;
 
+  const formattedState = convertToLabel(state as string);
+
   return (
     <MotionSection className="section-container wrapper">
-      <h2 className="section-heading">
-        Rent from top brands in{" "}
-        <div className="yellow-gradient inline-block rounded-xl px-2 capitalize">
-          <span data-testid="converted-label">
-            {convertToLabel(state as string)}
-          </span>
-        </div>
-      </h2>
+      <SectionHeading
+        title={`Rent From Top Brands In ${formattedState}`}
+        subtitle="Lorem ipsum dolor sit amet consectetur. Cras nulla commodo orci ipsum erat "
+      />
 
       <CarouselWrapper>
         {brands.map((brand: BrandType) => (

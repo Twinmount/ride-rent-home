@@ -42,7 +42,7 @@ export default async function FAQPage(props: PageProps) {
     <section>
       <HeadingBanner heading="Frequently Asked Questions" />
 
-      <FAQ stateValue={state || "dubai"} country={country} />
+      <FAQ state={state || "dubai"} country={country} />
     </section>
   );
 }

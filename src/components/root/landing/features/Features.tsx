@@ -1,7 +1,11 @@
 import FeaturesCard from "@/components/card/features-card/FeaturesCard";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps } from "@/types";
-import { convertToLabel, createFeatureCards, singularizeType } from "@/helpers";
+import {
+  convertToLabel,
+  createFeatureCards,
+  singularizeValue,
+} from "@/helpers";
 
 const Features = ({ state, category }: StateCategoryProps) => {
   const dynamicFeatureCards = createFeatureCards(convertToLabel(state));
@@ -10,7 +14,7 @@ const Features = ({ state, category }: StateCategoryProps) => {
     <MotionSection className="wrapper h-auto pb-12 pt-4">
       <h2 className="mb-6 text-center text-2xl font-bold">
         Enjoy ease and peace of mind when renting a{" "}
-        {convertToLabel(singularizeType(category)).toLowerCase()} in{" "}
+        {convertToLabel(singularizeValue(category)).toLowerCase()} in{" "}
         {convertToLabel(state)}
       </h2>
 

@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import FAQ from "@/components/common/FAQ/FAQ";
 import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
 import Documents from "@/components/root/landing/documents/Documents";
 import RideRentFeatures from "@/components/root/landing/features/Features";
 import Locations from "@/components/common/locations/Locations";
-import States from "@/components/root/landing/states/States";
-import MainVehicleGrid from "@/components/root/landing/MainVehicleGrid";
-import Recommended from "@/components/root/landing/Recommended";
+import MainVehicleGrid from "@/components/root/landing/FeaturedVehicles";
+import Recommended from "@/components/root/landing/PromotionDeals";
 import TopBrands from "@/components/root/landing/TopBrands";
 import { Suspense } from "react";
 import { PageProps } from "@/types";
@@ -58,7 +56,6 @@ export default async function Home(props: PageProps) {
 
       <VehicleCategoryAndFilter />
 
-
       <Suspense fallback={<VehicleCardSkeletonGrid />}>
         <MainVehicleGrid
           state={state}
@@ -77,7 +74,7 @@ export default async function Home(props: PageProps) {
       </Suspense>
 
       <Suspense fallback={<StatesGridSkeleton />}>
-        <States category={category} country={country} />
+        {/* <States category={category} country={country} /> */}
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
@@ -90,7 +87,10 @@ export default async function Home(props: PageProps) {
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
-        <FAQ stateValue={state || country === "in" ? "bangalore" : "dubai"} country={country} />
+        {/* <FAQ
+          stateValue={state || country === "in" ? "bangalore" : "dubai"}
+          country={country}
+        /> */}
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>

@@ -1,9 +1,10 @@
-import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
+import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
+import { SectionHeading } from "@/components/common/SectionHeading";
 import ViewAllButton from "@/components/common/ViewAllButton";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { ENV } from "@/config/env";
-import { convertToLabel, singularizeType } from "@/helpers";
+import { convertToLabel, singularizeValue } from "@/helpers";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 
@@ -39,24 +40,19 @@ export default async function NewlyArrived({
 
   if (vehicleData.length === 0) return null;
 
-  const formattedCategory = singularizeType(convertToLabel(category));
+  const formattedCategory = convertToLabel(category);
 
   return (
     <MotionSection className="section-container wrapper">
-      <h2 className="section-heading">
-        Newly arrived{" "}
-        <div className="yellow-gradient inline-block rounded-xl px-1">
-          <span data-testid="formatted-category">{formattedCategory}</span>
-        </div>{" "}
-        for rent in{" "}
-        <div className="yellow-gradient inline-block rounded-xl px-2 capitalize">
-          <span data-testid="converted-label">{convertToLabel(state)}</span>
-        </div>
-      </h2>
+      <SectionHeading
+        title={`Newly arrived ${formattedCategory}`}
+        subtitle="Lorem ipsum dolor sit amet consectetur."
+        align="left"
+      />
 
       <CarouselWrapper isButtonVisible>
         {vehicleData.map((vehicle, index) => (
-          <VehicleMainCard
+          <VehicleCard
             key={vehicle.vehicleId}
             vehicle={vehicle}
             index={index}
@@ -64,6 +60,7 @@ export default async function NewlyArrived({
           />
         ))}
       </CarouselWrapper>
+
       <ViewAllButton
         link={`/${country}/${state}/listing/${category}?filter=${VehicleHomeFilter.LATEST_MODELS}`}
       />

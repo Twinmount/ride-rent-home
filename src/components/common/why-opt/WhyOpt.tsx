@@ -1,10 +1,10 @@
 import { StateCategoryProps } from "@/types";
 import "./WhyOpt.scss";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
-import { convertToLabel, singularizeType } from "@/helpers";
+import { convertToLabel, singularizeValue } from "@/helpers";
 
 const WhyOpt = ({ state, category }: StateCategoryProps) => {
-  const formattedCategory = singularizeType(convertToLabel(category));
+  const formattedCategory = singularizeValue(convertToLabel(category));
 
   return (
     <MotionSection className="wrapper why-opt-section">
@@ -24,12 +24,12 @@ const WhyOpt = ({ state, category }: StateCategoryProps) => {
           <br />
           <br />
           Seeking a sleek luxury convertible or a cost-effective option for a
-          monthly car rental in {convertToLabel(state)}? RIDE.RENT has your perfect match on
-          standby.
+          monthly car rental in {convertToLabel(state)}? RIDE.RENT has your
+          perfect match on standby.
           <br />
           <br />
-          Don&apos;t hesitate—secure your ideal car for rent in {convertToLabel(state)} with
-          RIDE.RENT today!
+          Don&apos;t hesitate—secure your ideal car for rent in{" "}
+          {convertToLabel(state)} with RIDE.RENT today!
         </p>
       </div>
     </MotionSection>
