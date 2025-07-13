@@ -26,13 +26,13 @@ import JsonLd from "@/components/common/JsonLd";
 import Banner from "@/components/root/landing/Banner";
 import BannerSkeleton from "@/components/skelton/BannerSkeleton";
 
-export async function generateMetadata(props: PageProps): Promise<Metadata> {
-  const params = await props.params;
+// export async function generateMetadata(props: PageProps): Promise<Metadata> {
+//   const params = await props.params;
 
-  const { country, state, category } = params;
+//   const { country, state, category } = params;
 
-  return generateHomePageMetadata(state, category, country);
-}
+//   return generateHomePageMetadata(state, category, country);
+// }
 
 export default async function Home(props: PageProps) {
   const searchParams = await props.searchParams;

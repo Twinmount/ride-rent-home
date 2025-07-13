@@ -2,6 +2,7 @@ import Footer from "@/components/footer/Footer";
 import MobileNavbar from "@/components/navbar/MobileNavbar";
 import { Navbar } from "@/components/navbar/Navbar";
 import GlobalPageLoadingIndicator from "./GlobalPageLoadingIndicator";
+import BookingDialog from "@/components/dialog/BookingDialog";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,6 +16,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* global page loading indicator */}
       <GlobalPageLoadingIndicator />
+
+      {/* Dialog */}
+      <BookingDialog />
     </>
   );
 }

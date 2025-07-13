@@ -203,11 +203,40 @@ export type VehicleCardType = {
   };
 };
 
+export type NewVehicleCardType = {
+  vehicleId: string;
+  vehicleCode: string;
+  thumbnail: string;
+  model: string;
+  vehicleTitle: string;
+  rating?: string;
+  rentalDetails: CardRentalDetails;
+  securityDeposit: {
+    enabled: boolean;
+    amountInAED?: string;
+  };
+  state: string;
+  vehicleCategory: string;
+  isDisabled: boolean;
+};
+
 // API response type for FetchVehicleByFilters api function
 export interface FetchVehicleCardsResponse {
   status: string;
   result: {
     list: VehicleCardType[]; // Array of vehicle cards
+    page: string; // Page number is a string, not a number
+    limit: string; // Limit is a string, not a number
+    total: number; // Total number of vehicle cards available
+    totalNumberOfPages: number; // Total number of pages
+  };
+  statusCode: number;
+}
+
+export interface FetchVehicleCardsResponseV2 {
+  status: string;
+  result: {
+    list: NewVehicleCardType[]; // Array of vehicle cards
     page: string; // Page number is a string, not a number
     limit: string; // Limit is a string, not a number
     total: number; // Total number of vehicle cards available

@@ -14,6 +14,7 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 .scrollable-element {
@@ -138,11 +139,11 @@ body {
   }
 
   .heading-primary {
-    @apply text-text-primary text-[1.125rem] font-semibold leading-[1] sm:text-[1.75rem] lg:text-[2.5rem];
+    @apply text-[1.125rem] font-semibold leading-[1] text-text-primary sm:text-[1.75rem] lg:text-[2.5rem];
   }
 
   .heading-secondary {
-    @apply text-text-secondary text-[0.75rem] font-normal leading-[1] sm:text-[0.875rem] lg:text-[1.125rem];
+    @apply text-[0.75rem] font-normal leading-[1] text-text-secondary sm:text-[0.875rem] lg:text-[1.125rem];
   }
 
   .flex-center {

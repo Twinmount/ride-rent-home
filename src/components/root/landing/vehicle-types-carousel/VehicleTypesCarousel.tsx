@@ -35,16 +35,15 @@ export default function VehicleTypesCarousel() {
     queryKey: ["vehicleTypes", category, state],
     queryFn: () => fetchVehicleTypesByValue(category, state, country),
     enabled: !!category && !!country,
-    staleTime: 60 * 1000,
   });
 
   const vehicleTypes: VehicleTypeType[] = data?.result?.list || [];
 
-  // Save vehicleTypes to localStorage
+  // Save vehicleTypes to sessionStorage
   useEffect(() => {
     if (vehicleTypes.length === 0) return;
 
-    const cached = localStorage.getItem(storageKey);
+    const cached = sessionStorage.getItem(storageKey);
     let shouldUpdate = true;
 
     if (cached) {
@@ -62,16 +61,16 @@ export default function VehicleTypesCarousel() {
     }
 
     if (shouldUpdate) {
-      localStorage.setItem(storageKey, JSON.stringify(vehicleTypes));
+      sessionStorage.setItem(storageKey, JSON.stringify(vehicleTypes));
       setCachedVehicleTypes(vehicleTypes);
     }
   }, [vehicleTypes, storageKey]);
 
-  // Load from localStorage if API data is missing
+  // Load from sessionStorage if API data is missing
   useEffect(() => {
     if (vehicleTypes.length > 0) return;
 
-    const stored = localStorage.getItem(storageKey);
+    const stored = sessionStorage.getItem(storageKey);
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
@@ -136,12 +135,11 @@ export default function VehicleTypesCarousel() {
   return (
     <VehicleTypesCarouselWrapper>
       <Carousel
-        className="w-full max-w-full p-0"
         opts={{
           align: "start",
         }}
       >
-        <CarouselContent className="ap-x-3 mx-auto flex h-fit px-1 py-0 lg:gap-x-4">
+        <CarouselContent className="flex h-fit gap-x-3 px-1 py-0 lg:gap-x-4">
           {list.map((type, index) => (
             <VehicleTypeCard
               key={type.typeId}
@@ -171,7 +169,7 @@ export const VehicleTypesCarouselWrapper = ({
 }) => {
   return (
     <div
-      className="h-fit w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[53%] md:ml-6 md:mr-8 md:max-w-[55%] lg:max-w-[64%] xl:max-w-[60%] 2xl:max-w-[60%]"
+      className="h-fit w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[58%] md:ml-6 md:mr-8 md:max-w-[55%] lg:max-w-[60%] xl:max-w-[60%] 2xl:max-w-[60%]"
       id="categories"
     >
       {children}
