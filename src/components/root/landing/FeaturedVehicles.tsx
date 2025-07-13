@@ -2,7 +2,7 @@ import ViewAllButton from "@/components/common/ViewAllButton";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
-import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
+import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { API } from "@/utils/API";
 import VehicleCard from "@/components/card/new-vehicle-card/main-card/VehicleCard";
 
@@ -16,14 +16,6 @@ const FeaturedVehicles = async ({
   vehicleType,
   country,
 }: FeaturedVehiclesProps) => {
-  // view all link
-  let viewAllLink = `/${country}/${state}/listing/${category}`;
-
-  // if vehicleType exists, add it in the link
-  if (vehicleType) {
-    viewAllLink += `/${vehicleType}`;
-  }
-
   const params = new URLSearchParams({
     page: "1",
     limit: "8",
@@ -40,7 +32,7 @@ const FeaturedVehicles = async ({
   const url = `/vehicle/home-page/list?${params.toString()}`;
 
   const response = await API({
-    path: url,
+    path: `/vehicle/home-page/list?${params.toString()}`,
     options: {
       method: "GET",
       cache: "no-cache",
@@ -48,12 +40,20 @@ const FeaturedVehicles = async ({
     country,
   });
 
-  const data: FetchVehicleCardsResponse = await response.json();
+  const data: FetchVehicleCardsResponseV2 = await response.json();
 
   const vehicles = data?.result?.list || [];
 
   if (vehicles.length === 0) {
     return null;
+  }
+
+  // view all link
+  let viewAllLink = `/${country}/${state}/listing/${category}`;
+
+  // if vehicleType exists, add it in the link
+  if (vehicleType) {
+    viewAllLink += `/${vehicleType}`;
   }
 
   return (

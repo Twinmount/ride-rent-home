@@ -3,18 +3,16 @@ import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrappe
 import { SectionHeading } from "@/components/common/SectionHeading";
 import ViewAllButton from "@/components/common/ViewAllButton";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
-import { ENV } from "@/config/env";
 import { convertToLabel } from "@/helpers";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
-import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
+import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
+import { API } from "@/utils/API";
 
 export default async function NewlyArrived({
   state,
   category,
   country,
 }: StateCategoryProps) {
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-
   const params = new URLSearchParams({
     page: "1",
     limit: "5",
@@ -24,17 +22,17 @@ export default async function NewlyArrived({
     filter: VehicleHomeFilter.POPULAR_MODELS,
   });
 
-  // Construct the full URL
-  const url = `${baseUrl}/vehicle/home-page/list?${params.toString()}`;
-
-  // Fetch data using the generated URL
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "no-cache",
+  const response = await API({
+    path: `/vehicle/home-page/list?${params.toString()}`,
+    options: {
+      method: "GET",
+      cache: "no-cache",
+    },
+    country,
   });
 
   // Parse the JSON response
-  const data: FetchVehicleCardsResponse = await response.json();
+  const data: FetchVehicleCardsResponseV2 = await response.json();
 
   const vehicleData = data?.result?.list || [];
 

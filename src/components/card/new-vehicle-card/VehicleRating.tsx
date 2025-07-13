@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Star } from "lucide-react";
 
 interface VehicleRatingProps {
-  rating: string;
+  rating?: string;
 }
 
 /**

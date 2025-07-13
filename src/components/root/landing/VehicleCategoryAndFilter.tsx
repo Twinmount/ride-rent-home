@@ -13,7 +13,7 @@ export default function VehicleCategoryAndFilter() {
       }}
     >
       <div
-        className={`mx-auto flex items-center justify-center gap-x-4 p-0 sm:pl-4 lg:gap-x-14`}
+        className={`mx-auto flex w-full max-w-full items-center justify-center gap-x-4 p-0 lg:gap-x-14`}
       >
         {/* vehicle categories menu bar */}
         <VehicleCategories />

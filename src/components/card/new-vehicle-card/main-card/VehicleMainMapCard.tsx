@@ -7,7 +7,7 @@ import {
   getFormattedPhoneNumber,
 } from "@/helpers";
 import ContactIcons from "@/components/common/contact-icons/ContactIcons";
-import SpecsGrid from "../SpecsGrid";
+import SpecsGrid from "../../vehicle-card/SpecsGrid";
 import ZeroDeposit from "../ZeroDeposit";
 
 import CompanyLogo from "../CompanyLogo";
@@ -61,7 +61,6 @@ const VehicleMainMapCard = ({
             alt={vehicle.vehicleTitle || "Vehicle Image"}
             width={350}
             height={250}
-            className="vehicle-image"
           />
 
           {/* Company Logo */}
