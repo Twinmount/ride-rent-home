@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import NoResultsFound from "./NoResultsFound";
-import PriceEnquireDialog from "../../../dialog/price-filter-dialog/PriceEnquireDialog";
 import { useInView } from "react-intersection-observer";
 import { useFetchListingVehicles } from "@/hooks/useFetchListingVehicles";
 import LoadingWheel from "@/components/common/LoadingWheel";
@@ -278,9 +277,6 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
 
         {/* Toggle Button (mobile) */}
         <MapToggleButton showMap={showMap} toggleMap={toggleMap} />
-
-        {/* Dialog */}
-        <PriceEnquireDialog />
       </div>
     </>
   );

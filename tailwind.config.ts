@@ -41,7 +41,7 @@ const config = {
         "text-secondary": "#6C727C", // Secondary gray text
         "text-tertiary": "#7D8487", // Tertiary gray text
         "text-muted": "#C2C2C2", // Muted gray text
-        "border-default": "#E3EBEF", // Default borders
+        "border-default": "#DDE5EB", // Default borders
         "gradient-from": "#F9A825", // Gradient start
         "gradient-to": "#F57F17", // Gradient end
 

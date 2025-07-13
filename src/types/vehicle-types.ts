@@ -203,6 +203,23 @@ export type VehicleCardType = {
   };
 };
 
+export type NewVehicleCardType = {
+  vehicleId: string;
+  vehicleCode: string;
+  thumbnail: string;
+  model: string;
+  vehicleTitle: string;
+  rating: string;
+  rentalDetails: CardRentalDetails;
+  securityDeposit: {
+    enabled: boolean;
+    amountInAED?: string;
+  };
+  state: string;
+  vehicleCategory: string;
+  isDisabled: boolean;
+};
+
 // API response type for FetchVehicleByFilters api function
 export interface FetchVehicleCardsResponse {
   status: string;

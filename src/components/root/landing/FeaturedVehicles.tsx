@@ -4,7 +4,7 @@ import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 import { API } from "@/utils/API";
-import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
+import VehicleCard from "@/components/card/new-vehicle-card/main-card/VehicleCard";
 
 type FeaturedVehiclesProps = StateCategoryProps & {
   vehicleType: string | undefined;

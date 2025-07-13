@@ -207,10 +207,11 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        `border-border-default absolute h-12 w-12 rounded border p-2`,
+        `absolute h-12 w-12 rounded border border-border-default p-2 hover:bg-gray-200`,
         orientation === "horizontal"
           ? "-left-16 top-1/2 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+        canScrollPrev ? "text-accent" : "text-gray-400",
         className,
       )}
       disabled={!canScrollPrev}
@@ -236,10 +237,11 @@ const CarouselNext = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        `border-border-default absolute h-12 w-12 rounded border p-2`,
+        `absolute h-12 w-12 rounded border border-border-default p-2 hover:bg-gray-100`,
         orientation === "horizontal"
           ? "-right-16 top-1/2 -translate-y-1/2"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
+        canScrollNext ? "text-accent" : "text-gray-400",
         className,
       )}
       disabled={!canScrollNext}

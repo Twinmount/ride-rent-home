@@ -26,13 +26,13 @@ import JsonLd from "@/components/common/JsonLd";
 import Banner from "@/components/root/landing/Banner";
 import BannerSkeleton from "@/components/skelton/BannerSkeleton";
 
-export async function generateMetadata(props: PageProps): Promise<Metadata> {
-  const params = await props.params;
+// export async function generateMetadata(props: PageProps): Promise<Metadata> {
+//   const params = await props.params;
 
-  const { country, state, category } = params;
+//   const { country, state, category } = params;
 
-  return generateHomePageMetadata(state, category, country);
-}
+//   return generateHomePageMetadata(state, category, country);
+// }
 
 export default async function Home(props: PageProps) {
   const searchParams = await props.searchParams;
@@ -71,7 +71,7 @@ export default async function Home(props: PageProps) {
         <NewlyArrived state={state} category={category} country={country} />
       </Suspense>
 
-      <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
+      {/*   <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
         <TopBrands state={state} category={category} country={country} />
       </Suspense>
 
@@ -98,7 +98,7 @@ export default async function Home(props: PageProps) {
       <Suspense fallback={<SectionLoading />}>
         <Locations state={state} category={category} country={country} />
         <TrustedReviewsSection />
-      </Suspense>
+      </Suspense> */}
     </>
   );
 }

@@ -1,10 +1,10 @@
-import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
+import VehicleCard from "@/components/card/new-vehicle-card/main-card/VehicleCard";
 import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import ViewAllButton from "@/components/common/ViewAllButton";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { ENV } from "@/config/env";
-import { convertToLabel, singularizeValue } from "@/helpers";
+import { convertToLabel } from "@/helpers";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
 
