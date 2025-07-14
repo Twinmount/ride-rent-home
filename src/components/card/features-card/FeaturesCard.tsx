@@ -1,5 +1,4 @@
 import { IconType } from "react-icons";
-import { clsx } from "clsx";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 
 type FeatureCardProps = {
@@ -13,24 +12,29 @@ type FeatureCardProps = {
 };
 
 const FeaturesCard = ({ data }: FeatureCardProps) => {
-  const { icon: Icon, title, description, bgClass } = data;
+  const { icon: Icon, title, description } = data;
 
   return (
-    <MotionDiv className="group mx-auto flex min-h-[13rem] w-auto max-w-[90%] scale-100 cursor-default flex-col rounded-[0.5rem] bg-white p-3 shadow-md transition-all hover:shadow-xl">
-      <div
-        className={clsx(
-          "flex h-16 w-full items-center justify-center rounded-[0.5rem] text-white transition-colors",
-          {
-            "bg-black": bgClass === "black",
-            "bg-[#127384]": bgClass === "blue",
-            "bg-yellow": bgClass === "orange",
-          },
-        )}
-      >
-        <Icon className="h-6 w-6 transition-transform group-hover:scale-110" />
+    <MotionDiv className="group">
+      <div className="flex items-center gap-4 p-0 transition-all duration-300">
+        {/* Icon Container */}
+        <div className="flex-shrink-0">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FCECD2] ">
+            <Icon className="h-6 w-6 text-accent" />
+          </div>
+        </div>
+        
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-sm lg:text-lg text-accent leading-tight mb-2">
+            {title}
+          </h3>
+          
+          <p className="text-[10px] lg:text-sm text-gray-600">
+            {description}
+          </p>
+        </div>
       </div>
-      <h3 className="my-2 text-center text-lg font-medium">{title}</h3>
-      <p className="mx-auto w-[90%] text-center text-sm">{description}</p>
     </MotionDiv>
   );
 };

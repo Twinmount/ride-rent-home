@@ -17,19 +17,31 @@ export default function StateCard({
     <Link
       href={`/${country}/${state.stateValue}/${category}`}
       key={state.stateId}
-      className="group relative flex h-[7rem] w-full min-w-[10rem] max-w-[12rem] cursor-pointer items-center justify-center overflow-hidden rounded-[2rem] text-center shadow-[2px_2px_4px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in"
+      className="group relative flex h-[175px] w-[150px] m-2 cursor-pointer flex-col items-center justify-end overflow-hidden rounded-[1rem] transition-all duration-300 ease-out bg-white"
+      style={{ boxShadow: '0px 0px 4px 0px #00000040' }}
       target="_blank"
     >
-      <div className="absolute bottom-0 left-0 h-1/4 w-full bg-gradient-to-t from-black/80 to-transparent" />
-
+      {/* Background Image */}
       <Image
         fill
         src={state.stateImage}
         alt={`${state.stateName} logo`}
-        className="h-full w-full scale-110 object-cover transition-transform duration-500 ease-out group-hover:scale-100"
+        className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
       />
-      <figcaption className="absolute bottom-[0.2rem] z-[2] m-0 whitespace-nowrap p-0 font-bold text-white">
-        {state.stateName}
+      
+      {/* White gradient to match design */}
+      <div 
+        className="absolute bottom-0 left-0 h-full w-full"
+        style={{ 
+          background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 53.75%, rgba(255, 255, 255, 0.8) 84.5%)' 
+        }}
+      />
+      
+      {/* State name with enhanced styling */}
+      <figcaption className="relative z-1 mb-3 px-2 text-center">
+        <span className="text-base font-medium text-gray-800 drop-shadow-sm">
+          {state.stateName}
+        </span>
       </figcaption>
     </Link>
   );
