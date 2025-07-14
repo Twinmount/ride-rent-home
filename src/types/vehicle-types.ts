@@ -210,6 +210,7 @@ export type NewVehicleCardType = {
   model: string;
   vehicleTitle: string;
   rating?: string;
+  isFancyNumber: boolean;
   rentalDetails: CardRentalDetails;
   securityDeposit: {
     enabled: boolean;
