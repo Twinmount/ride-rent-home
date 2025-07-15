@@ -1,0 +1,64 @@
+.hourlyRental {
+  width: 100px; /* Smaller width */
+  height: 100px; /* Smaller height */
+  overflow: hidden;
+  position: absolute;
+  color: black;
+
+  &::before,
+  &::after {
+    position: absolute;
+    z-index: -1;
+    content: "";
+    display: block;
+    border: 4px solid #b78628; /* Reduced border size for smaller badge */
+  }
+
+  span {
+    position: absolute;
+    display: block;
+    width: 160px; /* Smaller width for span */
+    padding: 8px 0; /* Reduced padding */
+    background: linear-gradient(
+      45deg,
+      #ffd700,
+      #ffa500,
+      #ff8c00
+    ); /* Gradient background */
+    background-size: 200% 200%; /* Animate gradient */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #000000;
+    font: 700 14px/1 "Lato", sans-serif; /* Smaller font size */
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 0.6rem;
+  }
+}
+
+.badgeTopRight {
+  top: -8px; /* Adjusted for smaller size */
+  right: -8px;
+
+  &::before,
+  &::after {
+    border-top-color: transparent;
+    border-right-color: transparent;
+  }
+
+  &::before {
+    top: 0;
+    left: 0.6rem;
+  }
+
+  &::after {
+    bottom: 0.6rem;
+    right: 0;
+  }
+
+  span {
+    left: -15px; /* Adjusted for smaller span */
+    top: 25px;
+    transform: rotate(45deg);
+  }
+}

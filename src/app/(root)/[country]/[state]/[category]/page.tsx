@@ -27,13 +27,13 @@ import Banner from "@/components/root/landing/Banner";
 import BannerSkeleton from "@/components/skelton/BannerSkeleton";
 import CarSection from "@/components/root/landing/CarSection";
 
-export async function generateMetadata(props: PageProps): Promise<Metadata> {
-  const params = await props.params;
+// export async function generateMetadata(props: PageProps): Promise<Metadata> {
+//   const params = await props.params;
 
-  const { country, state, category } = params;
+//   const { country, state, category } = params;
 
-  return generateHomePageMetadata(state, category, country);
-}
+//   return generateHomePageMetadata(state, category, country);
+// }
 
 export default async function Home(props: PageProps) {
   const searchParams = await props.searchParams;

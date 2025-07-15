@@ -14,6 +14,7 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 .scrollable-element {
@@ -141,7 +142,7 @@ body {
   }
 
   .heading-secondary {
-    @apply text-text-secondary text-[0.75rem] font-normal leading-[1] sm:text-[0.875rem] lg:text-[1.125rem];
+    @apply text-[0.75rem] font-normal leading-[1] text-text-secondary sm:text-[0.875rem] lg:text-[1.125rem];
   }
 
   .flex-center {

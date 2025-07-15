@@ -12,7 +12,7 @@ const CarSection: React.FC = () => {
           
           {/* Left Car - BMW */}
           <div className="relative flex-shrink-0 mr-[-20px] md:mr-[-60px] flex items-end h-full">
-            <div className="relative w-[94px] h-[46px] md:w-[265px] md:h-[141px] md:mb-3 mb-1">
+            <div className="relative w-[94px] h-[46px] md:w-[265px] md:h-[141px] md:mb-3 mb-2">
               <Image
                 src="/assets/cars/bmw.png"
                 alt="BMW"
