@@ -19,7 +19,7 @@ export default function VehicleCategoryAndFilter() {
         <VehicleCategories />
 
         {/* vehicle types carousel */}
-        <VehicleTypesCarousel />
+        {/* <VehicleTypesCarousel /> */}
 
         {/* filter modal */}
         <div className="max-sm:hidden">

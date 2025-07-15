@@ -31,6 +31,10 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        'fira-sans': ['var(--font-fira-sans)', 'sans-serif'],
+        'poppins': ['var(--font-poppins)', 'sans-serif'],
+      },
       colors: {
         // **************redesign colors start***************
         background: "#F8F8F8", // Base page background

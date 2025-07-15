@@ -25,6 +25,7 @@ import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
 import JsonLd from "@/components/common/JsonLd";
 import Banner from "@/components/root/landing/Banner";
 import BannerSkeleton from "@/components/skelton/BannerSkeleton";
+import CarSection from "@/components/root/landing/CarSection";
 
 // export async function generateMetadata(props: PageProps): Promise<Metadata> {
 //   const params = await props.params;
@@ -71,21 +72,31 @@ export default async function Home(props: PageProps) {
         <NewlyArrived state={state} category={category} country={country} />
       </Suspense>
 
-      <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
-        <TopBrands state={state} category={category} country={country} />
-      </Suspense>
+      
+      
+      
 
-      <Suspense fallback={<StatesGridSkeleton />}>
-        <States category={category} country={country} state={state} />
-      </Suspense>
+      
 
       <Suspense fallback={<SectionLoading />}>
         <Recommended state={state} country={country} />
       </Suspense>
 
+      <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
+        <TopBrands state={state} category={category} country={country} />
+      </Suspense>
+      
+      <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
+        <CarSection />
+      </Suspense>
+
       <Suspense fallback={<SectionLoading />}>
         <RideRentFeatures state={state} category={category} country={country} />
-        <Documents state={state} category={category} country={country} />
+        {/* <Documents state={state} category={category} country={country} /> */}
+      </Suspense>
+
+      <Suspense fallback={<StatesGridSkeleton />}>
+        <States category={category} country={country} state={state} />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
