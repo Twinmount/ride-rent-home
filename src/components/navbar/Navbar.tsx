@@ -3,7 +3,6 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";

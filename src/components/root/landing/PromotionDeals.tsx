@@ -1,6 +1,7 @@
 import PromotionCard from "@/components/card/vehicle-card/PromotionCard";
+import { SectionHeading } from "@/components/common/SectionHeading";
 import { convertToLabel } from "@/helpers";
-import { FetchPromotionsResponse } from "@/types";
+import { FetchPromotionsResponse, PromotionType } from "@/types";
 import { API } from "@/utils/API";
 
 export const revalidate = 900;
@@ -32,10 +33,41 @@ export default async function PromotionDeals({
 
   const formattedState = convertToLabel(state);
 
+  const samplePromotions: PromotionType[] = [
+    {
+      promotionId: "1",
+      promotionImage: "/assets/sample/promotion/promotion-1.png",
+      promotionLink: "/ae/dubai/cars",
+      title: "Offer Upto 25%",
+      description: "Lorem ipsum dolor sit amet consectetur.",
+    },
+    {
+      promotionId: "2",
+      promotionImage: "/assets/sample/promotion/promotion-2.png",
+      promotionLink: "/ae/dubai/cars",
+      title: "Offer Upto 25%",
+      description: "Lorem ipsum dolor sit amet consectetur.",
+    },
+    {
+      promotionId: "3",
+      promotionImage: "/assets/sample/promotion/promotion-1.png",
+      promotionLink: "/ae/dubai/cars",
+      title: "Offer Upto 25%",
+      description: "Lorem ipsum dolor sit amet consectetur.",
+    },
+    {
+      promotionId: "4",
+      promotionImage: "/assets/sample/promotion/promotion-2.png",
+      promotionLink: "/ae/dubai/cars",
+      title: "Offer Upto 25%",
+      description: "Lorem ipsum dolor sit amet consectetur.",
+    },
+  ];
+
   // bg image is available at "/assets/img/bg/promotion-bg.png"
 
   return (
-    <section className="section-container relative overflow-hidden py-10">
+    <section className="no-global-padding relative h-auto overflow-hidden py-10">
       {/* Background image */}
       <div
         className="absolute inset-0 scale-110 bg-cover bg-center transition-transform duration-500"
@@ -48,16 +80,15 @@ export default async function PromotionDeals({
       <div className="relative z-10">
         <div className="my-8 flex w-full flex-col gap-y-3 text-center">
           <h2 className="heading-primary !text-white">{`Best offers in ${formattedState}`}</h2>
+
+          <p className="text-[0.75rem] font-normal leading-[1] text-text-muted sm:text-[0.875rem] lg:text-base">
+            Lorem ipsum dolor sit amet consectetur. Semper fringilla ut aliquet
+            aliquet sodales sagittis.
+          </p>
         </div>
 
-        <div
-          className={`mx-auto grid gap-6 ${
-            promotions.length < 4
-              ? `grid-cols-${promotions.length}`
-              : "grid-cols-4"
-          } sm:grid-cols-2 lg:grid-cols-4`}
-        >
-          {promotions.map((promotion) => (
+        <div className={`flex-center mx-auto w-full flex-wrap gap-6`}>
+          {samplePromotions.map((promotion) => (
             <PromotionCard key={promotion.promotionId} {...promotion} />
           ))}
         </div>

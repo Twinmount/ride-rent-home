@@ -1,25 +1,20 @@
-import Image from "next/image";
-import Link from "next/link";
 import { StateType } from "@/types";
+import Image from "next/image";
 
-type StateCardProps = {
+type Props = {
   state: StateType;
-  category: string;
-  country: string;
+  handleStateSelect: (state: string) => void;
 };
-
-export default function StateCard({
+export default function LocationDialogStateCard({
   state,
-  category,
-  country,
-}: StateCardProps) {
+  handleStateSelect,
+}: Props) {
   return (
-    <Link
-      href={`/${country}/${state.stateValue}/${category}`}
+    <li
       key={state.stateId}
-      className="group relative flex h-[120px] w-[100px] cursor-pointer flex-col items-center justify-end overflow-hidden rounded-[0.75rem] bg-white transition-all duration-300 ease-out md:h-[140px] md:w-[130px] lg:h-[160px] lg:w-[140px]"
+      className="group relative flex h-[7.5rem] w-[6.25rem] cursor-pointer flex-col items-center justify-end overflow-hidden rounded-[0.75rem] bg-white transition-all duration-300 ease-out lg:h-[9rem] lg:w-[8.4375rem]"
       style={{ boxShadow: "0px 0px 4px 0px #00000040" }}
-      target="_blank"
+      onClick={() => handleStateSelect(state?.stateValue)}
     >
       {/* Background Image */}
       <Image
@@ -44,6 +39,6 @@ export default function StateCard({
           {state.stateName}
         </span>
       </figcaption>
-    </Link>
+    </li>
   );
 }

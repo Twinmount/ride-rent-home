@@ -29,8 +29,6 @@ const FeaturedVehicles = async ({
     params.set("type", vehicleType);
   }
 
-  const url = `/vehicle/home-page/list?${params.toString()}`;
-
   const response = await API({
     path: `/vehicle/home-page/list?${params.toString()}`,
     options: {
