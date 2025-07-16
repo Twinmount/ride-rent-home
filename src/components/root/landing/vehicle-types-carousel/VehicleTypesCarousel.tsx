@@ -169,7 +169,7 @@ export const VehicleTypesCarouselWrapper = ({
 }) => {
   return (
     <div
-      className="h-fit w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[58%] md:ml-6 md:mr-8 md:max-w-[55%] lg:max-w-[60%] xl:max-w-[60%] 2xl:max-w-[60%]"
+      className="h-fit w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[58%] md:ml-6 md:mr-8 md:max-w-[42%] lg:max-w-[57%] xl:max-w-[60%] 2xl:max-w-[60%]"
       id="categories"
     >
       {children}

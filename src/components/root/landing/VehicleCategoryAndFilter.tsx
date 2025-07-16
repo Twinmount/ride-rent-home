@@ -13,13 +13,13 @@ export default function VehicleCategoryAndFilter() {
       }}
     >
       <div
-        className={`mx-auto flex w-full max-w-full items-center justify-center gap-x-4 p-0 lg:gap-x-14`}
+        className={`mx-auto flex w-full max-w-full items-center justify-center gap-x-4 p-0 md:gap-x-14`}
       >
         {/* vehicle categories menu bar */}
         <VehicleCategories />
 
         {/* vehicle types carousel */}
-        {/* <VehicleTypesCarousel /> */}
+        <VehicleTypesCarousel />
 
         {/* filter modal */}
         <div className="max-sm:hidden">

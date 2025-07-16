@@ -72,12 +72,6 @@ export default async function Home(props: PageProps) {
         <NewlyArrived state={state} category={category} country={country} />
       </Suspense>
 
-      
-      
-      
-
-      
-
       <Suspense fallback={<SectionLoading />}>
         <Recommended state={state} country={country} />
       </Suspense>
@@ -85,7 +79,7 @@ export default async function Home(props: PageProps) {
       <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
         <TopBrands state={state} category={category} country={country} />
       </Suspense>
-      
+
       <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
         <CarSection />
       </Suspense>
