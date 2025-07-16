@@ -19,18 +19,18 @@ const FeaturesCard = ({ data }: FeatureCardProps) => {
       <div className="flex items-center gap-4 p-0 transition-all duration-300">
         {/* Icon Container */}
         <div className="flex-shrink-0">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FCECD2] ">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FCECD2]">
             <Icon className="h-6 w-6 text-accent" />
           </div>
         </div>
-        
+
         {/* Content */}
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-sm lg:text-lg text-accent leading-tight mb-2">
+        <div className="min-w-0 flex-1">
+          <h3 className="mb-2 text-sm font-semibold leading-tight text-accent lg:text-lg">
             {title}
           </h3>
-          
-          <p className="text-[10px] lg:text-sm text-gray-600">
+
+          <p className="text-[0.625rem] text-gray-600 lg:text-sm">
             {description}
           </p>
         </div>

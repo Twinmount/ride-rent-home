@@ -1,4 +1,4 @@
-@use "../styles/_variables.scss" as *;
+@use '../styles/_variables.scss' as *;
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -102,7 +102,7 @@ body {
   margin-bottom: 1rem;
 
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     bottom: -0.9rem;
     left: 0;
@@ -138,7 +138,7 @@ body {
   // }
 
   .heading-primary {
-    @apply text-text-primary text-[1.125rem] font-semibold leading-[1] sm:text-[1.75rem] lg:text-[2.2rem] font-poppins;
+    @apply font-poppins text-[1.125rem] font-semibold leading-[1] text-text-primary sm:text-[1.75rem] lg:text-[2.2rem];
   }
 
   .heading-secondary {

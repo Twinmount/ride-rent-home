@@ -1,12 +1,12 @@
-import VehicleCard from "@/components/card/new-vehicle-card/main-card/VehicleCard";
-import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
-import { SectionHeading } from "@/components/common/SectionHeading";
-import ViewAllButton from "@/components/common/ViewAllButton";
-import MotionSection from "@/components/general/framer-motion/MotionSection";
-import { convertToLabel } from "@/helpers";
-import { StateCategoryProps, VehicleHomeFilter } from "@/types";
-import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
-import { API } from "@/utils/API";
+import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
+import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
+import { SectionHeading } from '@/components/common/SectionHeading';
+import ViewAllButton from '@/components/common/ViewAllButton';
+import MotionSection from '@/components/general/framer-motion/MotionSection';
+import { convertToLabel } from '@/helpers';
+import { StateCategoryProps, VehicleHomeFilter } from '@/types';
+import { FetchVehicleCardsResponseV2 } from '@/types/vehicle-types';
+import { API } from '@/utils/API';
 
 export default async function NewlyArrived({
   state,
@@ -14,10 +14,10 @@ export default async function NewlyArrived({
   country,
 }: StateCategoryProps) {
   const params = new URLSearchParams({
-    page: "1",
-    limit: "5",
+    page: '1',
+    limit: '5',
     state: state,
-    sortOrder: "DESC",
+    sortOrder: 'DESC',
     category: category,
     filter: VehicleHomeFilter.POPULAR_MODELS,
   });
@@ -25,8 +25,8 @@ export default async function NewlyArrived({
   const response = await API({
     path: `/vehicle/home-page/list?${params.toString()}`,
     options: {
-      method: "GET",
-      cache: "no-cache",
+      method: 'GET',
+      cache: 'no-cache',
     },
     country,
   });
@@ -46,6 +46,7 @@ export default async function NewlyArrived({
         title={`Newly arrived ${formattedCategory}`}
         subtitle="Lorem ipsum dolor sit amet consectetur."
         align="left"
+        className="pb-2 pl-2 lg:pb-10 lg:pl-20"
       />
 
       <CarouselWrapper isButtonVisible>

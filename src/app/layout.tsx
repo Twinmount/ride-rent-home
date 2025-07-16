@@ -36,7 +36,7 @@ export default function RootLayout({
         {/* tracking scripts */}
         <TrackingScripts />
       </head>
-      <body className={firaSans.className}>
+      <body className={poppins.className}>
         {/* top page loading progress bar indicator */}
         <NextTopLoader
           color="#ffa733"

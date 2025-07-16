@@ -1,87 +1,72 @@
-import { GiCheckMark } from "react-icons/gi";
-import Image from "next/image";
-import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import MotionDiv from '@/components/general/framer-motion/MotionDiv';
+import { CiCircleCheck } from 'react-icons/ci';
+
+const DocumentItem = ({ children }: { children: React.ReactNode }) => (
+  // Individual document item with icon and text
+  <li className="flex items-center gap-[0.5rem] sm:gap-[0.75rem]">
+    <CiCircleCheck className="h-[1rem] w-[1rem] flex-shrink-0 text-yellow sm:h-[1.25rem] sm:w-[1.25rem]" />
+    <span className="text-[0.625rem] text-[#6C6C6C] sm:text-[0.875rem]">
+      {children}
+    </span>
+  </li>
+);
+
+const DocumentSection = ({
+  title,
+  items,
+}: {
+  title: string;
+  items: string[];
+}) => (
+  // Document section with title and list of items
+  <MotionDiv className="space-y-[0.75rem] sm:space-y-[1rem]">
+    {/* Section title */}
+    <h4 className="text-[0.875rem] font-semibold text-text-primary sm:text-[1.125rem]">
+      {title}
+    </h4>
+
+    {/* List of document items */}
+    <ul className="space-y-[0.5rem] sm:space-y-[0.75rem]">
+      {items.map((item, index) => (
+        <DocumentItem key={index}>{item}</DocumentItem>
+      ))}
+    </ul>
+  </MotionDiv>
+);
 
 const DocumentsRequired = ({ category }: { category: string }) => {
+  // Document requirements for UAE residents
+  const uaeResidentDocs = [
+    'Valid UAE Driving License',
+    'Emirates ID',
+    '(Residential Visa may be acceptable)',
+  ];
+
+  // Document requirements for tourists
+  const touristDocs = [
+    'Valid Passport',
+    'Visa Details',
+    'Home Country Driving License',
+    'International Driving Permit (IDP)',
+  ];
+
   return (
-    <div className="mt-12">
-      <div className="g mx-auto mb-12 w-fit text-center">
-        <h2 className="text-center text-xl font-bold">
+    // Main container for documents required section
+    <div className="space-y-[1rem] pb-[1.5rem] sm:space-y-[1.5rem]">
+      {/* Main heading */}
+      <div>
+        <h3 className="text-[1rem] font-semibold text-text-primary sm:text-[1.25rem] lg:text-[1.5625rem]">
           Documents Required to Rent a {category} in UAE
-        </h2>
-        <hr className="mx-auto mt-2 w-[70%] border-t-4 border-yellow" />
-      </div>
-      <div className="mx-6 flex flex-col items-center justify-center gap-4 md:flex-row">
-        {/* left doc */}
-        <MotionDiv className="box flex h-36 items-center gap-4">
-          <div className="h-full w-[40%]">
-            <Image
-              width={100}
-              height={100}
-              src={"/assets/img/documents/Residents.webp"}
-              alt="Resident's image"
-              className="h-full w-full object-contain"
-            />
-          </div>
-          <div className="box_right flex flex-col justify-center">
-            <h3 className="mb-1 font-bold">For UAE Residents</h3>
-            <div>
-              <p className="mb-1 flex items-center gap-1 text-sm">
-                <GiCheckMark className="text-green-500" /> Valid UAE Driving
-                License
-              </p>
-              <p className="mb-1 flex items-center gap-1 text-sm">
-                <GiCheckMark className="text-green-500" /> Emirates ID
-              </p>
-              <p className="mb-1 flex items-center gap-1 text-sm">
-                <GiCheckMark className="text-green-500" /> (Residential Visa may
-                be acceptable)
-              </p>
-            </div>
-          </div>
-        </MotionDiv>
-
-        {/* right doc */}
-        <MotionDiv className="box flex h-36 items-center gap-4 md:flex-row-reverse">
-          <div className="box_left h-full w-[40%]">
-            <Image
-              width={100}
-              height={100}
-              src={"/assets/img/documents/UAE.webp"}
-              alt="Tourist's image"
-              className="h-full w-full object-contain"
-            />
-          </div>
-          <div className="box_right flex flex-col justify-center">
-            <h3 className="mb-1 font-bold">For Tourists in UAE</h3>
-            <div>
-              <p className="mb-1 flex items-center gap-1 text-sm">
-                <GiCheckMark className="text-green-500" /> Valid Passport
-              </p>
-              <p className="mb-1 flex items-center gap-1 text-sm">
-                <GiCheckMark className="text-green-500" /> Visa Details
-              </p>
-              <p className="mb-1 flex items-center gap-1 text-sm">
-                <GiCheckMark className="text-green-500" /> Home Country Driving
-                License
-              </p>
-              <p className="mb-1 flex items-center gap-1 text-sm">
-                <GiCheckMark className="text-green-500" /> International Driving
-                Permit (IDP)
-              </p>
-            </div>
-          </div>
-        </MotionDiv>
+        </h3>
       </div>
 
-      <div className="mx-auto mt-6 max-w-[80%]">
-        <p className="text-center text-sm font-normal">
-          Travellers from the GCC, US, UK, Canada, Europe, and some other places
-          can use their home country driver&apos;s license to drive in UAE,
-          without needing an International Driving Permit (IDP) .
-        </p>
+      {/* Two-column layout for document sections */}
+      <div className="flex flex-col gap-[1.5rem] font-medium text-text-primary sm:gap-[2rem] md:grid md:grid-cols-2">
+        <DocumentSection title="For UAE Residents" items={uaeResidentDocs} />
+        <DocumentSection title="For Tourists in UAE" items={touristDocs} />
       </div>
     </div>
   );
 };
+
 export default DocumentsRequired;
