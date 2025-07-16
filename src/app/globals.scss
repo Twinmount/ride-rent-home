@@ -122,7 +122,7 @@ body {
   padding: 0.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
-  border-radius: 0.5rem;
+  border-radius: 0.25rem;
   width: fit-content;
   color: black;
   font-style: normal;
@@ -134,12 +134,16 @@ body {
 
 /* Tailwind utility classes */
 @layer utilities {
-  // .global-padding {
-  //   @apply px-4 sm:px-6 md:px-8  xl:px-16;
-  // }
+  .global-padding {
+    @apply px-4 sm:px-6 md:px-8 xl:px-16;
+  }
+
+  .no-global-padding {
+    @apply -mx-4 sm:-mx-6 md:-mx-8 xl:-mx-16;
+  }
 
   .heading-primary {
-    @apply text-text-primary text-[1.125rem] font-semibold leading-[1] sm:text-[1.75rem] lg:text-[2.2rem] font-poppins;
+    @apply font-poppins text-[1.125rem] font-semibold leading-[1] text-text-primary sm:text-[1.75rem] lg:text-[2.2rem];
   }
 
   .heading-secondary {

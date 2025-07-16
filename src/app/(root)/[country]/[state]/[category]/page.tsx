@@ -6,7 +6,7 @@ import RideRentFeatures from "@/components/root/landing/features/Features";
 import Locations from "@/components/common/locations/Locations";
 import States from "@/components/root/landing/states/States";
 import FeaturedVehicles from "@/components/root/landing/FeaturedVehicles";
-import Recommended from "@/components/root/landing/PromotionDeals";
+import PromotionDeals from "@/components/root/landing/PromotionDeals";
 import TopBrands from "@/components/root/landing/TopBrands";
 import { Suspense } from "react";
 import { PageProps } from "@/types";
@@ -72,27 +72,21 @@ export default async function Home(props: PageProps) {
         <NewlyArrived state={state} category={category} country={country} />
       </Suspense>
 
-      
-      
-      
-
-      
-
       <Suspense fallback={<SectionLoading />}>
-        <Recommended state={state} country={country} />
+        <PromotionDeals state={state} country={country} />
       </Suspense>
 
       <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
         <TopBrands state={state} category={category} country={country} />
       </Suspense>
-      
+
       <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
         <CarSection />
       </Suspense>
 
       <Suspense fallback={<SectionLoading />}>
         <RideRentFeatures state={state} category={category} country={country} />
-        {/* <Documents state={state} category={category} country={country} /> */}
+        <Documents state={state} category={category} country={country} />
       </Suspense>
 
       <Suspense fallback={<StatesGridSkeleton />}>

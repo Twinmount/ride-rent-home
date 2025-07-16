@@ -7,18 +7,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { SearchResults } from "./SearchResults";
-import { SearchInput } from "./SearchInput";
 import { FaLocationDot } from "react-icons/fa6";
 import { useParams, useRouter, usePathname } from "next/navigation";
 import { extractCategory } from "@/helpers";
 import useFetchStates from "@/hooks/useFetchStates";
 import { StateType } from "@/types";
-import Image from "next/image";
 import ListGrid from "./ListGrid";
 import { fetchCategories } from "@/lib/api/general-api";
 import FavouriteListSkeleton from "./FavouriteListSkeleton";
 import { COUNTRIES } from "@/data";
+import LocationDialogStateCard from "@/components/card/LocationDialogStateCard";
+import CountryDropdown from "@/components/dropdown/CountryDropdown";
+import LocationDialogBanner from "./LocationDialogBanner";
+import { Button } from "@/components/ui/button";
+import { MapPin } from "lucide-react";
+import Link from "next/link";
 
 export function LocationDialog() {
   const router = useRouter();
@@ -130,21 +133,28 @@ export function LocationDialog() {
       let hasCars = categories?.find(
         (category: any) => category?.value === "cars",
       );
+      setIsFetching(false);
+      setOpen(false);
+      setSearch("");
       router.push(
         `/${selectedCountryURL}/${stateValue}/${!!isSelectedPresent ? selectedCategory : !!hasCars ? "cars" : categories[0]?.value}`,
       );
-      setIsFetching(false);
-      setOpen(false);
       return;
     } else {
-      router.push(`/${selectedCountryURL}/${stateValue}/${selectedCategory}`);
+      setSearch("");
       setIsFetching(false);
       setOpen(false);
+      router.push(`/${selectedCountryURL}/${stateValue}/${selectedCategory}`);
     }
   };
 
-  const handleCountrySelect = (e: any, countryId: string) => {
-    e.preventDefault();
+  // const handleCountrySelect = (e: any, countryId: string) => {
+  //   e.preventDefault();
+  //   setSelectedCountry(countryId);
+  //   // setSelectedState(undefined);
+  // };
+
+  const handleCountrySelect = (countryId: string) => {
     setSelectedCountry(countryId);
     // setSelectedState(undefined);
   };
@@ -163,88 +173,48 @@ export function LocationDialog() {
             </span>
           </button>
         </DialogTrigger>
-        <DialogContent
-          // className={`h-fit rounded-xl bg-white py-6 max-md:w-[95%] sm:max-w-[800px]`}
-          className={
-            "left-0 top-0 h-full w-full max-w-full translate-x-0 translate-y-0 rounded-none bg-white py-6 max-sm:flex max-sm:w-full max-sm:flex-col sm:left-[50%] sm:top-[50px] sm:grid sm:h-fit sm:max-w-[800px] sm:translate-x-[-50%] sm:rounded-xl"
-          }
-        >
+        <DialogContent className="h-[100vh] min-h-[100vh] w-screen min-w-[100vw] max-w-fit -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl bg-white py-6 sm:grid sm:h-fit sm:w-[800px] sm:rounded-xl lg:h-[90vh] lg:min-h-[90vh] lg:w-[90vw] lg:min-w-[95vw] xl:min-w-[82vw]">
           <DialogHeader className="sr-only">
             <DialogTitle className="sr-only">Select Country</DialogTitle>
           </DialogHeader>
-          <div className="relative flex h-auto max-h-[80vh] flex-col space-y-2">
-            {/* Search Input */}
-            <SearchInput search={search} setSearch={setSearch} />
 
-            {/* Search Results */}
-            {search?.trim() !== "" && states.length !== 0 && (
-              <div className="absolute top-full mt-2 w-full rounded-xl border bg-white shadow-lg">
-                <SearchResults
-                  data={searchResult}
-                  isLoading={isLoading}
-                  onClick={handleStateSelect}
-                />
-              </div>
-            )}
+          {/* Banner and Search Input */}
+          <LocationDialogBanner
+            search={search}
+            setSearch={setSearch}
+            showSearchResult={search?.trim() !== "" && states.length !== 0}
+            searchResult={searchResult}
+            isLoading={isLoading}
+            handleStateSelect={handleStateSelect}
+          />
+          <div className="flex-between">
+            <CountryDropdown
+              selectedCountry={selectedCountry}
+              onChange={handleCountrySelect}
+            />
+            <button className="flex items-center gap-2 rounded border bg-white px-2 py-2 text-accent-light">
+              <MapPin className="h-4 w-4" />
+              Use Your Current Location
+            </button>
           </div>
-
-          <div className="mt-3">
-            <h2 className="mb-3 text-sm font-bold">COUNTRIES</h2>
-            <div>
-              <ul className="flex gap-4">
-                {COUNTRIES.map((country) => (
-                  <li
-                    className={`flex cursor-pointer gap-2 rounded border border-neutral-50 px-2 py-2 align-middle text-sm transition ${
-                      selectedCountry === country?.id ? "!border-orange" : ""
-                    }`}
-                    key={country?.id}
-                    onClick={(e) => handleCountrySelect(e, country?.id)}
-                  >
-                    <Image
-                      src={country?.icon}
-                      alt={country?.name}
-                      width={30}
-                      height={20}
-                      className="rounded"
-                    />
-                    <span>{country?.name}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
           {isLoading ? (
             <FavouriteListSkeleton />
           ) : (
             <div className="mt-3">
-              <h2 className="mb-3 text-sm font-bold">FAVOURITES</h2>
-              <div>
-                <ul className="-me-2 -ms-2 flex flex-wrap gap-y-2">
-                  {favouriteStates?.length !== 0 &&
-                    favouriteStates?.map((state: StateType) => {
-                      return (
-                        <li
-                          key={state?.stateId}
-                          className={`flex basis-1/5 flex-col px-2 max-sm:basis-1/2`}
-                        >
-                          <div
-                            onClick={() => handleStateSelect(state?.stateValue)}
-                            className={`flex cursor-pointer flex-col items-center gap-1 rounded border border-neutral-50 py-2 text-sm transition hover:border-orange hover:text-orange ${selectedState?.stateId === state?.stateId ? "!border-orange text-orange" : ""}`}
-                          >
-                            <Image
-                              src={state?.stateIcon || ""}
-                              alt={state?.stateName}
-                              width={30}
-                              height={30}
-                            />
-                            <span>{state?.stateName}</span>
-                          </div>
-                        </li>
-                      );
-                    })}
-                </ul>
-              </div>
+              <h2 className="mb-3 text-sm font-bold">Popular Cities</h2>
+
+              <ul className="mx-auto grid w-fit grid-cols-3 place-items-center gap-3 sm:grid-cols-4 md:grid-cols-5 md:gap-4 lg:grid-cols-6 lg:gap-6 xl:grid-cols-7">
+                {favouriteStates?.length !== 0 &&
+                  favouriteStates?.map((state: StateType) => {
+                    return (
+                      <LocationDialogStateCard
+                        key={state.stateId}
+                        state={state}
+                        handleStateSelect={handleStateSelect}
+                      />
+                    );
+                  })}
+              </ul>
             </div>
           )}
 
@@ -269,6 +239,13 @@ export function LocationDialog() {
               </span>
             </div>
           )}
+
+          <Link
+            href={`/${country}/${selectedState?.stateValue}/cities?category=${selectedCategory}&city=&page=1`}
+            className="flex-center mx-auto mt-4 h-10 w-[21rem] rounded border border-border-default bg-white text-sm transition hover:border-yellow hover:text-yellow lg:w-[11.25rem]"
+          >
+            View All
+          </Link>
         </DialogContent>
       </BlurDialog>
     </>
