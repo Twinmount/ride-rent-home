@@ -15,6 +15,7 @@ import { SearchResults } from "./SearchResults";
 import { SearchInput } from "./SearchInput";
 import { CompanyPromotionList } from "./CompanyPromotionList";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type SearchDialogProps = {
   state?: string;
@@ -47,16 +48,24 @@ export function SearchDialog({ state }: SearchDialogProps) {
   const vehicles = results?.result.vehicle || [];
   const hasSearchResult = vehicleSeries.length > 0 || vehicles.length > 0;
 
+  const isMobile = useIsMobile();
+
   return (
     <BlurDialog>
       <DialogTrigger asChild>
-        <button
-          aria-label="Open Search Dialog"
-          className="placeholder:text-grey-500 p-regular-16 flex h-[2.2rem] min-w-[14rem] items-center gap-2 rounded-xl border bg-white px-4 py-3 text-gray-500 placeholder:italic focus-visible:ring-transparent focus-visible:ring-offset-0"
-        >
-          <Search className="h-4 w-4" strokeWidth={2} />
-          <span className="relative">Search Vehicle</span>
-        </button>
+        {isMobile ? (
+          <button className="flex-center my-auto h-full">
+            <Search className="h-4 w-4" strokeWidth={2} />
+          </button>
+        ) : (
+          <button
+            aria-label="Open Search Dialog"
+            className="placeholder:text-grey-500 p-regular-16 flex h-[2.2rem] min-w-[14rem] items-center gap-2 rounded-xl border bg-white px-4 py-3 text-text-secondary placeholder:italic focus-visible:ring-transparent focus-visible:ring-offset-0"
+          >
+            <Search className="h-4 w-4" strokeWidth={2} />
+            <span className="relative">Search Vehicle</span>
+          </button>
+        )}
       </DialogTrigger>
 
       <DialogContent
@@ -80,5 +89,23 @@ export function SearchDialog({ state }: SearchDialogProps) {
         </div>
       </DialogContent>
     </BlurDialog>
+  );
+}
+
+export function SearchTriggerButton() {
+  const isMobile = useIsMobile();
+
+  return isMobile ? (
+    <button>
+      <Search className="h-4 w-4" strokeWidth={2} />
+    </button>
+  ) : (
+    <button
+      aria-label="Open Search Dialog"
+      className="placeholder:text-grey-500 p-regular-16 flex h-[2.2rem] min-w-[14rem] items-center gap-2 rounded-xl border bg-white px-4 py-3 text-text-secondary placeholder:italic focus-visible:ring-transparent focus-visible:ring-offset-0"
+    >
+      <Search className="h-4 w-4" strokeWidth={2} />
+      <span className="relative">Search Vehicle</span>
+    </button>
   );
 }
