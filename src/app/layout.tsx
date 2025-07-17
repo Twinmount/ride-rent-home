@@ -31,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${firaSans.variable} ${poppins.variable}`}>
+    <html lang="en" className={`${poppins.variable} ${firaSans.variable} `}>
       <head className="notranslate">
         {/* tracking scripts */}
         <TrackingScripts />

@@ -2,7 +2,7 @@ import FooterGrid from "./footer-grid/FooterGrid";
 import Social from "./social/Social";
 import { FaRegCopyright, FaRegRegistered } from "react-icons/fa6";
 import MotionDiv from "../general/framer-motion/MotionDiv";
-import RideRentLogo from "./RideRentLogo";
+import RideRentLogo from "./RideRentFooterLogo";
 
 const Footer = () => {
   return (

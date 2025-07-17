@@ -6,8 +6,12 @@ import { useParams } from "next/navigation";
 import React from "react";
 import MotionDiv from "../general/framer-motion/MotionDiv";
 
-export default function RideRentLogo() {
-  const { state, category, country } = useParams<{ state: string; category: string, country: string }>();
+export default function RideRentFooterLogo() {
+  const { state, category, country } = useParams<{
+    state: string;
+    category: string;
+    country: string;
+  }>();
 
   return (
     <MotionDiv className="notranslate mx-auto mb-8 w-fit">

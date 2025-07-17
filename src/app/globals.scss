@@ -117,21 +117,6 @@ body {
   }
 }
 
-/* Default button styling */
-.default-btn {
-  padding: 0.5rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  border-radius: 0.25rem;
-  width: fit-content;
-  color: black;
-  font-style: normal;
-  font-weight: 700;
-  white-space: nowrap;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
 /* Tailwind utility classes */
 @layer utilities {
   .global-padding {
