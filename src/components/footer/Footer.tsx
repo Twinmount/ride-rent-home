@@ -1,8 +1,8 @@
-import FooterGrid from "./footer-grid/FooterGrid";
-import Social from "./social/Social";
-import { FaRegCopyright, FaRegRegistered } from "react-icons/fa6";
-import MotionDiv from "../general/framer-motion/MotionDiv";
-import RideRentLogo from "./RideRentFooterLogo";
+import FooterGrid from './footer-grid/FooterGrid';
+import Social from './social/Social';
+import { FaRegCopyright, FaRegRegistered } from 'react-icons/fa6';
+import MotionDiv from '../general/framer-motion/MotionDiv';
+import RideRentFooterLogo from './RideRentFooterLogo';
 
 const Footer = () => {
   return (
@@ -10,14 +10,14 @@ const Footer = () => {
       {/* Main Footer Content */}
       <div className="mx-auto max-w-7xl">
         {/* Top Section with Logo and Language Selectors */}
-        <div className="mb-14 flex items-center justify-between border-b border-[#303030]">
+        <div className="mb-14 flex w-full max-w-full flex-col items-center border-b border-[#303030] md:flex-row md:justify-between">
           {/* Logo - Left Side */}
-          <div className="flex-shrink-0">
-            <RideRentLogo />
+          <div className="">
+            <RideRentFooterLogo />
           </div>
 
           {/* Language/Country Selector - Right Side */}
-          <div className="flex gap-4">
+          <div className="flex-center h-full w-fit gap-4">
             <div className="flex items-center gap-2 rounded border border-text-tertiary px-3 py-2">
               <span className="text-sm">🌐</span>
               <span className="text-sm">English</span>

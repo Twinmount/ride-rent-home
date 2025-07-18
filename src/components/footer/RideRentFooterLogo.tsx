@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import React from "react";
-import MotionDiv from "../general/framer-motion/MotionDiv";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import React from 'react';
+import MotionDiv from '../general/framer-motion/MotionDiv';
 
 export default function RideRentFooterLogo() {
   const { state, category, country } = useParams<{
@@ -17,10 +17,10 @@ export default function RideRentFooterLogo() {
     <MotionDiv className="notranslate mx-auto mb-8 w-fit">
       <Link href={`/${country}/${state}/${category}`} className="header-logo">
         <Image
-          src={"/assets/logo/Logo_white.svg"}
+          src={'/assets/logo/Logo_white.svg'}
           width={200}
           height={120}
-          className="header-img"
+          className="w-[8rem] sm:w-[10rem] md:w-40"
           alt="Ride Rent Logo"
         />
       </Link>
