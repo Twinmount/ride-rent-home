@@ -271,11 +271,9 @@ body {
   @media screen and (min-width: 768px) {
     height: 26.25rem;
 
-    /* Full width banner */
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    width: 100vw;
-    max-width: none;
+    /* Container-based width instead of viewport width */
+    width: 100%;
+    max-width: 100%;
 
     /* Rectangular design for desktop */
     .slick-slide img {
