@@ -7,7 +7,7 @@ import { CompanyLinks } from "./CompanyLinks";
 
 const FooterGrid = () => {
   return (
-    <MotionDiv className="mx-auto grid w-full grid-cols-2 gap-4 pb-8 md:max-w-[90%] md:grid-cols-4 lg:max-w-[80%] xl:max-w-[70%]">
+    <MotionDiv className="mx-auto hidden w-full grid-cols-2 gap-4 pb-8 md:grid md:max-w-[90%] md:grid-cols-4 lg:grid lg:max-w-[80%] xl:max-w-[70%]">
       <FooterLocations />
 
       <Suspense fallback={<div>Loading..</div>}>

@@ -14,13 +14,13 @@ export default function RideRentFooterLogo() {
   }>();
 
   return (
-    <MotionDiv className="notranslate mx-auto mb-8 w-fit">
+    <MotionDiv className="notranslate">
       <Link href={`/${country}/${state}/${category}`} className="header-logo">
         <Image
-          src={"/assets/logo/Logo_white.svg"}
-          width={200}
-          height={120}
-          className="header-img"
+          src={'/assets/logo/Logo_white.svg'}
+          width={160}
+          height={96}
+          className="header-img h-12 w-auto md:h-16"
           alt="Ride Rent Logo"
         />
       </Link>

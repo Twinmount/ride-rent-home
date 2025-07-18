@@ -10,14 +10,14 @@ const Footer = () => {
       {/* Main Footer Content */}
       <div className="mx-auto max-w-7xl">
         {/* Top Section with Logo and Language Selectors */}
-        <div className="mb-14 flex items-center justify-between border-b border-[#303030]">
-          {/* Logo - Left Side */}
-          <div className="flex-shrink-0">
+        <div className="mb-8 flex flex-col items-center justify-center gap-4 border-b border-[#303030] pb-6 md:mb-14 md:flex-row md:justify-between md:pb-8">
+          {/* Logo - Center on mobile, Left on desktop */}
+          <div className="order-1 flex-shrink-0 md:order-none">
             <RideRentLogo />
           </div>
 
-          {/* Language/Country Selector - Right Side */}
-          <div className="flex gap-4">
+          {/* Language/Country Selector - Center on mobile, Right on desktop */}
+          <div className="order-2 flex gap-3 md:order-none">
             <div className="flex items-center gap-2 rounded border border-text-tertiary px-3 py-2">
               <span className="text-sm">🌐</span>
               <span className="text-sm">English</span>
@@ -29,11 +29,13 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Footer Grid */}
-        <FooterGrid />
+        {/* Footer Grid - Hidden on mobile */}
+        <div className="hidden md:block">
+          <FooterGrid />
+        </div>
 
         {/* Find Us On Section */}
-        <div className="py-8">
+        <div className="py-6 md:py-8">
           <h3 className="mb-6 text-center text-lg font-medium text-yellow">
             Find Us On
           </h3>
@@ -41,29 +43,23 @@ const Footer = () => {
         </div>
 
         {/* Bottom Description */}
-        <MotionDiv className="notranslate border-t border-[#303030] pt-8 text-center font-light text-gray-400">
+        <MotionDiv className="notranslate border-t border-[#303030] pt-6 text-center font-light text-gray-400 md:pt-8">
           <div className="text-sm leading-relaxed">
-            {/* <p className="mb-6">
-              Ride.Rent is an on-demand platform to rent cars, bikes, buses,
-              yachts, and more at the most affordable prices, operating in
-              selected cities worldwide.
-            </p> */}
-
             <div className="text-xs text-gray-500">
-              <p className="mb-4">
+              <p className="mb-4 px-2">
                 All trademarks are property of their respective owners.
                 Ride.Rent LD is licensed under Sharjah Media City, Sharjah, UAE,
                 License Number: 2434340.
               </p>
 
-              <div className="flex flex-wrap items-center justify-center gap-1 text-center">
+              <div className="flex flex-col items-center justify-center gap-2 text-center sm:flex-row sm:flex-wrap sm:gap-1">
                 <span className="flex items-center gap-1 font-semibold">
                   <FaRegCopyright className="mt-[0.17rem]" />
                   <FaRegRegistered className="mt-[0.17rem]" />
                   FleetOrbita Internet Services/Ride Rent LLC
                 </span>
                 <span className="hidden sm:inline-block">|</span>
-                <span>
+                <span className="text-center">
                   ACJ-9769 | Ride Rent LLC (UAE) License Version: 2434340.01 |
                   All Rights Reserved
                 </span>
