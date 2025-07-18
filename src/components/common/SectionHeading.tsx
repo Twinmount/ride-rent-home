@@ -19,7 +19,7 @@ export const SectionHeading = ({
     <div
       className={cn(
         'my-8 flex w-full flex-col gap-y-3',
-        align === 'center' ? 'text-center' : 'ml-8 text-left lg:ml-14',
+        align === 'center' ? 'text-center' : 'text-left',
         className
       )}
     >
