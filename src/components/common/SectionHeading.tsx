@@ -18,15 +18,9 @@ export const SectionHeading = ({
   return (
     <div
       className={cn(
-<<<<<<< HEAD
-        "my-8 flex w-full flex-col gap-y-3",
-        align === "center" ? "text-center" : "ml-8 text-left lg:ml-14",
-        className,
-=======
-        'flex w-full flex-col gap-y-3',
+        'my-8 flex w-full flex-col gap-y-3',
         align === 'center' ? 'text-center' : 'text-left',
         className
->>>>>>> top-banner
       )}
     >
       {isHero ? (

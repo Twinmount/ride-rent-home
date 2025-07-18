@@ -55,7 +55,7 @@ const DocumentsRequired = ({ category }: { category: string }) => {
     <div className="space-y-[1rem] sm:space-y-[1.5rem]">
       {/* Main heading */}
       <div>
-        <h3 className="text-[1rem] font-semibold text-text-primary sm:text-[1.25rem] lg:text-[1.5625rem]">
+        <h3 className="text-[1rem] font-semibold text-text-primary sm:text-[1.25rem] lg:text-[1.3rem]">
           Documents Required to Rent a {category} in UAE
         </h3>
       </div>
