@@ -19,7 +19,6 @@ import BrandsCarouselSkeleton from '@/components/skelton/BrandsCarouselSkeleton'
 import NewlyArrived from '@/components/root/landing/NewlyArrived';
 import VehicleCategoryAndFilter from '@/components/root/landing/VehicleCategoryAndFilter';
 import HeroSection from '@/components/root/landing/HeroSection';
-import VehicleCardSkeletonGrid from '@/components/skelton/VehicleCardSkeleton';
 import VehicleCardCarouselSkeleton from '@/components/skelton/VehicleCardCarouselSkeleton';
 import StatesGridSkeleton from '@/components/skelton/StatesGridSkeleton';
 import JsonLd from '@/components/common/JsonLd';
@@ -28,13 +27,13 @@ import BannerSkeleton from '@/components/skelton/BannerSkeleton';
 import CarSection from '@/components/root/landing/CarSection';
 import PromotionDeals from '@/components/root/landing/PromotionDeals';
 
-// export async function generateMetadata(props: PageProps): Promise<Metadata> {
-//   const params = await props.params;
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
 
-//   const { country, state, category } = params;
+  const { country, state, category } = params;
 
-//   return generateHomePageMetadata(state, category, country);
-// }
+  return generateHomePageMetadata(state, category, country);
+}
 
 export default async function Home(props: PageProps) {
   const searchParams = await props.searchParams;
@@ -60,7 +59,7 @@ export default async function Home(props: PageProps) {
 
       <VehicleCategoryAndFilter />
 
-      <Suspense fallback={<VehicleCardSkeletonGrid />}>
+      <Suspense fallback={<VehicleCardCarouselSkeleton />}>
         <FeaturedVehicles
           state={state}
           category={category}
