@@ -1,9 +1,9 @@
-import { ContactDetails } from "./vehicle-details-types";
+import { ContactDetails } from './vehicle-details-types';
 import {
   FeatureType,
   RentalDetailsType,
   SpecificationType,
-} from "./vehicle-types";
+} from './vehicle-types';
 
 export type PageProps = {
   params: Promise<{
@@ -210,6 +210,24 @@ export interface FetchPromotionsResponse {
   statusCode: number;
 }
 
+export interface RidePromotionCard {
+  image: string;
+  cardTitle: string;
+  cardSubtitle: string;
+  link: string;
+  _id: string;
+}
+
+export interface FetchRidePromotionsResponse {
+  status: string;
+  statusCode: number;
+  result: {
+    sectionTitle: string;
+    sectionSubtitle: string;
+    cards: RidePromotionCard[];
+  };
+}
+
 // vehicle details page type
 export interface VehicleDetailsPageType {
   brandName: BrandType;
@@ -331,12 +349,12 @@ export interface ListingPageMetaResponse {
 }
 
 export enum VehicleHomeFilter {
-  AFFORDABLE_VEHICLE = "affordable-vehicle",
-  POPULAR_MODELS = "popular-models",
-  TOP_BRANDS = "top-brands",
-  LATEST_MODELS = "latest-models",
-  HOURLY_RENTAL_VEHICLE = "hourly-rental-vehicle",
-  NONE = "none",
+  AFFORDABLE_VEHICLE = 'affordable-vehicle',
+  POPULAR_MODELS = 'popular-models',
+  TOP_BRANDS = 'top-brands',
+  LATEST_MODELS = 'latest-models',
+  HOURLY_RENTAL_VEHICLE = 'hourly-rental-vehicle',
+  NONE = 'none',
 }
 
 export type CompanyProfileDataType = {
