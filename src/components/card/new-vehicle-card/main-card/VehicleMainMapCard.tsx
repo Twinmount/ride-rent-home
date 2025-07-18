@@ -1,4 +1,4 @@
-import "./VehicleMainCard.scss";
+import "./VehicleCard.scss";
 import { VehicleCardType } from "@/types/vehicle-types";
 import {
   convertToLabel,
@@ -7,7 +7,7 @@ import {
   getFormattedPhoneNumber,
 } from "@/helpers";
 import ContactIcons from "@/components/common/contact-icons/ContactIcons";
-import SpecsGrid from "../SpecsGrid";
+import SpecsGrid from "../../vehicle-card/SpecsGrid";
 import ZeroDeposit from "../ZeroDeposit";
 
 import CompanyLogo from "../CompanyLogo";
@@ -15,23 +15,19 @@ import VehicleThumbnail from "../VehicleThumbnail";
 import HourlyRentalBadge from "./hourly-rental-badge/HourlyRentalBadge";
 import RentalDetails from "../RentalDetails";
 
-import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
 // import EnquireBestPrice from "../EnquireBestPrice";
 import { MapPin } from "lucide-react";
 import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
-import LinkWrapper from "../LinkWrapper";
 
-type VehicleMainCardProps = {
+type VehicleMainMapCardProps = {
   vehicle: VehicleCardType;
-  index: number;
   country: string;
 };
 
-const VehicleMainCard = ({
+const VehicleMainMapCard = ({
   vehicle,
-  index,
   country = "ae",
-}: VehicleMainCardProps) => {
+}: VehicleMainMapCardProps) => {
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,
     vehicle.phoneNumber,
@@ -55,9 +51,9 @@ const VehicleMainCard = ({
   });
 
   return (
-    <MotionStaggeredDiv index={index} className="main-card-container">
+    <div className="main-card-container">
       {/* card top */}
-      <LinkWrapper href={vehicleDetailsPageLink} className="card-top">
+      <div className="card-top">
         <div className="image-container">
           {/* Thumbnail Image */}
           <VehicleThumbnail
@@ -65,7 +61,6 @@ const VehicleMainCard = ({
             alt={vehicle.vehicleTitle || "Vehicle Image"}
             width={350}
             height={250}
-            className="vehicle-image"
           />
 
           {/* Company Logo */}
@@ -86,11 +81,11 @@ const VehicleMainCard = ({
             isHourlyRental={vehicle?.rentalDetails?.hour?.enabled}
           />
         </div>
-      </LinkWrapper>
+      </div>
 
       {/* card bottom */}
       <div className="card-bottom">
-        <LinkWrapper href={vehicleDetailsPageLink}>
+        <div>
           {/* title */}
           <div className="model-name">{vehicle.model}</div>
 
@@ -109,13 +104,13 @@ const VehicleMainCard = ({
             {/* rental details */}
             <RentalDetails rentalDetails={vehicle.rentalDetails} />
           </div>
-        </LinkWrapper>
+        </div>
         <div className="bottom-box">
           {/* client component which handles the dialog logic via context */}
           {/* <EnquireBestPrice vehicle={vehicle} /> */}
-          <LinkWrapper href={vehicleDetailsPageLink}>
+          <div>
             <RentNowButton companyLogo={vehicle.companyLogo} />
-          </LinkWrapper>
+          </div>
 
           <ContactIcons
             vehicleId={vehicle.vehicleId}
@@ -125,8 +120,8 @@ const VehicleMainCard = ({
           />
         </div>
       </div>
-    </MotionStaggeredDiv>
+    </div>
   );
 };
 
-export default VehicleMainCard;
+export default VehicleMainMapCard;

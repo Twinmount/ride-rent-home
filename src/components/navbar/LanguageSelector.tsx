@@ -190,9 +190,9 @@ export default function LanguageSelector() {
     <div className="notranslate relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-2 py-2 text-lg font-medium text-gray-900"
+        className="flex items-center space-x-1 px-2 py-2 text-lg font-medium text-gray-900"
       >
-        <Languages color="#ea7b0b" className="h-6 w-6" />
+        <Languages color="#ea7b0b" className="h-4 w-4 lg:h-6 lg:w-6" />
         <span className="max-sm:hidden">
           {languages.find((l) => l.code === displayLanguage)?.name || "English"}
         </span>

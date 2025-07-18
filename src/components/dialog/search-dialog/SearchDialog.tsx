@@ -11,23 +11,17 @@ import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { fetchSearchResults } from "@/lib/api/general-api";
 import { debounce } from "@/helpers";
-import { PlaceholderTypewriter } from "@/components/navbar/PlaceholderTypewriter";
 import { SearchResults } from "./SearchResults";
 import { SearchInput } from "./SearchInput";
 import { CompanyPromotionList } from "./CompanyPromotionList";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type SearchDialogProps = {
-  isHero?: boolean;
-  isMobileNav?: boolean;
   state?: string;
 };
 
-export function SearchDialog({
-  isHero = false,
-  isMobileNav = false,
-  state,
-}: SearchDialogProps) {
+export function SearchDialog({ state }: SearchDialogProps) {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
@@ -37,7 +31,7 @@ export function SearchDialog({
     [],
   );
 
-  const {country} = useStateAndCategory()
+  const { country } = useStateAndCategory();
 
   useEffect(() => {
     handleDebouncedSearch(search);
@@ -54,31 +48,26 @@ export function SearchDialog({
   const vehicles = results?.result.vehicle || [];
   const hasSearchResult = vehicleSeries.length > 0 || vehicles.length > 0;
 
+  const isMobile = useIsMobile();
+
   return (
     <BlurDialog>
       <DialogTrigger asChild>
-        {isHero ? (
-          <button
-            aria-label="Open Search Dialog"
-            className="flex-center relative mx-auto mt-4 h-[3rem] w-full max-w-[400px] cursor-pointer rounded-xl border border-slate-500/70 bg-white/80"
-          >
-            <Search className="absolute left-2 top-3 z-10 transform text-slate-600 md:left-4" />
-            <PlaceholderTypewriter />
-          </button>
-        ) : isMobileNav ? (
-          <button aria-label="Open Search Dialog">
-            <Search className="" />
+        {isMobile ? (
+          <button className="flex-center my-auto h-full">
+            <Search className="h-4 w-4" strokeWidth={2} />
           </button>
         ) : (
           <button
             aria-label="Open Search Dialog"
-            className="flex-center gap-x-2 rounded-xl border border-gray-300 px-4 py-1 text-black"
+            className="placeholder:text-grey-500 p-regular-16 flex h-[2.2rem] min-w-[14rem] items-center gap-2 rounded-xl border bg-white px-4 py-3 text-text-secondary placeholder:italic focus-visible:ring-transparent focus-visible:ring-offset-0"
           >
-            <Search className="h-4 w-4 text-orange" strokeWidth={2} />{" "}
-            <span className="relative text-gray-500">Search</span>
+            <Search className="h-4 w-4" strokeWidth={2} />
+            <span className="relative">Search Vehicle</span>
           </button>
         )}
       </DialogTrigger>
+
       <DialogContent
         className={`h-fit rounded-xl bg-white py-6 max-md:w-[95%] sm:max-w-[500px]`}
       >
@@ -100,5 +89,23 @@ export function SearchDialog({
         </div>
       </DialogContent>
     </BlurDialog>
+  );
+}
+
+export function SearchTriggerButton() {
+  const isMobile = useIsMobile();
+
+  return isMobile ? (
+    <button>
+      <Search className="h-4 w-4" strokeWidth={2} />
+    </button>
+  ) : (
+    <button
+      aria-label="Open Search Dialog"
+      className="placeholder:text-grey-500 p-regular-16 flex h-[2.2rem] min-w-[14rem] items-center gap-2 rounded-xl border bg-white px-4 py-3 text-text-secondary placeholder:italic focus-visible:ring-transparent focus-visible:ring-offset-0"
+    >
+      <Search className="h-4 w-4" strokeWidth={2} />
+      <span className="relative">Search Vehicle</span>
+    </button>
   );
 }

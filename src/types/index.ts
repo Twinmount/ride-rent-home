@@ -1,9 +1,9 @@
-import { ContactDetails } from "./vehicle-details-types";
+import { ContactDetails } from './vehicle-details-types';
 import {
   FeatureType,
   RentalDetailsType,
   SpecificationType,
-} from "./vehicle-types";
+} from './vehicle-types';
 
 export type PageProps = {
   params: Promise<{
@@ -194,6 +194,8 @@ export interface PromotionType {
   promotionId: string;
   promotionImage: string;
   promotionLink: string;
+  title: string; // e.g., "Offer Upto 25%"
+  description: string;
 }
 
 //  get-all-promotions  API response
@@ -206,6 +208,24 @@ export interface FetchPromotionsResponse {
   };
   status: string;
   statusCode: number;
+}
+
+export interface RidePromotionCard {
+  image: string;
+  cardTitle: string;
+  cardSubtitle: string;
+  link: string;
+  _id: string;
+}
+
+export interface FetchRidePromotionsResponse {
+  status: string;
+  statusCode: number;
+  result: {
+    sectionTitle: string;
+    sectionSubtitle: string;
+    cards: RidePromotionCard[];
+  };
 }
 
 // vehicle details page type
@@ -329,12 +349,12 @@ export interface ListingPageMetaResponse {
 }
 
 export enum VehicleHomeFilter {
-  AFFORDABLE_VEHICLE = "affordable-vehicle",
-  POPULAR_MODELS = "popular-models",
-  TOP_BRANDS = "top-brands",
-  LATEST_MODELS = "latest-models",
-  HOURLY_RENTAL_VEHICLE = "hourly-rental-vehicle",
-  NONE = "none",
+  AFFORDABLE_VEHICLE = 'affordable-vehicle',
+  POPULAR_MODELS = 'popular-models',
+  TOP_BRANDS = 'top-brands',
+  LATEST_MODELS = 'latest-models',
+  HOURLY_RENTAL_VEHICLE = 'hourly-rental-vehicle',
+  NONE = 'none',
 }
 
 export type CompanyProfileDataType = {

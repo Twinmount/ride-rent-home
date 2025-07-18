@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { categoryTags } from "@/constants/blog";
 import { formBlogUrlQuery } from "@/helpers/blog-helpers";
 import { CategoryType } from "@/types/blog";
+import { useTopLoader } from "nextjs-toploader";
 
 type CategoryTagsProps = {
   selectedTag: CategoryType;
@@ -12,7 +13,7 @@ type CategoryTagsProps = {
 export default function CategoryTags({ selectedTag }: CategoryTagsProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-
+  const loader = useTopLoader();
   // Function to handle tag click and update URL
   const handleTagClick = (value: string) => {
     let newUrl = "";
@@ -34,6 +35,11 @@ export default function CategoryTags({ selectedTag }: CategoryTagsProps) {
         updates: { tag: value }, // Reset page to 1 along with tag
       });
     }
+    // Start the loader and navigate to the new URL
+    loader.start();
+    setTimeout(() => {
+      loader.done();
+    }, 500);
 
     router.push(newUrl, { scroll: false });
   };

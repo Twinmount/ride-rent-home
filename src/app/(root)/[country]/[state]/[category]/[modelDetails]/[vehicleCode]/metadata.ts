@@ -8,7 +8,7 @@ import {
   generateCompanyProfilePageLink,
   generateModelDetailsUrl,
   generateVehicleDetailsUrl,
-  singularizeType,
+  singularizeValue,
 } from "@/helpers";
 import { restoreVehicleCodeFormat } from ".";
 import { ENV } from "@/config/env";
@@ -55,7 +55,7 @@ export async function generateVehicleMetadata(
   const vehicle = data.result;
 
   // Construct the title
-  const title = `Rent ${vehicle.vehicleTitle} |  ${singularizeType(convertToLabel(category))} Rentals in  ${convertToLabel(state)}`;
+  const title = `Rent ${vehicle.vehicleTitle} |  ${singularizeValue(convertToLabel(category))} Rentals in  ${convertToLabel(state)}`;
 
   // Construct the description
   const description = `${vehicle.vehicleTitle} For Rent in ${convertToLabel(

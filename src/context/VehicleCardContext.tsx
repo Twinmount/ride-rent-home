@@ -1,11 +1,11 @@
 "use client";
 
-import { VehicleCardType } from "@/types/vehicle-types";
+import { NewVehicleCardType } from "@/types/vehicle-types";
 import React, { createContext, useState, useContext } from "react";
 
 interface VehicleCardContextType {
-  selectedVehicle: VehicleCardType;
-  openDialog: (vehicle: VehicleCardType) => void;
+  selectedVehicle: NewVehicleCardType;
+  openDialog: (vehicle: NewVehicleCardType) => void;
   closeDialog: () => void;
 }
 

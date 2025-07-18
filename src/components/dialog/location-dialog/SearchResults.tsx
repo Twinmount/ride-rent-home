@@ -12,7 +12,7 @@ type Props = {
 export function SearchResults({ data = [], onClick, isLoading }: Props) {
   if (isLoading) {
     return (
-      <div className="px-4 py-1 text-left text-sm font-normal text-slate-700">
+      <div className="rounded-xl bg-white px-4 py-1 text-left text-sm font-normal text-slate-700">
         <span>Loading...</span>
       </div>
     );
@@ -20,21 +20,21 @@ export function SearchResults({ data = [], onClick, isLoading }: Props) {
 
   if (data?.length === 0) {
     return (
-      <div className="px-4 py-4 text-left text-sm font-normal text-slate-700">
+      <div className="rounded-xl bg-white px-4 py-4 text-left text-sm font-normal text-slate-700">
         <span>No result found</span>
       </div>
     );
   }
 
   return (
-    <ScrollArea className="-mt-3 flex h-fit max-h-full flex-col space-y-3 pt-4">
-      <h2 className="mb-3 px-4 text-sm font-bold">SEARCH RESULTS</h2>
-      <ul className="flex flex-col space-y-1 pb-2">
+    <ScrollArea className="flex h-fit max-h-full flex-col space-y-3 rounded-xl bg-white">
+      <h2 className="mb-3 px-4 text-sm font-semibold">SEARCH RESULTS</h2>
+      <ul className="flex flex-col space-y-1 overflow-hidden rounded-xl pb-2 shadow-md">
         {data?.map((state: StateType) => {
           return (
             <li
               key={state?.stateId}
-              className="cursor-pointer px-4 py-1 text-left text-sm font-normal text-slate-700 hover:bg-slate-100"
+              className="cursor-pointer px-4 py-2 text-left text-sm font-normal text-slate-700 hover:bg-slate-100"
               onClick={() => onClick(state?.stateValue)}
             >
               <span>{state?.stateName}</span>

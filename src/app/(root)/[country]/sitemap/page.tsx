@@ -58,7 +58,7 @@ async function fetchBlogs(country: string) {
 
     if (data.status === "SUCCESS" && data.result?.list) {
       return data.result.list.map((blog: BlogData) => ({
-        url: `https://ride.rent/blog/${generateBlogUrlTitle(blog.blogTitle)}/${blog.blogId}`,
+        url: `https://ride.rent/${country}/blog/${generateBlogUrlTitle(blog.blogTitle)}/${blog.blogId}`,
         title: blog.blogTitle,
         blogId: blog.blogId,
       }));

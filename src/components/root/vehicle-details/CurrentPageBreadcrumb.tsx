@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { convertToLabel, singularizeType } from "@/helpers";
+import { convertToLabel, singularizeValue } from "@/helpers";
 import Link from "next/link";
 
 type CurrentPageBreadcrumbProps = {
@@ -25,7 +25,7 @@ export default function CurrentPageBreadcrumb({
   vehicleTitle,
   country,
 }: CurrentPageBreadcrumbProps) {
-  const formattedCategory = convertToLabel(singularizeType(category));
+  const formattedCategory = convertToLabel(singularizeValue(category));
 
   const formattedState = convertToLabel(state);
 

@@ -1,7 +1,7 @@
 import "./globals.scss";
 import { ReactQueryProvider } from "@/app/ReactQueryProvider";
 import type { Metadata } from "next";
-import { Fira_Sans } from "next/font/google";
+import { Fira_Sans, Poppins } from "next/font/google";
 
 import TrackingScripts from "./TrackingScripts";
 import BodyScripts from "./BodyScripts";
@@ -16,6 +16,13 @@ const firaSans = Fira_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   style: ["normal", "italic"],
+  variable: "--font-fira-sans",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
 });
 
 export default function RootLayout({
@@ -24,12 +31,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${poppins.variable} ${firaSans.variable} `}>
       <head className="notranslate">
         {/* tracking scripts */}
         <TrackingScripts />
       </head>
-      <body className={firaSans.className}>
+      <body className={poppins.className}>
         {/* top page loading progress bar indicator */}
         <NextTopLoader
           color="#ffa733"
