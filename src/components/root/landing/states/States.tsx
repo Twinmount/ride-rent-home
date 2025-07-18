@@ -33,7 +33,7 @@ export default async function States({
 
   return (
     // Main section container with responsive padding
-    <MotionSection className="section-container relative pt-[1.5rem]">
+    <MotionSection className="section-container no-global-padding relative pt-[1.5rem] lg:pt-[2.5rem]">
       {/* Background gradient overlay for desktop */}
       <div
         className="absolute bottom-0 top-0 hidden lg:block"

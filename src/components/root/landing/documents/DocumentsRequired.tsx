@@ -51,8 +51,8 @@ const DocumentsRequired = ({ category }: { category: string }) => {
   ];
 
   return (
-    // Main container for documents required section
-    <div className="space-y-[1rem] pb-[1.5rem] sm:space-y-[1.5rem]">
+    // Main container for documents required section - REMOVED pb-[1.5rem] to fix padding issue
+    <div className="space-y-[1rem] sm:space-y-[1.5rem]">
       {/* Main heading */}
       <div>
         <h3 className="text-[1rem] font-semibold text-text-primary sm:text-[1.25rem] lg:text-[1.5625rem]">

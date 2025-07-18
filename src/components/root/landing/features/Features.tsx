@@ -14,7 +14,7 @@ const Features = ({ state, category }: StateCategoryProps) => {
 
   return (
     // Main section container with responsive padding
-    <MotionSection className="relative overflow-hidden py-[0.6875rem] pb-[8.125rem] lg:py-[1.75rem] lg:pb-[5.9375rem]">
+    <MotionSection className="no-global-padding relative overflow-hidden py-[0.6875rem] pb-[8.125rem] lg:py-[1.75rem] lg:pb-[5.9375rem]">
       {/* Main background container */}
       <div className="absolute left-0 right-0 top-0 z-0 h-full"></div>
 
@@ -93,8 +93,8 @@ const Features = ({ state, category }: StateCategoryProps) => {
             <div className="mt-[1rem] space-y-[0.75rem] font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[1rem] lg:mt-[1.5rem] lg:w-[53.1875rem] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
               <p className="lg:w-[53.4375rem]">
                 Discover the best of {convertToLabel(state)} with our affordable
-                and reliable car rental service. Whether you're visiting the
-                main locations or exploring hidden gems, our diverse fleet
+                and reliable car rental service. Whether you&apos;re visiting
+                the main locations or exploring hidden gems, our diverse fleet
                 offers the perfect match for your travel needs. Experience
                 hassle-free car rental with transparent pricing and no hidden
                 fees.

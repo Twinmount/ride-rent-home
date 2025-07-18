@@ -10,8 +10,8 @@ const Documents = ({ state, category }: StateCategoryProps) => {
   const formattedCategory = singularizeValue(convertToLabel(category));
 
   return (
-    // Main section with gradient background and responsive margins
-    <MotionSection className="section-container h-full bg-gradient-to-b from-[#EFEFEF] to-white sm:my-[2rem] lg:my-[3rem] xl:mt-[4rem]">
+    // Main section with gradient background and responsive margins - removed default padding
+    <MotionSection className="no-global-padding section-container h-full bg-gradient-to-b from-[#EFEFEF] to-white pb-0 sm:my-[2rem] lg:my-[3rem]">
       {/* Container with proper max-width constraints - removed min-height */}
       <div className="relative mx-auto max-w-[120rem] lg:flex">
         {/* Yellow gradient overlay for desktop */}
@@ -53,8 +53,8 @@ const Documents = ({ state, category }: StateCategoryProps) => {
           </div>
         </div>
 
-        {/* Right content section with responsive width */}
-        <div className="z-1 relative space-y-[1rem] px-[2rem] sm:space-y-[1.5rem] sm:px-[1.5rem] lg:w-[55%] lg:space-y-[2rem] lg:py-[2rem] lg:pr-[2rem]">
+        {/* Right content section with responsive width - added pb-0 to eliminate bottom padding */}
+        <div className="z-1 relative space-y-[1rem] px-[2rem] pb-0 sm:space-y-[1.5rem] sm:px-[1.5rem] lg:w-[55%] lg:space-y-[2rem] lg:py-[2rem] lg:pb-0 lg:pr-[2rem]">
           {/* Main content area with heading and description */}
           <div className="space-y-[1rem] sm:space-y-[1.5rem]">
             <SectionHeading
@@ -67,20 +67,20 @@ const Documents = ({ state, category }: StateCategoryProps) => {
                 As the fastest-growing vehicle rental portal, we pride ourselves
                 on offering an extensive range of vehicles available for rent in
                 the UAE, from luxurious cars and sports cars to thrilling
-                motorbikes and sport bikes. But that's not all - we also cater
-                to those seeking adventure on the water with our selection of
-                speed boats and yachts for rent. For those looking to soar high,
-                we provide charter planes for rent at affordable rates for your
-                convenience.
+                motorbikes and sport bikes. But that&apos;s not all - we also
+                cater to those seeking adventure on the water with our selection
+                of speed boats and yachts for rent. For those looking to soar
+                high, we provide charter planes for rent at affordable rates for
+                your convenience.
               </p>
 
               <p>
                 At Ride.Rent, we understand the importance of convenience and
                 choice, which is why our services span across prominent areas in
                 the UAE, including Abu Dhabi, Dubai, Sharjah, Ajman, Umm Quwain,
-                Ras AL Khaimah, and Fujairah. Whether you're cruising along the
-                stunning coastline or exploring the vibrant cityscape, we've got
-                the perfect ride for every occasion.
+                Ras AL Khaimah, and Fujairah. Whether you&apos;re cruising along
+                the stunning coastline or exploring the vibrant cityscape,
+                we&apos;ve got the perfect ride for every occasion.
               </p>
 
               <p>

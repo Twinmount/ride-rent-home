@@ -32,21 +32,21 @@ export default function VehicleCategories() {
         <NavigationMenuItem>
           <NavigationMenuTrigger
             disabled={isCategoriesLoading}
-            className={`flex-center h-12 gap-2 rounded border px-3 py-1 text-sm font-semibold text-black hover:text-black ${isCategoriesLoading ? "cursor-default text-gray-500" : "bg-theme-gradient hover:bg-theme-gradient"}`}
+            className={`flex-center h-12 gap-2 rounded border px-3 py-1 text-sm font-semibold text-black hover:text-black ${isCategoriesLoading ? 'cursor-default text-gray-500' : 'bg-theme-gradient hover:bg-theme-gradient'}`}
           >
             <Image
               src={`${baseAssetsUrl}/icons/vehicle-categories/${category}.png`}
               alt={`${category} Icon`}
               className={`transition-all duration-200 ease-out max-sm:hidden ${
-                category === "sports-cars" ? "scale-[1.02]" : ""
+                category === 'sports-cars' ? 'scale-[1.02]' : ''
               }`}
               width={35}
               height={35}
-            />{" "}
+            />{' '}
             {convertToLabel(category)}
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid h-full w-[20rem] min-w-[20rem] grid-cols-3 place-items-center gap-2 px-3 md:w-[26rem] md:min-w-[26rem] md:grid-cols-4">
+            <ul className="flex h-full w-[12rem] min-w-[12rem] flex-col gap-0 p-0">
               {sortedCategories.map((cat: CategoryType, index) => (
                 <VehicleCategoryCard
                   key={cat.categoryId}
@@ -113,7 +113,7 @@ function VehicleCategoryCard({
       initial="hidden"
       animate="visible"
       variants={categoryVariants}
-      className={`flex aspect-square h-[6rem] min-h-[6rem] w-[6rem] min-w-[6rem] cursor-pointer flex-col justify-center gap-[0.2rem] overflow-hidden rounded-[0.4rem]`}
+      className={`flex h-[3rem] min-h-[3rem] w-full cursor-pointer items-center overflow-hidden`}
     >
       <Link
         href={`/${selectedCountry}/${selectedState}/${cat.value}`}
@@ -122,27 +122,31 @@ function VehicleCategoryCard({
       >
         <NavigationMenuLink>
           <div
-            className={`flex h-[3.6rem] w-full items-center justify-center rounded-[0.4rem] bg-gray-100 hover:bg-gray-200 ${
-              selectedCategory === cat.value ? "bg-theme-gradient" : ""
+            className={`ml-3 flex h-full min-w-40 items-center px-3 py-2 hover:bg-gray-50 ${
+              selectedCategory === cat.value
+                ? 'rounded-[0.4rem] bg-theme-gradient text-white'
+                : 'bg-white text-text-tertiary'
             }`}
           >
             <Image
               src={`${baseAssetsUrl}/icons/vehicle-categories/${cat.value}.png`}
               alt={`${cat.name} Icon`}
               className={`transition-all duration-200 ease-out ${
-                cat.value === "sports-cars" ? "scale-[1.02]" : ""
+                cat.value === 'sports-cars' ? 'scale-[1.02]' : ''
               }`}
-              width={40}
-              height={40}
+              width={24}
+              height={24}
             />
+            <span
+              className={`pl-1 text-sm ${
+                selectedCategory === cat.value
+                  ? 'font-medium text-white'
+                  : 'text-gray-600'
+              }`}
+            >
+              {cat.name}
+            </span>
           </div>
-          <span
-            className={`line-clamp-1 w-full text-center text-[0.7rem] text-gray-600 lg:text-[0.65rem] ${
-              selectedCategory === cat.value && "font-medium"
-            }`}
-          >
-            {cat.name}
-          </span>
         </NavigationMenuLink>
       </Link>
     </motion.li>

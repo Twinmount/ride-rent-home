@@ -38,11 +38,11 @@ export default function BannerSlider({
           bannerImages?.map((image, index) => {
             /* Slide content structure */
             const slideContent = (
-              <div className="relative w-full h-full">
+              <div className="relative h-full w-full">
                 <img
                   src={image?.src}
                   alt={`Banner ${index + 1}`}
-                  className="w-full h-full object-cover object-center"
+                  className="h-full w-full object-cover object-center"
                   loading="lazy"
                   onDragStart={(e) => e.preventDefault()}
                 />
@@ -54,7 +54,7 @@ export default function BannerSlider({
               return (
                 <a
                   key={`dashboard-banner-item__${index + 1}`}
-                  className="block w-full h-full"
+                  className="block h-full w-full"
                   href={image?.link}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -66,7 +66,10 @@ export default function BannerSlider({
 
             /* Default slide without link */
             return (
-              <div key={`dashboard-banner-item__${index + 1}`} className="w-full h-full">
+              <div
+                key={`dashboard-banner-item__${index + 1}`}
+                className="h-full w-full"
+              >
                 {slideContent}
               </div>
             );

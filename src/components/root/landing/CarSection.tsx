@@ -4,7 +4,7 @@ import Image from 'next/image';
 const CarSection: React.FC = () => {
   return (
     // Main section container with responsive positioning and gradient background
-    <section className="relative top-[0.125rem] h-[7.5rem] w-full overflow-hidden bg-gradient-to-b from-gray-50/20 to-white md:h-[14.25rem] lg:top-[0.5rem]">
+    <section className="relative top-[0.125rem] h-[7.5rem] w-full overflow-hidden bg-gradient-to-b from-gray-50/20 to-white p-2 md:h-[14.25rem] lg:top-[0.5rem] lg:m-6">
       {/* Container wrapper for centering content */}
       <div className="relative flex h-full w-full items-end justify-center px-[0.25rem]">
         {/* Cars container with responsive max-width constraints */}
