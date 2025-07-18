@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { BadgeId, VehicleBadgeConfig } from "./vehicleBadgesConfig";
+} from '@/components/ui/hover-card';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { BadgeId, VehicleBadgeConfig } from './vehicleBadgesConfig';
 
-type VehicleBadgeProps = Omit<VehicleBadgeConfig, "id"> & {
+type VehicleBadgeProps = Omit<VehicleBadgeConfig, 'id'> & {
   id: BadgeId;
 };
 
 const colorThemes: Record<BadgeId, string> = {
-  "zero-deposit": "bg-green-100 text-green-800",
-  "fancy-number": "bg-blue-100 text-blue-800",
-  "hourly-rental": "bg-red-100 text-red-500",
+  'zero-deposit': 'bg-green-100 text-green-800',
+  'fancy-number': 'bg-blue-100 text-blue-800',
+  'hourly-rental': 'bg-red-100 text-red-500',
 };
 
 export const VehicleBadge = ({
@@ -32,24 +32,24 @@ export const VehicleBadge = ({
   const color = colorThemes[id];
 
   return (
-    <HoverCard openDelay={300} closeDelay={50}>
+    <HoverCard openDelay={500} closeDelay={50}>
       <HoverCardTrigger asChild>
         <motion.div
           className={cn(
-            "relative flex h-8 cursor-default items-center overflow-hidden rounded-full",
-            color,
+            'relative flex h-8 cursor-default items-center overflow-hidden rounded-full',
+            color
           )}
           onHoverStart={() => setIsHovered(true)}
           onHoverEnd={() => setIsHovered(false)}
           animate={{
-            width: isHovered ? "auto" : "2rem",
-            paddingRight: isHovered ? "0.75rem" : "0rem",
+            width: isHovered ? 'auto' : '2rem',
+            paddingRight: isHovered ? '0.75rem' : '0rem',
           }}
           transition={{
             duration: 0.3,
             ease: [0.4, 0, 0.2, 1], // Smooth easing
           }}
-          style={{ minWidth: "2rem" }}
+          style={{ minWidth: '2rem' }}
         >
           {/* Icon container - always visible */}
           <div className="flex h-full w-8 flex-shrink-0 items-center justify-center">
@@ -60,7 +60,7 @@ export const VehicleBadge = ({
           <motion.div
             className="flex h-full items-center overflow-hidden"
             animate={{
-              width: isHovered ? "auto" : "0px",
+              width: isHovered ? 'auto' : '0px',
               opacity: isHovered ? 1 : 0,
             }}
             transition={{

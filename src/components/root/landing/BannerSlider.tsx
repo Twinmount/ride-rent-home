@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { ImageSrc } from "./Banner";
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import { ImageSrc } from './Banner';
 
 export default function BannerSlider({
   bannerImages,
@@ -21,18 +21,18 @@ export default function BannerSlider({
     arrows: false,
     fade: false,
     speed: 600,
-    cssEase: "ease-in-out",
+    cssEase: 'ease-in-out',
     pauseOnHover: true,
     /* Custom dot styling */
     customPaging: (i: number) => (
-      <div className="w-2 h-2 bg-white/40 rounded-full hover:bg-white/80 transition-all duration-300 cursor-pointer">
+      <div className="h-2 w-2 cursor-pointer rounded-full bg-white/40 transition-all duration-300 hover:bg-white/80">
         <span className="sr-only">Slide {i + 1}</span>
       </div>
     ),
   };
 
   return (
-    <div className="modern-banner-slider">
+    <div className="modern-banner-slider absolute inset-0 w-full min-w-full">
       <Slider {...settings}>
         {bannerImages?.length > 0 &&
           bannerImages?.map((image, index) => {

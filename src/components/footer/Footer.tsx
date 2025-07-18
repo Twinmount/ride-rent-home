@@ -1,8 +1,8 @@
-import FooterGrid from "./footer-grid/FooterGrid";
-import Social from "./social/Social";
-import { FaRegCopyright, FaRegRegistered } from "react-icons/fa6";
-import MotionDiv from "../general/framer-motion/MotionDiv";
-import RideRentLogo from "./RideRentFooterLogo";
+import FooterGrid from './footer-grid/FooterGrid';
+import Social from './social/Social';
+import { FaRegCopyright, FaRegRegistered } from 'react-icons/fa6';
+import MotionDiv from '../general/framer-motion/MotionDiv';
+import RideRentFooterLogo from './RideRentFooterLogo';
 
 const Footer = () => {
   return (
@@ -13,7 +13,7 @@ const Footer = () => {
         <div className="mb-8 flex flex-col items-center justify-center gap-4 border-b border-[#303030] pb-6 md:mb-14 md:flex-row md:justify-between md:pb-8">
           {/* Logo - Center on mobile, Left on desktop */}
           <div className="order-1 flex-shrink-0 md:order-none">
-            <RideRentLogo />
+            <RideRentFooterLogo />
           </div>
 
           {/* Language/Country Selector - Center on mobile, Right on desktop */}
