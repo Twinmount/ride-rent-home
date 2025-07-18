@@ -90,9 +90,10 @@ img {
 
 /* IE and Edge scrollbar */
 body {
+  @apply bg-background;
+
   scrollbar-face-color: #888;
   scrollbar-track-color: #f5f5f5;
-
   top: 0px !important;
 }
 
