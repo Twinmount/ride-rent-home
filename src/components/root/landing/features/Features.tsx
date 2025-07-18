@@ -1,48 +1,49 @@
-import FeaturesCard from "@/components/card/features-card/FeaturesCard";
-import MotionSection from "@/components/general/framer-motion/MotionSection";
-import { StateCategoryProps } from "@/types";
+import FeaturesCard from '@/components/card/features-card/FeaturesCard';
+import MotionSection from '@/components/general/framer-motion/MotionSection';
+import { StateCategoryProps } from '@/types';
 import {
   convertToLabel,
   createFeatureCards,
   singularizeValue,
-} from "@/helpers";
+} from '@/helpers';
 
 const Features = ({ state, category }: StateCategoryProps) => {
+  // Generate dynamic feature cards based on state
   const dynamicFeatureCards = createFeatureCards(convertToLabel(state));
   const formattedCategory = convertToLabel(singularizeValue(category));
 
   return (
-    <MotionSection className="no-global-padding relative overflow-hidden py-11 pb-[130px] lg:py-28 lg:pb-[95px]">
-      {/* Main background - darker white/gray gradient covering only top half */}
+    // Main section container with responsive padding
+    <MotionSection className="relative overflow-hidden py-[0.6875rem] pb-[8.125rem] lg:py-[1.75rem] lg:pb-[5.9375rem]">
+      {/* Main background container */}
       <div className="absolute left-0 right-0 top-0 z-0 h-full"></div>
 
-      {/* Orange/Yellow Gradient Overlay - Responsive */}
+      {/* Desktop orange/yellow gradient overlay */}
       <div
         className="absolute bottom-0 top-0 hidden lg:block"
         style={{
-          right: "0%",
-          width: "60%",
+          right: '0%',
+          width: '60%',
           background:
-            "linear-gradient(139.28deg, rgba(255, 255, 255, 0) 45%, rgba(249, 168, 37, 0.5) 120%)",
+            'linear-gradient(139.28deg, rgba(255, 255, 255, 0) 45%, rgba(249, 168, 37, 0.5) 120%)',
         }}
       ></div>
 
-      {/* Mobile Yellow Gradient - Smaller and positioned differently */}
+      {/* Mobile yellow gradient with different positioning */}
       <div
         className="absolute bottom-0 left-0 right-0 lg:hidden"
         style={{
-          height: "80%",
+          height: '80%',
           background:
-            "linear-gradient(139.28deg, rgba(255, 255, 255, 0) 55%, rgba(249, 168, 37, 0.7) 100%)",
+            'linear-gradient(139.28deg, rgba(255, 255, 255, 0) 55%, rgba(249, 168, 37, 0.7) 100%)',
         }}
       ></div>
 
-      {/* Background Images - Desktop Only */}
+      {/* Background building images for desktop only */}
       <div className="z-1 absolute inset-0 hidden lg:block">
-        {/* Left Background Building - Wide image (1257x535) */}
         <div
           className="absolute bottom-0 left-0"
-          style={{ width: "1257px", height: "535px" }}
+          style={{ width: '78.5625rem', height: '33.4375rem' }}
         >
           <img
             src="/assets/img/bg/featuresWideBG.png"
@@ -51,56 +52,55 @@ const Features = ({ state, category }: StateCategoryProps) => {
           />
         </div>
 
-        {/* Right Background Building - Tall image (426x632) */}
         <div
-          className="absolute bottom-14 right-0"
-          style={{ width: "426px", height: "632px" }}
+          className="absolute bottom-[0.875rem] right-0"
+          style={{ width: '26.625rem', height: '39.5rem' }}
         >
           <img
             src="/assets/img/bg/featuresBG.png"
             alt=""
-            className="h-full w-full object-cover pb-14 opacity-30"
+            className="h-full w-full object-cover pb-[0.875rem] opacity-30"
           />
         </div>
       </div>
 
-      {/* Car Image - Responsive, positioned absolutely for all screen sizes */}
+      {/* Responsive car image positioned absolutely */}
       <div className="absolute bottom-0 right-0 z-10">
         <div className="relative flex items-end justify-end">
           <img
             src="/assets/cars/mustang.png"
             alt="Red Mustang Car"
-            className="h-[141px] w-[224px] object-contain drop-shadow-2xl sm:lg:max-h-[250px] lg:h-[350px] lg:max-h-[325px] lg:w-auto"
+            className="h-[8.8125rem] w-[14rem] object-contain drop-shadow-2xl sm:lg:max-h-[15.625rem] lg:h-[21.875rem] lg:max-h-[20.3125rem] lg:w-auto"
           />
         </div>
       </div>
 
-      {/* Main Content Container */}
-      <div className="relative z-10 mx-auto w-full max-w-[1920px]">
-        {/* Text Content Section - Takes 3/4 of width on desktop, full width on mobile */}
-        <div className="w-full px-[2rem] sm:px-6 lg:ml-11 lg:w-3/4 lg:px-8 xl:w-2/3">
-          {/* Header Section */}
-          <div className="mb-6 w-full lg:mb-12 lg:w-[934px] lg:max-w-[934px]">
-            {/* Custom Title with responsive text sizes */}
-            <h2 className="mb-4 text-center text-[16px] font-medium leading-[110%] text-[#2E3A44] sm:text-left sm:text-[28px] lg:mb-6 lg:text-[40px]">
+      {/* Main content container with max width constraint */}
+      <div className="relative z-10 mx-auto w-full max-w-[120rem]">
+        {/* Text content section with responsive width */}
+        <div className="w-full px-[2rem] sm:px-[1.5rem] lg:ml-[0.6875rem] lg:w-3/4 lg:px-[2rem] xl:w-2/3">
+          {/* Header section with title and description */}
+          <div className="mb-[1.5rem] w-full lg:mb-[3rem] lg:w-[58.375rem] lg:max-w-[58.375rem]">
+            {/* Main title with responsive typography */}
+            <h2 className="mb-[1rem] text-center text-[0.8rem] font-medium leading-[110%] text-[#2E3A44] sm:text-left sm:text-[1.75rem] lg:mb-[1.5rem] lg:text-[2.5rem]">
               Enjoy ease and peace of mind
               <br />
-              when renting a {formattedCategory.toLowerCase()} in{" "}
+              when renting a {formattedCategory.toLowerCase()} in{' '}
               {convertToLabel(state)}
             </h2>
 
-            {/* Description Text with responsive typography */}
-            <div className="mt-4 space-y-3 font-poppins text-[10px] font-normal leading-[130%] tracking-[0%] text-[#7D8487] sm:text-[16px] lg:mt-6 lg:w-[851px] lg:space-y-4 lg:text-[15px] lg:leading-[120%]">
-              <p className="lg:w-[855px]">
+            {/* Description paragraphs with responsive spacing */}
+            <div className="mt-[1rem] space-y-[0.75rem] font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[1rem] lg:mt-[1.5rem] lg:w-[53.1875rem] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
+              <p className="lg:w-[53.4375rem]">
                 Discover the best of {convertToLabel(state)} with our affordable
-                and reliable car rental service. Whether you&apos;re visiting
-                the main locations or exploring hidden gems, our diverse fleet
+                and reliable car rental service. Whether you're visiting the
+                main locations or exploring hidden gems, our diverse fleet
                 offers the perfect match for your travel needs. Experience
                 hassle-free car rental with transparent pricing and no hidden
                 fees.
               </p>
 
-              <p className="lg:w-[851px]">
+              <p className="lg:w-[53.1875rem]">
                 Our commitment to reliability means your vehicle will be ready
                 and waiting, wherever and whenever you need it. Choose us for a
                 stress-free car rental experience in {convertToLabel(state)},
@@ -109,9 +109,9 @@ const Features = ({ state, category }: StateCategoryProps) => {
             </div>
           </div>
 
-          {/* Cards Section */}
-          <div className="w-full lg:max-w-[1112px]">
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
+          {/* Feature cards grid section */}
+          <div className="w-full lg:max-w-[69.5rem]">
+            <div className="grid grid-cols-1 gap-[1rem] lg:grid-cols-2 lg:gap-[2rem]">
               {dynamicFeatureCards.map((feature: any) => (
                 <div key={feature.key} className="w-full">
                   <FeaturesCard data={feature} />

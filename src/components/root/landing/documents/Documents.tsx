@@ -1,44 +1,107 @@
-import MotionSection from "@/components/general/framer-motion/MotionSection";
-import DocumentsRequired from "./DocumentsRequired";
-import { convertToLabel, singularizeValue } from "@/helpers";
-import { StateCategoryProps } from "@/types";
+import MotionSection from '@/components/general/framer-motion/MotionSection';
+import DocumentsRequired from './DocumentsRequired';
+import { convertToLabel, singularizeValue } from '@/helpers';
+import { StateCategoryProps } from '@/types';
+import Image from 'next/image';
+import { SectionHeading } from '@/components/common/SectionHeading';
 
 const Documents = ({ state, category }: StateCategoryProps) => {
+  // Format category for display
   const formattedCategory = singularizeValue(convertToLabel(category));
 
   return (
-    <MotionSection className="section-container wrapper">
-      <h2 className="section-heading">
-        Ride.Rent is getting you the best {formattedCategory} for rental in{" "}
-        {convertToLabel(state)}
-      </h2>
-      <div className="mx-auto w-full max-w-[95%] md:max-w-[80%]">
-        <p className="text-center text-sm font-normal md:text-base">
-          As the fastest-growing vehicle rental portal, we pride ourselves on
-          offering an extensive range of vehicles available for rent in the UAE,
-          from luxurious cars and sports cars to thrilling motorbikes and sport
-          bikes. But that&apos;s not all - we also cater to those seeking
-          adventure on the water with our selection of speed boats and yachts
-          for rent. For those looking to soar high, we provide charter planes
-          for rent at affordable rates for your convenience.
-          <br />
-          <br /> At Ride.Rent, we understand the importance of convenience and
-          choice, which is why our services span across prominent areas in the
-          UAE, including Abu Dhabi, Dubai, Sharjah, Ajman, Umm Quwain, Ras AL
-          Khaimah, and Fujairah, Whether you&apos;re cruising along the stunning
-          coastline or exploring the vibrant cityscape, we&apos;ve got the
-          perfect ride for every occasion. <br />
-          <br /> With a commitment to providing exceptional service and an
-          unbeatable selection, Ride.Rent is your go-to destination for all your
-          vehicle rental needs in the UAE. <br />
-          <br /> Book your dream ride today and elevate your journey with
-          Ride.Rent!
-        </p>
-      </div>
+    // Main section with gradient background and responsive margins
+    <MotionSection className="section-container h-full bg-gradient-to-b from-[#EFEFEF] to-white sm:my-[2rem] lg:my-[3rem] xl:mt-[4rem]">
+      {/* Container with proper max-width constraints - removed min-height */}
+      <div className="relative mx-auto max-w-[120rem] lg:flex">
+        {/* Yellow gradient overlay for desktop */}
+        <div
+          className="absolute bottom-0 left-0 right-0 top-0 z-0"
+          style={{
+            background:
+              'linear-gradient(220.28deg, rgba(255, 255, 255, 0) 45%, rgba(249, 168, 37, 0.5) 120%)',
+          }}
+        ></div>
 
-      {/* Documents Required */}
-      <DocumentsRequired category={formattedCategory} />
+        {/* Background building image for desktop only */}
+        <div className="absolute inset-0 z-0 hidden lg:block">
+          <div
+            className="absolute bottom-0 right-0"
+            style={{ width: '78.5625rem', height: '33.4375rem' }}
+          >
+            <img
+              src="/assets/img/bg/featuresWideBG.png"
+              alt=""
+              className="h-full w-full object-cover opacity-30"
+            />
+          </div>
+        </div>
+
+        {/* Left image section - hidden on mobile, fixed width on desktop */}
+        <div className="z-1 relative hidden pt-[8rem] lg:block lg:h-full lg:w-[45%] lg:overflow-hidden lg:px-[1.5rem]">
+          <div className="relative flex h-full items-center justify-center lg:justify-end lg:pr-[2rem]">
+            <div className="relative">
+              <Image
+                src="/assets/img/home-images/document-section-img.png"
+                alt="Toyota Fortuner"
+                width={600}
+                height={500}
+                className="relative max-w-none object-contain"
+                priority
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Right content section with responsive width */}
+        <div className="z-1 relative space-y-[1rem] px-[2rem] sm:space-y-[1.5rem] sm:px-[1.5rem] lg:w-[55%] lg:space-y-[2rem] lg:py-[2rem] lg:pr-[2rem]">
+          {/* Main content area with heading and description */}
+          <div className="space-y-[1rem] sm:space-y-[1.5rem]">
+            <SectionHeading
+              title={`Ride.Rent is getting you the best ${formattedCategory} for rental in ${convertToLabel(state)}`}
+              align="left"
+            />
+
+            <div className="space-y-[0.75rem] font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-[#7D8487] sm:text-[0.875rem] sm:leading-[125%] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
+              <p>
+                As the fastest-growing vehicle rental portal, we pride ourselves
+                on offering an extensive range of vehicles available for rent in
+                the UAE, from luxurious cars and sports cars to thrilling
+                motorbikes and sport bikes. But that's not all - we also cater
+                to those seeking adventure on the water with our selection of
+                speed boats and yachts for rent. For those looking to soar high,
+                we provide charter planes for rent at affordable rates for your
+                convenience.
+              </p>
+
+              <p>
+                At Ride.Rent, we understand the importance of convenience and
+                choice, which is why our services span across prominent areas in
+                the UAE, including Abu Dhabi, Dubai, Sharjah, Ajman, Umm Quwain,
+                Ras AL Khaimah, and Fujairah. Whether you're cruising along the
+                stunning coastline or exploring the vibrant cityscape, we've got
+                the perfect ride for every occasion.
+              </p>
+
+              <p>
+                With a commitment to providing exceptional service and an
+                unbeatable selection, Ride.Rent is your go-to destination for
+                all your vehicle rental needs in the UAE.
+              </p>
+
+              <p>
+                Book your dream ride today and elevate your journey with
+                Ride.Rent!
+              </p>
+            </div>
+          </div>
+
+          {/* Documents required section */}
+          <DocumentsRequired category={formattedCategory} />
+        </div>
+      </div>
     </MotionSection>
   );
 };
+
 export default Documents;

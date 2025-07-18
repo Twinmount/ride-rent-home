@@ -1,6 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
-import { StateType } from "@/types";
+import Image from 'next/image';
+import Link from 'next/link';
+import { StateType } from '@/types';
 
 type StateCardProps = {
   state: StateType;
@@ -14,14 +14,15 @@ export default function StateCard({
   country,
 }: StateCardProps) {
   return (
+    // Card link with responsive dimensions and hover effects
     <Link
       href={`/${country}/${state.stateValue}/${category}`}
       key={state.stateId}
-      className="group relative flex h-[120px] w-[100px] cursor-pointer flex-col items-center justify-end overflow-hidden rounded-[0.75rem] bg-white transition-all duration-300 ease-out md:h-[140px] md:w-[130px] lg:h-[160px] lg:w-[140px]"
-      style={{ boxShadow: "0px 0px 4px 0px #00000040" }}
+      className="group relative flex h-[7.5rem] w-[6.25rem] cursor-pointer flex-col items-center justify-end overflow-hidden rounded-[0.75rem] bg-white transition-all duration-300 ease-out md:h-[8.75rem] md:w-[8.125rem] lg:h-[10rem] lg:w-[8.75rem]"
+      style={{ boxShadow: '0rem 0rem 0.25rem 0rem #00000040' }}
       target="_blank"
     >
-      {/* Background Image */}
+      {/* Background state image with hover scale effect */}
       <Image
         fill
         src={state.stateImage}
@@ -29,18 +30,18 @@ export default function StateCard({
         className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
       />
 
-      {/* White gradient to match design */}
+      {/* White gradient overlay for text readability */}
       <div
         className="absolute bottom-0 left-0 h-full w-full"
         style={{
           background:
-            "linear-gradient(180deg, rgba(0, 0, 0, 0) 53.75%, rgba(255, 255, 255, 0.8) 84.5%)",
+            'linear-gradient(180deg, rgba(0, 0, 0, 0) 53.75%, rgba(255, 255, 255, 0.8) 84.5%)',
         }}
       />
 
-      {/* State name with enhanced styling */}
-      <figcaption className="z-1 relative mb-3 px-2 text-center">
-        <span className="text-base font-medium text-gray-800 drop-shadow-sm">
+      {/* State name caption with responsive typography */}
+      <figcaption className="z-1 relative mb-[0.5rem] px-[0.5rem] text-center">
+        <span className="text-xs font-normal text-gray-800 drop-shadow-sm md:text-sm">
           {state.stateName}
         </span>
       </figcaption>

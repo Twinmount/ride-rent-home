@@ -1,4 +1,4 @@
-@use "../styles/_variables.scss" as *;
+@use '../styles/_variables.scss' as *;
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -24,7 +24,6 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: "FiraSans", sans-serif;
   font-weight: normal;
   background-color: $gray_bg;
   overflow-x: hidden !important;
@@ -103,7 +102,7 @@ body {
   margin-bottom: 1rem;
 
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     bottom: -0.9rem;
     left: 0;
@@ -261,11 +260,9 @@ body {
   @media screen and (min-width: 768px) {
     height: 26.25rem;
 
-    /* Full width banner */
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    width: 100vw;
-    max-width: none;
+    /* Container-based width instead of viewport width */
+    width: 100%;
+    max-width: 100%;
 
     /* Rectangular design for desktop */
     .slick-slide img {
