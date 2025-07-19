@@ -51,15 +51,15 @@ export default async function States({
         subtitle="Lorem ipsum dolor sit amet consectetur."
       />
 
-      {/* States grid container with responsive columns */}
-      <div className="mx-auto mt-[1.75rem] grid w-fit auto-rows-auto grid-cols-3 place-items-center justify-items-center gap-[1rem] py-[0.75rem] md:grid-cols-3 md:gap-[1.25rem] lg:grid-cols-6 lg:gap-[1.5rem]">
+      {/* States flex container with responsive wrapping and centering */}
+      <div className="mx-auto mt-[1.75rem] flex w-full max-w-[1200px] flex-wrap justify-center gap-[1rem] align-middle md:gap-[1.25rem] lg:gap-x-1 lg:gap-y-3">
         {states.map((state, index) => (
-          <StateCard
+          <div
             key={state.stateId}
-            state={state}
-            category={category}
-            country={country}
-          />
+            className="w-[calc((100%-2rem)/3)] flex-none px-2 pt-2 md:w-[calc((100%-2.5rem)/3)] lg:w-[calc((100%-7.5rem)/6)]"
+          >
+            <StateCard state={state} category={category} country={country} />
+          </div>
         ))}
       </div>
 

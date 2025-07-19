@@ -1,0 +1,45 @@
+export const languages = [
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'ar', name: 'Arabic', nativeName: 'العربية' },
+  { code: 'fr', name: 'French', nativeName: 'Français' },
+  { code: 'nl', name: 'Dutch', nativeName: 'Nederlands' },
+  { code: 'zh-CN', name: 'Chinese', nativeName: '中文' },
+  { code: 'es', name: 'Spanish', nativeName: 'Español' },
+  { code: 'pt', name: 'Portuguese', nativeName: 'Português' },
+  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी' },
+  { code: 'ru', name: 'Russian', nativeName: 'Русский' },
+  { code: 'ja', name: 'Japanese', nativeName: '日本語' },
+  { code: 'tr', name: 'Turkish', nativeName: 'Türkçe' },
+  { code: 'it', name: 'Italian', nativeName: 'Italiano' },
+  { code: 'de', name: 'German', nativeName: 'Deutsch' },
+];
+
+export const countries = [
+  { code: 'IN', name: 'India', flag: '🇮🇳' },
+  { code: 'US', name: 'United States', flag: '🇺🇸' },
+  { code: 'GB', name: 'United Kingdom', flag: '🇬🇧' },
+  { code: 'AE', name: 'UAE', flag: '🇦🇪' },
+  { code: 'SA', name: 'Saudi Arabia', flag: '🇸🇦' },
+  { code: 'FR', name: 'France', flag: '🇫🇷' },
+  { code: 'DE', name: 'Germany', flag: '🇩🇪' },
+  { code: 'CN', name: 'China', flag: '🇨🇳' },
+  { code: 'JP', name: 'Japan', flag: '🇯🇵' },
+];
+
+export const currencySymbols: Record<string, string> = {
+  AED: 'د.إ',
+  USD: '$',
+  GBP: '£',
+  EUR: '€',
+  SAR: '﷼',
+  KWD: 'د.ك',
+  RUB: '₽',
+  INR: '₹',
+  PKR: '₨',
+  OMR: 'ر.ع.',
+  MAD: 'د.م.',
+  CNY: '¥',
+  AUD: 'A$',
+  CAD: 'C$',
+  JPY: '¥',
+};

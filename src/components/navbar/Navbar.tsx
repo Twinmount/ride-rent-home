@@ -112,7 +112,13 @@ export const Navbar = () => {
             </li>
 
             <li>
-              <LanguageSelector />
+              <LanguageSelector
+                theme="navbar"
+                size="md"
+                showLanguageText={true}
+                position="left"
+                className="navbar-lang-selector"
+              />
             </li>
 
             {/* Location */}
