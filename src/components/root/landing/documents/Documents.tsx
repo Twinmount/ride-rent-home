@@ -11,7 +11,7 @@ const Documents = ({ state, category }: StateCategoryProps) => {
 
   return (
     // Main section with gradient background and responsive margins - removed default padding
-    <MotionSection className="no-global-padding section-container h-full bg-gradient-to-b from-[#EFEFEF] to-white pb-0 sm:my-[2rem] lg:my-[3rem]">
+    <MotionSection className="no-global-padding section-container h-full bg-gradient-to-b from-[#f8f6f6] to-white pb-0 sm:my-[2rem] lg:my-[3rem]">
       {/* Container with proper max-width constraints - removed min-height */}
       <div className="relative mx-auto max-w-[120rem] pb-4 lg:flex">
         {/* Yellow gradient overlay for desktop */}
@@ -54,7 +54,7 @@ const Documents = ({ state, category }: StateCategoryProps) => {
         </div>
 
         {/* Right content section with responsive width - added pb-0 to eliminate bottom padding */}
-        <div className="z-1 relative space-y-[1rem] px-[2rem] pb-0 sm:space-y-[1.5rem] sm:px-[1.5rem] lg:w-[55%] lg:space-y-[2rem] lg:py-[2rem] lg:pb-0 lg:pr-[2rem]">
+        <div className="z-1 relative space-y-[1rem] px-[2rem] pb-0 sm:space-y-[1.5rem] sm:px-[1.5rem] sm:text-[0.17rem] lg:w-[55%] lg:space-y-[2rem] lg:py-[2rem] lg:pb-0 lg:pr-[2rem] lg:text-[2.2rem]">
           {/* Main content area with heading and description */}
           <div className="space-y-[1rem] sm:space-y-[1.5rem]">
             <SectionHeading
@@ -62,7 +62,7 @@ const Documents = ({ state, category }: StateCategoryProps) => {
               align="left"
             />
 
-            <div className="space-y-[0.75rem] font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-[#7D8487] sm:text-[0.875rem] sm:leading-[125%] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
+            <div className="space-y-[0.75rem] font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[0.875rem] sm:leading-[125%] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
               <p>
                 As the fastest-growing vehicle rental portal, we pride ourselves
                 on offering an extensive range of vehicles available for rent in

@@ -5,7 +5,7 @@ import MotionDiv from "../../general/framer-motion/MotionDiv";
 
 const Social = () => {
   return (
-    <MotionDiv className="notranslate flex flex-col items-center justify-center gap-6">
+    <MotionDiv className="notranslate flex flex-col items-center justify-center gap-3">
       {/* Social Media Icons */}
       <div className="flex flex-wrap justify-center gap-3">
         {socials.map((social) => {

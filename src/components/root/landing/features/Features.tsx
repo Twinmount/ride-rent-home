@@ -82,7 +82,7 @@ const Features = ({ state, category }: StateCategoryProps) => {
           {/* Header section with title and description */}
           <div className="mb-[1.5rem] w-full lg:mb-[3rem] lg:w-[58.375rem] lg:max-w-[58.375rem]">
             {/* Main title with responsive typography */}
-            <h2 className="mb-[1rem] text-center text-[0.8rem] font-medium leading-[110%] text-[#2E3A44] sm:text-left sm:text-[1.75rem] lg:mb-[1.5rem] lg:text-[2.5rem]">
+            <h2 className="mb-[1rem] text-center text-[1.125rem] font-semibold leading-[1] text-text-primary sm:text-left sm:text-[1.75rem] lg:mb-[1.5rem] lg:text-[2.5rem]">
               Enjoy ease and peace of mind
               <br />
               when renting a {formattedCategory.toLowerCase()} in{' '}
@@ -90,7 +90,7 @@ const Features = ({ state, category }: StateCategoryProps) => {
             </h2>
 
             {/* Description paragraphs with responsive spacing */}
-            <div className="mt-[1rem] space-y-[0.75rem] font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[1rem] lg:mt-[1.5rem] lg:w-[53.1875rem] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
+            <div className="mt-[1rem] space-y-[0.75rem] font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[0.875rem] lg:mt-[1.5rem] lg:w-[53.1875rem] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
               <p className="lg:w-[53.4375rem]">
                 Discover the best of {convertToLabel(state)} with our affordable
                 and reliable car rental service. Whether you&apos;re visiting
