@@ -144,7 +144,7 @@ body {
   }
 
   .section-container {
-    @apply flex h-auto min-h-fit flex-col items-center rounded-[1rem] pb-8;
+    @apply h-auto min-h-fit w-full pb-8;
   }
 
   .section-heading {

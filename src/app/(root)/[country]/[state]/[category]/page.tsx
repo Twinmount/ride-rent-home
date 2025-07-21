@@ -67,7 +67,7 @@ export default async function Home(props: PageProps) {
         />
       </Suspense>
 
-      {/* <Suspense fallback={<SectionLoading />}>
+      <Suspense fallback={<SectionLoading />}>
         <PromotionDeals state={state} country={country} />
       </Suspense>
 
@@ -101,7 +101,7 @@ export default async function Home(props: PageProps) {
           limit={8}
           country={country}
         />
-      </Suspense> */}
+      </Suspense>
 
       {/* <Suspense fallback={<SectionLoading />}>
         <Locations state={state} category={category} country={country} />

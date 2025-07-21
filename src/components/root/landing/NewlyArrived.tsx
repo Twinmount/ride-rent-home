@@ -15,7 +15,7 @@ export default async function NewlyArrived({
 }: StateCategoryProps) {
   const params = new URLSearchParams({
     page: '1',
-    limit: '5',
+    limit: '6',
     state: state,
     sortOrder: 'DESC',
     category: category,
@@ -41,12 +41,12 @@ export default async function NewlyArrived({
   const formattedCategory = convertToLabel(category);
 
   return (
-    <MotionSection className="section-container wrapper">
+    <MotionSection className="section-container">
       <SectionHeading
         title={`Newly arrived ${formattedCategory}`}
         subtitle="Lorem ipsum dolor sit amet consectetur."
         align="left"
-        className="pb-2 pl-2 lg:pl-20"
+        className="lg:ml-12"
       />
 
       <CarouselWrapper isButtonVisible>

@@ -31,7 +31,7 @@ const ViewAllGridCard = ({
       className="flex h-[19.8rem] w-[16.37rem] min-w-[16.37rem] cursor-pointer flex-col gap-4 rounded border border-border-default bg-white p-3 md:w-[17.18rem] md:min-w-[17.18rem] lg:w-[18.43rem] lg:min-w-[18.43rem]"
     >
       {/* Thumbnail grid */}
-      <div className="relative grid h-auto min-h-[80%] grid-cols-3 grid-rows-2 gap-1 overflow-hidden rounded-lg">
+      <div className="relative grid h-auto min-h-[80%] grid-cols-3 grid-rows-2 gap-1 overflow-hidden rounded-lg border">
         {filledThumbnails.map((url, idx) => (
           <div
             key={idx}

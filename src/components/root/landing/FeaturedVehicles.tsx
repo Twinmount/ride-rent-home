@@ -56,7 +56,7 @@ const FeaturedVehicles = async ({
   // view all link
   let viewAllLink = `/${country}/${state}/listing/${category}`;
 
-  // if vehicleType exists, add it in the link
+  // if vehicleType exists, add it in the link of the corresponding listing page
   if (vehicleType) {
     viewAllLink += `/${vehicleType}`;
   }
@@ -65,7 +65,7 @@ const FeaturedVehicles = async ({
   const formattedCategory = convertToLabel(category);
 
   return (
-    <MotionSection className="h-auto min-h-fit w-full pb-8">
+    <MotionSection className="section-container">
       <CarouselWrapper isButtonVisible>
         {mainVehicles.map((vehicle, index) => (
           <VehicleCard
