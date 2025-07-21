@@ -8,19 +8,21 @@ import { useTopLoader } from 'nextjs-toploader';
 import { NavigationMenuLink } from '../ui/navigation-menu';
 import Image from 'next/image';
 
+type PropsType = {
+  cat: CategoryType;
+  index: number;
+  selectedCategory: string | undefined;
+  selectedState: string;
+  selectedCountry: string;
+};
+
 function VehicleCategoryCard({
   cat,
   index,
   selectedCategory,
   selectedState,
   selectedCountry,
-}: {
-  cat: CategoryType;
-  index: number;
-  selectedCategory: string | undefined;
-  selectedState: string;
-  selectedCountry: string;
-}) {
+}: PropsType) {
   // Animation variants for categories
   const categoryVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -66,7 +68,7 @@ function VehicleCategoryCard({
           <div
             className={`ml-3 flex h-full min-w-40 items-center px-3 py-2 hover:bg-gray-50 ${
               selectedCategory === cat.value
-                ? 'rounded-[0.4rem] bg-theme-gradient text-white'
+                ? 'rounded-[0.4rem] bg-theme-gradient text-text-primary'
                 : 'bg-white text-text-tertiary'
             }`}
           >
@@ -82,7 +84,7 @@ function VehicleCategoryCard({
             <span
               className={`pl-1 text-sm ${
                 selectedCategory === cat.value
-                  ? 'font-medium text-white'
+                  ? 'font-medium text-text-primary'
                   : 'text-gray-600'
               }`}
             >

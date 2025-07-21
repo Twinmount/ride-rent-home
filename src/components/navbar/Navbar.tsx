@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import { useParams } from "next/navigation";
-import { useShouldRender } from "@/hooks/useShouldRender";
-import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
-import { extractCategory } from "@/helpers";
-import { noStatesDropdownRoutes } from ".";
-import LanguageSelector from "./LanguageSelector";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { LocationDialog } from "../dialog/location-dialog/LocationDialog";
-import { useEffect, useState } from "react";
-import { AlignRight } from "lucide-react";
-import { Button } from "../ui/button";
-import RegisterLinkButton from "../common/RegisterLinkButton";
-import RideRentNavbarLogo from "../common/RideRentNavbarLogo";
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import { useParams } from 'next/navigation';
+import { useShouldRender } from '@/hooks/useShouldRender';
+import { SearchDialog } from '../dialog/search-dialog/SearchDialog';
+import { extractCategory } from '@/helpers';
+import { noStatesDropdownRoutes } from '.';
+import LanguageSelector from './LanguageSelector';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { LocationDialog } from '../dialog/location-dialog/LocationDialog';
+import { useEffect, useState } from 'react';
+import { AlignRight } from 'lucide-react';
+import { Button } from '../ui/button';
+import RegisterLinkButton from '../common/RegisterLinkButton';
+import RideRentNavbarLogo from '../common/RideRentNavbarLogo';
 
 // dynamic import for sidebar
-const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
+const MobileSidebar = dynamic(() => import('../sidebar/MobileSidebar'), {
   loading: () => (
     // fallback while loading sidebar
     <Button className="border-none outline-none" size="icon" disabled>
@@ -34,10 +34,10 @@ export const Navbar = () => {
     country: string;
   }>();
 
-  const country = (params?.country as string) || "ae";
+  const country = (params?.country as string) || 'ae';
 
-  const [state, setState] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
+  const [state, setState] = useState<string>('');
+  const [category, setCategory] = useState<string>('');
 
   useEffect(() => {
     // Check if param values exist
@@ -46,42 +46,42 @@ export const Navbar = () => {
 
     // If present in params, store in localStorage
     if (paramState) {
-      localStorage.setItem("state", paramState);
+      localStorage.setItem('state', paramState);
     }
     if (paramCategory) {
-      localStorage.setItem("category", paramCategory);
+      localStorage.setItem('category', paramCategory);
     }
 
     // Fallback order: params → localStorage → default
-    const storedState = localStorage.getItem("state");
-    const storedCategory = localStorage.getItem("category");
+    const storedState = localStorage.getItem('state');
+    const storedCategory = localStorage.getItem('category');
 
     const finalState =
-      paramState || storedState || (country === "in" ? "bangalore" : "dubai");
+      paramState || storedState || (country === 'in' ? 'bangalore' : 'dubai');
 
-    const finalCategory = paramCategory || storedCategory || "cars";
+    const finalCategory = paramCategory || storedCategory || 'cars';
 
     setState(finalState);
     setCategory(extractCategory(finalCategory));
   }, [params, country]);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && "geolocation" in navigator) {
+    if (typeof window !== 'undefined' && 'geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           // Save to localStorage
           sessionStorage.setItem(
-            "userLocation",
-            JSON.stringify({ latitude, longitude }),
+            'userLocation',
+            JSON.stringify({ latitude, longitude })
           );
         },
         (error) => {
-          console.error("Error getting location:", error);
-        },
+          console.error('Error getting location:', error);
+        }
       );
     } else {
-      console.warn("Geolocation is not supported");
+      console.warn('Geolocation is not supported');
     }
   }, []);
 
@@ -108,7 +108,7 @@ export const Navbar = () => {
           <ul className="flex w-full items-center justify-between gap-2 md:gap-4 lg:gap-5">
             {/* Search Dialog */}
             <li>
-              <SearchDialog state={state} />
+              <SearchDialog state={state} category={category} />
             </li>
 
             <li>
