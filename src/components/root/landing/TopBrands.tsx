@@ -1,13 +1,13 @@
-import MotionSection from "@/components/general/framer-motion/MotionSection";
-import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
-import ViewAllButton from "@/components/common/ViewAllButton";
-import { BrandType, FetchTopBrandsResponse } from "@/types";
-import Link from "next/link";
-import { convertToLabel } from "@/helpers";
-import Image from "next/image";
-import { ENV } from "@/config/env";
-import { API } from "@/utils/API";
-import { SectionHeading } from "@/components/common/SectionHeading";
+import MotionSection from '@/components/general/framer-motion/MotionSection';
+import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
+import ViewAllButton from '@/components/common/ViewAllButton';
+import { BrandType, FetchTopBrandsResponse } from '@/types';
+import Link from 'next/link';
+import { convertToLabel } from '@/helpers';
+import Image from 'next/image';
+import { ENV } from '@/config/env';
+import { API } from '@/utils/API';
+import { SectionHeading } from '@/components/common/SectionHeading';
 
 export const revalidate = 3600;
 
@@ -20,11 +20,9 @@ export default async function TopBrands({
   state: string | undefined;
   country: string | undefined;
 }) {
-  const url = `/vehicle-brand/top-brands?categoryValue=${category}`;
-
   // Fetch brand data from your API endpoint
   const response = await API({
-    path: url,
+    path: `/vehicle-brand/top-brands?categoryValue=${category}&hasVehicle=true`,
     options: {},
     country: country,
   });

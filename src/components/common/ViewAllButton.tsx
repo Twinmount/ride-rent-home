@@ -1,12 +1,20 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-const ViewAllButton = ({ link = "/" }: { link?: string }) => {
+type ViewAllButtonProps = {
+  link?: string;
+  target?: '_self' | '_blank' | '_parent' | '_top';
+};
+
+const ViewAllButton = ({
+  link = '/',
+  target = '_blank',
+}: ViewAllButtonProps) => {
   return (
     <Link
-      target="_blank"
+      target={target}
       href={link}
       id="brands"
-      className="flex items-center justify-center mx-auto mt-8 w-[150px] h-[43px] cursor-pointer rounded border-2 border-[#DDE5EB] bg-white text-black font-normal transition-all duration-200 hover:border-yellow hover:text-yellow active:scale-95"
+      className="mx-auto mt-8 flex h-[43px] w-[150px] cursor-pointer items-center justify-center rounded border-2 border-[#DDE5EB] bg-white font-normal text-black transition-all duration-200 hover:border-yellow hover:text-yellow active:scale-95"
     >
       View All
     </Link>
