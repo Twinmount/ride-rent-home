@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 type RegisterLinkButtonProps = {
   country: string;
@@ -9,16 +9,16 @@ type RegisterLinkButtonProps = {
 export default function RegisterLinkButton({
   country,
   children,
-  className = "",
+  className = '',
 }: RegisterLinkButtonProps) {
   return (
     <Link
       href={`https://agent.ride.rent/${country}/register`}
       target="_blank"
       rel="noopener noreferrer"
-      className={`w-fit whitespace-nowrap rounded border border-black/10 bg-theme-gradient px-4 py-2 font-bold text-black shadow ${className}`}
+      className={`w-fit whitespace-nowrap rounded border border-black/10 bg-theme-gradient px-4 py-2 font-semibold text-black shadow ${className}`}
     >
-      {children || "List Your Vehicle for FREE"}
+      {children || 'List Your Vehicle for FREE'}
     </Link>
   );
 }

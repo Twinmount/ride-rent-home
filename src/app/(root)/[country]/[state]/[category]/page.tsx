@@ -10,7 +10,6 @@ import Recommended from '@/components/root/landing/PromotionDeals';
 import TopBrands from '@/components/root/landing/TopBrands';
 import { Suspense } from 'react';
 import { PageProps } from '@/types';
-import TrustedReviewsSection from '@/components/root/landing/trusted-reviews/TrustedReviewsSection';
 import {
   generateHomePageMetadata,
   getHomePageJsonLd,
@@ -68,12 +67,12 @@ export default async function Home(props: PageProps) {
         />
       </Suspense>
 
-      <Suspense fallback={<VehicleCardCarouselSkeleton />}>
-        <NewlyArrived state={state} category={category} country={country} />
+      {/* <Suspense fallback={<SectionLoading />}>
+        <PromotionDeals state={state} country={country} />
       </Suspense>
 
-      <Suspense fallback={<SectionLoading />}>
-        <PromotionDeals state={state} country={country} />
+      <Suspense fallback={<VehicleCardCarouselSkeleton />}>
+        <NewlyArrived state={state} category={category} country={country} />
       </Suspense>
 
       <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
@@ -102,7 +101,7 @@ export default async function Home(props: PageProps) {
           limit={8}
           country={country}
         />
-      </Suspense>
+      </Suspense> */}
 
       {/* <Suspense fallback={<SectionLoading />}>
         <Locations state={state} category={category} country={country} />

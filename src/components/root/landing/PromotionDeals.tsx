@@ -39,7 +39,7 @@ export default async function PromotionDeals({
   const formattedState = convertToLabel(state);
 
   return (
-    <section className="no-global-padding relative h-auto overflow-hidden py-10">
+    <section className="no-global-padding relative mb-5 h-auto overflow-hidden py-10">
       {/* Background image */}
       <div
         className="absolute inset-0 scale-110 bg-cover bg-center transition-transform duration-500"

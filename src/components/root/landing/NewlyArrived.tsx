@@ -46,7 +46,7 @@ export default async function NewlyArrived({
         title={`Newly arrived ${formattedCategory}`}
         subtitle="Lorem ipsum dolor sit amet consectetur."
         align="left"
-        className="pb-2 pl-2 lg:pb-10 lg:pl-20"
+        className="pb-2 pl-2 lg:pl-20"
       />
 
       <CarouselWrapper isButtonVisible>
@@ -62,6 +62,7 @@ export default async function NewlyArrived({
 
       <ViewAllButton
         link={`/${country}/${state}/listing/${category}?filter=${VehicleHomeFilter.LATEST_MODELS}`}
+        align="end"
       />
     </MotionSection>
   );

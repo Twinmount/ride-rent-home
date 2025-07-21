@@ -1,8 +1,10 @@
-import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
-import Image from "next/image";
-import { VehicleTypeType } from "@/types";
-import { ENV } from "@/config/env";
-import { easeOut } from "framer-motion";
+'use client';
+
+import { MotionDivElm } from '@/components/general/framer-motion/MotionElm';
+import Image from 'next/image';
+import { VehicleTypeType } from '@/types';
+import { ENV } from '@/config/env';
+import { easeOut } from 'framer-motion';
 
 export function VehicleTypeCard({
   type,
@@ -45,10 +47,10 @@ export function VehicleTypeCard({
     >
       <div
         onClick={() => handleTypeClick(type.value)}
-        className={`border-border-default group relative flex aspect-square h-[4.5rem] w-[5.75rem] min-w-[4rem] cursor-pointer flex-col justify-center gap-[0.2rem] rounded-[0.5rem] border lg:h-[6.625rem] lg:w-[7.125rem] lg:min-w-[5.2rem]`}
+        className={`group relative flex aspect-square h-[4rem] w-[5.75rem] min-w-[4rem] cursor-pointer flex-col justify-center gap-[0.2rem] rounded-[0.5rem] border border-border-default lg:h-[4.5rem] lg:w-[6rem]`}
       >
         <div
-          className={`mx-auto flex h-[55%] w-[80%] items-center justify-center rounded-[0.4rem] bg-gray-100`}
+          className={`mx-auto flex h-[57%] w-[65%] items-center justify-center rounded-[0.4rem] bg-gray-100`}
         >
           <Image
             width={90}
@@ -59,13 +61,13 @@ export function VehicleTypeCard({
           />
         </div>
         <span
-          className={`line-clamp-1 w-full text-center text-[0.56rem] font-normal text-gray-600 lg:text-[0.65rem] ${isSelected && "font-semibold text-black"}`}
+          className={`line-clamp-1 w-full text-center text-[0.56rem] font-normal text-gray-600 lg:text-[0.65rem] ${isSelected && 'font-semibold text-black'}`}
         >
           {type.name}
         </span>
 
         <div
-          className={`absolute bottom-0 left-1/2 h-[0.20rem] w-[85%] -translate-x-1/2 transform rounded-full ${isSelected ? "bg-yellow" : "bg-gray-300 opacity-0 group-hover:opacity-100"}`}
+          className={`absolute bottom-0 left-1/2 h-[0.20rem] w-[85%] -translate-x-1/2 transform rounded-full ${isSelected ? 'bg-yellow' : 'bg-yellow opacity-0 group-hover:opacity-100'}`}
         />
       </div>
     </MotionDivElm>

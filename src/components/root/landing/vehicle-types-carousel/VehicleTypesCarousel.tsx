@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
 import {
   Carousel,
   CarouselContent,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
-import { useQuery } from "@tanstack/react-query";
-import { fetchVehicleTypesByValue } from "@/lib/api/general-api";
-import { useStateAndCategory } from "@/hooks/useStateAndCategory";
-import { VehicleTypeType } from "@/types";
-import VehicleTypesCarouselSkelton from "@/components/skelton/VehicleTypesCarouselSkelton";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { formUrlQuery, removeKeysFromQuery } from "@/helpers";
-import { VehicleTypeCard } from "./VehicleTypeCard";
-import { useTopLoader } from "nextjs-toploader";
+} from '@/components/ui/carousel';
+import { useQuery } from '@tanstack/react-query';
+import { fetchVehicleTypesByValue } from '@/lib/api/general-api';
+import { useStateAndCategory } from '@/hooks/useStateAndCategory';
+import { VehicleTypeType } from '@/types';
+import VehicleTypesCarouselSkelton from '@/components/skelton/VehicleTypesCarouselSkelton';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { formUrlQuery, removeKeysFromQuery } from '@/helpers';
+import { VehicleTypeCard } from '../../../card/VehicleTypeCard';
+import { useTopLoader } from 'nextjs-toploader';
 
 export default function VehicleTypesCarousel() {
   const { state, category, country } = useStateAndCategory();
@@ -32,7 +32,7 @@ export default function VehicleTypesCarousel() {
   const loader = useTopLoader();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["vehicleTypes", category, state],
+    queryKey: ['vehicleTypes', category, state],
     queryFn: () => fetchVehicleTypesByValue(category, state, country),
     enabled: !!category && !!country,
   });
@@ -56,7 +56,7 @@ export default function VehicleTypesCarousel() {
           shouldUpdate = false;
         }
       } catch (e) {
-        console.warn("Failed to parse cached vehicle types:", e);
+        console.warn('Failed to parse cached vehicle types:', e);
       }
     }
 
@@ -78,7 +78,7 @@ export default function VehicleTypesCarousel() {
           setCachedVehicleTypes(parsed);
         }
       } catch (e) {
-        console.warn("Failed to parse cached vehicle types:", e);
+        console.warn('Failed to parse cached vehicle types:', e);
       }
     }
   }, [storageKey]);
@@ -88,21 +88,21 @@ export default function VehicleTypesCarousel() {
     (type: string) => {
       const newUrl = formUrlQuery({
         params: searchParams.toString(),
-        key: "type",
+        key: 'type',
         value: type,
       });
       router.push(newUrl, { scroll: false });
     },
-    [searchParams, router],
+    [searchParams, router]
   );
 
   const handleTypeClick = (typeValue: string) => {
-    const currentlySelectedType = searchParams.get("type");
+    const currentlySelectedType = searchParams.get('type');
 
     if (currentlySelectedType === typeValue) {
       const newUrl = removeKeysFromQuery({
         params: searchParams.toString(),
-        keysToRemove: ["type"],
+        keysToRemove: ['type'],
       });
       router.push(newUrl, { scroll: false });
     } else {
@@ -114,14 +114,14 @@ export default function VehicleTypesCarousel() {
     setTimeout(() => {
       loader.done();
     }, 500);
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 300, behavior: "smooth" });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 300, behavior: 'smooth' });
     }
   };
 
   if (isLoading) return <VehicleTypesCarouselSkelton />;
 
-  const currentlySelectedType = searchParams.get("type");
+  const currentlySelectedType = searchParams.get('type');
 
   const list =
     vehicleTypes.length > 0
@@ -136,7 +136,7 @@ export default function VehicleTypesCarousel() {
     <VehicleTypesCarouselWrapper>
       <Carousel
         opts={{
-          align: "start",
+          align: 'start',
         }}
       >
         <CarouselContent className="flex h-fit gap-x-3 px-1 py-0 lg:gap-x-4">

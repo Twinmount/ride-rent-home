@@ -36,7 +36,7 @@ export default async function FAQ({ state, country, limit }: FAQStateProps) {
   const displayedFAQs = limit ? faqData.slice(0, limit) : faqData;
 
   return (
-    <section className="section-container wrapper bg-white">
+    <section className="section-container wrapper">
       <SectionHeading title={`Frequently Asked Questions `} />
 
       <Accordion
@@ -58,7 +58,7 @@ export default async function FAQ({ state, country, limit }: FAQStateProps) {
                 </span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="text-text px-4 pb-4 leading-relaxed text-text-secondary">
+            <AccordionContent className="text-text bg-white px-4 pb-4 leading-relaxed text-text-secondary">
               <div className="ml-9">{item.answer}</div>
             </AccordionContent>
           </AccordionItem>
