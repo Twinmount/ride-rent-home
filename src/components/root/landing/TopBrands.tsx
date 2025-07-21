@@ -79,7 +79,7 @@ export function BrandCard({
     <Link
       href={`/${country}/${state}/listing/${category}/brand/${brand.brandValue}`}
       key={brand.id}
-      className="flex aspect-square h-[8rem] max-h-[8rem] min-h-[8rem] w-[8rem] min-w-[8rem] max-w-[8rem] cursor-pointer flex-col items-center justify-between rounded-[1rem] border border-black/10 bg-white p-2 shadow-[0px_2px_2px_rgba(0,0,0,0.2)] transition-transform duration-200 ease-out hover:scale-105 hover:shadow-[0px_2px_2px_rgba(0,0,0,0.5)]"
+      className="flex aspect-square h-[8rem] max-h-[8rem] min-h-[8rem] w-[8rem] min-w-[8rem] max-w-[8rem] cursor-pointer flex-col items-center justify-between rounded-[0.5rem] border border-black/10 bg-white p-2 shadow-[0px_2px_2px_rgba(0,0,0,0.2)] transition-transform duration-200 ease-out hover:shadow-[0px_2px_2px_rgba(0,0,0,0.5)]"
     >
       <div className="relative m-auto flex h-[6rem] min-h-[6rem] w-full min-w-full items-center justify-center">
         <Image

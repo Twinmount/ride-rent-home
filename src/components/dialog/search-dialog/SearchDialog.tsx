@@ -1,34 +1,36 @@
-"use client";
-import { useState, useEffect, useCallback } from "react";
-import { BlurDialog } from "@/components/ui/blur-dialog";
+'use client';
+import { useState, useEffect, useCallback } from 'react';
+import { BlurDialog } from '@/components/ui/blur-dialog';
 import {
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
-import { fetchSearchResults } from "@/lib/api/general-api";
-import { debounce } from "@/helpers";
-import { SearchResults } from "./SearchResults";
-import { SearchInput } from "./SearchInput";
-import { CompanyPromotionList } from "./CompanyPromotionList";
-import { useStateAndCategory } from "@/hooks/useStateAndCategory";
-import { useIsMobile } from "@/hooks/use-mobile";
+} from '@/components/ui/dialog';
+import { useQuery } from '@tanstack/react-query';
+import { Search } from 'lucide-react';
+import { fetchSearchResults } from '@/lib/api/general-api';
+import { debounce } from '@/helpers';
+import { SearchResults } from './SearchResults';
+import { SearchInput } from './SearchInput';
+import { CompanyPromotionList } from './CompanyPromotionList';
+import { useStateAndCategory } from '@/hooks/useStateAndCategory';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { PlaceholderTypewriter } from '@/components/general/PlaceholderTypewriter';
 
 type SearchDialogProps = {
   state?: string;
+  category: string;
 };
 
-export function SearchDialog({ state }: SearchDialogProps) {
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+export function SearchDialog({ state, category }: SearchDialogProps) {
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   // Memoized debounce function
   const handleDebouncedSearch = useCallback(
     debounce((value: string) => setDebouncedSearch(value), 300),
-    [],
+    []
   );
 
   const { country } = useStateAndCategory();
@@ -38,7 +40,7 @@ export function SearchDialog({ state }: SearchDialogProps) {
   }, [search, handleDebouncedSearch]);
 
   const { data: results, isLoading } = useQuery({
-    queryKey: ["search", debouncedSearch],
+    queryKey: ['search', debouncedSearch],
     queryFn: () => fetchSearchResults(country, debouncedSearch, state),
     enabled: !!debouncedSearch && !!state && debouncedSearch.length > 1,
     staleTime: 0,
@@ -58,13 +60,10 @@ export function SearchDialog({ state }: SearchDialogProps) {
             <Search className="h-4 w-4" strokeWidth={2} />
           </button>
         ) : (
-          <button
-            aria-label="Open Search Dialog"
-            className="placeholder:text-grey-500 p-regular-16 flex h-[2.2rem] min-w-[14rem] items-center gap-2 rounded-xl border bg-white px-4 py-3 text-text-secondary placeholder:italic focus-visible:ring-transparent focus-visible:ring-offset-0"
-          >
-            <Search className="h-4 w-4" strokeWidth={2} />
-            <span className="relative">Search Vehicle</span>
-          </button>
+          <div className="p-regular-16 flex h-[2.2rem] w-[14rem] cursor-pointer items-center justify-start gap-2 rounded-xl border bg-white px-4 py-3 text-text-secondary focus-visible:ring-transparent focus-visible:ring-offset-0">
+            <Search className="h-5 w-4" strokeWidth={2} />
+            <PlaceholderTypewriter category={category} />
+          </div>
         )}
       </DialogTrigger>
 

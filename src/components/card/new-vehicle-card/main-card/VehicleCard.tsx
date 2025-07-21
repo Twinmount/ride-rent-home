@@ -1,12 +1,12 @@
-import { NewVehicleCardType } from "@/types/vehicle-types";
-import { generateVehicleDetailsUrl } from "@/helpers";
-import VehicleThumbnail from "../VehicleThumbnail";
-import RentalDetails from "../RentalDetails";
-import LinkWrapper from "../LinkWrapper";
-import MotionStaggeredArticle from "@/components/general/framer-motion/MotionStaggeredArticle";
-import RentNowDialogTrigger from "../RentNowDialogTrigger";
-import VehicleRating from "../VehicleRating";
-import { VehicleBadgesGroup } from "../vehicle-badge/VehicleBadgesGroup";
+import { NewVehicleCardType } from '@/types/vehicle-types';
+import { generateVehicleDetailsUrl } from '@/helpers';
+import VehicleThumbnail from '../VehicleThumbnail';
+import RentalDetails from '../RentalDetails';
+import LinkWrapper from '../LinkWrapper';
+import MotionStaggeredArticle from '@/components/general/framer-motion/MotionStaggeredArticle';
+import RentNowDialogTrigger from '../RentNowDialogTrigger';
+import VehicleRating from '../VehicleRating';
+import { VehicleBadgesGroup } from '../vehicle-badge/VehicleBadgesGroup';
 
 type VehicleCardProps = {
   vehicle: NewVehicleCardType;
@@ -14,7 +14,7 @@ type VehicleCardProps = {
   country: string;
 };
 
-const VehicleCard = ({ vehicle, index, country = "ae" }: VehicleCardProps) => {
+const VehicleCard = ({ vehicle, index, country = 'ae' }: VehicleCardProps) => {
   // dynamic link to navigate to vehicle details page
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
     vehicleTitle: vehicle.vehicleTitle,
@@ -27,7 +27,7 @@ const VehicleCard = ({ vehicle, index, country = "ae" }: VehicleCardProps) => {
   return (
     <MotionStaggeredArticle
       index={index}
-      className="flex w-[16.375rem] min-w-[16.375rem] flex-col gap-4 rounded border border-border-default bg-white p-3 md:w-[17.1875rem] md:min-w-[17.1875rem] lg:w-[18.4375rem] lg:min-w-[18.4375rem]"
+      className="flex w-[16.37rem] min-w-[16.37rem] flex-col gap-4 rounded border border-border-default bg-white p-3 md:w-[17.18rem] md:min-w-[17.18rem] lg:w-[18.43rem] lg:min-w-[18.43rem]"
     >
       {/* card top */}
       <LinkWrapper
@@ -38,7 +38,7 @@ const VehicleCard = ({ vehicle, index, country = "ae" }: VehicleCardProps) => {
           {/* thumbnail */}
           <VehicleThumbnail
             src={vehicle.thumbnail}
-            alt={vehicle.vehicleTitle || "Vehicle Image"}
+            alt={vehicle.vehicleTitle || 'Vehicle Image'}
             width={250}
             height={200}
           />
@@ -52,11 +52,11 @@ const VehicleCard = ({ vehicle, index, country = "ae" }: VehicleCardProps) => {
         </div>
 
         <div className="flex-between flex gap-x-2">
-          <h3 className="line-clamp-1 text-base font-semibold lg:text-xl">
+          <h3 className="line-clamp-1 text-base font-medium lg:text-xl">
             {vehicle.vehicleTitle}
           </h3>
 
-          <VehicleRating rating={vehicle.rating} />
+          {/* <VehicleRating rating={vehicle.rating} /> */}
         </div>
       </LinkWrapper>
 

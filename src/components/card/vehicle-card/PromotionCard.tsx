@@ -10,7 +10,7 @@ const PromotionCard = ({
 }: RidePromotionCard) => {
   return (
     <Link href={link} target="_blank" rel="noopener noreferrer">
-      <div className="group relative h-[7.5rem] w-[10.34rem] cursor-pointer overflow-hidden rounded-[0.5rem] shadow-lg transition-transform duration-300 hover:scale-105 md:h-[14rem] md:w-[16rem] lg:h-[19.75rem] lg:w-[22.25rem]">
+      <div className="group relative h-[7.5rem] w-[10.34rem] cursor-pointer overflow-hidden rounded-[0.5rem] shadow-lg transition-transform duration-300 hover:scale-105 md:h-[14rem] md:w-[16rem] lg:h-[18rem] lg:w-[20.2rem]">
         {/* Background Image */}
         <Image src={image} alt={cardTitle} fill className="object-cover" />
 
@@ -19,7 +19,7 @@ const PromotionCard = ({
 
         {/* Text Content */}
         <div className="absolute bottom-4 left-4 right-4 text-center">
-          <h3 className="text-xs font-bold text-white md:text-base lg:text-xl">
+          <h3 className="text-xs font-semibold text-white md:text-base lg:text-xl">
             {cardTitle}
           </h3>
           <p className="mt-1 text-[0.5rem] text-gray-200 lg:text-xs">

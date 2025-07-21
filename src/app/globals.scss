@@ -128,7 +128,7 @@ body {
   }
 
   .heading-primary {
-    @apply font-poppins text-[1.125rem] font-semibold leading-[1] text-text-primary sm:text-[1.75rem] lg:text-[2.2rem];
+    @apply font-poppins text-[1.125rem] font-medium leading-[1] text-text-primary sm:text-[1.75rem] lg:text-[2.2rem];
   }
 
   .heading-secondary {
@@ -144,7 +144,7 @@ body {
   }
 
   .section-container {
-    @apply flex h-auto min-h-fit flex-col items-center rounded-[1rem] pb-8;
+    @apply h-auto min-h-fit w-full pb-8;
   }
 
   .section-heading {
@@ -259,7 +259,7 @@ body {
 
   /* Desktop responsive design */
   @media screen and (min-width: 768px) {
-    height: 26.25rem;
+    height: 19rem;
 
     /* Container-based width instead of viewport width */
     width: 100%;
@@ -287,11 +287,6 @@ body {
         }
       }
     }
-  }
-
-  /* Large desktop styling */
-  @media (min-width: 1024px) {
-    height: 26.25rem;
   }
 }
 

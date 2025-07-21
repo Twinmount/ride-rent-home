@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { fetchCategories } from "@/lib/api/general-api";
-import { useQuery } from "@tanstack/react-query";
-import { sortCategories } from "@/helpers";
-import { ENV } from "@/config/env";
-import { useStateAndCategory } from "./useStateAndCategory";
-import { notFound, usePathname } from "next/navigation";
-import { CategoryType } from "@/types";
+import { useEffect, useMemo, useState } from 'react';
+import { fetchCategories } from '@/lib/api/general-api';
+import { useQuery } from '@tanstack/react-query';
+import { sortCategories } from '@/helpers';
+import { ENV } from '@/config/env';
+import { useStateAndCategory } from './useStateAndCategory';
+import { notFound, usePathname } from 'next/navigation';
+import { CategoryType } from '@/types';
 
-const NO_CATEGORY_PATHS = ["/blog"];
+const NO_CATEGORY_PATHS = ['/blog'];
 
 // Local storage key based on country and state
 const getCategoryStorageKey = (country: string, state: string) =>
@@ -29,9 +29,8 @@ export function useFetchVehicleCategories({
 
   // Fetch categories using react-query
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ["categories", state, country],
+    queryKey: ['categories', state, country],
     queryFn: () => fetchCategories(state, country),
-    staleTime: 0,
   });
 
   // Load from localStorage if API data is missing
@@ -46,7 +45,7 @@ export function useFetchVehicleCategories({
           setCachedCategories(parsed);
         }
       } catch (e) {
-        console.warn("Failed to parse cached categories:", e);
+        console.warn('Failed to parse cached categories:', e);
       }
     }
   }, [storageKey, data]);
@@ -76,14 +75,14 @@ export function useFetchVehicleCategories({
   // Sort categories
   const sortedCategories = useMemo(
     () => sortCategories(finalCategories),
-    [finalCategories],
+    [finalCategories]
   );
 
   const isDataReady = !isLoading && !isFetching && finalCategories.length > 0;
 
   // if current path starts with one of the specified paths, skip 404
   const shouldSkip404 = NO_CATEGORY_PATHS.some((safePath) =>
-    pathname?.startsWith(`/${country}${safePath}`),
+    pathname?.startsWith(`/${country}${safePath}`)
   );
 
   // if no categories, return 404 not found
@@ -93,7 +92,7 @@ export function useFetchVehicleCategories({
     !shouldSkip404 &&
     needRedirection
   ) {
-    console.warn("triggering not found");
+    console.warn('triggering not found');
     return notFound();
   }
 
@@ -106,7 +105,7 @@ export function useFetchVehicleCategories({
   ) {
     const foundCategory = finalCategories.find((cat) => cat.value === category);
     if (!foundCategory && needRedirection) {
-      console.warn("triggering not found");
+      console.warn('triggering not found');
       return notFound();
     }
   }
