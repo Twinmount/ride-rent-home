@@ -28,7 +28,7 @@ const Social = () => {
       {/* Contact Information */}
       <div className="flex flex-col items-center gap-4 text-center md:flex-row md:gap-8">
         {/* Phone */}
-        <div className="flex items-center gap-3 text-gray-300 transition-colors hover:text-yellow">
+        {/* <div className="flex items-center gap-3 text-gray-300 transition-colors hover:text-yellow">
           <div className="flex h-8 w-8 items-center justify-center rounded-full">
             <FaPhoneVolume className="text-sm text-white" />
           </div>
@@ -38,10 +38,10 @@ const Social = () => {
           >
             +971 50 297 2335
           </a>
-        </div>
+        </div> */}
 
         {/* Email */}
-        <div className="flex items-center gap-3 text-gray-300 transition-colors hover:text-yellow">
+        {/* <div className="flex items-center gap-3 text-gray-300 transition-colors hover:text-yellow">
           <div className="flex h-8 w-8 items-center justify-center rounded-full">
             <MdEmail className="text-sm text-white" />
           </div>
@@ -51,7 +51,7 @@ const Social = () => {
           >
             hello@ride.rent
           </a>
-        </div>
+        </div> */}
       </div>
 
       {/* Description */}

@@ -8,7 +8,7 @@ import {
   getDropdownPosition,
   handleLanguageUpdate,
 } from '@/utils/languageUtils';
-import { ChevronDown, Languages } from 'lucide-react';
+import { ChevronDown, Languages, Globe } from 'lucide-react';
 
 interface LanguageSelectorProps {
   theme?: Theme;
@@ -18,6 +18,7 @@ interface LanguageSelectorProps {
   position?: 'left' | 'right';
   size?: Size;
   className?: string;
+  variant?: 'default' | 'footer'; // Add variant prop to distinguish footer usage
 }
 
 export default function LanguageSelector({
@@ -28,6 +29,7 @@ export default function LanguageSelector({
   position = 'left',
   size = 'md',
   className = '',
+  variant = 'default',
 }: LanguageSelectorProps) {
   const {
     isOpen,
@@ -65,16 +67,22 @@ export default function LanguageSelector({
   const selectedLanguage = languages.find((l) => l.code === displayLanguage);
   const selectedCountry = countries.find((c) => c.code === country);
 
+  // Choose icon based on variant
+  const IconComponent = variant === 'footer' ? Globe : Languages;
+
   return (
     <div className={`notranslate relative ${className}`} ref={dropdownRef}>
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center space-x-2 ${sizes.padding} ${sizes.text} font-medium ${themeConfig.trigger} ${themeConfig.triggerBorder} transition-colors`}
+        className={`flex items-center space-x-2 ${sizes.padding} ${sizes.text} font-medium ${themeConfig.trigger} ${themeConfig.triggerBorder || ''} transition-colors ${
+          variant === 'footer' ? 'rounded-md' : ''
+        }`}
       >
-        <Languages
-          color="#ea7b0b"
-          className={`${sizes.icon} lg:${sizes.icon.replace('h-4 w-4', 'h-6 w-6')}`}
+        <IconComponent
+          className={`${sizes.icon} lg:${sizes.icon.replace('h-4 w-4', 'h-6 w-6')} ${
+            variant === 'footer' ? 'text-tertiary' : 'text-orange-500'
+          }`}
         />
         {showLanguageText && (
           <span className="max-sm:hidden">
@@ -119,7 +127,7 @@ export default function LanguageSelector({
                 </select>
               </div>
 
-              {/* Country Selection */}
+              {/* Country Selection - Always show if showCountry is true */}
               {showCountry && (
                 <div className="mb-3">
                   <label
@@ -141,7 +149,7 @@ export default function LanguageSelector({
                 </div>
               )}
 
-              {/* Currency Selection */}
+              {/* Currency Selection - Always show if showCurrency is true */}
               {showCurrency && (
                 <div className="mb-4">
                   <label
@@ -165,7 +173,7 @@ export default function LanguageSelector({
 
               <button
                 onClick={handleUpdate}
-                className={`w-full rounded-lg py-3 ${sizes.text} min-h-[44px] bg-yellow text-black hover:opacity-90`}
+                className={`w-full rounded-lg py-3 ${sizes.text} min-h-[44px] ${themeConfig.button}`}
               >
                 UPDATE
               </button>

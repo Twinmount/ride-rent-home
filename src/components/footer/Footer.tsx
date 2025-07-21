@@ -3,33 +3,22 @@ import Social from './social/Social';
 import { FaRegCopyright, FaRegRegistered } from 'react-icons/fa6';
 import MotionDiv from '../general/framer-motion/MotionDiv';
 import RideRentFooterLogo from './RideRentFooterLogo';
-import LanguageSelector from '../navbar/LanguageSelector';
+import FooterSelectors from './FooterSelectors'; // Import the client component
 
 const Footer = () => {
   return (
     <div className="w-full bg-footer">
       <footer className="mx-auto max-w-7xl px-4 py-8 text-white md:px-8">
-        {/* Main Footer Content */}
         <div>
-          {/* Top Section with Logo and Language Selectors */}
+          {/* Top Section with Logo and Selectors */}
           <div className="mb-6 flex w-full max-w-full flex-col items-center border-b border-[#303030] pb-2 md:flex-row md:justify-between lg:pb-5">
             {/* Logo - Left Side */}
             <div className="mb-3 sm:mb-0">
               <RideRentFooterLogo />
             </div>
 
-            {/* Language/Country Selector - Right Side */}
-            <div className="flex-center h-full w-fit gap-4">
-              <LanguageSelector
-                theme="dark"
-                size="md"
-                showCurrency={true}
-                showCountry={true}
-                showLanguageText={true}
-                position="right"
-                className="footer-lang-selector"
-              />
-            </div>
+            {/* Language and Country Selectors - Right Side */}
+            <FooterSelectors />
           </div>
 
           {/* Footer Grid - Hidden on mobile */}

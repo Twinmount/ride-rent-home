@@ -76,13 +76,13 @@ const Features = ({ state, category }: StateCategoryProps) => {
       </div>
 
       {/* Main content container with max width constraint */}
-      <div className="relative z-10 mx-auto w-full max-w-[120rem]">
+      <div className="relative z-10 mx-auto w-full lg:ml-14">
         {/* Text content section with responsive width */}
         <div className="w-full px-[2rem] sm:px-[1.5rem] lg:ml-[0.6875rem] lg:w-3/4 lg:px-[2rem] xl:w-2/3">
           {/* Header section with title and description */}
           <div className="mb-[1.5rem] w-full lg:mb-[3rem] lg:w-[58.375rem] lg:max-w-[58.375rem]">
             {/* Main title with responsive typography */}
-            <h2 className="mb-[1rem] text-center text-[1.125rem] font-semibold leading-[1] text-text-primary sm:text-left sm:text-[1.75rem] lg:mb-[1.5rem] lg:text-[2.5rem]">
+            <h2 className="mb-[1rem] text-center text-[1.125rem] font-medium leading-[1] text-text-primary sm:text-left sm:text-[1.75rem] lg:mb-[1.5rem] lg:text-[2.2rem]">
               Enjoy ease and peace of mind
               <br />
               when renting a {formattedCategory.toLowerCase()} in{' '}
@@ -91,7 +91,7 @@ const Features = ({ state, category }: StateCategoryProps) => {
 
             {/* Description paragraphs with responsive spacing */}
             <div className="mt-[1rem] space-y-[0.75rem] font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[0.875rem] lg:mt-[1.5rem] lg:w-[53.1875rem] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
-              <p className="lg:w-[53.4375rem]">
+              <p>
                 Discover the best of {convertToLabel(state)} with our affordable
                 and reliable car rental service. Whether you&apos;re visiting
                 the main locations or exploring hidden gems, our diverse fleet
@@ -100,7 +100,7 @@ const Features = ({ state, category }: StateCategoryProps) => {
                 fees.
               </p>
 
-              <p className="lg:w-[53.1875rem]">
+              <p>
                 Our commitment to reliability means your vehicle will be ready
                 and waiting, wherever and whenever you need it. Choose us for a
                 stress-free car rental experience in {convertToLabel(state)},
