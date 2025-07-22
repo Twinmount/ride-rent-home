@@ -11,9 +11,9 @@ const Documents = ({ state, category }: StateCategoryProps) => {
 
   return (
     // Main section with gradient background and responsive margins - removed default padding
-    <MotionSection className="no-global-padding section-container h-full bg-gradient-to-b from-[#f8f6f6] to-white pb-0 sm:my-[2rem] lg:my-[3rem]">
+    <MotionSection className="no-global-padding relative overflow-hidden bg-gradient-to-b from-[#f8f6f6] to-white pt-1">
       {/* Container with proper max-width constraints - removed min-height */}
-      <div className="relative mx-auto max-w-[120rem] pb-4 lg:flex">
+      <div className="global-padding mx-auto w-full pb-4 lg:flex">
         {/* Yellow gradient overlay for desktop */}
         <div
           className="absolute bottom-0 left-0 right-0 top-0 z-0"

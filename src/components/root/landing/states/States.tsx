@@ -31,49 +31,114 @@ export default async function States({
   // Return null if no states available
   if (states.length === 0) return null;
 
+  // Function to chunk array into rows based on screen size
+  const chunkStates = (states: any[], itemsPerRow: number) => {
+    const chunks = [];
+    for (let i = 0; i < states.length; i += itemsPerRow) {
+      chunks.push(states.slice(i, i + itemsPerRow));
+    }
+    return chunks;
+  };
+
   return (
-    // Main section container - override parent padding issues
-    <MotionSection className="section-container no-global-padding relative !mx-0 !px-0 pt-[1.5rem] lg:pt-[2.5rem]">
-      {/* Background gradient overlay for desktop - adjusted positioning */}
+    // Main section container - full width with proper constraints
+    <MotionSection className="section-container relative w-full pt-[1.5rem] lg:pt-[2.5rem]">
+      {/* Background gradient overlay - contained within section bounds */}
       <div
-        className="absolute bottom-0 top-0 hidden lg:block"
+        className="absolute bottom-0 left-0 right-0 top-0 z-0 -ml-16"
         style={{
-          left: '-5vw', // Extend beyond container
-          width: '110vw', // Make it wider than viewport
           background:
             'linear-gradient(350deg, rgba(255, 255, 255, 0) 65%, rgba(249, 168, 37, 0.4) 160%)',
-          pointerEvents: 'none', // Ensure it doesn't block interactions
+          pointerEvents: 'none',
         }}
       />
 
-      {/* Section heading with title and subtitle */}
-      <SectionHeading
-        title={`Explore Rental Offers In Other Locations`}
-        subtitle="Lorem ipsum dolor sit amet consectetur."
-      />
+      {/* Content wrapper with relative positioning */}
+      <div className="relative z-10 w-full">
+        {/* Section heading with title and subtitle */}
+        <SectionHeading
+          title={`Explore Rental Offers In Other Locations`}
+          subtitle="Lorem ipsum dolor sit amet consectetur."
+        />
 
-      {/* States grid container - break out of parent constraints */}
-      <div className="relative mt-[1.75rem] w-full">
-        <div className="mx-auto w-full max-w-none px-4">
-          <div className="mx-auto flex max-w-[1200px] flex-wrap justify-center gap-2 sm:gap-3 md:gap-3 lg:gap-3">
-            {states.map((state) => (
-              <div
-                key={state.stateId}
-                className="w-[calc((100%-16px)/3)] max-w-[160px] sm:w-[calc((100%-24px)/4)] sm:max-w-[170px] md:w-[calc((100%-24px)/5)] md:max-w-[180px] lg:w-[calc((100%-24px)/6)] lg:max-w-[180px]"
-              >
-                <StateCard
-                  state={state}
-                  category={category}
-                  country={country}
-                />
-              </div>
-            ))}
+        {/* States container with responsive design */}
+        <div className="mt-[1.75rem] w-full">
+          {/* Mobile: 2 cards per row */}
+          <div className="mx-auto w-full max-w-7xl px-4 sm:hidden">
+            <div className="flex flex-col gap-2">
+              {chunkStates(states, 2).map((row, rowIndex) => (
+                <div key={rowIndex} className="flex justify-center gap-2">
+                  {row.map((state) => (
+                    <StateCard
+                      key={state.stateId}
+                      state={state}
+                      category={category}
+                      country={country}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Small devices: 3 cards per row */}
+          <div className="mx-auto hidden w-full max-w-7xl px-4 sm:block md:hidden">
+            <div className="flex flex-col gap-3">
+              {chunkStates(states, 3).map((row, rowIndex) => (
+                <div key={rowIndex} className="flex justify-center gap-3">
+                  {row.map((state) => (
+                    <StateCard
+                      key={state.stateId}
+                      state={state}
+                      category={category}
+                      country={country}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Medium devices: 4 cards per row */}
+          <div className="mx-auto hidden w-full max-w-7xl px-4 md:block lg:hidden">
+            <div className="flex flex-col gap-4">
+              {chunkStates(states, 4).map((row, rowIndex) => (
+                <div key={rowIndex} className="flex justify-center gap-4">
+                  {row.map((state) => (
+                    <StateCard
+                      key={state.stateId}
+                      state={state}
+                      category={category}
+                      country={country}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Large devices: 6 cards per row */}
+          <div className="mx-auto hidden w-full max-w-7xl px-4 lg:block">
+            <div className="flex flex-col gap-6">
+              {chunkStates(states, 6).map((row, rowIndex) => (
+                <div key={rowIndex} className="flex justify-center gap-6">
+                  {row.map((state) => (
+                    <StateCard
+                      key={state.stateId}
+                      state={state}
+                      category={category}
+                      country={country}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* View all button for navigation */}
-      <ViewAllButton link={`/${country}/${state}/listing/${category}`} />
+        {/* View all button for navigation */}
+        <ViewAllButton link={`/${country}/${state}/listing/${category}`} />
+      </div>
     </MotionSection>
   );
 }

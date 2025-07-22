@@ -39,9 +39,9 @@ export default function StateCard({
         }}
       />
 
-      {/* State name caption with responsive typography */}
+      {/* State name caption with responsive typography and mobile line height fix */}
       <figcaption className="z-1 relative mb-[0.5rem] px-[0.5rem] text-center">
-        <span className="text-xs font-normal text-gray-800 drop-shadow-sm md:text-sm">
+        <span className="text-xs font-normal leading-tight text-gray-800 drop-shadow-sm md:text-sm md:leading-[100%]">
           {state.stateName}
         </span>
       </figcaption>
