@@ -160,7 +160,7 @@ export function LocationDialog() {
             aria-label="Open Search Dialog"
             className="flex-center gap-x-1 px-2 py-1 text-black"
           >
-            <FaLocationDot className="mr-1 text-orange" />
+            <FaLocationDot className="mr-1 text-text-primary" />
             <span className="line-clamp-1 w-full max-w-[5rem] text-left text-sm font-medium capitalize sm:w-fit md:max-w-fit lg:text-lg">
               {selectedState ? selectedState?.stateName : 'Select Location'}
             </span>

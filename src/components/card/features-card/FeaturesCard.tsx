@@ -30,7 +30,7 @@ const FeaturesCard = ({ data }: FeatureCardProps) => {
             {title}
           </h3>
 
-          <p className="text-[0.625rem] text-gray-600 lg:text-sm">
+          <p className="text-justify text-[0.625rem] text-gray-600 lg:text-sm">
             {description}
           </p>
         </div>

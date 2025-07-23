@@ -59,7 +59,7 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
   }, []);
 
   return (
-    <div className="relative country-selector">
+    <div className="country-selector relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`flex items-center space-x-2 ${sizes.padding} ${sizes.text} font-medium ${themeConfig.trigger} ${themeConfig.triggerBorder || ''} transition-colors ${
@@ -68,7 +68,7 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
         aria-label="Select Country"
         type="button"
       >
-        <Image 
+        <Image
           src={selectedCountry.icon}
           alt={`${selectedCountry.name} flag`}
           width={20}
@@ -76,10 +76,10 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
           className="object-contain"
         />
         <span className="max-sm:hidden">{selectedCountry.name}</span>
-        <ChevronDown 
+        <ChevronDown
           className={`text-orange-500 h-4 w-4 transition-transform duration-200 ${
             isOpen ? 'rotate-180' : 'rotate-0'
-          }`} 
+          }`}
         />
       </button>
 
@@ -89,8 +89,10 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
             className="fixed inset-0 z-40 bg-black bg-opacity-25 sm:hidden"
             onClick={() => setIsOpen(false)}
           />
-          
-          <div className={`absolute z-50 mt-2 left-0 w-60 max-w-[calc(100vw-1rem)] sm:${sizes.dropdown} rounded-xl border ${themeConfig.dropdown}`}>
+
+          <div
+            className={`absolute z-50 mt-2 ${/* Mobile: Center the dropdown with constrained width */ ''} left-1/2 -translate-x-1/2 transform sm:left-0 sm:transform-none ${/* Responsive width handling - smaller max-width for country selector */ ''} w-[calc(100vw-2rem)] max-w-[160px] rounded-xl border sm:w-60 sm:max-w-[280px] ${themeConfig.dropdown}`}
+          >
             <div className="p-4">
               <label
                 className={`block ${sizes.text} font-medium ${themeConfig.label} mb-1`}
@@ -101,15 +103,17 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({
                 {COUNTRIES.map((country) => (
                   <button
                     key={country.id}
-                    onClick={() => handleCountryChange(country.value as CountryValue)}
-                    className={`flex w-full items-center gap-2 px-3 py-2 text-left ${sizes.text} rounded-lg transition-colors hover:bg-gray-700 ${
+                    onClick={() =>
+                      handleCountryChange(country.value as CountryValue)
+                    }
+                    className={`flex w-full items-center gap-2 py-2 text-left ${sizes.text} rounded-lg transition-colors hover:bg-gray-700 ${
                       country.value === currentCountry
-                        ? 'bg-gray-700 text-yellow'
+                        ? 'text-yellow'
                         : themeConfig.label
                     }`}
                     type="button"
                   >
-                    <Image 
+                    <Image
                       src={country.icon}
                       alt={`${country.name} flag`}
                       width={20}

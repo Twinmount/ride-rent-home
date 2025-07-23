@@ -62,7 +62,7 @@ const Documents = ({ state, category }: StateCategoryProps) => {
               align="left"
             />
 
-            <div className="space-y-[0.75rem] font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[0.875rem] sm:leading-[125%] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
+            <div className="space-y-[0.75rem] pr-1 text-justify font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[0.875rem] sm:leading-[125%] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
               <p>
                 As the fastest-growing vehicle rental portal, we pride ourselves
                 on offering an extensive range of vehicles available for rent in

@@ -90,7 +90,7 @@ const Features = ({ state, category }: StateCategoryProps) => {
             </h2>
 
             {/* Description paragraphs with responsive spacing */}
-            <div className="mt-[1rem] space-y-[0.75rem] font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[0.875rem] lg:mt-[1.5rem] lg:w-[53.1875rem] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
+            <div className="mt-[1rem] space-y-[0.75rem] text-justify font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[0.875rem] lg:mt-[1.5rem] lg:w-[53.1875rem] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
               <p>
                 Discover the best of {convertToLabel(state)} with our affordable
                 and reliable car rental service. Whether you&apos;re visiting

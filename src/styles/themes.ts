@@ -14,22 +14,25 @@ export const themes: Record<Theme, ThemeConfig> = {
   light: {
     dropdown: 'bg-white border-gray-200 shadow-lg',
     label: 'text-gray-700',
-    select: 'bg-white border-gray-300 text-gray-900 focus:ring-orange-500 focus:border-orange-500',
+    select:
+      'bg-white border-gray-300 text-gray-900 focus:ring-orange-500 focus:border-orange-500',
     button: 'bg-yellow text-white hover:bg-orange-600',
     trigger: 'text-gray-900 hover:text-orange-500',
   },
   dark: {
     dropdown: 'bg-text-primary border-gray-700 shadow-xl',
     label: 'text-text-secondary',
-    select: 'bg-gray-700 border-gray-600 text-white focus:ring-orange-500 focus:border-orange-500',
+    select:
+      'bg-gray-700 border-gray-600 text-white focus:ring-orange-500 focus:border-orange-500',
     button: 'bg-yellow text-black hover:opacity-90',
     trigger: 'text-text-tertiary hover:text-orange-400',
     triggerBorder: 'border border-text-tertiary',
   },
   navbar: {
-    dropdown: 'bg-white border-gray-200 shadow-lg',
+    dropdown: 'bg-white border-gray-200 shadow-lg mr-3 lg:mr-0',
     label: 'text-gray-600',
-    select: 'bg-white border-gray-200 text-gray-900 focus:ring-orange-500 focus:border-orange-500',
+    select:
+      'bg-white border-gray-200 text-gray-900 focus:ring-orange-500 focus:border-orange-500',
     button: 'bg-orange-500 text-white hover:bg-orange-600',
     trigger: 'text-gray-900',
   },

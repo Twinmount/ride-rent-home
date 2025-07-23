@@ -101,7 +101,7 @@ export default function LanguageSelector({
           />
 
           <div
-            className={`absolute z-50 mt-2 ${getDropdownPosition(position)} w-60 max-w-[calc(100vw-1rem)] sm:${sizes.dropdown} rounded-xl border ${themeConfig.dropdown}`}
+            className={`absolute z-50 mt-2 ${/* Mobile: Center the dropdown with proper positioning */ ''} left-1/2 -translate-x-1/2 transform sm:transform-none sm:${getDropdownPosition(position)} ${/* Responsive width handling */ ''} w-[calc(100vw-2rem)] max-w-[280px] rounded-xl border sm:w-60 sm:max-w-[280px] ${themeConfig.dropdown}`}
           >
             <div className="p-4">
               {/* Language Selection */}
@@ -173,7 +173,7 @@ export default function LanguageSelector({
 
               <button
                 onClick={handleUpdate}
-                className={`w-full rounded-lg py-3 ${sizes.text} min-h-[44px] ${themeConfig.button}`}
+                className={`w-full rounded-lg py-3 ${sizes.text} min-h-[44px] bg-yellow font-medium text-text-primary transition-opacity hover:opacity-90`}
               >
                 UPDATE
               </button>
