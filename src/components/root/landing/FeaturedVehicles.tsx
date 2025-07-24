@@ -73,6 +73,7 @@ const FeaturedVehicles = async ({
             vehicle={vehicle}
             index={index}
             country={country}
+            layoutType="carousel"
           />
         ))}
         {/* Render ViewAllGridCard only if there are thumbnails */}

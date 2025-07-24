@@ -1,11 +1,11 @@
-import { PageProps } from "@/types";
-import { normalizeSingleQueryParam } from "@/utils/url";
-import { redirect } from "next/navigation";
-import qs from "query-string";
+import { PageProps } from '@/types';
+import { normalizeSingleQueryParam } from '@/utils/url';
+import { redirect } from 'next/navigation';
+import qs from 'query-string';
 
 /**
  * Redirects old-style listing URLs (e.g. /listing?brand=...,vehicleTypes=...)
- * to the new SEO-friendly dynamic paths (e.g. /listing/cars/luxury/brand/bmw).
+ * to the new SEO-friendly dynamic paths (e.g. /listing/cars or /luxury/brand/bmw).
  */
 export default async function ListingPage(props: PageProps) {
   const { country, state } = await props.params;
@@ -17,7 +17,7 @@ export default async function ListingPage(props: PageProps) {
   const brand = searchParams?.brand;
 
   // Use 'cars' as fallback category
-  const resolvedCategory = category || "cars";
+  const resolvedCategory = category || 'cars';
 
   // Extract valid single values (omit if multiple)
   const singleVehicleType = normalizeSingleQueryParam(vehicleTypes);
@@ -36,7 +36,7 @@ export default async function ListingPage(props: PageProps) {
 
   // Reconstruct the query string
   const queryString = qs.stringify(remainingQuery, {
-    arrayFormat: "comma",
+    arrayFormat: 'comma',
     skipNull: true,
     skipEmptyString: true,
   });

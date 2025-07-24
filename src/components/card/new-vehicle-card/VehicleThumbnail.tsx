@@ -1,16 +1,15 @@
-"use client";
+'use client';
 
-import { VehicleCardImageSkeleton } from "@/components/skelton/VehicleCardImageSkeleton";
-import Image from "next/image";
-import { useState } from "react";
-import { vehicleBadgesConfig } from "./vehicle-badge/vehicleBadgesConfig";
-import { VehicleBadge } from "./vehicle-badge/VehicleBadge";
+import { VehicleCardImageSkeleton } from '@/components/skelton/VehicleCardImageSkeleton';
+import Image from 'next/image';
+import { useState } from 'react';
 
 type VehicleThumbnailProps = {
   src: string | null;
   alt: string;
   width: number;
   height: number;
+  layoutType: 'grid' | 'carousel';
 };
 
 const VehicleThumbnail = ({
@@ -18,6 +17,7 @@ const VehicleThumbnail = ({
   alt,
   width,
   height,
+  layoutType,
 }: VehicleThumbnailProps) => {
   const [isImageLoading, setImageLoading] = useState(true);
 
@@ -25,7 +25,7 @@ const VehicleThumbnail = ({
   if (!src) {
     return (
       <img
-        src={"/assets/img/default-thumbnail.webp"}
+        src={'/assets/img/default-thumbnail.webp'}
         alt={alt}
         width={width}
         height={height}
@@ -34,8 +34,13 @@ const VehicleThumbnail = ({
     );
   }
 
+  const className =
+    layoutType === 'carousel'
+      ? 'h-[9rem] lg:h-[11.25rem]'
+      : 'h-[6rem] lg:h-[8rem]';
+
   return (
-    <div className="relative h-[9rem] w-full overflow-hidden rounded lg:h-[11.25rem]">
+    <div className={`relative w-full overflow-hidden rounded ${className}`}>
       {/* Show skeleton only when image is loading */}
       {isImageLoading && <VehicleCardImageSkeleton />}
 

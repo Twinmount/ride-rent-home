@@ -5,16 +5,23 @@ import RentalDetails from '../RentalDetails';
 import LinkWrapper from '../LinkWrapper';
 import MotionStaggeredArticle from '@/components/general/framer-motion/MotionStaggeredArticle';
 import RentNowDialogTrigger from '../RentNowDialogTrigger';
-import VehicleRating from '../VehicleRating';
+
 import { VehicleBadgesGroup } from '../vehicle-badge/VehicleBadgesGroup';
+import CardTitle from '../CardTitle';
 
 type VehicleCardProps = {
   vehicle: NewVehicleCardType;
   index: number;
   country: string;
+  layoutType: 'grid' | 'carousel';
 };
 
-const VehicleCard = ({ vehicle, index, country = 'ae' }: VehicleCardProps) => {
+const VehicleCard = ({
+  vehicle,
+  index,
+  country = 'ae',
+  layoutType,
+}: VehicleCardProps) => {
   // dynamic link to navigate to vehicle details page
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
     vehicleTitle: vehicle.vehicleTitle,
@@ -24,10 +31,16 @@ const VehicleCard = ({ vehicle, index, country = 'ae' }: VehicleCardProps) => {
     country: country,
   });
 
+  // Conditionally set the width classes based on layoutType
+  const widthClasses =
+    layoutType === 'carousel'
+      ? 'w-[16.37rem] min-w-[16.37rem] md:w-[17.18rem] md:min-w-[17.18rem] lg:w-[18.43rem] lg:min-w-[18.43rem]'
+      : 'w-[12rem] min-w-[12rem] md:w-[15rem] md:min-w-[15rem] lg:w-[13.5rem] lg:min-w-[13.5rem]';
+
   return (
     <MotionStaggeredArticle
       index={index}
-      className="flex w-[16.37rem] min-w-[16.37rem] flex-col gap-4 rounded border border-border-default bg-white p-3 md:w-[17.18rem] md:min-w-[17.18rem] lg:w-[18.43rem] lg:min-w-[18.43rem]"
+      className={`flex flex-col gap-4 rounded border border-border-default bg-white p-3 ${widthClasses}`}
     >
       {/* card top */}
       <LinkWrapper
@@ -41,6 +54,7 @@ const VehicleCard = ({ vehicle, index, country = 'ae' }: VehicleCardProps) => {
             alt={vehicle.vehicleTitle || 'Vehicle Image'}
             width={250}
             height={200}
+            layoutType={layoutType}
           />
 
           {/* badge group */}
@@ -51,13 +65,11 @@ const VehicleCard = ({ vehicle, index, country = 'ae' }: VehicleCardProps) => {
           />
         </div>
 
-        <div className="flex-between flex gap-x-2">
-          <h3 className="line-clamp-1 text-base font-medium lg:text-xl">
-            {vehicle.vehicleTitle}
-          </h3>
-
-          {/* <VehicleRating rating={vehicle.rating} /> */}
-        </div>
+        <CardTitle
+          vehicleTitle={vehicle.vehicleTitle}
+          rating={vehicle.rating}
+          layoutType={layoutType}
+        />
       </LinkWrapper>
 
       {/* card bottom */}
@@ -66,10 +78,13 @@ const VehicleCard = ({ vehicle, index, country = 'ae' }: VehicleCardProps) => {
           href={vehicleDetailsPageLink}
           className="flex h-full w-full items-center"
         >
-          <RentalDetails rentalDetails={vehicle.rentalDetails} />
+          <RentalDetails
+            rentalDetails={vehicle.rentalDetails}
+            layoutType={layoutType}
+          />
         </LinkWrapper>
 
-        <RentNowDialogTrigger vehicle={vehicle} />
+        <RentNowDialogTrigger vehicle={vehicle} layoutType={layoutType} />
       </div>
     </MotionStaggeredArticle>
   );

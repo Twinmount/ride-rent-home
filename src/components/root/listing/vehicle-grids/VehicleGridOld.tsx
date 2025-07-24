@@ -16,8 +16,6 @@ import { useGlobalContext } from '@/context/GlobalContext';
 import { useUserLocation } from '@/hooks/useUserLocation';
 import VehicleListSection from './VehicleListSection';
 import MapToggleButton from './MapToggleButton';
-import DraggableSheet from '@/components/common/DraggableSheet';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 type VehicleGridProps = {
   country: string;
@@ -75,8 +73,6 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
     enabled: true,
     staleTime: 0,
   });
-
-  const isMobile = useIsMobile(1024);
 
   // when page load go to top, use case -> when filter change key of
   // this component change, so this effect will be trigerd
@@ -154,9 +150,12 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
     }
   }, [isFetching]);
 
-  useEffect(() => {
-    setMountMap(true);
-  }, []);
+  const toggleMap = () => {
+    setShowMap((prev) => !prev);
+    if (!mountMap) {
+      setMountMap(true);
+    }
+  };
 
   // When the set of visible vehicle IDs changes, update the visible vehicle list for the map
   useEffect(() => {
@@ -210,125 +209,76 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
   //  boolean to determine whether to show end of results or not
   const showEndOfResults = !hasNextPage && !isFetching;
 
-  const toggleMap = () => {
-    setShowMap((prev) => !prev);
-    if (!mountMap) {
-      setMountMap(true);
-    }
-  };
-
   return (
-    <div className="relative h-full w-full">
-      {isInitialLoad ? (
-        <div className="flex min-h-[90vh] w-full flex-col gap-8">
+    <>
+      <div className="relative mt-8 flex min-h-screen w-full flex-col gap-8">
+        {isInitialLoad ? (
           <AnimatedSkelton />
-        </div>
-      ) : isMobile ? (
-        // 📱 Mobile Layout (Draggable Sheet)
-        <DraggableSheet
-          mapContent={
-            mountMap ? <MapClientWrapper /> : <div>Loading map...</div>
-          }
-        >
-          <div className="w-full">
-            {Object.keys(vehicles).length === 0 ? (
-              <NoResultsFound />
-            ) : (
-              <>
-                {(!vehicles[state] || vehicles[state]?.length === 0) && (
-                  <p className="mb-6 text-center text-base text-gray-600">
-                    No vehicles found in{' '}
-                    {convertToLabel(state.replace(/-/g, ' '))}. Showing results
-                    from nearby locations.
-                  </p>
-                )}
+        ) : (
+          <>
+            {/* Map Layer (Always Mounted) */}
+            <div
+              className={`fixed inset-0 top-[4rem] transition-opacity duration-300 ${
+                showMap
+                  ? 'z-40 opacity-100'
+                  : 'pointer-events-none z-0 opacity-0'
+              }`}
+            >
+              {mountMap && <MapClientWrapper />}
+            </div>
 
-                <VehicleListSection
-                  vehicles={vehicles}
-                  state={state}
-                  category={category}
-                  country={country}
-                  setVisibleVehicleIds={setVisibleVehicleIds}
-                />
+            {/* List Layer (Always Mounted, visibility toggled) */}
+            <div
+              className={`relative z-10 w-full transition-opacity duration-300 ${
+                showMap ? 'pointer-events-none opacity-0' : 'opacity-100'
+              }`}
+            >
+              {Object.keys(vehicles).length === 0 ? (
+                <NoResultsFound />
+              ) : (
+                <>
+                  {(!vehicles[state] || vehicles[state]?.length === 0) && (
+                    <p className="mb-10 mt-8 text-center text-base text-gray-600">
+                      No vehicles found in{' '}
+                      {convertToLabel(state.replace(/-/g, ' '))}. Showing
+                      results from nearby locations.
+                    </p>
+                  )}
 
-                {showLoadingTrigger && (
-                  <div ref={ref} className="w-full py-4 text-center">
-                    {isFetching && (
-                      <div className="flex-center h-12">
-                        <LoadingWheel />
-                      </div>
-                    )}
-                  </div>
-                )}
+                  {/* List all the vehicles in the grid */}
+                  <VehicleListSection
+                    vehicles={vehicles}
+                    state={state}
+                    category={category}
+                    country={country}
+                    setVisibleVehicleIds={setVisibleVehicleIds}
+                  />
+                </>
+              )}
 
-                {showEndOfResults && (
-                  <span className="mt-16 block text-center text-base italic text-gray-500">
-                    You have reached the end
-                  </span>
-                )}
-              </>
-            )}
-          </div>
-        </DraggableSheet>
-      ) : (
-        // 🖥️ Desktop Layout (Original)
-        <div className="relative mt-8 flex min-h-screen w-full flex-col gap-8">
-          <div
-            className={`fixed inset-0 top-[4rem] transition-opacity duration-300 ${
-              showMap ? 'z-40 opacity-100' : 'pointer-events-none z-0 opacity-0'
-            }`}
-          >
-            {mountMap && <MapClientWrapper />}
-          </div>
+              {showLoadingTrigger && (
+                <div ref={ref} className="z-10 w-full py-4 text-center">
+                  {isFetching && (
+                    <div className="flex-center h-12">
+                      <LoadingWheel />
+                    </div>
+                  )}
+                </div>
+              )}
 
-          <div
-            className={`relative z-10 w-full transition-opacity duration-300 ${
-              showMap ? 'pointer-events-none opacity-0' : 'opacity-100'
-            }`}
-          >
-            {Object.keys(vehicles).length === 0 ? (
-              <NoResultsFound />
-            ) : (
-              <>
-                {(!vehicles[state] || vehicles[state]?.length === 0) && (
-                  <p className="mb-10 mt-8 text-center text-base text-gray-600">
-                    No vehicles found in{' '}
-                    {convertToLabel(state.replace(/-/g, ' '))}. Showing results
-                    from nearby locations.
-                  </p>
-                )}
+              {showEndOfResults && (
+                <span className="mt-16 block text-center text-base italic text-gray-500">
+                  You have reached the end
+                </span>
+              )}
+            </div>
+          </>
+        )}
 
-                <VehicleListSection
-                  vehicles={vehicles}
-                  state={state}
-                  category={category}
-                  country={country}
-                  setVisibleVehicleIds={setVisibleVehicleIds}
-                />
-              </>
-            )}
-
-            {showLoadingTrigger && (
-              <div ref={ref} className="z-10 w-full py-4 text-center">
-                {isFetching && (
-                  <div className="flex-center h-12">
-                    <LoadingWheel />
-                  </div>
-                )}
-              </div>
-            )}
-
-            {showEndOfResults && (
-              <span className="mt-16 block text-center text-base italic text-gray-500">
-                You have reached the end
-              </span>
-            )}
-          </div>
-
-          <MapToggleButton showMap={showMap} toggleMap={toggleMap} />
-        </div>
-      )}
-    </div>
+        {/* Toggle Button (mobile) */}
+        <MapToggleButton showMap={showMap} toggleMap={toggleMap} />
+      </div>
+    </>
   );
 };
 

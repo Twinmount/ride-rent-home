@@ -56,6 +56,7 @@ export default async function NewlyArrived({
             vehicle={vehicle}
             index={index}
             country={country}
+            layoutType="carousel"
           />
         ))}
       </CarouselWrapper>
