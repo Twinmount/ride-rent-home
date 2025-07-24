@@ -1,7 +1,7 @@
-import { FilterSidebar } from "@/components/root/listing/filter/FilterSidebar";
-import PriceFilterDialog from "@/components/dialog/price-filter-dialog/PriceFilterDialog";
-import { convertToLabel } from "@/helpers";
-import { getCountryName } from "@/utils/url";
+import { FilterSidebar } from '@/components/root/listing/filter/FilterSidebar';
+import PriceFilterDialog from '@/components/dialog/price-filter-dialog/PriceFilterDialog';
+import { convertToLabel } from '@/helpers';
+import { getCountryName } from '@/utils/url';
 
 type ListingHeadingProps = {
   country: string;
@@ -25,28 +25,28 @@ export default function ListingHeading({
   const formattedCountry = getCountryName(country);
   const formattedState = convertToLabel(state);
   const formattedCategory = convertToLabel(category);
-  const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : "";
-  const formattedBrand = brand ? convertToLabel(brand) : "";
+  const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : '';
+  const formattedBrand = brand ? convertToLabel(brand) : '';
 
   const headingH1 =
     heading ||
-    `Rent ${formattedBrand ? `${formattedBrand} ` : ""}${formattedVehicleType ? `${formattedVehicleType} ` : ""}${formattedCategory} in ${formattedState}`;
+    `Rent ${formattedBrand ? `${formattedBrand} ` : ''}${formattedVehicleType ? `${formattedVehicleType} ` : ''}${formattedCategory} in ${formattedState}`;
 
   const headingH2 =
     subheading ||
-    `Explore verified ${formattedBrand ? `${formattedBrand} ` : ""}${formattedVehicleType ? `${formattedVehicleType} ` : ""}${formattedCategory} rentals in ${formattedState}, ${formattedCountry}. Instant booking, flexible pricing, and trusted hosts.`;
+    `Explore verified ${formattedBrand ? `${formattedBrand} ` : ''}${formattedVehicleType ? `${formattedVehicleType} ` : ''}${formattedCategory} rentals in ${formattedState}`;
 
   return (
     <div
       className="flex-between mb-6 h-fit w-full max-md:flex-col"
-      style={{ alignItems: "start" }}
+      style={{ alignItems: 'start' }}
     >
       <div className="overflow-wrap-anywhere max-w-[calc(100%-180px)] pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full">
-        <h1 className="ml-2 break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
+        <h1 className="md:text-2l ml-2 break-words text-lg font-[400] max-md:mr-auto lg:text-3xl xl:text-4xl">
           {headingH1}
         </h1>
 
-        <h2 className="ml-2 mt-2 break-words text-lg font-[400] max-md:mr-auto lg:text-xl">
+        <h2 className="ml-2 mt-2 break-words text-xs font-[400] max-md:mr-auto lg:text-base">
           {headingH2}
         </h2>
       </div>

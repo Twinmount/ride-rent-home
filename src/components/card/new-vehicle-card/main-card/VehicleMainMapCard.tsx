@@ -1,23 +1,23 @@
-import "./VehicleCard.scss";
-import { VehicleCardType } from "@/types/vehicle-types";
+import './VehicleCard.scss';
+import { VehicleCardType } from '@/types/vehicle-types';
 import {
   convertToLabel,
   generateVehicleDetailsUrl,
   generateWhatsappUrl,
   getFormattedPhoneNumber,
-} from "@/helpers";
-import ContactIcons from "@/components/common/contact-icons/ContactIcons";
-import SpecsGrid from "../../vehicle-card/SpecsGrid";
-import ZeroDeposit from "../ZeroDeposit";
+} from '@/helpers';
+import ContactIcons from '@/components/common/contact-icons/ContactIcons';
+import SpecsGrid from '../../vehicle-card/SpecsGrid';
+import ZeroDeposit from '../ZeroDeposit';
 
-import CompanyLogo from "../CompanyLogo";
-import VehicleThumbnail from "../VehicleThumbnail";
-import HourlyRentalBadge from "./hourly-rental-badge/HourlyRentalBadge";
-import RentalDetails from "../RentalDetails";
+import CompanyLogo from '../CompanyLogo';
+import VehicleThumbnail from '../VehicleThumbnail';
+import HourlyRentalBadge from './hourly-rental-badge/HourlyRentalBadge';
+import RentalDetails from '../RentalDetails';
 
 // import EnquireBestPrice from "../EnquireBestPrice";
-import { MapPin } from "lucide-react";
-import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
+import { MapPin } from 'lucide-react';
+import RentNowButton from '@/components/common/RentNowButton/RentNowButton';
 
 type VehicleMainMapCardProps = {
   vehicle: VehicleCardType;
@@ -26,11 +26,11 @@ type VehicleMainMapCardProps = {
 
 const VehicleMainMapCard = ({
   vehicle,
-  country = "ae",
+  country = 'ae',
 }: VehicleMainMapCardProps) => {
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,
-    vehicle.phoneNumber,
+    vehicle.phoneNumber
   );
 
   // dynamic link to navigate to vehicle details page
@@ -58,9 +58,10 @@ const VehicleMainMapCard = ({
           {/* Thumbnail Image */}
           <VehicleThumbnail
             src={vehicle.thumbnail}
-            alt={vehicle.vehicleTitle || "Vehicle Image"}
+            alt={vehicle.vehicleTitle || 'Vehicle Image'}
             width={350}
             height={250}
+            layoutType="carousel"
           />
 
           {/* Company Logo */}
@@ -95,14 +96,17 @@ const VehicleMainMapCard = ({
           {/* location and rental details */}
           <div className="location-box">
             <div className="location">
-              <MapPin strokeWidth={1.5} size={18} />{" "}
+              <MapPin strokeWidth={1.5} size={18} />{' '}
               <span className="state">
-                {convertToLabel(vehicle.state) || "N/A"}
+                {convertToLabel(vehicle.state) || 'N/A'}
               </span>
             </div>
 
             {/* rental details */}
-            <RentalDetails rentalDetails={vehicle.rentalDetails} />
+            <RentalDetails
+              rentalDetails={vehicle.rentalDetails}
+              layoutType="carousel"
+            />
           </div>
         </div>
         <div className="bottom-box">

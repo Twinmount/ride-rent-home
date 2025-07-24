@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React from "react";
-import { motion } from "framer-motion";
-import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
-import VehicleListingGridWrapper from "@/components/common/VehicleListingGridWrapper";
-import VisibilityObserver from "@/components/common/VisibilityObserver";
-import { convertToLabel } from "@/helpers";
+import React from 'react';
+import { motion } from 'framer-motion';
+import VehicleListingGridWrapper from '@/components/common/VehicleListingGridWrapper';
+import VisibilityObserver from '@/components/common/VisibilityObserver';
+import { convertToLabel } from '@/helpers';
+import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
 
 type VehicleListSectionProps = {
   vehicles: Record<string, any[]>;
@@ -45,21 +45,21 @@ const VehicleListSection: React.FC<VehicleListSectionProps> = ({
         const isFromRelatedState = location !== state;
 
         return (
-          <div key={location} className="mb-8">
+          <div key={location} className="mt-3 lg:mb-8">
             {isFromRelatedState && (
-              <h3 className="relative mb-6 inline-block break-words text-2xl font-[400] max-md:mr-auto lg:text-3xl">
-                Discover more <span className="capitalize">{category}</span>{" "}
-                from{" "}
+              <h3 className="relative mb-6 ml-4 inline-block break-words text-xl font-[400] max-md:mr-auto lg:text-2xl">
+                Discover more <span className="capitalize">{category}</span>{' '}
+                from{' '}
                 <span className="capitalize">
-                  {convertToLabel(location.replace(/-/g, " "))}
+                  {convertToLabel(location.replace(/-/g, ' '))}
                 </span>
                 <motion.div
                   className="absolute bottom-0 left-0 h-[2px] bg-black"
                   initial={{ width: 0 }}
-                  animate={{ width: "100%" }}
+                  animate={{ width: '100%' }}
                   transition={{
                     duration: 0.5,
-                    ease: "easeOut",
+                    ease: 'easeOut',
                   }}
                 />
               </h3>
@@ -74,12 +74,12 @@ const VehicleListSection: React.FC<VehicleListSectionProps> = ({
                     vehicle={vehicle}
                     onVisible={(id) =>
                       setVisibleVehicleIds((prev) =>
-                        prev.includes(id) ? prev : [...prev, id],
+                        prev.includes(id) ? prev : [...prev, id]
                       )
                     }
                     onHidden={(id) =>
                       setVisibleVehicleIds((prev) =>
-                        prev.filter((v) => v !== id),
+                        prev.filter((v) => v !== id)
                       )
                     }
                   >
@@ -87,6 +87,7 @@ const VehicleListSection: React.FC<VehicleListSectionProps> = ({
                       vehicle={vehicle}
                       index={animationIndex}
                       country={country}
+                      layoutType="grid"
                     />
                   </VisibilityObserver>
                 );
