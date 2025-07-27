@@ -54,7 +54,7 @@ const Documents = ({ state, category }: StateCategoryProps) => {
         </div>
 
         {/* Right content section with responsive width - added pb-0 to eliminate bottom padding */}
-        <div className="z-1 relative right-0 space-y-[1rem] pb-0 pl-[2rem] sm:space-y-[1.5rem] sm:pl-[1.5rem] sm:text-[0.17rem] lg:w-[55%] lg:space-y-[2rem] lg:py-[2rem] lg:pb-0 lg:text-[2.2rem]">
+        <div className="z-1 relative right-0 space-y-[1rem] pb-0 sm:space-y-[1.5rem] sm:text-[0.17rem] lg:w-[55%] lg:space-y-[2rem] lg:py-[2rem] lg:pb-0 lg:text-[2.2rem]">
           {/* Main content area with heading and description */}
           <div className="space-y-[1rem] sm:space-y-[1.5rem]">
             <SectionHeading

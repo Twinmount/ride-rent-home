@@ -31,15 +31,6 @@ export default async function States({
   // Return null if no states available
   if (states.length === 0) return null;
 
-  // Function to chunk array into rows based on screen size
-  const chunkStates = (states: any[], itemsPerRow: number) => {
-    const chunks = [];
-    for (let i = 0; i < states.length; i += itemsPerRow) {
-      chunks.push(states.slice(i, i + itemsPerRow));
-    }
-    return chunks;
-  };
-
   return (
     // Main section container - full width with proper constraints
     <MotionSection className="section-container relative w-full pt-[1.5rem] lg:pt-[2.5rem]">
@@ -61,78 +52,21 @@ export default async function States({
           subtitle="Lorem ipsum dolor sit amet consectetur."
         />
 
-        {/* States container with responsive design */}
-        <div className="mt-[1.75rem] w-full">
-          {/* Mobile: 2 cards per row */}
-          <div className="mx-auto w-full max-w-7xl px-4 sm:hidden">
-            <div className="flex flex-col gap-2">
-              {chunkStates(states, 2).map((row, rowIndex) => (
-                <div key={rowIndex} className="flex justify-center gap-2">
-                  {row.map((state) => (
-                    <StateCard
-                      key={state.stateId}
-                      state={state}
-                      category={category}
-                      country={country}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Small devices: 3 cards per row */}
-          <div className="mx-auto hidden w-full max-w-7xl px-4 sm:block md:hidden">
-            <div className="flex flex-col gap-3">
-              {chunkStates(states, 3).map((row, rowIndex) => (
-                <div key={rowIndex} className="flex justify-center gap-3">
-                  {row.map((state) => (
-                    <StateCard
-                      key={state.stateId}
-                      state={state}
-                      category={category}
-                      country={country}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Medium devices: 4 cards per row */}
-          <div className="mx-auto hidden w-full max-w-7xl px-4 md:block lg:hidden">
-            <div className="flex flex-col gap-4">
-              {chunkStates(states, 4).map((row, rowIndex) => (
-                <div key={rowIndex} className="flex justify-center gap-4">
-                  {row.map((state) => (
-                    <StateCard
-                      key={state.stateId}
-                      state={state}
-                      category={category}
-                      country={country}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Large devices: 6 cards per row */}
-          <div className="mx-auto hidden w-full max-w-7xl px-4 lg:block">
-            <div className="flex flex-col gap-6">
-              {chunkStates(states, 6).map((row, rowIndex) => (
-                <div key={rowIndex} className="flex justify-center gap-6">
-                  {row.map((state) => (
-                    <StateCard
-                      key={state.stateId}
-                      state={state}
-                      category={category}
-                      country={country}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
+        {/* Single responsive states container with equal spacing */}
+        <div className="mt-[1.75rem w-full lg:px-6">
+          <div className="flex flex-wrap justify-center gap-1.5 md:gap-1.5 lg:mx-16 lg:gap-1.5">
+            {states.map((state) => (
+              <div
+                key={state.stateId}
+                className="mb-3 flex-[0_0_30%] md:flex-[0_0_22%] lg:mb-7 lg:flex-[0_0_15%]"
+              >
+                <StateCard
+                  state={state}
+                  category={category}
+                  country={country}
+                />
+              </div>
+            ))}
           </div>
         </div>
 
