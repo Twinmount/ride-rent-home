@@ -50,7 +50,7 @@ const CookiePopup = () => {
             </div>
             <button
               onClick={handleOkClick}
-              className="flex-shrink-0 rounded bg-yellow px-6 py-1 text-sm font-medium text-white transition-colors hover:bg-amber-600"
+              className="flex-shrink-0 rounded bg-yellow px-6 py-1 text-sm font-medium text-black transition-colors hover:bg-amber-600"
             >
               OK
             </button>
