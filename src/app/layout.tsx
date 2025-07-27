@@ -9,20 +9,21 @@ import { getDefaultMetadata } from "./root-metadata";
 import { NetworkWrapper } from "./(root)/NetworkWrapper";
 import { GlobalContextProvider } from "@/context/GlobalContext";
 import NextTopLoader from "nextjs-toploader";
+import CookiePopup from '@/components/dialog/CookiePopup';
 
 export const metadata: Metadata = getDefaultMetadata();
 
 const firaSans = Fira_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
-  style: ["normal", "italic"],
-  variable: "--font-fira-sans",
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  style: ['normal', 'italic'],
+  variable: '--font-fira-sans',
 });
 
 const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-poppins",
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-poppins',
 });
 
 export default function RootLayout({
@@ -59,6 +60,7 @@ export default function RootLayout({
             <GlobalContextProvider>{children}</GlobalContextProvider>
           </ReactQueryProvider>
         </NetworkWrapper>
+        <CookiePopup />
       </body>
     </html>
   );
