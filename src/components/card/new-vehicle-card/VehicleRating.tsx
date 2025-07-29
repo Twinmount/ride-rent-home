@@ -11,9 +11,9 @@ interface VehicleRatingProps {
  */
 const VehicleRating: FC<VehicleRatingProps> = ({ rating }) => {
   return (
-    <div className="inline-flex items-center gap-1 rounded-md border px-2 py-1 text-sm text-gray-700">
-      <span>{rating || "3.2"}</span>
-      <Star size={14} className="text-accent-light" fill="currentColor" />
+    <div className="inline-flex items-center gap-1 rounded-md border px-1 py-1 text-xs text-gray-700">
+      <span>{rating || '3.2'}</span>
+      <Star size={12} className="text-accent-light" fill="currentColor" />
     </div>
   );
 };

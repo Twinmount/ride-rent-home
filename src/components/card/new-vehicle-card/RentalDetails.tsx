@@ -19,8 +19,8 @@ export default function RentalDetails({
   const fontSize =
     layoutType === 'carousel'
       ? {
-          price: 'text-base',
-          label: 'text-[0.9rem]',
+          price: 'text-sm',
+          label: 'text-[0.6rem]',
         }
       : {
           price: 'text-base',
