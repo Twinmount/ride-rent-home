@@ -66,24 +66,27 @@ const FeaturedVehicles = async ({
 
   return (
     <MotionSection className="section-container">
-      <div className="mx-auto flex w-fit max-w-full items-center justify-between gap-1 overflow-x-auto px-1 [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] xl:max-w-full [&::-webkit-scrollbar]:hidden">
-        {mainVehicles.map((vehicle, index) => (
-          <VehicleCard
-            key={vehicle.vehicleId}
-            vehicle={vehicle}
-            index={index}
-            country={country}
-            layoutType="carousel"
-          />
-        ))}
-        {gridThumbnails.length > 0 && (
-          <ViewAllGridCard
-            thumbnails={gridThumbnails}
-            totalCount={totalVehicles}
-            label={`More ${formattedVehicleType || formattedCategory} `}
-            viewAllLink={viewAllLink}
-          />
-        )}
+      {/* Full-width carousel section on mobile */}
+      <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen lg:relative lg:left-auto lg:right-auto lg:ml-0 lg:mr-0 lg:w-full">
+        <div className="mx-auto flex w-fit max-w-full items-center justify-between gap-1 overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] lg:px-1 xl:max-w-full [&::-webkit-scrollbar]:hidden">
+          {mainVehicles.map((vehicle, index) => (
+            <VehicleCard
+              key={vehicle.vehicleId}
+              vehicle={vehicle}
+              index={index}
+              country={country}
+              layoutType="carousel"
+            />
+          ))}
+          {gridThumbnails.length > 0 && (
+            <ViewAllGridCard
+              thumbnails={gridThumbnails}
+              totalCount={totalVehicles}
+              label={`More ${formattedVehicleType || formattedCategory} `}
+              viewAllLink={viewAllLink}
+            />
+          )}
+        </div>
       </div>
     </MotionSection>
   );

@@ -34,7 +34,7 @@ const VehicleCard = ({
   // Conditionally set the width classes based on layoutType
   const widthClasses =
     layoutType === 'carousel'
-      ? 'w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.4rem]'
+      ? 'w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem]'
       : 'w-[12rem] min-w-[12rem] md:w-[15rem] md:min-w-[15rem] lg:w-[13.5rem] lg:min-w-[13.5rem]';
 
   return (

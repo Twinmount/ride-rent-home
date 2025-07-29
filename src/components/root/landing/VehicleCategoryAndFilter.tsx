@@ -9,7 +9,7 @@ export default function VehicleCategoryAndFilter() {
     <div
       className={`no-global-padding sticky z-30 mb-4 flex items-center justify-between bg-background py-2`}
       style={{
-        top: "3.9rem",
+        top: '3.9rem',
       }}
     >
       <div
