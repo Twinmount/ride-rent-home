@@ -1,12 +1,13 @@
 import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
 import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
-import { SectionHeading } from '@/components/common/SectionHeading';
 import ViewAllButton from '@/components/common/ViewAllButton';
+import ViewAllLinkButton from '@/components/common/ViewAllLinkButton';
 import MotionSection from '@/components/general/framer-motion/MotionSection';
 import { convertToLabel } from '@/helpers';
 import { StateCategoryProps, VehicleHomeFilter } from '@/types';
 import { FetchVehicleCardsResponseV2 } from '@/types/vehicle-types';
 import { API } from '@/utils/API';
+import { cn } from '@/lib/utils';
 
 export default async function NewlyArrived({
   state,
@@ -41,30 +42,36 @@ export default async function NewlyArrived({
   const formattedCategory = convertToLabel(category);
 
   return (
-    <MotionSection className="section-container">
-      <SectionHeading
-        title={`Newly arrived ${formattedCategory}`}
-        subtitle="Lorem ipsum dolor sit amet consectetur."
-        align="left"
-        className="ml-3 lg:ml-2"
-      />
-
-      <div className="mx-auto flex w-fit max-w-full items-center justify-between gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] xl:max-w-full [&::-webkit-scrollbar]:hidden">
-        {vehicleData.map((vehicle, index) => (
-          <VehicleCard
-            key={vehicle.vehicleId}
-            vehicle={vehicle}
-            index={index}
-            country={country}
-            layoutType="carousel"
-          />
-        ))}
+    <MotionSection className="section-container mx-auto">
+      {/* Header section with View All button - respects container padding */}
+      <div className="ml-3 flex items-center justify-between lg:mb-4 lg:ml-2 lg:mt-8">
+        <div className={cn('mb-4 flex w-full flex-col gap-y-3 text-left')}>
+          <h2 className="heading-primary text-primary">
+            Newly arrived {formattedCategory}
+          </h2>
+          <p className="heading-secondary hidden lg:block">
+            Lorem ipsum dolor sit amet consectetur.
+          </p>
+        </div>
+        <ViewAllLinkButton
+          link={`/${country}/${state}/listing/${category}?filter=${VehicleHomeFilter.LATEST_MODELS}`}
+        />
       </div>
 
-      <ViewAllButton
-        link={`/${country}/${state}/listing/${category}?filter=${VehicleHomeFilter.LATEST_MODELS}`}
-        align="end"
-      />
+      {/* Full-width carousel section on mobile */}
+      <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen lg:relative lg:left-auto lg:right-auto lg:ml-0 lg:mr-0 lg:w-full">
+        <div className="mx-auto flex w-fit max-w-full items-center justify-between gap-1 overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] lg:px-0 xl:max-w-full [&::-webkit-scrollbar]:hidden">
+          {vehicleData.map((vehicle, index) => (
+            <VehicleCard
+              key={vehicle.vehicleId}
+              vehicle={vehicle}
+              index={index}
+              country={country}
+              layoutType="carousel"
+            />
+          ))}
+        </div>
+      </div>
     </MotionSection>
   );
 }
