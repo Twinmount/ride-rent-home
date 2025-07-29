@@ -5,6 +5,36 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { ImageSrc } from './Banner';
 
+const CustomArrow = ({
+  onClick,
+  direction,
+}: {
+  onClick?: () => void;
+  direction: 'prev' | 'next';
+}) => (
+  <button
+    className={`absolute top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center text-yellow focus:outline-none ${
+      direction === 'prev' ? 'left-4' : 'right-4'
+    }`}
+    onClick={onClick}
+    aria-label={direction === 'prev' ? 'Previous slide' : 'Next slide'}
+  >
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`transition-all duration-100 hover:scale-125 ${direction === 'next' ? 'rotate-180' : ''}`}
+    >
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  </button>
+);
+
 export default function BannerSlider({
   bannerImages,
 }: {
@@ -18,11 +48,14 @@ export default function BannerSlider({
     autoplaySpeed: 4000,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: false,
+    arrows: bannerImages?.length > 1, // Only show arrows if there are multiple slides
     fade: false,
     speed: 600,
     cssEase: 'ease-in-out',
     pauseOnHover: true,
+    // Custom arrows
+    prevArrow: <CustomArrow direction="prev" />,
+    nextArrow: <CustomArrow direction="next" />,
     /* Custom dot styling */
     customPaging: (i: number) => (
       <div className="h-2 w-2 cursor-pointer rounded-full bg-white/40 transition-all duration-300 hover:bg-white/80">

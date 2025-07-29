@@ -46,10 +46,10 @@ export default async function NewlyArrived({
         title={`Newly arrived ${formattedCategory}`}
         subtitle="Lorem ipsum dolor sit amet consectetur."
         align="left"
-        className="lg:ml-12"
+        className="ml-3 lg:ml-2"
       />
 
-      <CarouselWrapper isButtonVisible>
+      <div className="mx-auto flex w-fit max-w-full items-center justify-between gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] xl:max-w-full [&::-webkit-scrollbar]:hidden">
         {vehicleData.map((vehicle, index) => (
           <VehicleCard
             key={vehicle.vehicleId}
@@ -59,7 +59,7 @@ export default async function NewlyArrived({
             layoutType="carousel"
           />
         ))}
-      </CarouselWrapper>
+      </div>
 
       <ViewAllButton
         link={`/${country}/${state}/listing/${category}?filter=${VehicleHomeFilter.LATEST_MODELS}`}

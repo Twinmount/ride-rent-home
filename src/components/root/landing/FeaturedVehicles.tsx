@@ -66,7 +66,7 @@ const FeaturedVehicles = async ({
 
   return (
     <MotionSection className="section-container">
-      <CarouselWrapper isButtonVisible>
+      <div className="mx-auto flex w-fit max-w-full items-center justify-between gap-1 overflow-x-auto px-1 [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] xl:max-w-full [&::-webkit-scrollbar]:hidden">
         {mainVehicles.map((vehicle, index) => (
           <VehicleCard
             key={vehicle.vehicleId}
@@ -76,7 +76,6 @@ const FeaturedVehicles = async ({
             layoutType="carousel"
           />
         ))}
-        {/* Render ViewAllGridCard only if there are thumbnails */}
         {gridThumbnails.length > 0 && (
           <ViewAllGridCard
             thumbnails={gridThumbnails}
@@ -85,8 +84,9 @@ const FeaturedVehicles = async ({
             viewAllLink={viewAllLink}
           />
         )}
-      </CarouselWrapper>
+      </div>
     </MotionSection>
   );
 };
+
 export default FeaturedVehicles;

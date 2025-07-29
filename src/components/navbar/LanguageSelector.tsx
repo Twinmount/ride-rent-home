@@ -128,7 +128,7 @@ export default function LanguageSelector({
               </div>
 
               {/* Country Selection - Always show if showCountry is true */}
-              {showCountry && (
+              {/* {showCountry && (
                 <div className="mb-3">
                   <label
                     className={`block ${sizes.text} font-medium ${themeConfig.label} mb-1`}
@@ -147,7 +147,7 @@ export default function LanguageSelector({
                     ))}
                   </select>
                 </div>
-              )}
+              )} */}
 
               {/* Currency Selection - Always show if showCurrency is true */}
               {showCurrency && (

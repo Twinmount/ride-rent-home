@@ -36,7 +36,7 @@ const VehicleThumbnail = ({
 
   const className =
     layoutType === 'carousel'
-      ? 'h-[9rem] lg:h-[11.25rem]'
+      ? 'h-[8.5rem] lg:h-[10.25rem]'
       : 'h-[6rem] lg:h-[8rem]';
 
   return (
