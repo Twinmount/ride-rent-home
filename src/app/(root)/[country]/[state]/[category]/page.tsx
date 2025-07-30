@@ -50,9 +50,9 @@ export default async function Home(props: PageProps) {
       {/* Inject JSON-LD into the <head> */}
       <JsonLd jsonLdData={jsonLdData} id="json-ld-homepage" />
 
-      <Suspense fallback={<BannerSkeleton />}>
-        <Banner state={state} country={country} />
-      </Suspense>
+      {/* <Suspense fallback={<BannerSkeleton />}> */}
+      <Banner state={state} country={country} />
+      {/* </Suspense> */}
 
       <HeroSection state={state} category={category} />
 
