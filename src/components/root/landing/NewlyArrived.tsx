@@ -59,15 +59,19 @@ export default async function NewlyArrived({
 
       {/* Full-width carousel section on mobile */}
       <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen lg:relative lg:left-auto lg:right-auto lg:ml-0 lg:mr-0 lg:w-full">
-        <div className="mx-auto flex w-fit max-w-full items-center justify-between gap-1 overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] lg:px-0 xl:max-w-full [&::-webkit-scrollbar]:hidden">
+        <div className="mx-auto flex w-fit max-w-full snap-x snap-mandatory items-center justify-between gap-1 overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] lg:snap-none lg:px-1 xl:max-w-full [&::-webkit-scrollbar]:hidden">
           {vehicleData.map((vehicle, index) => (
-            <VehicleCard
+            <div
               key={vehicle.vehicleId}
-              vehicle={vehicle}
-              index={index}
-              country={country}
-              layoutType="carousel"
-            />
+              className="flex-shrink-0 snap-start lg:snap-align-none"
+            >
+              <VehicleCard
+                vehicle={vehicle}
+                index={index}
+                country={country}
+                layoutType="carousel"
+              />
+            </div>
           ))}
         </div>
       </div>
