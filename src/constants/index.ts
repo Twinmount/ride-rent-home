@@ -59,3 +59,17 @@ export const colors = [
   { label: 'Beige', value: 'beige' },
   { label: 'Golden', value: 'golden' },
 ]
+
+// payment methods
+export const paymentMethods = [
+  { label: "Crypto", value: "crypto" },
+  { label: "Credit / Debit Card", value: "credit-debit-card" },
+  { label: "Tabby", value: "tabby" },
+  { label: "Cash", value: "cash" },
+  { label: "Bank Transfer", value: "bank-transfer" },
+  { label: "PayPal", value: "paypal" },
+  // Popular in UAE/GCC region
+  { label: "Emirates NBD", value: "emirates-nbd" },
+  // Popular in India
+  { label: "UPI", value: "upi" },
+];
