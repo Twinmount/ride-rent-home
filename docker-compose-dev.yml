@@ -8,3 +8,4 @@ services:
     ports:
       - '3004:3000'  # Map server port 3003 to container port 3000
     command: npm run start
+    restart: unless-stopped
