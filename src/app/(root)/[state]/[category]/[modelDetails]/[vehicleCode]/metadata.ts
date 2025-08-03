@@ -61,13 +61,6 @@ export async function generateVehicleMetadata(
   const metaTitle = vehicle?.vehicleMetaTitle || title;
   const metaDescription = vehicle?.vehicleMetaDescription || description;
 
-  // Shortened versions for social media
-  const shortTitle = title.length > 60 ? `${title.substring(0, 57)}...` : title;
-  const shortDescription =
-    description.length > 155
-      ? `${description.substring(0, 152)}...`
-      : description;
-
   // formatted vehicle title
   const vehicleTitle = generateModelDetailsUrl(vehicle.vehicleTitle);
 
@@ -80,8 +73,8 @@ export async function generateVehicleMetadata(
     description: metaDescription,
     keywords: ` ${vehicle.vehicleModel}, ${category} rental in ${state}, ${convertToLabel(state)} ${category} rental near me`,
     openGraph: {
-      title: shortTitle,
-      description: shortDescription,
+      title: metaTitle,
+      description: metaDescription,
       url: canonicalUrl,
       type: "website",
       images: [
@@ -95,8 +88,8 @@ export async function generateVehicleMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title: shortTitle,
-      description: shortDescription,
+      title: metaTitle,
+      description: metaDescription,
       images: [ogImage],
     },
     manifest: "/manifest.webmanifest",

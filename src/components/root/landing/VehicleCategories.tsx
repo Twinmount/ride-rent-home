@@ -3,7 +3,7 @@
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 import { CategoryType } from "@/types";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { easeOut, motion } from "framer-motion";
 import { convertToLabel } from "@/helpers";
 
 import {
@@ -84,7 +84,7 @@ function VehicleCategoryCard({
       transition: {
         delay: index * 0.05,
         duration: 0.5,
-        ease: "easeOut",
+        ease: easeOut,
       },
     }),
   };
