@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { useSearchParams, useRouter, useParams } from "next/navigation";
-import qs from "query-string";
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter, useParams } from 'next/navigation';
+import qs from 'query-string';
 import {
   getDefaultFilters,
   parseFiltersFromUrl,
-} from "@/helpers/filter-helper";
+} from '@/helpers/filter-helper';
 
 export interface FiltersType {
   modelYear: string;
@@ -16,6 +16,8 @@ export interface FiltersType {
   fuelType: string[];
   color: string[];
   paymentMethod: string[];
+  price: string;
+  period: string;
 }
 
 /**
@@ -46,6 +48,8 @@ const useFilters = () => {
     fuelType: [],
     color: [],
     paymentMethod: [],
+    price: '',
+    period: '',
   });
 
   // Applied filters reflecting the URL parameters
@@ -59,6 +63,8 @@ const useFilters = () => {
     fuelType: [],
     color: [],
     paymentMethod: [],
+    price: '',
+    period: '',
   });
 
   const searchParams = useSearchParams();

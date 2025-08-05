@@ -42,22 +42,17 @@ export default function ListingHeading({
       style={{ alignItems: 'start' }}
     >
       <div className="overflow-wrap-anywhere max-w-[calc(100%-180px)] pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full">
-        <h1 className="md:text-2l ml-2 break-words text-lg font-[400] max-md:mr-auto lg:text-3xl xl:text-4xl">
+        <h1 className="ml-2 break-words text-lg font-[400] max-md:mr-auto md:text-xl lg:text-3xl">
           {headingH1}
         </h1>
 
-        <h2 className="ml-2 mt-2 break-words text-xs font-[400] max-md:mr-auto lg:text-base">
+        <h2 className="ml-2 mt-2 break-words text-xs font-[400] max-md:mr-auto lg:text-sm">
           {headingH2}
         </h2>
       </div>
 
-      <div className="listing-page-filter-div z-[12] flex flex-shrink-0 max-md:mt-4">
-        {/* price filter */}
-        <PriceFilterDialog isListingPage />
-
-        {/* filter sidebar */}
-        <FilterSidebar />
-      </div>
+      {/* filter sidebar */}
+      <FilterSidebar />
     </div>
   );
 }
