@@ -4,7 +4,7 @@ import { useStateAndCategory } from '@/hooks/useStateAndCategory';
 import { adjustMinMaxIfEqual, getAvailablePeriods } from '@/helpers';
 import { useFetchPriceFilter } from './useFetchPriceFilter';
 
-type PeriodType = 'hour' | 'day' | 'week' | 'month';
+export type PeriodType = 'hour' | 'day' | 'week' | 'month';
 
 export function usePriceFilter() {
   const { state, category, country } = useStateAndCategory();
@@ -62,5 +62,6 @@ export function usePriceFilter() {
     isPriceRangeEmpty,
     isLoading,
     selectedPriceRange,
+    data,
   };
 }

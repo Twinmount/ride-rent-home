@@ -1,5 +1,5 @@
-import { FiltersType } from "@/hooks/useFilters";
-import qs from "query-string";
+import { FiltersType } from '@/hooks/useFilters';
+import qs from 'query-string';
 
 /**
  * Parse URL query parameters into a FiltersType object.
@@ -27,6 +27,8 @@ export const parseFiltersFromUrl = (urlParams: string): FiltersType => {
       typeof params.paymentMethod === 'string'
         ? params.paymentMethod.split(',')
         : [],
+    price: typeof params.price === 'string' ? params.price : '',
+    period: typeof params.period === 'string' ? params.period : '',
   };
 };
 
@@ -75,4 +77,6 @@ export const getDefaultFilters = (): FiltersType => ({
   color: [],
   brand: '',
   paymentMethod: [],
+  price: '',
+  period: '',
 });

@@ -22,14 +22,19 @@ export default function Filter({
   setOpen: (open: boolean) => void;
 }) {
   // custom hook to handle filters state and URL updates
-  const { selectedFilters, handleFilterChange, applyFilters } = useFilters();
+  const {
+    selectedFilters,
+    handleFilterChange,
+    handlePeriodPriceChange,
+    applyFilters,
+  } = useFilters();
 
   return (
     <div className={`flex h-full max-h-full w-full flex-col`}>
       <div className="absolute bottom-16 left-4 right-0 top-20 overflow-y-scroll pr-1">
         <ListingPriceFilter
           selectedFilters={selectedFilters}
-          handleFilterChange={handleFilterChange}
+          handlePeriodPriceChange={handlePeriodPriceChange}
         />
 
         <Accordion type="single" collapsible>

@@ -33,6 +33,7 @@ export interface FiltersType {
  * - selectedFilters: Local state reflecting current selections.
  * - appliedFilters: State synced with the current URL.
  * - handleFilterChange: Updates filter selections based on user input.
+ * - handlePeriodPriceChange: Updates period and price together (for price filter).
  * - applyFilters: Constructs the correct route + query and navigates to it.
  * - resetFilters: Clears all filters and resets URL.
  */
@@ -113,13 +114,24 @@ const useFilters = () => {
       updatedFilters.brand = '';
     }
 
+    // If period is cleared, clear the price as well
+    if (filterName === 'period' && value === '') {
+      updatedFilters.price = ''; // Remove price when period is cleared
+    }
+
+    //  If price is cleared, clear the period as well
+    if (filterName === 'price' && value === '') {
+      updatedFilters.period = '';
+    }
     // Handle single-selection fields
     if (
       filterName === 'modelYear' ||
       filterName === 'category' ||
       filterName === 'seats' ||
       filterName === 'vehicleType' ||
-      filterName === 'brand'
+      filterName === 'brand' ||
+      filterName === 'price' ||
+      filterName === 'period'
     ) {
       // Allow unchecking for brand/vehicleType
       if (
@@ -142,6 +154,22 @@ const useFilters = () => {
       }
     }
 
+    console.log('updatedFilters:', updatedFilters);
+
+    setSelectedFilters(updatedFilters);
+  };
+
+  /**
+   * Updates period and price together in a single state update.
+   * This prevents race conditions when both values need to be set simultaneously.
+   *
+   * @param period - The period value to set
+   * @param price - The price range value to set
+   */
+  const handlePeriodPriceChange = (period: string, price: string) => {
+    const updatedFilters = { ...selectedFilters };
+    updatedFilters.period = period;
+    updatedFilters.price = price;
     setSelectedFilters(updatedFilters);
   };
 
@@ -165,13 +193,28 @@ const useFilters = () => {
     // Build pathname
     let path = `/${country}/${state}/listing`;
 
-    const { category, vehicleType, brand, ...queryFilters } = updatedFilters;
+    const { category, vehicleType, brand, period, price, ...queryFilters } =
+      updatedFilters;
+
+    // Type casting queryFilters to FiltersType to ensure period and price are allowed
+    const typedQueryFilters = queryFilters as FiltersType;
 
     if (category) path += `/${category}`;
     if (vehicleType) path += `/${vehicleType}`;
     if (brand) path += `/brand/${brand}`;
 
-    const queryString = qs.stringify(queryFilters, {
+    // If period exists, include price; otherwise, omit price
+    if (period) {
+      typedQueryFilters.period = period;
+      if (price) {
+        typedQueryFilters.price = price;
+      }
+    } else {
+      typedQueryFilters.price = '';
+    }
+
+    // Create the query string from the filters
+    const queryString = qs.stringify(typedQueryFilters, {
       arrayFormat: 'comma',
       skipNull: true,
       skipEmptyString: true,
@@ -199,6 +242,7 @@ const useFilters = () => {
     selectedFilters,
     appliedFilters,
     handleFilterChange,
+    handlePeriodPriceChange,
     applyFilters,
     resetFilters,
   };

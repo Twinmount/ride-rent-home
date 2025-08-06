@@ -1,36 +1,32 @@
-import { usePriceFilter } from '@/components/dialog/price-filter-dialog/usePriceFilter';
 import RentalPeriod from '@/components/dialog/price-filter-dialog/RentalPeriod';
 import { PriceRangeSlider } from '@/components/ui/price-range-slider';
+import { Skeleton } from '@/components/ui/skeleton';
 import { FiltersType } from '@/hooks/useFilters';
+import { useListingPriceFilter } from '@/hooks/useListingPriceFilter';
 
 interface ListingPriceFilterProps {
-  selectedFilters: FiltersType; // Ensure the correct type is used
-  handleFilterChange: (filterName: keyof FiltersType, value: string) => void; // Ensure the correct type is used
+  selectedFilters: FiltersType;
+  handlePeriodPriceChange: (period: string, price: string) => void;
 }
 
 export default function ListingPriceFilter({
   selectedFilters,
-  handleFilterChange,
+  handlePeriodPriceChange,
 }: ListingPriceFilterProps) {
   const {
-    values,
-    setValues,
-    availablePeriods,
     selectedPeriod,
-    setSelectedPeriod,
-  } = usePriceFilter();
-
-  // Price range update handler
-  const handlePriceChange = (newPriceRange: [number, number]) => {
-    setValues(newPriceRange); // Updates price range in state
-    handleFilterChange('price', newPriceRange.join('-')); // Updates the URL with the price range as "min-max"
-  };
-
-  // Period change handler (single selection, uncheckable)
-  const handlePeriodChange = (newPeriod: string) => {
-    setSelectedPeriod(newPeriod); // Sets the selected period in state
-    handleFilterChange('period', newPeriod); // Updates the URL with the selected period
-  };
+    values,
+    availablePeriods,
+    isLoading,
+    handlePeriodChange,
+    handlePriceChange,
+    isPriceSliderDisabled,
+    minPrice,
+    maxPrice,
+  } = useListingPriceFilter({
+    selectedFilters,
+    handlePeriodPriceChange,
+  });
 
   return (
     <div className="border-b pb-6">
@@ -38,39 +34,43 @@ export default function ListingPriceFilter({
         Price Filter
       </div>
 
-      {availablePeriods.length > 0 && (
-        <RentalPeriod
-          selectedPeriod={selectedPeriod}
-          setSelectedPeriod={handlePeriodChange}
-          availablePeriods={availablePeriods}
-          isListingPage={true}
-        />
+      {isLoading ? (
+        <PeriodSkeleton boxClassNames="px-2 py-1 text-sm" />
+      ) : (
+        availablePeriods.length > 0 && (
+          <RentalPeriod
+            selectedPeriod={selectedPeriod}
+            setSelectedPeriod={handlePeriodChange}
+            availablePeriods={availablePeriods}
+            isListingPage={true}
+          />
+        )
       )}
 
       <div>
-        <div className="flex-between my-2 text-sm text-accent">
+        <div
+          className={`flex-between my-2 text-sm ${
+            isPriceSliderDisabled ? 'text-gray-300' : 'text-accent'
+          }`}
+        >
           <span className="rounded-2xl py-2 font-medium">AED {values[0]}</span>
-
           <span className="rounded-2xl py-2 font-medium">AED {values[1]}</span>
         </div>
 
         <PriceRangeSlider
           value={values}
-          onValueChange={handlePriceChange} // Update the price range in state and URL
-          min={
-            selectedFilters.price
-              ? parseInt(selectedFilters.price.split('-')[0], 10)
-              : 0
-          }
-          max={
-            selectedFilters.price
-              ? parseInt(selectedFilters.price.split('-')[1], 10)
-              : 1000
-          }
+          onValueChange={handlePriceChange}
+          disabled={isPriceSliderDisabled}
+          min={minPrice}
+          max={maxPrice}
           step={10}
         />
 
-        <div className="flex-between mt-3 w-full text-xs text-text-tertiary">
+        <div
+          className={`flex-between mt-3 w-full text-xs ${
+            isPriceSliderDisabled ? 'text-gray-300' : 'text-text-tertiary'
+          }`}
+        >
           <span>Minimum</span>
           <span>Maximum</span>
         </div>
@@ -78,3 +78,16 @@ export default function ListingPriceFilter({
     </div>
   );
 }
+
+const PeriodSkeleton = ({ boxClassNames }: { boxClassNames: string }) => {
+  return (
+    <div className="flex w-full max-w-full justify-center gap-2 px-4 py-2">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <Skeleton
+          key={index}
+          className={`h-7 w-16 rounded-[0.4rem] bg-slate-300 ${boxClassNames}`}
+        />
+      ))}
+    </div>
+  );
+};

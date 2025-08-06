@@ -97,7 +97,7 @@ const ListingPageRenderer = async ({
               brand={brand}
             /> */}
 
-            <PriceFilterTag />
+            {/* <PriceFilterTag /> */}
 
             <VehicleGrid
               key={JSON.stringify(searchParams)}
