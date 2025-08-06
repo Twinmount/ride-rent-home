@@ -1,32 +1,44 @@
-"use client";
+'use client';
 
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@/components/ui/accordion";
-import useFilters from "@/hooks/useFilters";
-import { RiListSettingsFill } from "react-icons/ri";
-import FilterAccordionContent from "../accordion/FilterAccordionContent";
+} from '@/components/ui/accordion';
+import useFilters from '@/hooks/useFilters';
+import { RiListSettingsFill } from 'react-icons/ri';
+import FilterAccordionContent from '../accordion/FilterAccordionContent';
 
-import { CategoryAccordion } from "./CategoryAccordion";
-import { VehicleTypeAccordion } from "./VehicleTypesAccordion";
-import { BrandsAccordion } from "./BrandsAccordion";
-import { filterConfigs } from "./filter-config";
+import { CategoryAccordion } from './CategoryAccordion';
+import { VehicleTypeAccordion } from './VehicleTypesAccordion';
+import { BrandsAccordion } from './BrandsAccordion';
+import { filterConfigs } from './filter-config';
+import ListingPriceFilter from './ListingPriceFilter';
 
-export default function Filter({
-  setOpen,
-}: {
+type ListingFilterProps = {
   setOpen: (open: boolean) => void;
-}) {
-  // custom hook to handle filters state and URL updates
-  const { selectedFilters, handleFilterChange, applyFilters, resetFilters } =
-    useFilters();
+};
+
+export default function ListingFilter({ setOpen }: ListingFilterProps) {
+  // centralized hook to handle filters state and URL updates
+  const {
+    selectedFilters,
+    handleFilterChange,
+    handlePeriodPriceChange,
+    applyFilters,
+  } = useFilters();
 
   return (
     <div className={`flex h-full max-h-full w-full flex-col`}>
-      <div className="absolute bottom-24 left-4 right-0 top-20 overflow-y-scroll pr-1">
+      <div className="absolute bottom-16 left-4 right-0 top-20 overflow-y-scroll pr-1">
+        {/* Rental Period and Price Slider */}
+        <ListingPriceFilter
+          selectedFilters={selectedFilters}
+          handlePeriodPriceChange={handlePeriodPriceChange}
+        />
+
+        {/* Accordion for filters */}
         <Accordion type="single" collapsible>
           {/*Vehicle  Category Accordion (cars, sports-bikes, yachts etc) */}
           <CategoryAccordion
@@ -70,11 +82,7 @@ export default function Filter({
       {/* 
       apply filter and reset filter buttons in bottom of the sidebar
       */}
-      <FilterActionButtons
-        onApply={applyFilters}
-        onReset={resetFilters}
-        setOpen={setOpen}
-      />
+      <FilterActionButtons onApply={applyFilters} setOpen={setOpen} />
     </div>
   );
 }
@@ -82,7 +90,6 @@ export default function Filter({
 // type for filter action buttons
 type FilterActionsProps = {
   onApply: () => void;
-  onReset: () => void;
   setOpen: (open: boolean) => void;
 };
 
@@ -91,25 +98,18 @@ type FilterActionsProps = {
  */
 const FilterActionButtons: React.FC<FilterActionsProps> = ({
   onApply,
-  onReset,
   setOpen,
 }) => (
-  <div className="absolute bottom-0 left-0 right-0 flex h-28 flex-col items-center justify-center gap-3 border-t bg-gray-100 p-3">
+  <div className="absolute bottom-0 left-0 right-0 flex h-16 flex-col items-center justify-center gap-3 border-t bg-gray-100 p-3">
     <button
-      className="flex-center w-full rounded-xl bg-yellow py-2 text-white"
+      className="flex-center w-full rounded-[0.3rem] bg-theme-gradient py-2 font-medium text-text-primary"
       // call  setOpen false to close the sidebar after 300ms
       onClick={() => {
         onApply();
         setTimeout(() => setOpen(false), 300);
       }}
     >
-      Apply Filters <RiListSettingsFill />
-    </button>
-    <button
-      className="flex-center w-full rounded-xl border border-red-500 bg-white py-2 text-red-500 transition-colors hover:bg-red-500 hover:text-white"
-      onClick={onReset}
-    >
-      Reset Filters
+      Apply
     </button>
   </div>
 );

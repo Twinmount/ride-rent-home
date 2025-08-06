@@ -23,17 +23,17 @@ export default function RentalDetails({
           label: 'text-[0.6rem]',
         }
       : {
-          price: 'text-base',
+          price: 'text-[0.8rem]',
           label: 'text-[0.56rem]',
         };
   return (
-    <div className="text-[0.7rem] text-gray-600">
+    <div className="flex items-center text-gray-600">
       {rentalPeriod ? (
         <>
-          <span className={`text-base font-bold text-orange ${fontSize.price}`}>
+          <span className={`font-bold text-orange ${fontSize.price}`}>
             {convert(Number(rentalPeriod.rentInAED)) || 'N/A'}
           </span>
-          <span className={`${fontSize.label}`}>
+          <span className={`${fontSize.label} `}>
             &nbsp;{rentalPeriod.label}
           </span>
         </>

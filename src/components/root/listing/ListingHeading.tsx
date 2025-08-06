@@ -1,7 +1,5 @@
 import { FilterSidebar } from '@/components/root/listing/filter/FilterSidebar';
-import PriceFilterDialog from '@/components/dialog/price-filter-dialog/PriceFilterDialog';
 import { convertToLabel } from '@/helpers';
-import { getCountryName } from '@/utils/url';
 
 type ListingHeadingProps = {
   country: string;
@@ -22,7 +20,6 @@ export default function ListingHeading({
   heading,
   subheading,
 }: ListingHeadingProps) {
-  const formattedCountry = getCountryName(country);
   const formattedState = convertToLabel(state);
   const formattedCategory = convertToLabel(category);
   const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : '';
@@ -38,26 +35,21 @@ export default function ListingHeading({
 
   return (
     <div
-      className="flex-between mb-6 h-fit w-full max-md:flex-col"
+      className="flex-between mb-6 h-fit w-full"
       style={{ alignItems: 'start' }}
     >
       <div className="overflow-wrap-anywhere max-w-[calc(100%-180px)] pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full">
-        <h1 className="md:text-2l ml-2 break-words text-lg font-[400] max-md:mr-auto lg:text-3xl xl:text-4xl">
+        <h1 className="ml-2 break-words text-lg font-[400] max-md:mr-auto md:text-xl lg:text-3xl">
           {headingH1}
         </h1>
 
-        <h2 className="ml-2 mt-2 break-words text-xs font-[400] max-md:mr-auto lg:text-base">
+        <h2 className="ml-2 mt-2 break-words text-xs font-[400] max-md:mr-auto lg:text-sm">
           {headingH2}
         </h2>
       </div>
 
-      <div className="listing-page-filter-div z-[12] flex flex-shrink-0 max-md:mt-4">
-        {/* price filter */}
-        <PriceFilterDialog isListingPage />
-
-        {/* filter sidebar */}
-        <FilterSidebar />
-      </div>
+      {/* filter sidebar */}
+      <FilterSidebar />
     </div>
   );
 }

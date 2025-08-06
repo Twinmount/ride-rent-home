@@ -20,8 +20,8 @@ export default function RentNowDialogTrigger({
 
   const className =
     layoutType === 'carousel'
-      ? 'h-[1.25rem] w-[4.5rem]  lg:h-[2rem] lg:w-[5.8rem] text-sm px-6'
-      : 'W-[4.6rem] h-[1.75rem] text-xs px-4';
+      ? 'h-[1.25rem] w-[4.5rem]  lg:h-[2rem] lg:w-[5.5rem] text-sm px-6'
+      : 'w-[4.6rem] h-[1.75rem] text-xs px-4';
 
   return (
     <button
