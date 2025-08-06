@@ -22,7 +22,6 @@ import {
   minimalTheme,
 } from '@/helpers/map-helpers';
 import { useGlobalContext } from '@/context/GlobalContext';
-import VehicleHighlightIconSVG from './VehicleHighlightIconSVG';
 
 const MapClient = () => {
   const mapRef = useRef(null);
@@ -354,7 +353,21 @@ const MapClient = () => {
         position: { lat: vehicle.location.lat, lng: vehicle.location.lng },
         title: `${vehicle.vehicleModel} - ₹${price}/${period}${vehicle.isAdjusted ? ' (Position Adjusted)' : ''}`,
         icon: {
-          url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(<VehicleHighlightIconSVG />)}`,
+          url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" width="65" height="35" viewBox="0 0 65 35">
+              <defs>
+                <filter id="shadow${index}" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.3)"/>
+                </filter>
+              </defs>
+              <rect x="3" y="3" width="59" height="29" rx="14" ry="14" 
+                    fill="${vehicle.isAdjusted ? '#6B7280' : '#6B7280'}" stroke="white" stroke-width="2" 
+                    filter="url(#shadow${index})" class="marker-bg"/>
+              <text x="32.5" y="21" font-family="Arial, sans-serif" 
+                    font-size="11" font-weight="bold" text-anchor="middle" 
+                    fill="white">${convertPrice}</text>
+            </svg>
+          `)}`,
           scaledSize: new window.google.maps.Size(65, 35),
           anchor: new window.google.maps.Point(32.5, 17),
         },
@@ -405,7 +418,21 @@ const MapClient = () => {
         marker.setZIndex(vehicle.isAdjusted ? 200 : 100);
 
         const originalIcon = {
-          url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(<VehicleHighlightIconSVG />)}`,
+          url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" width="65" height="35" viewBox="0 0 65 35">
+              <defs>
+                <filter id="shadow${index}" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.3)"/>
+                </filter>
+              </defs>
+              <rect x="3" y="3" width="59" height="29" rx="14" ry="14" 
+                    fill="${vehicle.isAdjusted ? '#6B7280' : '#6B7280'}" stroke="white" stroke-width="2" 
+                    filter="url(#shadow${index})"/>
+              <text x="32.5" y="21" font-family="Arial, sans-serif" 
+                    font-size="11" font-weight="bold" text-anchor="middle" 
+                    fill="white">${convertPrice}</text>
+            </svg>
+          `)}`,
           scaledSize: new window.google.maps.Size(65, 35),
           anchor: new window.google.maps.Point(32.5, 17),
         };
@@ -563,7 +590,7 @@ const MapClient = () => {
           <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500"></div>
           <p className="font-medium text-gray-600">Loading Google Maps...</p>
           <p className="mt-2 text-sm text-gray-500">
-            Calculating optimal center point from{' '}
+            Calculating optimal center point for{' '}
             {vehicleListVisible?.length || 0} vehicles
           </p>
         </div>
