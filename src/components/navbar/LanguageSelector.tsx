@@ -75,7 +75,7 @@ export default function LanguageSelector({
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center space-x-2 ${sizes.padding} ${sizes.text} font-medium ${themeConfig.trigger} ${themeConfig.triggerBorder || ''} transition-colors ${
+        className={`flex items-center space-x-1 ${sizes.padding} ${sizes.text} font-medium ${themeConfig.trigger} ${themeConfig.triggerBorder || ''} transition-colors ${
           variant === 'footer' ? 'rounded-md' : ''
         }`}
       >

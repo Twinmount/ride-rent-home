@@ -1,7 +1,5 @@
 import { FilterSidebar } from '@/components/root/listing/filter/FilterSidebar';
-import PriceFilterDialog from '@/components/dialog/price-filter-dialog/PriceFilterDialog';
 import { convertToLabel } from '@/helpers';
-import { getCountryName } from '@/utils/url';
 
 type ListingHeadingProps = {
   country: string;
@@ -22,7 +20,6 @@ export default function ListingHeading({
   heading,
   subheading,
 }: ListingHeadingProps) {
-  const formattedCountry = getCountryName(country);
   const formattedState = convertToLabel(state);
   const formattedCategory = convertToLabel(category);
   const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : '';
@@ -38,7 +35,7 @@ export default function ListingHeading({
 
   return (
     <div
-      className="flex-between mb-6 h-fit w-full max-md:flex-col"
+      className="flex-between mb-6 h-fit w-full"
       style={{ alignItems: 'start' }}
     >
       <div className="overflow-wrap-anywhere max-w-[calc(100%-180px)] pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full">

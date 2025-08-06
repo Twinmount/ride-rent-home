@@ -10,6 +10,10 @@ interface UseListingPriceFilterProps {
   handlePeriodPriceChange: (period: string, price: string) => void;
 }
 
+/**
+ * Custom React hook to manage and synchronize price filter state with the URL.
+ * eg: /?period=day&price=100-200
+ */
 export function useListingPriceFilter({
   selectedFilters,
   handlePeriodPriceChange,

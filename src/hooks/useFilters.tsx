@@ -225,6 +225,35 @@ const useFilters = () => {
   };
 
   /**
+   * Returns the number of applied filters.
+   *
+   * This function iterates over the selectedFilters object and increments a counter
+   * for each filter that has a value (either an array with at least one element or
+   * a string with at least one character). The counter is then returned as the
+   * total number of applied filters.
+   *
+   * @returns {number} The number of applied filters.
+   */
+  const getAppliedFilterCount = (): number => {
+    const count = Object.entries(selectedFilters).reduce(
+      (total, [key, value]) => {
+        if (Array.isArray(value) && value.length > 0) {
+          return total + 1;
+        }
+
+        if (typeof value === 'string' && value.trim() !== '') {
+          return total + 1;
+        }
+
+        return total;
+      },
+      0
+    );
+
+    return count;
+  };
+
+  /**
    * Resets the filters to their default values and navigates to the updated URL.
    */
   const resetFilters = () => {
@@ -244,6 +273,7 @@ const useFilters = () => {
     handleFilterChange,
     handlePeriodPriceChange,
     applyFilters,
+    getAppliedFilterCount,
     resetFilters,
   };
 };

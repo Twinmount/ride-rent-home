@@ -16,12 +16,12 @@ import { BrandsAccordion } from './BrandsAccordion';
 import { filterConfigs } from './filter-config';
 import ListingPriceFilter from './ListingPriceFilter';
 
-export default function Filter({
-  setOpen,
-}: {
+type ListingFilterProps = {
   setOpen: (open: boolean) => void;
-}) {
-  // custom hook to handle filters state and URL updates
+};
+
+export default function ListingFilter({ setOpen }: ListingFilterProps) {
+  // centralized hook to handle filters state and URL updates
   const {
     selectedFilters,
     handleFilterChange,
@@ -32,11 +32,13 @@ export default function Filter({
   return (
     <div className={`flex h-full max-h-full w-full flex-col`}>
       <div className="absolute bottom-16 left-4 right-0 top-20 overflow-y-scroll pr-1">
+        {/* Rental Period and Price Slider */}
         <ListingPriceFilter
           selectedFilters={selectedFilters}
           handlePeriodPriceChange={handlePeriodPriceChange}
         />
 
+        {/* Accordion for filters */}
         <Accordion type="single" collapsible>
           {/*Vehicle  Category Accordion (cars, sports-bikes, yachts etc) */}
           <CategoryAccordion

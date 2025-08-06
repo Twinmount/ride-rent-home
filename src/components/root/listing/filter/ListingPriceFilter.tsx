@@ -79,6 +79,9 @@ export default function ListingPriceFilter({
   );
 }
 
+/**
+ * Skeleton for loading periods (day, week, month, hour)
+ */
 const PeriodSkeleton = ({ boxClassNames }: { boxClassNames: string }) => {
   return (
     <div className="flex w-full max-w-full justify-center gap-2 px-4 py-2">

@@ -1,14 +1,15 @@
-"use client";
-import { BlurDialog } from "@/components/ui/blur-dialog";
+'use client';
+import { BlurDialog } from '@/components/ui/blur-dialog';
 import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { VehicleCardType } from "@/types/vehicle-types";
-import Link from "next/link";
-import { generateVehicleDetailsUrl } from "@/helpers";
-import VehicleMainMapCard from "../card/vehicle-card/main-card/VehicleMainMapCard";
+} from '@/components/ui/map-dialog';
+import { VehicleCardType } from '@/types/vehicle-types';
+import Link from 'next/link';
+import { generateVehicleDetailsUrl } from '@/helpers';
+import VehicleMapCard from '../card/new-vehicle-card/main-card/VehicleMapCard';
+import { Fragment } from 'react';
 
 export function VehicleDetailsDialog({
   open,
@@ -28,13 +29,11 @@ export function VehicleDetailsDialog({
   return (
     <>
       <BlurDialog open={open} onOpenChange={setOpen}>
-        <DialogContent
-          className={`h-fit rounded-xl bg-white py-6 max-md:w-[95%] sm:max-w-[400px]`}
-        >
-          <DialogHeader>
+        <DialogContent className={`h-fit max-h-fit w-fit max-w-fit`}>
+          <DialogHeader className="sr-only">
             <DialogTitle>
               {vehicles.length === 1
-                ? "Vehicle Details"
+                ? 'Vehicle Details'
                 : `${vehicles.length} Vehicles Available`}
             </DialogTitle>
           </DialogHeader>
@@ -49,14 +48,14 @@ export function VehicleDetailsDialog({
                 country: country,
               });
               return (
-                <div key={vehicle.vehicleCode}>
+                <Fragment key={vehicle.vehicleCode}>
                   <Link
                     target="_blank"
                     href={`https://dev.ride.rent${vehicleDetailsPageLink}`}
                   >
-                    <VehicleMainMapCard vehicle={vehicle} country={country} />
+                    <VehicleMapCard vehicle={vehicle} country={country} />
                   </Link>
-                </div>
+                </Fragment>
               );
             })}
           </div>
