@@ -46,7 +46,7 @@ export async function generateCompanyMetadata(
 
   const title = `${companyName}, Affordable Vehicle Renting & Leasing Company in ${companyAddress} | A Ride.Rent Partner.`;
 
-  const description = `Rent or Lease cars, bikes, sports cars, bicycles, buses, vans, buggies, and charters effortlessly with ${companyName}. Partnering with the best rental agencies, Ride.Rent is your trusted vehicle rental platform for seamless bookings, unbeatable prices, and top-quality service when it comes to vehicle renting and leasing.`;
+  const description = `Rent or Lease vehicles effortlessly with ${companyName}. Partnering with the best rental agencies, Ride.Rent is your trusted vehicle rental platform for seamless bookings, unbeatable prices, and top-quality service when it comes to vehicle renting and leasing.`;
 
   const metaTitle = companyDetails?.companyMetaTitle || title;
   const metaDescription = companyDetails?.companyMetaDescription || description;
@@ -62,8 +62,8 @@ export async function generateCompanyMetadata(
     description: metaDescription,
     keywords: `rent vehicles, ${companyName}, cars, bikes, charters, vehicle rental platform`,
     openGraph: {
-      title,
-      description,
+      title: metaTitle,
+      description: metaDescription,
       url: canonicalUrl,
       type: "website",
       images: [
@@ -77,8 +77,8 @@ export async function generateCompanyMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
+      title: metaTitle,
+      description: metaDescription,
       images: [ogImage],
     },
     manifest: "/manifest.webmanifest",
