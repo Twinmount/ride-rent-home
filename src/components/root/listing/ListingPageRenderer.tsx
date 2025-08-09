@@ -57,6 +57,17 @@ const ListingPageRenderer = async ({
   return (
     <>
       <JsonLd id={jsonLdId} key={jsonLdId} jsonLdData={jsonLdData} />
+
+      <ListingHeading
+        country={country}
+        state={state}
+        category={category}
+        vehicleType={vehicleType}
+        brand={brand}
+        heading={data?.result?.h1}
+        subheading={data?.result?.h2}
+      />
+
       <div className="no-global-padding -mx-2 flex flex-wrap">
         {/* Left: Map */}
         <div className="hidden w-full px-2 lg:block lg:w-1/2">
@@ -66,7 +77,7 @@ const ListingPageRenderer = async ({
           >
             <div
               style={{
-                borderRadius: '20px',
+                borderRadius: '0.6rem',
                 overflow: 'hidden',
                 height: '100%',
               }}
@@ -78,17 +89,7 @@ const ListingPageRenderer = async ({
 
         {/* Right: Listing & Filters */}
         <div className="w-full px-2 lg:w-1/2">
-          <div className="relative mb-0 h-auto min-h-[90vh] px-1 pb-3 pt-8">
-            <ListingHeading
-              country={country}
-              state={state}
-              category={category}
-              vehicleType={vehicleType}
-              brand={brand}
-              heading={data?.result?.h1}
-              subheading={data?.result?.h2}
-            />
-
+          <div className="relative mb-0 h-auto min-h-[90vh] px-1 pb-3">
             {/* <ListingPageBreadcrumb
               country={country}
               state={state}

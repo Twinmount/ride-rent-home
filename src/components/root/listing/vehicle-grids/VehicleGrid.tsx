@@ -306,7 +306,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
 
   return (
     <>
-      <div className="relative mt-8 flex min-h-screen w-full flex-col gap-8">
+      <div className="relative flex min-h-screen w-full flex-col gap-8">
         {isInitialLoad ? (
           <AnimatedSkelton />
         ) : (
