@@ -1,23 +1,23 @@
-import { getDefaultMetadata } from "@/app/root-metadata";
-import { ENV } from "@/config/env";
-import { convertToValue } from "@/helpers";
-import { getAbsoluteUrl } from "@/helpers/metadata-helper";
-import { CompanyMetadataResponse } from "@/types";
-import { Metadata } from "next";
+import { getDefaultMetadata } from '@/app/root-metadata';
+import { ENV } from '@/config/env';
+import { convertToValue } from '@/helpers';
+import { getAbsoluteUrl } from '@/helpers/metadata-helper';
+import { CompanyMetadataResponse } from '@/types';
+import { Metadata } from 'next';
 
 export async function fetchCompanyDetails(
   companyId: string,
-  country: string,
+  country: string
 ): Promise<CompanyMetadataResponse | null> {
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
+  const baseUrl = country === 'in' ? ENV.API_URL_INDIA : ENV.API_URL;
 
   try {
     const response = await fetch(
       `${baseUrl}/metadata/company?company=${companyId}`,
       {
-        method: "GET",
-        cache: "no-cache",
-      },
+        method: 'GET',
+        cache: 'no-cache',
+      }
     );
 
     if (!response.ok) {
@@ -26,14 +26,14 @@ export async function fetchCompanyDetails(
 
     return await response.json();
   } catch (error) {
-    console.error("Failed to fetch company details:", error);
+    console.error('Failed to fetch company details:', error);
     return null;
   }
 }
 
 export async function generateCompanyMetadata(
   companyId: string,
-  country: string,
+  country: string
 ): Promise<Metadata> {
   const data = await fetchCompanyDetails(companyId, country);
 
@@ -44,7 +44,7 @@ export async function generateCompanyMetadata(
   }
 
   const companyName = companyDetails.companyName;
-  const companyAddress = companyDetails?.companyAddress || "UAE";
+  const companyAddress = companyDetails?.companyAddress || 'UAE';
 
   const title = `${companyName}, Affordable Vehicle Renting & Leasing Company in ${companyAddress} | A Ride.Rent Partner.`;
 
@@ -57,17 +57,17 @@ export async function generateCompanyMetadata(
   const companyProfilePageLink = `/profile/${formattedCompanyName}/${companyId}`;
 
   const canonicalUrl = `https://ride.rent/${country}${companyProfilePageLink}`;
-  const ogImage = companyDetails?.companyLogo || "/assets/icons/ride-rent.png";
+  const ogImage = companyDetails?.companyLogo || '/assets/icons/ride-rent.png';
 
   return {
     title: metaTitle,
     description: metaDescription,
     keywords: `rent vehicles, ${companyName}, cars, bikes, charters, vehicle rental platform`,
     openGraph: {
-      title,
-      description,
+      title: metaTitle,
+      description: metaDescription,
       url: canonicalUrl,
-      type: "website",
+      type: 'website',
       images: [
         {
           url: ogImage,
@@ -78,12 +78,12 @@ export async function generateCompanyMetadata(
       ],
     },
     twitter: {
-      card: "summary_large_image",
-      title,
-      description,
+      card: 'summary_large_image',
+      title: metaTitle,
+      description: metaDescription,
       images: [ogImage],
     },
-    manifest: "/manifest.webmanifest",
+    manifest: '/manifest.webmanifest',
     robots: {
       index: true,
       follow: true,
@@ -92,9 +92,9 @@ export async function generateCompanyMetadata(
         index: true,
         follow: true,
         noimageindex: false,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
       },
     },
     alternates: {
@@ -119,7 +119,7 @@ export function getCompanyJsonLd(
   companyNameLabel: string | null,
   companyAddress: string | null,
   companyLogo: string | null,
-  country: string,
+  country: string
 ) {
   // If company data is null, return null (no JSON-LD)
   if (!companyNameLabel || !companyAddress || !companyLogo) {
@@ -127,36 +127,36 @@ export function getCompanyJsonLd(
   }
 
   const companyProfileUrl = getAbsoluteUrl(
-    `${country}/profile/${companyNameValue}/${companyId}`,
+    `${country}/profile/${companyNameValue}/${companyId}`
   );
 
   const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
 
-  const address = companyAddress || "UAE"; // Default to "UAE" if address is missing
+  const address = companyAddress || 'UAE'; // Default to "UAE" if address is missing
 
   return {
-    "@context": "https://schema.org",
-    "@type": "Organization",
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
     name: companyNameLabel,
     url: companyProfileUrl,
     logo: companyLogo,
     image: companyLogo,
     address: {
-      "@type": "PostalAddress",
+      '@type': 'PostalAddress',
       addressLocality: address,
-      addressCountry: "UAE",
+      addressCountry: 'UAE',
     },
     breadcrumb: {
-      "@type": "BreadcrumbList",
+      '@type': 'BreadcrumbList',
       itemListElement: [
         {
-          "@type": "ListItem",
+          '@type': 'ListItem',
           position: 1,
-          name: "Home",
-          item: getAbsoluteUrl("/"),
+          name: 'Home',
+          item: getAbsoluteUrl('/'),
         },
         {
-          "@type": "ListItem",
+          '@type': 'ListItem',
           position: 2,
           name: companyNameLabel,
           item: companyProfileUrl,
@@ -164,9 +164,9 @@ export function getCompanyJsonLd(
       ],
     },
     publisher: {
-      "@type": "Organization",
-      name: "Ride Rent",
-      url: getAbsoluteUrl("/"),
+      '@type': 'Organization',
+      name: 'Ride Rent',
+      url: getAbsoluteUrl('/'),
       logo: rootImage,
     },
   };

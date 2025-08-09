@@ -18,6 +18,9 @@ docker-compose-prod.yml
 # Logs
 *.log
 
+# package.json
+package-lock.json
+
 # IDE/config files
 .vscode
 *.tsbuildinfo

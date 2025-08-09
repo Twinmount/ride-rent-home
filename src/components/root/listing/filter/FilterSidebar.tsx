@@ -13,14 +13,12 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { SlidersHorizontal } from 'lucide-react';
-import useElementVisibility from '@/hooks/useElementVisibility';
 import useFilters from '@/hooks/useFilters';
 import ClearIconSVG from './icons/ClearIconSVG';
 import FilterOptionsIconSVG from './icons/FilterOptionsIconSVG';
 
 export const FilterSidebar = () => {
   const [open, setOpen] = useState(false);
-  const isVisible = useElementVisibility('footer', 0.1);
 
   const { resetFilters, getAppliedFilterCount } = useFilters();
 
@@ -28,12 +26,12 @@ export const FilterSidebar = () => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger>
+      <SheetTrigger className="mb-2 self-end">
         <motion.span
           initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: isVisible ? 1 : 0, scale: isVisible ? 1 : 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
-          className={`flex-center h-8 w-24 cursor-pointer gap-2 rounded-[0.5em] border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-secondary max-md:w-20 lg:h-10 lg:w-28 ${isVisible && 'hidden'}`}
+          className={`flex-center h-8 w-24 cursor-pointer gap-2 rounded-[0.5em] border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-secondary max-md:w-20 lg:h-10 lg:w-28`}
         >
           <SlidersHorizontal width={15} />
           <span className="text-sm max-md:hidden"> Filter </span>

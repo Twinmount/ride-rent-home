@@ -34,10 +34,7 @@ export default function ListingHeading({
     `Explore verified ${formattedBrand ? `${formattedBrand} ` : ''}${formattedVehicleType ? `${formattedVehicleType} ` : ''}${formattedCategory} rentals in ${formattedState}`;
 
   return (
-    <div
-      className="flex-between mb-6 h-fit w-full"
-      style={{ alignItems: 'start' }}
-    >
+    <div className="flex-between mb-2 mt-[4.85rem] h-fit w-full">
       <div className="overflow-wrap-anywhere max-w-[calc(100%-180px)] pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full">
         <h1 className="ml-2 break-words text-lg font-[400] max-md:mr-auto md:text-xl lg:text-3xl">
           {headingH1}

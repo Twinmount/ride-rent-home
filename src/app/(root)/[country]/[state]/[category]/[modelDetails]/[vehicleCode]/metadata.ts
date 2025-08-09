@@ -1,32 +1,32 @@
-import { Metadata } from "next";
+import { Metadata } from 'next';
 import {
   VehicleDetailsPageType,
   VehicleMetaDataResponse,
-} from "@/types/vehicle-details-types";
+} from '@/types/vehicle-details-types';
 import {
   convertToLabel,
   generateCompanyProfilePageLink,
   generateModelDetailsUrl,
   generateVehicleDetailsUrl,
   singularizeValue,
-} from "@/helpers";
-import { restoreVehicleCodeFormat } from ".";
-import { ENV } from "@/config/env";
-import { getAbsoluteUrl } from "@/helpers/metadata-helper";
-import { notFound } from "next/navigation";
+} from '@/helpers';
+import { restoreVehicleCodeFormat } from '.';
+import { ENV } from '@/config/env';
+import { getAbsoluteUrl } from '@/helpers/metadata-helper';
+import { notFound } from 'next/navigation';
 
 export async function fetchVehicleMetaData(
   vehicleCode: string,
-  country: string,
+  country: string
 ): Promise<VehicleMetaDataResponse | null> {
-  const API_URL = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
+  const API_URL = country === 'in' ? ENV.API_URL_INDIA : ENV.API_URL;
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
   const url = `${API_URL}/metadata/vehicle?vehicle=${formattedVehicleCode}`;
   try {
     const response = await fetch(url, {
-      method: "GET",
-      cache: "no-cache",
+      method: 'GET',
+      cache: 'no-cache',
     });
 
     if (!response.ok) {
@@ -35,7 +35,7 @@ export async function fetchVehicleMetaData(
 
     return await response.json();
   } catch (error) {
-    console.error("Failed to fetch vehicle data:", error);
+    console.error('Failed to fetch vehicle data:', error);
     return null;
   }
 }
@@ -44,7 +44,7 @@ export async function generateVehicleMetadata(
   state: string,
   category: string,
   vehicleCode: string,
-  country: string,
+  country: string
 ): Promise<Metadata> {
   const data = await fetchVehicleMetaData(vehicleCode, country);
 
@@ -59,18 +59,11 @@ export async function generateVehicleMetadata(
 
   // Construct the description
   const description = `${vehicle.vehicleTitle} For Rent in ${convertToLabel(
-    state,
+    state
   )} at cheap rates, free spot delivery available. Daily, monthly, and lease options.`;
 
   const metaTitle = vehicle?.vehicleMetaTitle || title;
   const metaDescription = vehicle?.vehicleMetaDescription || description;
-
-  // Shortened versions for social media
-  const shortTitle = title.length > 60 ? `${title.substring(0, 57)}...` : title;
-  const shortDescription =
-    description.length > 155
-      ? `${description.substring(0, 152)}...`
-      : description;
 
   const vehicleTitle = generateModelDetailsUrl(vehicle.vehicleTitle);
 
@@ -83,10 +76,10 @@ export async function generateVehicleMetadata(
     description: metaDescription,
     keywords: ` ${vehicle.vehicleModel}, ${category} rental in ${state}, ${convertToLabel(state)} ${category} rental near me`,
     openGraph: {
-      title: shortTitle,
-      description: shortDescription,
+      title: metaTitle,
+      description: metaDescription,
       url: canonicalUrl,
-      type: "website",
+      type: 'website',
       images: [
         {
           url: ogImage,
@@ -97,12 +90,12 @@ export async function generateVehicleMetadata(
       ],
     },
     twitter: {
-      card: "summary_large_image",
-      title: shortTitle,
-      description: shortDescription,
+      card: 'summary_large_image',
+      title: metaTitle,
+      description: metaDescription,
       images: [ogImage],
     },
-    manifest: "/manifest.webmanifest",
+    manifest: '/manifest.webmanifest',
     robots: {
       index: true,
       follow: true,
@@ -111,9 +104,9 @@ export async function generateVehicleMetadata(
         index: true,
         follow: true,
         noimageindex: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
       },
     },
     alternates: {
@@ -128,7 +121,7 @@ export function getVehicleJsonLd(
   state: string,
   category: string,
   vehicleCode: string,
-  country: string,
+  country: string
 ) {
   const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
 
@@ -140,72 +133,72 @@ export function getVehicleJsonLd(
       vehicleCategory: category,
       vehicleCode: vehicleCode,
       country,
-    }),
+    })
   );
 
   const companyPortfolioPageLink = getAbsoluteUrl(
     generateCompanyProfilePageLink(
       vehicle.company.companyName,
       vehicle.company.companyId,
-      country,
-    ),
+      country
+    )
   );
 
   const isVehicleAvailable =
     !!vehicle?.company?.companyName && !!vehicle?.company?.companyProfile;
 
   return {
-    "@context": "https://schema.org",
-    "@type": "Product",
+    '@context': 'https://schema.org',
+    '@type': 'Product',
     name: vehicle.vehicleTitle || vehicle.modelName,
     description: vehicle.description,
     aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      bestRating: "5",
-      ratingCount: "680",
+      '@type': 'AggregateRating',
+      ratingValue: '4.9',
+      bestRating: '5',
+      ratingCount: '680',
     },
     brand: {
-      "@type": "Brand",
+      '@type': 'Brand',
       name: vehicle.brand.label,
     },
     model: vehicle.modelName,
     image: vehicle.vehiclePhotos?.[0],
     url: vehicleDetailsPageLink,
     offers: {
-      "@type": "Offer",
-      price: vehicle.rentalDetails?.day?.rentInAED || "0",
-      priceCurrency: "AED",
+      '@type': 'Offer',
+      price: vehicle.rentalDetails?.day?.rentInAED || '0',
+      priceCurrency: 'AED',
       availability: isVehicleAvailable
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
       validFrom: new Date().toISOString(),
       priceValidUntil: new Date(
-        new Date().setFullYear(new Date().getFullYear() + 1),
+        new Date().setFullYear(new Date().getFullYear() + 1)
       ).toISOString(),
       seller: {
-        "@type": "Organization",
+        '@type': 'Organization',
         name: vehicle.company.companyName,
         url: companyPortfolioPageLink,
       },
     },
     breadcrumb: {
-      "@type": "BreadcrumbList",
+      '@type': 'BreadcrumbList',
       itemListElement: [
         {
-          "@type": "ListItem",
+          '@type': 'ListItem',
           position: 1,
-          name: "Home",
-          item: getAbsoluteUrl("/"),
+          name: 'Home',
+          item: getAbsoluteUrl('/'),
         },
         {
-          "@type": "ListItem",
+          '@type': 'ListItem',
           position: 2,
           name: category,
           item: getAbsoluteUrl(`/${country}/${state}/${category}`),
         },
         {
-          "@type": "ListItem",
+          '@type': 'ListItem',
           position: 3,
           name: vehicle.modelName,
           item: vehicleDetailsPageLink,
@@ -213,9 +206,9 @@ export function getVehicleJsonLd(
       ],
     },
     publisher: {
-      "@type": "Organization",
-      name: "Ride Rent",
-      url: getAbsoluteUrl("/"),
+      '@type': 'Organization',
+      name: 'Ride Rent',
+      url: getAbsoluteUrl('/'),
       logo: rootImage,
     },
   };
