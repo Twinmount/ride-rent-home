@@ -22,6 +22,7 @@ import {
   minimalTheme,
 } from '@/helpers/map-helpers';
 import { useGlobalContext } from '@/context/GlobalContext';
+import { createMarkerIcon } from './map-icons/marker-icon';
 
 const MapClient = () => {
   const mapRef = useRef(null);
@@ -35,6 +36,7 @@ const MapClient = () => {
   const { state, category } = useStateAndCategory();
   const [companiesList, setCompaniesList] = useImmer([]);
   const [center, setCenter] = useImmer({ lat: 0.001, lng: 0.001 });
+  const [open, setOpen] = useState(false);
 
   const { vehicleListVisible } = useGlobalContext();
 
@@ -353,27 +355,13 @@ const MapClient = () => {
         position: { lat: vehicle.location.lat, lng: vehicle.location.lng },
         title: `${vehicle.vehicleModel} - ₹${price}/${period}${vehicle.isAdjusted ? ' (Position Adjusted)' : ''}`,
         icon: {
-          url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg" width="65" height="35" viewBox="0 0 65 35">
-              <defs>
-                <filter id="shadow${index}" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.3)"/>
-                </filter>
-              </defs>
-              <rect x="3" y="3" width="59" height="29" rx="14" ry="14" 
-                    fill="${vehicle.isAdjusted ? '#6B7280' : '#6B7280'}" stroke="white" stroke-width="2" 
-                    filter="url(#shadow${index})" class="marker-bg"/>
-              <text x="32.5" y="21" font-family="Arial, sans-serif" 
-                    font-size="11" font-weight="bold" text-anchor="middle" 
-                    fill="white">${convertPrice}</text>
-            </svg>
-          `)}`,
-          scaledSize: new window.google.maps.Size(65, 35),
-          anchor: new window.google.maps.Point(32.5, 17),
+          // marker icon
+          url: createMarkerIcon({ category, dark: false }),
+          scaledSize: new window.google.maps.Size(46, 56), // Match the size from the mouseout event
+          anchor: new window.google.maps.Point(23, 28), // Match the anchor point from the mouseout event
         },
         zIndex: vehicle.isAdjusted ? 200 : 100,
-        // Optimization: Use optimized rendering
-        optimized: true,
+        optimized: true, // Optimized rendering
       });
 
       // Enhanced click listener
@@ -389,24 +377,10 @@ const MapClient = () => {
           marker.setZIndex(1000 + index);
 
           const hoverIcon = {
-            url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-              <svg xmlns="http://www.w3.org/2000/svg" width="75" height="40" viewBox="0 0 75 40">
-                <defs>
-                  <filter id="glow${index}" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                    <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(59, 130, 246, 0.5)"/>
-                  </filter>
-                </defs>
-                <rect x="3" y="3" width="69" height="34" rx="17" ry="17" 
-                      fill="#3B82F6" stroke="white" stroke-width="3" 
-                      filter="url(#glow${index})"/>
-                <text x="37.5" y="24" font-family="Arial, sans-serif" 
-                      font-size="12" font-weight="bold" text-anchor="middle" 
-                      fill="white">${convertPrice}</text>
-              </svg>
-            `)}`,
-            scaledSize: new window.google.maps.Size(75, 40),
-            anchor: new window.google.maps.Point(37.5, 20),
+            // marker icon
+            url: createMarkerIcon({ category, dark: true }), // Use the same data URL as in the mouseout event
+            scaledSize: new window.google.maps.Size(46, 56), // Match the size from the mouseout event
+            anchor: new window.google.maps.Point(23, 28), // Match the anchor point from the mouseout event
           };
 
           marker.setIcon(hoverIcon);
@@ -417,27 +391,14 @@ const MapClient = () => {
         clearTimeout(hoverTimeout);
         marker.setZIndex(vehicle.isAdjusted ? 200 : 100);
 
-        const originalIcon = {
-          url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg" width="65" height="35" viewBox="0 0 65 35">
-              <defs>
-                <filter id="shadow${index}" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.3)"/>
-                </filter>
-              </defs>
-              <rect x="3" y="3" width="59" height="29" rx="14" ry="14" 
-                    fill="${vehicle.isAdjusted ? '#6B7280' : '#6B7280'}" stroke="white" stroke-width="2" 
-                    filter="url(#shadow${index})"/>
-              <text x="32.5" y="21" font-family="Arial, sans-serif" 
-                    font-size="11" font-weight="bold" text-anchor="middle" 
-                    fill="white">${convertPrice}</text>
-            </svg>
-          `)}`,
-          scaledSize: new window.google.maps.Size(65, 35),
-          anchor: new window.google.maps.Point(32.5, 17),
+        const dropletIcon = {
+          // marker icon
+          url: createMarkerIcon({ category, dark: false }), // Use the imported data URL
+          scaledSize: new window.google.maps.Size(46, 56), // Adjust size to fit your design
+          anchor: new window.google.maps.Point(23, 28), // Adjust the anchor to the center of the droplet
         };
 
-        marker.setIcon(originalIcon);
+        marker.setIcon(dropletIcon);
       });
 
       marker.vehicleData = vehicle;
@@ -478,16 +439,16 @@ const MapClient = () => {
 
             let color,
               size,
-              textColor = 'white';
+              textColor = '#F57F17';
 
             if (count >= 20) {
-              color = '#EF4444';
+              color = '#1C2122';
               size = 80;
             } else if (count >= 10) {
-              color = '#EA580C';
+              color = '#1C2122';
               size = 80;
             } else {
-              color = '#F97316';
+              color = '#1C2122';
               size = 80;
             }
 
@@ -497,28 +458,28 @@ const MapClient = () => {
               position,
               icon: {
                 url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-                  <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-                    <defs>
-                      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.2" />
-                      </filter>
-                    </defs>
-                    <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 3}" fill="${color}" stroke="white" stroke-width="2" filter="url(#shadow)"/>
-                    
-                    <text x="50%" y="${size / 2 - 10}" font-family="Segoe UI, sans-serif" text-anchor="middle" fill="${textColor}">
-                      <tspan font-size="${fontSize + 2}" font-weight="700">${count}</tspan>
-                      <tspan font-size="${fontSize - 2}" font-weight="400">vehicles</tspan>
-                    </text>
-                    
-                    <text x="50%" y="${size / 2 + 4}" font-family="Segoe UI, sans-serif" font-size="${fontSize - 1}" font-weight="500" text-anchor="middle" fill="${textColor}">
-                      Starting From
-                    </text>
-                    
-                    <text x="50%" y="${size / 2 + 20}" font-family="Segoe UI, sans-serif" font-size="${fontSize}" font-weight="600" text-anchor="middle" fill="${textColor}">
-                      ${priceText}
-                    </text>
-                  </svg>
-                `)}`,
+                 <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+                   <defs>
+                     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                       <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.2" />
+                     </filter>
+                   </defs>
+                   <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 3}" fill="${color}" stroke="white" stroke-width="2" filter="url(#shadow)"/>
+                  
+                   <text x="50%" y="${size / 2 - 10}" font-family="Segoe UI, sans-serif" text-anchor="middle" fill="${textColor}">
+                     <tspan font-size="${fontSize + 2}" font-weight="700">${count}</tspan>
+                     <tspan font-size="${fontSize - 2}" font-weight="400">vehicles</tspan>
+                   </text>
+                  
+                   <text x="50%" y="${size / 2 + 4}" font-family="Segoe UI, sans-serif" font-size="${fontSize - 1}" font-weight="500" text-anchor="middle" fill="${textColor}">
+                     Starting From
+                   </text>
+                  
+                   <text x="50%" y="${size / 2 + 20}" font-family="Segoe UI, sans-serif" font-size="${fontSize}" font-weight="600" text-anchor="middle" fill="${textColor}">
+                     ${priceText}
+                   </text>
+                 </svg>
+               `)}`,
                 scaledSize: new window.google.maps.Size(size, size),
                 anchor: new window.google.maps.Point(size / 2, size / 2),
               },
@@ -537,10 +498,14 @@ const MapClient = () => {
         if (vehicles.length > 0) {
           setSelectedVehicles(vehicles);
         }
+        alert(
+          'You clicked on a cluster with ' + clusterMarkers.length + ' markers.'
+        );
       });
 
       setMarkerClusterer(clusterer);
     } else {
+      alert;
       markers.forEach((marker) => marker.setMap(map));
     }
 
@@ -551,8 +516,6 @@ const MapClient = () => {
       markers.forEach((marker) => marker.setMap(null));
     };
   }, [map, vehicleListVisible]);
-
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (selectedVehicles) {
@@ -616,22 +579,6 @@ const MapClient = () => {
           convert={convert}
         />
       )}
-
-      {/* Instructions Panel */}
-      {/* <div className="absolute left-4 top-4 z-10 max-w-sm rounded-lg bg-white p-4 shadow-lg">
-        <h3 className="mb-2 flex items-center gap-2 font-semibold text-gray-800">
-          <MapPin className="h-4 w-4 text-blue-500" />
-          Vehicle Map Guide
-        </h3>
-        <div className="mt-3 border-t border-gray-200 pt-3">
-          <p className="text-xs text-gray-500">
-            Total vehicles: {vehicleListVisible?.length || 0}
-          </p>
-          <p className="text-xs text-gray-500">
-            Center: {center.lat.toFixed(4)}, {center.lng.toFixed(4)}
-          </p>
-        </div>
-      </div> */}
     </div>
   );
 };

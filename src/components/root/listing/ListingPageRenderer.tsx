@@ -73,7 +73,7 @@ const ListingPageRenderer = async ({
         <div className="hidden w-full px-2 lg:block lg:w-1/2">
           <div
             className="sticky top-[4rem] p-3"
-            style={{ height: 'calc(100vh - 4rem)' }}
+            style={{ height: 'calc(95vh - 4rem)' }}
           >
             <div
               style={{
