@@ -36,6 +36,7 @@ const MapClient = () => {
   const { state, category } = useStateAndCategory();
   const [companiesList, setCompaniesList] = useImmer([]);
   const [center, setCenter] = useImmer({ lat: 0.001, lng: 0.001 });
+  const [open, setOpen] = useState(false);
 
   const { vehicleListVisible } = useGlobalContext();
 
@@ -497,10 +498,14 @@ const MapClient = () => {
         if (vehicles.length > 0) {
           setSelectedVehicles(vehicles);
         }
+        alert(
+          'You clicked on a cluster with ' + clusterMarkers.length + ' markers.'
+        );
       });
 
       setMarkerClusterer(clusterer);
     } else {
+      alert;
       markers.forEach((marker) => marker.setMap(map));
     }
 
@@ -511,8 +516,6 @@ const MapClient = () => {
       markers.forEach((marker) => marker.setMap(null));
     };
   }, [map, vehicleListVisible]);
-
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (selectedVehicles) {
