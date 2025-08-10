@@ -2,8 +2,8 @@ export type CompanyType = {
   companyId: string;
   companyName: string;
   regNumber: string;
-  approvalStatus: "APPROVED" | "PENDING" | "REJECTED";
-  plan: "BASIC" | "PREMIUM" | "ENTERPRISE";
+  approvalStatus: 'APPROVED' | 'PENDING' | 'REJECTED';
+  plan: 'BASIC' | 'PREMIUM' | 'ENTERPRISE';
   rejectionReason: string;
   agentId: string;
   companyLogo: string;
@@ -98,7 +98,7 @@ export type SpecificationType = {
 export type SingleVehicleType = {
   vehicleId: string;
   tempId: string;
-  disabledBy: "admin" | "seller";
+  disabledBy: 'admin' | 'seller';
   vehicleRegistrationNumber: string;
   company: CompanyType;
   brand: BrandType;
@@ -116,7 +116,7 @@ export type SingleVehicleType = {
   vehiclePhotos: string[];
   commercialLicenses: string;
   commercialLicenseExpiryDate: string;
-  approvalStatus: "APPROVED" | "PENDING" | "REJECTED" | "UNDER_REVIEW";
+  approvalStatus: 'APPROVED' | 'PENDING' | 'REJECTED' | 'UNDER_REVIEW';
   rejectionReason: string;
   isLease: boolean;
   isModified: boolean;
@@ -167,6 +167,13 @@ export type CardRentalDetails = {
   };
 };
 
+export type MapCardRentalDetailsType = {
+  day: string | null;
+  hour: string | null;
+  month: string | null;
+  week: string | null;
+};
+
 // Type for vehicle specifications
 type VehicleSpecs = {
   [key: string]: {
@@ -187,6 +194,32 @@ export type VehicleCardType = {
   phoneNumber: string | null;
   email: string | null;
   rentalDetails: CardRentalDetails;
+  vehicleSpecs: VehicleSpecs;
+  companyLogo: string | null;
+  state: string;
+  vehicleCategory: string;
+  whatsappPhone: string | null;
+  whatsappCountryCode: string | null;
+  isDisabled: boolean;
+  isCryptoAccepted: boolean;
+  isSpotDeliverySupported: boolean;
+  vehicleTitle: string;
+  securityDeposit: {
+    enabled: boolean;
+    amountInAED?: string;
+  };
+};
+
+export type MapVehicleCardType = {
+  vehicleId: string;
+  vehicleCode: string;
+  thumbnail: string;
+  model: string;
+  brandName: string;
+  countryCode: string | null;
+  phoneNumber: string | null;
+  email: string | null;
+  rentalDetails: MapCardRentalDetailsType;
   vehicleSpecs: VehicleSpecs;
   companyLogo: string | null;
   state: string;

@@ -1,6 +1,9 @@
 import qs from 'query-string';
 import { RemoveUrlQueryParams, StateType, UrlQueryParams } from '@/types';
-import { CardRentalDetails } from '@/types/vehicle-types';
+import {
+  CardRentalDetails,
+  MapCardRentalDetailsType,
+} from '@/types/vehicle-types';
 import { VehicleDetailsPageType } from '@/types/vehicle-details-types';
 import { IoIosSpeedometer } from 'react-icons/io';
 import { FaCrown } from 'react-icons/fa6';
@@ -164,6 +167,37 @@ export const getRentalPeriodDetails = (
     return {
       period: 'Month',
       rentInAED: rentalDetails.month.rentInAED,
+      label: '/ month',
+    };
+  }
+  return null;
+};
+
+export const getMapCardRentalPeriodDetails = (
+  rentalDetails: MapCardRentalDetailsType | undefined
+) => {
+  if (rentalDetails?.hour) {
+    return {
+      period: 'Hour',
+      rentInAED: rentalDetails.hour, // Since it's a string, you may need to parse or format it if required
+      label: '/ hour',
+    };
+  } else if (rentalDetails?.day) {
+    return {
+      period: 'Day',
+      rentInAED: rentalDetails.day, // Same here
+      label: '/ day',
+    };
+  } else if (rentalDetails?.week) {
+    return {
+      period: 'Week',
+      rentInAED: rentalDetails.week, // Same here
+      label: '/ week',
+    };
+  } else if (rentalDetails?.month) {
+    return {
+      period: 'Month',
+      rentInAED: rentalDetails.month, // Same here
       label: '/ month',
     };
   }

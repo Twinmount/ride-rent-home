@@ -1,16 +1,12 @@
-import { VehicleCardType } from '@/types/vehicle-types';
-import {
-  convertToLabel,
-  generateVehicleDetailsUrl,
-  getFormattedPhoneNumber,
-} from '@/helpers';
+import { MapVehicleCardType, VehicleCardType } from '@/types/vehicle-types';
+import { generateVehicleDetailsUrl } from '@/helpers';
 
 import LinkWrapper from '../LinkWrapper';
 import Image from 'next/image';
-import RentalDetails from '../RentalDetails';
+import MapCardRentalDetails from '../MapCardRentalDetails';
 
 type VehicleMapCardProps = {
-  vehicle: VehicleCardType;
+  vehicle: MapVehicleCardType;
   country: string;
 };
 
@@ -40,7 +36,7 @@ const VehicleMapCard = ({ vehicle, country = 'ae' }: VehicleMapCardProps) => {
 
       <div className="flex h-full min-h-full w-48 flex-1 flex-col justify-between gap-y-4">
         <h4 className="line-clamp-1">{vehicle.vehicleTitle}</h4>
-        <RentalDetails
+        <MapCardRentalDetails
           rentalDetails={vehicle.rentalDetails}
           layoutType={'carousel'}
         />

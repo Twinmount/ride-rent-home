@@ -8,8 +8,6 @@ import {
 } from '@/constants';
 import { FiltersType } from '@/hooks/useFilters';
 
-console.log('paymentMethods imported:', paymentMethods);
-
 type FilterConfig = {
   key: string;
   title: string;

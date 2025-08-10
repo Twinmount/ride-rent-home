@@ -154,8 +154,6 @@ const useFilters = () => {
       }
     }
 
-    console.log('updatedFilters:', updatedFilters);
-
     setSelectedFilters(updatedFilters);
   };
 
