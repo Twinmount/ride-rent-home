@@ -47,14 +47,14 @@ const VehicleListSection: React.FC<VehicleListSectionProps> = ({
         return (
           <div key={location} className="mt-3 lg:mb-8">
             {isFromRelatedState && (
-              <h3 className="relative mb-6 ml-6 inline-block break-words text-lg font-[400] max-md:mr-auto lg:text-xl">
+              <h3 className="relative mb-6 ml-3 mt-6 break-words text-lg font-[400] max-md:mr-auto lg:text-xl">
                 Discover more <span className="capitalize">{category}</span>{' '}
                 from{' '}
                 <span className="capitalize">
                   {convertToLabel(location.replace(/-/g, ' '))}
                 </span>
                 <motion.div
-                  className="absolute bottom-0 left-0 h-[2px] bg-gray-500"
+                  className="absolute -bottom-2 left-0 h-[2px] bg-gray-200"
                   initial={{ width: 0 }}
                   animate={{ width: '100%' }}
                   transition={{

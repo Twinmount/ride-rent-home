@@ -70,10 +70,10 @@ const ListingPageRenderer = async ({
 
       <div className="no-global-padding -mx-2 flex flex-wrap">
         {/* Left: Map */}
-        <div className="hidden w-full px-2 lg:block lg:w-1/2">
+        <div className="hidden w-full px-2 lg:block lg:w-[45%]">
           <div
             className="sticky top-[4rem] p-3"
-            style={{ height: 'calc(95vh - 4rem)' }}
+            style={{ height: 'calc(90vh - 4rem)' }}
           >
             <div
               style={{
@@ -88,7 +88,7 @@ const ListingPageRenderer = async ({
         </div>
 
         {/* Right: Listing & Filters */}
-        <div className="w-full px-2 lg:w-1/2">
+        <div className="w-full px-2 lg:w-[55%]">
           <div className="relative mb-0 h-auto min-h-[90vh] px-1 pb-3">
             {/* <ListingPageBreadcrumb
               country={country}
