@@ -37,7 +37,7 @@ const VehicleThumbnail = ({
   const className =
     layoutType === 'carousel'
       ? 'h-[8rem] lg:h-[8.3rem]'
-      : 'h-[6rem] lg:h-[8rem]';
+      : 'h-[6rem] lg:h-[7.5rem]';
 
   return (
     <div className={`relative w-full overflow-hidden rounded ${className}`}>

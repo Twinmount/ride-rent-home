@@ -31,27 +31,23 @@ const VehicleCard = ({
     country: country,
   });
 
-  // Conditionally set the dimensions based on layoutType
-  const classes =
-    layoutType === 'carousel'
-      ? {
-          dimensions:
-            'w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem] ',
-        }
-      : {
-          dimensions:
-            'w-[12rem] min-w-[12rem] md:w-[15rem] md:min-w-[15rem] lg:w-[13.5rem] lg:min-w-[13.5rem] xl:min-w-[12.8rem] xl:w-[12.8rem] 2xl:min-w-[14rem] 2xl:w-[14rem]',
-        };
+  // card styles based on layout type
+  const carouselCardStyle = `w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem] `;
+
+  const gridCardStyle = `w-full max-w-full min-w-[12rem]`;
+
+  // Conditionally set the styling based on layoutType
+  const classes = layoutType === 'carousel' ? carouselCardStyle : gridCardStyle;
 
   return (
     <MotionStaggeredArticle
       index={index}
-      className={`flex flex-col gap-4 rounded border border-border-default bg-white p-2 ${classes.dimensions}`}
+      className={`flex w-full max-w-full flex-col gap-3 rounded border border-border-default bg-white p-2 ${classes}`}
     >
       {/* card top */}
       <LinkWrapper
         href={vehicleDetailsPageLink}
-        className="h-full w-full space-y-4"
+        className="h-full w-full space-y-3"
       >
         <div className="relative">
           {/* thumbnail */}
