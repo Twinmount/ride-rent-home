@@ -212,7 +212,7 @@ export default async function VehicleDetails(props: ParamsProps) {
           <div>
             <ImagesGrid
               mediaItems={mediaSourceList}
-              imageAlt={vehicle?.modelName}
+              imageAlt={vehicle?.vehicleTitleH1}
             />
           </div>
 

@@ -3,10 +3,8 @@ import FAQ from '@/components/common/FAQ/FAQ';
 import SectionLoading from '@/components/skelton/section-loading/SectionLoading';
 import Documents from '@/components/root/landing/documents/Documents';
 import RideRentFeatures from '@/components/root/landing/features/Features';
-import Locations from '@/components/common/locations/Locations';
 import States from '@/components/root/landing/states/States';
 import FeaturedVehicles from '@/components/root/landing/FeaturedVehicles';
-import Recommended from '@/components/root/landing/PromotionDeals';
 import TopBrands from '@/components/root/landing/TopBrands';
 import { Suspense } from 'react';
 import { PageProps } from '@/types';
@@ -22,7 +20,6 @@ import VehicleCardCarouselSkeleton from '@/components/skelton/VehicleCardCarouse
 import StatesGridSkeleton from '@/components/skelton/StatesGridSkeleton';
 import JsonLd from '@/components/common/JsonLd';
 import Banner from '@/components/root/landing/Banner';
-import BannerSkeleton from '@/components/skelton/BannerSkeleton';
 import CarSection from '@/components/root/landing/CarSection';
 import PromotionDeals from '@/components/root/landing/PromotionDeals';
 

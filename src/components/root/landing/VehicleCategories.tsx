@@ -27,7 +27,7 @@ export default function VehicleCategories() {
         <NavigationMenuItem>
           <NavigationMenuTrigger
             disabled={isCategoriesLoading}
-            className={`flex-center line-clamp-1 h-12 max-w-[7rem] gap-2 rounded border px-3 py-1 text-sm font-semibold text-text-primary hover:text-text-primary lg:max-w-[9rem] lg:px-6 ${isCategoriesLoading ? 'cursor-default text-gray-500' : 'bg-theme-gradient hover:bg-theme-gradient'}`}
+            className={`flex-center line-clamp-1 h-12 min-w-fit gap-2 rounded border px-3 py-1 text-sm font-semibold text-text-primary hover:text-text-primary lg:px-2 ${isCategoriesLoading ? 'cursor-default text-gray-500' : 'bg-theme-gradient hover:bg-theme-gradient'}`}
           >
             <Image
               src={`${baseAssetsUrl}/icons/vehicle-categories/${category}.png`}
