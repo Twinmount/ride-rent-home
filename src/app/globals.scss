@@ -300,3 +300,75 @@ body {
     }
   }
 }
+
+/* ViewAllGridCard Sequential Scale Animation - Slower + Performance Optimized */
+@keyframes scaleSequence {
+  0% {
+     transform: scale3d(1, 1, 1);
+  }
+  20% {
+     transform: scale3d(1.25, 1.25, 1);
+  }
+  40% {
+     transform: scale3d(1, 1, 1);
+  }
+  100% {
+     transform: scale3d(1, 1, 1);
+  }
+}
+
+/* Top-left (index 0) */
+.animate-scale-0 {
+  animation: scaleSequence 3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation-delay: 0s;
+  will-change: transform;
+  animation-fill-mode: both;
+}
+
+/* Top-right (index 1) */
+.animate-scale-1 {
+  animation: scaleSequence 3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation-delay: 0.7s;
+  will-change: transform;
+  animation-fill-mode: both;
+}
+
+/* Bottom-right (index 2) */
+.animate-scale-2 {
+  animation: scaleSequence 3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation-delay: 1.4s;
+  will-change: transform;
+  animation-fill-mode: both;
+}
+
+/* Bottom-left (index 3) */
+.animate-scale-3 {
+  animation: scaleSequence 3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation-delay: 2.1s;
+  will-change: transform;
+  animation-fill-mode: both;
+}
+
+/* View All Text Color + Scale Animation */
+@keyframes textHighlightScale {
+  0% {
+    color: rgb(75, 85, 99); /* text-gray-600 */
+    transform: scale(1);
+  }
+  50% {
+    color: #ffa733; /* Custom yellow */
+    transform: scale(1.5);
+  }
+  100% {
+    color: rgb(75, 85, 99); /* text-gray-600 */
+    transform: scale(1);
+  }
+}
+
+/* View All text animation class - triggers after scale animations complete */
+.animate-view-all-glow {
+  animation: textHighlightScale 1.5s ease-in-out;
+  animation-delay: 3.1s; /* Starts after all scale animations (2.1s + 3s = 5.1s) */
+  animation-fill-mode: both;
+  will-change: color, transform;
+}
