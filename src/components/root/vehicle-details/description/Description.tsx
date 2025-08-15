@@ -1,6 +1,6 @@
-import MotionDiv from "@/components/general/framer-motion/MotionDiv";
-import styles from "./Description.module.scss";
-import DescriptionToggle from "./DescriptionToggle";
+import MotionDiv from '@/components/general/framer-motion/MotionDiv';
+import styles from './Description.module.scss';
+import DescriptionToggle from './DescriptionToggle';
 
 const Description = ({ description }: { description: string }) => {
   if (!description) {
@@ -8,24 +8,26 @@ const Description = ({ description }: { description: string }) => {
   }
 
   return (
-    <MotionDiv className={styles["description-section"]}>
-      <h2 className="custom-heading">Description</h2>
+    <MotionDiv className={styles['description-section']}>
+      <h2 className="border-b pb-4 text-base font-semibold lg:text-lg">
+        Description
+      </h2>
 
       {/* Hidden checkbox for toggling */}
       <input
         type="checkbox"
         id="toggle-description"
-        className={styles["toggle-checkbox"]}
+        className={styles['toggle-checkbox']}
         aria-hidden="true"
       />
 
-      {/* Render the description content */}
-      <div className={styles["description-content"]} id="description-content">
+      {/* Inject description content */}
+      <div className={styles['description-content']} id="description-content">
         <div
           dangerouslySetInnerHTML={{
-            __html: description, // Render HTML content
+            __html: description,
           }}
-        ></div>
+        />
       </div>
 
       {/* Gradient overlay and toggle button */}

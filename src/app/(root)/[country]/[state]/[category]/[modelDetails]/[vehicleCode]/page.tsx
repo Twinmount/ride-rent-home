@@ -1,33 +1,33 @@
-import "./VehicleDetailsPage.scss";
-import ProfileCard from "@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard";
-import WhyOpt from "@/components/common/why-opt/WhyOpt";
-import Description from "@/components/root/vehicle-details/description/Description";
-import Specification from "@/components/root/vehicle-details/Specification";
-import DetailsSectionClientWrapper from "@/components/root/vehicle-details/DetailsSectionClientWrapper";
-import VehicleFeatures from "@/components/root/vehicle-details/features/Features";
-import MotionDiv from "@/components/general/framer-motion/MotionDiv";
-import RelatedResults from "@/components/root/vehicle-details/RelatedResults";
+import './VehicleDetailsPage.scss';
+import ProfileCard from '@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard';
+import WhyOpt from '@/components/common/why-opt/WhyOpt';
+import Description from '@/components/root/vehicle-details/description/Description';
+import Specification from '@/components/root/vehicle-details/Specification';
+import DetailsSectionClientWrapper from '@/components/root/vehicle-details/DetailsSectionClientWrapper';
+import VehicleFeatures from '@/components/root/vehicle-details/features/Features';
+import MotionDiv from '@/components/general/framer-motion/MotionDiv';
+import RelatedResults from '@/components/root/vehicle-details/RelatedResults';
 import {
   ProfileCardDataType,
   VehicleDetailsPageResponse,
-} from "@/types/vehicle-details-types";
-import RelatedLinks from "@/components/root/vehicle-details/RelatedLinks";
-import { notFound, redirect } from "next/navigation";
-import { Metadata } from "next";
-import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
-import { generateVehicleMetadata, getVehicleJsonLd } from "./metadata";
-import CurrentPageBreadcrumb from "@/components/root/vehicle-details/CurrentPageBreadcrumb";
-import { restoreVehicleCodeFormat } from ".";
-import { ENV } from "@/config/env";
-import { Suspense } from "react";
-import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
-import { VehicleInfo } from "@/components/root/vehicle-details/VehicleInfo";
-import JsonLd from "@/components/common/JsonLd";
-import BrandImage from "@/components/common/BrandImage";
-import ImagesGrid from "@/components/root/vehicle-details/ImagesGrid";
-import LocationMap from "@/components/root/vehicle-details/LocationMap";
-import Link from "next/link";
-import { generateModelDetailsUrl } from "@/helpers";
+} from '@/types/vehicle-details-types';
+import RelatedLinks from '@/components/root/vehicle-details/RelatedLinks';
+import { notFound, redirect } from 'next/navigation';
+import { Metadata } from 'next';
+import DynamicFAQ from '@/components/common/FAQ/DynamicFAQ';
+import { generateVehicleMetadata, getVehicleJsonLd } from './metadata';
+import CurrentPageBreadcrumb from '@/components/root/vehicle-details/CurrentPageBreadcrumb';
+import { restoreVehicleCodeFormat } from '.';
+import { ENV } from '@/config/env';
+import { Suspense } from 'react';
+import SectionLoading from '@/components/skelton/section-loading/SectionLoading';
+import { VehicleInfo } from '@/components/root/vehicle-details/VehicleInfo';
+import JsonLd from '@/components/common/JsonLd';
+import BrandImage from '@/components/common/BrandImage';
+import ImagesGrid from '@/components/root/vehicle-details/ImagesGrid';
+import LocationMap from '@/components/root/vehicle-details/LocationMap';
+import Link from 'next/link';
+import { generateModelDetailsUrl } from '@/helpers';
 
 type ParamsProps = {
   params: Promise<{
@@ -53,26 +53,26 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   const { country, state, category, vehicleCode, modelDetails } = params;
 
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
+  const baseUrl = country === 'in' ? ENV.API_URL_INDIA : ENV.API_URL;
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
 
-  const formattedModelDetails = modelDetails.replace(/-for-rent$/, "");
+  const formattedModelDetails = modelDetails.replace(/-for-rent$/, '');
 
   // Fetch the vehicle data from the API
   const response = await fetch(
     `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}`,
     {
-      method: "GET",
-      cache: "no-cache",
-    },
+      method: 'GET',
+      cache: 'no-cache',
+    }
   );
 
   const data: VehicleDetailsPageResponse = await response.json();
 
   // if the vehicle data is not found, return 404 not found
   if (
-    data?.status === "NOT_SUCCESS" ||
+    data?.status === 'NOT_SUCCESS' ||
     response.status === 400 ||
     !data.result
   ) {
@@ -82,12 +82,12 @@ export default async function VehicleDetails(props: ParamsProps) {
   // 🆕 If the modelDetails in the URL (slug) doesn't match actual vehicle title, redirect to canonical URL
 
   const normalizedActualTitle = generateModelDetailsUrl(
-    data.result.vehicleTitle,
+    data.result.vehicleTitle
   );
 
   if (formattedModelDetails !== normalizedActualTitle) {
     redirect(
-      `/${country}/${state}/${category}/${normalizedActualTitle}-for-rent/${vehicleCode}`,
+      `/${country}/${state}/${category}/${normalizedActualTitle}-for-rent/${vehicleCode}`
     );
   }
 
@@ -122,12 +122,12 @@ export default async function VehicleDetails(props: ParamsProps) {
     state,
     category,
     vehicleCode,
-    country,
+    country
   );
 
   type MediaItem = {
     source: string;
-    type: "video" | "image";
+    type: 'video' | 'image';
   };
 
   const mediaSourceList: MediaItem[] = [];
@@ -147,7 +147,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     // Add video as the first item
     mediaSourceList.push({
       source: vehicle.vehicleVideos[0],
-      type: "video",
+      type: 'video',
     });
   }
 
@@ -155,7 +155,7 @@ export default async function VehicleDetails(props: ParamsProps) {
   for (const image of images) {
     mediaSourceList.push({
       source: image,
-      type: "image",
+      type: 'image',
     });
   }
   const brandValue = vehicle?.brand?.value;
