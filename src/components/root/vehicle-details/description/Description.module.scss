@@ -1,8 +1,9 @@
+/* importing this style as a module in the Description.tsx component to style the injected HTML */
 .description-section {
   background-color: white;
-  padding: 1rem;
-  border-radius: 1rem;
-  box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem 1.5rem 0;
+  border-radius: 0.75rem;
+  border: solid 1px #d9dee0;
   height: auto;
   margin: 1rem 0;
   margin-left: auto;
@@ -14,7 +15,7 @@
 
 .description-section h2 {
   color: rgb(29, 29, 29);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 /* Hidden checkbox */
@@ -26,7 +27,7 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: pre-wrap; /* Preserve whitespace and line breaks */
-  max-height: 15rem; /* Collapsed height */
+  max-height: 12rem; /* Collapsed height */
   overflow: hidden;
   transition: max-height 0.3s ease-in-out;
 }
@@ -62,22 +63,29 @@
 }
 
 .description-content h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
+  font-size: 2rem;
+  font-weight: 500;
 }
 
 .description-content h2 {
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 1.5rem;
+  font-weight: 500;
 }
 
 .description-content h3 {
-  font-size: 1.75rem;
-  font-weight: bold;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.description-content h4 {
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .description-content p {
   margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #6c727c;
 }
 
 .description-content ul,
@@ -89,11 +97,4 @@
 .description-content a {
   color: blue;
   text-decoration: underline;
-}
-
-/* Responsive Adjustments */
-@media (min-width: 1200px) {
-  .description-section {
-    max-width: 80%;
-  }
 }

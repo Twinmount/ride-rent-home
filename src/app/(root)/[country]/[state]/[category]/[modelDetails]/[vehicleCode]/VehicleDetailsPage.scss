@@ -28,21 +28,6 @@
     align-items: start;
     width: 100% !important;
     max-width: 100% !important;
-
-    .details-left {
-      width: 100%;
-      min-width: auto;
-      max-width: 100%;
-    }
-
-    // right side
-    .details-right {
-      display: flex;
-      flex-direction: column;
-      align-items: start;
-      justify-content: start;
-      gap: 1rem;
-    }
   }
 }
 
@@ -56,14 +41,6 @@
         width: 90%;
       }
     }
-
-    .vehicle-details-section {
-      .details-left {
-        width: auto;
-        min-width: auto;
-        max-width: 100%;
-      }
-    }
   }
 }
 
@@ -75,13 +52,6 @@
         font-size: 1.7rem;
       }
     }
-    .vehicle-details-section {
-      .details-left {
-        width: auto;
-        min-width: auto;
-        max-width: 100%;
-      }
-    }
   }
 }
 
@@ -90,11 +60,6 @@
   .vehicle-details-page {
     .vehicle-details-section {
       flex-direction: row;
-
-      .details-left {
-        width: 70%;
-        max-width: 70%;
-      }
     }
   }
 }

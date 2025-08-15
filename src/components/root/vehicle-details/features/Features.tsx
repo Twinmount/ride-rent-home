@@ -1,8 +1,8 @@
-import React from "react";
-import FeaturesSidebar from "./FeaturesSidebar";
-import { MotionH2 } from "@/components/general/framer-motion/MotionElm";
-import { FeatureType } from "@/types/vehicle-types";
-import LimitedFeatures from "./LimitedFeatures";
+import React from 'react';
+import FeaturesSidebar from './FeaturesSidebar';
+import { FeatureType } from '@/types/vehicle-types';
+import LimitedFeatures from './LimitedFeatures';
+import MotionDiv from '@/components/general/framer-motion/MotionDiv';
 
 type VehicleFeaturesProps = {
   features: Record<string, FeatureType[]>;
@@ -14,16 +14,14 @@ const VehicleFeatures = ({
   vehicleCategory,
 }: VehicleFeaturesProps) => {
   return (
-    <div className="relative mx-auto my-4 w-full max-w-full overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-      <MotionH2
-        initial={{ opacity: 0.1, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ type: "tween", duration: 0.5, delay: 0.1 }}
-        viewport={{ once: true }}
-        className="custom-heading mb-8 text-gray-900"
-      >
+    <MotionDiv className="relative mx-auto my-4 w-full rounded-xl border border-gray-100 bg-white p-4 shadow-sm xl:w-1/2 xl:flex-1">
+      <h3 className="text-sm font-medium text-gray-900 md:text-lg lg:text-xl">
         Features
-      </MotionH2>
+      </h3>
+
+      <p className="border-b pb-4 text-xs text-text-secondary lg:text-sm">
+        Lorem ipsum dolor sit amet consectetur. Ut felis lacinia neque
+      </p>
 
       {/* showing limited features */}
       <LimitedFeatures features={features} />
@@ -34,7 +32,7 @@ const VehicleFeatures = ({
           vehicleCategory={vehicleCategory}
         />
       </div>
-    </div>
+    </MotionDiv>
   );
 };
 
