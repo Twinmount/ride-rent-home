@@ -9,7 +9,7 @@ const Description = ({ description }: { description: string }) => {
 
   return (
     <MotionDiv className={styles['description-section']}>
-      <h2 className="border-b pb-4 text-base font-semibold lg:text-lg">
+      <h2 className="border-b pb-4 text-base font-medium lg:text-lg">
         Description
       </h2>
 

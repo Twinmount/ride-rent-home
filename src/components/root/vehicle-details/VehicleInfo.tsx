@@ -1,10 +1,10 @@
-import { RentalDetailsType } from "@/types/vehicle-types";
-import RentalInfo from "./RentalInfo";
-import NoDeposit from "./NoDeposit";
-import { formatVehicleSpecification } from "@/helpers";
-import AddOnServices from "./AddOnServices";
-import Location from "./Location";
-import { AdditionalVehicleTypes } from "@/types/vehicle-details-types";
+import { RentalDetailsType } from '@/types/vehicle-types';
+import RentalInfo from './RentalInfo';
+import NoDeposit from './NoDeposit';
+import { formatVehicleSpecification } from '@/helpers';
+import AddOnServices from './AddOnServices';
+import Location from './Location';
+import { AdditionalVehicleTypes } from '@/types/vehicle-details-types';
 
 interface VehicleInfoProps {
   vehicleId: string;

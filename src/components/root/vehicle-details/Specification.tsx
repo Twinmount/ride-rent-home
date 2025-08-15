@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { FC } from "react";
+import { FC } from 'react';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import MotionDiv from "@/components/general/framer-motion/MotionDiv";
-import { formatKeyForIcon } from "@/helpers";
-import { ENV } from "@/config/env";
+} from '@/components/ui/tooltip';
+import MotionDiv from '@/components/general/framer-motion/MotionDiv';
+import { formatKeyForIcon } from '@/helpers';
+import { ENV } from '@/config/env';
 
 // Types for specifications
 interface SpecificationItem {
@@ -36,7 +36,7 @@ const SpecificationItem: FC<{
   vehicleCategory?: string;
 }> = ({ name, spec, vehicleCategory }) => {
   const iconSrc = `${baseAssetsUrl}/icons/vehicle-specifications/${vehicleCategory}/${formatKeyForIcon(
-    name,
+    name
   )}.svg`;
 
   return (
@@ -45,7 +45,7 @@ const SpecificationItem: FC<{
         <Tooltip>
           <TooltipTrigger className="flex w-full gap-1">
             {/* Icon Container */}
-            <div className="flex h-12 max-h-12 w-12 min-w-12 items-center justify-center rounded-[0.5rem] border border-gray-300">
+            <div className="flex h-12 max-h-12 w-12 min-w-12 items-center justify-center rounded-[0.5rem]">
               <img
                 src={iconSrc}
                 alt={`${name} icon`}
@@ -54,10 +54,8 @@ const SpecificationItem: FC<{
             </div>
             {/* Specification Details */}
             <div className="flex h-full w-full max-w-full flex-col items-start justify-center gap-[0.1rem] text-left">
-              <span className="text-[0.7rem] font-medium md:text-[0.8rem]">
-                {name}
-              </span>
-              <span className="max-w-full text-left text-[0.75rem] text-gray-600">
+              <span className="text-[0.8rem] font-medium">{name}</span>
+              <span className="max-w-full text-left text-[0.8rem] text-gray-600">
                 {spec.name}
               </span>
             </div>
@@ -80,8 +78,14 @@ const Specification: FC<SpecificationsProps> = ({
   vehicleCategory,
 }) => {
   return (
-    <MotionDiv className="mx-auto my-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
-      <h2 className="custom-heading mb-8 text-gray-900">Specifications</h2>
+    <MotionDiv className="mx-auto my-4 w-full rounded-xl border border-gray-100 bg-white p-4 shadow-sm xl:w-1/2 xl:flex-1">
+      <h3 className="text-sm font-medium text-gray-900 md:text-lg lg:text-xl">
+        Specifications
+      </h3>
+
+      <p className="border-b pb-4 text-xs text-text-secondary lg:text-sm">
+        Lorem ipsum dolor sit amet consectetur. Ut felis lacinia neque
+      </p>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {Object.entries(specifications).map(([key, spec]) => (
           <SpecificationItem
