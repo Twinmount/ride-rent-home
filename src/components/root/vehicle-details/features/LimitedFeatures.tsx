@@ -2,6 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { FeatureType } from '@/types/vehicle-types';
 import MotionDiv from '@/components/general/framer-motion/MotionDiv';
+import { FeatureItem } from './FeatureSidebarItem';
 
 const LimitedFeatures = ({
   features,
@@ -28,20 +29,8 @@ const LimitedFeatures = ({
 
     return features[activeCategory]
       .filter((feature) => feature.selected)
-      .slice(0, 12); // Show up to 12 features for the active category
+      .slice(0, 15); // Show up to 15 features for the active category
   }, [features, activeCategory]);
-
-  // Extracted FeatureItem component
-  const FeatureItem = React.memo(({ feature }: { feature: FeatureType }) => (
-    <div className="flex items-center gap-2">
-      <div className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-yellow">
-        <div className="h-2 w-2 rounded-full bg-yellow"></div>
-      </div>
-      <div className="text-sm font-normal text-gray-700">{feature.name}</div>
-    </div>
-  ));
-
-  FeatureItem.displayName = 'FeatureItem';
 
   // If no categories available, show empty state
   if (availableCategories.length === 0) {
@@ -61,20 +50,32 @@ const LimitedFeatures = ({
   return (
     <MotionDiv className="mt-4">
       {/* Category Tabs */}
-      <div className="flex gap-1 overflow-x-auto border-b border-gray-200">
-        {visibleCategories.map((category) => (
-          <button
-            key={category}
-            onClick={() => setActiveCategory(category)}
-            className={`whitespace-nowrap border-b-4 px-4 py-2 text-sm transition-colors duration-200 ${
-              activeCategory === category
-                ? 'border-accent font-medium text-gray-900'
-                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-            }`}
-          >
-            {category}
-          </button>
-        ))}
+      <div className="relative">
+        <div className="flex gap-1 overflow-x-auto border-b border-gray-200 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {visibleCategories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setActiveCategory(category)}
+              className={`whitespace-nowrap border-b-4 px-4 py-2 text-sm transition-colors duration-200 ${
+                activeCategory === category
+                  ? 'border-accent font-medium text-gray-900'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+
+          {/* Show extra categories indicator */}
+          {extraCategoriesCount > 0 && (
+            <div className="flex cursor-pointer items-center whitespace-nowrap px-3 py-2 text-sm text-accent">
+              +{extraCategoriesCount} More
+            </div>
+          )}
+        </div>
+
+        {/* Right fade indicator  */}
+        <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white to-transparent"></div>
       </div>
 
       {/* Active Category Features */}
