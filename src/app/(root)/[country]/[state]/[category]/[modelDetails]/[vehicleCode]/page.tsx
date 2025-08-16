@@ -1,7 +1,7 @@
 import './VehicleDetailsPage.scss';
 import ProfileCard from '@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard';
 import Description from '@/components/root/vehicle-details/description/Description';
-import Specification from '@/components/root/vehicle-details/Specification';
+import Specification from '@/components/root/vehicle-details/specification/Specification';
 import DetailsSectionClientWrapper from '@/components/root/vehicle-details/DetailsSectionClientWrapper';
 import VehicleFeatures from '@/components/root/vehicle-details/features/Features';
 import MotionDiv from '@/components/general/framer-motion/MotionDiv';
@@ -165,6 +165,13 @@ export default async function VehicleDetails(props: ParamsProps) {
     brandListingPageHref += `/brand/${brandValue}`;
   }
 
+  const SupplierDetailsData = {
+    companyName: vehicle?.company?.companyName,
+    companyId: vehicle?.company?.companyId,
+    country,
+    companyProfile: vehicle?.company?.companyProfile,
+  };
+
   return (
     <>
       {/* Inject JSON-LD into the <head> */}
@@ -232,7 +239,7 @@ export default async function VehicleDetails(props: ParamsProps) {
           />
 
           {/* Specifications and Features */}
-          <div className="flex-center w-full flex-col gap-4 xl:flex-row xl:items-stretch">
+          <div className="flex-center mt-8 w-full flex-col gap-4 xl:mt-4 xl:flex-row xl:items-stretch">
             {/* Vehicle Specifications */}
             <Specification
               specifications={vehicle?.specs}
@@ -265,7 +272,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         </Suspense>
 
         {/* Supplier Details */}
-        <SupplierDetails />
+        <SupplierDetails {...SupplierDetailsData} />
       </div>
     </>
   );
