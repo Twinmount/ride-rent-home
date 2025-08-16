@@ -1,4 +1,3 @@
-import './VehicleDetailsPage.scss';
 import ProfileCard from '@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard';
 import Description from '@/components/root/vehicle-details/description/Description';
 import Specification from '@/components/root/vehicle-details/specification/Specification';
@@ -10,7 +9,6 @@ import {
   ProfileCardDataType,
   VehicleDetailsPageResponse,
 } from '@/types/vehicle-details-types';
-import RelatedLinks from '@/components/root/vehicle-details/RelatedLinks';
 import { notFound, redirect } from 'next/navigation';
 import { Metadata } from 'next';
 import DynamicFAQ from '@/components/common/FAQ/DynamicFAQ';
@@ -22,12 +20,10 @@ import { Suspense } from 'react';
 import SectionLoading from '@/components/skelton/section-loading/SectionLoading';
 import { VehicleInfo } from '@/components/root/vehicle-details/VehicleInfo';
 import JsonLd from '@/components/common/JsonLd';
-import BrandImage from '@/components/common/BrandImage';
 import ImagesGrid from '@/components/root/vehicle-details/ImagesGrid';
-import LocationMap from '@/components/root/vehicle-details/LocationMap';
-import Link from 'next/link';
 import { generateModelDetailsUrl } from '@/helpers';
 import SupplierDetails from '@/components/root/vehicle-details/SupplierDetails';
+import VehicleHeading from '@/components/root/vehicle-details/VehicleHeading';
 
 type ParamsProps = {
   params: Promise<{
@@ -165,13 +161,20 @@ export default async function VehicleDetails(props: ParamsProps) {
     brandListingPageHref += `/brand/${brandValue}`;
   }
 
-  const SupplierDetailsData = {
+  const SupplierDetailsPropsData = {
     companyName: vehicle?.company?.companyName,
     companyId: vehicle?.company?.companyId,
     country,
     companyProfile: vehicle?.company?.companyProfile,
   };
 
+  const VehicleHeadingPropsData = {
+    brandListingPageHref,
+    category,
+    brandValue,
+    heading:
+      vehicle?.vehicleTitleH1 || vehicle?.vehicleTitle || vehicle?.modelName,
+  };
   return (
     <>
       {/* Inject JSON-LD into the <head> */}
@@ -181,25 +184,9 @@ export default async function VehicleDetails(props: ParamsProps) {
         id={`json-ld-vehicle-${vehicleCode}`}
       />
 
-      <div className="vehicle-details-page wrapper">
+      <div className="h-auto min-h-screen w-full pb-8 pt-4">
         {/* Details heading */}
-        <MotionDiv className="heading-box">
-          <div className="flex items-center gap-2">
-            {/* brand logo */}
-            <Link href={brandListingPageHref}>
-              <BrandImage
-                category={category}
-                brandValue={vehicle?.brand.value}
-                className="h-12 w-12 rounded-full border-2 border-amber-500 object-contain"
-              />
-            </Link>
-            <h1 className="custom-heading model-name">
-              {vehicle.vehicleTitleH1 ||
-                vehicle.vehicleTitle ||
-                vehicle.modelName}
-            </h1>
-          </div>
-
+        <MotionDiv className="">
           {/* breadcrumb for current page path*/}
           <CurrentPageBreadcrumb
             category={category}
@@ -208,6 +195,9 @@ export default async function VehicleDetails(props: ParamsProps) {
             brand={vehicle?.brand}
             vehicleTitle={vehicle?.vehicleTitleH1 || vehicle?.vehicleTitle}
           />
+
+          {/* Heading and Brand logo */}
+          <VehicleHeading {...VehicleHeadingPropsData} />
         </MotionDiv>
 
         {/* Wrapper to handle client side logic regarding mobile profile card */}
@@ -272,7 +262,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         </Suspense>
 
         {/* Supplier Details */}
-        <SupplierDetails {...SupplierDetailsData} />
+        <SupplierDetails {...SupplierDetailsPropsData} />
       </div>
     </>
   );
