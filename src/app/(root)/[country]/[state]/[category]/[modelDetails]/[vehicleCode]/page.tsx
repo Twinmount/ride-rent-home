@@ -165,6 +165,13 @@ export default async function VehicleDetails(props: ParamsProps) {
     brandListingPageHref += `/brand/${brandValue}`;
   }
 
+  const SupplierDetailsData = {
+    companyName: vehicle?.company?.companyName,
+    companyId: vehicle?.company?.companyId,
+    country,
+    companyProfile: vehicle?.company?.companyProfile,
+  };
+
   return (
     <>
       {/* Inject JSON-LD into the <head> */}
@@ -265,7 +272,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         </Suspense>
 
         {/* Supplier Details */}
-        <SupplierDetails />
+        <SupplierDetails {...SupplierDetailsData} />
       </div>
     </>
   );

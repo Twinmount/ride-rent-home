@@ -61,7 +61,7 @@ export default async function DynamicFAQ({
         Frequently Asked Questions
       </h3>
 
-      <div className="mx-auto w-full md:w-[95%]">
+      <div className="mx-auto w-full">
         {/* Mobile/Tablet: Single column accordion (below lg) */}
         <div className="2xl:hidden">
           <Accordion

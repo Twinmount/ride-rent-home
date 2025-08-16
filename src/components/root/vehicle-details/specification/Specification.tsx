@@ -2,7 +2,7 @@
 
 import { FC, useState } from 'react';
 import MotionDiv from '@/components/general/framer-motion/MotionDiv';
-import SpecificationSidebar from '../SpecificationSidebar';
+import SpecificationSidebar from '../specification/SpecificationSidebar';
 import DesktopShowAllOverlayButton from '../DesktopShowAllOverlayButton';
 import MobileViewAllCard from '../MobileViewAllCard';
 import SpecificationGearSVG from '../icons/SpecificationGearSVG';

@@ -4,15 +4,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { formatKeyForIcon } from '@/helpers';
-import { ENV } from '@/config/env';
-import { SpecificationItem } from './specification/SpecificationItem';
+import { SpecificationItem } from './SpecificationItem';
 
 // Types for specifications
 interface SpecificationItem {
@@ -35,9 +27,6 @@ export default function SpecificationSidebar({
   isOpen,
   onOpenChange,
 }: SpecificationSidebarProps) {
-  // Base URL for fetching icons
-  const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
-
   // Convert specifications object to an array for easier mapping
   const specEntries = Object.entries(specifications);
 
@@ -49,7 +38,7 @@ export default function SpecificationSidebar({
             Specifications
           </SheetTitle>
           <div className="space-y-4">
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-2">
               {specEntries.map(([key, spec]) => {
                 return (
                   <SpecificationItem

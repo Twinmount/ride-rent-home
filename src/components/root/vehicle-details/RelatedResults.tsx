@@ -34,7 +34,7 @@ export default async function RelatedResults({
       },
       body: JSON.stringify({
         page: '1',
-        limit: '7',
+        limit: '6',
         sortOrder: 'DESC',
         category: category,
         state: state,
@@ -75,7 +75,7 @@ export default async function RelatedResults({
           link={`/${country}/${state}/listing/${category}?filter=${VehicleHomeFilter.LATEST_MODELS}`}
         />
       </div>
-      <CarouselWrapper>
+      <CarouselWrapper isButtonVisible={false} parentWrapperClass="w-full">
         {vehicleData.map((vehicle, index) => (
           <VehicleCard
             key={vehicle.vehicleId}
