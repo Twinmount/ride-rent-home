@@ -11,15 +11,13 @@ import TopContainer from "./top-container/TopContainer";
 import RentalDetailsTab from "../../profile-specifications/RentalDetailsTab";
 import LeaseInfo from "../../profile-specifications/LeaseInfo";
 import SecurityDepositInfo from "../../profile-specifications/SecurityDepositInfo";
-import VehicleStats from '../../profile-specifications/VehicleStats';
-import VehicleDescription from '../../profile-specifications/VehicleDescription';
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
   country: string;
 };
 
-const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
+const OldProfileCard = ({ profileData, country }: ProfileCardProps) => {
   const {
     formattedPhoneNumber,
     whatsappUrl,
@@ -31,36 +29,38 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
     vehicleId,
   } = useProfileData(profileData, country);
 
-  const {
-    company,
-    vehicleTitleH1,
-    vehicleData: { state },
-  } = profileData;
+  const { company } = profileData;
 
   return (
     <MotionDiv className="profile-card">
-      <div className="p-1 text-2xl font-medium">{vehicleTitleH1}</div>
+      <div className="profile-heading">
+        <h2 className="custom-heading">Listing Owner Details</h2>
+      </div>
 
       {!isCompanyValid && (
         <p className="disabled-text">This vehicle is currently unavailable.</p>
       )}
 
       {/* top container */}
-      <VehicleStats state={state} />
-
-      {/* profile specifications */}
-      <VehicleDescription />
-
-      {/* rental details tab */}
-      <RentalDetailsTab
-        rentalDetails={rentalDetails}
-        securityDeposit={securityDeposit}
+      <TopContainer
+        company={profileData.company}
+        companyProfilePageLink={companyProfilePageLink}
       />
 
+      {/* profile specifications */}
+      <ProfileSpecification
+        specs={profileData.company.companySpecs}
+        rentalDetails={rentalDetails}
+      />
+
+      {/* rental details tab */}
+      <RentalDetailsTab rentalDetails={rentalDetails} />
+
       {/* Security Deposit */}
+      <SecurityDepositInfo securityDeposit={securityDeposit} />
 
       {/* Lease Info */}
-      {/* <LeaseInfo isLease={isLease} /> */}
+      <LeaseInfo isLease={isLease} />
 
       <div className="bottom">
         <RentNowSection
@@ -75,4 +75,4 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
   );
 };
 
-export default ProfileCard;
+export default OldProfileCard;
