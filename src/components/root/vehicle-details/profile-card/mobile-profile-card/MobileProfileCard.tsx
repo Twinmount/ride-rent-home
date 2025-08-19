@@ -84,7 +84,7 @@ const MobileProfileCard = ({
                 className={`rounded-full border px-3 py-1.5 text-xs font-normal transition-all duration-200 ${
                   selectedPeriod.period === rental.period
                     ? 'hover:bg-orange-dark bg-orange text-white'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                    : 'border-gray-300 bg-white text-text-primary hover:border-gray-400'
                 }`}
                 onClick={() => handleTabChange(rental)}
               >
