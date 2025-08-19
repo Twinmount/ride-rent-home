@@ -24,19 +24,22 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
-            cd /root/docker/ride-rent/ride-rent-home
 
-            # Make sure we are on latest development branch
+            # Go to repo folder and update code
+            cd /root/docker/ride-rent/ride-rent-home
             git fetch origin
             git checkout development || git checkout -b development origin/development
             git reset --hard origin/development
 
-            # Stop and remove old containers (frees port 3004)
-            docker compose -f docker-compose-dev.yml down
+            # Move back to central compose folder
+            cd ..
 
-            # Build fresh images without using cache
-            docker compose -f docker-compose-dev.yml build --no-cache
+            # Stop old container
+            docker compose down ride-rent-home || true
 
-            # Start containers in detached mode
-            docker compose -f docker-compose-dev.yml up -d
+            # Build fresh image without cache
+            docker compose build --no-cache ride-rent-home
+
+            # Start container in detached mode
+            docker compose up -d ride-rent-home
           EOF
