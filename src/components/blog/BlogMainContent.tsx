@@ -7,9 +7,13 @@ import PopularCardSkeleton from "../skelton/PopularCardSkelton";
 
 type BlogMainContentProps = {
   blogContent: string;
+  country: string;
 };
 
-export default function BlogMainContent({ blogContent }: BlogMainContentProps) {
+export default function BlogMainContent({
+  country,
+  blogContent,
+}: BlogMainContentProps) {
   return (
     <div className="wrapper my-4 mt-8 flex gap-6 max-lg:flex-col lg:mt-12">
       {/* left section */}
@@ -19,12 +23,12 @@ export default function BlogMainContent({ blogContent }: BlogMainContentProps) {
       <div className="flex flex-col gap-6">
         {/* promotions */}
         <Suspense fallback={<PromotionCardSkelton count={1} />}>
-          <Promotion />
+          <Promotion country={country} />
         </Suspense>
 
         {/* popular blogs */}
         <Suspense fallback={<PopularCardSkeleton count={4} />}>
-          <PopularBlogs />
+          <PopularBlogs country={country} />
         </Suspense>
       </div>
     </div>

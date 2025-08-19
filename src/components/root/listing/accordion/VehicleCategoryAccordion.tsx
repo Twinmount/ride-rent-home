@@ -10,14 +10,14 @@ import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 const VehicleCategoryAccordion: FC = () => {
   const { selectedFilters, handleFilterChange } = useFilters();
-  const { state } = useStateAndCategory();
+  const { state, country } = useStateAndCategory();
   const searchParams = useSearchParams();
   const isInitialLoad = useRef(true);
 
   // Fetch categories using react-query
   const { data, isLoading } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => fetchCategories(state),
+    queryFn: () => fetchCategories(state, country),
     staleTime: 60 * 1000,
   });
 

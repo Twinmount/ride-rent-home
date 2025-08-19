@@ -5,11 +5,15 @@ import { FetchStatesResponse, StateType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function DirectoryStates() {
-  const API_URL = ENV.API_URL;
+export default async function DirectoryStates({
+  country,
+}: {
+  country: string;
+}) {
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   // Fetch the states data from the API
-  const response = await fetch(`${API_URL}/states/list?hasVehicle=true`, {
+  const response = await fetch(`${baseUrl}/states/list?hasVehicle=true`, {
     cache: "no-cache",
   });
 
@@ -21,7 +25,7 @@ export default async function DirectoryStates() {
   if (states.length === 0) return null;
 
   //
-  states = rearrangeStates(states);
+  states = rearrangeStates(states, country);
 
   return (
     <section className="my-10">
@@ -30,7 +34,12 @@ export default async function DirectoryStates() {
       </h4>
       <ul className="mx-auto mb-[1.5rem] flex flex-wrap items-center gap-4 max-sm:justify-center">
         {states.map((state, index) => (
-          <StateCard state={state} index={index} key={state.stateId} />
+          <StateCard
+            state={state}
+            index={index}
+            country={country}
+            key={state.stateId}
+          />
         ))}
       </ul>
     </section>
@@ -38,11 +47,19 @@ export default async function DirectoryStates() {
 }
 
 // individual state card
-function StateCard({ state, index }: { state: StateType; index: number }) {
+function StateCard({
+  state,
+  index,
+  country,
+}: {
+  state: StateType;
+  index: number;
+  country: string;
+}) {
   return (
     <MotionStaggeredDiv index={index} delay={0.1}>
       <Link
-        href={`/${state.stateValue}/vehicle-rentals`}
+        href={`/${country}/${state.stateValue}/vehicle-rentals`}
         className="group relative flex h-[4.5rem] w-full min-w-[4rem] max-w-[7rem] cursor-pointer items-center justify-center overflow-hidden rounded-[2rem] text-center shadow-[2px_2px_4px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in"
       >
         <div className="absolute bottom-0 left-0 h-1/4 w-full bg-gradient-to-t from-black/80 to-transparent" />

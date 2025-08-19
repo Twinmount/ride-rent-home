@@ -38,7 +38,7 @@ export default function TermsAndCondition() {
   return (
     <section className="terms-condition-section">
       <HeadingBanner heading="Terms & Conditions" />
-      <MotionDiv className="container">
+      <MotionDiv className="container text-justify">
         <h2>PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY</h2>
 
         <MainSection />

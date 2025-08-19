@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 import {
   Dialog,
@@ -9,16 +9,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { PriceRangeSlider } from "@/components/ui/price-range-slider";
-import Link from "next/link";
-import { generateListingUrl } from "@/helpers";
-import PriceDialogTrigger from "./PriceDialogTrigger";
-import RentalPeriod from "./RentalPeriod";
-import MinAndMaxPrice from "./MinAndMaxPrice";
-import PriceFilterLoadingSkelton from "./PriceFilterSkelton";
-import { usePriceFilter } from "./usePriceFilter";
-import useElementVisibility from "@/hooks/useElementVisibility";
+} from '@/components/ui/dialog';
+import { PriceRangeSlider } from '@/components/ui/price-range-slider';
+import Link from 'next/link';
+import { generateListingUrl } from '@/helpers';
+import PriceDialogTrigger from './PriceDialogTrigger';
+import RentalPeriod from './RentalPeriod';
+import MinAndMaxPrice from './MinAndMaxPrice';
+import PriceFilterLoadingSkelton from './PriceFilterSkelton';
+import { usePriceFilter } from './usePriceFilter';
+import useElementVisibility from '@/hooks/useElementVisibility';
 
 export default function PriceFilterDialog({
   isMobileNav = false,
@@ -33,11 +33,12 @@ export default function PriceFilterDialog({
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
-  const isVisible = useElementVisibility("footer", 0.5);
+  const isVisible = useElementVisibility('footer', 0.5);
 
   const {
     state,
     category,
+    country,
     selectedPeriod,
     setSelectedPeriod,
     values,
@@ -51,8 +52,9 @@ export default function PriceFilterDialog({
   const dynamicUrl = generateListingUrl(
     values,
     state,
-    category,
-    selectedPeriod,
+    category ? category : 'cars',
+    country,
+    selectedPeriod
   );
 
   const handleApply = () => {
@@ -76,7 +78,10 @@ export default function PriceFilterDialog({
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger disabled={isPriceRangeEmpty || isLoading}>
+      <DialogTrigger
+        disabled={isPriceRangeEmpty || isLoading}
+        className="me-0 max-sm:hidden md:me-2"
+      >
         {isVisible && (
           <PriceDialogTrigger
             isMobileNav={isMobileNav}
@@ -119,7 +124,7 @@ export default function PriceFilterDialog({
             disabled={isNavigating}
             className="flex-center mx-auto w-4/5 rounded-xl bg-yellow/90 px-6 py-2 font-semibold text-white transition-colors hover:bg-yellow"
           >
-            {isNavigating ? "Applying..." : "Apply Filter"}
+            {isNavigating ? 'Applying...' : 'Apply Filter'}
           </button>
         ) : (
           <Link href={dynamicUrl} className="mx-auto w-4/5">

@@ -1,16 +1,31 @@
-import Link from "next/link";
-import { SquareArrowOutUpRight } from "lucide-react";
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
-const ViewAllButton = ({ link = "/" }: { link?: string }) => {
+type ViewAllButtonProps = {
+  link?: string;
+  target?: '_self' | '_blank' | '_parent' | '_top';
+  align?: 'center' | 'end';
+};
+
+const ViewAllButton = ({
+  link = '/',
+  target = '_blank',
+  align = 'center',
+}: ViewAllButtonProps) => {
   return (
     <Link
-      target="_blank"
+      target={target}
       href={link}
       id="brands"
-      className="flex-center ml-auto mt-4 h-8 w-fit cursor-pointer gap-1 self-end rounded border border-gray-800 px-2 text-black shadow-sm transition-transform duration-200 hover:scale-105 hover:shadow-md"
+      className={cn(
+        'mt-8 flex h-[43px] w-[150px] cursor-pointer items-center justify-center rounded border-2 border-[#DDE5EB] bg-white font-normal text-black transition-all duration-200 hover:border-yellow hover:text-yellow active:scale-95',
+        align === 'center' && 'mx-auto',
+        align === 'end' && 'ml-auto'
+      )}
     >
-      View All <SquareArrowOutUpRight size={16} strokeWidth={1.5} />
+      View All
     </Link>
   );
 };
+
 export default ViewAllButton;

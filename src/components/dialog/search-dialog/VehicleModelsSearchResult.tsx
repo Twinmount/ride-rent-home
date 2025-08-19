@@ -5,18 +5,20 @@ import Link from "next/link";
 type VehicleModelsSearchResultProps = {
   vehicles: VehicleSearchItems[];
   state: string;
+  country: string;
 };
 
 export default function VehicleModelsSearchResult({
   vehicles,
   state,
+  country
 }: VehicleModelsSearchResultProps) {
   if (vehicles.length === 0) return null;
 
   return (
     <div className="rounded-[0.4rem] bg-slate-50 p-1">
       <h3 className="mb-2 border-b px-3 py-2 text-sm font-semibold text-gray-700">
-        Explore Models
+        Available Vehicles
       </h3>
       <div className="flex flex-col rounded-[0.25rem] p-1">
         {vehicles.map((item) => {
@@ -26,6 +28,7 @@ export default function VehicleModelsSearchResult({
             state,
             vehicleCategory: item.category,
             vehicleCode: item.code,
+            country
           });
 
           return (

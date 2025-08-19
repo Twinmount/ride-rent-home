@@ -2,10 +2,11 @@ import {
   colors,
   fuelTypes,
   modelYears,
+  paymentMethods,
   seats,
   transmissions,
-} from "@/constants";
-import { FiltersType } from "@/hooks/useFilters";
+} from '@/constants';
+import { FiltersType } from '@/hooks/useFilters';
 
 type FilterConfig = {
   key: string;
@@ -17,44 +18,51 @@ type FilterConfig = {
 
 export const filterConfigs: FilterConfig[] = [
   {
-    key: "model-year",
-    title: "Model Year",
+    key: 'model-year',
+    title: 'Model Year',
     options: modelYears.map((year) => ({
       label: year.toString(),
       value: year.toString(),
     })),
-    field: "modelYear",
+    field: 'modelYear',
     isMultipleChoice: false,
   },
   {
-    key: "seats",
-    title: "No of Seats",
+    key: 'seats',
+    title: 'No of Seats',
     options: seats.map((seat) => ({
       label: seat.toString(),
       value: seat.toString(),
     })),
-    field: "seats",
+    field: 'seats',
     isMultipleChoice: false,
   },
   {
-    key: "transmission",
-    title: "Transmission",
+    key: 'transmission',
+    title: 'Transmission',
     options: transmissions,
-    field: "transmission",
+    field: 'transmission',
     isMultipleChoice: true,
   },
   {
-    key: "fuel-type",
-    title: "Fuel Type",
+    key: 'fuel-type',
+    title: 'Fuel Type',
     options: fuelTypes,
-    field: "fuelType",
+    field: 'fuelType',
     isMultipleChoice: true,
   },
   {
-    key: "color",
-    title: "Color",
+    key: 'color',
+    title: 'Color',
     options: colors,
-    field: "color",
+    field: 'color',
+    isMultipleChoice: true,
+  },
+  {
+    key: 'payment-method',
+    title: 'Payment Method',
+    options: paymentMethods,
+    field: 'paymentMethod',
     isMultipleChoice: true,
   },
 ];

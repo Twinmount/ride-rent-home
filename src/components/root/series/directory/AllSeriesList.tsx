@@ -5,14 +5,18 @@ type AllSeriesListProps = {
   state: string;
   brand: string;
   list: VehicleBrandSeriesWithCount[];
+  country: string;
+  category: string;
 };
 export default function AllSeriesList({
   state,
   brand,
   list,
+  country,
+  category,
 }: AllSeriesListProps) {
   return (
-    <div className="mt-12 h-[90vh]">
+    <div className="mt-12 h-auto">
       <ul className="mt-3 grid grid-cols-1 gap-3 max-md:pl-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {list.map((series) => (
           <SeriesListLink
@@ -24,6 +28,8 @@ export default function AllSeriesList({
               seriesLabel: series.vehicleSeriesLabel,
               vehicleCount: series.vehicleCount,
             }}
+            country={country}
+            category={category}
           />
         ))}
       </ul>

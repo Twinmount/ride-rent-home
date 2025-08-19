@@ -4,10 +4,10 @@ import Link from "next/link";
 
 export default function AboutMain() {
   return (
-    <div className=" bg-gray-950 ">
-      <div className="h-auto min-h-[85vh] flex flex-col gap-y-2 max-w-[100rem] mx-auto px-6 md:px-10 lg:px-28  text-white pt-10">
-        <h1 className="text-5xl md:text-6xl font-bold">Ride.Rent</h1>
-        <h2 className="text-xl md:text-2xl font-semibold mb-3">
+    <div className="bg-gray-950">
+      <div className="mx-auto flex h-auto min-h-[85vh] max-w-[100rem] flex-col gap-y-2 px-6 pt-10 text-white md:px-10 lg:px-28">
+        <h1 className="text-5xl font-bold md:text-6xl">Ride.Rent</h1>
+        <h2 className="mb-3 text-xl font-semibold md:text-2xl">
           Earn More With The Best Aggregation Platform
         </h2>
         <p className="text-gray-300">
@@ -27,15 +27,15 @@ export default function AboutMain() {
           register, ensuring ease of use for all.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-fit mx-auto my-8 ">
+        <div className="mx-auto my-8 grid w-fit grid-cols-1 gap-4 md:grid-cols-2">
           {aboutGridData.map((item, index) => (
             <div
               key={index}
-              className="flex flex-col gap-1 border border-slate-800 hover:bg-slate-900 transition-colors  p-2 rounded-xl"
+              className="flex flex-col gap-1 rounded-xl border border-slate-800 p-2 transition-colors hover:bg-slate-900"
             >
               <Image src={item.icon} alt={item.title} width={30} height={30} />
               <div className="font-semibold">{item.title}</div>
-              <div className="text-gray-300 text-sm max-w-[90%]">
+              <div className="max-w-[90%] text-sm text-gray-300">
                 {item.subtitle}
               </div>
             </div>
@@ -43,10 +43,10 @@ export default function AboutMain() {
         </div>
 
         <Link
-          href={`https://agent.ride.rent/register`}
+          href={`https://agent.ride.rent/ae/register`}
           target="_blank"
           rel="noopener noreferrer"
-          className={`yellow-gradient w-fit text-xl leading-relaxed font-bold text-black px-2 md:px-4 py-2 rounded-xl mx-auto mb-10`}
+          className={`bg-theme-gradient mx-auto mb-10 w-fit rounded-xl px-2 py-2 text-xl font-bold leading-relaxed text-black md:px-4`}
         >
           Register Your Fleet Today
         </Link>

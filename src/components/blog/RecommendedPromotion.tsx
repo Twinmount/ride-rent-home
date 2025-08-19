@@ -1,12 +1,14 @@
 import { FetchBlogPromotionsResponse } from "@/types/blog.types";
 import BlogPromotionCard from "../card/blog/BlogPromotionCard";
 import CarouselWrapper from "../common/carousel-wrapper/CarouselWrapper";
-import { ENV } from "@/config/env";
 import { BlogPromotionPlacement } from "@/types/enum";
+import { API } from "@/utils/API";
 
-export default async function RecommendedPromotion() {
-  const baseUrl = ENV.API_URL;
+type Props = {
+  country: string;
+};
 
+export default async function RecommendedPromotion({ country }: Props) {
   const queryParams = new URLSearchParams({
     page: "1",
     limit: "10",
@@ -14,11 +16,15 @@ export default async function RecommendedPromotion() {
     blogPromotionPlacement: BlogPromotionPlacement.RecommendedDeals,
   }).toString();
 
-  // Fetch the vehicle data from the API
-  const response = await fetch(
-    `${baseUrl}/blogs-promotions/list?${queryParams}`,
-    { cache: "no-cache" },
-  );
+  const response = await API({
+    path: `/blogs-promotions/list?${queryParams}`,
+    options: {
+      method: "GET",
+      cache: "no-cache",
+    },
+    country: country,
+  });
+
   const data: FetchBlogPromotionsResponse = await response.json();
 
   const promotions = data.result.list || [];

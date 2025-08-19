@@ -3,6 +3,7 @@ import { sendQuery } from "@/lib/api/general-api";
 import React, { useState } from "react";
 import { FaWhatsappSquare } from "react-icons/fa";
 import Phone from "./Phone";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 interface ContactIconsProps {
   vehicleId: string;
@@ -18,6 +19,7 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
   phoneNumber,
 }) => {
   const [loading, setLoading] = useState(false);
+  const {country} = useGlobalContext()
 
   // whatsapp click handler with google script
   const handleWhatsAppClick = async () => {
@@ -52,7 +54,7 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
 
     // Optional: Trigger server-side logging for WhatsApp click
     setLoading(true);
-    await sendQuery(vehicleId, "WHATSAPP");
+    await sendQuery(vehicleId, "WHATSAPP", country);
     setLoading(false);
 
     // Trigger Google Ads conversion tracking
@@ -62,7 +64,7 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
   const handlePhoneClick = async () => {
     if (!phoneNumber) return; // Do nothing if phone is unavailable
     setLoading(true);
-    await sendQuery(vehicleId, "OTHER");
+    await sendQuery(vehicleId, "OTHER", country);
     setLoading(false);
   };
   const isDisabled = !whatsappUrl || !email || !phoneNumber;

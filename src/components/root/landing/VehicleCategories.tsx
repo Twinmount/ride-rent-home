@@ -1,26 +1,30 @@
-"use client";
+'use client';
 
+<<<<<<< HEAD
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 import { CategoryType } from "@/types";
 import Link from "next/link";
 import { easeOut, motion } from "framer-motion";
 import { convertToLabel } from "@/helpers";
+=======
+import { useStateAndCategory } from '@/hooks/useStateAndCategory';
+import { CategoryType } from '@/types';
+import { convertToLabel } from '@/helpers';
+>>>>>>> c59e81bf06631eb0743f028ec23a47d93a9150fb
 
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-
-import Image from "next/image";
-import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
-import { ENV } from "@/config/env";
+} from '@/components/ui/navigation-menu';
+import Image from 'next/image';
+import { useFetchVehicleCategories } from '@/hooks/useFetchVehicleCategories';
+import VehicleCategoryCard from '@/components/card/VehicleCategoryCard';
 
 export default function VehicleCategories() {
-  const { state, category } = useStateAndCategory();
+  const { country, state, category } = useStateAndCategory();
 
   const { sortedCategories, isCategoriesLoading, baseAssetsUrl } =
     useFetchVehicleCategories();
@@ -31,21 +35,24 @@ export default function VehicleCategories() {
         <NavigationMenuItem>
           <NavigationMenuTrigger
             disabled={isCategoriesLoading}
-            className={`flex-center h-12 gap-2 rounded-[0.5em] border px-3 py-1 text-sm font-semibold text-black hover:text-black ${isCategoriesLoading ? "cursor-default text-gray-500" : "yellow-gradient hover:yellow-gradient"}`}
+            className={`flex-center line-clamp-1 h-12 min-w-fit gap-2 rounded border px-3 py-1 text-sm font-semibold text-text-primary hover:text-text-primary lg:px-2 ${isCategoriesLoading ? 'cursor-default text-gray-500' : 'bg-theme-gradient hover:bg-theme-gradient'}`}
           >
             <Image
               src={`${baseAssetsUrl}/icons/vehicle-categories/${category}.png`}
               alt={`${category} Icon`}
-              className={`transition-all duration-200 ease-out max-sm:hidden ${
-                category === "sports-cars" ? "scale-[1.02]" : ""
+              className={`transition-all duration-200 ease-out ${
+                category === 'sports-cars' ? 'scale-[1.02]' : ''
               }`}
               width={35}
               height={35}
-            />{" "}
-            {convertToLabel(category)}
+            />
+
+            <span className="line-clamp-1 w-full max-w-full max-md:hidden">
+              {convertToLabel(category)}
+            </span>
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid h-full w-[20rem] min-w-[20rem] grid-cols-3 place-items-center gap-2 px-3 md:w-[26rem] md:min-w-[26rem] md:grid-cols-4">
+            <ul className="flex h-full w-[12rem] min-w-[12rem] flex-col gap-0 p-0">
               {sortedCategories.map((cat: CategoryType, index) => (
                 <VehicleCategoryCard
                   key={cat.categoryId}
@@ -53,6 +60,7 @@ export default function VehicleCategories() {
                   index={index}
                   selectedCategory={category}
                   selectedState={state}
+                  selectedCountry={country}
                 />
               ))}
             </ul>
@@ -62,6 +70,7 @@ export default function VehicleCategories() {
     </NavigationMenu>
   );
 }
+<<<<<<< HEAD
 
 // individual vehicle type card
 function VehicleCategoryCard({
@@ -129,3 +138,5 @@ function VehicleCategoryCard({
     </motion.li>
   );
 }
+=======
+>>>>>>> c59e81bf06631eb0743f028ec23a47d93a9150fb

@@ -1,18 +1,21 @@
 import { ENV } from "@/config/env";
-import { convertToLabel, singularizeType } from "@/helpers";
+import { convertToLabel, singularizeValue } from "@/helpers";
 import { CategoryDirectoryStatsResponse } from "@/types";
 
 type PropsType = {
   state: string;
   category: string;
+  country: string;
 };
 
 export default async function CategoryDirectoryHeading({
   state,
   category,
+  country,
 }: PropsType) {
   // // Construct the full URL
-  const url = `${ENV.API_URL}/vehicle-brand/vehicle-series/directory/heading?state=${state}&category=${category}`;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
+  const url = `${baseUrl}/vehicle-brand/vehicle-series/directory/heading?state=${state}&category=${category}`;
 
   // Fetch data using the generated URL
   const response = await fetch(url, {
@@ -26,7 +29,7 @@ export default async function CategoryDirectoryHeading({
 
   const hasCount = count?.vehiclesCount && count?.brandsCount;
 
-  const formattedCategory = singularizeType(convertToLabel(category));
+  const formattedCategory = singularizeValue(convertToLabel(category));
 
   return (
     <div className="mb-8">

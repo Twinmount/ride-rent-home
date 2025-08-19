@@ -1,0 +1,189 @@
+import React from "react";
+import InternForm from "@/components/intern/InternForm";
+import { PageProps } from "@/types";
+import Image from "next/image";
+
+export async function generateMetadata(props: PageProps) {
+  const { country } = await props.params;
+
+  const canonicalUrl = `https://ride.rent/${country}/interns`;
+  const title = `Internships for students | Ride.Rent India`;
+  const description = `Explore exciting internships for students at Ride.Rent India. Build your skills, and work with the team behind India's fast-growing vehicle rental platform.`;
+
+  return {
+    title,
+    description,
+    keywords: `Ride Rent, intern, apply intern`,
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    alternates: {
+      canonical: canonicalUrl,
+    },
+  };
+}
+
+const InternsPage = async (props: PageProps) => {
+  const { country } = await props.params;
+
+  const STATIC_FILES_URL = process.env.STATIC_FILES_URL;
+
+  return (
+    <div className="interns bg-white">
+      <div className="mx-auto w-full pb-8 md:max-w-[90%] lg:max-w-[80%] xl:max-w-[70%]">
+        <section className="px-8 py-4">
+          <div className="relative flex items-end justify-end overflow-hidden rounded-[16px] md:h-[500px]">
+            <div className="absolute left-0 top-0 z-[1] h-full w-full">
+              <Image
+                src={`${STATIC_FILES_URL}/intern-page-banner.jpg`}
+                alt="interns banner"
+                className="h-full w-full object-cover"
+                loading="lazy"
+                width={1200}
+                height={600}
+              />
+            </div>
+            <div className="relative z-[5] mb-4 me-4 ms-4 mt-60 md:mb-0 md:me-0 md:ms-0 md:mt-0 md:max-w-[50%]">
+              <div className="relative rounded-[16px] bg-white px-[30px] py-[30px] md:rounded-[0] md:rounded-tl-[16px] md:px-[60px] md:py-[80px]">
+                <h1 className="mb-3 text-[28px] font-medium text-black">
+                  Interns of Ride
+                </h1>
+                <p className="text-md mb-0 inline-block text-black">
+                  {`Our internship program provides practical exposure in a
+                  dynamic work setting. You'll transform academic knowledge into
+                  real-world contributions, receive guided mentorship, and
+                  develop essential skills to advance your professional journey.`}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="px-8 py-8 md:py-16">
+          <div className="mb-5 py-3">
+            <h3 className="text-[20px] font-medium text-black">
+              Your internship experience will include:
+            </h3>
+          </div>
+          <ul className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <li className="relative rounded-[12px] border p-6 md:p-8">
+              <div className="mb-2 h-[50px] w-[50px]">
+                <Image
+                  className="h-[50px] w-[50px] align-middle"
+                  src="/assets/icons/interns/grid-4.svg"
+                  alt=""
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <h3 className="mb-3 text-base font-medium">
+                Owning Impactful Projects
+              </h3>
+              <p className="m-0 text-sm text-gray-700">
+                Take full ownership of real-world projects from start to finish,
+                working on products and services that influence thousands of
+                customers across the Ride.Rent platform.
+              </p>
+            </li>
+            <li className="relative rounded-[12px] border p-6 md:p-8">
+              <div className="mb-2 h-[50px] w-[50px]">
+                <Image
+                  className="h-[50px] w-[50px] align-middle"
+                  src="/assets/icons/interns/suitcase.svg"
+                  alt=""
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <h3 className="mb-3 text-base font-medium">
+                Skill Development & Hands-On Learning
+              </h3>
+              <p className="m-0 text-sm text-gray-700">
+                Build valuable skills through guided training, data-driven
+                problem solving, and user-focused solution design in a
+                fast-paced startup environment.
+              </p>
+            </li>
+            <li className="relative rounded-[12px] border p-6 md:p-8">
+              <div className="mb-2 h-[50px] w-[50px]">
+                <Image
+                  className="h-[50px] w-[50px] align-middle"
+                  src="/assets/icons/interns/globe-1.svg"
+                  alt=""
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <h3 className="mb-3 text-base font-medium">
+                Global Networking Opportunities
+              </h3>
+              <p className="m-0 text-sm text-gray-700">
+                Connect with peers, teammates, and professionals across teams
+                and borders through daily collaboration and curated team events.
+              </p>
+            </li>
+            <li className="relative rounded-[12px] border p-6">
+              <div className="mb-2 h-[50px] w-[50px]">
+                <Image
+                  className="h-[50px] w-[50px] align-middle"
+                  src="/assets/icons/interns/like.svg"
+                  alt=""
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <h3 className="mb-3 text-base font-medium">
+                Dedicated Mentorship & Career Guidance
+              </h3>
+              <p className="m-0 text-sm text-gray-700">
+                Receive personal mentorship and continuous feedback from
+                experienced team members who are committed to supporting your
+                growth and success.
+              </p>
+            </li>
+          </ul>
+        </section>
+
+        <section className="px-8 py-8 md:py-10">
+          <div className="relative overflow-hidden rounded-[16px] pb-[160px] pt-[100px]">
+            <div className="absolute left-0 top-0 z-[1] h-full w-full">
+              <img
+                src={`${STATIC_FILES_URL}/intern-application-form-banner.jpg`}
+                alt="interns form banner"
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
+              <div className="absolute left-0 top-0 z-[2] h-full w-full bg-black bg-opacity-30"></div>
+            </div>
+            <div className="relative z-[5] mx-auto px-5 md:max-w-[700px]">
+              <div className="relative text-center">
+                <h2 className="mb-3 text-[28px] font-semibold text-white drop-shadow-lg md:text-[40px]">
+                  Intern opportunities open for 25 batches
+                </h2>
+                <p className="text-md mb-0 inline-block text-white drop-shadow-lg">
+                  Our internships are for final-year students and recent
+                  graduates with a degree in computer science or business. The
+                  program lasts for 3 months.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="relative z-[7] -mt-24 ml-auto mr-auto w-full rounded-[12px] border bg-white p-5 md:max-w-[700px] md:p-10">
+            {/* intern form */}
+            <InternForm country={country} />
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+};
+
+export default InternsPage;

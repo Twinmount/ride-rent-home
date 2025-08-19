@@ -1,26 +1,27 @@
 import { BlogType, FetchBlogsResponse } from "@/types/blog.types";
 import BlogPopularCard from "../card/blog/BlogPopularCard";
 
-import { ENV } from "@/config/env";
 import { FetchPromotionsResponse, PromotionType } from "@/types";
 import PromotionSideCard from "../card/blog/PromotionSideCard";
 import { BlogPromotionPlacement } from "@/types/enum";
+import { API } from "@/utils/API";
 
-interface RequestBody {
+type Props = {
+  country: string;
+};
+
+type RequestBody = {
   page: string;
   limit: string;
   sortOrder: "ASC" | "DESC";
   filterCondition: string;
-}
+};
 
 type CombinedCard =
   | { type: "blog"; data: BlogType }
   | { type: "promotion"; data: PromotionType };
 
-export default async function PopularBlogs() {
-  // Fetch the blogs data
-  const baseUrl = ENV.API_URL;
-
+export default async function PopularBlogs({ country }: Props) {
   // Prepare the request body for the blogs
   const requestBody: RequestBody = {
     page: "1",
@@ -29,14 +30,18 @@ export default async function PopularBlogs() {
     filterCondition: "popular",
   };
 
-  // Fetch blogs data from your API endpoint
-  const response = await fetch(`${baseUrl}/blogs/list`, {
-    method: "POST",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json",
+  // Fetch blogs data from API endpoint
+  const response = await API({
+    path: `/blogs/list`,
+    options: {
+      method: "POST",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
     },
-    body: JSON.stringify(requestBody),
+    country: country,
   });
 
   const data: FetchBlogsResponse = await response.json();
@@ -45,19 +50,19 @@ export default async function PopularBlogs() {
   // promotion query params
   const queryParams = new URLSearchParams({
     page: "1",
-    limit: "10",
+    limit: "8",
     sortOrder: "DESC",
     blogPromotionPlacement: BlogPromotionPlacement.PopularList,
   }).toString();
 
-  // Fetch the promotion side card data
-  const promotionResponse = await fetch(
-    `${baseUrl}/blogs-promotions/list?${queryParams}`,
-    {
+  const promotionResponse = await API({
+    path: `/blogs-promotions/list?${queryParams}`,
+    options: {
       method: "GET",
       cache: "no-cache",
     },
-  );
+    country: country,
+  });
 
   const promotionData: FetchPromotionsResponse = await promotionResponse.json();
 
@@ -106,6 +111,7 @@ export default async function PopularBlogs() {
                 blogId={item.data.blogId}
                 title={item.data.blogTitle}
                 description={item.data.blogDescription}
+                country={country}
               />
             );
           } else if (item.type === "promotion") {

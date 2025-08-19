@@ -11,7 +11,7 @@ export default function EnquireBestPrice({ vehicle }: EnquireBestPriceProps) {
   const { openDialog } = useVehicleCardContext();
 
   const handleClick = () => {
-    openDialog(vehicle);
+    openDialog(vehicle as any);
   };
 
   return (

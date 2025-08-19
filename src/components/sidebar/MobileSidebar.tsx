@@ -8,12 +8,26 @@ import {
 import { Button } from "../ui/button";
 import { AlignRight } from "lucide-react";
 import { SidebarAccordion } from "./SidebarAccordion";
+import RideRentNavbarLogo from "../common/RideRentNavbarLogo";
+import { useParams } from "next/navigation";
 
 export default function MobileSidebar() {
+  const {
+    country,
+    state,
+    category = "cars",
+  } = useParams<{
+    country: string;
+    state: string;
+    category: string;
+  }>();
+
+  const stateValue = state ? state : country === "in" ? "bangalore" : "dubai";
+
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="border-none outline-none" size="icon">
+        <Button className="w-fit border-none outline-none" size="icon">
           <AlignRight className="h-6 w-6" />
           <span className="sr-only">Toggle navigation</span>
         </Button>
@@ -23,7 +37,12 @@ export default function MobileSidebar() {
         <SheetDescription className="text-lightGray-foreground sr-only">
           Sidebar
         </SheetDescription>
-        <div className="flex h-full w-full flex-col justify-start px-4 py-6">
+        <div className="relative flex h-full w-full flex-col justify-start px-4 py-6">
+          <RideRentNavbarLogo
+            country={country}
+            state={stateValue}
+            category={category}
+          />
           {/* sidebar accordions */}
           <SidebarAccordion />
         </div>

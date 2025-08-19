@@ -12,11 +12,11 @@ import { LinkType } from "@/types";
 import { FaLink } from "react-icons/fa6";
 
 export const QuickLinksAccordion = () => {
-  const { state } = useStateAndCategory();
+  const { state, country } = useStateAndCategory();
 
   const { data: linksData, isLoading: isLinksLoading } = useQuery({
     queryKey: ["quick-links", state],
-    queryFn: () => fetchQuickLinksByValue(state),
+    queryFn: () => fetchQuickLinksByValue(state, country),
     enabled: !!state, // Only fetch if state is provided
     staleTime: 15 * 60 * 1000, //15 minutes
   });

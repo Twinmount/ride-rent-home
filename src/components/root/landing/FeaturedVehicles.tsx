@@ -1,0 +1,101 @@
+import MotionSection from '@/components/general/framer-motion/MotionSection';
+import { StateCategoryProps, VehicleHomeFilter } from '@/types';
+import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
+import { FetchVehicleCardsResponseV2 } from '@/types/vehicle-types';
+import { API } from '@/utils/API';
+import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
+import ViewAllGridCard from '@/components/card/ViewAllGridCard';
+import { convertToLabel } from '@/helpers';
+
+type FeaturedVehiclesProps = StateCategoryProps & {
+  vehicleType: string | undefined;
+};
+
+const FeaturedVehicles = async ({
+  state,
+  category,
+  vehicleType,
+  country,
+}: FeaturedVehiclesProps) => {
+  const params = new URLSearchParams({
+    page: '1',
+    limit: '9',
+    state,
+    category,
+    sortOrder: 'DESC',
+    filter: VehicleHomeFilter.NONE,
+  });
+
+  if (vehicleType) {
+    params.set('type', vehicleType);
+  }
+
+  const response = await API({
+    path: `/vehicle/home-page/list?${params.toString()}`,
+    options: {
+      method: 'GET',
+      cache: 'no-cache',
+    },
+    country,
+  });
+
+  const data: FetchVehicleCardsResponseV2 = await response.json();
+
+  const vehicles = data?.result?.list || [];
+
+  if (vehicles.length === 0) {
+    return null;
+  }
+
+  // 5 vehicles for carousel
+  const mainVehicles = vehicles.slice(0, 5);
+  // remaining 4 vehicles for view all grid
+  const gridThumbnails = vehicles.slice(5, 9).map((v) => v.thumbnail);
+  const totalVehicles = data?.result?.total || 0;
+
+  // view all link
+  let viewAllLink = `/${country}/${state}/listing/${category}`;
+
+  // if vehicleType exists, add it in the link of the corresponding listing page
+  if (vehicleType) {
+    viewAllLink += `/${vehicleType}`;
+  }
+
+  const formattedVehicleType = convertToLabel(vehicleType);
+  const formattedCategory = convertToLabel(category);
+
+  return (
+    <MotionSection className="section-container">
+      {/* Full-width carousel section on mobile */}
+      <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen lg:relative lg:left-auto lg:right-auto lg:ml-0 lg:mr-0 lg:w-full">
+        <div className="mx-auto flex w-fit max-w-full snap-x snap-mandatory items-center justify-between gap-1 overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] lg:snap-none lg:px-1 xl:max-w-full [&::-webkit-scrollbar]:hidden">
+          {mainVehicles.map((vehicle, index) => (
+            <div
+              key={vehicle.vehicleId}
+              className="flex-shrink-0 snap-start lg:snap-align-none"
+            >
+              <VehicleCard
+                vehicle={vehicle}
+                index={index}
+                country={country}
+                layoutType="carousel"
+              />
+            </div>
+          ))}
+          {gridThumbnails.length > 0 && (
+            <div className="flex-shrink-0 snap-start lg:snap-align-none">
+              <ViewAllGridCard
+                thumbnails={gridThumbnails}
+                totalCount={totalVehicles}
+                label={`More ${formattedVehicleType || formattedCategory} `}
+                viewAllLink={viewAllLink}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </MotionSection>
+  );
+};
+
+export default FeaturedVehicles;

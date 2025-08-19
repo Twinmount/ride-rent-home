@@ -6,14 +6,16 @@ type PropsType = {
   series: string;
   state: string;
   brand: string;
+  country: string;
 };
 
 export default async function VehicleSeriesInfo({
   series,
   state,
   brand,
+  country,
 }: PropsType) {
-  const baseUrl = ENV.API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   const url = `${baseUrl}/vehicle-series/info?vehicleSeries=${series}&state=${state}&brand=${brand}`;
 

@@ -1,13 +1,13 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from 'react';
 
-import { useStateAndCategory } from "@/hooks/useStateAndCategory";
-import { adjustMinMaxIfEqual, getAvailablePeriods } from "@/helpers";
-import { useFetchPriceFilter } from "./useFetchPriceFilter";
+import { useStateAndCategory } from '@/hooks/useStateAndCategory';
+import { adjustMinMaxIfEqual, getAvailablePeriods } from '@/helpers';
+import { useFetchPriceFilter } from './useFetchPriceFilter';
 
-type PeriodType = "hour" | "day" | "week" | "month";
+export type PeriodType = 'hour' | 'day' | 'week' | 'month';
 
 export function usePriceFilter() {
-  const { state, category } = useStateAndCategory();
+  const { state, category, country } = useStateAndCategory();
 
   // Fetch price range
   const { data, isLoading } = useFetchPriceFilter();
@@ -15,7 +15,7 @@ export function usePriceFilter() {
   // Extract available periods
   const availablePeriods = useMemo(
     () => getAvailablePeriods(data?.result),
-    [data],
+    [data]
   );
 
   // Check if all keys are null
@@ -23,7 +23,7 @@ export function usePriceFilter() {
 
   // Set default selected period only when availablePeriods changes
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType | null>(
-    availablePeriods.length > 0 ? availablePeriods[0] : null,
+    availablePeriods.length > 0 ? availablePeriods[0] : null
   );
 
   useEffect(() => {
@@ -53,6 +53,7 @@ export function usePriceFilter() {
   return {
     state,
     category,
+    country,
     selectedPeriod,
     setSelectedPeriod,
     values,
@@ -61,5 +62,6 @@ export function usePriceFilter() {
     isPriceRangeEmpty,
     isLoading,
     selectedPriceRange,
+    data,
   };
 }

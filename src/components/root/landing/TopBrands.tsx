@@ -1,27 +1,31 @@
-import MotionSection from "@/components/general/framer-motion/MotionSection";
-import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
-import ViewAllButton from "@/components/common/ViewAllButton";
-import { BrandType, FetchTopBrandsResponse } from "@/types";
-import Link from "next/link";
-import { convertToLabel } from "@/helpers";
-import Image from "next/image";
-import { ENV } from "@/config/env";
+import MotionSection from '@/components/general/framer-motion/MotionSection';
+import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
+import ViewAllButton from '@/components/common/ViewAllButton';
+import { BrandType, FetchTopBrandsResponse } from '@/types';
+import Link from 'next/link';
+import { convertToLabel } from '@/helpers';
+import Image from 'next/image';
+import { ENV } from '@/config/env';
+import { API } from '@/utils/API';
+import { SectionHeading } from '@/components/common/SectionHeading';
 
 export const revalidate = 3600;
 
 export default async function TopBrands({
   category,
   state,
+  country,
 }: {
   category: string | undefined;
   state: string | undefined;
+  country: string | undefined;
 }) {
-  const baseUrl = ENV.API_URL;
-
-  const url = `${baseUrl}/vehicle-brand/top-brands?categoryValue=${category}`;
-
   // Fetch brand data from your API endpoint
-  const response = await fetch(url);
+  const response = await API({
+    path: `/vehicle-brand/top-brands?categoryValue=${category}&hasVehicle=true`,
+    options: {},
+    country: country,
+  });
 
   // Parse the JSON response
   const data: FetchTopBrandsResponse = await response.json();
@@ -31,16 +35,14 @@ export default async function TopBrands({
 
   if (brands.length === 0) return null;
 
+  const formattedState = convertToLabel(state as string);
+
   return (
     <MotionSection className="section-container wrapper">
-      <h2 className="section-heading">
-        Rent from top brands in{" "}
-        <div className="yellow-gradient inline-block rounded-xl px-2 capitalize">
-          <span data-testid="converted-label">
-            {convertToLabel(state as string)}
-          </span>
-        </div>
-      </h2>
+      <SectionHeading
+        title={`Rent From Top Brands In ${formattedState}`}
+        subtitle="Lorem ipsum dolor sit amet consectetur. Cras nulla commodo orci ipsum erat "
+      />
 
       <CarouselWrapper>
         {brands.map((brand: BrandType) => (
@@ -49,11 +51,12 @@ export default async function TopBrands({
             brand={brand}
             category={category!}
             state={state!}
+            country={country!}
           />
         ))}
       </CarouselWrapper>
 
-      <ViewAllButton link={`/${state}/${category}/brands`} />
+      <ViewAllButton link={`/${country}/${state}/${category}/brands`} />
     </MotionSection>
   );
 }
@@ -63,18 +66,20 @@ export function BrandCard({
   brand,
   category,
   state,
+  country,
 }: {
   brand: BrandType;
   category: string;
   state: string;
+  country: string;
 }) {
   const baseAssetsUrl = ENV.ASSETS_URL;
 
   return (
     <Link
-      href={`/${state}/listing?brand=${brand.brandValue}&category=${category}`}
+      href={`/${country}/${state}/listing/${category}/brand/${brand.brandValue}`}
       key={brand.id}
-      className="flex aspect-square h-[8rem] max-h-[8rem] min-h-[8rem] w-[8rem] min-w-[8rem] max-w-[8rem] cursor-pointer flex-col items-center justify-between rounded-[1rem] border border-black/10 bg-white p-2 shadow-[0px_2px_2px_rgba(0,0,0,0.2)] transition-transform duration-200 ease-out hover:scale-105 hover:shadow-[0px_2px_2px_rgba(0,0,0,0.5)]"
+      className="flex aspect-square h-[8rem] max-h-[8rem] min-h-[8rem] w-[8rem] min-w-[8rem] max-w-[8rem] cursor-pointer flex-col items-center justify-between rounded-[0.5rem] border border-black/10 bg-white p-2 shadow-[0px_2px_2px_rgba(0,0,0,0.2)] transition-transform duration-200 ease-out hover:shadow-[0px_2px_2px_rgba(0,0,0,0.5)]"
     >
       <div className="relative m-auto flex h-[6rem] min-h-[6rem] w-full min-w-full items-center justify-center">
         <Image

@@ -1,14 +1,18 @@
 "use client";
 
-import { fetchBlogsData } from "@/app/(root)/blog/actions";
+import { fetchBlogsData } from "@/app/(root)/[country]/blog/actions";
 import { JSX, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 type LoadMoreBlogsProps = {
   selectedTag: string;
+  country: string;
 };
 
-export default function LoadMoreBlogs({ selectedTag }: LoadMoreBlogsProps) {
+export default function LoadMoreBlogs({
+  selectedTag,
+  country,
+}: LoadMoreBlogsProps) {
   const { ref, inView } = useInView();
   const [data, setData] = useState<JSX.Element[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -16,7 +20,7 @@ export default function LoadMoreBlogs({ selectedTag }: LoadMoreBlogsProps) {
 
   useEffect(() => {
     if (inView && hasMore) {
-      fetchBlogsData({ page, selectedTag }).then((response) => {
+      fetchBlogsData({ page, selectedTag, country }).then((response) => {
         if (!response.hasMore) {
           setHasMore(false);
         } else {

@@ -18,25 +18,45 @@ const config = {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      // padding: {
+      //   DEFAULT: "1rem", // Mobile
+      //   sm: "1.6rem", // >=576px
+      //   md: "2rem", // >=768px
+      //   lg: "3rem", // >=992px
+      //   xl: "4rem", // >=1200px
+      //   "2xl": "4rem", // >=1536px
+      // },
       screens: {
-        "2xl": "1400px",
+        "2xl": "1920px",
       },
     },
     extend: {
+      fontFamily: {
+        'fira-sans': ['var(--font-fira-sans)', 'sans-serif'],
+        'poppins': ['var(--font-poppins)', 'sans-serif'],
+      },
       colors: {
+        // **************redesign colors start***************
+        background: "#F8F8F8", // Base page background
+        footer: "#232323", // Footer background
+        accent: "#F57F17", // Orange theme color
+        "accent-light": "#F9A825", // Lighter orange
+        "text-primary": "#1C2122", // Main text color
+        "text-secondary": "#6C727C", // Secondary gray text
+        "text-tertiary": "#7D8487", // Tertiary gray text
+        "text-muted": "#C2C2C2", // Muted gray text
+        "border-default": "#DDE5EB", // Default borders
+        "gradient-from": "#F9A825", // Gradient start
+        "gradient-to": "#F57F17", // Gradient end
+
+        //  ***************redesign colors end***************
+
         yellow: "#ffa733",
         orange: "#ea7b0b",
         lightGray: "#f5f5f5", //bg light gray
-        border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
@@ -48,10 +68,6 @@ const config = {
         mutedd: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -72,6 +88,11 @@ const config = {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      backgroundImage: {
+        "theme-gradient":
+          "linear-gradient(255.26deg, #F9A825 29.45%, #F57F17 88.69%)",
+      },
+
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

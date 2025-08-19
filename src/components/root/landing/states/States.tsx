@@ -1,34 +1,77 @@
-import MotionSection from "@/components/general/framer-motion/MotionSection";
-import { FetchStatesResponse } from "@/types"; // Import your types
-import { rearrangeStates } from "@/helpers";
-import StateCardList from "./StateCardList";
-import { ENV } from "@/config/env";
+import MotionSection from '@/components/general/framer-motion/MotionSection';
+import { FetchStatesResponse } from '@/types';
+import { rearrangeStates } from '@/helpers';
+import StateCard from './StateCard';
+import { SectionHeading } from '@/components/common/SectionHeading';
+import { API } from '@/utils/API';
+import ViewAllButton from '@/components/common/ViewAllButton';
 
-export default async function States({ category }: { category: string }) {
-  const baseUrl = ENV.API_URL;
-
-  // Fetch the states data from the API
-  const response = await fetch(`${baseUrl}/states/list?hasVehicle=true`, {
-    cache: "no-cache",
+export default async function States({
+  category,
+  state,
+  country,
+}: {
+  category: string;
+  state: string;
+  country: string;
+}) {
+  // Fetch states data from API with cache disabled
+  const response = await API({
+    path: `/states/list?hasVehicle=true`,
+    options: { cache: 'no-cache' },
+    country,
   });
 
   const data: FetchStatesResponse = await response.json();
 
-  // Extract the states list from the response
+  // Extract and reorder states array based on country
   let states = data.result;
+  states = rearrangeStates(states, country);
 
-  //reordering the states array
-  states = rearrangeStates(states);
-
+  // Return null if no states available
   if (states.length === 0) return null;
 
   return (
-    <MotionSection className="wrapper section-container">
-      <h2 className="section-heading">
-        Find Vehicle Rental Offers In Other States
-      </h2>
-      <div className="mx-auto mb-[1.5rem] grid w-fit auto-rows-auto grid-cols-2 justify-items-center gap-[1.4rem] md:grid-cols-3 lg:grid-cols-4">
-        <StateCardList states={states} category={category} />
+    // Main section container - full width with proper constraints
+    <MotionSection className="section-container relative w-full pt-[1.5rem] lg:pt-[2.5rem]">
+      {/* Background gradient overlay - contained within section bounds */}
+      <div
+        className="absolute bottom-0 left-0 right-0 top-0 z-0 -ml-16"
+        style={{
+          background:
+            'linear-gradient(350deg, rgba(255, 255, 255, 0) 65%, rgba(249, 168, 37, 0.4) 160%)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Content wrapper with relative positioning */}
+      <div className="relative z-10 w-full">
+        {/* Section heading with title and subtitle */}
+        <SectionHeading
+          title={`Explore Rental Offers In Other Locations`}
+          subtitle="Lorem ipsum dolor sit amet consectetur."
+        />
+
+        {/* Single responsive states container with equal spacing */}
+        <div className="mt-[1.75rem w-full lg:px-6">
+          <div className="flex flex-wrap justify-center gap-1.5 md:gap-1.5 lg:mx-16 lg:gap-1.5">
+            {states.map((state) => (
+              <div
+                key={state.stateId}
+                className="mb-3 flex-[0_0_30%] md:flex-[0_0_22%] lg:mb-7 lg:flex-[0_0_15%]"
+              >
+                <StateCard
+                  state={state}
+                  category={category}
+                  country={country}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* View all button for navigation */}
+        <ViewAllButton link={`/${country}/${state}/listing/${category}`} />
       </div>
     </MotionSection>
   );

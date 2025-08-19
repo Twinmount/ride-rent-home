@@ -7,11 +7,14 @@ import useFetchStates from "@/hooks/useFetchStates";
 import Cities from "./Cities";
 
 // Locations Component
-const Locations = ({ state, category }: StateCategoryProps) => {
+const Locations = ({ country, state, category }: StateCategoryProps) => {
   const [selectedState, setSelectedState] = useState<StateType | null>(null);
 
   // Fetch states using custom hook
-  const { states: statesData, isLoading: isStatesLoading } = useFetchStates();
+  const { states: statesData, isLoading: isStatesLoading } = useFetchStates({
+    countryId: "68ea1314-08ed-4bba-a2b1-af549946523d",
+    country,
+  });
 
   // Set the initial state when statesData is available
   useEffect(() => {

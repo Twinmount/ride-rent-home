@@ -1,12 +1,16 @@
+import { fetchBlogsData } from "@/app/(root)/[country]/blog/actions";
 import LoadMoreBlogs from "@/components/blog/LoadMoreBlogs";
-import { fetchBlogsData } from "@/app/(root)/blog/actions";
 
 type BlogsGridProps = {
   selectedTag: string;
+  country: string;
 };
 
-export default async function BlogsGrid({ selectedTag }: BlogsGridProps) {
-  const data = await fetchBlogsData({ selectedTag, page: 1 });
+export default async function BlogsGrid({
+  selectedTag,
+  country,
+}: BlogsGridProps) {
+  const data = await fetchBlogsData({ selectedTag, page: 1, country });
 
   const blogs = data.blogs;
 
@@ -18,7 +22,7 @@ export default async function BlogsGrid({ selectedTag }: BlogsGridProps) {
             {blogs}
           </div>
 
-          <LoadMoreBlogs selectedTag={selectedTag} />
+          <LoadMoreBlogs selectedTag={selectedTag} country={country} />
         </>
       ) : (
         <div className="flex-center h-72 text-lg font-thin">

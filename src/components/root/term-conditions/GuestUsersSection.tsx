@@ -30,5 +30,5 @@ export default function GuestUsersSection() {
       <GuestUser12 />
       <GuestUser13 />
     </section>
-  )
+  );
 }

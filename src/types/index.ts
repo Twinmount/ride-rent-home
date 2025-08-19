@@ -1,16 +1,23 @@
-import { ContactDetails } from "./vehicle-details-types";
+import { ContactDetails } from './vehicle-details-types';
 import {
   FeatureType,
   RentalDetailsType,
   SpecificationType,
-} from "./vehicle-types";
+} from './vehicle-types';
 
 export type PageProps = {
-  params: Promise<{ state: string; category: string }>;
+  params: Promise<{
+    country: string;
+    state: string;
+    category: string;
+    vehicleType: string;
+    brand: string;
+  }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
 export type StateCategoryProps = {
+  country: string;
   state: string;
   category: string;
 };
@@ -25,6 +32,8 @@ export interface StateType {
   metaTitle: string;
   metaDescription: string;
   stateImage: any;
+  isFavorite?: boolean;
+  stateIcon?: string;
 }
 
 //  interface for the get-all-states  API response
@@ -185,6 +194,8 @@ export interface PromotionType {
   promotionId: string;
   promotionImage: string;
   promotionLink: string;
+  title: string; // e.g., "Offer Upto 25%"
+  description: string;
 }
 
 //  get-all-promotions  API response
@@ -197,6 +208,24 @@ export interface FetchPromotionsResponse {
   };
   status: string;
   statusCode: number;
+}
+
+export interface RidePromotionCard {
+  image: string;
+  cardTitle: string;
+  cardSubtitle: string;
+  link: string;
+  _id: string;
+}
+
+export interface FetchRidePromotionsResponse {
+  status: string;
+  statusCode: number;
+  result: {
+    sectionTitle: string;
+    sectionSubtitle: string;
+    cards: RidePromotionCard[];
+  };
 }
 
 // vehicle details page type
@@ -306,11 +335,10 @@ export interface HomePageMetaResponse {
 
 // listing page meta
 export interface ListingPageMeta {
-  metaDataId: string;
-  stateId: string;
-  state: string;
   metaTitle: string;
   metaDescription: string;
+  h1: string;
+  h2: string;
 }
 
 //  listing page meta response
@@ -321,12 +349,12 @@ export interface ListingPageMetaResponse {
 }
 
 export enum VehicleHomeFilter {
-  AFFORDABLE_VEHICLE = "affordable-vehicle",
-  POPULAR_MODELS = "popular-models",
-  TOP_BRANDS = "top-brands",
-  LATEST_MODELS = "latest-models",
-  HOURLY_RENTAL_VEHICLE = "hourly-rental-vehicle",
-  NONE = "none",
+  AFFORDABLE_VEHICLE = 'affordable-vehicle',
+  POPULAR_MODELS = 'popular-models',
+  TOP_BRANDS = 'top-brands',
+  LATEST_MODELS = 'latest-models',
+  HOURLY_RENTAL_VEHICLE = 'hourly-rental-vehicle',
+  NONE = 'none',
 }
 
 export type CompanyProfileDataType = {
@@ -462,3 +490,18 @@ export interface FetchAllSeriesUnderBrandResponse {
   status: string;
   statusCode: number;
 }
+
+export type VehicleData = {
+  vehicleTitle: string;
+  vehicleCode: string;
+  category: string;
+  vehiclePhoto: string;
+  state: string;
+};
+
+export type BlogData = {
+  blogTitle: string;
+  blogId: string;
+  createdAt?: string;
+  updatedAt?: string;
+};

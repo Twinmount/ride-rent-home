@@ -1,5 +1,5 @@
-import { FiltersType } from "@/hooks/useFilters";
-import qs from "query-string";
+import { FiltersType } from '@/hooks/useFilters';
+import qs from 'query-string';
 
 /**
  * Parse URL query parameters into a FiltersType object.
@@ -11,21 +11,24 @@ export const parseFiltersFromUrl = (urlParams: string): FiltersType => {
   const params = qs.parse(urlParams);
 
   return {
-    modelYear: typeof params.modelYear === "string" ? params.modelYear : "",
-    category: typeof params.category === "string" ? params.category : "",
-    vehicleTypes:
-      typeof params.vehicleTypes === "string"
-        ? params.vehicleTypes.split(",")
-        : [],
-    seats: typeof params.seats === "string" ? params.seats : "",
+    category: '',
+    vehicleType: '',
+    brand: '',
+    modelYear: typeof params.modelYear === 'string' ? params.modelYear : '',
+    seats: typeof params.seats === 'string' ? params.seats : '',
     transmission:
-      typeof params.transmission === "string"
-        ? params.transmission.split(",")
+      typeof params.transmission === 'string'
+        ? params.transmission.split(',')
         : [],
     fuelType:
-      typeof params.fuelType === "string" ? params.fuelType.split(",") : [],
-    color: typeof params.color === "string" ? params.color.split(",") : [],
-    brand: typeof params.brand === "string" ? params.brand.split(",") : [],
+      typeof params.fuelType === 'string' ? params.fuelType.split(',') : [],
+    color: typeof params.color === 'string' ? params.color.split(',') : [],
+    paymentMethod:
+      typeof params.paymentMethod === 'string'
+        ? params.paymentMethod.split(',')
+        : [],
+    price: typeof params.price === 'string' ? params.price : '',
+    period: typeof params.period === 'string' ? params.period : '',
   };
 };
 
@@ -38,7 +41,7 @@ export const parseFiltersFromUrl = (urlParams: string): FiltersType => {
  */
 export const generateUpdatedUrl = (
   selectedFilters: Record<string, any>, // Filters can be strings or arrays
-  currentUrlParams: string,
+  currentUrlParams: string
 ): string => {
   const currentParams = qs.parse(currentUrlParams);
 
@@ -52,12 +55,12 @@ export const generateUpdatedUrl = (
   const nonEmptyFilters = Object.fromEntries(
     Object.entries(updatedParams).filter(
       ([_, value]) =>
-        value !== "" && !(Array.isArray(value) && value.length === 0),
-    ),
+        value !== '' && !(Array.isArray(value) && value.length === 0)
+    )
   );
 
   // Serialize back to query string
-  return qs.stringify(nonEmptyFilters, { arrayFormat: "comma" });
+  return qs.stringify(nonEmptyFilters, { arrayFormat: 'comma' });
 };
 
 /**
@@ -65,12 +68,15 @@ export const generateUpdatedUrl = (
  * @returns {FiltersType} - The default filters object.
  */
 export const getDefaultFilters = (): FiltersType => ({
-  modelYear: "",
-  category: "cars",
-  vehicleTypes: [],
-  seats: "",
+  modelYear: '',
+  category: 'cars',
+  vehicleType: '',
+  seats: '',
   transmission: [],
   fuelType: [],
   color: [],
-  brand: [],
+  brand: '',
+  paymentMethod: [],
+  price: '',
+  period: '',
 });

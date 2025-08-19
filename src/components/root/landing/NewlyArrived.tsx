@@ -1,70 +1,80 @@
-import VehicleMainCard from "@/components/card/vehicle-card/main-card/VehicleMainCard";
-import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
-import ViewAllButton from "@/components/common/ViewAllButton";
-import MotionSection from "@/components/general/framer-motion/MotionSection";
-import { ENV } from "@/config/env";
-import { convertToLabel, singularizeType } from "@/helpers";
-import { StateCategoryProps, VehicleHomeFilter } from "@/types";
-import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
+import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
+import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
+import ViewAllLinkButton from '@/components/common/ViewAllLinkButton';
+import MotionSection from '@/components/general/framer-motion/MotionSection';
+import { convertToLabel } from '@/helpers';
+import { StateCategoryProps, VehicleHomeFilter } from '@/types';
+import { FetchVehicleCardsResponseV2 } from '@/types/vehicle-types';
+import { API } from '@/utils/API';
+import { cn } from '@/lib/utils';
 
 export default async function NewlyArrived({
   state,
   category,
+  country,
 }: StateCategoryProps) {
-  const baseUrl = ENV.API_URL;
-
   const params = new URLSearchParams({
-    page: "1",
-    limit: "5",
+    page: '1',
+    limit: '6',
     state: state,
-    sortOrder: "DESC",
+    sortOrder: 'DESC',
     category: category,
     filter: VehicleHomeFilter.POPULAR_MODELS,
   });
 
-  // Construct the full URL
-  const url = `${baseUrl}/vehicle/home-page/list?${params.toString()}`;
-
-  // Fetch data using the generated URL
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "no-cache",
+  const response = await API({
+    path: `/vehicle/home-page/list?${params.toString()}`,
+    options: {
+      method: 'GET',
+      cache: 'no-cache',
+    },
+    country,
   });
 
   // Parse the JSON response
-  const data: FetchVehicleCardsResponse = await response.json();
+  const data: FetchVehicleCardsResponseV2 = await response.json();
 
   const vehicleData = data?.result?.list || [];
 
   if (vehicleData.length === 0) return null;
 
-  const formattedCategory = singularizeType(convertToLabel(category));
+  const formattedCategory = convertToLabel(category);
 
   return (
-    <MotionSection className="section-container wrapper">
-      <h2 className="section-heading">
-        Newly arrived{" "}
-        <div className="yellow-gradient inline-block rounded-xl px-1">
-          <span data-testid="formatted-category">{formattedCategory}</span>
-        </div>{" "}
-        for rent in{" "}
-        <div className="yellow-gradient inline-block rounded-xl px-2 capitalize">
-          <span data-testid="converted-label">{convertToLabel(state)}</span>
+    <MotionSection className="section-container mx-auto">
+      {/* Header section with View All button - respects container padding */}
+      <div className="ml-3 flex items-center justify-between lg:mb-4 lg:ml-2 lg:mt-8">
+        <div className={cn('mb-4 flex w-full flex-col gap-y-3 text-left')}>
+          <h2 className="heading-primary text-text-primary">
+            Newly arrived {formattedCategory}
+          </h2>
+          <p className="heading-secondary hidden lg:block">
+            Lorem ipsum dolor sit amet consectetur.
+          </p>
         </div>
-      </h2>
+        <ViewAllLinkButton
+          link={`/${country}/${state}/listing/${category}?filter=${VehicleHomeFilter.LATEST_MODELS}`}
+        />
+      </div>
 
-      <CarouselWrapper isButtonVisible>
-        {vehicleData.map((vehicle, index) => (
-          <VehicleMainCard
-            key={vehicle.vehicleId}
-            vehicle={vehicle}
-            index={index}
-          />
-        ))}
-      </CarouselWrapper>
-      <ViewAllButton
-        link={`/${state}/listing?category=${category}&filter=${VehicleHomeFilter.LATEST_MODELS}`}
-      />
+      {/* Full-width carousel section on mobile */}
+      <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen lg:relative lg:left-auto lg:right-auto lg:ml-0 lg:mr-0 lg:w-full">
+        <div className="mx-auto flex w-fit max-w-full snap-x snap-mandatory items-center justify-between gap-1 overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] lg:snap-none lg:px-1 xl:max-w-full [&::-webkit-scrollbar]:hidden">
+          {vehicleData.map((vehicle, index) => (
+            <div
+              key={vehicle.vehicleId}
+              className="flex-shrink-0 snap-start lg:snap-align-none"
+            >
+              <VehicleCard
+                vehicle={vehicle}
+                index={index}
+                country={country}
+                layoutType="carousel"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </MotionSection>
   );
 }

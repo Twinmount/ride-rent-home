@@ -11,12 +11,19 @@ import TopContainer from "./top-container/TopContainer";
 import RentalDetailsTab from "../../profile-specifications/RentalDetailsTab";
 import LeaseInfo from "../../profile-specifications/LeaseInfo";
 import SecurityDepositInfo from "../../profile-specifications/SecurityDepositInfo";
+import VehicleStats from '../../profile-specifications/VehicleStats';
+import VehicleDescription from '../../profile-specifications/VehicleDescription';
+import CompanySpecifications from '../../profile-specifications/CompanySpecifications';
+import RentNowButton from '@/components/common/RentNowButton/RentNowButton';
+import RentNowbuttonWide from '@/components/common/RentNowbuttonWide';
+import ShareLikeComponent from '../../profile-specifications/ShareLikeComponent';
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
+  country: string;
 };
 
-const ProfileCard = ({ profileData }: ProfileCardProps) => {
+const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
   const {
     formattedPhoneNumber,
     whatsappUrl,
@@ -26,14 +33,21 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
     isLease,
     securityDeposit,
     vehicleId,
-  } = useProfileData(profileData);
+  } = useProfileData(profileData, country);
 
-  const { company } = profileData;
+  const {
+    company,
+    vehicleTitleH1,
+    vehicleData: { state },
+  } = profileData;
 
   return (
     <MotionDiv className="profile-card">
-      <div className="profile-heading">
-        <h2 className="custom-heading">Listing Owner Details</h2>
+      <div className="align-center flex justify-between">
+        <div className="p-2 text-xl font-medium md:text-2xl">
+          {vehicleTitleH1}
+        </div>
+        <ShareLikeComponent />
       </div>
 
       {!isCompanyValid && (
@@ -41,27 +55,23 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
       )}
 
       {/* top container */}
-      <TopContainer
-        company={profileData.company}
-        companyProfilePageLink={companyProfilePageLink}
-      />
+      <VehicleStats state={state} />
 
       {/* profile specifications */}
-      <ProfileSpecification
-        specs={profileData.company.companySpecs}
-        rentalDetails={rentalDetails}
-      />
+      <VehicleDescription />
 
       {/* rental details tab */}
-      <RentalDetailsTab rentalDetails={rentalDetails} />
+      <RentalDetailsTab
+        rentalDetails={rentalDetails}
+        securityDeposit={securityDeposit}
+      />
 
       {/* Security Deposit */}
-      <SecurityDepositInfo securityDeposit={securityDeposit} />
 
       {/* Lease Info */}
-      <LeaseInfo isLease={isLease} />
+      <CompanySpecifications specs={company.companySpecs} />
 
-      <div className="bottom">
+      {/* <div className="bottom">
         <RentNowSection
           vehicleId={vehicleId}
           whatsappUrl={whatsappUrl}
@@ -69,6 +79,9 @@ const ProfileCard = ({ profileData }: ProfileCardProps) => {
           formattedPhoneNumber={formattedPhoneNumber}
           isPing={true}
         />
+      </div> */}
+      <div className="py-2">
+        <RentNowbuttonWide />
       </div>
     </MotionDiv>
   );

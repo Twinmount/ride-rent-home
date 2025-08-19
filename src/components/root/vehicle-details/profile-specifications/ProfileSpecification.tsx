@@ -23,10 +23,10 @@ const ProfileSpecification = ({
   return (
     <div className="flex flex-col justify-center gap-4">
       {/* specification list */}
-      <SpecificationGrid
+      {/* <SpecificationGrid
         specs={specs}
         getRentalAvailability={getRentalAvailability}
-      />
+      /> */}
 
       {/* card payments */}
       <CardPayments

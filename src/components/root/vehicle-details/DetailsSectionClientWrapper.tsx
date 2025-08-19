@@ -1,15 +1,16 @@
-"use client";
+'use client';
 
-import { useRef } from "react";
-import MobileProfileCard from "@/components/root/vehicle-details/profile-card/mobile-profile-card/MobileProfileCard";
-import useIntersectionObserver from "@/hooks/useIntersectionObserver";
-import { sendPortfolioVisit } from "@/lib/api/general-api";
-import { ProfileCardDataType } from "@/types/vehicle-details-types";
-import { useQuery } from "@tanstack/react-query";
+import { useRef } from 'react';
+import MobileProfileCard from '@/components/root/vehicle-details/profile-card/mobile-profile-card/MobileProfileCard';
+import useIntersectionObserver from '@/hooks/useIntersectionObserver';
+import { sendPortfolioVisit } from '@/lib/api/general-api';
+import { ProfileCardDataType } from '@/types/vehicle-details-types';
+import { useQuery } from '@tanstack/react-query';
 
 type DetailsSectionClientWrapperProps = {
   children: React.ReactNode;
   profileData: ProfileCardDataType;
+  country: string;
 };
 
 /**
@@ -29,6 +30,7 @@ type DetailsSectionClientWrapperProps = {
 const DetailsSectionClientWrapper = ({
   children,
   profileData,
+  country,
 }: DetailsSectionClientWrapperProps) => {
   const { vehicleCode } = profileData;
 
@@ -36,18 +38,20 @@ const DetailsSectionClientWrapper = ({
   const isInViewPort = useIntersectionObserver(detailsSectionRef);
 
   useQuery({
-    queryKey: ["portfolioVisit", vehicleCode],
-    queryFn: () => sendPortfolioVisit(vehicleCode),
+    queryKey: ['portfolioVisit', vehicleCode],
+    queryFn: () => sendPortfolioVisit(vehicleCode, country),
     staleTime: 0,
   });
 
   return (
-    <div ref={detailsSectionRef}>
+    <section ref={detailsSectionRef}>
       {children}
 
       {/* Conditionally render MobileProfileCard based on the visibility of DetailsSectionClientWrapper*/}
-      {isInViewPort && <MobileProfileCard profileData={profileData} />}
-    </div>
+      {isInViewPort && (
+        <MobileProfileCard profileData={profileData} country={country} />
+      )}
+    </section>
   );
 };
 

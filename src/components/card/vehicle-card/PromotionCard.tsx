@@ -1,20 +1,31 @@
-import { PromotionType } from "@/types";
-import Link from "next/link";
+import { RidePromotionCard } from '@/types';
+import Image from 'next/image';
+import Link from 'next/link';
 
-const PromotionCard = ({ promotionImage, promotionLink }: PromotionType) => {
+const PromotionCard = ({
+  image,
+  link,
+  cardTitle,
+  cardSubtitle,
+}: RidePromotionCard) => {
   return (
-    <Link href={promotionLink} target="_blank" rel="noopener noreferrer">
-      <div className="group relative h-[21rem] max-h-[21rem] w-full min-w-[15rem] max-w-[17rem] cursor-pointer overflow-hidden rounded-xl bg-white shadow-md">
-        <figure className="relative flex h-full w-full items-center justify-center">
-          <img
-            src={promotionImage}
-            alt="Promotion"
-            className="h-full w-full transform object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-          />
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
-            <span className="text-lg font-semibold text-white">Visit</span>
-          </div>
-        </figure>
+    <Link href={link} target="_blank" rel="noopener noreferrer">
+      <div className="group relative h-[7.5rem] w-[10.34rem] cursor-pointer overflow-hidden rounded-[0.5rem] shadow-lg transition-transform duration-300 hover:scale-105 md:h-[14rem] md:w-[16rem] lg:h-[18rem] lg:w-[20.2rem]">
+        {/* Background Image */}
+        <Image src={image} alt={cardTitle} fill className="object-cover" />
+
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+
+        {/* Text Content */}
+        <div className="absolute bottom-4 left-4 right-4 text-center">
+          <h3 className="text-xs font-semibold text-white md:text-base lg:text-xl">
+            {cardTitle}
+          </h3>
+          <p className="mt-1 text-[0.5rem] text-gray-200 lg:text-xs">
+            {cardSubtitle}
+          </p>
+        </div>
       </div>
     </Link>
   );

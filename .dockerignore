@@ -1,1 +1,30 @@
+<<<<<<< HEAD
 package-lock.json
+=======
+# Node modules and build output
+node_modules
+.next
+dist
+coverage
+
+# Git
+.git
+.gitignore
+
+# Docker and Compose files
+Dockerfile
+Dockerfile-dev
+Dockerfile-Prod
+docker-compose-dev.yml
+docker-compose-prod.yml
+
+# Logs
+*.log
+
+# package.json
+package-lock.json
+
+# IDE/config files
+.vscode
+*.tsbuildinfo
+>>>>>>> c59e81bf06631eb0743f028ec23a47d93a9150fb

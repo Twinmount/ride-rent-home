@@ -2,22 +2,20 @@ import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrappe
 import BlogCard from "@/components/card/blog/BlogCard";
 import { FetchBlogsResponse } from "@/types/blog.types";
 import BlogViewTracker from "./BlogViewTracker";
+import { API } from "@/utils/API";
 
-interface RequestBody {
+type RequestBody = {
   page: string;
   limit: string;
   sortOrder: "ASC" | "DESC";
-}
+};
 
-export default async function RecentlyPublished({
-  blogId,
-}: {
+type Props = {
   blogId: string;
-}) {
-  // Fetch the blogs data
-  const baseUrl =
-    process.env.API_URL || "https://prod-api.ride.rent/v1/riderent";
+  country: string;
+};
 
+export default async function RecentlyPublished({ blogId, country }: Props) {
   // Prepare the request body
   const requestBody: RequestBody = {
     page: "1",
@@ -25,14 +23,18 @@ export default async function RecentlyPublished({
     sortOrder: "DESC",
   };
 
-  // Fetch brand data from your API endpoint
-  const response = await fetch(`${baseUrl}/blogs/list`, {
-    method: "POST",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json",
+  // Fetch brand data from  API endpoint
+  const response = await API({
+    path: `/blogs/list`,
+    options: {
+      method: "POST",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
     },
-    body: JSON.stringify(requestBody),
+    country: country,
   });
 
   const data: FetchBlogsResponse = await response.json();
@@ -47,7 +49,7 @@ export default async function RecentlyPublished({
       </h2>
       <CarouselWrapper>
         {blogsData.map((blog, index) => (
-          <BlogCard key={index} blog={blog} />
+          <BlogCard key={index} blog={blog} country={country} />
         ))}
       </CarouselWrapper>
     </div>

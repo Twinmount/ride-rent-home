@@ -1,0 +1,63 @@
+import VehicleSeriesGrid from "@/components/root/series/directory/VehicleSeriesGrid";
+import CategoryDirectoryHeading from "@/components/root/series/directory/CategoryDirectoryHeading";
+
+import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
+import { Metadata } from "next";
+import { Suspense } from "react";
+import { generateCategoryDirectoryPageMetadata } from "./metadata";
+import { extractCategory } from "@/helpers";
+
+type PageProps = {
+  params: Promise<{
+    state: string;
+    category: string;
+    country: string;
+  }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+};
+
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
+
+  const { state, category, country } = params;
+
+  // remove '-for-rent' from category
+  const categoryValue = extractCategory(category);
+
+  return generateCategoryDirectoryPageMetadata({
+    state,
+    category: categoryValue,
+    country,
+  });
+}
+
+export default async function CategoryDirectoryPage(props: PageProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { state, category, country } = params;
+
+  const page = parseInt(searchParams.page || "1", 10);
+
+  const categoryValue = extractCategory(category);
+
+  return (
+    <div className="wrapper h-auto min-h-screen pt-6">
+      <CategoryDirectoryHeading
+        state={state}
+        category={categoryValue}
+        country={country}
+      />
+
+      <Suspense fallback={<SectionLoading />}>
+        {/* Async Server Component */}
+        <VehicleSeriesGrid
+          state={state}
+          category={categoryValue}
+          page={page}
+          country={country}
+        />
+      </Suspense>
+    </div>
+  );
+}

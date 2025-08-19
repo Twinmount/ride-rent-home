@@ -192,7 +192,24 @@ export default function Agent1() {
           </ul>
           <br />
         </li>
+        <li>
+          <strong>Promotional Communications:</strong>
+          <ul>
+            <li>
+              In alignment with our commitment to providing you with relevant
+              updates and business opportunities, Ride.Rent may periodically
+              reach out to you regarding our services, products, and offerings,
+              as well as those of our strategic business partners. These
+              communications may be delivered through various channels,
+              including email, SMS, MMS, phone calls, or other electronic media.
+              By engaging with our services, you acknowledge and agree to
+              receive such communications as part of our ongoing business
+              relationship.
+            </li>
+          </ul>
+          <br />
+        </li>
       </ol>
     </div>
-  )
+  );
 }

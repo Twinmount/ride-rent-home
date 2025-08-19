@@ -1,5 +1,6 @@
 import { generateBlogHref } from "@/helpers/blog-helpers";
 import { FetchBlogsResponse } from "@/types/blog.types";
+import { API } from "@/utils/API";
 import Link from "next/link";
 
 interface RequestBody {
@@ -8,11 +9,7 @@ interface RequestBody {
   sortOrder: "ASC" | "DESC";
 }
 
-export default async function BlogsList() {
-  // Fetch the blogs data
-  const baseUrl =
-    process.env.API_URL || "https://prod-api.ride.rent/v1/riderent";
-
+export default async function BlogsList({ country }: { country: string }) {
   // Prepare the request body
   const requestBody: RequestBody = {
     page: "1",
@@ -20,14 +17,18 @@ export default async function BlogsList() {
     sortOrder: "DESC",
   };
 
-  // Fetch brand data from your API endpoint
-  const response = await fetch(`${baseUrl}/blogs/list`, {
-    method: "POST",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json",
+  // Fetch brand data from API endpoint
+  const response = await API({
+    path: `/blogs/list`,
+    options: {
+      method: "POST",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
     },
-    body: JSON.stringify(requestBody),
+    country: country,
   });
 
   const data: FetchBlogsResponse = await response.json();
@@ -46,11 +47,11 @@ export default async function BlogsList() {
 
       <div className="mt-6 grid grid-cols-1 gap-2 max-md:pl-8 md:grid-cols-2 lg:grid-cols-3">
         {blogsData.map((data) => {
-          const href = generateBlogHref(data.blogTitle);
+          const href = generateBlogHref(country, data.blogTitle, data.blogId);
 
           return (
             <Link
-              href={`/${href}/${data.blogId}`}
+              href={href}
               key={data.blogId}
               className="flex w-fit items-center gap-1 font-semibold transition-colors hover:text-yellow"
             >

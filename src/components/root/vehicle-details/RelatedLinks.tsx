@@ -4,8 +4,8 @@ import { Link as LinkIcon } from "lucide-react";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import { ENV } from "@/config/env";
 
-export default async function RelatedLinks({ state }: { state: string }) {
-  const baseUrl = ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
+export default async function RelatedLinks({ state, country }: { state: string, country: string }) {
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA || ENV.NEXT_PUBLIC_API_URL_INDIA : ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
 
   // generating api URL
   const apiUrl = `${baseUrl}/recomented-links/list?page=1&limit=10&sortOrder=ASC&stateValue=${state}`;

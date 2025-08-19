@@ -13,18 +13,39 @@ import {
   FetchStatesResponse,
   FetchTypesResponse,
 } from "@/types";
+import { API } from "@/utils/API";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+interface FetchVehicleByFiltersParams {
+  query: string;
+  state?: string;
+  pageParam?: number;
+  limit?: string;
+  country: string;
+  coordinates: { latitude: number; longitude: number } | null;
+  category: string;
+  vehicleType?: string;
+  brand?: string;
+}
 
 // Function to fetch vehicles based on filters using a POST request
-export const FetchVehicleByFilters = async (
-  query: string,
-  state: string = "dubai",
-  pageParam: number = 1,
-  limit: string = "8", // Accept pageParam here directly
-): Promise<FetchVehicleCardsResponse> => {
+export const FetchVehicleByFilters = async ({
+  query,
+  state = "dubai",
+  pageParam = 1,
+  limit = "8",
+  country,
+  coordinates,
+  category,
+  vehicleType,
+  brand,
+}: FetchVehicleByFiltersParams): Promise<FetchVehicleCardsResponse> => {
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);
+
+  const BASE_URL =
+    country === "in"
+      ? process.env.NEXT_PUBLIC_API_URL_INDIA
+      : process.env.NEXT_PUBLIC_API_URL;
 
   // Utility function to safely parse parameter values
   const getParamValue = (key: string, defaultValue: string = ""): string => {
@@ -42,8 +63,103 @@ export const FetchVehicleByFilters = async (
     page: pageParam.toString(), // Use the pageParam directly
     limit, // Ensure it's a string
     sortOrder: "DESC",
+    category: category || "cars",
+    state: getParamValue("state", state),
+    coordinates,
+  };
+
+  // Extract price and selectedPeriod from URL params
+  const priceParam = getParamValue("price"); // Example: "45-250"
+  const selectedPeriod = getParamValue("period", "hour"); // Default to "hour"
+
+  // Only add priceRange if both price and period are available
+  if (priceParam && selectedPeriod) {
+    const [minPrice, maxPrice] = priceParam.split("-");
+    payload.priceRange = {
+      [selectedPeriod]: {
+        min: minPrice || "",
+        max: maxPrice || "",
+      },
+    };
+  }
+
+  // Add optional fields only if they are non-empty
+  const optionalFields = {
+    color: getParamArray("color"),
+    fuelType: getParamArray("fuelType"),
+    modelYear: getParamValue("modelYear"),
+    seats: getParamValue("seats"),
+    transmission: getParamArray("transmission"),
+    filter: getParamValue("filter"),
+    city: getParamValue("city"),
+  };
+
+  if (vehicleType) {
+    payload.vehicleTypes = [vehicleType];
+  }
+
+  if (brand) {
+    payload.brand = [brand];
+  }
+
+  Object.entries(optionalFields).forEach(([key, value]) => {
+    if (Array.isArray(value) && value.length > 0) {
+      payload[key] = value;
+    } else if (typeof value === "string" && value !== "") {
+      payload[key] = value;
+    }
+  });
+
+  // Send the POST request to the API
+  const response = await fetch(`${BASE_URL}/vehicle/filter`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch vehicles");
+  }
+
+  const data: FetchVehicleCardsResponse = await response.json();
+
+  return data; // Adheres to FetchVehicleCardsResponse type
+};
+
+export const FetchVehicleByFiltersGPS = async (
+  query: string,
+  state: string = "dubai",
+  limit: number, // Accept pageParam here directly
+  country: string,
+  coordinates: { latitude: number; longitude: number } | null,
+) => {
+  // Parse the query string to get filter values
+  const params = new URLSearchParams(query);
+
+  const BASE_URL =
+    country === "in"
+      ? process.env.NEXT_PUBLIC_API_URL_INDIA
+      : process.env.NEXT_PUBLIC_API_URL;
+
+  // Utility function to safely parse parameter values
+  const getParamValue = (key: string, defaultValue: string = ""): string => {
+    const value = params.get(key);
+    return value !== null ? value : defaultValue;
+  };
+
+  const getParamArray = (key: string): string[] => {
+    const value = params.get(key);
+    return value ? value.split(",") : [];
+  };
+
+  // Build the payload for the POST request
+  const payload: Record<string, any> = {
+    limit,
     category: getParamValue("category") || "cars",
     state: getParamValue("state", state),
+    coordinates,
   };
 
   // Extract price and selectedPeriod from URL params
@@ -84,7 +200,7 @@ export const FetchVehicleByFilters = async (
   });
 
   // Send the POST request to the API
-  const response = await fetch(`${BASE_URL}/vehicle/filter`, {
+  const response = await fetch(`${BASE_URL}/vehicle/filter-and-get-gps`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -96,14 +212,21 @@ export const FetchVehicleByFilters = async (
     throw new Error("Failed to fetch vehicles");
   }
 
-  const data: FetchVehicleCardsResponse = await response.json();
+  const data = await response.json();
 
   return data; // Adheres to FetchVehicleCardsResponse type
 };
 
 // send portfolio count post
-export const sendPortfolioVisit = async (vehicleId: string) => {
+export const sendPortfolioVisit = async (
+  vehicleId: string,
+  country: string,
+) => {
   try {
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
     // Send a POST request to the API with the vehicleId in the request body
     const response = await fetch(
       `${BASE_URL}/portfolio`, // Assuming '/portfolio' is the correct endpoint
@@ -139,8 +262,13 @@ export const sendPortfolioVisit = async (vehicleId: string) => {
 export const sendQuery = async (
   vehicleId: string,
   medium: "EMAIL" | "WHATSAPP" | "OTHER",
+  country: string,
 ) => {
   try {
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
     const url = `${BASE_URL}/queries`;
 
     const response = await fetch(url, {
@@ -163,9 +291,14 @@ export const sendQuery = async (
 export const fetchVehicleTypesByValue = async (
   vehicleCategoryValue: string,
   vehicleState: string,
+  country: string,
 ): Promise<FetchTypesResponse | undefined> => {
   try {
     // generating api URL
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}&hasVehicle=true&state=${vehicleState}`;
 
     const response = await fetch(apiUrl, {
@@ -193,12 +326,18 @@ export const fetchVehicleTypesByValue = async (
 export const fetchPriceRange = async ({
   state,
   category,
+  country,
 }: {
   state: string;
   category: string;
+  country: string;
 }): Promise<FetchPriceRangeResponse | undefined> => {
   try {
     // generating api URL
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/vehicle/price-range?state=${state}&category=${category}`;
 
     const response = await fetch(apiUrl);
@@ -220,10 +359,15 @@ export const fetchPriceRange = async ({
 };
 
 export const fetchSearchResults = async (
+  country: string,
   search: string,
   state?: string,
 ): Promise<FetchSearchResultsResponse | undefined> => {
   try {
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
     let url = `${BASE_URL}/vehicle/search?search=${encodeURIComponent(search)}`;
 
     if (state) {
@@ -244,13 +388,21 @@ export const fetchSearchResults = async (
   }
 };
 
-export const fetchStates = async (): Promise<
-  FetchStatesResponse | undefined
-> => {
+export const fetchStates = async ({
+  countryId,
+  country,
+}: {
+  countryId: string;
+  country: string;
+}): Promise<FetchStatesResponse | undefined> => {
   try {
-    const res = await fetch(`${BASE_URL}/states/list?hasVehicle=true`, {
-      method: "GET",
-      cache: "no-cache",
+    const res = await API({
+      path: `/states/list?hasVehicle=true&countryId=${countryId}`,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country,
     });
 
     if (!res.ok) {
@@ -261,8 +413,8 @@ export const fetchStates = async (): Promise<
 
     return data;
   } catch (error) {
-    handleError(error);
-    return undefined;
+    console.error("Error fetching states/locations:", error);
+    throw error;
   }
 };
 
@@ -271,8 +423,14 @@ export const fetchAllCities = async (
   stateId: string,
   limit: number = 30,
   page: number = 1,
+  country: string,
 ): Promise<FetchCitiesResponse> => {
   try {
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
+
     const response = await fetch(
       `${BASE_URL}/city/list?stateId=${stateId}&page=${page}&limit=${limit}`,
     );
@@ -295,8 +453,13 @@ export const fetchAllPaginatedCities = async (
   stateId: string,
   page: number = 1,
   limit: number = 30,
+  country: string,
 ): Promise<FetchCitiesResponse> => {
   try {
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
     const response = await fetch(
       `${BASE_URL}/city/paginated/list?state=${stateId}&page=${page}&limit=${limit}`,
     );
@@ -316,13 +479,16 @@ export const fetchAllPaginatedCities = async (
 
 export const fetchCategories = async (
   state: string,
+  country: string,
 ): Promise<FetchCategoriesResponse | undefined> => {
   try {
-    const url = `${BASE_URL}/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`;
-
-    const response = await fetch(url, {
-      method: "GET",
-      cache: "no-cache",
+    const response = await API({
+      path: `/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country,
     });
 
     if (!response.ok) {
@@ -340,8 +506,13 @@ export const fetchCategories = async (
 // fetch quick links by state value
 export const fetchQuickLinksByValue = async (
   stateValue: string,
+  country: string,
 ): Promise<FetchLinksResponse | undefined> => {
   try {
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/links/list?page=1&limit=20&sortOrder=ASC&stateValue=${stateValue}`;
 
     const response = await fetch(apiUrl, {
@@ -370,9 +541,14 @@ export const fetchQuickLinksByValue = async (
 export const fetchVehicleBrandsByValue = async (
   vehicleCategory: string,
   searchTerm: string,
+  country: string,
 ): Promise<FetchBrandsResponse | undefined> => {
   try {
     // generating api URL
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/vehicle-brand/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategory}&search=${searchTerm}`;
 
     const response = await fetch(apiUrl, {
@@ -394,11 +570,17 @@ export const fetchVehicleBrandsByValue = async (
   }
 };
 
-export const fetcheRealatedStateList = async (
+export const fetchRelatedStateList = async (
   state: string,
+  country: string,
 ): Promise<FetchRelatedStateResponse | undefined> => {
   try {
     // generating api URL
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
+
     const apiUrl = `${BASE_URL}/states/related-state?stateValue=${state}`;
 
     const response = await fetch(apiUrl, {
@@ -420,12 +602,18 @@ export const fetcheRealatedStateList = async (
   }
 };
 
-export const fetchExchangeRates = async (): Promise<
-  FetchExchangeRatesResponse | undefined
-> => {
+export const fetchExchangeRates = async ({
+  country,
+}: {
+  country: string;
+}): Promise<FetchExchangeRatesResponse | undefined> => {
   try {
     // generating api URL
-    const apiUrl = `${BASE_URL}/exchange-rates/today`;
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = `${BASE_URL}/exchange-rates/today${country === "in" ? "-inr" : "-aed"}`;
 
     const response = await fetch(apiUrl, {
       method: "GET",
@@ -448,18 +636,33 @@ export const fetchExchangeRates = async (): Promise<
 
 export const fetchFAQ = async (
   stateValue: string,
+  country: string,
 ): Promise<FetcFAQResponse | undefined> => {
   try {
-    // generating api URL
-    const apiUrl = `${BASE_URL}/state-faq/client/${stateValue}`;
-
-    const response = await fetch(apiUrl, {
-      method: "GET",
+    const response = await API({
+      path: `/state-faq/client/${stateValue}`,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country,
     });
 
     // Check if the response is OK
     if (!response.ok) {
-      throw new Error(`Failed to fetch exchange rates`);
+      return {
+        result: {
+          stateId: "",
+          faqs: [
+            {
+              question: "",
+              answer: "",
+            },
+          ],
+        },
+        status: "400",
+        statusCode: 400,
+      };
     }
 
     const data = await response.json();
@@ -469,5 +672,97 @@ export const fetchFAQ = async (
     console.error("Error in fetchVehicleTypes:", error);
     handleError(error);
     return undefined;
+  }
+};
+
+// Fetches a list of related vehicle series based on specified filters
+
+export const fetchRelatedSeriesList = async (
+  category: string,
+  brand: string,
+  state: string,
+  country: string,
+  series: string,
+): Promise<{ result: { relatedSeries: string[] } }> => {
+  // Determine base URL based on country
+  const BASE_URL =
+    country === "in"
+      ? process.env.NEXT_PUBLIC_API_URL_INDIA
+      : process.env.NEXT_PUBLIC_API_URL;
+
+  if (!BASE_URL) {
+    throw new Error("Base URL is not defined in environment variables");
+  }
+
+  // Construct query parameters
+  const queryParams = new URLSearchParams({
+    page: "1",
+    limit: "1000",
+    sortOrder: "DESC",
+    state: state,
+    category: category,
+    brand: brand,
+  });
+
+  const fullUrl = `${BASE_URL}/vehicle-series/list/all?${queryParams}`;
+
+  try {
+    const response = await fetch(fullUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${errorText}`,
+      );
+    }
+
+    const data = await response.json();
+
+    // Extract series data from API response
+    let seriesData: string[] = [];
+
+    if (data.status === "SUCCESS" && data.result && data.result.list) {
+      seriesData = data.result.list;
+    } else if (data.success && data.result && data.result.list) {
+      seriesData = data.result.list;
+    }
+
+    // Return empty array if no valid data found
+    if (!Array.isArray(seriesData) || seriesData.length === 0) {
+      return {
+        result: {
+          relatedSeries: [],
+        },
+      };
+    }
+
+    // Filter out the current series (case-insensitive)
+    const filteredSeries = seriesData.filter((seriesItem: string) => {
+      const itemLower = String(seriesItem).toLowerCase().trim();
+      const seriesToExcludeLower = series.toLowerCase().trim();
+      return itemLower !== seriesToExcludeLower;
+    });
+
+    return {
+      result: {
+        relatedSeries: filteredSeries,
+      },
+    };
+  } catch (error) {
+    // Handle specific error types
+    if (error instanceof TypeError && error.message.includes("fetch")) {
+      throw new Error("Network error: Unable to connect to the API");
+    } else if (error instanceof SyntaxError) {
+      throw new Error("Invalid JSON response from API");
+    } else {
+      throw new Error(
+        `Failed to fetch related series list: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    }
   }
 };

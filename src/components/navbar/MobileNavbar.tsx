@@ -1,7 +1,6 @@
 "use client";
 
 import PriceFilterDialog from "@/components/dialog/price-filter-dialog/PriceFilterDialog";
-import { SearchDialog } from "@/components/dialog/search-dialog/SearchDialog";
 import MobileNavbarWrapper from "./MobileNavbarWrapper";
 import useIsSmallScreen from "@/hooks/useIsSmallScreen";
 import { useParams } from "next/navigation";
@@ -22,13 +21,9 @@ const MobileNavbar = () => {
             <span className="text-xs text-gray-600">Price</span>
           </li>
 
-          <li className="flex-center w-fit flex-col gap-y-1">
+          {/* <li className="flex-center w-fit flex-col gap-y-1">
             <SearchDialog isMobileNav={true} state={state} />
             <span className="text-xs text-gray-600">search</span>
-          </li>
-
-          {/* <li>
-            <ProfileDropdown isMobile />
           </li> */}
         </ul>
       </div>
