@@ -11,7 +11,7 @@ const SecurityDepositInfo = ({ securityDeposit }: SecurityDepositInfoProps) => {
   return (
     <div className="mx-4 flex items-center justify-center text-sm text-text-secondary">
       {securityDeposit?.enabled ? (
-        <HandCoins className="w-2" />
+        <HandCoins className="h-5 w-5" />
       ) : (
         <CheckCircle className="w-4" />
       )}

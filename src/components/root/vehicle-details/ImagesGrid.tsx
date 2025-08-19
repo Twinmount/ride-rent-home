@@ -20,10 +20,6 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
   useEffect(() => {
     Fancybox.bind("[data-fancybox='gallery']", {
       Thumbs: true,
-      // Carousel: {
-      // infinite loop enable/disable
-      //   infinite: false,
-      // },
     });
     return () => Fancybox.destroy();
   }, []);
@@ -86,14 +82,14 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
   };
 
   const renderBottomRow = () => {
-    if (mediaItems.length <= 3) return null; // No bottom row if 3 or fewer total images
+    if (mediaItems.length <= 3) return null;
 
     return (
-      <div className="mt-4">
+      <div className="flex-shrink-0" style={{ height: '120px' }}>
         {/* Desktop view: 4 items (images 4-7) */}
-        <div className="hidden gap-2 md:flex">
+        <div className="hidden h-full gap-2 md:flex">
           {desktopBottomItems.map((item, index) => (
-            <div key={index} className="h-28 flex-1">
+            <div key={index} className="h-full flex-1">
               {index === desktopBottomItems.length - 1 &&
               desktopRemainingCount > 0
                 ? renderMedia(item, index + 3, desktopRemainingCount, true)
@@ -103,9 +99,9 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
         </div>
 
         {/* Mobile view: 3 items (images 2-4) */}
-        <div className="flex justify-center gap-2 md:hidden">
+        <div className="flex h-full justify-center gap-2 md:hidden">
           {mobileBottomItems.map((item, index) => (
-            <div key={index} className="h-20 w-1/3 flex-shrink-0">
+            <div key={index} className="h-full w-1/3 flex-shrink-0">
               {index === mobileBottomItems.length - 1 &&
               mobileRemainingCount > 0
                 ? renderMedia(item, index + 1, mobileRemainingCount, true)
@@ -118,11 +114,10 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
   };
 
   return (
-    <div className="relative w-full pr-3">
-      {/* Top Grid */}
-      <div className="w-full overflow-hidden rounded-xl md:h-[400px]">
+    <div className="relative flex h-full w-full flex-col pr-3">
+      {/* Top Grid - Takes remaining space after bottom row */}
+      <div className="w-full flex-1 overflow-hidden rounded-xl">
         {/* === One media === */}
-        {/* Desktop: Show first image, Mobile: Show first image */}
         {desktopTopGridItems.length === 1 && (
           <div className="h-full w-full">
             {renderMedia(desktopTopGridItems[0], 0)}
@@ -130,13 +125,12 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
         )}
 
         {/* === Two media items === */}
-        {/* Desktop: Show both images, Mobile: Show only first image */}
         {desktopTopGridItems.length === 2 && (
           <>
             {/* Desktop view */}
-            <div className="hidden h-full md:flex">
+            <div className="hidden h-full gap-2 md:flex">
               {desktopTopGridItems.map((item, i) => (
-                <div key={i} className="h-full w-1/2">
+                <div key={i} className="h-full flex-1">
                   {renderMedia(item, i)}
                 </div>
               ))}
@@ -149,25 +143,24 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
         )}
 
         {/* === Three or more media items === */}
-        {/* Desktop: Show 3 images in grid, Mobile: Show only first image */}
         {desktopTopGridItems.length >= 3 && (
           <>
             {/* Desktop view */}
             <div className="hidden h-full flex-row gap-2 md:flex">
               {/* Column 1: First item full height */}
-              <div className="flex-1">
+              <div className="h-full flex-1">
                 {renderMedia(desktopTopGridItems[0], 0)}
               </div>
 
               {/* Column 2: two stacked items */}
-              <div className="flex flex-1 flex-col">
+              <div className="flex h-full flex-1 flex-col gap-2">
                 {desktopTopGridItems[1] && (
-                  <div className="h-1/2">
+                  <div className="flex-1">
                     {renderMedia(desktopTopGridItems[1], 1)}
                   </div>
                 )}
                 {desktopTopGridItems[2] && (
-                  <div className="h-1/2 pt-2">
+                  <div className="flex-1">
                     {renderMedia(desktopTopGridItems[2], 2)}
                   </div>
                 )}
@@ -181,8 +174,8 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
         )}
       </div>
 
-      {/* Bottom Row */}
-      {renderBottomRow()}
+      {/* Bottom Row - Fixed height, appears only when more than 3 images */}
+      {mediaItems.length > 3 && <div className="mt-4">{renderBottomRow()}</div>}
 
       {/* Hidden Lightbox Anchors for remaining images */}
       <div className="hidden">
