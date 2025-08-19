@@ -2,6 +2,7 @@ import qs from 'query-string';
 import { RemoveUrlQueryParams, StateType, UrlQueryParams } from '@/types';
 import {
   CardRentalDetails,
+  FeatureType,
   MapCardRentalDetailsType,
 } from '@/types/vehicle-types';
 import { VehicleDetailsPageType } from '@/types/vehicle-details-types';
@@ -630,4 +631,20 @@ export const getTypewriterStrings = (category: string): string[] => {
   ];
 
   return categoryMap[category] || fallbackArray;
+};
+
+// Helper function to check if Show All button should be displayed for Features in the vehicle details page
+// return true if there are more than 4 categories as well as any of the categories sub array
+export const shouldShowDesktopFeaturesButton = (
+  features: Record<string, FeatureType[]>
+): boolean => {
+  const categories = Object.entries(features);
+
+  const isMoreThanFourCategories = categories.length > 4;
+  const isLargeFeatureList = categories.some(
+    ([_, featureList]) => featureList.length > 15
+  );
+
+  // return true if there is more than 4 categories as well as  at least one category has more than 15 items
+  return isMoreThanFourCategories || isLargeFeatureList;
 };

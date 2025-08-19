@@ -1,17 +1,9 @@
-import "./MobileProfileCard.scss";
-import { useState } from "react";
-import ProfileSpecification from "@/components/root/vehicle-details/profile-specifications/ProfileSpecification";
-import { ProfileCardDataType } from "@/types/vehicle-details-types";
-import RentNowSection from "@/components/common/rent-now/RentNowSection";
-import RentalDetailsTab from "../../profile-specifications/RentalDetailsTab";
-import SecurityDepositInfo from "../../profile-specifications/SecurityDepositInfo";
-import useProfileData from "@/hooks/useProfileCardData";
-import LeaseInfo from "../../profile-specifications/LeaseInfo";
-import ExpandableHeader from "./expandable-header/ExpandableHeader";
-import MobileProfileInfo from "./mobile-profile-info/MobileProfileInfo";
-import Overlay from "./overlay/Overlay";
-import MobileProfileCardWrapper from "./MobileProfileCardWrapper";
-import RentalPriceHeader from "../../profile-specifications/RentalPriceHeader";
+import { useState } from 'react';
+import { ProfileCardDataType } from '@/types/vehicle-details-types';
+import useProfileData from '@/hooks/useProfileCardData';
+import AnimatedPriceDisplay from '../../profile-specifications/AnimatedPriceDisplay';
+import { usePriceConverter } from '@/hooks/usePriceConverter';
+import RentNowButtonWide from '@/components/common/RentNowbuttonWide';
 
 type MobileProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -22,84 +14,94 @@ const MobileProfileCard = ({
   profileData,
   country,
 }: MobileProfileCardProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { rentalDetails } = useProfileData(profileData, country);
 
-  const {
-    formattedPhoneNumber,
-    whatsappUrl,
-    companyProfilePageLink,
-    rentalDetails,
-    isLease,
-    securityDeposit,
-    vehicleId,
-    company,
-  } = useProfileData(profileData, country);
+  const { convert } = usePriceConverter();
 
-  // Toggle function
-  const handleToggle = () => {
-    setIsExpanded((prev) => !prev);
+  // Filter and structure enabled rental periods (same logic as RentalDetailsTab)
+  const enabledRentalPeriods = [
+    { period: 'Hour', details: rentalDetails.hour },
+    { period: 'Day', details: rentalDetails.day },
+    { period: 'Week', details: rentalDetails.week },
+    { period: 'Month', details: rentalDetails.month },
+  ].filter((rental) => rental.details.enabled);
+
+  // Initialize with first available rental period (same logic as RentalDetailsTab)
+  const [selectedPeriod, setSelectedPeriod] = useState(enabledRentalPeriods[0]);
+
+  // Handle tab switching (same logic as RentalDetailsTab)
+  const handleTabChange = (rental: (typeof enabledRentalPeriods)[0]) => {
+    setSelectedPeriod(rental);
   };
+
+  // Extract minBookingHours for hourly rentals (same logic as RentalDetailsTab)
+  const getMinBookingHours = (period: string, details: any) => {
+    if (period === 'Hour' && 'minBookingHours' in details) {
+      return details.minBookingHours;
+    }
+    return undefined;
+  };
+
+  // Render period labels (same logic as RentalDetailsTab)
+  const getPeriodLabel = (period: string) => {
+    const labels = {
+      Hour: 'Hourly',
+      Day: 'Daily',
+      Week: 'Weekly',
+      Month: 'Monthly',
+    };
+    return labels[period as keyof typeof labels];
+  };
+
+  // Early return if no selected period
+  if (!selectedPeriod) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
-      {/* Overlay */}
-      <Overlay isVisible={isExpanded} setIsExpanded={setIsExpanded} />
-
-      <MobileProfileCardWrapper
-        isExpanded={isExpanded}
-        setIsExpanded={setIsExpanded}
-      >
-        {/* Expandable Header */}
-        <ExpandableHeader
-          isExpanded={isExpanded}
-          onToggle={handleToggle}
-          heading={
-            <RentalPriceHeader
-              rentalDetails={rentalDetails}
-              className="m-1 rounded-full bg-[#ffa733] px-3 text-sm font-medium"
-            />
-          }
-          isUnavailable={!company.companyName || !company.companyProfile}
-        />
-
-        {/* profile */}
-        <div className="top">
-          {/* left */}
-          <MobileProfileInfo
-            companyProfilePageLink={companyProfilePageLink}
-            company={company}
+      {/* Mobile Profile Card - Simple Layout */}
+      <div className="fixed bottom-2 left-1/2 z-50 flex w-[96%] max-w-sm -translate-x-1/2 transform flex-col gap-3 rounded-xl bg-white px-4 py-3 shadow-[0px_0px_20px_rgba(0,0,0,0.5)] lg:hidden">
+        {/* Price Display */}
+        <div className="text-center">
+          <AnimatedPriceDisplay
+            price={selectedPeriod.details.rentInAED}
+            period={selectedPeriod.period}
+            minBookingHours={getMinBookingHours(
+              selectedPeriod.period,
+              selectedPeriod.details
+            )}
+            convert={convert}
           />
+        </div>
 
-          {/* right -  rent now button */}
-          <div className="profile-right">
-            <div className="contact-container">
-              <RentNowSection
-                vehicleId={vehicleId}
-                whatsappUrl={whatsappUrl}
-                email={company.contactDetails?.email}
-                formattedPhoneNumber={formattedPhoneNumber}
-                isPing={true}
-                isMobileProfileCard={true}
-              />
-            </div>
+        {/* Period Tabs */}
+        <div className="flex justify-center">
+          <div className="flex items-center gap-2">
+            {enabledRentalPeriods.map((rental, index) => (
+              <button
+                key={index}
+                className={`rounded-full border px-3 py-1.5 text-xs font-normal transition-all duration-200 ${
+                  selectedPeriod.period === rental.period
+                    ? 'bg-orange text-white'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                }`}
+                onClick={() => handleTabChange(rental)}
+              >
+                {getPeriodLabel(rental.period)}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Specifications */}
-        <ProfileSpecification
-          specs={company.companySpecs}
-          rentalDetails={rentalDetails}
+        {/* Rent Now Button */}
+        <RentNowButtonWide
+          onClick={() => {
+            // Handle rent now click
+            console.log('Rent now clicked');
+          }}
         />
-
-        {/* rental details tab */}
-        <RentalDetailsTab rentalDetails={rentalDetails} />
-
-        {/* Security Deposit */}
-        <SecurityDepositInfo securityDeposit={securityDeposit} />
-
-        {/* Lease Info */}
-        <LeaseInfo isLease={isLease} />
-      </MobileProfileCardWrapper>
+      </div>
     </>
   );
 };
