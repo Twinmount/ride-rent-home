@@ -54,7 +54,7 @@ const OldProfileCard = ({ profileData, country }: ProfileCardProps) => {
       />
 
       {/* rental details tab */}
-      <RentalDetailsTab rentalDetails={rentalDetails} />
+      {/* <RentalDetailsTab rentalDetails={rentalDetails} /> */}
 
       {/* Security Deposit */}
       <SecurityDepositInfo securityDeposit={securityDeposit} />

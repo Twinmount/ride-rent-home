@@ -2,8 +2,10 @@ const description = "Lorem Ipsum is simply dummy text of the printing and typese
 
 const VehicleDescription = () => {
   return (
-    <div className="text-text-secondary text-base m-2">{description}</div>
-  )
+    <div className="m-2 text-sm text-text-secondary md:text-base">
+      {description}
+    </div>
+  );
 }
 
 export default VehicleDescription

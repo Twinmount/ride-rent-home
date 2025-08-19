@@ -13,6 +13,10 @@ import LeaseInfo from "../../profile-specifications/LeaseInfo";
 import SecurityDepositInfo from "../../profile-specifications/SecurityDepositInfo";
 import VehicleStats from '../../profile-specifications/VehicleStats';
 import VehicleDescription from '../../profile-specifications/VehicleDescription';
+import CompanySpecifications from '../../profile-specifications/CompanySpecifications';
+import RentNowButton from '@/components/common/RentNowButton/RentNowButton';
+import RentNowbuttonWide from '@/components/common/RentNowbuttonWide';
+import ShareLikeComponent from '../../profile-specifications/ShareLikeComponent';
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -39,7 +43,12 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
 
   return (
     <MotionDiv className="profile-card">
-      <div className="p-1 text-2xl font-medium">{vehicleTitleH1}</div>
+      <div className="align-center flex justify-between">
+        <div className="p-2 text-xl font-medium md:text-2xl">
+          {vehicleTitleH1}
+        </div>
+        <ShareLikeComponent />
+      </div>
 
       {!isCompanyValid && (
         <p className="disabled-text">This vehicle is currently unavailable.</p>
@@ -60,9 +69,9 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
       {/* Security Deposit */}
 
       {/* Lease Info */}
-      {/* <LeaseInfo isLease={isLease} /> */}
+      <CompanySpecifications specs={company.companySpecs} />
 
-      <div className="bottom">
+      {/* <div className="bottom">
         <RentNowSection
           vehicleId={vehicleId}
           whatsappUrl={whatsappUrl}
@@ -70,6 +79,9 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
           formattedPhoneNumber={formattedPhoneNumber}
           isPing={true}
         />
+      </div> */}
+      <div className="py-2">
+        <RentNowbuttonWide />
       </div>
     </MotionDiv>
   );

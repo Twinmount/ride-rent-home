@@ -118,7 +118,7 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
   };
 
   return (
-    <div className="relative w-full p-4">
+    <div className="relative w-full pr-3">
       {/* Top Grid */}
       <div className="w-full overflow-hidden rounded-xl md:h-[400px]">
         {/* === One media === */}
@@ -160,7 +160,7 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
               </div>
 
               {/* Column 2: two stacked items */}
-              <div className="m-2 flex flex-1 flex-col">
+              <div className="flex flex-1 flex-col">
                 {desktopTopGridItems[1] && (
                   <div className="h-1/2">
                     {renderMedia(desktopTopGridItems[1], 1)}

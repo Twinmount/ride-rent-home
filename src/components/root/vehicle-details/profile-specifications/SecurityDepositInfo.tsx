@@ -9,7 +9,7 @@ type SecurityDepositInfoProps = {
 
 const SecurityDepositInfo = ({ securityDeposit }: SecurityDepositInfoProps) => {
   return (
-    <div className="m-4 flex items-center justify-center text-sm text-text-secondary">
+    <div className="mx-4 flex items-center justify-center text-sm text-text-secondary">
       {securityDeposit?.enabled ? (
         <HandCoins className="w-2" />
       ) : (
