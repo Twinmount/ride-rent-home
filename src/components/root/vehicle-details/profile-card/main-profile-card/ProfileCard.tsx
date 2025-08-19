@@ -2,19 +2,13 @@
 
 import "./ProfileCard.scss";
 
-import ProfileSpecification from "@/components/root/vehicle-details/profile-specifications/ProfileSpecification";
-import MotionDiv from "@/components/general/framer-motion/MotionDiv";
-import RentNowSection from "@/components/common/rent-now/RentNowSection";
-import { ProfileCardDataType } from "@/types/vehicle-details-types";
-import useProfileData from "@/hooks/useProfileCardData";
-import TopContainer from "./top-container/TopContainer";
-import RentalDetailsTab from "../../profile-specifications/RentalDetailsTab";
-import LeaseInfo from "../../profile-specifications/LeaseInfo";
-import SecurityDepositInfo from "../../profile-specifications/SecurityDepositInfo";
+import MotionDiv from '@/components/general/framer-motion/MotionDiv';
+import { ProfileCardDataType } from '@/types/vehicle-details-types';
+import useProfileData from '@/hooks/useProfileCardData';
+import RentalDetailsTab from '../../profile-specifications/RentalDetailsTab';
 import VehicleStats from '../../profile-specifications/VehicleStats';
 import VehicleDescription from '../../profile-specifications/VehicleDescription';
 import CompanySpecifications from '../../profile-specifications/CompanySpecifications';
-import RentNowButton from '@/components/common/RentNowButton/RentNowButton';
 import RentNowbuttonWide from '@/components/common/RentNowbuttonWide';
 import ShareLikeComponent from '../../profile-specifications/ShareLikeComponent';
 
@@ -24,16 +18,10 @@ type ProfileCardProps = {
 };
 
 const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
-  const {
-    formattedPhoneNumber,
-    whatsappUrl,
-    companyProfilePageLink,
-    isCompanyValid,
-    rentalDetails,
-    isLease,
-    securityDeposit,
-    vehicleId,
-  } = useProfileData(profileData, country);
+  const { isCompanyValid, rentalDetails, securityDeposit } = useProfileData(
+    profileData,
+    country
+  );
 
   const {
     company,
@@ -57,7 +45,7 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
       {/* top container */}
       <VehicleStats state={state} />
 
-      {/* profile specifications */}
+      {/* vehicle specifications */}
       <VehicleDescription />
 
       {/* rental details tab */}
@@ -66,9 +54,6 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
         securityDeposit={securityDeposit}
       />
 
-      {/* Security Deposit */}
-
-      {/* Lease Info */}
       <CompanySpecifications specs={company.companySpecs} />
 
       {/* <div className="bottom">

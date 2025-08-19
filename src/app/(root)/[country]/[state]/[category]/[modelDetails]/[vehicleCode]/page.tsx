@@ -17,7 +17,6 @@ import { restoreVehicleCodeFormat } from '.';
 import { ENV } from '@/config/env';
 import { Suspense } from 'react';
 import SectionLoading from '@/components/skelton/section-loading/SectionLoading';
-import { VehicleInfo } from '@/components/root/vehicle-details/VehicleInfo';
 import JsonLd from '@/components/common/JsonLd';
 import ImagesGrid from '@/components/root/vehicle-details/ImagesGrid';
 import { generateModelDetailsUrl } from '@/helpers';
@@ -206,8 +205,8 @@ export default async function VehicleDetails(props: ParamsProps) {
           country={country}
         >
           {/* Vehicle Images Grid */}
-          <div className="flex-center flex-col gap-2 lg:flex-row">
-            <div className="w-full lg:w-[60%]">
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
+            <div className="w-full md:h-[650px] lg:w-[60%]">
               <ImagesGrid
                 mediaItems={mediaSourceList}
                 imageAlt={vehicle?.vehicleTitleH1}

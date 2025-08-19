@@ -109,7 +109,7 @@ const AnimatedPriceDisplay = ({
   const isNumber = (char: string) => /[0-9]/.test(char);
 
   return (
-    <div className="text-2xl font-bold text-yellow overflow-hidden my-3 mb-5 md:mb-0  md:text-left text-center">
+    <div className="mb-5 mt-1 overflow-hidden text-center text-2xl font-bold text-yellow md:mb-0 md:text-left">
       <AnimatePresence mode="wait">
         <motion.div
           key={key}
@@ -117,7 +117,6 @@ const AnimatedPriceDisplay = ({
           initial="hidden"
           animate="visible"
           exit="exit"
-          
           style={{ perspective: 1000 }}
         >
           {characters.map((char, index) => (
@@ -126,11 +125,12 @@ const AnimatedPriceDisplay = ({
               variants={isNumber(char) ? numberVariants : characterVariants}
               className={`inline-block ${isNumber(char) ? 'font-black' : ''}`}
               style={{
-                transformOrigin: "center center",
-                transformStyle: "preserve-3d"
+                transformOrigin: 'center center',
+                transformStyle: 'preserve-3d',
               }}
             >
-              {char === ' ' ? '\u00A0' : char} {/* Replace space with non-breaking space */}
+              {char === ' ' ? '\u00A0' : char}{' '}
+              {/* Replace space with non-breaking space */}
             </motion.span>
           ))}
         </motion.div>

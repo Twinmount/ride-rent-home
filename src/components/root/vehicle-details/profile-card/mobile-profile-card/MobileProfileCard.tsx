@@ -63,28 +63,35 @@ const MobileProfileCard = ({
       {/* Mobile Profile Card - Simple Layout */}
       <div className="fixed bottom-2 left-1/2 z-50 flex w-[96%] max-w-sm -translate-x-1/2 transform flex-col gap-3 rounded-xl bg-white px-4 py-3 shadow-[0px_0px_20px_rgba(0,0,0,0.5)] lg:hidden">
         {/* Price Display */}
-        <div className="text-center">
-          <AnimatedPriceDisplay
-            price={selectedPeriod.details.rentInAED}
-            period={selectedPeriod.period}
-            minBookingHours={getMinBookingHours(
-              selectedPeriod.period,
-              selectedPeriod.details
-            )}
-            convert={convert}
+        <div className="flex items-center justify-between border-b-2 border-[D9DEE0]">
+          <div className="mt-2">
+            <AnimatedPriceDisplay
+              price={selectedPeriod.details.rentInAED}
+              period={selectedPeriod.period}
+              minBookingHours={getMinBookingHours(
+                selectedPeriod.period,
+                selectedPeriod.details
+              )}
+              convert={convert}
+            />
+          </div>
+
+          <RentNowButtonWide
+            variant="compact"
+            onClick={() => console.log('Rent now clicked')}
           />
         </div>
 
         {/* Period Tabs */}
-        <div className="flex justify-center">
+        <div className="flex justify-center py-3">
           <div className="flex items-center gap-2">
             {enabledRentalPeriods.map((rental, index) => (
               <button
                 key={index}
                 className={`rounded-full border px-3 py-1.5 text-xs font-normal transition-all duration-200 ${
                   selectedPeriod.period === rental.period
-                    ? 'bg-orange text-white'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                    ? 'hover:bg-orange-dark bg-orange text-white'
+                    : 'border-gray-300 bg-white text-text-primary hover:border-gray-400'
                 }`}
                 onClick={() => handleTabChange(rental)}
               >
@@ -93,14 +100,6 @@ const MobileProfileCard = ({
             ))}
           </div>
         </div>
-
-        {/* Rent Now Button */}
-        <RentNowButtonWide
-          onClick={() => {
-            // Handle rent now click
-            console.log('Rent now clicked');
-          }}
-        />
       </div>
     </>
   );

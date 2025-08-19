@@ -44,10 +44,7 @@ export async function generateVehicleMetadata(
   state: string,
   category: string,
   vehicleCode: string,
-<<<<<<< HEAD:src/app/(root)/[state]/[category]/[modelDetails]/[vehicleCode]/metadata.ts
-=======
   country: string
->>>>>>> c59e81bf06631eb0743f028ec23a47d93a9150fb:src/app/(root)/[country]/[state]/[category]/[modelDetails]/[vehicleCode]/metadata.ts
 ): Promise<Metadata> {
   const data = await fetchVehicleMetaData(vehicleCode, country);
 
@@ -68,18 +65,10 @@ export async function generateVehicleMetadata(
   const metaTitle = vehicle?.vehicleMetaTitle || title;
   const metaDescription = vehicle?.vehicleMetaDescription || description;
 
-<<<<<<< HEAD:src/app/(root)/[state]/[category]/[modelDetails]/[vehicleCode]/metadata.ts
-  // formatted vehicle title
-  const vehicleTitle = generateModelDetailsUrl(vehicle.vehicleTitle);
-
-  // dynamic link to  vehicle details page
-  const canonicalUrl = `https://ride.rent/${state}/${category}/${vehicleTitle}/${vehicleCode}`;
-=======
   const vehicleTitle = generateModelDetailsUrl(vehicle.vehicleTitle);
 
   // dynamic link to  vehicle details page
   const canonicalUrl = `https://ride.rent/${country}/${state}/${category}/${vehicleTitle}/${vehicleCode}`;
->>>>>>> c59e81bf06631eb0743f028ec23a47d93a9150fb:src/app/(root)/[country]/[state]/[category]/[modelDetails]/[vehicleCode]/metadata.ts
   const ogImage = vehicle.vehiclePhoto;
 
   return {
@@ -101,11 +90,7 @@ export async function generateVehicleMetadata(
       ],
     },
     twitter: {
-<<<<<<< HEAD:src/app/(root)/[state]/[category]/[modelDetails]/[vehicleCode]/metadata.ts
-      card: "summary_large_image",
-=======
       card: 'summary_large_image',
->>>>>>> c59e81bf06631eb0743f028ec23a47d93a9150fb:src/app/(root)/[country]/[state]/[category]/[modelDetails]/[vehicleCode]/metadata.ts
       title: metaTitle,
       description: metaDescription,
       images: [ogImage],
