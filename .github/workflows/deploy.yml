@@ -37,15 +37,9 @@ jobs:
             # Stop old container
             docker compose down ride-rent-home || true
 
-<<<<<<< HEAD
             # Build fresh image without cache
             docker compose build --no-cache ride-rent-home
 
             # Start container in detached mode
             docker compose up -d ride-rent-home
           EOF
-=======
-            # Start containers in detached mode
-            docker compose -f docker-compose-dev.yml up -d
-          EOF
->>>>>>> 742c277bc765728fcad60be80005e886b8bc06cf
