@@ -53,13 +53,8 @@ export async function generateCompanyMetadata(
   const metaTitle = companyDetails?.companyMetaTitle || title;
   const metaDescription = companyDetails?.companyMetaDescription || description;
 
-<<<<<<< HEAD:src/app/(root)/profile/[companyName]/[companyId]/profile-metadata.ts
-  const formattedCompanyName = formatToUrlFriendly(companyName);
-  const companyProfilePageLink = `profile/${formattedCompanyName}/${companyId}`;
-=======
   const formattedCompanyName = convertToValue(companyName);
   const companyProfilePageLink = `/profile/${formattedCompanyName}/${companyId}`;
->>>>>>> c59e81bf06631eb0743f028ec23a47d93a9150fb:src/app/(root)/[country]/profile/[companyName]/[companyId]/profile-metadata.ts
 
   const canonicalUrl = `https://ride.rent/${country}${companyProfilePageLink}`;
   const ogImage = companyDetails?.companyLogo || '/assets/icons/ride-rent.png';
@@ -83,11 +78,7 @@ export async function generateCompanyMetadata(
       ],
     },
     twitter: {
-<<<<<<< HEAD:src/app/(root)/profile/[companyName]/[companyId]/profile-metadata.ts
-      card: "summary_large_image",
-=======
       card: 'summary_large_image',
->>>>>>> c59e81bf06631eb0743f028ec23a47d93a9150fb:src/app/(root)/[country]/profile/[companyName]/[companyId]/profile-metadata.ts
       title: metaTitle,
       description: metaDescription,
       images: [ogImage],

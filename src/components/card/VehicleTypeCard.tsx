@@ -1,10 +1,3 @@
-<<<<<<< HEAD:src/components/root/landing/vehicle-types-carousel/VehicleTypeCard.tsx
-import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
-import Image from "next/image";
-import { VehicleTypeType } from "@/types";
-import { ENV } from "@/config/env";
-import { easeOut } from "framer-motion";
-=======
 'use client';
 
 import { MotionDivElm } from '@/components/general/framer-motion/MotionElm';
@@ -12,7 +5,6 @@ import Image from 'next/image';
 import { VehicleTypeType } from '@/types';
 import { ENV } from '@/config/env';
 import { easeOut } from 'framer-motion';
->>>>>>> c59e81bf06631eb0743f028ec23a47d93a9150fb:src/components/card/VehicleTypeCard.tsx
 
 export function VehicleTypeCard({
   type,
