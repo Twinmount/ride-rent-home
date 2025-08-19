@@ -1,4 +1,3 @@
-import ProfileCard from '@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard';
 import Description from '@/components/root/vehicle-details/description/Description';
 import Specification from '@/components/root/vehicle-details/specification/Specification';
 import DetailsSectionClientWrapper from '@/components/root/vehicle-details/DetailsSectionClientWrapper';
@@ -24,6 +23,7 @@ import ImagesGrid from '@/components/root/vehicle-details/ImagesGrid';
 import { generateModelDetailsUrl } from '@/helpers';
 import SupplierDetails from '@/components/root/vehicle-details/SupplierDetails';
 import VehicleHeading from '@/components/root/vehicle-details/VehicleHeading';
+import ProfileCard from '@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard';
 
 type ParamsProps = {
   params: Promise<{
@@ -206,17 +206,21 @@ export default async function VehicleDetails(props: ParamsProps) {
           country={country}
         >
           {/* Vehicle Images Grid */}
-          <div className="flex-center flex-col gap-4 lg:flex-row">
-            <ImagesGrid
-              mediaItems={mediaSourceList}
-              imageAlt={vehicle?.vehicleTitleH1}
-            />
+          <div className="flex-center flex-col gap-2 lg:flex-row">
+            <div className="w-full lg:w-[60%]">
+              <ImagesGrid
+                mediaItems={mediaSourceList}
+                imageAlt={vehicle?.vehicleTitleH1}
+              />
+            </div>
 
-            <ProfileCard profileData={ProfileCardData} country={country} />
+            <div className="w-full py-2 lg:w-[40%]">
+              <ProfileCard profileData={ProfileCardData} country={country} />
+            </div>
           </div>
 
           {/* vehicle information */}
-          <VehicleInfo
+          {/* <VehicleInfo
             vehicleId={vehicle?.vehicleId}
             modelName={vehicle?.modelName}
             stateLabel={vehicle?.state.label}
@@ -226,7 +230,7 @@ export default async function VehicleDetails(props: ParamsProps) {
             vehicleSpecification={vehicle?.vehicleSpecification}
             additionalVehicleTypes={vehicle?.additionalVehicleTypes}
             cities={vehicle?.cities}
-          />
+          /> */}
 
           {/* Specifications and Features */}
           <div className="flex-center mt-8 w-full flex-col gap-4 xl:mt-4 xl:flex-row xl:items-stretch">
