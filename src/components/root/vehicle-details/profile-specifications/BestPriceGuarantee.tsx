@@ -81,7 +81,7 @@ const BestPriceGuarantee = () => {
       >
         <button
           onClick={openModal}
-          className="text-orange-500 hover:text-orange-600 group flex items-center gap-x-1 transition-colors"
+          className="text-orange-500 hover:text-orange-600 flex items-center gap-x-1 transition-colors"
         >
           {/* Shield Icon - slides in from left */}
           <motion.div
@@ -89,31 +89,17 @@ const BestPriceGuarantee = () => {
             initial="hidden"
             animate="visible"
           >
-            <MdOutlineVerifiedUser className="h-5 w-5 text-yellow" />
+            <MdOutlineVerifiedUser className="h-4 w-4 text-yellow" />
           </motion.div>
 
-          {/* Text with Metallic Glow - slides in from right */}
+          {/* Text - slides in from right */}
           <motion.span
-            className="relative text-sm font-medium md:text-lg"
+            className="text-sm font-medium text-yellow underline"
             variants={textVariants}
             initial="hidden"
             animate="visible"
           >
-            <motion.span
-              variants={metallicGlowVariants}
-              animate="glow"
-              className="relative bg-gradient-to-r bg-clip-text"
-              style={{
-                WebkitBackgroundClip: 'text',
-                color: '#ffa733',
-                backgroundImage:
-                  'linear-gradient(45deg, #ea7b0b 0%, #b45309 25%, #8b4513 50%, #d2691e 75%, #ea7b0b 100%)',
-                backgroundSize: '200% 100%',
-                animation: 'shimmer 5s ease-in-out infinite',
-              }}
-            >
-              Best Price Guarantee
-            </motion.span>
+            Best Price Guarantee
           </motion.span>
         </button>
       </motion.div>
