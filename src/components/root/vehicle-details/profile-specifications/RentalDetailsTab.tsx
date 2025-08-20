@@ -75,7 +75,7 @@ const RentalDetailsTab = ({
             {enabledRentalPeriods.map((rental, index) => (
               <button
                 key={index}
-                className={`rounded-full border px-2 py-2 text-xs font-normal transition-all duration-200 ${
+                className={`rounded-full border px-1 py-1 text-xs font-normal transition-all duration-200 md:px-2 md:py-2 ${
                   selectedPeriod.period === rental.period
                     ? 'bg-orange text-white'
                     : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'

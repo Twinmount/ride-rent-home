@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { MdOutlineClose, MdOutlineVerifiedUser } from 'react-icons/md';
+import Image from 'next/image';
 
 const BestPriceGuarantee = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,9 +43,36 @@ const BestPriceGuarantee = () => {
     },
   };
 
+  // Metallic glow animation variants for edge lighting effect
+  const metallicGlowVariants: Variants = {
+    glow: {
+      filter: [
+        'brightness(1) contrast(1.1)',
+        'brightness(1.3) contrast(1.3)',
+        'brightness(1) contrast(1.1)',
+      ],
+      transition: {
+        duration: 2.5,
+        repeat: Infinity,
+        ease: 'easeInOut',
+      },
+    },
+  };
+
   return (
     <>
-      {/* Animated Best Price Guarantee Text */}
+      <style jsx>{`
+        @keyframes shimmer {
+          0% {
+            background-position: -200% 0;
+          }
+          100% {
+            background-position: 200% 0;
+          }
+        }
+      `}</style>
+
+      {/* Animated Best Price Guarantee Text with Metallic Glow */}
       <motion.div
         className="m-4 flex justify-center"
         variants={shakeVariants}
@@ -53,7 +81,7 @@ const BestPriceGuarantee = () => {
       >
         <button
           onClick={openModal}
-          className="text-orange-500 hover:text-orange-600 flex items-center gap-x-1 transition-colors"
+          className="text-orange-500 hover:text-orange-600 group flex items-center gap-x-1 transition-colors"
         >
           {/* Shield Icon - slides in from left */}
           <motion.div
@@ -61,17 +89,31 @@ const BestPriceGuarantee = () => {
             initial="hidden"
             animate="visible"
           >
-            <MdOutlineVerifiedUser className="h-4 w-4 text-yellow" />
+            <MdOutlineVerifiedUser className="h-5 w-5 text-yellow" />
           </motion.div>
 
-          {/* Text - slides in from right */}
+          {/* Text with Metallic Glow - slides in from right */}
           <motion.span
-            className="text-sm font-medium text-yellow underline"
+            className="relative text-sm font-medium md:text-lg"
             variants={textVariants}
             initial="hidden"
             animate="visible"
           >
-            Best Price Guarantee
+            <motion.span
+              variants={metallicGlowVariants}
+              animate="glow"
+              className="relative bg-gradient-to-r bg-clip-text"
+              style={{
+                WebkitBackgroundClip: 'text',
+                color: '#ffa733',
+                backgroundImage:
+                  'linear-gradient(45deg, #ea7b0b 0%, #b45309 25%, #8b4513 50%, #d2691e 75%, #ea7b0b 100%)',
+                backgroundSize: '200% 100%',
+                animation: 'shimmer 5s ease-in-out infinite',
+              }}
+            >
+              Best Price Guarantee
+            </motion.span>
           </motion.span>
         </button>
       </motion.div>
@@ -103,27 +145,42 @@ const BestPriceGuarantee = () => {
 
             {/* Shield Icon */}
             <div className="mb-4 flex justify-center">
-              <div className="from-yellow-400 to-orange-500 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br">
-                <MdOutlineVerifiedUser
-                  className="h-10 w-10 text-white"
-                  fill="currentColor"
+              <div className="flex items-center justify-center rounded-2xl bg-gradient-to-br">
+                <Image
+                  src="/assets/img/detailsPage/shield.webp"
+                  alt="Shield Icon"
+                  width={250}
+                  height={250}
                 />
               </div>
             </div>
 
-            {/* Title */}
-            <h2 className="mb-4 text-center text-2xl font-bold text-yellow">
+            {/* Title with Metallic Glow */}
+            <motion.h2
+              className="relative mb-4 text-center text-2xl font-bold"
+              variants={metallicGlowVariants}
+              animate="glow"
+              style={{
+                color: '#ffa733',
+                background:
+                  'linear-gradient(45deg, #ea7b0b 0%, #b45309 25%, #8b4513 50%, #d2691e 75%, #ea7b0b 100%)',
+                backgroundSize: '200% 100%',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                animation: 'shimmer 3s ease-in-out infinite',
+              }}
+            >
               Lowest Price Guarantee!
-            </h2>
+            </motion.h2>
 
             {/* Description */}
             <div className="space-y-4 text-center text-gray-600">
-              <p className="text-sm">
+              <p className="text-base md:text-lg md:font-semibold">
                 At Ride.Rent We are Committed to Helping You Get the Lowest
                 Prices Every Time.
               </p>
 
-              <p className="text-sm">
+              <p className="text-xs text-text-tertiary">
                 We Use Advanced Machine Learning and Expert Insights to Track
                 Local Rates, Compare Prices and Apply Smart Pricing Strategies
                 So You Always Get the Best Rental Deals.

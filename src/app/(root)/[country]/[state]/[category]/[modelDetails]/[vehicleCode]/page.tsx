@@ -171,6 +171,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     brandListingPageHref,
     category,
     brandValue,
+    state,
     heading:
       vehicle?.vehicleTitleH1 || vehicle?.vehicleTitle || vehicle?.modelName,
   };
