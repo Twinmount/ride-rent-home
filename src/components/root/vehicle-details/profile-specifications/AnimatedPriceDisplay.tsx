@@ -19,7 +19,6 @@ const AnimatedPriceDisplay = ({
 
   // Calculate the display price
   const calculateDisplayPrice = () => {
-    console.log('Period:', period, 'MinBookingHours:', minBookingHours); // Debug log
     
     if (period === 'Hour' && minBookingHours !== undefined) {
       return `${convert(Number(price), 'prefix')} / ${minBookingHours} Hrs`;
@@ -29,13 +28,12 @@ const AnimatedPriceDisplay = ({
 
   useEffect(() => {
     const newPrice = calculateDisplayPrice();
-    console.log('New calculated price:', newPrice); // Debug log
-    
+
     if (newPrice !== displayPrice) {
       setDisplayPrice(newPrice);
-      setKey(prev => prev + 1); // Force re-render with animation
+      setKey((prev) => prev + 1); // Force re-render with animation
     }
-  }, [price, period, minBookingHours, convert]); // Added convert to dependencies
+  }, [price, period, minBookingHours, convert]); 
 
   // Split the price into individual characters for animation
   const characters = displayPrice.split('');
