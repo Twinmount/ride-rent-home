@@ -206,15 +206,15 @@ export default async function VehicleDetails(props: ParamsProps) {
           country={country}
         >
           {/* Vehicle Images Grid */}
-          <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
-            <div className="w-full md:h-[650px] lg:w-[60%]">
+          <div className="flex h-full flex-col gap-2 lg:flex-row lg:items-stretch">
+            <div className="w-full lg:w-[55%]">
               <ImagesGrid
                 mediaItems={mediaSourceList}
                 imageAlt={vehicle?.vehicleTitleH1}
               />
             </div>
 
-            <div className="w-full py-2 lg:w-[40%]">
+            <div className="w-full py-2 lg:w-[45%]">
               <ProfileCard profileData={ProfileCardData} country={country} />
             </div>
           </div>

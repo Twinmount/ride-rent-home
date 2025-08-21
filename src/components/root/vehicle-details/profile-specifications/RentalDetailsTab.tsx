@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { RentalDetails } from '@/types/vehicle-details-types';
 import { usePriceConverter } from '@/hooks/usePriceConverter';
 import SecurityDepositInfo from './SecurityDepositInfo';
-import MileageInfo from './MileageInfo';
 import BestPriceGuarantee from './BestPriceGuarantee';
 import AnimatedPriceDisplay from './AnimatedPriceDisplay';
+import MileageInfo from './MileageInfo';
 
 type RentalDetailsTabProps = {
   rentalDetails: RentalDetails;
@@ -60,25 +60,25 @@ const RentalDetailsTab = ({
   }
 
   return (
-    <div className="mx-auto mt-3 w-full rounded-xl border bg-white p-4 shadow">
+    <div className="mx-auto mt-2 w-full rounded-xl border bg-white p-2 shadow xl:mt-3 xl:p-4">
       {/* Header */}
       <div className="flex gap-2">
         <p className="mb-2 text-lg font-medium md:text-xl">Rental Details</p>
       </div>
 
       {/* Main content container */}
-      <div className="mb-4 rounded-xl border-b border-[#D9DEE0] bg-[#eeeef0] p-4 shadow-sm">
+      <div className="mb-2 rounded-xl border-b border-[#D9DEE0] bg-[#f4f4f4] p-2 xl:mb-4 xl:p-4">
         {/* Period tabs and pricing */}
-        <div className="flex flex-col border-b-2 border-[#D9DEE0] pb-5 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col border-b-2 border-[#D9DEE0] p-1 md:items-center md:justify-between lg:flex-row lg:p-2">
           {/* Tabs - show second on mobile, first on desktop */}
-          <div className="order-2 mx-auto flex w-fit items-center justify-between gap-2 md:order-1 md:mx-0">
+          <div className="order-2 mx-auto flex w-fit items-center justify-between gap-1 md:mx-0 lg:order-1 xl:gap-2 xl:pb-2">
             {enabledRentalPeriods.map((rental, index) => (
               <button
                 key={index}
-                className={`rounded-full border px-1 py-1 text-xs font-normal transition-all duration-200 md:px-2 md:py-2 ${
+                className={`rounded-full border px-2 py-2 text-xs font-normal transition-all duration-200 md:px-3 md:py-2 ${
                   selectedPeriod.period === rental.period
                     ? 'bg-orange text-white'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                    : 'border-gray-300 bg-white text-[#1C2122] hover:border-gray-400'
                 }`}
                 onClick={() => handleTabChange(rental)}
               >
@@ -88,7 +88,7 @@ const RentalDetailsTab = ({
           </div>
 
           {/* Animated price - show first on mobile, second on desktop */}
-          <div className="order-1 md:order-2">
+          <div className="order-1 lg:order-2">
             <AnimatedPriceDisplay
               price={selectedPeriod.details.rentInAED}
               period={selectedPeriod.period}
