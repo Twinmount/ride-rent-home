@@ -11,10 +11,12 @@ import LanguageSelector from './LanguageSelector';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { LocationDialog } from '../dialog/location-dialog/LocationDialog';
 import { useEffect, useState } from 'react';
-import { AlignRight } from 'lucide-react';
+import { AlignRight, User, } from 'lucide-react';
 import { Button } from '../ui/button';
 import RegisterLinkButton from '../common/RegisterLinkButton';
 import RideRentNavbarLogo from '../common/RideRentNavbarLogo';
+import { LoginDialog } from '../dialog/login-dialog';
+// import { LoginDialog } from '../dialog/login-dialog/LoginDialog';
 
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import('../sidebar/MobileSidebar'), {
@@ -131,6 +133,31 @@ export const Navbar = () => {
             {/* List Button */}
             <li className="hidden lg:block">
               <RegisterLinkButton country={country} />
+            </li>
+
+            {/* Login/Signup Icon */}
+            <li className="max-sm:hidden">
+              {/* Login Dialog with required props */}
+              {(() => {
+                const [isLoginOpen, setLoginOpen] = useState(false);
+                return (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full"
+                      onClick={() => setLoginOpen(true)}
+                    >
+                      <User className="h-5 w-5" />
+                      <span className="sr-only">Login / Sign Up</span>
+                    </Button>
+                    <LoginDialog
+                      isOpen={isLoginOpen}
+                      onClose={() => setLoginOpen(false)}
+                    />
+                  </>
+                );
+              })()}
             </li>
 
             {/* <li className="max-sm:hidden">

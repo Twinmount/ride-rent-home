@@ -37,9 +37,8 @@ const config = {
       },
       colors: {
         // **************redesign colors start***************
-        background: "#F8F8F8", // Base page background
         footer: "#232323", // Footer background
-        accent: "#F57F17", // Orange theme color
+        "accent-brand": "#F57F17", // Orange theme color
         "accent-light": "#F9A825", // Lighter orange
         "text-primary": "#1C2122", // Main text color
         "text-secondary": "#6C727C", // Secondary gray text
@@ -48,34 +47,65 @@ const config = {
         "border-default": "#DDE5EB", // Default borders
         "gradient-from": "#F9A825", // Gradient start
         "gradient-to": "#F57F17", // Gradient end
-
         //  ***************redesign colors end***************
 
         yellow: "#ffa733",
-        orange: "#ea7b0b",
+        orange: {
+          DEFAULT: "#ea7b0b", // Keep existing custom orange
+          50: "#fef7ed",
+          100: "#fdedd3",
+          200: "#fbd9a5",
+          300: "#f8bd6d",
+          400: "#f59532",
+          500: "#ea7b0b", // Your custom orange as 500
+          600: "#db5f0a",
+          700: "#b6480c",
+          800: "#933a10",
+          900: "#783011",
+          950: "#411505",
+        },
         lightGray: "#f5f5f5", //bg light gray
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
+        
+        // shadcn/ui default colors
+        background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        mutedd: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        chart: {
+          "1": "hsl(var(--chart-1))",
+          "2": "hsl(var(--chart-2))",
+          "3": "hsl(var(--chart-3))",
+          "4": "hsl(var(--chart-4))",
+          "5": "hsl(var(--chart-5))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
