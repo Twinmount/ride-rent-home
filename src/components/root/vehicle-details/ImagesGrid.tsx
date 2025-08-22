@@ -12,9 +12,10 @@ type MediaItem = {
 type Props = {
   mediaItems: MediaItem[];
   imageAlt?: string;
+  className?: string;
 };
 
-const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
+const ImagesGrid = ({ mediaItems, imageAlt, className = '' }: Props) => {
   useEffect(() => {
     Fancybox.bind("[data-fancybox='gallery']", {
       Thumbs: true,
@@ -37,7 +38,7 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
     return () => Fancybox.destroy();
   }, []);
 
-  // Since we always have 6-7 items (6 images + 1 video or 7 images)
+  // Organize media items for display
   const videoItem = mediaItems.find((item) => item.type === 'video');
   const imageItems = mediaItems.filter((item) => item.type === 'image');
 
@@ -87,7 +88,7 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
           loading="lazy"
         />
         {overlayCount && overlayCount > 0 && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-2xl font-semibold text-white backdrop-blur-sm">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-xl font-semibold text-white backdrop-blur-sm md:text-2xl">
             +{overlayCount}
           </div>
         )}
@@ -96,62 +97,56 @@ const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
   };
 
   return (
-    <div className="h-full w-full">
-      {/* Desktop Layout */}
-      <div
-        className="hidden h-full flex-col md:flex"
-        style={{ height: '40.63rem' }}
-      >
-        {/* Main Grid - Calculate exact height: total height minus thumbnail height and gap */}
-        <div className="w-full" style={{ height: 'calc(100% - 9rem)' }}>
-          <div className="flex h-full gap-3 p-2">
-            {/* Main Image/Video - 2/3 width, full height */}
-            <div className="w-2/3 overflow-hidden rounded-xl">
-              {renderMediaItem(mainItem, 0)}
-            </div>
+    <div className={`h-full w-full ${className}`}>
+      {/* Desktop Layout - Adapts to container height with no internal padding */}
+      <div className="hidden h-full md:grid md:grid-rows-[1fr_auto] md:gap-3">
+        {/* Main Grid Area - Takes most of available height */}
+        <div className="grid h-full min-h-0 grid-cols-3 gap-3">
+          {/* Main Image/Video - Takes 2 columns, maintains aspect but fits container */}
+          <div className="col-span-2 overflow-hidden rounded-xl">
+            <div className="h-full w-full">{renderMediaItem(mainItem, 0)}</div>
+          </div>
 
-            {/* Side Column - 1/3 width, two stacked items */}
-            <div className="flex w-1/3 flex-col gap-3">
-              {sideItems.map((item, index) => (
-                <div key={index} className="flex-1 overflow-hidden rounded-xl">
-                  {renderMediaItem(item, index + 1)}
-                </div>
-              ))}
-            </div>
+          {/* Side Column - Takes 1 column, divided into 2 equal rows */}
+          <div className="grid grid-rows-2 gap-3">
+            {sideItems.map((item, index) => (
+              <div key={index} className="overflow-hidden rounded-xl">
+                {renderMediaItem(item, index + 1)}
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="flex h-32 gap-3 px-2 pt-3">
-          {visibleThumbnails.map((item, index) => (
-            <div key={index} className="flex-1 overflow-hidden rounded-xl">
-              {renderMediaItem(
-                item,
-                index + (videoItem ? 3 : 4),
-                index === visibleThumbnails.length - 1
-                  ? remainingCount
-                  : undefined
-              )}
-            </div>
-          ))}
-        </div>
+        {/* Thumbnail Row - Fixed height based on content */}
+        {visibleThumbnails.length > 0 && (
+          <div className="grid h-20 grid-cols-4 gap-3 lg:h-24">
+            {visibleThumbnails.map((item, index) => (
+              <div key={index} className="overflow-hidden rounded-xl">
+                {renderMediaItem(
+                  item,
+                  index + (videoItem ? 3 : 4),
+                  index === visibleThumbnails.length - 1
+                    ? remainingCount
+                    : undefined
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Mobile Layout  */}
+      {/* Mobile Layout - Preserved as requested */}
       <div className="flex h-full w-full flex-col px-2 md:hidden">
         <div className="w-full flex-1 overflow-hidden rounded-xl">
           {renderMediaItem(mediaItems[0], 0)}
         </div>
 
         {mediaItems.length > 1 && (
-          <div
-            className="mt-4 flex justify-center gap-2 px-2"
-            style={{ height: '5.625rem' }}
-          >
+          <div className="mt-4 flex h-20 justify-center gap-2 px-2">
             {mediaItems.slice(1, 4).map((item, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 overflow-hidden rounded-xl"
-                style={{ width: '30%', height: '100%' }}
+                className="h-full w-[30%] flex-shrink-0 overflow-hidden rounded-xl"
               >
                 {renderMediaItem(
                   item,

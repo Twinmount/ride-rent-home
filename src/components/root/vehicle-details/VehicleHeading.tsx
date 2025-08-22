@@ -8,6 +8,7 @@ type Props = {
   vehicleTitleH1: string;
   vehicleSubTitle: string;
   heading: string;
+  model: string;
   state: string;
 };
 
@@ -17,6 +18,7 @@ export default function VehicleHeading({
   brandValue,
   vehicleTitleH1,
   vehicleSubTitle,
+  model,
   heading,
   state,
 }: Props) {

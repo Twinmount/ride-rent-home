@@ -26,14 +26,14 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
   const {
     company,
     vehicleTitleH1,
-    vehicleData: { state },
+    vehicleData: { state, model },
   } = profileData;
 
   return (
-    <MotionDiv className="profile-card">
+    <MotionDiv className="profile-card h-auto">
       <div className="align-center flex justify-between">
-        <div className="p-2 text-xl font-medium md:text-2xl">
-          {vehicleTitleH1}
+        <div className="p-2 text-lg font-normal text-text-primary md:text-2xl">
+          {model}
         </div>
         <ShareLikeComponent />
       </div>
