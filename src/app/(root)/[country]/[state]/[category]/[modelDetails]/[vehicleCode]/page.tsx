@@ -159,6 +159,8 @@ export default async function VehicleDetails(props: ParamsProps) {
   if (!!brandValue) {
     brandListingPageHref += `/brand/${brandValue}`;
   }
+  const vehicleTitleH1 = vehicle.vehicleTitleH1;
+  const vehicleSubTitle = vehicle.subTitle || vehicle.vehicleTitle;
 
   const SupplierDetailsPropsData = {
     companyName: vehicle?.company?.companyName,
@@ -172,6 +174,8 @@ export default async function VehicleDetails(props: ParamsProps) {
     category,
     brandValue,
     state,
+    vehicleTitleH1,
+    vehicleSubTitle,
     heading:
       vehicle?.vehicleTitleH1 || vehicle?.vehicleTitle || vehicle?.modelName,
   };

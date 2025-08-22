@@ -1,6 +1,7 @@
 import React from 'react';
 import { Infinity, Gauge } from "lucide-react";
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 type MileageInfoProps = {
   unlimitedMileage: boolean;
@@ -39,9 +40,14 @@ const MileageInfo = ({ unlimitedMileage, mileageLimit }: MileageInfoProps) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.08, ease: 'easeInOut' }}
-            className="flex items-center gap-x-2"
+            className="g flex items-center gap-1"
           >
-            <Gauge className="h-5 w-5" />
+            <Image
+              src="/assets/icons/detail-page/top-speed.svg"
+              alt="top speed"
+              width={18}
+              height={18}
+            />
             <span>Mileage Limit: {mileageLimit} KM</span>
           </motion.div>
         )}
