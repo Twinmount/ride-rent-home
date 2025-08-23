@@ -1,10 +1,11 @@
-"use client";
+'use client';
 
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { VehicleCardContextProvider } from "./VehicleCardContext";
-import { useImmer } from "use-immer";
-import { useFetchExchangeRates } from "@/hooks/useFetchExchangeRates";
-import { useParams } from "next/navigation";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { VehicleCardContextProvider } from './VehicleCardContext';
+import { AuthContextProvider } from './AuthContext';
+import { useImmer } from 'use-immer';
+import { useFetchExchangeRates } from '@/hooks/useFetchExchangeRates';
+import { useParams } from 'next/navigation';
 
 type GlobalContextType = {
   isPageLoading: boolean;
@@ -34,12 +35,12 @@ export const GlobalContextProvider = ({
   const [exchangeRates, setExchangeRates] = useImmer<{ [key: string]: number }>(
     {
       AED: 1,
-    },
+    }
   );
   const { country } = useParams<{ country: string }>();
 
   const [currency, setCurrency] = useImmer<string>(
-    country === "in" ? "INR" : "AED",
+    country === 'in' ? 'INR' : 'AED'
   );
 
   const {
@@ -58,30 +59,32 @@ export const GlobalContextProvider = ({
   }, [exchangeValue]);
 
   useEffect(() => {
-    const storedCurrency = localStorage.getItem("currency");
+    const storedCurrency = localStorage.getItem('currency');
 
     if (storedCurrency && exchangeRates[storedCurrency]) {
       setCurrency(storedCurrency);
     } else {
-      setCurrency(country === "in" ? "INR" : "AED");
+      setCurrency(country === 'in' ? 'INR' : 'AED');
     }
   }, [exchangeRates]);
 
   return (
-    <GlobalContext.Provider
-      value={{
-        isPageLoading,
-        setIsPageLoading,
-        currency,
-        setCurrency,
-        exchangeRates,
-        country,
-        vehicleListVisible,
-        setVehiclesListVisible,
-      }}
-    >
-      <VehicleCardContextProvider>{children}</VehicleCardContextProvider>
-    </GlobalContext.Provider>
+    <AuthContextProvider>
+      <GlobalContext.Provider
+        value={{
+          isPageLoading,
+          setIsPageLoading,
+          currency,
+          setCurrency,
+          exchangeRates,
+          country,
+          vehicleListVisible,
+          setVehiclesListVisible,
+        }}
+      >
+        <VehicleCardContextProvider>{children}</VehicleCardContextProvider>
+      </GlobalContext.Provider>
+    </AuthContextProvider>
   );
 };
 
@@ -90,7 +93,7 @@ export const useGlobalContext = () => {
 
   if (!context) {
     throw new Error(
-      "useGlobalContext must be used within a GlobalContextProvider",
+      'useGlobalContext must be used within a GlobalContextProvider'
     );
   }
 

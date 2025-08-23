@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useImmer } from 'use-immer';
 import {
   Dialog,
   DialogContent,
@@ -19,20 +20,42 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Eye, EyeOff, Lock, User, Phone, Check } from 'lucide-react';
+import { useAuthContext } from '@/auth';
+import { SignupSection } from './SignupSection';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLoginSuccess?: () => void;
-  login: () => void; // Added optional callback for successful login
 }
 
 export const LoginDialog = ({
   isOpen,
-  login,
   onClose,
   onLoginSuccess,
 }: AuthModalProps) => {
+  const {
+    user,
+    auth,
+    login,
+    logout,
+    isLoginOpen,
+    onHandleLoginmodal,
+    handleProfileNavigation,
+    isLoading,
+    loginMutation,
+    error,
+    clearError,
+  } = useAuthContext();
+
+  // Login form state using useImmer
+  const [loginForm, updateLoginForm] = useImmer({
+    phoneNumber: '',
+    countryCode: '+971',
+    password: '',
+    rememberMe: false,
+  });
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -72,18 +95,39 @@ export const LoginDialog = ({
     }
   };
 
-  const handleLogin = () => {
-    // Simulate login logic here
-    console.log('[v0] Login successful');
-    if (onLoginSuccess) {
-      onLoginSuccess();
-    }
-  };
-
   const handleSignupComplete = () => {
     console.log('[v0] Signup completed successfully');
-    if (onLoginSuccess) {
-      onLoginSuccess();
+  };
+
+  const handleLogin = async () => {
+    try {
+      // Clear any previous errors
+      if (error) {
+        clearError();
+      }
+
+      // Basic validation
+      if (!loginForm.phoneNumber.trim()) {
+        return;
+      }
+
+      if (!loginForm.password.trim()) {
+        return;
+      }
+
+      await login({
+        countryCode: loginForm.countryCode,
+        password: loginForm.password,
+        phoneNumber: loginForm.phoneNumber,
+        rememberMe: loginForm.rememberMe,
+      });
+
+      // Call success callback if login is successful
+      onLoginSuccess?.();
+      handleClose();
+    } catch (error) {
+      console.error('Login failed:', error);
+      // Error is handled by the auth context
     }
   };
 
@@ -94,6 +138,20 @@ export const LoginDialog = ({
     setFirstName('');
     setLastName('');
     setMobileNumber('');
+
+    // Reset login form
+    updateLoginForm((draft) => {
+      draft.phoneNumber = '';
+      draft.countryCode = '+971';
+      draft.password = '';
+      draft.rememberMe = false;
+    });
+
+    // Clear any errors
+    if (error) {
+      clearError();
+    }
+
     onClose();
   };
 
@@ -115,10 +173,43 @@ export const LoginDialog = ({
 
           <TabsContent value="login" className="mt-6 space-y-4">
             <div className="space-y-4">
+              {error && (
+                <div className="rounded-md border border-red-200 bg-red-50 p-3">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-red-800">
+                        Login Failed
+                      </p>
+                      <p className="mt-1 text-xs text-red-700">
+                        {error.message}
+                      </p>
+                      {error.field && (
+                        <p className="mt-1 text-xs text-red-600">
+                          Field: {error.field}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={clearError}
+                      className="text-lg leading-none text-red-400 hover:text-red-600"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-2">
                 <Label htmlFor="mobile">Mobile Number</Label>
                 <div className="flex gap-2">
-                  <Select defaultValue="+971">
+                  <Select
+                    value={loginForm.countryCode}
+                    onValueChange={(value) =>
+                      updateLoginForm((draft) => {
+                        draft.countryCode = value;
+                      })
+                    }
+                  >
                     <SelectTrigger className="w-24">
                       <SelectValue />
                     </SelectTrigger>
@@ -138,9 +229,16 @@ export const LoginDialog = ({
                     <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                     <Input
                       id="mobile"
+                      name="mobile"
                       type="tel"
                       placeholder="50 123 4567"
                       className="pl-10"
+                      value={loginForm.phoneNumber}
+                      onChange={(e) =>
+                        updateLoginForm((draft) => {
+                          draft.phoneNumber = e.target.value;
+                        })
+                      }
                     />
                   </div>
                 </div>
@@ -155,6 +253,12 @@ export const LoginDialog = ({
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
                     className="pl-10 pr-10"
+                    value={loginForm.password}
+                    onChange={(e) =>
+                      updateLoginForm((draft) => {
+                        draft.password = e.target.value;
+                      })
+                    }
                   />
                   <Button
                     type="button"
@@ -174,7 +278,16 @@ export const LoginDialog = ({
 
               <div className="flex items-center justify-between text-sm">
                 <label className="flex cursor-pointer items-center space-x-2">
-                  <input type="checkbox" className="rounded" />
+                  <input
+                    type="checkbox"
+                    className="rounded"
+                    checked={loginForm.rememberMe}
+                    onChange={(e) =>
+                      updateLoginForm((draft) => {
+                        draft.rememberMe = e.target.checked;
+                      })
+                    }
+                  />
                   <span>Remember me</span>
                 </label>
                 <Button
@@ -187,9 +300,17 @@ export const LoginDialog = ({
 
               <Button
                 className="w-full cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
-                onClick={login}
+                onClick={handleLogin}
+                disabled={
+                  isLoading ||
+                  loginMutation.isPending ||
+                  !loginForm.phoneNumber.trim() ||
+                  !loginForm.password.trim()
+                }
               >
-                Login
+                {isLoading || loginMutation.isPending
+                  ? 'Logging in...'
+                  : 'Login'}
               </Button>
 
               <div className="relative">
@@ -244,7 +365,7 @@ export const LoginDialog = ({
               </div>
             </div>
           </TabsContent>
-
+          {/* 
           <TabsContent value="signup" className="mt-6 space-y-4">
             {signupStep === 1 && (
               <div className="space-y-4">
@@ -470,7 +591,8 @@ export const LoginDialog = ({
                 </Button>
               </div>
             )}
-          </TabsContent>
+          </TabsContent> */}
+          <SignupSection />
         </Tabs>
       </DialogContent>
     </Dialog>

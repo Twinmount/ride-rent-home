@@ -18,7 +18,7 @@ import { Badge } from '../ui/badge';
 import RegisterLinkButton from '../common/RegisterLinkButton';
 import RideRentNavbarLogo from '../common/RideRentNavbarLogo';
 import { LoginDialog } from '../dialog/login-dialog';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthContext } from '@/auth';
 
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import('../sidebar/MobileSidebar'), {
@@ -33,14 +33,14 @@ const MobileSidebar = dynamic(() => import('../sidebar/MobileSidebar'), {
 
 export const Navbar = () => {
   const {
+    user,
     auth,
-    isLoginOpen,
     login,
     logout,
+    isLoginOpen,
     onHandleLoginmodal,
     handleProfileNavigation,
-    user,
-  } = useAuth();
+  } = useAuthContext();
   const params = useParams<{
     state: string;
     category: string;
@@ -213,7 +213,7 @@ export const Navbar = () => {
               )}
             </div>
             <LoginDialog
-              login={login}
+              // login={login}
               isOpen={isLoginOpen}
               onClose={() => onHandleLoginmodal({ isOpen: false })}
             />
