@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useImmer } from 'use-immer';
 import { LoginData, SignupData } from './useAuth';
 
 // Form validation state
@@ -10,32 +11,34 @@ export interface FormErrors {
 
 // Login form hook
 export const useLoginForm = () => {
-  const [formData, setFormData] = useState<LoginData>({
+  const [formData, updateFormData] = useImmer<LoginData>({
     phoneNumber: '',
     countryCode: '+971',
     password: '',
     rememberMe: false,
   });
 
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [errors, updateErrors] = useImmer<FormErrors>({});
+  const [touched, updateTouched] = useImmer<Record<string, boolean>>({});
 
   const updateField = useCallback((field: keyof LoginData, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    updateFormData(draft => {
+      (draft as any)[field] = value;
+    });
     
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
+      updateErrors(draft => {
+        delete draft[field];
       });
     }
-  }, [errors]);
+  }, [updateFormData, updateErrors, errors]);
 
   const setFieldTouched = useCallback((field: keyof LoginData) => {
-    setTouched(prev => ({ ...prev, [field]: true }));
-  }, []);
+    updateTouched(draft => {
+      draft[field] = true;
+    });
+  }, [updateTouched]);
 
   const validateForm = useCallback((): boolean => {
     const newErrors: FormErrors = {};
@@ -50,20 +53,20 @@ export const useLoginForm = () => {
       newErrors.password = 'Password is required';
     }
 
-    setErrors(newErrors);
+    updateErrors(() => newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [formData]);
+  }, [formData, updateErrors]);
 
   const resetForm = useCallback(() => {
-    setFormData({
+    updateFormData(() => ({
       phoneNumber: '',
       countryCode: '+971',
       password: '',
       rememberMe: false,
-    });
-    setErrors({});
-    setTouched({});
-  }, []);
+    }));
+    updateErrors(() => ({}));
+    updateTouched(() => ({}));
+  }, [updateFormData, updateErrors, updateTouched]);
 
   return {
     formData,
@@ -79,7 +82,7 @@ export const useLoginForm = () => {
 
 // Signup form hook
 export const useSignupForm = () => {
-  const [formData, setFormData] = useState<SignupData>({
+  const [formData, updateFormData] = useImmer<SignupData>({
     firstName: '',
     lastName: '',
     email: '',
@@ -91,25 +94,27 @@ export const useSignupForm = () => {
     agreeToTerms: false,
   });
 
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [errors, updateErrors] = useImmer<FormErrors>({});
+  const [touched, updateTouched] = useImmer<Record<string, boolean>>({});
 
   const updateField = useCallback((field: keyof SignupData, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    updateFormData(draft => {
+      (draft as any)[field] = value;
+    });
     
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
+      updateErrors(draft => {
+        delete draft[field];
       });
     }
-  }, [errors]);
+  }, [updateFormData, updateErrors, errors]);
 
   const setFieldTouched = useCallback((field: keyof SignupData) => {
-    setTouched(prev => ({ ...prev, [field]: true }));
-  }, []);
+    updateTouched(draft => {
+      draft[field] = true;
+    });
+  }, [updateTouched]);
 
   const validateForm = useCallback((): boolean => {
     const newErrors: FormErrors = {};
@@ -181,12 +186,12 @@ export const useSignupForm = () => {
       newErrors.agreeToTerms = 'You must agree to the terms and conditions';
     }
 
-    setErrors(newErrors);
+    updateErrors(() => newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [formData]);
+  }, [formData, updateErrors]);
 
   const resetForm = useCallback(() => {
-    setFormData({
+    updateFormData(() => ({
       firstName: '',
       lastName: '',
       email: '',
@@ -196,10 +201,10 @@ export const useSignupForm = () => {
       confirmPassword: '',
       dateOfBirth: '',
       agreeToTerms: false,
-    });
-    setErrors({});
-    setTouched({});
-  }, []);
+    }));
+    updateErrors(() => ({}));
+    updateTouched(() => ({}));
+  }, [updateFormData, updateErrors, updateTouched]);
 
   const isValid = Object.keys(errors).length === 0 && 
                   formData.firstName && 

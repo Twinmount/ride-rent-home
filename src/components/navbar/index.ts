@@ -10,4 +10,5 @@ export const noStatesDropdownRoutes = [
   "/in/sitemap",
   "/ae/sitemap",
   "/blog",
+  "/user-profile"
 ];

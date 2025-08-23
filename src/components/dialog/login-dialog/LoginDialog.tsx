@@ -10,61 +10,96 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PhoneInput } from '@/components/ui/phone-input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
-import { SignupSection } from './SignupSection';
-import { useAuth } from '@/hooks/useAuth';
-import { useLoginForm } from '@/hooks/useAuthForms';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Eye, EyeOff, Lock, User, Phone, Check } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onLoginSuccess?: () => void;
+  login: () => void; // Added optional callback for successful login
 }
 
-export const LoginDialog = ({ isOpen, onClose }: AuthModalProps) => {
+export const LoginDialog = ({
+  isOpen,
+  login,
+  onClose,
+  onLoginSuccess,
+}: AuthModalProps) => {
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isLoading, error } = useAuth();
-  const { 
-    formData, 
-    errors, 
-    updateField, 
-    setFieldTouched, 
-    validateForm, 
-    resetForm 
-  } = useLoginForm();
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      console.error('Please fix the errors before submitting');
-      return;
-    }
+  const [signupStep, setSignupStep] = useState(1); // 1: basic info, 2: OTP verification, 3: password setup
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [countryCode, setCountryCode] = useState('+971');
+  const [otp, setOtp] = useState(['', '', '', '']);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
-    try {
-      const response = await login(formData);
-      if (response.success) {
-        console.log('Login successful!');
-        resetForm();
-        onClose();
+  const handleOtpChange = (index: number, value: string) => {
+    if (value.length <= 1 && /^\d*$/.test(value)) {
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+
+      // Auto-focus next input
+      if (value && index < 3) {
+        const nextInput = document.getElementById(`otp-${index + 1}`);
+        nextInput?.focus();
       }
-    } catch (error) {
-      console.error(error instanceof Error ? error.message : 'Login failed');
+
+      // Check if OTP is complete and simulate verification
+      if (newOtp.every((digit) => digit !== '') && newOtp.join('') === '1234') {
+        setOtpVerified(true);
+        setTimeout(() => setSignupStep(3), 1000); // Move to password setup after 1 second
+      }
     }
   };
 
-  const handleInputChange = (field: keyof typeof formData, value: string | boolean) => {
-    updateField(field, value);
+  const handleSendOtp = () => {
+    if (firstName && lastName && mobileNumber) {
+      setSignupStep(2);
+      // Simulate OTP sending
+      console.log(`[v0] OTP sent to ${countryCode}${mobileNumber}`);
+    }
   };
 
-  const handleInputBlur = (field: keyof typeof formData) => {
-    setFieldTouched(field);
+  const handleLogin = () => {
+    // Simulate login logic here
+    console.log('[v0] Login successful');
+    if (onLoginSuccess) {
+      onLoginSuccess();
+    }
+  };
+
+  const handleSignupComplete = () => {
+    console.log('[v0] Signup completed successfully');
+    if (onLoginSuccess) {
+      onLoginSuccess();
+    }
+  };
+
+  const handleClose = () => {
+    setSignupStep(1);
+    setOtp(['', '', '', '']);
+    setOtpVerified(false);
+    setFirstName('');
+    setLastName('');
+    setMobileNumber('');
+    onClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center text-2xl font-bold">
             <span className="text-orange-500">🚗 Ride.</span>
@@ -79,11 +114,26 @@ export const LoginDialog = ({ isOpen, onClose }: AuthModalProps) => {
           </TabsList>
 
           <TabsContent value="login" className="mt-6 space-y-4">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="mobile">Mobile Number</Label>
                 <div className="flex gap-2">
-                  <PhoneInput/>
+                  <Select defaultValue="+971">
+                    <SelectTrigger className="w-24">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                      <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                      <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                      <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                      <SelectItem value="+966">🇸🇦 +966</SelectItem>
+                      <SelectItem value="+974">🇶🇦 +974</SelectItem>
+                      <SelectItem value="+965">🇰🇼 +965</SelectItem>
+                      <SelectItem value="+973">🇧🇭 +973</SelectItem>
+                      <SelectItem value="+968">🇴🇲 +968</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <div className="relative flex-1">
                     <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                     <Input
@@ -91,13 +141,7 @@ export const LoginDialog = ({ isOpen, onClose }: AuthModalProps) => {
                       type="tel"
                       placeholder="50 123 4567"
                       className="pl-10"
-                      value={formData.phoneNumber}
-                      onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                      onBlur={() => handleInputBlur('phoneNumber')}
                     />
-                    {errors.phoneNumber && (
-                      <p className="text-sm text-red-500 mt-1">{errors.phoneNumber}</p>
-                    )}
                   </div>
                 </div>
               </div>
@@ -111,15 +155,12 @@ export const LoginDialog = ({ isOpen, onClose }: AuthModalProps) => {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
                     className="pl-10 pr-10"
-                    value={formData.password}
-                    onChange={(e) => handleInputChange('password', e.target.value)}
-                    onBlur={() => handleInputBlur('password')}
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full cursor-pointer px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -129,56 +170,44 @@ export const LoginDialog = ({ isOpen, onClose }: AuthModalProps) => {
                     )}
                   </Button>
                 </div>
-                {errors.password && (
-                  <p className="text-sm text-red-500 mt-1">{errors.password}</p>
-                )}
               </div>
 
               <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center space-x-2">
-                  <input 
-                    type="checkbox" 
-                    className="rounded" 
-                    checked={formData.rememberMe}
-                    onChange={(e) => handleInputChange('rememberMe', e.target.checked)}
-                  />
+                <label className="flex cursor-pointer items-center space-x-2">
+                  <input type="checkbox" className="rounded" />
                   <span>Remember me</span>
                 </label>
                 <Button
                   variant="link"
-                  className="text-orange-500 hover:text-orange-600 h-auto p-0"
+                  className="h-auto cursor-pointer p-0 text-orange-500 hover:text-orange-600"
                 >
                   Forgot password?
                 </Button>
               </div>
 
-              <Button 
-                type="submit"
-                className="bg-orange-500 hover:bg-orange-600 w-full text-white"
-                disabled={isLoading}
+              <Button
+                className="w-full cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
+                onClick={login}
               >
-                {isLoading ? 'Logging in...' : 'Login'}
+                Login
               </Button>
-
-              {error && (
-                <div className="text-sm text-red-500 text-center">
-                  {error.message}
-                </div>
-              )}
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="text-muted-foreground bg-background px-2">
+                  <span className="bg-background px-2 text-muted-foreground">
                     Or continue with
                   </span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" className="w-full bg-transparent">
+                <Button
+                  variant="outline"
+                  className="w-full cursor-pointer bg-transparent"
+                >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                     <path
                       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -199,7 +228,10 @@ export const LoginDialog = ({ isOpen, onClose }: AuthModalProps) => {
                   </svg>
                   Google
                 </Button>
-                <Button variant="outline" className="w-full bg-transparent">
+                <Button
+                  variant="outline"
+                  className="w-full cursor-pointer bg-transparent"
+                >
                   <svg
                     className="mr-2 h-4 w-4"
                     fill="currentColor"
@@ -210,9 +242,235 @@ export const LoginDialog = ({ isOpen, onClose }: AuthModalProps) => {
                   Twitter
                 </Button>
               </div>
-            </form>
+            </div>
           </TabsContent>
-          <SignupSection />
+
+          <TabsContent value="signup" className="mt-6 space-y-4">
+            {signupStep === 1 && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                      <Input
+                        id="firstName"
+                        placeholder="First name"
+                        className="pl-10"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      placeholder="Last name"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="signupMobile">Mobile Number</Label>
+                  <div className="flex gap-2">
+                    <Select value={countryCode} onValueChange={setCountryCode}>
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                        <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                        <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                        <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                        <SelectItem value="+966">🇸🇦 +966</SelectItem>
+                        <SelectItem value="+974">🇶🇦 +974</SelectItem>
+                        <SelectItem value="+965">🇰🇼 +965</SelectItem>
+                        <SelectItem value="+973">🇧🇭 +973</SelectItem>
+                        <SelectItem value="+968">🇴🇲 +968</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <div className="relative flex-1">
+                      <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                      <Input
+                        id="signupMobile"
+                        type="tel"
+                        placeholder="50 123 4567"
+                        className="pl-10"
+                        value={mobileNumber}
+                        onChange={(e) => setMobileNumber(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <Button
+                  className="w-full bg-orange-500 text-white hover:bg-orange-600"
+                  onClick={handleSendOtp}
+                  disabled={!firstName || !lastName || !mobileNumber}
+                >
+                  Send OTP
+                </Button>
+              </div>
+            )}
+
+            {signupStep === 2 && (
+              <div className="space-y-4">
+                <div className="space-y-2 text-center">
+                  <h3 className="text-lg font-semibold">
+                    Verify Your Mobile Number
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    We've sent a 4-digit code to {countryCode} {mobileNumber}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Enter 4-digit OTP</Label>
+                  <div className="flex justify-center gap-2">
+                    {otp.map((digit, index) => (
+                      <div key={index} className="relative">
+                        <Input
+                          id={`otp-${index}`}
+                          type="text"
+                          maxLength={1}
+                          className="h-12 w-12 text-center text-lg font-semibold"
+                          value={digit}
+                          onChange={(e) =>
+                            handleOtpChange(index, e.target.value)
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === 'Backspace' && !digit && index > 0) {
+                              const prevInput = document.getElementById(
+                                `otp-${index - 1}`
+                              );
+                              prevInput?.focus();
+                            }
+                          }}
+                        />
+                        {otpVerified && digit && (
+                          <Check className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-white text-green-500" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {otpVerified && (
+                    <div className="flex items-center justify-center gap-2 text-sm text-green-600">
+                      <Check className="h-4 w-4" />
+                      <span>OTP Verified Successfully!</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="text-center">
+                  <Button
+                    variant="link"
+                    className="text-orange-500 hover:text-orange-600"
+                  >
+                    Resend OTP
+                  </Button>
+                </div>
+
+                <p className="text-center text-xs text-gray-500">
+                  For demo purposes, use OTP: 1234
+                </p>
+              </div>
+            )}
+
+            {signupStep === 3 && (
+              <div className="space-y-4">
+                <div className="space-y-2 text-center">
+                  <h3 className="text-lg font-semibold">Set Your Password</h3>
+                  <p className="text-sm text-gray-600">
+                    Create a secure password for your account
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="signupPassword">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                    <Input
+                      id="signupPassword"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Create a password"
+                      className="pl-10 pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full cursor-pointer px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="Confirm your password"
+                      className="pl-10 pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full cursor-pointer px-3 py-2 hover:bg-transparent"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2 text-sm">
+                  <input type="checkbox" className="rounded" />
+                  <span>
+                    I agree to the{' '}
+                    <Button
+                      variant="link"
+                      className="h-auto cursor-pointer p-0 text-orange-500 hover:text-orange-600"
+                    >
+                      Terms of Service
+                    </Button>{' '}
+                    and{' '}
+                    <Button
+                      variant="link"
+                      className="h-auto cursor-pointer p-0 text-orange-500 hover:text-orange-600"
+                    >
+                      Privacy Policy
+                    </Button>
+                  </span>
+                </div>
+
+                <Button
+                  className="w-full cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
+                  onClick={handleSignupComplete}
+                >
+                  Create Account
+                </Button>
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
       </DialogContent>
     </Dialog>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useImmer } from 'use-immer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,7 +22,7 @@ export const SignupSection = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [signupStep, setSignupStep] = useState(1); // 1: basic info, 2: OTP verification, 3: password setup
-  const [otp, setOtp] = useState(['', '', '', '']);
+  const [otp, updateOtp] = useImmer(['', '', '', '']);
   const [otpVerified, setOtpVerified] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -80,7 +81,7 @@ export const SignupSection = () => {
       const response = await resendOTP(formData.phoneNumber, formData.countryCode);
       if (response.success) {
         console.log('OTP resent successfully!');
-        setOtp(['', '', '', '']); // Reset OTP input
+        updateOtp(() => ['', '', '', '']); // Reset OTP input
       }
     } catch (error) {
       console.error(error instanceof Error ? error.message : 'Failed to resend OTP');
@@ -97,9 +98,9 @@ export const SignupSection = () => {
 
   const handleOtpChange = (index: number, value: string) => {
     if (value.length <= 1 && /^\d*$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
+      updateOtp(draft => {
+        draft[index] = value;
+      });
 
       // Auto-focus next input
       if (value && index < 3) {
@@ -108,6 +109,8 @@ export const SignupSection = () => {
       }
 
       // Check if OTP is complete
+      const newOtp = [...otp];
+      newOtp[index] = value;
       if (newOtp.every((digit) => digit !== '')) {
         setOtpVerified(true);
       }
@@ -116,7 +119,7 @@ export const SignupSection = () => {
 
   const handleClose = () => {
     setSignupStep(1);
-    setOtp(['', '', '', '']);
+    updateOtp(() => ['', '', '', '']);
     setOtpVerified(false);
     setSuccess(false);
     resetForm();

@@ -11,12 +11,14 @@ import LanguageSelector from './LanguageSelector';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { LocationDialog } from '../dialog/location-dialog/LocationDialog';
 import { useEffect, useState } from 'react';
-import { AlignRight, User, } from 'lucide-react';
+import { AlignRight, User, Globe, MapPin, Bell, Edit3 } from 'lucide-react';
 import { Button } from '../ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Badge } from '../ui/badge';
 import RegisterLinkButton from '../common/RegisterLinkButton';
 import RideRentNavbarLogo from '../common/RideRentNavbarLogo';
 import { LoginDialog } from '../dialog/login-dialog';
-// import { LoginDialog } from '../dialog/login-dialog/LoginDialog';
+import { useAuth } from '@/hooks/useAuth';
 
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import('../sidebar/MobileSidebar'), {
@@ -30,6 +32,15 @@ const MobileSidebar = dynamic(() => import('../sidebar/MobileSidebar'), {
 });
 
 export const Navbar = () => {
+  const {
+    auth,
+    isLoginOpen,
+    login,
+    logout,
+    onHandleLoginmodal,
+    handleProfileNavigation,
+    user,
+  } = useAuth();
   const params = useParams<{
     state: string;
     category: string;
@@ -91,6 +102,17 @@ export const Navbar = () => {
 
   const isMobile = useIsMobile(640);
 
+  // Handle logout function
+  const handleLogout = () => {
+    logout();
+  };
+
+  // Get user name from auth state
+  const userName =
+    user?.firstName && user?.lastName
+      ? `${user.firstName} ${user.lastName}`
+      : 'User';
+
   return (
     <header
       className={`fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-white transition-all duration-200 ease-in-out`}
@@ -134,31 +156,67 @@ export const Navbar = () => {
             <li className="hidden lg:block">
               <RegisterLinkButton country={country} />
             </li>
+            {auth.isLoggedIn && (
+              <Button
+                variant="ghost"
+                onClick={handleProfileNavigation}
+                className="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-orange-50 hover:text-orange-600"
+              >
+                <User className="mr-2 h-4 w-4" />
+                My Profile
+              </Button>
+            )}
 
             {/* Login/Signup Icon */}
-            <li className="max-sm:hidden">
-              {/* Login Dialog with required props */}
-              {(() => {
-                const [isLoginOpen, setLoginOpen] = useState(false);
-                return (
-                  <>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full"
-                      onClick={() => setLoginOpen(true)}
-                    >
-                      <User className="h-5 w-5" />
-                      <span className="sr-only">Login / Sign Up</span>
-                    </Button>
-                    <LoginDialog
-                      isOpen={isLoginOpen}
-                      onClose={() => setLoginOpen(false)}
+            <div className="flex items-center space-x-2">
+              {auth.isLoggedIn && (
+                <>
+                  {/* Notifications */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="relative cursor-pointer"
+                  >
+                    <Bell className="h-5 w-5 text-gray-600" />
+                    <Badge className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 p-0 text-xs text-white">
+                      3
+                    </Badge>
+                  </Button>
+
+                  <Avatar
+                    className="h-9 w-9 cursor-pointer ring-2 ring-orange-200"
+                    onClick={handleLogout}
+                  >
+                    <AvatarImage
+                      src="/professional-man-suit.png"
+                      alt={userName}
                     />
-                  </>
-                );
-              })()}
-            </li>
+                    <AvatarFallback className="bg-orange-100 font-semibold text-orange-600">
+                      {userName
+                        .split(' ')
+                        .map((n: string) => n[0])
+                        .join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                </>
+              )}
+
+              {!auth.isLoggedIn && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  onClick={() => onHandleLoginmodal({ isOpen: true })}
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+              )}
+            </div>
+            <LoginDialog
+              login={login}
+              isOpen={isLoginOpen}
+              onClose={() => onHandleLoginmodal({ isOpen: false })}
+            />
 
             {/* <li className="max-sm:hidden">
               <ProfileDropdown />
