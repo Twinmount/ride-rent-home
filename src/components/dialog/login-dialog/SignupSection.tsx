@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useImmer } from 'use-immer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,23 +12,82 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { PhoneInput } from '@/components/ui/phone-input';
-import { Eye, EyeOff, Lock, User, Phone, Check } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
-import { useSignupForm, COUNTRY_CODES } from '@/hooks/useAuthForms';
+import { Eye, EyeOff, Lock, Phone, Check } from 'lucide-react';
+import { useAuthContext } from '@/auth';
 
-export const SignupSection = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+// Country code to ID mapping
+const COUNTRY_MAPPINGS: Record<string, number> = {
+  '+971': 1, // UAE
+  '+1': 2, // USA
+  '+44': 3, // UK
+  '+91': 4, // India
+  '+966': 5, // Saudi Arabia
+  '+974': 6, // Qatar
+  '+965': 7, // Kuwait
+  '+973': 8, // Bahrain
+  '+968': 9, // Oman
+};
 
-  const [signupStep, setSignupStep] = useState(1); // 1: basic info, 2: OTP verification, 3: password setup
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [countryCode, setCountryCode] = useState('+971');
-  const [otp, setOtp] = useState(['', '', '', '']);
-  const [otpVerified, setOtpVerified] = useState(false);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+interface SignupSectionProps {
+  signupStep: number;
+  setSignupStep: (step: number) => void;
+  mobileNumber: string;
+  setMobileNumber: (number: string) => void;
+  countryCode: string;
+  setCountryCode: (code: string) => void;
+  otp: string[];
+  setOtp: (otp: string[]) => void;
+  otpVerified: boolean;
+  setOtpVerified: (verified: boolean) => void;
+  showPassword: boolean;
+  setShowPassword: (show: boolean) => void;
+  showConfirmPassword: boolean;
+  setShowConfirmPassword: (show: boolean) => void;
+  password: string;
+  setPassword: (password: string) => void;
+  confirmPassword: string;
+  setConfirmPassword: (confirmPassword: string) => void;
+  onLoginSuccess?: () => void;
+  onClose: () => void;
+}
 
+export const SignupSection = ({
+  signupStep,
+  setSignupStep,
+  mobileNumber,
+  setMobileNumber,
+  countryCode,
+  setCountryCode,
+  otp,
+  setOtp,
+  otpVerified,
+  setOtpVerified,
+  showPassword,
+  setShowPassword,
+  showConfirmPassword,
+  setShowConfirmPassword,
+  password,
+  setPassword,
+  confirmPassword,
+  setConfirmPassword,
+  onLoginSuccess,
+  onClose,
+}: SignupSectionProps) => {
+  const {
+    signup,
+    verifyOTP,
+    setPassword: setUserPassword,
+    resendOTP,
+    signupMutation,
+    verifyOtpMutation,
+    setPasswordMutation,
+    resendOtpMutation,
+    error,
+    clearError,
+  } = useAuthContext();
+
+  const [signupData, setSignupData] = useState<any>(null);
+  const [tempToken, setTempToken] = useState<string>('');
   const handleOtpChange = (index: number, value: string) => {
     if (value.length <= 1 && /^\d*$/.test(value)) {
       const newOtp = [...otp];
@@ -42,62 +100,138 @@ export const SignupSection = () => {
         nextInput?.focus();
       }
 
-      // Check if OTP is complete and simulate verification
-      if (newOtp.every((digit) => digit !== '') && newOtp.join('') === '1234') {
-        setOtpVerified(true);
-        setTimeout(() => setSignupStep(3), 1000); // Move to password setup after 1 second
+      // Check if OTP is complete (4 digits)
+      if (newOtp.every((digit) => digit !== '')) {
+        handleVerifyOtp(newOtp.join(''));
       }
     }
   };
 
-  const handleSendOtp = () => {
-    if (firstName && lastName && mobileNumber) {
-      setSignupStep(2);
-      // Simulate OTP sending
-      console.log(`[v0] OTP sent to ${countryCode}${mobileNumber}`);
+  const handleSendOtp = async () => {
+    if (mobileNumber && countryCode) {
+      try {
+        clearError();
+        const response = await signup({
+          phoneNumber: mobileNumber,
+          countryCode: countryCode,
+          countryId: COUNTRY_MAPPINGS[countryCode] || 1, // Default to 1 if not found
+        });
+
+        if (response.success) {
+          setSignupData(response.data);
+          setSignupStep(2);
+          console.log(
+            `[SignupSection] OTP sent to ${countryCode}${mobileNumber}`
+          );
+        }
+      } catch (error) {
+        console.error('Signup failed:', error);
+      }
     }
   };
 
-  const handleSignupComplete = () => {
-    console.log('[v0] Signup completed successfully');
+  const handleVerifyOtp = async (otpCode: string) => {
+    if (signupData && otpCode.length === 4) {
+      try {
+        clearError();
+        const response = await verifyOTP(
+          signupData.userId,
+          signupData.otpId,
+          otpCode
+        );
+
+        if (response.success) {
+          console.log('response: ', response);
+          setOtpVerified(true);
+          setTempToken(response?.tempToken || '');
+          setTimeout(() => setSignupStep(3), 1000);
+        }
+      } catch (error) {
+        console.error('OTP verification failed:', error);
+        setOtpVerified(false);
+      }
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (mobileNumber && countryCode) {
+      try {
+        clearError();
+        await resendOTP(mobileNumber, countryCode);
+        console.log('OTP resent successfully');
+      } catch (error) {
+        console.error('Failed to resend OTP:', error);
+      }
+    }
+  };
+
+  const handleSignupComplete = async () => {
+    console.log('ererere');
+    console.log('password: ', password);
+    console.log('confirmPassword: ', confirmPassword);
+    console.log('tempToken: ', tempToken);
+    if (password && confirmPassword && tempToken) {
+      try {
+        clearError();
+        const response = await setUserPassword({
+          tempToken,
+          password,
+          confirmPassword,
+        });
+
+        if (response.success) {
+          console.log('[SignupSection] Signup completed successfully');
+          if (onLoginSuccess) {
+            onLoginSuccess();
+          }
+          onClose();
+        }
+      } catch (error) {
+        console.error('Password setup failed:', error);
+      }
+    }
   };
 
   const handleClose = () => {
     setSignupStep(1);
     setOtp(['', '', '', '']);
     setOtpVerified(false);
-    setFirstName('');
-    setLastName('');
     setMobileNumber('');
+    setPassword('');
+    setConfirmPassword('');
+    onClose();
   };
 
   return (
     <TabsContent value="signup" className="mt-6 space-y-4">
+      {error && (
+        <div className="rounded-md border border-red-200 bg-red-50 p-3">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm font-medium text-red-800">Signup Error</p>
+              <p className="mt-1 text-xs text-red-700">{error.message}</p>
+              {error.field && (
+                <p className="mt-1 text-xs text-red-600">
+                  Field: {error.field}
+                </p>
+              )}
+            </div>
+            <button
+              onClick={clearError}
+              className="text-lg leading-none text-red-400 hover:text-red-600"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
       {signupStep === 1 && (
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
-                <Input
-                  id="firstName"
-                  placeholder="First name"
-                  className="pl-10"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input
-                id="lastName"
-                placeholder="Last name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </div>
+          <div className="space-y-2 text-center">
+            <h3 className="text-lg font-semibold">Create Your Account</h3>
+            <p className="text-sm text-gray-600">
+              Enter your mobile number to get started
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -134,12 +268,29 @@ export const SignupSection = () => {
           </div>
 
           <Button
-            className="w-full bg-orange-500 text-white hover:bg-orange-600"
+            className="w-full cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
             onClick={handleSendOtp}
-            disabled={!firstName || !lastName || !mobileNumber}
+            disabled={!mobileNumber || signupMutation.isPending}
           >
-            Send OTP
+            {signupMutation.isPending ? 'Sending OTP...' : 'Send OTP'}
           </Button>
+
+          <div className="text-center text-sm text-gray-600">
+            By continuing, you agree to our{' '}
+            <Button
+              variant="link"
+              className="h-auto cursor-pointer p-0 text-orange-500 hover:text-orange-600"
+            >
+              Terms of Service
+            </Button>{' '}
+            and{' '}
+            <Button
+              variant="link"
+              className="h-auto cursor-pointer p-0 text-orange-500 hover:text-orange-600"
+            >
+              Privacy Policy
+            </Button>
+          </div>
         </div>
       )}
 
@@ -190,15 +341,13 @@ export const SignupSection = () => {
           <div className="text-center">
             <Button
               variant="link"
-              className="text-orange-500 hover:text-orange-600"
+              className="cursor-pointer text-orange-500 hover:text-orange-600"
+              onClick={handleResendOtp}
+              disabled={resendOtpMutation.isPending}
             >
-              Resend OTP
+              {resendOtpMutation.isPending ? 'Resending...' : 'Resend OTP'}
             </Button>
           </div>
-
-          <p className="text-center text-xs text-gray-500">
-            For demo purposes, use OTP: 1234
-          </p>
         </div>
       )}
 
@@ -220,6 +369,8 @@ export const SignupSection = () => {
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Create a password"
                 className="pl-10 pr-10"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <Button
                 type="button"
@@ -246,6 +397,8 @@ export const SignupSection = () => {
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirm your password"
                 className="pl-10 pr-10"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <Button
                 type="button"
@@ -261,33 +414,24 @@ export const SignupSection = () => {
                 )}
               </Button>
             </div>
-          </div>
-
-          <div className="flex items-center space-x-2 text-sm">
-            <input type="checkbox" className="rounded" />
-            <span>
-              I agree to the{' '}
-              <Button
-                variant="link"
-                className="h-auto cursor-pointer p-0 text-orange-500 hover:text-orange-600"
-              >
-                Terms of Service
-              </Button>{' '}
-              and{' '}
-              <Button
-                variant="link"
-                className="h-auto cursor-pointer p-0 text-orange-500 hover:text-orange-600"
-              >
-                Privacy Policy
-              </Button>
-            </span>
+            {password && confirmPassword && password !== confirmPassword && (
+              <p className="text-xs text-red-600">Passwords do not match</p>
+            )}
           </div>
 
           <Button
             className="w-full cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
             onClick={handleSignupComplete}
+            disabled={
+              !password ||
+              !confirmPassword ||
+              password !== confirmPassword ||
+              setPasswordMutation.isPending
+            }
           >
-            Create Account
+            {setPasswordMutation.isPending
+              ? 'Creating Account...'
+              : 'Create Account'}
           </Button>
         </div>
       )}

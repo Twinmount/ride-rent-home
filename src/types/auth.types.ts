@@ -31,7 +31,7 @@ export interface SignupData {
 export interface PhoneSignupData {
   phoneNumber: string;
   countryCode: string;
-  countryId: string;
+  countryId?: number; // Made optional and number type
 }
 
 /**
@@ -47,8 +47,7 @@ export interface OtpVerificationData {
  * Set password request data interface
  */
 export interface SetPasswordData {
-  phoneNumber: string;
-  countryCode: string;
+  tempToken: string;
   password: string;
   confirmPassword: string;
 }
@@ -99,6 +98,7 @@ export interface AuthResponse {
   };
   accessToken?: string;
   refreshToken?: string;
+  tempToken?: string;
   errors?: Record<string, string[]>;
 }
 

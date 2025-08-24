@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import "./ProfileCard.scss";
+import './ProfileCard.scss';
 
 import MotionDiv from '@/components/general/framer-motion/MotionDiv';
 import { ProfileCardDataType } from '@/types/vehicle-details-types';
