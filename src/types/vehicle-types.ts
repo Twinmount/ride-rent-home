@@ -238,6 +238,7 @@ export type MapVehicleCardType = {
 
 export type NewVehicleCardType = {
   vehicleId: string;
+  companyLogo?: string
   vehicleCode: string;
   thumbnail: string;
   model: string;

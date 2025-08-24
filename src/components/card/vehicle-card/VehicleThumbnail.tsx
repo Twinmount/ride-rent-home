@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { VehicleCardImageSkeleton } from "@/components/skelton/VehicleCardImageSkeleton";
-import Image from "next/image";
-import { useState } from "react";
+import { VehicleCardImageSkeleton } from '@/components/skelton/VehicleCardImageSkeleton';
+import Image from 'next/image';
+import { useState } from 'react';
 
 type VehicleThumbnailProps = {
   src: string | null;
@@ -25,7 +25,7 @@ const VehicleThumbnail = ({
   if (!src) {
     return (
       <img
-        src={"/assets/img/default-thumbnail.webp"}
+        src={'/assets/img/default-thumbnail.webp'}
         alt={alt}
         width={width}
         height={height}

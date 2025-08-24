@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Dialog,
@@ -6,9 +6,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { useVehicleCardContext } from "@/context/VehicleCardContext";
-import { FC } from "react";
+} from '@/components/ui/dialog';
+import { useVehicleCardContext } from '@/context/VehicleCardContext';
+import { FC } from 'react';
 
 /**
  * A minimal dialog that shows the selected vehicle’s image and title.
@@ -19,7 +19,7 @@ const BookingDialog: FC = () => {
 
   return (
     <Dialog
-      open={isOpen}
+      open={true}
       onOpenChange={(open) => {
         if (!open) {
           closeDialog();

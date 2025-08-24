@@ -11,7 +11,16 @@ import LanguageSelector from './LanguageSelector';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { LocationDialog } from '../dialog/location-dialog/LocationDialog';
 import { useEffect, useState } from 'react';
-import { AlignRight, User, Globe, MapPin, Bell, Edit3 } from 'lucide-react';
+import {
+  AlignRight,
+  User,
+  Globe,
+  MapPin,
+  Bell,
+  Edit3,
+  Settings,
+  LogOut,
+} from 'lucide-react';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
@@ -19,6 +28,14 @@ import RegisterLinkButton from '../common/RegisterLinkButton';
 import RideRentNavbarLogo from '../common/RideRentNavbarLogo';
 import { LoginDialog } from '../dialog/login-dialog';
 import { useAuthContext } from '@/auth';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import('../sidebar/MobileSidebar'), {
@@ -156,21 +173,9 @@ export const Navbar = () => {
             <li className="hidden lg:block">
               <RegisterLinkButton country={country} />
             </li>
-            {auth.isLoggedIn && (
-              <Button
-                variant="ghost"
-                onClick={handleProfileNavigation}
-                className="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-orange-50 hover:text-orange-600"
-              >
-                <User className="mr-2 h-4 w-4" />
-                My Profile
-              </Button>
-            )}
-
-            {/* Login/Signup Icon */}
             <div className="flex items-center space-x-2">
               {auth.isLoggedIn && (
-                <>
+                <div className="flex items-center space-x-2">
                   {/* Notifications */}
                   <Button
                     variant="ghost"
@@ -183,22 +188,60 @@ export const Navbar = () => {
                     </Badge>
                   </Button>
 
-                  <Avatar
-                    className="h-9 w-9 cursor-pointer ring-2 ring-orange-200"
-                    onClick={handleLogout}
-                  >
-                    <AvatarImage
-                      src="/professional-man-suit.png"
-                      alt={userName}
-                    />
-                    <AvatarFallback className="bg-orange-100 font-semibold text-orange-600">
-                      {userName
-                        .split(' ')
-                        .map((n: string) => n[0])
-                        .join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                </>
+                  {/* Dropdown Menu for Avatar */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-orange-200 transition-all hover:ring-orange-300">
+                        <AvatarImage
+                          src="/professional-man-suit.png"
+                          alt={userName}
+                        />
+                        <AvatarFallback className="bg-orange-100 font-semibold text-orange-600">
+                          {userName
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="w-56"
+                      align="end"
+                      forceMount
+                    >
+                      <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {userName}
+                          </p>
+                          <p className="text-xs leading-none text-muted-foreground">
+                            dubai.badass@example.com
+                          </p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={handleProfileNavigation}
+                        className="cursor-pointer"
+                      >
+                        <User className="mr-2 h-4 w-4" />
+                        <span>My Profile</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={handleLogout}
+                        className="cursor-pointer text-red-600 focus:text-red-600"
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               )}
 
               {!auth.isLoggedIn && (

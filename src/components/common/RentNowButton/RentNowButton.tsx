@@ -1,5 +1,5 @@
-import React from "react";
-import "./RentNowButton.scss";
+import React from 'react';
+import './RentNowButton.scss';
 
 type RentNowButtonProps = {
   companyLogo?: string | null;
@@ -14,7 +14,7 @@ const RentNowButton: React.FC<RentNowButtonProps> = ({ companyLogo }) => {
             <span className="rent-now-text">RENT NOW</span>
             <span>
               {companyLogo && <span className="green-round"></span>}
-              <span className={companyLogo ? "" : "margin-for-span"}>
+              <span className={companyLogo ? '' : 'margin-for-span'}>
                 Available now for chat
               </span>
             </span>

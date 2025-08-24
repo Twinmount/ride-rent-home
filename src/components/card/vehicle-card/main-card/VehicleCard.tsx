@@ -1,25 +1,25 @@
-import "./VehicleCard.scss";
-import { VehicleCardType } from "@/types/vehicle-types";
+import './VehicleCard.scss';
+import { VehicleCardType } from '@/types/vehicle-types';
 import {
   convertToLabel,
   generateVehicleDetailsUrl,
   generateWhatsappUrl,
   getFormattedPhoneNumber,
-} from "@/helpers";
-import ContactIcons from "@/components/common/contact-icons/ContactIcons";
-import SpecsGrid from "../SpecsGrid";
-import ZeroDeposit from "../ZeroDeposit";
+} from '@/helpers';
+import ContactIcons from '@/components/common/contact-icons/ContactIcons';
+import SpecsGrid from '../SpecsGrid';
+import ZeroDeposit from '../ZeroDeposit';
 
-import CompanyLogo from "../CompanyLogo";
-import VehicleThumbnail from "../VehicleThumbnail";
-import HourlyRentalBadge from "./hourly-rental-badge/HourlyRentalBadge";
-import RentalDetails from "../RentalDetails";
+import CompanyLogo from '../CompanyLogo';
+import VehicleThumbnail from '../VehicleThumbnail';
+import HourlyRentalBadge from './hourly-rental-badge/HourlyRentalBadge';
+import RentalDetails from '../RentalDetails';
 
-import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
+import MotionStaggeredDiv from '@/components/general/framer-motion/MotionStaggeredDiv';
 // import EnquireBestPrice from "../EnquireBestPrice";
-import { MapPin } from "lucide-react";
-import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
-import LinkWrapper from "../LinkWrapper";
+import { MapPin } from 'lucide-react';
+import RentNowButton from '@/components/common/RentNowButton/RentNowButton';
+import LinkWrapper from '../LinkWrapper';
 
 type VehicleCardProps = {
   vehicle: VehicleCardType;
@@ -27,10 +27,10 @@ type VehicleCardProps = {
   country: string;
 };
 
-const VehicleCard = ({ vehicle, index, country = "ae" }: VehicleCardProps) => {
+const VehicleCard = ({ vehicle, index, country = 'ae' }: VehicleCardProps) => {
   const formattedPhoneNumber = getFormattedPhoneNumber(
     vehicle.countryCode,
-    vehicle.phoneNumber,
+    vehicle.phoneNumber
   );
 
   // dynamic link to navigate to vehicle details page
@@ -58,7 +58,7 @@ const VehicleCard = ({ vehicle, index, country = "ae" }: VehicleCardProps) => {
           {/* Thumbnail Image */}
           <VehicleThumbnail
             src={vehicle.thumbnail}
-            alt={vehicle.vehicleTitle || "Vehicle Image"}
+            alt={vehicle.vehicleTitle || 'Vehicle Image'}
             width={350}
             height={250}
             className="vehicle-image"
@@ -96,9 +96,9 @@ const VehicleCard = ({ vehicle, index, country = "ae" }: VehicleCardProps) => {
           {/* location and rental details */}
           <div className="location-box">
             <div className="location">
-              <MapPin strokeWidth={1.5} size={18} />{" "}
+              <MapPin strokeWidth={1.5} size={18} />{' '}
               <span className="state">
-                {convertToLabel(vehicle.state) || "N/A"}
+                {convertToLabel(vehicle.state) || 'N/A'}
               </span>
             </div>
 

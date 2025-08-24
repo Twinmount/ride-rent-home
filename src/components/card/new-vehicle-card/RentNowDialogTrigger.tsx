@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuthContext } from '@/auth';
 import { useVehicleCardContext } from '@/context/VehicleCardContext';
 import { NewVehicleCardType } from '@/types/vehicle-types';
 
@@ -13,6 +14,7 @@ export default function RentNowDialogTrigger({
   layoutType,
 }: RentNowDialogTriggerProps) {
   const { openDialog } = useVehicleCardContext();
+  const { auth, onHandleLoginmodal } = useAuthContext();
 
   const handleClick = () => {
     openDialog(vehicle);
@@ -25,7 +27,13 @@ export default function RentNowDialogTrigger({
 
   return (
     <button
-      onClick={handleClick}
+      onClick={() => {
+        if (!auth.isLoggedIn) {
+          onHandleLoginmodal({ isOpen: true });
+        } else {
+          handleClick();
+        }
+      }}
       className={`flex-center whitespace-nowrap rounded bg-theme-gradient py-1 text-text-primary ${className}`}
     >
       Rent Now

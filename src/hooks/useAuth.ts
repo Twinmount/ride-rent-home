@@ -199,6 +199,9 @@ export const useAuth = () => {
     user: authStorage.getUser(),
   });
 
+  console.log('state: ', state);
+
+
   const [] = useImmer({
 
   })
@@ -231,19 +234,30 @@ export const useAuth = () => {
     mutationFn: authAPI.login,
     onSuccess: (data) => {
       if (data.success) {
-        console.log('data: ', data);
+
+        const user: User = {
+          id: data?.data?.userId!,
+          phoneNumber: data?.data?.phoneNumber!,
+          countryCode: data?.data?.countryCode!,
+          email: data?.data?.email!,
+          isEmailVerified: data?.data?.isEmailVerified!,
+          isPhoneVerified: data?.data?.isPhoneVerified!,
+        };
+
         setAuthenticated(
-          data.data?.user!,
-          data.data?.token!,
-          data.data?.refreshToken || undefined,
+          user,
+          data.accessToken,
+          data.refreshToken,
           true // Remember user
         );
+
         setAuth((draft) => {
           draft.isLoggedIn = true;
-          draft.user = data.data?.user || null;
-          draft.token = data.data?.token || null;
-          draft.refreshToken = data.data?.refreshToken || null;
+          draft.user = user;
+          draft.token = data?.accessToken!;
+          draft.refreshToken = data?.refreshToken!;
         });
+
         setError(null);
         console.log('Login successful:', data);
       }
@@ -360,7 +374,9 @@ export const useAuth = () => {
     });
   }, [updateState]);
 
-  const setAuthenticated = useCallback((user: User | null, token?: string, refreshToken?: string, rememberMe: boolean = false) => {
+  const setAuthenticated = (user: User | null, token?: string, refreshToken?: string, rememberMe: boolean = false) => {
+    console.log('token: setAuthenticated', token);
+    console.log('user:setAuthenticated ', user);
     if (user && token) {
       authStorage.setToken(token, rememberMe);
       authStorage.setUser(user, rememberMe);
@@ -379,7 +395,7 @@ export const useAuth = () => {
         draft.user = null;
       });
     }
-  }, [updateState]);
+  };
 
   // Login function
 
