@@ -295,6 +295,30 @@ export const useAuth = () => {
   const setPasswordMutation = useMutation({
     mutationFn: authAPI.setPassword,
     onSuccess: (data) => {
+      if (data.success && data.data) {
+        const user: User = {
+          id: data?.data?.userId!,
+          phoneNumber: data?.data?.phoneNumber!,
+          countryCode: data?.data?.countryCode!,
+          email: data?.data?.email!,
+          isEmailVerified: data?.data?.isEmailVerified!,
+          isPhoneVerified: data?.data?.isPhoneVerified!,
+        };
+
+        setAuthenticated(
+          user,
+          data.accessToken,
+          data.refreshToken,
+          true // Remember user
+        );
+
+        setAuth((draft) => {
+          draft.isLoggedIn = true;
+          draft.user = user;
+          draft.token = data?.accessToken!;
+          draft.refreshToken = data?.refreshToken!;
+        });
+      }
       setError(null);
       console.log('Password set successfully:', data);
     },
