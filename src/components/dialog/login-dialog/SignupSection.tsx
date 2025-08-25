@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Eye, EyeOff, Lock, Phone, Check } from 'lucide-react';
+import { Eye, EyeOff, Lock, Phone, Check, Camera, Upload } from 'lucide-react';
 import { useAuthContext } from '@/auth';
 
 // Country code to ID mapping
@@ -88,6 +88,28 @@ export const SignupSection = ({
 
   const [signupData, setSignupData] = useState<any>(null);
   const [tempToken, setTempToken] = useState<string>('');
+
+  const [profileName, setProfileName] = useState('');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  const handleProfileSetupComplete = () => {
+    console.log('[v0] Profile setup completed successfully');
+    if (onLoginSuccess) {
+      onLoginSuccess();
+    }
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfileImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleOtpChange = (index: number, value: string) => {
     if (value.length <= 1 && /^\d*$/.test(value)) {
       const newOtp = [...otp];
@@ -181,10 +203,12 @@ export const SignupSection = ({
 
         if (response.success) {
           console.log('[SignupSection] Signup completed successfully');
+          setSignupStep(4);
           if (onLoginSuccess) {
             onLoginSuccess();
           }
-          onClose();
+
+          // onClose();
         }
       } catch (error) {
         console.error('Password setup failed:', error);
@@ -432,6 +456,79 @@ export const SignupSection = ({
             {setPasswordMutation.isPending
               ? 'Creating Account...'
               : 'Create Account'}
+          </Button>
+        </div>
+      )}
+
+      {signupStep === 4 && (
+        <div className="space-y-6 py-4">
+          <div className="mb-8 flex justify-center">
+            <div className="to-yellow-500 h-16 w-16 rotate-12 transform rounded-lg bg-gradient-to-br from-orange-400 shadow-lg"></div>
+          </div>
+
+          <div className="space-y-2 text-center">
+            <h3 className="text-xl font-bold text-gray-900">
+              Welcome to Ride.Rent
+            </h3>
+            <p className="text-sm text-gray-600">
+              Let's ride in style, time to set up your profile.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center space-y-2">
+            <div className="relative">
+              <input
+                type="file"
+                id="profileImageUpload"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+              <label
+                htmlFor="profileImageUpload"
+                className="flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 transition-colors hover:border-orange-400 hover:bg-orange-50"
+              >
+                {profileImage ? (
+                  <img
+                    src={profileImage || '/placeholder.svg'}
+                    alt="Profile"
+                    className="h-full w-full rounded-2xl object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <Camera className="mb-1 h-6 w-6 text-gray-400" />
+                    <Upload className="h-4 w-4 text-gray-400" />
+                  </div>
+                )}
+              </label>
+            </div>
+            <p className="text-xs text-gray-500">Optional</p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="relative">
+              <Input
+                type="text"
+                placeholder="Name"
+                value={profileName}
+                onChange={(e) => setProfileName(e.target.value)}
+                className="h-12 w-full rounded-xl border-gray-300 text-base focus:border-orange-400 focus:ring-orange-400"
+              />
+              {profileName && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 transform">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-orange-500">
+                    <Check className="h-4 w-4 text-white" />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <Button
+            className="h-12 w-full cursor-pointer rounded-xl bg-gray-900 text-base font-medium text-white hover:bg-gray-800"
+            onClick={handleProfileSetupComplete}
+          >
+            Start Booking
           </Button>
         </div>
       )}

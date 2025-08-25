@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Eye, EyeOff, Lock, Phone, Check } from 'lucide-react';
+import { Eye, EyeOff, Lock, Phone, Check, ArrowLeft } from 'lucide-react';
 import { useAuthContext } from '@/auth';
 import { SignupSection } from './SignupSection';
 
@@ -34,19 +34,8 @@ export const LoginDialog = ({
   onClose,
   onLoginSuccess,
 }: AuthModalProps) => {
-  const {
-    user,
-    auth,
-    login,
-    logout,
-    isLoginOpen,
-    onHandleLoginmodal,
-    handleProfileNavigation,
-    isLoading,
-    loginMutation,
-    error,
-    clearError,
-  } = useAuthContext();
+  const { login, isLoading, loginMutation, error, clearError } =
+    useAuthContext();
 
   // Login form state using useImmer
   const [loginForm, updateLoginForm] = useImmer({
@@ -58,9 +47,19 @@ export const LoginDialog = ({
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [showSignupConfirmPassword, setShowSignupConfirmPassword] =
     useState(false);
+
+  // Forgot password state using useImmer
+  const [forgotPasswordForm, updateForgotPasswordForm] = useImmer({
+    step: 1,
+    countryCode: '+971',
+    mobile: '',
+    otp: ['', '', '', ''],
+    otpVerified: false,
+  });
 
   const [signupStep, setSignupStep] = useState(1); // 1: basic info, 2: OTP verification, 3: password setup
   const [mobileNumber, setMobileNumber] = useState('');
@@ -113,6 +112,15 @@ export const LoginDialog = ({
     setShowSignupPassword(false);
     setShowSignupConfirmPassword(false);
 
+    // Reset forgot password state
+    updateForgotPasswordForm((draft) => {
+      draft.step = 1;
+      draft.countryCode = '+971';
+      draft.mobile = '';
+      draft.otp = ['', '', '', ''];
+      draft.otpVerified = false;
+    });
+
     // Reset login form
     updateLoginForm((draft) => {
       draft.phoneNumber = '';
@@ -129,6 +137,55 @@ export const LoginDialog = ({
     onClose();
   };
 
+  const handleSendForgotOtp = () => {
+    // TODO: Implement forgot password OTP sending
+    console.log(
+      'Sending forgot password OTP to:',
+      forgotPasswordForm.countryCode,
+      forgotPasswordForm.mobile
+    );
+    updateForgotPasswordForm((draft) => {
+      draft.step = 2;
+    });
+  };
+
+  const handleForgotPasswordOtpChange = (index: number, value: string) => {
+    if (value.length > 1) return;
+
+    updateForgotPasswordForm((draft) => {
+      draft.otp[index] = value;
+    });
+
+    // Auto-focus next input
+    if (value && index < 3) {
+      const nextInput = document.getElementById(`forgot-otp-${index + 1}`);
+      nextInput?.focus();
+    }
+
+    // Check if OTP is complete (for demo purposes, use 1234)
+    const newOtp = [...forgotPasswordForm.otp];
+    newOtp[index] = value;
+    const otpString = newOtp.join('');
+    if (otpString.length === 4) {
+      if (otpString === '1234') {
+        updateForgotPasswordForm((draft) => {
+          draft.otpVerified = true;
+        });
+        setTimeout(() => {
+          updateForgotPasswordForm((draft) => {
+            draft.step = 3;
+          });
+        }, 1000);
+      }
+    }
+  };
+
+  const handlePasswordReset = () => {
+    // TODO: Implement password reset
+    console.log('Resetting password');
+    setShowForgotPassword(false);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-md">
@@ -138,160 +195,380 @@ export const LoginDialog = ({
             <span className="text-gray-800">Rent</span>
           </DialogTitle>
         </DialogHeader>
-
-        <Tabs defaultValue="login" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="login" className="mt-6 space-y-4">
-            <div className="space-y-2 text-center">
-              <h3 className="text-lg font-semibold">Welcome Back</h3>
-              <p className="text-sm text-gray-600">Sign in to your account</p>
+        {showForgotPassword ? (
+          <div className="mt-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowForgotPassword(false)}
+                className="cursor-pointer p-1"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <h3 className="text-lg font-semibold">Reset Password</h3>
             </div>
-            <div className="space-y-4">
-              {error && (
-                <div className="rounded-md border border-red-200 bg-red-50 p-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-red-800">
-                        Login Failed
-                      </p>
-                      <p className="mt-1 text-xs text-red-700">
-                        {error.message}
-                      </p>
-                      {error.field && (
-                        <p className="mt-1 text-xs text-red-600">
-                          Field: {error.field}
-                        </p>
-                      )}
-                    </div>
-                    <button
-                      onClick={clearError}
-                      className="text-lg leading-none text-red-400 hover:text-red-600"
+
+            {forgotPasswordForm.step === 1 && (
+              <div className="space-y-4">
+                <div className="space-y-2 text-center">
+                  <p className="text-sm text-gray-600">
+                    Enter your mobile number to reset your password
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="forgotMobile">Mobile Number</Label>
+                  <div className="flex gap-2">
+                    <Select
+                      value={forgotPasswordForm.countryCode}
+                      onValueChange={(value) =>
+                        updateForgotPasswordForm((draft) => {
+                          draft.countryCode = value;
+                        })
+                      }
                     >
-                      ×
-                    </button>
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                        <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                        <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                        <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                        <SelectItem value="+966">🇸🇦 +966</SelectItem>
+                        <SelectItem value="+974">🇶🇦 +974</SelectItem>
+                        <SelectItem value="+965">🇰🇼 +965</SelectItem>
+                        <SelectItem value="+973">🇧🇭 +973</SelectItem>
+                        <SelectItem value="+968">🇴🇲 +968</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <div className="relative flex-1">
+                      <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                      <Input
+                        id="forgotMobile"
+                        type="tel"
+                        placeholder="50 123 4567"
+                        className="pl-10"
+                        value={forgotPasswordForm.mobile}
+                        onChange={(e) =>
+                          updateForgotPasswordForm((draft) => {
+                            draft.mobile = e.target.value;
+                          })
+                        }
+                      />
+                    </div>
                   </div>
                 </div>
-              )}
 
-              <div className="space-y-2">
-                <Label htmlFor="mobile">Mobile Number</Label>
-                <div className="flex gap-2">
-                  <Select
-                    value={loginForm.countryCode}
-                    onValueChange={(value) =>
-                      updateLoginForm((draft) => {
-                        draft.countryCode = value;
-                      })
-                    }
+                <Button
+                  className="w-full cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
+                  onClick={handleSendForgotOtp}
+                  disabled={!forgotPasswordForm.mobile}
+                >
+                  Send Reset Code
+                </Button>
+              </div>
+            )}
+
+            {forgotPasswordForm.step === 2 && (
+              <div className="space-y-4">
+                <div className="space-y-2 text-center">
+                  <p className="text-sm text-gray-600">
+                    We've sent a 4-digit code to{' '}
+                    {forgotPasswordForm.countryCode} {forgotPasswordForm.mobile}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Enter 4-digit OTP</Label>
+                  <div className="flex justify-center gap-2">
+                    {forgotPasswordForm.otp.map(
+                      (digit: string, index: number) => (
+                        <div key={index} className="relative">
+                          <Input
+                            id={`forgot-otp-${index}`}
+                            type="text"
+                            maxLength={1}
+                            className="h-12 w-12 text-center text-lg font-semibold"
+                            value={digit}
+                            onChange={(e) =>
+                              handleForgotPasswordOtpChange(
+                                index,
+                                e.target.value
+                              )
+                            }
+                            onKeyDown={(e) => {
+                              if (
+                                e.key === 'Backspace' &&
+                                !digit &&
+                                index > 0
+                              ) {
+                                const prevInput = document.getElementById(
+                                  `forgot-otp-${index - 1}`
+                                );
+                                prevInput?.focus();
+                              }
+                            }}
+                          />
+                          {forgotPasswordForm.otpVerified && digit && (
+                            <Check className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-white text-green-500" />
+                          )}
+                        </div>
+                      )
+                    )}
+                  </div>
+                  {forgotPasswordForm.otpVerified && (
+                    <div className="flex items-center justify-center gap-2 text-sm text-green-600">
+                      <Check className="h-4 w-4" />
+                      <span>OTP Verified Successfully!</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="text-center">
+                  <Button
+                    variant="link"
+                    className="cursor-pointer text-orange-500 hover:text-orange-600"
                   >
-                    <SelectTrigger className="w-24">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                      <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                      <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                      <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                      <SelectItem value="+966">🇸🇦 +966</SelectItem>
-                      <SelectItem value="+974">🇶🇦 +974</SelectItem>
-                      <SelectItem value="+965">🇰🇼 +965</SelectItem>
-                      <SelectItem value="+973">🇧🇭 +973</SelectItem>
-                      <SelectItem value="+968">🇴🇲 +968</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <div className="relative flex-1">
-                    <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                    Resend OTP
+                  </Button>
+                </div>
+
+                <p className="text-center text-xs text-gray-500">
+                  For demo purposes, use OTP: 1234
+                </p>
+              </div>
+            )}
+
+            {forgotPasswordForm.step === 3 && (
+              <div className="space-y-4">
+                <div className="space-y-2 text-center">
+                  <p className="text-sm text-gray-600">
+                    Create a new password for your account
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="newPassword">New Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                     <Input
-                      id="mobile"
-                      name="mobile"
-                      type="tel"
-                      placeholder="50 123 4567"
-                      className="pl-10"
-                      value={loginForm.phoneNumber}
+                      id="newPassword"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Create a new password"
+                      className="pl-10 pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full cursor-pointer px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmNewPassword">
+                    Confirm New Password
+                  </Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                    <Input
+                      id="confirmNewPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="Confirm your new password"
+                      className="pl-10 pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full cursor-pointer px-3 py-2 hover:bg-transparent"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <Button
+                  className="w-full cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
+                  onClick={handlePasswordReset}
+                >
+                  Reset Password
+                </Button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Tabs defaultValue="login" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="login">Login</TabsTrigger>
+              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="login" className="mt-6 space-y-4">
+              <div className="space-y-2 text-center">
+                <h3 className="text-lg font-semibold">Welcome Back</h3>
+                <p className="text-sm text-gray-600">Sign in to your account</p>
+              </div>
+              <div className="space-y-4">
+                {error && (
+                  <div className="rounded-md border border-red-200 bg-red-50 p-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-red-800">
+                          Login Failed
+                        </p>
+                        <p className="mt-1 text-xs text-red-700">
+                          {error.message}
+                        </p>
+                        {error.field && (
+                          <p className="mt-1 text-xs text-red-600">
+                            Field: {error.field}
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        onClick={clearError}
+                        className="text-lg leading-none text-red-400 hover:text-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label htmlFor="mobile">Mobile Number</Label>
+                  <div className="flex gap-2">
+                    <Select
+                      value={loginForm.countryCode}
+                      onValueChange={(value) =>
+                        updateLoginForm((draft) => {
+                          draft.countryCode = value;
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                        <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                        <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                        <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                        <SelectItem value="+966">🇸🇦 +966</SelectItem>
+                        <SelectItem value="+974">🇶🇦 +974</SelectItem>
+                        <SelectItem value="+965">🇰🇼 +965</SelectItem>
+                        <SelectItem value="+973">🇧🇭 +973</SelectItem>
+                        <SelectItem value="+968">🇴🇲 +968</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <div className="relative flex-1">
+                      <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                      <Input
+                        id="mobile"
+                        name="mobile"
+                        type="tel"
+                        placeholder="50 123 4567"
+                        className="pl-10"
+                        value={loginForm.phoneNumber}
+                        onChange={(e) =>
+                          updateLoginForm((draft) => {
+                            draft.phoneNumber = e.target.value;
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Enter your password"
+                      className="pl-10 pr-10"
+                      value={loginForm.password}
                       onChange={(e) =>
                         updateLoginForm((draft) => {
-                          draft.phoneNumber = e.target.value;
+                          draft.password = e.target.value;
                         })
                       }
                     />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full cursor-pointer px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
                   </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
-                    className="pl-10 pr-10"
-                    value={loginForm.password}
-                    onChange={(e) =>
-                      updateLoginForm((draft) => {
-                        draft.password = e.target.value;
-                      })
-                    }
-                  />
+                <div className="flex items-center justify-between text-sm">
+                  <label className="flex cursor-pointer items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      className="rounded"
+                      checked={loginForm.rememberMe}
+                      onChange={(e) =>
+                        updateLoginForm((draft) => {
+                          draft.rememberMe = e.target.checked;
+                        })
+                      }
+                    />
+                    <span>Remember me</span>
+                  </label>
                   <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full cursor-pointer px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
+                    variant="link"
+                    className="h-auto cursor-pointer p-0 text-orange-500 hover:text-orange-600"
+                    onClick={() => setShowForgotPassword(true)}
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
-                    )}
+                    Forgot password?
                   </Button>
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex cursor-pointer items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    className="rounded"
-                    checked={loginForm.rememberMe}
-                    onChange={(e) =>
-                      updateLoginForm((draft) => {
-                        draft.rememberMe = e.target.checked;
-                      })
-                    }
-                  />
-                  <span>Remember me</span>
-                </label>
                 <Button
-                  variant="link"
-                  className="h-auto cursor-pointer p-0 text-orange-500 hover:text-orange-600"
+                  className="w-full cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
+                  onClick={handleLogin}
+                  disabled={
+                    isLoading ||
+                    loginMutation.isPending ||
+                    !loginForm.phoneNumber.trim() ||
+                    !loginForm.password.trim()
+                  }
                 >
-                  Forgot password?
+                  {isLoading || loginMutation.isPending
+                    ? 'Logging in...'
+                    : 'Login'}
                 </Button>
-              </div>
 
-              <Button
-                className="w-full cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
-                onClick={handleLogin}
-                disabled={
-                  isLoading ||
-                  loginMutation.isPending ||
-                  !loginForm.phoneNumber.trim() ||
-                  !loginForm.password.trim()
-                }
-              >
-                {isLoading || loginMutation.isPending
-                  ? 'Logging in...'
-                  : 'Login'}
-              </Button>
-
-              {/* <div className="relative">
+                {/* <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />
                 </div>
@@ -302,7 +579,7 @@ export const LoginDialog = ({
                 </div>
               </div> */}
 
-              {/* <div className="grid grid-cols-2 gap-4">
+                {/* <div className="grid grid-cols-2 gap-4">
                 <Button
                   variant="outline"
                   className="w-full cursor-pointer bg-transparent"
@@ -341,32 +618,33 @@ export const LoginDialog = ({
                   Twitter
                 </Button>
               </div> */}
-            </div>
-          </TabsContent>
+              </div>
+            </TabsContent>
 
-          <SignupSection
-            signupStep={signupStep}
-            setSignupStep={setSignupStep}
-            mobileNumber={mobileNumber}
-            setMobileNumber={setMobileNumber}
-            countryCode={countryCode}
-            setCountryCode={setCountryCode}
-            otp={otp}
-            setOtp={setOtp}
-            otpVerified={otpVerified}
-            setOtpVerified={setOtpVerified}
-            showPassword={showSignupPassword}
-            setShowPassword={setShowSignupPassword}
-            showConfirmPassword={showSignupConfirmPassword}
-            setShowConfirmPassword={setShowSignupConfirmPassword}
-            password={password}
-            setPassword={setPassword}
-            confirmPassword={confirmPassword}
-            setConfirmPassword={setConfirmPassword}
-            onLoginSuccess={onLoginSuccess}
-            onClose={handleClose}
-          />
-        </Tabs>
+            <SignupSection
+              signupStep={signupStep}
+              setSignupStep={setSignupStep}
+              mobileNumber={mobileNumber}
+              setMobileNumber={setMobileNumber}
+              countryCode={countryCode}
+              setCountryCode={setCountryCode}
+              otp={otp}
+              setOtp={setOtp}
+              otpVerified={otpVerified}
+              setOtpVerified={setOtpVerified}
+              showPassword={showSignupPassword}
+              setShowPassword={setShowSignupPassword}
+              showConfirmPassword={showSignupConfirmPassword}
+              setShowConfirmPassword={setShowSignupConfirmPassword}
+              password={password}
+              setPassword={setPassword}
+              confirmPassword={confirmPassword}
+              setConfirmPassword={setConfirmPassword}
+              onLoginSuccess={onLoginSuccess}
+              onClose={handleClose}
+            />
+          </Tabs>
+        )}
       </DialogContent>
     </Dialog>
   );
