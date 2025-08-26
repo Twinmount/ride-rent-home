@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,12 +34,14 @@ import {
   Calendar,
   Activity,
 } from 'lucide-react';
+import { useUserProfile } from '@/hooks/useUserProfile';
+import { useAuthContext } from '@/auth';
 
 interface UserProfileProps {
   className?: string;
 }
 
-export default function UserProfile({ className }: UserProfileProps) {
+export const UserProfile2 = ({ className }: UserProfileProps) => {
   const [profileMobile, setProfileMobile] = useState('+971 9019122332');
   const [profileEmail, setProfileEmail] = useState('dubai.badass@email.com');
   const [languages, setLanguages] = useState('English, Arabic');
@@ -52,6 +54,19 @@ export default function UserProfile({ className }: UserProfileProps) {
 
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [tempEmail, setTempEmail] = useState('');
+
+  const { authStorage } = useAuthContext();
+
+  const { userCarActionCountsQuery } = useUserProfile({
+    userId: authStorage.getUser()?.id.toString()!,
+  });
+
+  useEffect(() => {
+    if (!userCarActionCountsQuery.isLoading) {
+      const data = userCarActionCountsQuery.data;
+      console.log('data: ', data);
+    }
+  }, [userCarActionCountsQuery.data]);
 
   const handleEditMobile = () => {
     const [code, number] = profileMobile.split(' ');
@@ -86,7 +101,7 @@ export default function UserProfile({ className }: UserProfileProps) {
   const stats = [
     {
       label: 'Total Enquiries',
-      value: 31,
+      value: userCarActionCountsQuery.data?.enquired || 0,
       trend: '+12%',
       trendUp: true,
       icon: MessageSquare,
@@ -97,7 +112,7 @@ export default function UserProfile({ className }: UserProfileProps) {
     },
     {
       label: 'Saved Vehicles',
-      value: 921,
+      value: userCarActionCountsQuery.data?.saved || 0,
       trend: '+8%',
       trendUp: true,
       icon: Heart,
@@ -108,7 +123,7 @@ export default function UserProfile({ className }: UserProfileProps) {
     },
     {
       label: 'Profile Views',
-      value: 1009,
+      value: userCarActionCountsQuery.data?.viewed || 0,
       trend: '+24%',
       trendUp: true,
       icon: Eye,
@@ -167,51 +182,98 @@ export default function UserProfile({ className }: UserProfileProps) {
       </div>
 
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-        {stats.map((stat, index) => (
-          <Card
-            key={index}
-            className="group relative cursor-pointer overflow-hidden border-0 shadow-lg transition-all duration-300 hover:shadow-xl"
-          >
-            <div
-              className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-5 transition-opacity group-hover:opacity-10`}
-            ></div>
-            <CardContent className="relative p-6">
-              <div className="mb-4 flex items-start justify-between">
-                <div className={`rounded-xl p-3 ${stat.bgColor}`}>
-                  <stat.icon className={`h-6 w-6 ${stat.textColor}`} />
+        {userCarActionCountsQuery.isLoading ? (
+          // Loading skeleton
+          Array.from({ length: 3 }).map((_, index) => (
+            <Card
+              key={index}
+              className="group relative cursor-pointer overflow-hidden border-0 shadow-lg transition-all duration-300 hover:shadow-xl"
+            >
+              <CardContent className="relative p-6">
+                <div className="mb-4 flex items-start justify-between">
+                  <div className="animate-pulse rounded-xl bg-gray-100 p-3">
+                    <div className="h-6 w-6 rounded bg-gray-200"></div>
+                  </div>
+                  <div className="animate-pulse rounded-full bg-gray-100 px-2 py-1 text-xs font-medium">
+                    <div className="h-3 w-3 rounded bg-gray-200"></div>
+                  </div>
                 </div>
-                <div
-                  className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${
-                    stat.trendUp
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-red-100 text-red-700'
-                  }`}
-                >
-                  <TrendingUp
-                    className={`h-3 w-3 ${stat.trendUp ? '' : 'rotate-180'}`}
-                  />
-                  {stat.trend}
+                <div className="space-y-2">
+                  <div className="h-8 animate-pulse rounded bg-gray-200"></div>
+                  <div className="h-4 animate-pulse rounded bg-gray-200"></div>
+                  <div className="h-3 animate-pulse rounded bg-gray-200"></div>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-3xl font-bold text-gray-900">
-                  {stat.value.toLocaleString()}
-                </h3>
-                <p className="font-medium text-gray-700">{stat.label}</p>
-                <p className="text-sm text-gray-500">{stat.description}</p>
-              </div>
-              <div className="mt-4 border-t border-gray-100 pt-4">
+                <div className="mt-4 border-t border-gray-100 pt-4">
+                  <div className="h-8 animate-pulse rounded bg-gray-200"></div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : userCarActionCountsQuery.error ? (
+          // Error state
+          <div className="col-span-3">
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-6 text-center">
+                <p className="text-red-600">Failed to load user statistics</p>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
-                  className="w-full cursor-pointer justify-center hover:bg-gray-50"
+                  onClick={() => userCarActionCountsQuery.refetch()}
+                  className="mt-2"
                 >
-                  View Details
+                  Retry
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          // Success state
+          stats.map((stat, index) => (
+            <Card
+              key={index}
+              className="group relative cursor-pointer overflow-hidden border-0 shadow-lg transition-all duration-300 hover:shadow-xl"
+            >
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-5 transition-opacity group-hover:opacity-10`}
+              ></div>
+              <CardContent className="relative p-6">
+                <div className="mb-4 flex items-start justify-between">
+                  <div className={`rounded-xl p-3 ${stat.bgColor}`}>
+                    <stat.icon className={`h-6 w-6 ${stat.textColor}`} />
+                  </div>
+                  <div
+                    className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${
+                      stat.trendUp
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-red-100 text-red-700'
+                    }`}
+                  >
+                    <TrendingUp
+                      className={`h-3 w-3 ${stat.trendUp ? '' : 'rotate-180'}`}
+                    />
+                    {stat.trend}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-3xl font-bold text-gray-900">
+                    {stat.value.toLocaleString()}
+                  </h3>
+                  <p className="font-medium text-gray-700">{stat.label}</p>
+                  <p className="text-sm text-gray-500">{stat.description}</p>
+                </div>
+                <div className="mt-4 border-t border-gray-100 pt-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full cursor-pointer justify-center hover:bg-gray-50"
+                  >
+                    View Details
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
@@ -534,4 +596,4 @@ export default function UserProfile({ className }: UserProfileProps) {
       </div>
     </div>
   );
-}
+};

@@ -214,8 +214,6 @@ export const useAuth = () => {
     refreshToken: authStorage.getRefreshToken()
   });
 
-  console.log('auth: ', auth);
-
   const [isLoginOpen, setLoginOpen] = useImmer(false);
 
   // React Query Mutations
@@ -223,7 +221,6 @@ export const useAuth = () => {
     mutationFn: authAPI.signup,
     onSuccess: (data) => {
       setError(null);
-      console.log('Signup successful:', data);
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -556,6 +553,7 @@ export const useAuth = () => {
     auth,
     ...state,
     isLoginOpen,
+    authStorage,
 
     // Loading states from mutations
     isLoading: state.isLoading || signupMutation.isPending || loginMutation.isPending || verifyOtpMutation.isPending || setPasswordMutation.isPending || resendOtpMutation.isPending || logoutMutation.isPending,

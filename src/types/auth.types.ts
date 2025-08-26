@@ -203,6 +203,7 @@ export interface UseAuthReturn {
   error: AuthError | null;
   isLoginOpen: boolean;
   isLoading: boolean;
+  authStorage: AuthStorageInterface
 
   // Actions
   login: (loginData: LoginData) => Promise<AuthResponse>;
