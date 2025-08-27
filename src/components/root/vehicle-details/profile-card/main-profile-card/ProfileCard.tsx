@@ -46,7 +46,7 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
       <VehicleStats state={state} />
 
       {/* vehicle specifications */}
-      <VehicleDescription />
+      <VehicleDescription description={profileData.seriesDescription} />
 
       {/* rental details tab */}
       <RentalDetailsTab
