@@ -1,23 +1,14 @@
 import FeaturesCard from '@/components/card/features-card/FeaturesCard';
 import MotionSection from '@/components/general/framer-motion/MotionSection';
 import { StateCategoryProps } from '@/types';
-import {
-  convertToLabel,
-  createFeatureCards,
-  singularizeValue,
-} from '@/helpers';
 import { getHomePageFeatures } from '@/helpers/homepage-content.helper';
 
 const Features = ({ state, category, country }: StateCategoryProps) => {
   // Generate dynamic feature cards based on state
-  const dynamicFeatureCards = createFeatureCards(convertToLabel(state));
-  const formattedCategory = convertToLabel(singularizeValue(category));
+  // const dynamicFeatureCards = createFeatureCards(convertToLabel(state));
+  // const formattedCategory = convertToLabel(singularizeValue(category));
 
-  const {
-    h2: heading,
-    description,
-    cards,
-  } = getHomePageFeatures({
+  const { heading, description, cards } = getHomePageFeatures({
     country,
     state,
     category,

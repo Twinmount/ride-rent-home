@@ -25,9 +25,7 @@ export function getHomePageHeading({
   state,
   category,
 }: LocationCategoryParams) {
-  const custom = (homepageHeadingContent as HomeHeading)?.[country]?.[state]?.[
-    category
-  ];
+  const custom = homepageHeadingContent?.[country]?.[state]?.[category];
 
   // If a custom title and subtitle are defined, return
   if (custom) return { title: custom.title, subtitle: custom.subtitle };
@@ -53,7 +51,7 @@ export function getHomePageFeatures({
   // Check if there is a custom content for the given country, state, and category
   const custom = (homepageFeaturesContent as HomeFeaturesContent)?.[country]?.[
     state
-  ]?.[category];
+  ];
 
   if (custom) return custom;
 
@@ -62,7 +60,7 @@ export function getHomePageFeatures({
 
   // fallback
   return {
-    h2: `Enjoy ease and peace of mind when renting a ${formattedCategory.toLowerCase()} in ${formattedState}`,
+    heading: `Enjoy ease and peace of mind when renting a ${formattedCategory.toLowerCase()} in ${formattedState}`,
     description: [
       `Discover the best of ${formattedState} with our affordable and reliable ${formattedCategory.toLowerCase()} rental service.`,
       `Our commitment to reliability means your vehicle will be ready and waiting, wherever and whenever you need it.`,
@@ -99,7 +97,7 @@ export function getHomePageDocuments({
 }: LocationCategoryParams) {
   const custom = (homepageDocumentsContent as DocumentsContent)?.[country]?.[
     state
-  ]?.[category];
+  ];
 
   if (custom) {
     return {

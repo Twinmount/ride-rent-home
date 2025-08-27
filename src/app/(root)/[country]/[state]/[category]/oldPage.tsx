@@ -1,28 +1,28 @@
-import type { Metadata } from "next";
-import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
-import Documents from "@/components/root/landing/documents/Documents";
-import RideRentFeatures from "@/components/root/landing/features/Features";
-import Locations from "@/components/common/locations/Locations";
-import MainVehicleGrid from "@/components/root/landing/FeaturedVehicles";
-import Recommended from "@/components/root/landing/PromotionDeals";
-import TopBrands from "@/components/root/landing/TopBrands";
-import { Suspense } from "react";
-import { PageProps } from "@/types";
-import TrustedReviewsSection from "@/components/root/landing/trusted-reviews/TrustedReviewsSection";
+import type { Metadata } from 'next';
+import SectionLoading from '@/components/skelton/section-loading/SectionLoading';
+import Documents from '@/components/root/landing/documents/Documents';
+import RideRentFeatures from '@/components/root/landing/features/Features';
+import Locations from '@/components/common/locations/Locations';
+import MainVehicleGrid from '@/components/root/landing/FeaturedVehicles';
+import Recommended from '@/components/root/landing/PromotionDeals';
+import TopBrands from '@/components/root/landing/TopBrands';
+import { Suspense } from 'react';
+import { PageProps } from '@/types';
+import TrustedReviewsSection from '@/components/root/landing/trusted-reviews/TrustedReviewsSection';
 import {
   generateHomePageMetadata,
   getHomePageJsonLd,
-} from "./landing-metadata";
-import BrandsCarouselSkeleton from "@/components/skelton/BrandsCarouselSkeleton";
-import NewlyArrived from "@/components/root/landing/NewlyArrived";
-import VehicleCategoryAndFilter from "@/components/root/landing/VehicleCategoryAndFilter";
-import HeroSection from "@/components/root/landing/HeroSection";
-import VehicleCardSkeletonGrid from "@/components/skelton/VehicleCardSkeleton";
-import VehicleCardCarouselSkeleton from "@/components/skelton/VehicleCardCarouselSkeleton";
-import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
-import JsonLd from "@/components/common/JsonLd";
-import Banner from "@/components/root/landing/Banner";
-import BannerSkeleton from "@/components/skelton/BannerSkeleton";
+} from './landing-metadata';
+import BrandsCarouselSkeleton from '@/components/skelton/BrandsCarouselSkeleton';
+import NewlyArrived from '@/components/root/landing/NewlyArrived';
+import VehicleCategoryAndFilter from '@/components/root/landing/VehicleCategoryAndFilter';
+import HeroSection from '@/components/root/landing/HeroSection';
+import VehicleCardSkeletonGrid from '@/components/skelton/VehicleCardSkeleton';
+import VehicleCardCarouselSkeleton from '@/components/skelton/VehicleCardCarouselSkeleton';
+import StatesGridSkeleton from '@/components/skelton/StatesGridSkeleton';
+import JsonLd from '@/components/common/JsonLd';
+import Banner from '@/components/root/landing/Banner';
+import BannerSkeleton from '@/components/skelton/BannerSkeleton';
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
@@ -52,7 +52,7 @@ export default async function Home(props: PageProps) {
         <Banner state={state} country={country} />
       </Suspense>
 
-      <HeroSection state={state} category={category} />
+      <HeroSection country={country} state={state} category={category} />
 
       <VehicleCategoryAndFilter />
 
