@@ -1,11 +1,13 @@
-const description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s. "
+type VehicleDescriptionProps = {
+  description?: string;
+};
 
-const VehicleDescription = () => {
+const VehicleDescription = ({ description }: VehicleDescriptionProps) => {
   return (
-    <div className="m-2 text-sm text-text-secondary md:text-base">
+    <div className="- m-2 text-justify text-sm text-text-secondary">
       {description}
     </div>
   );
-}
+};
 
-export default VehicleDescription
+export default VehicleDescription;

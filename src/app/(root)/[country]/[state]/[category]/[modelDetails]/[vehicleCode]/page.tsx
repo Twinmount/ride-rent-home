@@ -109,6 +109,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     securityDeposit: vehicle.securityDeposit,
     vehicleTitle: vehicle.vehicleTitle,
     vehicleTitleH1: vehicle.vehicleTitle,
+    seriesDescription: vehicle.vehicleSeries?.vehicleSeriesInfoDescription,
   };
 
   // Generate JSON-LD
@@ -180,6 +181,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     heading:
       vehicle?.vehicleTitleH1 || vehicle?.vehicleTitle || vehicle?.modelName,
   };
+
   return (
     <>
       {/* Inject JSON-LD into the <head> */}
