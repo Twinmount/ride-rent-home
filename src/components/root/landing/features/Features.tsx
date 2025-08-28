@@ -48,7 +48,7 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
           style={{ width: '78.5625rem', height: '33.4375rem' }}
         >
           <img
-            src="/assets/img/bg/featuresWideBG.png"
+            src="/assets/img/bg/featuresWideBG.webp"
             alt=""
             className="h-full w-full object-cover opacity-30"
           />
@@ -59,7 +59,7 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
           style={{ width: '26.625rem', height: '39.5rem' }}
         >
           <img
-            src="/assets/img/bg/featuresBG.png"
+            src="/assets/img/bg/featuresBG.webp"
             alt=""
             className="h-full w-full object-cover pb-[0.875rem] opacity-30"
           />
@@ -70,7 +70,7 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
       <div className="absolute bottom-0 right-0 z-10">
         <div className="relative flex items-end justify-end">
           <img
-            src="/assets/cars/mustang.png"
+            src="/assets/cars/mustang.webp"
             alt="Red Mustang Car"
             className="h-[8.8125rem] w-[14rem] object-contain drop-shadow-2xl sm:lg:max-h-[15.625rem] lg:h-[21.875rem] lg:max-h-[20.3125rem] lg:w-auto"
           />
@@ -89,7 +89,7 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
             </h2>
 
             {/* Description paragraphs with responsive spacing */}
-            <div className="mt-[1rem] space-y-[0.75rem] text-justify font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[0.875rem] lg:mt-[1.5rem] lg:w-[53.1875rem] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
+            <div className="mt-[1rem] space-y-[0.75rem] text-justify font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[0.875rem] lg:mt-[1.5rem] lg:w-[62.18rem] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
               {description.map((para, i) => (
                 <p key={i}>{para}</p>
               ))}

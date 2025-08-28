@@ -37,7 +37,7 @@ const Documents = ({ country, state, category }: StateCategoryProps) => {
             style={{ width: '78.5625rem', height: '33.4375rem' }}
           >
             <img
-              src="/assets/img/bg/featuresWideBG.png"
+              src="/assets/img/bg/featuresWideBG.webp"
               alt=""
               className="h-full w-full object-cover opacity-30"
             />
