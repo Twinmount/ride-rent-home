@@ -1,8 +1,8 @@
-import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
-import MainCard from "../card/vehicle-card/main-card/VehicleCard";
-import { Suspense } from "react";
-import Pagination from "../common/Pagination";
-import { ENV } from "@/config/env";
+import { FetchVehicleCardsResponseV2 } from '@/types/vehicle-types';
+import { Suspense } from 'react';
+import Pagination from '../common/Pagination';
+import VehicleCard from '../card/new-vehicle-card/main-card/VehicleCard';
+import { API } from '@/utils/API';
 
 type Props = {
   filter: string;
@@ -19,23 +19,25 @@ export default async function AgentVehicleGrid({
   companyId,
   country,
 }: Props) {
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-
   const params = new URLSearchParams({
     page: page.toString(),
     companyId,
-    limit: "9",
-    sortOrder: "DESC",
+    limit: '9',
+    sortOrder: 'DESC',
     vehicleCategory: filter,
   }).toString();
 
-  const url = `${baseUrl}/vehicle/vehicle/company/list?${params}`;
-
-  // Fetch vehicles from the backend
-  const response = await fetch(url);
+  const response = await API({
+    path: `/vehicle/vehicle/company/list?${params}`,
+    options: {
+      method: 'GET',
+      cache: 'no-cache',
+    },
+    country,
+  });
 
   // Parse the JSON response
-  const data: FetchVehicleCardsResponse = await response.json();
+  const data: FetchVehicleCardsResponseV2 = await response.json();
 
   const totalPages = data?.result?.totalNumberOfPages || 1;
   const vehicles = data.result.list || [];
@@ -43,13 +45,14 @@ export default async function AgentVehicleGrid({
   return (
     <div>
       {vehicles.length > 0 ? (
-        <div className="mx-auto !grid w-fit max-w-fit grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mx-auto !grid w-fit max-w-fit grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {vehicles.map((vehicle, index) => (
-            <MainCard
+            <VehicleCard
               key={vehicle.vehicleId}
               index={index}
               vehicle={vehicle}
               country={country}
+              layoutType="grid"
             />
           ))}
         </div>
