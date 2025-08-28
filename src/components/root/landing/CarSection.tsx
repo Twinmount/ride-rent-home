@@ -13,7 +13,7 @@ const CarSection: React.FC = () => {
           <div className="relative mr-[-1.25rem] flex h-full flex-shrink-0 items-end md:mr-[-3.75rem]">
             <div className="relative mb-[0.125rem] h-[2.875rem] w-[5.875rem] md:mb-[0.1875rem] md:h-[8.8125rem] md:w-[16.5625rem]">
               <Image
-                src="/assets/cars/bmw.png"
+                src="/assets/cars/bmw.webp"
                 alt="BMW"
                 width={265}
                 height={141}
@@ -27,7 +27,7 @@ const CarSection: React.FC = () => {
           <div className="relative z-10 flex h-full flex-shrink-0 items-end">
             <div className="relative h-[5rem] w-[5.875rem] md:h-[14.25rem] md:w-[16.75rem]">
               <Image
-                src="/assets/cars/rangerover.png"
+                src="/assets/cars/rangerover.webp"
                 alt="Range Rover"
                 width={268}
                 height={228}
@@ -41,7 +41,7 @@ const CarSection: React.FC = () => {
           <div className="relative ml-[-1.4375rem] flex h-full flex-shrink-0 items-end md:ml-[-5.625rem]">
             <div className="relative mb-[0.0625rem] h-[2.875rem] w-[5.875rem] md:mb-[0.1875rem] md:h-[8.8125rem] md:w-[19.125rem]">
               <Image
-                src="/assets/cars/mercedes.png"
+                src="/assets/cars/mercedes.webp"
                 alt="Mercedes"
                 width={306}
                 height={141}

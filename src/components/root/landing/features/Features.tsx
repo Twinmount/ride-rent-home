@@ -1,16 +1,18 @@
 import FeaturesCard from '@/components/card/features-card/FeaturesCard';
 import MotionSection from '@/components/general/framer-motion/MotionSection';
 import { StateCategoryProps } from '@/types';
-import {
-  convertToLabel,
-  createFeatureCards,
-  singularizeValue,
-} from '@/helpers';
+import { getHomePageFeatures } from '@/helpers/homepage-content.helper';
 
-const Features = ({ state, category }: StateCategoryProps) => {
+const Features = ({ state, category, country }: StateCategoryProps) => {
   // Generate dynamic feature cards based on state
-  const dynamicFeatureCards = createFeatureCards(convertToLabel(state));
-  const formattedCategory = convertToLabel(singularizeValue(category));
+  // const dynamicFeatureCards = createFeatureCards(convertToLabel(state));
+  // const formattedCategory = convertToLabel(singularizeValue(category));
+
+  const { heading, description, cards } = getHomePageFeatures({
+    country,
+    state,
+    category,
+  });
 
   return (
     // Main section container with responsive padding
@@ -46,7 +48,7 @@ const Features = ({ state, category }: StateCategoryProps) => {
           style={{ width: '78.5625rem', height: '33.4375rem' }}
         >
           <img
-            src="/assets/img/bg/featuresWideBG.png"
+            src="/assets/img/bg/featuresWideBG.webp"
             alt=""
             className="h-full w-full object-cover opacity-30"
           />
@@ -57,7 +59,7 @@ const Features = ({ state, category }: StateCategoryProps) => {
           style={{ width: '26.625rem', height: '39.5rem' }}
         >
           <img
-            src="/assets/img/bg/featuresBG.png"
+            src="/assets/img/bg/featuresBG.webp"
             alt=""
             className="h-full w-full object-cover pb-[0.875rem] opacity-30"
           />
@@ -68,7 +70,7 @@ const Features = ({ state, category }: StateCategoryProps) => {
       <div className="absolute bottom-0 right-0 z-10">
         <div className="relative flex items-end justify-end">
           <img
-            src="/assets/cars/mustang.png"
+            src="/assets/cars/mustang.webp"
             alt="Red Mustang Car"
             className="h-[8.8125rem] w-[14rem] object-contain drop-shadow-2xl sm:lg:max-h-[15.625rem] lg:h-[21.875rem] lg:max-h-[20.3125rem] lg:w-auto"
           />
@@ -83,39 +85,27 @@ const Features = ({ state, category }: StateCategoryProps) => {
           <div className="mb-[1.5rem] w-full lg:mb-[3rem] lg:w-[58.375rem] lg:max-w-[58.375rem]">
             {/* Main title with responsive typography */}
             <h2 className="mb-[1rem] text-center text-[1.125rem] font-medium leading-[1] text-text-primary sm:text-left sm:text-[1.75rem] lg:mb-[1.5rem] lg:text-[2.2rem]">
-              Enjoy ease and peace of mind
-              <br />
-              when renting a {formattedCategory.toLowerCase()} in{' '}
-              {convertToLabel(state)}
+              {heading}
             </h2>
 
             {/* Description paragraphs with responsive spacing */}
-            <div className="mt-[1rem] space-y-[0.75rem] text-justify font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[0.875rem] lg:mt-[1.5rem] lg:w-[53.1875rem] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
-              <p>
-                Discover the best of {convertToLabel(state)} with our affordable
-                and reliable car rental service. Whether you&apos;re visiting
-                the main locations or exploring hidden gems, our diverse fleet
-                offers the perfect match for your travel needs. Experience
-                hassle-free car rental with transparent pricing and no hidden
-                fees.
-              </p>
-
-              <p>
-                Our commitment to reliability means your vehicle will be ready
-                and waiting, wherever and whenever you need it. Choose us for a
-                stress-free car rental experience in {convertToLabel(state)},
-                and drive away with confidence and comfort.
-              </p>
+            <div className="mt-[1rem] space-y-[0.75rem] text-justify font-poppins text-[0.75rem] font-normal leading-[130%] tracking-[0%] text-text-tertiary sm:text-[0.875rem] lg:mt-[1.5rem] lg:w-[62.18rem] lg:space-y-[1rem] lg:text-[0.9375rem] lg:leading-[120%]">
+              {description.map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
             </div>
           </div>
 
           {/* Feature cards grid section */}
           <div className="w-full lg:max-w-[69.5rem]">
             <div className="grid grid-cols-1 gap-[1rem] lg:grid-cols-2 lg:gap-[2rem]">
-              {dynamicFeatureCards.map((feature: any) => (
-                <div key={feature.key} className="w-full">
-                  <FeaturesCard data={feature} />
-                </div>
+              {cards.map((feature) => (
+                <FeaturesCard
+                  key={feature.key}
+                  icon={feature.icon}
+                  title={feature.title}
+                  description={feature.description}
+                />
               ))}
             </div>
           </div>

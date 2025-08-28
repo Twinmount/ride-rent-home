@@ -181,6 +181,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     heading:
       vehicle?.vehicleTitleH1 || vehicle?.vehicleTitle || vehicle?.modelName,
   };
+
   return (
     <>
       {/* Inject JSON-LD into the <head> */}

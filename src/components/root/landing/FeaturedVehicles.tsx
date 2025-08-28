@@ -31,7 +31,7 @@ const FeaturedVehicles = async ({
   }
 
   const response = await API({
-    path: `/vehicle/home-page/list?${params.toString()}`,
+    path: `/vehicle/home-page/list/v2?${params.toString()}`,
     options: {
       method: 'GET',
       cache: 'no-cache',

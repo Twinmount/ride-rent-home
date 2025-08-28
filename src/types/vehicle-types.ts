@@ -240,6 +240,7 @@ export type NewVehicleCardType = {
   vehicleId: string;
   vehicleCode: string;
   thumbnail: string;
+  vehiclePhotos: string[];
   model: string;
   vehicleTitle: string;
   rating?: string;
@@ -252,6 +253,11 @@ export type NewVehicleCardType = {
   state: string;
   vehicleCategory: string;
   isDisabled: boolean;
+  location?: {
+    type: string;
+    coordinates: [number, number];
+    address: string;
+  };
 };
 
 // API response type for FetchVehicleByFilters api function

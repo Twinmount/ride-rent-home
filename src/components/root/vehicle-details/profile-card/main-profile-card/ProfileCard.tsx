@@ -7,10 +7,10 @@ import { ProfileCardDataType } from '@/types/vehicle-details-types';
 import useProfileData from '@/hooks/useProfileCardData';
 import RentalDetailsTab from '../../profile-specifications/RentalDetailsTab';
 import VehicleStats from '../../profile-specifications/VehicleStats';
-import VehicleDescription from '../../profile-specifications/VehicleDescription';
 import CompanySpecifications from '../../profile-specifications/CompanySpecifications';
 import RentNowbuttonWide from '@/components/common/RentNowbuttonWide';
 import ShareLikeComponent from '../../profile-specifications/ShareLikeComponent';
+import VehicleDescription from '../../profile-specifications/VehicleDescription';
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -25,7 +25,7 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
 
   const {
     company,
-    vehicleTitleH1,
+    seriesDescription,
     vehicleData: { state, model },
   } = profileData;
 
@@ -46,7 +46,7 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
       <VehicleStats state={state} />
 
       {/* vehicle specifications */}
-      <VehicleDescription description={profileData.seriesDescription} />
+      <VehicleDescription description={seriesDescription} />
 
       {/* rental details tab */}
       <RentalDetailsTab

@@ -1,18 +1,14 @@
-import { IconType } from "react-icons";
-import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import { IconType } from 'react-icons';
+import MotionDiv from '@/components/general/framer-motion/MotionDiv';
 
 type FeatureCardProps = {
-  data: {
-    key: number;
-    icon: IconType;
-    title: string;
-    description: string;
-    bgClass: string;
-  };
+  icon: IconType;
+  title: string;
+  description: string;
 };
 
-const FeaturesCard = ({ data }: FeatureCardProps) => {
-  const { icon: Icon, title, description } = data;
+const FeaturesCard = (props: FeatureCardProps) => {
+  const { icon: Icon, title, description } = props;
 
   return (
     <MotionDiv className="group">
