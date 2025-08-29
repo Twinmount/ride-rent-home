@@ -2,6 +2,7 @@ import qs from 'query-string';
 import { RemoveUrlQueryParams, StateType, UrlQueryParams } from '@/types';
 import {
   CardRentalDetails,
+  FeatureType,
   MapCardRentalDetailsType,
 } from '@/types/vehicle-types';
 import { VehicleDetailsPageType } from '@/types/vehicle-details-types';
@@ -270,21 +271,18 @@ export const createFeatureCards = (state: string) => [
     icon: IoIosSpeedometer,
     title: 'Easy & Fast Booking',
     description: `From premium models to economy vehicles to rent in ${state}, find the perfect car at competitive rates. Secure your rental with just a few clicks and make the most of your ${state} trip. RIDE.RENT is the smart choice for 'Rent a Car in ${state}' services.`,
-    bgClass: 'black',
   },
   {
     key: 2,
     icon: FaCrown,
     title: 'Many Pickup Locations',
     description: `From premium models to economy vehicles to rent in ${state}, find the perfect car at competitive rates. Secure your rental with just a few clicks and make the most of your ${state} trip. RIDE.RENT is the smart choice for 'Rent a Car in ${state}' services.`,
-    bgClass: 'blue',
   },
   {
     key: 3,
     icon: IoShieldCheckmark,
     title: 'Ensured Delivery Promise',
     description: `Our commitment to punctuality means your chosen vehicle from our extensive 'Rent a Car in ${state}' collection is delivered when and where you need it. Seamless booking, transparent rates, and steadfast service—that's the RIDE.RENT promise.`,
-    bgClass: 'orange',
   },
 ];
 
@@ -630,4 +628,20 @@ export const getTypewriterStrings = (category: string): string[] => {
   ];
 
   return categoryMap[category] || fallbackArray;
+};
+
+// Helper function to check if Show All button should be displayed for Features in the vehicle details page
+// return true if there are more than 4 categories as well as any of the categories sub array
+export const shouldShowDesktopFeaturesButton = (
+  features: Record<string, FeatureType[]>
+): boolean => {
+  const categories = Object.entries(features);
+
+  const isMoreThanFourCategories = categories.length > 4;
+  const isLargeFeatureList = categories.some(
+    ([_, featureList]) => featureList.length > 15
+  );
+
+  // return true if there is more than 4 categories as well as  at least one category has more than 15 items
+  return isMoreThanFourCategories || isLargeFeatureList;
 };

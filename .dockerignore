@@ -1,3 +1,4 @@
+package-lock.json
 # Node modules and build output
 node_modules
 .next

@@ -2,20 +2,20 @@
 export const modelYears = Array.from(
   { length: Math.ceil((new Date().getFullYear() - 1900) / 5) },
   (_, i) => {
-    const startYear = new Date().getFullYear() - 5 * i
-    const endYear = startYear - 4 > 1900 ? startYear - 4 : 1900
-    return `${startYear}-${endYear}`
+    const startYear = new Date().getFullYear() - 5 * i;
+    const endYear = startYear - 4 > 1900 ? startYear - 4 : 1900;
+    return `${startYear}-${endYear}`;
   }
-)
+);
 
 // General seat count ranges
-export const seats = ['1-2', '2-4', '4-6', '4-8', '8-20', '20-60']
+export const seats = ['1-2', '2-4', '4-6', '4-8', '8-20', '20-60'];
 
 // transmissions
 export const transmissions = [
   { label: 'Automatic', value: 'automatic' },
   { label: 'Manual', value: 'manual' },
-]
+];
 
 // fuel types
 export const fuelTypes = [
@@ -23,7 +23,7 @@ export const fuelTypes = [
   { label: 'Electric', value: 'electric' },
   { label: 'Hybrid', value: 'hybrid' },
   { label: 'Diesel', value: 'diesel' },
-]
+];
 
 // colors
 export const colors = [
@@ -58,18 +58,48 @@ export const colors = [
   { label: 'Metallic Gray', value: 'metallic-gray' },
   { label: 'Beige', value: 'beige' },
   { label: 'Golden', value: 'golden' },
-]
+];
 
 // payment methods
 export const paymentMethods = [
-  { label: "Crypto", value: "crypto" },
-  { label: "Credit / Debit Card", value: "credit-debit-card" },
-  { label: "Tabby", value: "tabby" },
-  { label: "Cash", value: "cash" },
-  { label: "Bank Transfer", value: "bank-transfer" },
-  { label: "PayPal", value: "paypal" },
+  { label: 'Crypto', value: 'crypto' },
+  { label: 'Credit / Debit Card', value: 'credit-debit-card' },
+  { label: 'Tabby', value: 'tabby' },
+  { label: 'Cash', value: 'cash' },
+  { label: 'Bank Transfer', value: 'bank-transfer' },
+  { label: 'PayPal', value: 'paypal' },
   // Popular in UAE/GCC region
-  { label: "Emirates NBD", value: "emirates-nbd" },
+  { label: 'Emirates NBD', value: 'emirates-nbd' },
   // Popular in India
-  { label: "UPI", value: "upi" },
+  { label: 'UPI', value: 'upi' },
 ];
+
+// following COUNTRIES, STATES, CATEGORIES will be used for handling dynamic homepage jsx content
+export const COUNTRIES = {
+  AE: 'ae',
+  IN: 'in',
+};
+
+export const STATES = {
+  DUBAI: 'dubai',
+  UMM_AL_QUWAIN: 'umm-al-quwain',
+  AL_AIN: 'al-ain',
+  AJMAN: 'ajman',
+  ABU_DHABI: 'abu-dhabi',
+  RAS_AL_KHAIMAH: 'ras-al-khaimah',
+  SHARJAH: 'sharjah',
+  FUJAIRAH: 'fujairah',
+};
+
+export const CATEGORIES = {
+  CARS: 'cars',
+  SPORTS_CARS: 'sports-cars',
+  MOTORCYCLES: 'motorcycles',
+  BICYCLES: 'bicycles',
+  BUSES: 'buses',
+  LEISURE_BOATS: 'leisure-boats',
+  YACHTS: 'yachts',
+  VANS: 'vans',
+  BUGGIES: 'buggies',
+  CHARTERS: 'charters',
+};

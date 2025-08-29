@@ -2,12 +2,10 @@
 
 /* Default styles for mobile devices and above */
 .profile-card {
-  display: none;
+  display: flex; // Show on all screens
   flex-direction: column;
-  gap: 1rem;
+  gap: 1;
   width: 100%;
-  min-width: 22rem;
-  max-width: 25rem;
   padding: 1rem;
   background-color: white;
   border-radius: 1rem;

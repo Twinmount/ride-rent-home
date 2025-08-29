@@ -45,22 +45,9 @@ export default async function FAQ({ state, country, limit }: FAQStateProps) {
         className="mx-auto mt-7 w-full space-y-3 lg:max-w-[70%]"
       >
         {displayedFAQs.map((item, index) => (
-          <AccordionItem
-            key={index}
-            value={`item-${index + 1}`}
-            className="mx-4 overflow-hidden rounded-lg border border-border-default bg-white lg:mx-0"
-          >
-            <AccordionTrigger className="px-4 py-3 text-start text-sm font-normal text-text-secondary hover:no-underline lg:text-base">
-              <div className="flex items-start gap-3">
-                <CiCircleQuestion className="mt-0.5 h-6 w-6 flex-shrink-0 text-text-secondary" />
-                <span className="text-left leading-relaxed">
-                  {item.question}
-                </span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="text-text bg-white px-4 pb-4 leading-relaxed text-text-secondary">
-              <div className="ml-9">{item.answer}</div>
-            </AccordionContent>
+          <AccordionItem key={index} value={`item-${index + 1}`}>
+            <AccordionTrigger>{item.question}</AccordionTrigger>
+            <AccordionContent>{item.answer}</AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>

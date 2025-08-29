@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main className="global-padding container mt-[4rem] min-h-[1200px] bg-background">
         {children}
       </main>
-      <MobileNavbar />
+      {/* <MobileNavbar /> */}
       <Footer />
 
       {/* global page loading indicator */}

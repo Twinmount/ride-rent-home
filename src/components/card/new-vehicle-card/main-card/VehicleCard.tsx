@@ -5,7 +5,6 @@ import RentalDetails from '../RentalDetails';
 import LinkWrapper from '../LinkWrapper';
 import MotionStaggeredArticle from '@/components/general/framer-motion/MotionStaggeredArticle';
 import RentNowDialogTrigger from '../RentNowDialogTrigger';
-
 import { VehicleBadgesGroup } from '../vehicle-badge/VehicleBadgesGroup';
 import CardTitle from '../CardTitle';
 
@@ -33,7 +32,6 @@ const VehicleCard = ({
 
   // card styles based on layout type
   const carouselCardStyle = `w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem] `;
-
   const gridCardStyle = `w-full max-w-full min-w-[12rem]`;
 
   // Conditionally set the styling based on layoutType
@@ -50,19 +48,20 @@ const VehicleCard = ({
         className="h-full w-full space-y-3"
       >
         <div className="relative">
-          {/* thumbnail */}
+          {/* thumbnail with hover image cycling */}
           <VehicleThumbnail
             src={vehicle.thumbnail}
             alt={vehicle.vehicleTitle || 'Vehicle Image'}
             width={250}
             height={200}
             layoutType={layoutType}
+            vehiclePhotos={vehicle.vehiclePhotos} // Pass the additional photos
           />
 
           {/* badge group */}
           <VehicleBadgesGroup
             hasZeroDeposit={!vehicle.securityDeposit.enabled}
-            hasFancyNumber={true}
+            hasFancyNumber={vehicle.isFancyNumber} // Use actual value instead of hardcoded true
             hasHourlyRental={!!vehicle?.rentalDetails?.hour?.enabled}
           />
         </div>

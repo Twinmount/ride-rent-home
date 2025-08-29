@@ -2,15 +2,15 @@
 
 import "./ProfileCard.scss";
 
-import ProfileSpecification from "@/components/root/vehicle-details/profile-specifications/ProfileSpecification";
-import MotionDiv from "@/components/general/framer-motion/MotionDiv";
-import RentNowSection from "@/components/common/rent-now/RentNowSection";
-import { ProfileCardDataType } from "@/types/vehicle-details-types";
-import useProfileData from "@/hooks/useProfileCardData";
-import TopContainer from "./top-container/TopContainer";
-import RentalDetailsTab from "../../profile-specifications/RentalDetailsTab";
-import LeaseInfo from "../../profile-specifications/LeaseInfo";
-import SecurityDepositInfo from "../../profile-specifications/SecurityDepositInfo";
+import MotionDiv from '@/components/general/framer-motion/MotionDiv';
+import { ProfileCardDataType } from '@/types/vehicle-details-types';
+import useProfileData from '@/hooks/useProfileCardData';
+import RentalDetailsTab from '../../profile-specifications/RentalDetailsTab';
+import VehicleStats from '../../profile-specifications/VehicleStats';
+import CompanySpecifications from '../../profile-specifications/CompanySpecifications';
+import RentNowbuttonWide from '@/components/common/RentNowbuttonWide';
+import ShareLikeComponent from '../../profile-specifications/ShareLikeComponent';
+import VehicleDescription from '../../profile-specifications/VehicleDescription';
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -18,23 +18,24 @@ type ProfileCardProps = {
 };
 
 const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
-  const {
-    formattedPhoneNumber,
-    whatsappUrl,
-    companyProfilePageLink,
-    isCompanyValid,
-    rentalDetails,
-    isLease,
-    securityDeposit,
-    vehicleId,
-  } = useProfileData(profileData, country);
+  const { isCompanyValid, rentalDetails, securityDeposit } = useProfileData(
+    profileData,
+    country
+  );
 
-  const { company } = profileData;
+  const {
+    company,
+    seriesDescription,
+    vehicleData: { state, model },
+  } = profileData;
 
   return (
-    <MotionDiv className="profile-card">
-      <div className="profile-heading">
-        <h2 className="custom-heading">Listing Owner Details</h2>
+    <MotionDiv className="profile-card h-auto">
+      <div className="align-center flex justify-between">
+        <div className="p-2 text-lg font-normal text-text-primary md:text-2xl">
+          {model}
+        </div>
+        <ShareLikeComponent />
       </div>
 
       {!isCompanyValid && (
@@ -42,27 +43,20 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
       )}
 
       {/* top container */}
-      <TopContainer
-        company={profileData.company}
-        companyProfilePageLink={companyProfilePageLink}
-      />
+      <VehicleStats state={state} />
 
-      {/* profile specifications */}
-      <ProfileSpecification
-        specs={profileData.company.companySpecs}
-        rentalDetails={rentalDetails}
-      />
+      {/* vehicle specifications */}
+      <VehicleDescription description={seriesDescription} />
 
       {/* rental details tab */}
-      <RentalDetailsTab rentalDetails={rentalDetails} />
+      <RentalDetailsTab
+        rentalDetails={rentalDetails}
+        securityDeposit={securityDeposit}
+      />
 
-      {/* Security Deposit */}
-      <SecurityDepositInfo securityDeposit={securityDeposit} />
+      <CompanySpecifications specs={company.companySpecs} />
 
-      {/* Lease Info */}
-      <LeaseInfo isLease={isLease} />
-
-      <div className="bottom">
+      {/* <div className="bottom">
         <RentNowSection
           vehicleId={vehicleId}
           whatsappUrl={whatsappUrl}
@@ -70,6 +64,9 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
           formattedPhoneNumber={formattedPhoneNumber}
           isPing={true}
         />
+      </div> */}
+      <div className="py-2">
+        <RentNowbuttonWide />
       </div>
     </MotionDiv>
   );

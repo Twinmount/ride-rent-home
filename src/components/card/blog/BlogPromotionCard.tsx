@@ -15,7 +15,7 @@ const BlogPromotionCard = ({
   promotionLink,
 }: PromotionType) => {
   return (
-    <CarouselItem className="mx-auto h-[23rem] w-full min-w-[17rem] overflow-hidden md:max-w-[21rem] lg:h-[18rem]">
+    <CarouselItem className="mx-auto h-[23rem] w-full min-w-[17rem] max-w-[20rem] overflow-hidden md:max-w-[21rem] lg:h-[18rem]">
       <Link
         href={promotionLink}
         target="_blank"
@@ -34,7 +34,7 @@ const BlogPromotionCard = ({
               />
             ) : (
               <Image
-                src={"/assets/bg/blur.jpg"}
+                src={'/assets/bg/blur.jpg'}
                 alt="Promotion"
                 className="h-full w-full object-cover"
                 width={400}

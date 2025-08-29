@@ -10,7 +10,7 @@ const PromotionCard = ({
 }: RidePromotionCard) => {
   return (
     <Link href={link} target="_blank" rel="noopener noreferrer">
-      <div className="group relative h-[7.5rem] w-[10.34rem] cursor-pointer overflow-hidden rounded-[0.5rem] shadow-lg transition-transform duration-300 hover:scale-105 md:h-[14rem] md:w-[16rem] lg:h-[18rem] lg:w-[20.2rem]">
+      <div className="group relative h-[7.5rem] w-[10.34rem] cursor-pointer overflow-hidden rounded-[0.5rem] shadow-lg transition-transform duration-300 hover:scale-105 md:h-[14rem] md:w-[16rem] lg:h-[16rem] lg:w-[18.5rem]">
         {/* Background Image */}
         <Image src={image} alt={cardTitle} fill className="object-cover" />
 

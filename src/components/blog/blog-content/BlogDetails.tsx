@@ -6,7 +6,7 @@ type BlogDetailsProps = {
 
 export default function BlogDetails({ blogContent }: BlogDetailsProps) {
   return (
-    <div className="w-full md:w-4/5">
+    <div className="w-full">
       <div
         className={` ${styles.blogContent}`}
         dangerouslySetInnerHTML={{ __html: blogContent }} // Use the passed blogContent

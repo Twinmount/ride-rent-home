@@ -24,7 +24,7 @@ ubai_Emirate_of_Dubai.html`}
           <Image
             src="/assets/logo/tripadvisor.webp"
             alt="tripadvisor logo"
-            className="h-8 sm:h-12 lg:h-14 w-auto"
+            className="h-8 w-auto sm:h-12 lg:h-14"
             width={0} // can be 0 or removed
             height={0} // can be 0 or removed
             priority
@@ -38,18 +38,18 @@ ubai_Emirate_of_Dubai.html`}
           <Image
             src="/assets/logo/trustpilot.webp"
             alt="trustpilot logo"
-            className="h-5 sm:h-9 lg:h-11 w-auto"
+            className="h-5 w-auto sm:h-9 lg:h-11"
             width={0}
             height={0}
             priority
             sizes="(max-width: 768px) 100vw, 170px"
           />
         </Link>
-        <Link href={`https://g.page/r/CXPd6aHEo_hvEAE/review`} target="_blank">
-        <Image
+        <Link href={`https://g.page/r/CX8aWK61gQI8EAI/review`} target="_blank">
+          <Image
             src="/assets/logo/google.webp"
             alt="google logo"
-            className="h-8 sm:h-16 w-auto"
+            className="h-8 w-auto sm:h-16"
             width={0}
             height={0}
             priority

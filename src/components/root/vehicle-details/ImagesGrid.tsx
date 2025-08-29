@@ -1,186 +1,176 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { Fancybox } from "@fancyapps/ui";
-import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import { useEffect } from 'react';
+import { Fancybox } from '@fancyapps/ui';
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
 type MediaItem = {
   source: string;
-  type: "image" | "video";
+  type: 'image' | 'video';
 };
 
 type Props = {
   mediaItems: MediaItem[];
   imageAlt?: string;
+  className?: string;
 };
 
-const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
+const ImagesGrid = ({ mediaItems, imageAlt, className = '' }: Props) => {
   useEffect(() => {
     Fancybox.bind("[data-fancybox='gallery']", {
       Thumbs: true,
-      // Carousel: {
-      // infinite loop enable/disable
-      //   infinite: false,
-      // },
+      Toolbar: {
+        display: {
+          left: ['infobar'],
+          middle: [
+            'zoomIn',
+            'zoomOut',
+            'toggle1to1',
+            'rotateCCW',
+            'rotateCW',
+            'flipX',
+            'flipY',
+          ],
+          right: ['slideshow', 'thumbs', 'close'],
+        },
+      },
     });
     return () => Fancybox.destroy();
   }, []);
 
+  // Organize media items for display
+  const videoItem = mediaItems.find((item) => item.type === 'video');
+  const imageItems = mediaItems.filter((item) => item.type === 'image');
 
-  // play video on hover
-  // const handleMouseEnter = () => videoRef.current?.play();
-  // const handleMouseLeave = () => {
-  //   if (videoRef.current) {
-  //     videoRef.current.pause();
-  //     videoRef.current.currentTime = 0;
-  //   }
-  // };
+  const mainItem = videoItem || mediaItems[0];
+  const sideItems = videoItem ? imageItems.slice(0, 2) : mediaItems.slice(1, 3);
+  const thumbnailItems = videoItem ? imageItems.slice(2) : mediaItems.slice(3);
 
-  const gridItems = mediaItems.slice(0, 4);
-  const lightboxImages = mediaItems.filter((item) => item.type === "image" && !gridItems.includes(item));
+  const remainingCount = Math.max(0, thumbnailItems.length - 4);
+  const visibleThumbnails = thumbnailItems.slice(0, 4);
 
-  const totalImageCount = mediaItems.filter(
-    (item) => item.type === "image",
-  ).length;
-  const displayedImageCount = mediaItems
-    .slice(0, 4)
-    .filter((item) => item.type === "image").length;
-  const remainingImages = totalImageCount - displayedImageCount;
+  const renderMediaItem = (
+    item: MediaItem,
+    index: number,
+    overlayCount?: number
+  ) => {
+    const isVideo = item.type === 'video';
+    const baseClasses = 'h-full w-full rounded-xl object-cover';
 
-  const renderMedia = (item: MediaItem, index: number, remainingImages?: number) => {
-    if (item.type === "video") {
+    if (isVideo) {
       return (
-        <a
-          key={index}
-          // onMouseEnter={handleMouseEnter}
-          // onMouseLeave={handleMouseLeave}
-          className="block h-full w-full"
-        >
+        <div className="relative h-full w-full overflow-hidden rounded-xl bg-black">
           <video
-            ref={videoRef}
             src={item.source}
-            muted
+            className={baseClasses}
             controls
+            muted
             autoPlay
             loop
-            // to hide options
             controlsList="nodownload noplaybackrate"
             disablePictureInPicture
-            className="h-full w-full rounded object-cover"
+            playsInline
           />
-        </a>
+        </div>
       );
     }
 
     return (
       <a
-        key={index}
-        data-fancybox="gallery"
         href={item.source}
-        className="block h-full w-full"
+        data-fancybox="gallery"
+        className="group relative block h-full w-full overflow-hidden rounded-xl"
       >
         <img
           src={item.source}
-          alt={imageAlt}
-          className="h-full w-full rounded object-cover"
+          alt={imageAlt || `Gallery image ${index + 1}`}
+          className={`${baseClasses} transition-transform duration-300 group-hover:scale-105`}
+          loading="lazy"
         />
-        {!!remainingImages && remainingImages > 0 && (
-            <div className="absolute inset-0 flex select-none items-center justify-center rounded bg-black/50 text-2xl font-semibold text-white">
-              {`+${remainingImages}`}
-            </div>
-          )}
+        {overlayCount && overlayCount > 0 && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-xl font-semibold text-white backdrop-blur-sm md:text-2xl">
+            +{overlayCount}
+          </div>
+        )}
       </a>
     );
   };
 
   return (
-    <div className="relative w-full rounded-xl bg-white p-4 shadow-md">
-      <div
-        className="w-full overflow-hidden rounded md:h-[400px]"
-        // style={{ height: "400px" }}
-      >
-        {/* === One media === */}
-        {gridItems.length === 1 && (
-          <div className="h-full w-full">{renderMedia(gridItems[0], 0)}</div>
-        )}
+    <div className={`h-full w-full ${className}`}>
+      {/* Desktop Layout - Adapts to container height with no internal padding */}
+      <div className="hidden h-full md:grid md:grid-rows-[1fr_auto] md:gap-3">
+        {/* Main Grid Area - Takes most of available height */}
+        <div className="grid h-full min-h-0 grid-cols-3 gap-3">
+          {/* Main Image/Video - Takes 2 columns, maintains aspect but fits container */}
+          <div className="col-span-2 overflow-hidden rounded-xl">
+            <div className="h-full w-full">{renderMediaItem(mainItem, 0)}</div>
+          </div>
 
-        {/* === Two media items === */}
-        {gridItems.length === 2 && (
-          <div className="flex h-full gap-2">
-            {gridItems.map((item, i) => (
-              <div key={i} className="h-full w-1/2">
-                {renderMedia(item, i)}
+          {/* Side Column - Takes 1 column, divided into 2 equal rows */}
+          <div className="grid grid-rows-2 gap-3">
+            {sideItems.map((item, index) => (
+              <div key={index} className="overflow-hidden rounded-xl">
+                {renderMediaItem(item, index + 1)}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Thumbnail Row - Fixed height based on content */}
+        {visibleThumbnails.length > 0 && (
+          <div className="grid h-20 grid-cols-4 gap-3 lg:h-24">
+            {visibleThumbnails.map((item, index) => (
+              <div key={index} className="overflow-hidden rounded-xl">
+                {renderMediaItem(
+                  item,
+                  index + (videoItem ? 3 : 4),
+                  index === visibleThumbnails.length - 1
+                    ? remainingCount
+                    : undefined
+                )}
               </div>
             ))}
           </div>
         )}
+      </div>
 
-        {/* === Three media items === */}
-        {gridItems.length === 3 && (
-          <div className="flex h-full flex-col gap-2 md:flex-row">
-            {/* Column 1: First item full height */}
-            <div className="flex-1">{renderMedia(gridItems[0], 0)}</div>
+      {/* Mobile Layout - Preserved as requested */}
+      <div className="flex h-full w-full flex-col px-2 md:hidden">
+        <div className="w-full flex-1 overflow-hidden rounded-xl">
+          {renderMediaItem(mediaItems[0], 0)}
+        </div>
 
-            {/* Column 2: two stacked items (1 or 2 items) */}
-            <div className="flex flex-1 flex-row gap-2 md:flex-col">
-              {gridItems[1] && (
-                <div className="flex-1 md:h-1/2">
-                  {renderMedia(gridItems[1], 1)}
-                </div>
-              )}
-              {gridItems[2] && (
-                <div className="flex-1 md:h-1/2">
-                  {renderMedia(gridItems[2], 2)}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* === Three or four media items === */}
-        {gridItems.length >= 4 && (
-          <div className="flex h-full flex-col gap-2 md:flex-row">
-            {/* Column 1: First item full height */}
-            <div className="flex-1">{renderMedia(gridItems[0], 0)}</div>
-
-            {/* Column 2: two stacked items (1 or 2 items) */}
-            <div className="flex flex-1 flex-row gap-2 md:flex-col">
-              {gridItems[1] && (
-                <div className="flex-1 md:h-1/2">
-                  {renderMedia(gridItems[1], 1)}
-                </div>
-              )}
-              {gridItems[2] && (
-                <div className="flex-1 md:h-1/2">
-                  {renderMedia(gridItems[2], 2)}
-                </div>
-              )}
-            </div>
-
-            {/* Column 3: fourth item full height */}
-            {gridItems[3] && (
-              <div className="relative flex-1">
-                {remainingImages > 0 ?(
-                  renderMedia(gridItems[3], 3, remainingImages)
-                ):(
-                  renderMedia(gridItems[3], 3)
+        {mediaItems.length > 1 && (
+          <div className="mt-4 flex h-20 justify-center gap-2 px-2">
+            {mediaItems.slice(1, 4).map((item, index) => (
+              <div
+                key={index}
+                className="h-full w-[30%] flex-shrink-0 overflow-hidden rounded-xl"
+              >
+                {renderMediaItem(
+                  item,
+                  index + 1,
+                  index === 2 && mediaItems.length > 4
+                    ? mediaItems.length - 4
+                    : undefined
                 )}
               </div>
-            )}
+            ))}
           </div>
         )}
       </div>
 
-      {/* Hidden Lightbox Anchors for all images */}
-      <div className="hidden">
-        {lightboxImages.map((item, i) => (
-          <a key={i} data-fancybox="gallery" href={item.source}>
-            <img src={item.source} alt={imageAlt} />
-          </a>
-        ))}
-      </div>
+      {/* Hidden lightbox items for remaining images */}
+      {remainingCount > 0 && (
+        <div className="hidden">
+          {thumbnailItems.slice(4).map((item, index) => (
+            <a key={index} href={item.source} data-fancybox="gallery">
+              <img src={item.source} alt={imageAlt} />
+            </a>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

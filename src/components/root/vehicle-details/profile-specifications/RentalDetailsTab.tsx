@@ -1,135 +1,133 @@
-"use client";
-import React, { useState } from "react";
-import { RentalDetails } from "@/types/vehicle-details-types";
-import { Infinity, Tag } from "lucide-react";
-import { IoSpeedometer } from "react-icons/io5";
-import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
-import { AnimatePresence } from "framer-motion";
-import { usePriceConverter } from "@/hooks/usePriceConverter";
-import { Cover } from "@/components/ui/cover";
+import { useState } from 'react';
+import { RentalDetails } from '@/types/vehicle-details-types';
+import { usePriceConverter } from '@/hooks/usePriceConverter';
+import SecurityDepositInfo from './SecurityDepositInfo';
+import BestPriceGuarantee from './BestPriceGuarantee';
+import AnimatedPriceDisplay from './AnimatedPriceDisplay';
+import MileageInfo from './MileageInfo';
+import Image from 'next/image';
 
 type RentalDetailsTabProps = {
   rentalDetails: RentalDetails;
+  securityDeposit: {
+    enabled: boolean;
+    amountInAED: string;
+  };
 };
 
-const RentalDetailsTab = ({ rentalDetails }: RentalDetailsTabProps) => {
-  // Filter out only the enabled rental periods
+const RentalDetailsTab = ({
+  rentalDetails,
+  securityDeposit,
+}: RentalDetailsTabProps) => {
+  // Filter and structure enabled rental periods
   const enabledRentalPeriods = [
-    { period: "Hour", details: rentalDetails.hour },
-    { period: "Day", details: rentalDetails.day },
-    { period: "Week", details: rentalDetails.week },
-    { period: "Month", details: rentalDetails.month },
+    { period: 'Hour', details: rentalDetails.hour },
+    { period: 'Day', details: rentalDetails.day },
+    { period: 'Week', details: rentalDetails.week },
+    { period: 'Month', details: rentalDetails.month },
   ].filter((rental) => rental.details.enabled);
 
   const { convert } = usePriceConverter();
 
-  // Set default selected period (first enabled period)
+  // Initialize with first available rental period
   const [selectedPeriod, setSelectedPeriod] = useState(enabledRentalPeriods[0]);
-  const [direction, setDirection] = useState(0); // -1 for left, 1 for right
 
+  // Handle tab switching
   const handleTabChange = (rental: (typeof enabledRentalPeriods)[0]) => {
-    const currentIndex = enabledRentalPeriods.findIndex(
-      (item) => item.period === selectedPeriod.period,
-    );
-    const nextIndex = enabledRentalPeriods.findIndex(
-      (item) => item.period === rental.period,
-    );
-    setDirection(nextIndex > currentIndex ? 1 : -1); // Determine direction
     setSelectedPeriod(rental);
   };
 
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? "100%" : "-100%",
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.2,
-      },
-    },
-    exit: (direction: number) => ({
-      x: direction > 0 ? "-100%" : "100%",
-      opacity: 0,
-      transition: {
-        duration: 0.2,
-      },
-    }),
+  // Extract minBookingHours for hourly rentals
+  const getMinBookingHours = (period: string, details: any) => {
+    if (period === 'Hour' && 'minBookingHours' in details) {
+      return details.minBookingHours;
+    }
+    return undefined;
+  };
+
+  // Render period labels
+  const getPeriodLabel = (period: string) => {
+    const labels = {
+      Hour: 'Hourly',
+      Day: 'Daily',
+      Week: 'Weekly',
+      Month: 'Monthly',
+    };
+    return labels[period as keyof typeof labels];
   };
 
   if (!selectedPeriod) {
     return <div>Loading...</div>;
   }
+
   return (
-    <div className="mx-auto mt-3 w-full max-w-md rounded-xl border bg-white p-4 shadow">
-      {/* Tabs */}
-      <div className="mb-4 flex flex-col border-b border-gray-200">
-        <div className="flex gap-2 text-gray-600">
-          <Tag className="text-gray-600" width={15} /> Pricing starts
-        </div>
-        <div className="flex items-center justify-evenly">
-          {enabledRentalPeriods.map((rental, index) => (
-            <button
-              key={index}
-              className={`flex-1 py-2 text-center font-semibold ${
-                selectedPeriod.period === rental.period
-                  ? "border-b-2 border-orange text-orange"
-                  : "text-gray-600"
-              }`}
-              onClick={() => handleTabChange(rental)}
-            >
-              {rental.period === "Hour" && "Hourly"}
-              {rental.period === "Day" && "Daily"}
-              {rental.period === "Week" && "Weekly"}
-              {rental.period === "Month" && "Monthly"}
-            </button>
-          ))}
-        </div>
+    <div className="mx-auto mt-2 w-full rounded-xl border bg-white p-2 shadow xl:mt-3 xl:p-4">
+      {/* Header */}
+      <div className="flex gap-1 lg:pb-2">
+        <Image
+          src="/assets/icons/detail-page/Tag.svg"
+          alt="rental details"
+          className="pb-1"
+          width={23}
+          height={20}
+        />
+        <p className="mb-2 text-lg font-medium md:text-xl">Rental Details</p>
       </div>
 
-      {/* Content based on selected period */}
-      <div className="h-[145px] max-h-[145px] min-h-[6rem] overflow-y-auto overflow-x-hidden">
-        <AnimatePresence custom={direction} mode="wait">
-          <MotionDivElm
-            key={selectedPeriod.period}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            className="inset-0 space-y-4"
-          >
-            <div className="flex items-center justify-between rounded-[0.5rem] bg-[#2c2c2c] px-2 py-1">
-              <span className="flex items-center justify-start gap-x-1 font-medium text-slate-200">
-                <IoSpeedometer className="mb-1" /> Rental Rate:
-              </span>
-              <span className="text-lg font-bold text-yellow">
-                {selectedPeriod.period === "Hour" &&
-                "minBookingHours" in selectedPeriod.details
-                  ? `${convert(Number(selectedPeriod.details.rentInAED), "prefix")} / ${selectedPeriod.details.minBookingHours} Hrs`
-                  : `${convert(Number(selectedPeriod.details.rentInAED), "prefix")}`}
-              </span>
+      {/* Main content container */}
+      <div className="mb-2 rounded-xl border-b border-[#D9DEE0] bg-[#f4f4f4] p-2 xl:mb-4 xl:p-4">
+        {/* Period tabs and pricing */}
+
+        <div className="border-b-2 border-[#D9DEE0]">
+          <div className="flex flex-col p-1 md:items-center md:justify-between lg:flex-row lg:p-2">
+            {/* Tabs - show second on mobile, first on desktop */}
+            <div className="order-2 mx-auto flex w-fit items-center justify-between gap-1 md:mx-0 lg:order-1 xl:gap-2 xl:pb-2">
+              {enabledRentalPeriods.map((rental, index) => (
+                <button
+                  key={index}
+                  className={`rounded-full border px-2 py-2 text-xs font-normal transition-all duration-200 md:px-3 md:py-2 ${
+                    selectedPeriod.period === rental.period
+                      ? 'bg-orange text-white'
+                      : 'border-gray-300 bg-white text-[#1C2122] hover:border-gray-400'
+                  }`}
+                  onClick={() => handleTabChange(rental)}
+                >
+                  {getPeriodLabel(rental.period)}
+                </button>
+              ))}
             </div>
 
-            {selectedPeriod.details.unlimitedMileage ? (
-              <Cover className="flex-center h-9 gap-x-3 text-xl font-semibold text-yellow">
-                Unlimited Mileage <Infinity />
-              </Cover>
-            ) : (
-              <div className="flex h-12 items-center justify-between rounded-[0.5rem] bg-[#2c2c2c] px-2 py-1">
-                <span className="flex items-center justify-start gap-x-1 font-medium text-slate-200">
-                  <IoSpeedometer className="mb-1" />
-                  Included Mileage Limit:
-                </span>
-                <span className="text-lg font-bold text-yellow">
-                  {`${selectedPeriod.details.mileageLimit} Km`}
-                </span>
-              </div>
-            )}
-          </MotionDivElm>
-        </AnimatePresence>
+            {/* Animated price - show first on mobile, second on desktop */}
+            <div className="order-1 lg:order-2">
+              <AnimatedPriceDisplay
+                price={selectedPeriod.details.rentInAED}
+                period={selectedPeriod.period}
+                minBookingHours={getMinBookingHours(
+                  selectedPeriod.period,
+                  selectedPeriod.details
+                )}
+                convert={convert}
+              />
+            </div>
+          </div>
+
+          {/* Best price guarantee - positioned below the main flex container, aligned to right */}
+          <div className="flex justify-center py-2 pr-1 lg:justify-end lg:pt-1">
+            <BestPriceGuarantee />
+          </div>
+        </div>
+
+        {/* Best price guarantee */}
+        {/* <BestPriceGuarantee /> */}
+
+        {/* Additional rental information */}
+        <div className="flex flex-col items-center justify-between pt-3 md:flex-row lg:pt-2">
+          <SecurityDepositInfo securityDeposit={securityDeposit} />
+          <MileageInfo
+            unlimitedMileage={selectedPeriod.details.unlimitedMileage}
+            mileageLimit={selectedPeriod.details.mileageLimit}
+          />
+        </div>
       </div>
     </div>
   );

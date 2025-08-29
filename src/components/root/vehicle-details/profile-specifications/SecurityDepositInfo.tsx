@@ -1,4 +1,5 @@
-import { HandCoins } from "lucide-react";
+import { HandCoins, CheckCircle } from 'lucide-react';
+import Image from 'next/image';
 
 type SecurityDepositInfoProps = {
   securityDeposit: {
@@ -8,13 +9,22 @@ type SecurityDepositInfoProps = {
 };
 
 const SecurityDepositInfo = ({ securityDeposit }: SecurityDepositInfoProps) => {
-  if (!securityDeposit?.enabled) return null;
-
   return (
-    <div className="-mb-1 flex items-center justify-center">
-      <HandCoins className="text-yellow-500 h-auto w-5" />
+    <div className="mx-4 flex items-center justify-center text-sm text-text-secondary">
+      {securityDeposit?.enabled ? (
+        <Image
+          src="/assets/icons/detail-page/deposits.svg"
+          alt="deposit"
+          width={20}
+          height={20}
+        />
+      ) : (
+        <CheckCircle className="w-4" />
+      )}
       <span className="ml-1 whitespace-nowrap text-sm font-normal capitalize">
-        {`${securityDeposit?.amountInAED} AED deposit applies`}
+        {securityDeposit?.enabled
+          ? `${securityDeposit?.amountInAED} AED deposit applies`
+          : 'No security deposit'}
       </span>
     </div>
   );

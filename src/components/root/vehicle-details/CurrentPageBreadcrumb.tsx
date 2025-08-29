@@ -1,4 +1,4 @@
-import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import MotionDiv from '@/components/general/framer-motion/MotionDiv';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,9 +6,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { convertToLabel, singularizeValue } from "@/helpers";
-import Link from "next/link";
+} from '@/components/ui/breadcrumb';
+import { convertToLabel, singularizeValue } from '@/helpers';
+import Link from 'next/link';
 
 type CurrentPageBreadcrumbProps = {
   category: string;
@@ -30,13 +30,13 @@ export default function CurrentPageBreadcrumb({
   const formattedState = convertToLabel(state);
 
   return (
-    <MotionDiv className="mt-6 rounded-xl bg-white">
+    <MotionDiv className="m-1 mb-3 ml-2 rounded-xl text-sm">
       <Breadcrumb className="w-fit rounded-2xl">
         <BreadcrumbList>
           {/* vehicle state */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              className="font-semibold transition-colors hover:text-yellow hover:underline"
+              className="font-medium transition-colors hover:text-yellow hover:underline"
               asChild
             >
               <Link href={`/${country}/${state}/${category}`}>
@@ -49,11 +49,11 @@ export default function CurrentPageBreadcrumb({
           {/* vehicle category */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              className="font-semibold transition-colors hover:text-yellow hover:underline"
+              className="font-medium transition-colors hover:text-yellow hover:underline"
               asChild
             >
-              <Link href={`/${country}/${state}/${category}`}>
-                {formattedCategory} for rent{" "}
+              <Link href={`/${country}/${state}/listing/${category}`}>
+                {formattedCategory} for rent{' '}
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -62,7 +62,7 @@ export default function CurrentPageBreadcrumb({
           {/* vehicle brand */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              className="font-semibold transition-colors hover:text-yellow hover:underline"
+              className="font-medium transition-colors hover:text-yellow hover:underline"
               asChild
             >
               <Link
@@ -76,7 +76,7 @@ export default function CurrentPageBreadcrumb({
 
           {/* vehicle title */}
           <BreadcrumbItem>
-            <BreadcrumbPage className="cursor-default font-semibold text-yellow">
+            <BreadcrumbPage className="cursor-default font-medium text-accent">
               {vehicleTitle}
             </BreadcrumbPage>
           </BreadcrumbItem>

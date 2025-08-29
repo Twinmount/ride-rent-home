@@ -3,13 +3,9 @@ type SpecificationGridProps = {
     isCryptoAccepted: boolean;
     isSpotDeliverySupported: boolean;
   };
-  getRentalAvailability: () => string;
 };
 
-const SpecificationGrid: React.FC<SpecificationGridProps> = ({
-  specs,
-  getRentalAvailability,
-}) => {
+const SpecificationGrid: React.FC<SpecificationGridProps> = ({ specs }) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       {/* Payment Type */}
@@ -39,8 +35,8 @@ const SpecificationGrid: React.FC<SpecificationGridProps> = ({
         </div>
         <span className="ml-1 text-sm font-light capitalize">
           {specs.isSpotDeliverySupported
-            ? "Free Spot Delivery"
-            : "Collect at Point"}
+            ? 'Free Spot Delivery'
+            : 'Collect at Point'}
         </span>
       </div>
 
@@ -53,9 +49,6 @@ const SpecificationGrid: React.FC<SpecificationGridProps> = ({
             className="h-full w-full object-contain"
           />
         </div>
-        <span className="ml-1 text-[0.81rem] font-light capitalize">
-          {getRentalAvailability()}
-        </span>
       </div>
     </div>
   );
