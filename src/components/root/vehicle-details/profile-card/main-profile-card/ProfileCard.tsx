@@ -70,6 +70,7 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
         <RentNowbuttonWide
           contactDetails={company.contactDetails}
           vehicleName={model}
+          state={state}
         />
       </div>
     </MotionDiv>

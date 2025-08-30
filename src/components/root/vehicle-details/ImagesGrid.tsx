@@ -119,9 +119,12 @@ const ImagesGrid = ({ mediaItems, imageAlt, className = '' }: Props) => {
 
         {/* Thumbnail Row - Fixed height based on content */}
         {visibleThumbnails.length > 0 && (
-          <div className="grid h-20 grid-cols-4 gap-3 lg:h-24">
+          <div className="flex h-20 justify-center gap-3 lg:h-24">
             {visibleThumbnails.map((item, index) => (
-              <div key={index} className="overflow-hidden rounded-xl">
+              <div
+                key={index}
+                className="h-20 w-20 overflow-hidden rounded-xl lg:h-24 lg:w-[12.5rem]"
+              >
                 {renderMediaItem(
                   item,
                   index + (videoItem ? 3 : 4),

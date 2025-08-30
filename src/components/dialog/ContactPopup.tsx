@@ -12,6 +12,7 @@ interface ContactPopupProps {
   vehicleName?: string;
   isOpen: boolean;
   onClose: () => void;
+  state?: string;
 }
 
 const ContactPopup: React.FC<ContactPopupProps> = ({
@@ -22,6 +23,7 @@ const ContactPopup: React.FC<ContactPopupProps> = ({
   vehicleName,
   isOpen,
   onClose,
+  state,
 }) => {
   // Handle backdrop click
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -53,11 +55,11 @@ const ContactPopup: React.FC<ContactPopupProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm rounded-lg"
+      className="fixed inset-0 z-50 flex items-center justify-center rounded-lg bg-black bg-opacity-50 backdrop-blur-sm"
       onClick={handleBackdropClick}
     >
       {/* Popup Content */}
-      <div className="relative mx-4 w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+      <div className="relative mx-4 w-full max-w-md rounded-xl bg-white p-6 shadow-xl lg:max-w-lg">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -68,18 +70,18 @@ const ContactPopup: React.FC<ContactPopupProps> = ({
         </button>
 
         {/* Popup Header */}
-        <div className="m-6 flex flex-col items-center justify-center gap-2">
+        <div className="m-6 flex flex-col items-center justify-center gap-6">
           <div>
-            <h2 className="text-xl font-semibold text-yellow">
-            Contact Options
-          </h2>
+            {vehicleName && (
+              <span className="pb-5 text-2xl font-bold text-yellow">
+                Rent {vehicleName} in {state}
+              </span>
+            )}
           </div>
           <div>
-          {vehicleName && (
-            <p className="mt-1 text-sm text-text-secondary">
-              <span className="font-bold text-text-primary">Model:</span> {vehicleName}
-            </p>
-          )}
+            <h2 className="text-xl font-semibold text-text-secondary">
+              Contact Options
+            </h2>
           </div>
         </div>
 
@@ -95,9 +97,7 @@ const ContactPopup: React.FC<ContactPopupProps> = ({
 
         {/* Contact details text */}
         <div className="mt-6 space-y-2 text-center text-sm text-text-tertiary">
-          {whatsappUrl && (
-            <p>Click WhatsApp to chat with us directly</p>
-          )}
+          {whatsappUrl && <p>Click WhatsApp to chat with us directly</p>}
         </div>
       </div>
     </div>

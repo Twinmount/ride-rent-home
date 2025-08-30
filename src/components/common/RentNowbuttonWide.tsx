@@ -19,6 +19,7 @@ type RentNowButtonWideProps = {
   variant?: 'wide' | 'compact';
   contactDetails?: ContactDetails | null;
   vehicleName?: string;
+  state?: string;
 };
 
 const RentNowButtonWide = ({
@@ -28,6 +29,7 @@ const RentNowButtonWide = ({
   variant = 'wide',
   contactDetails,
   vehicleName,
+  state,
 }: RentNowButtonWideProps) => {
   const [showContactPopup, setShowContactPopup] = useState(false);
 
@@ -88,6 +90,7 @@ const RentNowButtonWide = ({
           vehicleName={vehicleName}
           isOpen={showContactPopup}
           onClose={() => setShowContactPopup(false)}
+          state={state}
         />
       )}
     </>
