@@ -85,7 +85,11 @@ const VehicleCard = ({
           />
         </LinkWrapper>
 
-        <RentNowDialogTrigger vehicle={vehicle} layoutType={layoutType} />
+        <RentNowDialogTrigger
+          country={country}
+          vehicle={vehicle}
+          layoutType={layoutType}
+        />
       </div>
     </MotionStaggeredArticle>
   );

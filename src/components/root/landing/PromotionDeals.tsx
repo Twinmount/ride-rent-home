@@ -1,5 +1,4 @@
 import PromotionCard from '@/components/card/vehicle-card/PromotionCard';
-import { SectionHeading } from '@/components/common/SectionHeading';
 import { convertToLabel } from '@/helpers';
 import {
   FetchPromotionsResponse,
