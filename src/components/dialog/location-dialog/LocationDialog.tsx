@@ -187,10 +187,10 @@ export function LocationDialog() {
                 selectedCountry={selectedCountry}
                 onChange={handleCountrySelect}
               />
-              <button className="flex items-center gap-2 rounded border bg-white px-2 py-2 text-accent-light">
+              {/* <button className="flex items-center gap-2 rounded border bg-white px-2 py-2 text-accent-light">
                 <MapPin className="h-4 w-4" />
                 Use Your Current Location
-              </button>
+              </button> */}
             </div>
 
             {isLoading ? (
