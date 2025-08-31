@@ -33,6 +33,9 @@ const Footer = () => {
               Find Us On
             </h3>
             <Social />
+            <div className="text-center">
+              <MadeWith />
+            </div>
           </div>
 
           {/* Bottom Description */}
@@ -57,7 +60,6 @@ const Footer = () => {
                     All Rights Reserved
                   </span>
                 </div>
-                <MadeWith />
               </div>
             </div>
           </MotionDiv>

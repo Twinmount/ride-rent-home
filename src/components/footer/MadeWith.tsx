@@ -23,7 +23,7 @@ const MadeWith = () => {
   const validCountry = country && isValidCountryValue(country) ? country : 'in';
 
   return (
-    <div className="pt-4 text-sm text-white">
+    <div className="pt-4 text-sm text-white lg:mt-2">
       Crafted with ❤️ from {validCountry === 'in' ? 'Namma Bengaluru' : 'Dubai'}
     </div>
   );
