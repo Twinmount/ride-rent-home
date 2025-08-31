@@ -4,6 +4,7 @@ import { FaRegCopyright, FaRegRegistered } from 'react-icons/fa6';
 import MotionDiv from '../general/framer-motion/MotionDiv';
 import RideRentFooterLogo from './RideRentFooterLogo';
 import FooterSelectors from './FooterSelectors'; // Import the client component
+import MadeWith from './MadeWith';
 
 const Footer = () => {
   return (
@@ -55,6 +56,7 @@ const Footer = () => {
                     ACJ-9769 | Ride Rent LLC (UAE) License Version: 2434340.01 |
                     All Rights Reserved
                   </span>
+                  <MadeWith />
                 </div>
               </div>
             </div>

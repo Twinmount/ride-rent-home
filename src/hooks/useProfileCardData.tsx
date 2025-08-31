@@ -77,7 +77,7 @@ const useProfileData = (profileData: ProfileCardDataType, country: string) => {
     return generateCompanyProfilePageLink(
       company.companyName,
       company.companyId,
-      country,
+      country
     );
   }, [company.companyName, company.companyId]);
 
