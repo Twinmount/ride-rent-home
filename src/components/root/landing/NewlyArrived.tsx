@@ -43,7 +43,7 @@ export default async function NewlyArrived({
   return (
     <MotionSection className="section-container mx-auto">
       {/* Header section with View All button - respects container padding */}
-      <div className="ml-3 flex items-center justify-between lg:mb-4 lg:ml-2 lg:mt-8">
+      <div className="mx-auto flex items-center justify-between align-middle lg:my-6 lg:max-w-[92rem] lg:pr-6 lg:pt-3">
         <div
           className={cn('mb-4 flex w-full flex-col gap-y-3 text-left lg:pl-6')}
         >
