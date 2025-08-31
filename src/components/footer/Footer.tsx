@@ -47,8 +47,8 @@ const Footer = () => {
 
                 <div className="flex flex-col items-center justify-center gap-2 text-center sm:flex-row sm:flex-wrap sm:gap-1">
                   <span className="flex items-center gap-1 font-semibold">
-                    <FaRegCopyright className="mt-[0.17rem]" />
-                    <FaRegRegistered className="mt-[0.17rem]" />
+                    <FaRegCopyright />
+                    <FaRegRegistered />
                     FleetOrbita Internet Services/Ride Rent LLC
                   </span>
                   <span className="hidden sm:inline-block">|</span>
@@ -56,8 +56,8 @@ const Footer = () => {
                     ACJ-9769 | Ride Rent LLC (UAE) License Version: 2434340.01 |
                     All Rights Reserved
                   </span>
-                  <MadeWith />
                 </div>
+                <MadeWith />
               </div>
             </div>
           </MotionDiv>
