@@ -51,7 +51,7 @@ export default async function NewlyArrived({
             Newly arrived {formattedCategory}
           </h2>
           <p className="heading-secondary hidden lg:block">
-            Lorem ipsum dolor sit amet consectetur.
+            Check out the newly arrived cars in {state}
           </p>
         </div>
         <ViewAllLinkButton

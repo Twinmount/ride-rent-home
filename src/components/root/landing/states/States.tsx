@@ -31,6 +31,18 @@ export default async function States({
   // Return null if no states available
   if (states.length === 0) return null;
 
+  // Determine subtitle based on country
+  const getSubtitle = (country: string) => {
+    switch (country.toLowerCase()) {
+      case 'ae':
+        return 'Explore more from all Emirates.';
+      case 'in':
+        return 'Explore exclusive offers across Indian cities.';
+      default:
+        return 'Lorem ipsum dolor sit amet consectetur.';
+    }
+  };
+
   return (
     // Main section container - full width with proper constraints
     <MotionSection className="section-container relative w-full pt-[1.5rem] lg:pt-[2.5rem]">
@@ -46,10 +58,10 @@ export default async function States({
 
       {/* Content wrapper with relative positioning */}
       <div className="relative z-10 w-full">
-        {/* Section heading with title and subtitle */}
+        {/* Section heading with title and dynamic subtitle */}
         <SectionHeading
           title={`Explore Rental Offers In Other Locations`}
-          subtitle="Lorem ipsum dolor sit amet consectetur."
+          subtitle={getSubtitle(country)}
         />
 
         {/* Single responsive states container with equal spacing */}

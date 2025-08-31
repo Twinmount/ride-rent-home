@@ -68,7 +68,7 @@ export default async function RelatedResults({
           </h2>
 
           <p className="heading-secondary hidden lg:block">
-            Lorem ipsum dolor sit amet consectetur.
+            Check out more options you might like.​
           </p>
         </div>
         <ViewAllLinkButton

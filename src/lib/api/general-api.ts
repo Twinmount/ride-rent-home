@@ -510,20 +510,20 @@ export const fetchQuickLinksByValue = async (
 ): Promise<FetchLinksResponse | undefined> => {
   try {
     const BASE_URL =
-      country === "in"
+      country === 'in'
         ? process.env.NEXT_PUBLIC_API_URL_INDIA
         : process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/links/list?page=1&limit=20&sortOrder=ASC&stateValue=${stateValue}`;
 
     const response = await fetch(apiUrl, {
-      method: "GET",
-      cache: "no-store",
+      method: 'GET',
+      cache: 'no-store',
     });
 
     // Check if the response is OK
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch vehicle types. Status: ${response.status}`,
+        `Failed to fetch vehicle types. Status: ${response.status}`
       );
     }
 

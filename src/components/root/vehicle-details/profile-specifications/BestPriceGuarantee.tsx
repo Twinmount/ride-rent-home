@@ -122,14 +122,13 @@ const BestPriceGuarantee = () => {
             {/* Description */}
             <div className="space-y-4 text-center text-text-tertiary">
               <p className="text-sm md:text-lg">
-                We are Committed to Helping You Get the Lowest Prices Every
-                Time.
+                Helping you get the lowest prices every time.
               </p>
 
-              <p className="text-sm text-text-tertiary">
-                We Use Advanced Machine Learning and Expert Insights to Track
-                Local Rates, Compare Prices and Apply Smart Pricing Strategies
-                So You Always Get the Best Rental Deals.
+              <p className="text-xs text-text-secondary">
+                We use advanced machine learning and AI driven insights to track
+                local rates, compare prices, and apply smart pricing strategies
+                so you always get the best deals.​
               </p>
             </div>
           </motion.div>

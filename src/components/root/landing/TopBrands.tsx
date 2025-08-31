@@ -41,7 +41,7 @@ export default async function TopBrands({
     <MotionSection className="section-container wrapper">
       <SectionHeading
         title={`Rent From Top Brands In ${formattedState}`}
-        subtitle="Lorem ipsum dolor sit amet consectetur. Cras nulla commodo orci ipsum erat "
+        subtitle="Premium cars from leading brands, ready for your journey."
       />
 
       <CarouselWrapper>
