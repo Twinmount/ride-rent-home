@@ -26,7 +26,6 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
   const {
     company,
     seriesDescription,
-    vehicleId,
     vehicleData: { state, model },
   } = profileData;
 

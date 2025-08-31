@@ -33,7 +33,7 @@ export default function SupplierDetails({
         </h4>
 
         <p className="heading-secondary">
-          Lorem ipsum dolor sit amet consectetur.
+          Learn more about the supplier, reach out instantly, and explore deals.
         </p>
       </div>
 

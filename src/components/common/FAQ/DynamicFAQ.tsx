@@ -71,7 +71,7 @@ export default async function DynamicFAQ({
           >
             {faqData.map((item, index) => (
               <AccordionItem
-                className="mb-1 rounded-lg bg-white p-1 px-4 shadow"
+                className="mb-1 rounded-lg bg-white p-1 px-4 shadow lg:px-2"
                 key={index}
                 value={`item-${index + 1}`}
               >

@@ -32,7 +32,7 @@ const VehicleCard = ({
 
   // card styles based on layout type
   const carouselCardStyle = `w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem] `;
-  const gridCardStyle = `w-full max-w-full min-w-[12rem]`;
+  const gridCardStyle = `w-full max-w-[26rem] min-w-[12rem]`;
 
   // Conditionally set the styling based on layoutType
   const classes = layoutType === 'carousel' ? carouselCardStyle : gridCardStyle;

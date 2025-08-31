@@ -15,7 +15,7 @@ export default async function States({
   state: string;
   country: string;
 }) {
-  // Fetch states data from API with cache disabled
+  // Fetch and process states data
   const response = await API({
     path: `/states/list?hasVehicle=true`,
     options: { cache: 'no-cache' },
@@ -23,18 +23,25 @@ export default async function States({
   });
 
   const data: FetchStatesResponse = await response.json();
-
-  // Extract and reorder states array based on country
   let states = data.result;
   states = rearrangeStates(states, country);
 
-  // Return null if no states available
   if (states.length === 0) return null;
 
+  // Get dynamic subtitle based on country
+  const getSubtitle = (country: string) => {
+    switch (country.toLowerCase()) {
+      case 'ae':
+        return 'Explore more from all Emirates.';
+      case 'in':
+        return 'Explore exclusive offers across Indian cities.';
+      default:
+        return 'Lorem ipsum dolor sit amet consectetur.';
+    }
+  };
+
   return (
-    // Main section container - full width with proper constraints
     <MotionSection className="section-container relative w-full pt-[1.5rem] lg:pt-[2.5rem]">
-      {/* Background gradient overlay - contained within section bounds */}
       <div
         className="absolute bottom-0 left-0 right-0 top-0 z-0 -ml-16"
         style={{
@@ -44,33 +51,32 @@ export default async function States({
         }}
       />
 
-      {/* Content wrapper with relative positioning */}
       <div className="relative z-10 w-full">
-        {/* Section heading with title and subtitle */}
         <SectionHeading
           title={`Explore Rental Offers In Other Locations`}
-          subtitle="Lorem ipsum dolor sit amet consectetur."
+          subtitle={getSubtitle(country)}
         />
 
-        {/* Single responsive states container with equal spacing */}
-        <div className="mt-[1.75rem w-full lg:px-6">
-          <div className="flex flex-wrap justify-center gap-1.5 md:gap-1.5 lg:mx-16 lg:gap-1.5">
-            {states.map((state) => (
-              <div
-                key={state.stateId}
-                className="mb-3 flex-[0_0_30%] md:flex-[0_0_22%] lg:mb-7 lg:flex-[0_0_15%]"
-              >
-                <StateCard
-                  state={state}
-                  category={category}
-                  country={country}
-                />
-              </div>
-            ))}
+        {/* Responsive cards container with fixed widths */}
+        <div className="mt-[1.75rem] flex w-full justify-center px-4">
+          <div className="w-full max-w-[21.875rem] sm:max-w-[26.25rem] md:max-w-[35rem] lg:max-w-[50rem]">
+            <div className="flex flex-wrap justify-center gap-[0.75rem] md:gap-[0.75rem] lg:gap-[1rem]">
+              {states.map((state) => (
+                <div
+                  key={state.stateId}
+                  className="mb-4 w-[6.25rem] sm:w-[7.8125rem] md:w-[8.125rem] lg:w-[10.3125rem]"
+                >
+                  <StateCard
+                    state={state}
+                    category={category}
+                    country={country}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* View all button for navigation */}
         <ViewAllButton link={`/${country}/${state}/listing/${category}`} />
       </div>
     </MotionSection>

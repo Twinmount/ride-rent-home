@@ -4,6 +4,7 @@ import { FaRegCopyright, FaRegRegistered } from 'react-icons/fa6';
 import MotionDiv from '../general/framer-motion/MotionDiv';
 import RideRentFooterLogo from './RideRentFooterLogo';
 import FooterSelectors from './FooterSelectors'; // Import the client component
+import MadeWith from './MadeWith';
 
 const Footer = () => {
   return (
@@ -32,6 +33,9 @@ const Footer = () => {
               Find Us On
             </h3>
             <Social />
+            <div className="text-center">
+              <MadeWith />
+            </div>
           </div>
 
           {/* Bottom Description */}
@@ -46,8 +50,8 @@ const Footer = () => {
 
                 <div className="flex flex-col items-center justify-center gap-2 text-center sm:flex-row sm:flex-wrap sm:gap-1">
                   <span className="flex items-center gap-1 font-semibold">
-                    <FaRegCopyright className="mt-[0.17rem]" />
-                    <FaRegRegistered className="mt-[0.17rem]" />
+                    <FaRegCopyright />
+                    <FaRegRegistered />
                     FleetOrbita Internet Services/Ride Rent LLC
                   </span>
                   <span className="hidden sm:inline-block">|</span>
