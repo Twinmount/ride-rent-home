@@ -11,7 +11,7 @@ export default function CardTitle({ vehicleTitle, rating, layoutType }: Props) {
     <div className="flex-between text- flex gap-x-2">
       <h3 className={`line-clamp-1 font-medium ${fontSize}`}>{vehicleTitle}</h3>
 
-      <VehicleRating rating={rating} />
+      {/* <VehicleRating rating={rating} /> */}
     </div>
   );
 }

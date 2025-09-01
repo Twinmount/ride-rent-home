@@ -40,7 +40,7 @@ const UAE_CONTENT: IStateDocument = {
     title: 'Ride.Rent Makes Car Rentals Effortless in Al Ain',
     description: [
       'In Al Ain, drivers look for comfort, affordability, and reliable service. Ride.Rent brings together the best rent a car in Al Ain, offering everything from daily car rental Al Ain for short use to monthly car rental Al Ain packages that give residents long-term savings. Whether you are comparing rent a car Al Ain price, searching for the cheapest rent a car in Al Ain, or checking for rent a car Al Ain near me, Ride.Rent ensures trusted options with transparent pricing.',
-      'For extra flexibility, our platform also lists cheap rental cars Al Ain and providers like Budget Rent a Car Al Ain and Al Sarooj Rent a Car Office, giving you peace of mind with verified services. Families can choose larger vehicles for group travel, while professionals and frequent travelers can rely on affordable car hire Al Ain plans that match their needs.',
+      'For extra flexibility, our platform also lists cheap rental cars in Al Ain, giving you peace of mind with verified services. Families can choose larger vehicles for group travel, while professionals and frequent travelers can rely on affordable car hire Al Ain plans that match their needs.',
       'Premium renters are also covered with luxury car rental Al Ain options and convenient city locations such as car rental Al Ain Mall, making every booking easy to access. From car rental in Al Ain UAE to Al Ain rent a car services across the city, Ride.Rent ensures every journey is simple, affordable, and dependable.',
     ],
   },
@@ -63,9 +63,9 @@ const UAE_CONTENT: IStateDocument = {
   [STATES.SHARJAH]: {
     title: 'Ride.Rent Brings You the Best Car Rental in Sharjah',
     description: [
-      'As one of the fastest-growing car rental companies in Sharjah, Ride.Rent connects you with trusted providers offering both budget-friendly and premium choices. Whether you’re looking for rent a car Sharjah Al Nahda, need a quick rent a car Sharjah per day, or prefer a convenient car rental Sharjah no deposit option, Ride.Rent makes booking seamless and reliable.',
-      'From autobahn car rental Sharjah and shift car rental Sharjah to established names like Dollar Car Rental Sharjah and Budget Rent a Car Sharjah Airport Terminal 1, our platform ensures you get the widest range of vehicles at competitive rates.',
-      'Need more than just a rental? With rent a car with driver Sharjah and premium national car rental Sharjah services, Ride.Rent guarantees comfort, punctuality, and peace of mind. Whether it’s for business, leisure, or everyday use, Ride.Rent is your trusted partner for the cheapest rent a car in Sharjah monthly and beyond.',
+      "As one of the fastest-growing car rental companies in Sharjah, Ride.Rent connects you with trusted providers offering both budget-friendly and premium choices. Whether you're looking to rent a car Sharjah Al Nahda, need a quick rent a car Sharjah per day, or prefer a convenient car rental Sharjah with no deposit option, Ride.Rent makes booking seamless and reliable.",
+      'Our platform ensures you get the widest range of vehicles at competitive rates. Need more than just a rental? With rent a car with driver Sharjah and premium car rental Sharjah services, Ride.Rent guarantees comfort, punctuality, and peace of mind.',
+      "Whether it's for business, leisure, or everyday use, Ride.Rent is your trusted partner for the cheapest rent a car in Sharjah monthly and beyond.",
     ],
   },
 };

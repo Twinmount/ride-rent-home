@@ -46,7 +46,7 @@ export default async function States({
         className="absolute bottom-0 left-0 right-0 top-0 z-0 -ml-16"
         style={{
           background:
-            'linear-gradient(350deg, rgba(255, 255, 255, 0) 65%, rgba(249, 168, 37, 0.4) 160%)',
+            'linear-gradient(350deg, rgba(255, 255, 255, 0) 85%, rgba(249, 168, 37, 0.4) 160%)',
           pointerEvents: 'none',
         }}
       />
@@ -60,7 +60,7 @@ export default async function States({
         {/* Responsive cards container with fixed widths */}
         <div className="mt-[1.75rem] flex w-full justify-center px-4">
           <div className="w-full max-w-[21.875rem] sm:max-w-[26.25rem] md:max-w-[35rem] lg:max-w-[50rem]">
-            <div className="flex flex-wrap justify-center gap-[0.75rem] md:gap-[0.75rem] lg:gap-[1rem]">
+            <div className="flex flex-wrap justify-center gap-x-7 gap-y-3 md:gap-x-8 lg:gap-x-6 lg:gap-y-6">
               {states.map((state) => (
                 <div
                   key={state.stateId}

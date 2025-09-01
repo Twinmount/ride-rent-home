@@ -1,9 +1,8 @@
-"use client";
-
-import Image from "next/image";
-import { SearchInput } from "./SearchInput";
-import { SearchResults } from "./SearchResults";
-import { StateType } from "@/types";
+'use client';
+import Image from 'next/image';
+import { SearchInput } from './SearchInput';
+import { SearchResults } from './SearchResults';
+import { StateType } from '@/types';
 
 type Props = {
   search: string;
@@ -12,7 +11,9 @@ type Props = {
   searchResult: StateType[];
   isLoading: boolean;
   handleStateSelect: (state: string) => void;
+  country: string; // Added country prop
 };
+
 export default function LocationDialogBanner({
   search,
   setSearch,
@@ -20,7 +21,19 @@ export default function LocationDialogBanner({
   searchResult,
   isLoading,
   handleStateSelect,
+  country, // Added country prop
 }: Props) {
+  // Function to get the appropriate description based on country
+  const getLocationDescription = () => {
+    if (country === 'ae') {
+      return 'Ride.Rent provides vehicle rental solutions across all emirates of the UAE';
+    } else if (country === 'in') {
+      return 'Ride.Rent offers vehicle rental services in over 35 cities in India';
+    }
+    // Default fallback
+    return 'Ride.Rent offers vehicle rental services';
+  };
+
   return (
     <div className="relative h-48 w-full rounded-t-xl p-6 sm:p-8">
       {/* Background illustration */}
@@ -39,7 +52,7 @@ export default function LocationDialogBanner({
         <div className="text-center">
           <h2 className="text-xl font-medium">Select Your City</h2>
           <p className="mt-1 text-sm text-neutral-500">
-            Ride.Rent offers vehicle rental services in over 35 cities in India
+            {getLocationDescription()}
           </p>
         </div>
       </div>

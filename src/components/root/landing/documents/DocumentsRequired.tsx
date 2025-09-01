@@ -39,7 +39,7 @@ const DocumentsRequired = ({ category }: { category: string }) => {
   const uaeResidentDocs = [
     'Valid UAE Driving License',
     'Emirates ID',
-    '(Residential Visa may be acceptable)',
+    'Residential Visa may be acceptable',
   ];
 
   // Document requirements for tourists
