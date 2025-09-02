@@ -13,6 +13,7 @@ type VehicleCardProps = {
   index: number;
   country: string;
   layoutType: 'grid' | 'carousel';
+  openInNewTab?: boolean;
 };
 
 const VehicleCard = ({
@@ -20,6 +21,7 @@ const VehicleCard = ({
   index,
   country = 'ae',
   layoutType,
+  openInNewTab = false,
 }: VehicleCardProps) => {
   // dynamic link to navigate to vehicle details page
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
@@ -46,6 +48,7 @@ const VehicleCard = ({
       <LinkWrapper
         href={vehicleDetailsPageLink}
         className="h-full w-full space-y-3"
+        newTab={openInNewTab}
       >
         <div className="relative">
           {/* thumbnail with hover image cycling */}
@@ -78,6 +81,7 @@ const VehicleCard = ({
         <LinkWrapper
           href={vehicleDetailsPageLink}
           className="flex h-full w-full items-center"
+          newTab={openInNewTab}
         >
           <RentalDetails
             rentalDetails={vehicle.rentalDetails}

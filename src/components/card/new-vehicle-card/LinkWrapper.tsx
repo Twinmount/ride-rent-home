@@ -1,23 +1,34 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
-import { useGlobalContext } from "@/context/GlobalContext";
+import { useGlobalContext } from '@/context/GlobalContext';
 
 interface LinkWrapperProps {
   href: string;
   children: React.ReactNode;
   className?: string;
+  newTab?: boolean;
 }
 
-const LinkWrapper = ({ children, href, className }: LinkWrapperProps) => {
+const LinkWrapper = ({
+  children,
+  href,
+  className,
+  newTab = false,
+}: LinkWrapperProps) => {
   const { setIsPageLoading } = useGlobalContext();
 
   const currentPath = usePathname(); // Get the current route
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Skip global loading if opening in a new tab
+    if (newTab) {
+      return;
+    }
+
     // If it's a modified click (Ctrl, Cmd, Shift, Alt, Middle-click), do nothing
     if (
       e.metaKey || // Cmd on Mac
@@ -28,12 +39,13 @@ const LinkWrapper = ({ children, href, className }: LinkWrapperProps) => {
     ) {
       return;
     }
-  
+
     setIsPageLoading(true);
   };
-  
 
   useEffect(() => {
+    if (newTab) return;
+
     // Reset loading state ONLY if the new route starts with the href
     if (currentPath.startsWith(href)) {
       setIsPageLoading(false);
@@ -45,7 +57,13 @@ const LinkWrapper = ({ children, href, className }: LinkWrapperProps) => {
   }, [currentPath, href]); // Runs when the route changes
 
   return (
-    <Link href={href} onClick={handleClick} className={className}>
+    <Link
+      href={href}
+      target={newTab ? '_blank' : undefined}
+      rel={newTab ? 'noopener noreferrer' : undefined}
+      onClick={handleClick}
+      className={className}
+    >
       {children}
     </Link>
   );
