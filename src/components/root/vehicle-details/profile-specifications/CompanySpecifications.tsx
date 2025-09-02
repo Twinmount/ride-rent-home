@@ -35,7 +35,7 @@ const CompanySpecifications = ({ specs }: CompanySpecificationsProps) => {
   const activeSpecs = specifications.filter((spec) => spec.isActive);
 
   if (activeSpecs.length === 0) return null;
-  console.log('Active Specifications:', activeSpecs);
+  // console.log('Active Specifications:', activeSpecs);
 
   return (
     <div className="border-b-2 border-[E2E2E2] px-4 py-6 text-xs font-light text-text-secondary">

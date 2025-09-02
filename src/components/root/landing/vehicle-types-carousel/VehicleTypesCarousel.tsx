@@ -38,7 +38,7 @@ export default function VehicleTypesCarousel() {
   });
 
   const vehicleTypes: VehicleTypeType[] = data?.result?.list || [];
-  console.log('vehicleTypes', vehicleTypes);
+  // console.log('vehicleTypes', vehicleTypes);
 
   // Save vehicleTypes to sessionStorage
   useEffect(() => {
