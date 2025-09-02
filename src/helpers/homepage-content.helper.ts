@@ -82,7 +82,7 @@ export function getHomePageFeatures({
         key: 3,
         icon: Bus,
         title: 'Ensured Delivery Promise',
-        description: `Our commitment to punctuality means your chosen vehicle from our extensive 'Rent a Car in ${state}' collection is delivered when and where you need it. Seamless booking, transparent rates, and steadfast service—that's the RIDE.RENT promise.`,
+        description: `Our commitment to punctuality means your chosen vehicle from our extensive 'Rent a Car in ${state}' collection is delivered when and where you need it. Seamless booking, transparent rates, and steadfast service, that's the RIDE.RENT promise.`,
       },
     ],
   };

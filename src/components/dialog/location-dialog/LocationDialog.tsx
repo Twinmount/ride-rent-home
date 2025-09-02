@@ -19,7 +19,6 @@ import { COUNTRIES } from '@/data';
 import LocationDialogStateCard from '@/components/card/LocationDialogStateCard';
 import CountryDropdown from '@/components/dropdown/CountryDropdown';
 import LocationDialogBanner from './LocationDialogBanner';
-import { MapPin } from 'lucide-react';
 import Link from 'next/link';
 
 export function LocationDialog() {
@@ -180,6 +179,7 @@ export function LocationDialog() {
               searchResult={searchResult}
               isLoading={isLoading}
               handleStateSelect={handleStateSelect}
+              country={country}
             />
 
             <div className="flex-between border-b pb-3">

@@ -155,21 +155,46 @@ const alAinCarFeatureCards: ICard[] = [
     icon: IoIosSpeedometer,
     title: 'Quick Bookings, No Hidden Costs',
     description:
-      'Compare deals instantly on Ride.Rent, from rent car Al Ain for daily use to monthly car rental Al Ain for residents. Whether you\'re looking for cheap rental cars Al Ain or premium options, our platform ensures transparent prices with no surprises.',
+      "Compare deals instantly on Ride.Rent, from rent car Al Ain for daily use to monthly car rental Al Ain for residents. Whether you're looking for cheap rental cars Al Ain or premium options, our platform ensures transparent prices with no surprises.",
   },
   {
     key: 2,
     icon: FaCrown,
     title: 'Convenience Across Al Ain',
     description:
-      'From car rental Al Ain Mall to trusted names like Al Sarooj Rent a Car Office, Ride.Rent ensures multiple pickup points across the city. Simply search rent a car Al Ain near me and find reliable providers within minutes.',
+      'Whether you’re near Al Ain Mall or in another part of the city, Ride.Rent connects you with reliable car rental providers. A quick search for rent a car Al Ain near me gives you instant choices.​',
   },
   {
     key: 3,
     icon: IoShieldCheckmark,
     title: 'Trusted Partners for Every Traveler',
     description:
-      'Whether it\'s daily car rental Al Ain, monthly rent a car Al Ain, or premium car hire Al Ain, Ride.Rent connects you with the most reliable providers in the market. Every booking, from the cheapest rent a car in Al Ain to family-friendly options, is backed by verified suppliers and clear pricing.',
+      "Whether it's daily car rental Al Ain, monthly rent a car Al Ain, or premium car hire Al Ain, Ride.Rent connects you with the most reliable providers in the market. Every booking, from the cheapest rent a car in Al Ain to family-friendly options, is backed by verified suppliers and clear pricing.",
+  },
+] as const;
+
+// Mini array for Ras Al Khaimah Cars feature cards
+const rasAlKhaimahCarFeatureCards: ICard[] = [
+  {
+    key: 1,
+    icon: IoIosSpeedometer,
+    title: 'Fast Reservations with Real Value',
+    description:
+      "With Ride.Rent, there's no need for last-minute calls or lengthy negotiations. Our platform allows you to instantly compare cheap car hire Ras Al Khaimah deals and book within minutes. Whether you're searching for a rent a car Al Hamra, rent a car Al Nakheel, or a rent a car Ras Al Khaimah city option, Ride.Rent ensures the best match for your budget and travel needs.",
+  },
+  {
+    key: 2,
+    icon: FaCrown,
+    title: 'Pickups Across Ras Al Khaimah',
+    description:
+      'Convenience matters, which is why Ride.Rent provides vehicles across key touchpoints. Choose Ras Al Khaimah airport car rental or car hire Ras Al Khaimah international airport for smooth arrivals, or explore local hotspots with rental car Ras Al Khaimah and car on rent Ras Al Khaimah services. Even if you simply search Ras Al Khaimah car rental near me, our platform connects you with affordable and trusted providers.',
+  },
+  {
+    key: 3,
+    icon: IoShieldCheckmark,
+    title: 'Service You Can Trust',
+    description:
+      'From cheap car for rent in Ras Al Khaimah to luxury car hire in Ras Al Khaimah, every booking through Ride.Rent is supported by top-rated partners. With providers such as National Car Rental Ras Al Khaimah and other leading car rental companies Ras Al Khaimah, Ride.Rent ensures on-time delivery, transparent pricing, and dependable service. Whether you need Ras Al Khaimah rent a car for a short trip or monthly car rental Ras Al Khaimah for extended stays, Ride.Rent makes every booking smooth and stress-free.',
   },
 ] as const;
 
@@ -213,7 +238,6 @@ const UAE_CONTENT: IState = {
     heading: 'Seamless Car Rental Experience in Sharjah',
     description: [
       "Navigating Sharjah is easier when you choose Ride.Rent, the leading platform for renting a car in Sharjah. Whether you're a resident seeking the cheapest rent a car in Sharjah monthly, a business traveler booking at car rental Sharjah airport, or a tourist searching for rent a car in Sharjah cheap price, Ride.Rent ensures the perfect match for your needs.",
-      'Our platform features both economy and premium fleets from trusted car rental companies in Sharjah, including well-known names such as Dollar Car Rental Sharjah, Budget Rent a Car Sharjah Airport Terminal 1, and National Car Rental Sharjah. From budget-friendly daily bookings to auto lease Sharjah and auto rent Sharjah for long-term commitments, Ride.Rent delivers flexibility at transparent prices.',
       'Whether you need rent a car without deposit Sharjah, a luxury SUV for family trips, or even rent a car with driver Sharjah, our goal is to provide convenience, affordability, and peace of mind every step of the way.',
     ],
     cards: sharjahCarFeatureCards,
@@ -222,10 +246,19 @@ const UAE_CONTENT: IState = {
     heading: 'Your Reliable Choice for Car Rentals in Al Ain',
     description: [
       'Al Ain offers a perfect balance of comfort and culture, and Ride.Rent makes it easy to explore the city with the right vehicle. From daily car rental Al Ain for short trips to monthly car rental Al Ain for long-term use, our platform delivers transparent pricing and flexible options. Whether you are searching for the cheapest rent a car in Al Ain, comparing rent a car Al Ain price, or looking for trusted names like Budget Rent a Car Al Ain, Ride.Rent ensures affordability and convenience every time.',
-      'Our network includes reliable providers such as Al Sarooj Rent a Car Office, Budget Rent a Car Al Ain, and other popular Al Ain rent a car companies, ensuring you always get verified service. From city options like car rental Al Ain Mall to convenient searches like rent a car Al Ain near me, Ride.Rent helps you book with confidence.',
+      'Our network includes reliable vehicle rental providers and other popular Al Ain rent a car companies, ensuring you always get verified service. From city options like car rental Al Ain Mall to convenient searches like rent a car Al Ain near me, Ride.Rent helps you book with confidence.',
       'For professionals, families, and visitors, we also list cheap rental cars Al Ain, car hire Al Ain, and flexible packages under rent a car in Al Ain UAE, making it easy to find a vehicle that fits every budget and purpose.',
     ],
     cards: alAinCarFeatureCards,
+  },
+  [STATES.RAS_AL_KHAIMAH]: {
+    heading: 'Your Reliable Choice for Car Rentals in Ras Al Khaimah',
+    description: [
+      'Ras Al Khaimah is a destination of adventure, leisure, and heritage, and the right vehicle ensures you can explore it all with ease. With Ride.Rent, you can access everything from cheap car rental Ras Al Khaimah for everyday use to luxury car rental Ras Al Khaimah and exotic car rental Ras Al Khaimah for special occasions. Whether you need a quick car hire Ras Al Khaimah airport option for smooth arrivals or a flexible monthly car rental Ras Al Khaimah plan for long stays, Ride.Rent delivers clear pricing without hidden fees.',
+      'Our platform connects you with established car rental companies in Ras Al Khaimah, including trusted names like auto rent Ras Al Khaimah, auto rent a car Ras Al Khaimah, and leading Ras Al Khaimah airport car rental providers. From daily rentals to car lease Ras Al Khaimah solutions, we make sure both residents and visitors always find affordable and reliable mobility choices.',
+      'For families, business travelers, and tourists, we also feature rent a car with driver Ras Al Khaimah options along with premium executive services such as Ras Al Khaimah rent a car luxury and rent car Ras Al Khaimah luxury packages.',
+    ],
+    cards: rasAlKhaimahCarFeatureCards,
   },
 };
 
