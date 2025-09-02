@@ -89,7 +89,7 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
         </motion.button>
 
         {/* Like Button */}
-        <motion.button
+        {/* <motion.button
           onClick={handleLike}
           className="rounded-full p-2 transition-colors duration-200"
           whileHover={{ scale: 1.1 }}
@@ -115,7 +115,7 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
               }`}
             />
           </motion.div>
-        </motion.button>
+        </motion.button> */}
       </div>
 
       {/* Toast Notification */}
