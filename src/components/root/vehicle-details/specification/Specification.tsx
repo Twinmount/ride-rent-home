@@ -71,7 +71,7 @@ const Specification: FC<SpecificationsProps> = ({
       <MobileViewAllCard
         onClick={() => setIsSidebarOpen(true)}
         title="Specifications"
-        description="Lorem ipsum dolor sit amet consectetur."
+        description="Learn more about the specifications available​"
         icon={<SpecificationGearSVG />}
       />
 

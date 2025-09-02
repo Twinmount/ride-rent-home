@@ -53,7 +53,7 @@ const VehicleFeatures = ({
       <MobileViewAllCard
         onClick={() => setIsSidebarOpen(true)}
         title="Features"
-        description="Lorem ipsum dolor sit amet consectetur."
+        description="Learn more about the features available."
         icon={<FeaturesStarSVG />}
       />
 
