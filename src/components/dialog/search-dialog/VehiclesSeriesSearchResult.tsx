@@ -5,12 +5,14 @@ type VehiclesSeriesSearchResultProps = {
   vehicleSeries: VehicleSeriesSearchItems[];
   state: string;
   country: string;
+  category: string; // Add this
 };
 
 export default function VehiclesSeriesSearchResult({
   vehicleSeries,
   state,
-  country
+  country,
+  category, // Add this
 }: VehiclesSeriesSearchResultProps) {
   if (vehicleSeries.length === 0) return null;
 
@@ -23,7 +25,7 @@ export default function VehiclesSeriesSearchResult({
         {vehicleSeries.map((item) => (
           <Link
             key={item._id}
-            href={`/${country}/${state}/rent/${item.brand}/${item.urlTitle}`}
+            href={`/${country}/${state}/rent/${category}/${item.brand}/${item.urlTitle}`}
             target="_blank"
             className="cursor-pointer rounded px-3 py-2 text-sm text-gray-900 hover:bg-gray-200"
           >

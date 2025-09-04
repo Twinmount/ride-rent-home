@@ -390,6 +390,7 @@ export type VehicleSeriesSearchItems = {
   _id: string;
   brand: string;
   urlTitle?: string;
+  category: string;
 };
 export type VehicleSearchItems = {
   title: string;
