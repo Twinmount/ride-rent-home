@@ -1,11 +1,13 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import MobileProfileCard from '@/components/root/vehicle-details/profile-card/mobile-profile-card/MobileProfileCard';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { sendPortfolioVisit } from '@/lib/api/general-api';
 import { ProfileCardDataType } from '@/types/vehicle-details-types';
 import { useQuery } from '@tanstack/react-query';
+import { useUserProfile } from '@/hooks/useUserProfile';
+import { useAuthContext } from '@/auth';
 
 type DetailsSectionClientWrapperProps = {
   children: React.ReactNode;
@@ -32,16 +34,41 @@ const DetailsSectionClientWrapper = ({
   profileData,
   country,
 }: DetailsSectionClientWrapperProps) => {
-  const { vehicleCode } = profileData;
+  console.log('profileData: ', profileData);
+
+  const { vehicleCode, vehicleId } = profileData;
+  const { authStorage } = useAuthContext();
+  const userId = authStorage.getUser()?.id.toString();
 
   const detailsSectionRef = useRef(null);
   const isInViewPort = useIntersectionObserver(detailsSectionRef);
+
+  // Use the existing useUserProfile hook to get trackCarViewMutation
+  const { trackCarViewMutation } = useUserProfile({
+    userId: userId || '',
+  });
 
   useQuery({
     queryKey: ['portfolioVisit', vehicleCode],
     queryFn: () => sendPortfolioVisit(vehicleCode, country),
     staleTime: 0,
   });
+
+  // Track car view when component mounts (page loads)
+  useEffect(() => {
+    if (userId && vehicleId) {
+      trackCarViewMutation.mutate({
+        carId: vehicleId,
+        metadata: {
+          timestamp: new Date().toISOString(),
+          page: 'vehicle-details',
+          vehicleCode: vehicleCode,
+          country: country,
+          action: 'page-load',
+        },
+      });
+    }
+  }, [userId, vehicleId]);
 
   return (
     <section ref={detailsSectionRef}>

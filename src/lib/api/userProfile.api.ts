@@ -8,3 +8,13 @@ export const getUserCarActionCounts = async (userId: string): Promise<UserCarAct
   console.log('response.data: ', response.data);
   return response.data.result;
 };
+
+export const trackCarView = async (userId: string, carId: string, metadata: Record<string, any> = {}): Promise<void> => {
+  const baseURL = ENV.API_URL || ENV.NEXT_PUBLIC_API_URL
+  const response = await axios.post(`${baseURL}/user-cars/view`, {
+    userId,
+    carId,
+    metadata
+  });
+  console.log('Car view tracked: ', response.data);
+};

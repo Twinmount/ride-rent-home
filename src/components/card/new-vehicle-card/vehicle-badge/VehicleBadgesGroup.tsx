@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { VehicleBadge } from "./VehicleBadge";
-import { BadgeId, vehicleBadgesConfig } from "./vehicleBadgesConfig";
-import { cn } from "@/lib/utils";
+import { VehicleBadge } from './VehicleBadge';
+import { BadgeId, vehicleBadgesConfig } from './vehicleBadgesConfig';
+import { cn } from '@/lib/utils';
 
 type VehicleBadgesGroupProps = {
   hasZeroDeposit: boolean;
@@ -33,7 +33,7 @@ export const VehicleBadgesGroup = ({
   if (badgesToRender.length === 0) return null;
 
   return (
-    <div className={cn("absolute left-2 top-2 z-10 flex gap-1", className)}>
+    <div className={cn('absolute left-2 top-2 z-10 flex gap-1', className)}>
       {badgesToRender.map((badge) => {
         return badge ? <VehicleBadge key={badge.id} {...badge} /> : null;
       })}

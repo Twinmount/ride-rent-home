@@ -199,8 +199,6 @@ export const useAuth = () => {
     user: authStorage.getUser(),
   });
 
-  console.log('state: ', state);
-
 
   const [] = useImmer({
 

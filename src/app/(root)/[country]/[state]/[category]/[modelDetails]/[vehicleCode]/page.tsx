@@ -62,7 +62,6 @@ export default async function VehicleDetails(props: ParamsProps) {
       cache: 'no-cache',
     }
   );
-
   const data: VehicleDetailsPageResponse = await response.json();
 
   // if the vehicle data is not found, return 404 not found
