@@ -1,10 +1,6 @@
 import PromotionCard from '@/components/card/vehicle-card/PromotionCard';
 import { convertToLabel } from '@/helpers';
-import {
-  FetchPromotionsResponse,
-  FetchRidePromotionsResponse,
-  PromotionType,
-} from '@/types';
+import { FetchRidePromotionsResponse } from '@/types';
 import { API } from '@/utils/API';
 
 export const revalidate = 900;

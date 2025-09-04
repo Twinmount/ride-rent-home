@@ -11,7 +11,7 @@ import { convertToLabel } from '@/helpers';
 import { useQuery } from '@tanstack/react-query';
 import { fetchRelatedSeriesList } from '@/lib/api/general-api';
 import { useFetchListingVehiclesBySeries } from '@/hooks/useFetchListingVehiclesBySeries';
-import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
+import VehicleCard from '@/components/card/vehicle-card/main-card/VehicleCard';
 
 type SeriesListingGridProps = {
   series: string;

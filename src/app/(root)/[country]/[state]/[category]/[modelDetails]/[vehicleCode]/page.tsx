@@ -13,7 +13,7 @@ import { Metadata } from 'next';
 import DynamicFAQ from '@/components/common/FAQ/DynamicFAQ';
 import { generateVehicleMetadata, getVehicleJsonLd } from './metadata';
 import CurrentPageBreadcrumb from '@/components/root/vehicle-details/CurrentPageBreadcrumb';
-import { restoreVehicleCodeFormat } from '.';
+import { restoreVehicleCodeFormat } from '@/helpers';
 import { ENV } from '@/config/env';
 import { Suspense } from 'react';
 import SectionLoading from '@/components/skelton/section-loading/SectionLoading';
@@ -226,19 +226,6 @@ export default async function VehicleDetails(props: ParamsProps) {
               <ProfileCard profileData={ProfileCardData} country={country} />
             </div>
           </div>
-
-          {/* vehicle information */}
-          {/* <VehicleInfo
-            vehicleId={vehicle?.vehicleId}
-            modelName={vehicle?.modelName}
-            stateLabel={vehicle?.state.label}
-            isCryptoAccepted={vehicle?.company.companySpecs.isCryptoAccepted}
-            rentalDetails={vehicle?.rentalDetails}
-            securityDepositEnabled={vehicle?.securityDeposit.enabled}
-            vehicleSpecification={vehicle?.vehicleSpecification}
-            additionalVehicleTypes={vehicle?.additionalVehicleTypes}
-            cities={vehicle?.cities}
-          /> */}
 
           {/* Specifications and Features */}
           <div className="flex-center mt-8 w-full flex-col gap-4 xl:mt-4 xl:flex-row xl:items-stretch">

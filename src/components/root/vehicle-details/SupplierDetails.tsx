@@ -1,8 +1,8 @@
 import { generateCompanyProfilePageLink } from '@/helpers';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import LinkSVG from './icons/LinkSVG';
 import VerifiedSVG from './icons/VerifiedSVG';
+import { ExternalLink } from 'lucide-react';
 
 type Props = {
   companyName: string | null;
@@ -41,7 +41,7 @@ export default function SupplierDetails({
 
       <Link
         href={companyPortfolioPageLink}
-        className="flex-between gap-x-2 rounded-[0.5rem] border bg-white px-2 py-2 transition-all hover:shadow lg:px-4"
+        className="flex-between group gap-x-2 rounded-[0.5rem] border bg-white px-2 py-2 transition-all hover:shadow lg:px-4"
       >
         <div className="flex w-full items-center space-x-2 lg:space-x-4">
           <div className="h-12 w-12 min-w-12 overflow-hidden rounded-full lg:h-16 lg:w-16 lg:min-w-16">
@@ -69,7 +69,10 @@ export default function SupplierDetails({
           </div>
         </div>
 
-        <LinkSVG />
+        <ExternalLink
+          size={30}
+          className="text-gray-500 transition-colors group-hover:text-yellow"
+        />
       </Link>
     </div>
   );

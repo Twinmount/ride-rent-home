@@ -62,7 +62,7 @@ export default async function TopBrands({
 }
 
 // Render a single brand card
-export function BrandCard({
+function BrandCard({
   brand,
   category,
   state,
