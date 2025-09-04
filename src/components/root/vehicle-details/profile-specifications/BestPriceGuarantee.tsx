@@ -43,45 +43,18 @@ const BestPriceGuarantee = () => {
     },
   };
 
-  // Metallic glow animation variants for edge lighting effect
-  const metallicGlowVariants: Variants = {
-    glow: {
-      filter: [
-        'brightness(1) contrast(1.1)',
-        'brightness(1.3) contrast(1.3)',
-        'brightness(1) contrast(1.1)',
-      ],
-      transition: {
-        duration: 2.5,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      },
-    },
-  };
-
   return (
     <>
-      <style jsx>{`
-        @keyframes shimmer {
-          0% {
-            background-position: -200% 0;
-          }
-          100% {
-            background-position: 200% 0;
-          }
-        }
-      `}</style>
-
-      {/* Animated Best Price Guarantee Text with Metallic Glow */}
+      {/* Animated Best Price Guarantee Text */}
       <motion.div
-        className="m-4 flex justify-center"
+        className="flex justify-center pb-2"
         variants={shakeVariants}
         initial="initial"
         animate="shake"
       >
         <button
           onClick={openModal}
-          className="text-orange-500 hover:text-orange-600 flex items-center gap-x-1 transition-colors"
+          className="flex items-center gap-x-1 text-yellow transition-colors hover:text-orange"
         >
           {/* Shield Icon - slides in from left */}
           <motion.div
@@ -107,14 +80,14 @@ const BestPriceGuarantee = () => {
       {/* Modal Popup */}
       {isModalOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+          className="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 p-4 md:flex"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={closeModal}
         >
           <motion.div
-            className="relative w-full max-w-md rounded-2xl bg-white p-6"
+            className="relative w-full max-w-lg rounded-2xl bg-white p-6"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}
@@ -141,35 +114,21 @@ const BestPriceGuarantee = () => {
               </div>
             </div>
 
-            {/* Title with Metallic Glow */}
-            <motion.h2
-              className="relative mb-4 text-center text-2xl font-bold"
-              variants={metallicGlowVariants}
-              animate="glow"
-              style={{
-                color: '#ffa733',
-                background:
-                  'linear-gradient(45deg, #ea7b0b 0%, #b45309 25%, #8b4513 50%, #d2691e 75%, #ea7b0b 100%)',
-                backgroundSize: '200% 100%',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                animation: 'shimmer 3s ease-in-out infinite',
-              }}
-            >
+            {/* Title - Normal black text with xl size */}
+            <h2 className="mb-4 text-center text-xl font-semibold text-black">
               Lowest Price Guarantee!
-            </motion.h2>
+            </h2>
 
             {/* Description */}
-            <div className="space-y-4 text-center text-gray-600">
-              <p className="text-base md:text-lg md:font-semibold">
-                At Ride.Rent We are Committed to Helping You Get the Lowest
-                Prices Every Time.
+            <div className="space-y-4 text-center text-text-tertiary">
+              <p className="text-sm md:text-lg">
+                Helping you get the lowest prices every time.
               </p>
 
-              <p className="text-xs text-text-tertiary">
-                We Use Advanced Machine Learning and Expert Insights to Track
-                Local Rates, Compare Prices and Apply Smart Pricing Strategies
-                So You Always Get the Best Rental Deals.
+              <p className="text-xs text-text-secondary">
+                We use advanced machine learning and AI driven insights to track
+                local rates, compare prices, and apply smart pricing strategies
+                so you always get the best deals.​
               </p>
             </div>
           </motion.div>

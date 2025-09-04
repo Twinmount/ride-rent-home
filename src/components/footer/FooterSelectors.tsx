@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useParams } from 'next/navigation';
 import LanguageSelector from '../navbar/LanguageSelector';
@@ -18,23 +18,23 @@ const isValidCountryValue = (value: string): value is 'in' | 'ae' => {
 
 const FooterSelectors: React.FC = () => {
   const { country } = useParams<RouteParams>();
-  
+
   // Ensure we have a valid country value, default to 'in'
   const validCountry = country && isValidCountryValue(country) ? country : 'in';
-  
+
   return (
     <div className="flex-center h-full w-fit gap-3">
       {/* Language Selector */}
-      <LanguageSelector 
+      <LanguageSelector
         theme="dark"
         variant="footer"
         showCurrency={true}
         showCountry={true}
         showLanguageText={true}
       />
-      
+
       {/* Country Selector - Pass current country from URL with matching theme */}
-      <CountrySelector 
+      <CountrySelector
         currentCountry={validCountry}
         theme="dark"
         variant="footer"

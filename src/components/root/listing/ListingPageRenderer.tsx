@@ -23,9 +23,9 @@ type ListingPageRendererProps = {
 /**
  * This centralized component renders the page content on all 4 types of listing pages such as:
  * /listing/[category]
- * eg: /listing/[category]/[vehicleType]
- * eg: /listing/[category]/brand/[brand]
- * eg: /listing/[category]/[vehicleType]/brand/[brand]
+ * /listing/[category]/[vehicleType]
+ * /listing/[category]/brand/[brand]
+ * /listing/[category]/[vehicleType]/brand/[brand]
  */
 const ListingPageRenderer = async ({
   category,

@@ -1,206 +1,378 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { Fancybox } from "@fancyapps/ui";
-import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import { useEffect, useState, useCallback, useRef, memo } from 'react';
+import { Fancybox } from '@fancyapps/ui';
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
 type MediaItem = {
   source: string;
-  type: "image" | "video";
+  type: 'image' | 'video';
+  thumbnail?: string; // Add support for smaller thumbnails
+  width?: number;
+  height?: number;
 };
 
 type Props = {
   mediaItems: MediaItem[];
   imageAlt?: string;
+  className?: string;
 };
 
-const ImagesGrid = ({ mediaItems, imageAlt }: Props) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+// Memoized skeleton component
+const ImageSkeleton = memo(({ className = '' }: { className?: string }) => (
+  <div
+    className={`animate-pulse bg-gray-200 ${className}`}
+    role="presentation"
+    aria-hidden="true"
+  >
+    <div className="h-full w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
+  </div>
+));
+ImageSkeleton.displayName = 'ImageSkeleton';
 
-  // Initialize Fancybox lightbox for image gallery
-  useEffect(() => {
-    Fancybox.bind("[data-fancybox='gallery']", { Thumbs: true });
-    return () => Fancybox.destroy();
-  }, []);
+// Optimized image component with native lazy loading
+const LazyImage = memo(
+  ({
+    src,
+    alt,
+    className = '',
+    priority = false,
+    onLoad,
+    overlayCount,
+    thumbnail,
+    width,
+    height,
+  }: {
+    src: string;
+    alt: string;
+    className?: string;
+    priority?: boolean;
+    onLoad?: () => void;
+    overlayCount?: number;
+    thumbnail?: string;
+    width?: number;
+    height?: number;
+  }) => {
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [error, setError] = useState(false);
+    const imgRef = useRef<HTMLImageElement>(null);
 
-  // Split media items for different layout sections
-  const desktopTopGridItems = mediaItems.slice(0, 3); // Desktop: first 3 items in main grid
-  const mobileTopGridItem = mediaItems.slice(0, 1); // Mobile: only first item on top
-  const desktopBottomItems = mediaItems.slice(3, 7); // Desktop: items 4-7 in bottom row
-  const mobileBottomItems = mediaItems.slice(1, 4); // Mobile: items 2-4 in bottom row
+    const handleLoad = useCallback(() => {
+      setIsLoaded(true);
+      onLoad?.();
+    }, [onLoad]);
 
-  // Calculate overflow count for "+X" indicators
-  const desktopRemainingCount = Math.max(0, mediaItems.length - 7);
-  const mobileRemainingCount = Math.max(0, mediaItems.length - 4);
+    const handleError = useCallback(() => {
+      setError(true);
+      setIsLoaded(true);
+    }, []);
 
-  // Render individual media item with optional overlay and scaling
-  const renderMedia = (
-    item: MediaItem,
-    index: number,
-    remainingImages?: number,
-    isBottomRow?: boolean
-  ) => {
-    // Handle video items with controls
-    if (item.type === 'video') {
+    // Use srcset for responsive images if thumbnail provided
+    const srcSet = thumbnail ? `${thumbnail} 400w, ${src} 800w` : undefined;
+
+    if (error) {
       return (
-        <a key={index} className="block h-full w-full">
-          <video
-            ref={videoRef}
-            src={item.source}
-            muted
-            controls
-            autoPlay
-            loop
-            controlsList="nodownload noplaybackrate"
-            disablePictureInPicture
-            className="h-full w-full rounded-xl object-cover"
-          />
-        </a>
+        <div
+          className={`${className} flex items-center justify-center bg-gray-200 text-gray-500`}
+        >
+          <span className="text-sm">Failed to load</span>
+        </div>
       );
     }
 
-    // Handle image items with lightbox integration
-    return (
-      <a
-        key={index}
-        data-fancybox="gallery"
-        href={item.source}
-        className="relative block h-full w-full"
-      >
-        <img
-          src={item.source}
-          alt={imageAlt}
-          className="h-full w-full rounded-xl object-cover"
-          style={{
-            transform: isBottomRow ? 'scale(0.98)' : 'scale(0.95)', // Slight zoom for better visibility
-            transformOrigin: 'center center',
-          }}
-        />
-        {/* Overlay for remaining images count */}
-        {!!remainingImages && remainingImages > 0 && (
-          <div
-            className="absolute inset-0 flex select-none items-center justify-center bg-black/50 text-2xl font-semibold text-white"
-            style={{ borderRadius: '0.75rem' }}
-          >
-            {`+${remainingImages}`}
-          </div>
-        )}
-      </a>
-    );
-  };
-
-  // Render bottom thumbnail row (only shows when >3 items)
-  const renderBottomRow = () => {
-    if (mediaItems.length <= 3) return null;
-
     return (
       <>
-        {/* Desktop: 4 horizontal thumbnails with fixed height */}
-        <div
-          className="hidden flex-shrink-0 md:block"
-          style={{ height: '7.5rem' }}
-        >
-          <div className="flex h-full gap-2 px-1">
-            {desktopBottomItems.map((item, index) => (
-              <div key={index} className="h-full flex-1">
-                {index === desktopBottomItems.length - 1 &&
-                desktopRemainingCount > 0
-                  ? renderMedia(item, index + 3, desktopRemainingCount, true)
-                  : renderMedia(item, index + 3, undefined, true)}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile: 3 rectangular thumbnails with proper aspect ratio */}
-        <div
-          className="flex justify-center gap-2 px-2 md:hidden"
-          style={{ height: '5.625rem' }}
-        >
-          {mobileBottomItems.map((item, index) => (
-            <div
-              key={index}
-              className="flex-shrink-0"
-              style={{ width: '30%', height: '100%' }}
-            >
-              {index === mobileBottomItems.length - 1 &&
-              mobileRemainingCount > 0
-                ? renderMedia(item, index + 1, mobileRemainingCount, true)
-                : renderMedia(item, index + 1, undefined, true)}
-            </div>
-          ))}
-        </div>
-      </>
-    );
-  };
-
-  return (
-    <div className="relative flex h-full w-full flex-col px-2 md:pr-3">
-      {/* Main image grid - responsive layout based on item count */}
-      <div className="w-full flex-1 overflow-hidden rounded-xl">
-        {/* Single item layout */}
-        {desktopTopGridItems.length === 1 && (
-          <div className="h-full w-full">
-            {renderMedia(desktopTopGridItems[0], 0)}
+        {!isLoaded && <ImageSkeleton className="absolute inset-0 rounded-xl" />}
+        <img
+          ref={imgRef}
+          src={thumbnail || src}
+          srcSet={srcSet}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          alt={alt}
+          width={width}
+          height={height}
+          className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+          onLoad={handleLoad}
+          onError={handleError}
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+          fetchPriority={priority ? 'high' : 'auto'}
+        />
+        {overlayCount !== undefined && overlayCount > 0 && isLoaded && (
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-black/60 text-xl font-semibold text-white backdrop-blur-sm md:text-2xl"
+            aria-label={`${overlayCount} more images`}
+          >
+            +{overlayCount}
           </div>
         )}
+      </>
+    );
+  }
+);
+LazyImage.displayName = 'LazyImage';
 
-        {/* Two items layout */}
-        {desktopTopGridItems.length === 2 && (
-          <>
-            <div className="hidden h-full gap-2 md:flex">
-              {desktopTopGridItems.map((item, i) => (
-                <div key={i} className="h-full flex-1">
-                  {renderMedia(item, i)}
+const ImagesGrid = memo(
+  ({ mediaItems, imageAlt = 'Gallery image', className = '' }: Props) => {
+    const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+    const fancyboxInitialized = useRef(false);
+
+    useEffect(() => {
+      // Prevent multiple initializations
+      if (fancyboxInitialized.current) return;
+
+      // Small delay to ensure DOM is ready
+      const timer = requestAnimationFrame(() => {
+        Fancybox.bind("[data-fancybox='gallery']", {
+          Thumbs: true,
+          Toolbar: {
+            display: {
+              left: ['infobar'],
+              middle: [
+                'zoomIn',
+                'zoomOut',
+                'toggle1to1',
+                'rotateCCW',
+                'rotateCW',
+              ],
+              right: ['slideshow', 'thumbs', 'close'],
+            },
+          },
+          Images: {
+            zoom: true,
+          },
+          Hash: false, // Disable URL hash for better performance
+        });
+        fancyboxInitialized.current = true;
+      });
+
+      return () => {
+        cancelAnimationFrame(timer);
+        if (fancyboxInitialized.current) {
+          Fancybox.destroy();
+          fancyboxInitialized.current = false;
+        }
+      };
+    }, []);
+
+    const handleImageLoad = useCallback((index: number) => {
+      setLoadedImages((prev) => {
+        const next = new Set(prev);
+        next.add(index);
+        return next;
+      });
+    }, []);
+
+    // Organize media items for display
+    const videoItem = mediaItems.find((item) => item.type === 'video');
+    const imageItems = mediaItems.filter((item) => item.type === 'image');
+
+    const mainItem = videoItem || mediaItems[0];
+    const sideItems = videoItem
+      ? imageItems.slice(0, 2)
+      : mediaItems.slice(1, 3);
+    const thumbnailItems = videoItem
+      ? imageItems.slice(2)
+      : mediaItems.slice(3);
+
+    const remainingCount = Math.max(0, thumbnailItems.length - 4);
+    const visibleThumbnails = thumbnailItems.slice(0, 4);
+
+    const renderMediaItem = useCallback(
+      (
+        item: MediaItem,
+        index: number,
+        overlayCount?: number,
+        priority = false
+      ) => {
+        const isVideo = item.type === 'video';
+        const baseClasses = 'h-full w-full rounded-xl object-cover';
+
+        if (isVideo) {
+          return (
+            <div className="relative h-full w-full overflow-hidden rounded-xl bg-black">
+              {!loadedImages.has(index) && (
+                <ImageSkeleton className="absolute inset-0 rounded-xl" />
+              )}
+              <video
+                src={item.source}
+                className={`${baseClasses} ${loadedImages.has(index) ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+                controls
+                muted
+                autoPlay
+                loop
+                controlsList="nodownload"
+                playsInline
+                onLoadedData={() => handleImageLoad(index)}
+                poster={item.thumbnail}
+                preload="metadata"
+              >
+                <track kind="captions" />
+              </video>
+            </div>
+          );
+        }
+
+        return (
+          <a
+            href={item.source}
+            data-fancybox="gallery"
+            className="group relative block h-full w-full overflow-hidden rounded-xl"
+            aria-label={`${imageAlt} ${index + 1}`}
+          >
+            <LazyImage
+              src={item.source}
+              alt={`${imageAlt} ${index + 1}`}
+              className={`${baseClasses} transition-transform duration-300 will-change-transform group-hover:scale-105`}
+              priority={priority}
+              onLoad={() => handleImageLoad(index)}
+              overlayCount={overlayCount}
+              thumbnail={item.thumbnail}
+              width={item.width}
+              height={item.height}
+            />
+          </a>
+        );
+      },
+      [loadedImages, handleImageLoad, imageAlt]
+    );
+
+    return (
+      <div className={`${className}`} role="region" aria-label="Image gallery">
+        {/* Desktop Layout */}
+        <div className="hidden h-full lg:flex lg:flex-col lg:gap-3">
+          {/* Main Grid Area */}
+          <div className="flex flex-1 gap-3">
+            {/* Main Image/Video */}
+            <div className="flex-[2] overflow-hidden rounded-xl">
+              {renderMediaItem(mainItem, 0, undefined, true)}
+            </div>
+
+            {/* Side Column */}
+            <div className="flex flex-1 flex-col gap-3">
+              {sideItems.map((item, index) => (
+                <div
+                  key={`side-${index}`}
+                  className="flex-1 overflow-hidden rounded-xl"
+                >
+                  {renderMediaItem(item, index + 1, undefined, true)}
                 </div>
               ))}
             </div>
-            <div className="h-full w-full md:hidden">
-              {renderMedia(mobileTopGridItem[0], 0)}
-            </div>
-          </>
-        )}
+          </div>
 
-        {/* Three or more items layout - main + stacked grid */}
-        {desktopTopGridItems.length >= 3 && (
-          <>
-            <div className="hidden h-full flex-row gap-2 md:flex">
-              <div className="h-full flex-1">
-                {renderMedia(desktopTopGridItems[0], 0)}
-              </div>
-              <div className="flex h-full flex-1 flex-col gap-2">
-                {desktopTopGridItems[1] && (
-                  <div className="flex-1 overflow-hidden rounded-xl">
-                    {renderMedia(desktopTopGridItems[1], 1)}
-                  </div>
-                )}
-                {desktopTopGridItems[2] && (
-                  <div className="flex-1 overflow-hidden rounded-xl">
-                    {renderMedia(desktopTopGridItems[2], 2)}
-                  </div>
-                )}
-              </div>
+          {/* Thumbnail Row - Now properly aligned */}
+          {visibleThumbnails.length > 0 && (
+            <div className="flex h-20 gap-3 xl:h-24">
+              {visibleThumbnails.map((item, index) => (
+                <div
+                  key={`thumb-${index}`}
+                  className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl xl:h-24 xl:w-[24%]"
+                >
+                  {renderMediaItem(
+                    item,
+                    index + (videoItem ? 3 : 4),
+                    index === visibleThumbnails.length - 1
+                      ? remainingCount
+                      : undefined
+                  )}
+                </div>
+              ))}
             </div>
-            <div className="h-full w-full md:hidden">
-              {renderMedia(mobileTopGridItem[0], 0)}
+          )}
+        </div>
+
+        {/* Medium Layout */}
+        <div className="hidden h-full flex-col gap-3 md:flex lg:hidden">
+          <div className="h-64 w-full overflow-hidden rounded-xl sm:h-80">
+            {renderMediaItem(mainItem, 0, undefined, true)}
+          </div>
+
+          {sideItems.length > 0 && (
+            <div className="flex h-32 gap-3">
+              {sideItems.map((item, index) => (
+                <div
+                  key={`md-side-${index}`}
+                  className="flex-1 overflow-hidden rounded-xl"
+                >
+                  {renderMediaItem(item, index + 1)}
+                </div>
+              ))}
             </div>
-          </>
+          )}
+
+          {visibleThumbnails.length > 0 && (
+            <div className="flex h-20 gap-2">
+              {visibleThumbnails.slice(0, 3).map((item, index) => (
+                <div
+                  key={`md-thumb-${index}`}
+                  className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl"
+                >
+                  {renderMediaItem(
+                    item,
+                    index + (videoItem ? 3 : 4),
+                    index === 2 && remainingCount > 0
+                      ? remainingCount
+                      : undefined
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Layout */}
+        <div className="flex h-full flex-col gap-3 md:hidden">
+          <div className="aspect-[4/3] w-full overflow-hidden rounded-xl">
+            {renderMediaItem(mediaItems[0], 0, undefined, true)}
+          </div>
+
+          {mediaItems.length > 1 && (
+            <div className="flex h-20 gap-2">
+              {mediaItems.slice(1, 4).map((item, index) => (
+                <div
+                  key={`mobile-${index}`}
+                  className="h-full flex-1 overflow-hidden rounded-xl"
+                >
+                  {renderMediaItem(
+                    item,
+                    index + 1,
+                    index === 2 && mediaItems.length > 4
+                      ? mediaItems.length - 4
+                      : undefined
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Hidden lightbox items for SEO and accessibility */}
+        {remainingCount > 0 && (
+          <div className="sr-only" aria-hidden="true">
+            {thumbnailItems.slice(4).map((item, index) => (
+              <a
+                key={`hidden-${index}`}
+                href={item.source}
+                data-fancybox="gallery"
+                tabIndex={-1}
+              >
+                <img
+                  src={item.thumbnail || item.source}
+                  alt={`${imageAlt} ${index + 5}`}
+                  loading="lazy"
+                  width={item.width}
+                  height={item.height}
+                />
+              </a>
+            ))}
+          </div>
         )}
       </div>
+    );
+  }
+);
 
-      {/* Bottom thumbnail row - appears when >3 items */}
-      {mediaItems.length > 3 && <div className="mt-4">{renderBottomRow()}</div>}
-
-      {/* Hidden lightbox anchors for remaining images (8+) */}
-      <div className="hidden">
-        {mediaItems.slice(7).map((item, i) => (
-          <a key={i + 7} data-fancybox="gallery" href={item.source}>
-            <img src={item.source} alt={imageAlt} />
-          </a>
-        ))}
-      </div>
-    </div>
-  );
-};
+ImagesGrid.displayName = 'ImagesGrid';
 
 export default ImagesGrid;

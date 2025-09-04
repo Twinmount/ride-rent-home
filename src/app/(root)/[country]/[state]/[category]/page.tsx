@@ -51,7 +51,7 @@ export default async function Home(props: PageProps) {
       <Banner state={state} country={country} />
       {/* </Suspense> */}
 
-      <HeroSection state={state} category={category} />
+      <HeroSection country={country} state={state} category={category} />
 
       <VehicleCategoryAndFilter />
 
@@ -99,11 +99,6 @@ export default async function Home(props: PageProps) {
           country={country}
         />
       </Suspense>
-
-      {/* <Suspense fallback={<SectionLoading />}>
-        <Locations state={state} category={category} country={country} />
-        <TrustedReviewsSection />
-      </Suspense> */}
     </>
   );
 }

@@ -1,14 +1,13 @@
-import "./globals.scss";
-import { ReactQueryProvider } from "@/app/ReactQueryProvider";
-import type { Metadata } from "next";
-import { Fira_Sans, Poppins } from "next/font/google";
-
-import TrackingScripts from "./TrackingScripts";
-import BodyScripts from "./BodyScripts";
-import { getDefaultMetadata } from "./root-metadata";
-import { NetworkWrapper } from "./(root)/NetworkWrapper";
-import { GlobalContextProvider } from "@/context/GlobalContext";
-import NextTopLoader from "nextjs-toploader";
+import './globals.scss';
+import { ReactQueryProvider } from '@/app/ReactQueryProvider';
+import type { Metadata } from 'next';
+import { Fira_Sans, Poppins } from 'next/font/google';
+import TrackingScripts from './TrackingScripts';
+import BodyScripts from './BodyScripts';
+import { getDefaultMetadata } from './root-metadata';
+import { NetworkWrapper } from './(root)/NetworkWrapper';
+import { GlobalContextProvider } from '@/context/GlobalContext';
+import NextTopLoader from 'nextjs-toploader';
 import CookiePopup from '@/components/dialog/CookiePopup';
 
 export const metadata: Metadata = getDefaultMetadata();

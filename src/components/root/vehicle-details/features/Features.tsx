@@ -33,7 +33,7 @@ const VehicleFeatures = ({
         </h3>
 
         <p className="border-b pb-4 text-xs text-text-secondary lg:text-sm">
-          Lorem ipsum dolor sit amet consectetur. Ut felis lacinia neque
+          Learn more about the features available.
         </p>
 
         {/* Desktop: showing limited features */}
@@ -53,7 +53,7 @@ const VehicleFeatures = ({
       <MobileViewAllCard
         onClick={() => setIsSidebarOpen(true)}
         title="Features"
-        description="Lorem ipsum dolor sit amet consectetur."
+        description="Learn more about the features available."
         icon={<FeaturesStarSVG />}
       />
 

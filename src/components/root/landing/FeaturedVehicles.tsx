@@ -3,7 +3,7 @@ import { StateCategoryProps, VehicleHomeFilter } from '@/types';
 import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
 import { FetchVehicleCardsResponseV2 } from '@/types/vehicle-types';
 import { API } from '@/utils/API';
-import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
+import VehicleCard from '@/components/card/vehicle-card/main-card/VehicleCard';
 import ViewAllGridCard from '@/components/card/ViewAllGridCard';
 import { convertToLabel } from '@/helpers';
 
@@ -31,7 +31,7 @@ const FeaturedVehicles = async ({
   }
 
   const response = await API({
-    path: `/vehicle/home-page/list?${params.toString()}`,
+    path: `/vehicle/home-page/list/v2?${params.toString()}`,
     options: {
       method: 'GET',
       cache: 'no-cache',

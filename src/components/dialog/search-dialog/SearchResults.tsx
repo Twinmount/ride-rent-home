@@ -21,11 +21,14 @@ export function SearchResults({
   isLoading,
 }: SearchResultsProps) {
   // accessing state from the url params
-  const { state, country } = useParams<{ state: string, country: string }>();
+  const { state, country } = useParams<{ state: string; country: string }>();
 
   const vehicleSeries = results?.result.vehicleSeries || [];
   const vehicles = results?.result.vehicle || [];
   const company = results?.result.company || [];
+
+  // Get category from the first vehicle item
+  const category = vehicles[0]?.category;
 
   // Show placeholder when no search input
   if (!debouncedSearch || !search || search?.length < 2) {
@@ -60,10 +63,19 @@ export function SearchResults({
       <CompanySearchResult company={company} country={country} />
 
       {/* Vehicle Series Results */}
-      <VehiclesSeriesSearchResult vehicleSeries={vehicleSeries} state={state} country={country} />
+      <VehiclesSeriesSearchResult
+        vehicleSeries={vehicleSeries}
+        state={state}
+        country={country}
+        category={category}
+      />
 
       {/* Vehicles Results */}
-      <VehicleModelsSearchResult vehicles={vehicles} state={state} country={country} />
+      <VehicleModelsSearchResult
+        vehicles={vehicles}
+        state={state}
+        country={country}
+      />
     </ScrollArea>
   );
 }

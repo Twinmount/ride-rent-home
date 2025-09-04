@@ -13,7 +13,7 @@ import { Metadata } from 'next';
 import DynamicFAQ from '@/components/common/FAQ/DynamicFAQ';
 import { generateVehicleMetadata, getVehicleJsonLd } from './metadata';
 import CurrentPageBreadcrumb from '@/components/root/vehicle-details/CurrentPageBreadcrumb';
-import { restoreVehicleCodeFormat } from '.';
+import { restoreVehicleCodeFormat } from '@/helpers';
 import { ENV } from '@/config/env';
 import { Suspense } from 'react';
 import SectionLoading from '@/components/skelton/section-loading/SectionLoading';
@@ -108,6 +108,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     securityDeposit: vehicle.securityDeposit,
     vehicleTitle: vehicle.vehicleTitle,
     vehicleTitleH1: vehicle.vehicleTitle,
+    seriesDescription: vehicle.vehicleSeries?.vehicleSeriesInfoDescription,
   };
 
   // Generate JSON-LD
@@ -158,6 +159,8 @@ export default async function VehicleDetails(props: ParamsProps) {
   if (!!brandValue) {
     brandListingPageHref += `/brand/${brandValue}`;
   }
+  const vehicleTitleH1 = vehicle.vehicleTitleH1;
+  const vehicleSubTitle = vehicle.subTitle || vehicle.vehicleTitle;
 
   const SupplierDetailsPropsData = {
     companyName: vehicle?.company?.companyName,
@@ -171,9 +174,13 @@ export default async function VehicleDetails(props: ParamsProps) {
     category,
     brandValue,
     state,
+    vehicleTitleH1,
+    vehicleSubTitle,
+    model: vehicle.modelName,
     heading:
       vehicle?.vehicleTitleH1 || vehicle?.vehicleTitle || vehicle?.modelName,
   };
+
   return (
     <>
       {/* Inject JSON-LD into the <head> */}
@@ -205,31 +212,19 @@ export default async function VehicleDetails(props: ParamsProps) {
           country={country}
         >
           {/* Vehicle Images Grid */}
-          <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
-            <div className="w-full md:h-[650px] lg:w-[60%]">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-6">
+            <div className="w-full p-2 lg:w-[55%]">
               <ImagesGrid
                 mediaItems={mediaSourceList}
                 imageAlt={vehicle?.vehicleTitleH1}
+                className="h-full"
               />
             </div>
 
-            <div className="w-full py-2 lg:w-[40%]">
+            <div className="w-full p-2 lg:w-[45%]">
               <ProfileCard profileData={ProfileCardData} country={country} />
             </div>
           </div>
-
-          {/* vehicle information */}
-          {/* <VehicleInfo
-            vehicleId={vehicle?.vehicleId}
-            modelName={vehicle?.modelName}
-            stateLabel={vehicle?.state.label}
-            isCryptoAccepted={vehicle?.company.companySpecs.isCryptoAccepted}
-            rentalDetails={vehicle?.rentalDetails}
-            securityDepositEnabled={vehicle?.securityDeposit.enabled}
-            vehicleSpecification={vehicle?.vehicleSpecification}
-            additionalVehicleTypes={vehicle?.additionalVehicleTypes}
-            cities={vehicle?.cities}
-          /> */}
 
           {/* Specifications and Features */}
           <div className="flex-center mt-8 w-full flex-col gap-4 xl:mt-4 xl:flex-row xl:items-stretch">

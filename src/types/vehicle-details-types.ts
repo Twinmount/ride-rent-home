@@ -110,6 +110,11 @@ export type VehicleDetailsPageType = {
   vehicleTitleH1: string;
   location?: GPSLocation;
   mapImage?: string;
+  vehicleSeries?: {
+    vehicleSeries: string;
+    vehicleSeriesLabel: string;
+    vehicleSeriesInfoDescription: string;
+  };
 };
 
 export type VehicleDetailsPageResponse = {
@@ -150,4 +155,5 @@ export type ProfileCardDataType = {
   };
   vehicleTitle: string;
   vehicleTitleH1: string;
+  seriesDescription?: string;
 };

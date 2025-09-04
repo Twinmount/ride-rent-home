@@ -5,7 +5,7 @@ import { getAbsoluteUrl } from '@/helpers/metadata-helper';
 import { CompanyMetadataResponse } from '@/types';
 import { Metadata } from 'next';
 
-export async function fetchCompanyDetails(
+async function fetchCompanyDetails(
   companyId: string,
   country: string
 ): Promise<CompanyMetadataResponse | null> {

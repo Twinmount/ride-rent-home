@@ -30,7 +30,7 @@ export default function CurrentPageBreadcrumb({
   const formattedState = convertToLabel(state);
 
   return (
-    <MotionDiv className="my-4 ml-2 rounded-xl">
+    <MotionDiv className="m-1 mb-3 ml-2 rounded-xl text-sm">
       <Breadcrumb className="w-fit rounded-2xl">
         <BreadcrumbList>
           {/* vehicle state */}

@@ -1,4 +1,4 @@
-import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
+import VehicleCard from '@/components/card/vehicle-card/main-card/VehicleCard';
 
 import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
 import ViewAllLinkButton from '@/components/common/ViewAllLinkButton';
@@ -68,7 +68,7 @@ export default async function RelatedResults({
           </h2>
 
           <p className="heading-secondary hidden lg:block">
-            Lorem ipsum dolor sit amet consectetur.
+            Check out more options you might like.​
           </p>
         </div>
         <ViewAllLinkButton

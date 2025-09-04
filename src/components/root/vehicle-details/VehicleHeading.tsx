@@ -5,7 +5,10 @@ type Props = {
   brandListingPageHref: string;
   category: string;
   brandValue: string;
+  vehicleTitleH1: string;
+  vehicleSubTitle: string;
   heading: string;
+  model: string;
   state: string;
 };
 
@@ -13,10 +16,13 @@ export default function VehicleHeading({
   brandListingPageHref,
   category,
   brandValue,
+  vehicleTitleH1,
+  vehicleSubTitle,
+  model,
   heading,
   state,
 }: Props) {
-  const mainHeading = `Rent a ${brandValue} in ${state}`;
+  // const mainHeading = `Rent a ${brandValue} in ${state}`;
   return (
     <div className="mb-4 flex items-center gap-2 lg:gap-4">
       {/* brand logo */}
@@ -33,10 +39,10 @@ export default function VehicleHeading({
       {/* <h1 className="custom-heading model-name">{heading}</h1> */}
       <div className="h-fit space-y-1">
         <h1 className="font-poppins text-lg font-medium leading-[1] text-text-primary md:text-2xl lg:text-3xl">
-          {mainHeading}
+          {vehicleTitleH1}
         </h1>
         <p className="text-xs text-text-tertiary md:text-sm">
-          Explore top car rental options in {state} with flexible pricing.
+          {vehicleSubTitle}
         </p>
       </div>
     </div>

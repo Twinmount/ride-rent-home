@@ -19,7 +19,6 @@ import { COUNTRIES } from '@/data';
 import LocationDialogStateCard from '@/components/card/LocationDialogStateCard';
 import CountryDropdown from '@/components/dropdown/CountryDropdown';
 import LocationDialogBanner from './LocationDialogBanner';
-import { MapPin } from 'lucide-react';
 import Link from 'next/link';
 
 export function LocationDialog() {
@@ -180,6 +179,7 @@ export function LocationDialog() {
               searchResult={searchResult}
               isLoading={isLoading}
               handleStateSelect={handleStateSelect}
+              country={country}
             />
 
             <div className="flex-between border-b pb-3">
@@ -187,10 +187,10 @@ export function LocationDialog() {
                 selectedCountry={selectedCountry}
                 onChange={handleCountrySelect}
               />
-              <button className="flex items-center gap-2 rounded border bg-white px-2 py-2 text-accent-light">
+              {/* <button className="flex items-center gap-2 rounded border bg-white px-2 py-2 text-accent-light">
                 <MapPin className="h-4 w-4" />
                 Use Your Current Location
-              </button>
+              </button> */}
             </div>
 
             {isLoading ? (

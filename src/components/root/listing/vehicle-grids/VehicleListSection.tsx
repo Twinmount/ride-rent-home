@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 import VehicleListingGridWrapper from '@/components/common/VehicleListingGridWrapper';
 import VisibilityObserver from '@/components/common/VisibilityObserver';
 import { convertToLabel } from '@/helpers';
-import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
+import VehicleCard from '@/components/card/vehicle-card/main-card/VehicleCard';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type VehicleListSectionProps = {
   vehicles: Record<string, any[]>;
@@ -36,6 +37,9 @@ const VehicleListSection: React.FC<VehicleListSectionProps> = ({
   country,
   setVisibleVehicleIds,
 }) => {
+  const isMobile = useIsMobile(1024);
+  const openInNewTab = !isMobile;
+
   return (
     <>
       {Object.entries(vehicles).map(([location, vehiclesInLocation]) => {
@@ -88,6 +92,7 @@ const VehicleListSection: React.FC<VehicleListSectionProps> = ({
                       index={animationIndex}
                       country={country}
                       layoutType="grid"
+                      openInNewTab={openInNewTab}
                     />
                   </VisibilityObserver>
                 );

@@ -1,4 +1,4 @@
-import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
+import VehicleCard from '@/components/card/vehicle-card/main-card/VehicleCard';
 import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
 import ViewAllLinkButton from '@/components/common/ViewAllLinkButton';
 import MotionSection from '@/components/general/framer-motion/MotionSection';
@@ -43,13 +43,15 @@ export default async function NewlyArrived({
   return (
     <MotionSection className="section-container mx-auto">
       {/* Header section with View All button - respects container padding */}
-      <div className="ml-3 flex items-center justify-between lg:mb-4 lg:ml-2 lg:mt-8">
-        <div className={cn('mb-4 flex w-full flex-col gap-y-3 text-left')}>
+      <div className="mx-auto flex items-center justify-between align-middle lg:my-6 lg:max-w-[92rem] lg:pr-6 lg:pt-3">
+        <div
+          className={cn('mb-4 flex w-full flex-col gap-y-3 text-left lg:pl-6')}
+        >
           <h2 className="heading-primary text-text-primary">
             Newly arrived {formattedCategory}
           </h2>
           <p className="heading-secondary hidden lg:block">
-            Lorem ipsum dolor sit amet consectetur.
+            Check out the newly arrived cars in {state}
           </p>
         </div>
         <ViewAllLinkButton
