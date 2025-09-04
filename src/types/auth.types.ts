@@ -61,6 +61,14 @@ export interface ResendOtpData {
 }
 
 /**
+ * Profile update request data interface
+ */
+export interface ProfileUpdateData {
+  name: string;
+  avatar?: string | File;
+}
+
+/**
  * User entity interface
  */
 export interface User {
@@ -142,6 +150,7 @@ export interface AuthEndpoints {
   SET_PASSWORD: string;
   RESEND_OTP: string;
   PROFILE: string;
+  UPDATE_PROFILE: string;
   FORGOT_PASSWORD: string;
   RESET_PASSWORD: string;
   REFRESH_TOKEN: string;
@@ -189,6 +198,7 @@ export interface AuthAPIInterface {
   setPassword: (passwordData: SetPasswordData) => Promise<AuthResponse>;
   resendOtp: (resendData: ResendOtpData) => Promise<AuthResponse>;
   getProfile: () => Promise<AuthResponse>;
+  updateProfile: (userId: string, profileData: ProfileUpdateData) => Promise<AuthResponse>;
   logout: () => Promise<AuthResponse>;
 }
 
@@ -212,6 +222,7 @@ export interface UseAuthReturn {
   verifyOTP: (userId: string, otpId: string, otp: string) => Promise<AuthResponse>;
   setPassword: (passwordData: SetPasswordData) => Promise<AuthResponse>;
   resendOTP: (phoneNumber: string, countryCode: string) => Promise<AuthResponse>;
+  updateProfile: (userId: string, profileData: ProfileUpdateData) => Promise<AuthResponse>;
   clearError: () => void;
   onHandleLoginmodal: (config: { isOpen: boolean }) => void;
   handleProfileNavigation: () => void;
@@ -222,6 +233,7 @@ export interface UseAuthReturn {
   verifyOtpMutation: any;
   setPasswordMutation: any;
   resendOtpMutation: any;
+  updateUserNameAndAvatar: any;
   logoutMutation: any;
 
   // Utilities

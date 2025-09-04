@@ -22,6 +22,7 @@ import type {
   OtpVerificationData,
   SetPasswordData,
   ResendOtpData,
+  ProfileUpdateData,
   AuthRequestOptions,
 } from '@/types/auth.types';
 
@@ -48,6 +49,7 @@ const AUTH_ENDPOINTS: AuthEndpoints = {
   SET_PASSWORD: `${API_BASE_URL}/v1/riderent/auth/set-password`,
   RESEND_OTP: `${API_BASE_URL}/v1/riderent/auth/resend-otp`,
   PROFILE: `${API_BASE_URL}/v1/riderent/auth/profile`,
+  UPDATE_PROFILE: `${API_BASE_URL}/v1/riderent/auth/user/profile`,
   FORGOT_PASSWORD: `${API_BASE_URL}/v1/riderent/auth/forgot-password`,
   RESET_PASSWORD: `${API_BASE_URL}/v1/riderent/auth/reset-password`,
   REFRESH_TOKEN: `${API_BASE_URL}/v1/riderent/auth/refresh-token`,
@@ -110,9 +112,12 @@ const createAuthRequest = async (
 ): Promise<AuthResponse> => {
   const token = authStorage.getToken();
 
-  const defaultHeaders: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
+  const defaultHeaders: Record<string, string> = {};
+
+  // Only set Content-Type for non-FormData requests
+  if (!(options.body instanceof FormData)) {
+    defaultHeaders['Content-Type'] = 'application/json';
+  }
 
   if (token) {
     defaultHeaders.Authorization = `Bearer ${token}`;
@@ -178,6 +183,22 @@ const authAPI: AuthAPIInterface = {
 
   getProfile: async () => {
     return createAuthRequest(AUTH_ENDPOINTS.PROFILE);
+  },
+
+  updateProfile: async (userId: string, profileData: ProfileUpdateData) => {
+    // Create FormData for file upload
+    const formData = new FormData();
+    formData.append('name', profileData.name);
+
+    if (profileData.avatar && profileData.avatar instanceof File) {
+      formData.append('avatar', profileData.avatar);
+    }
+    console.log('formData: ', formData);
+
+    return createAuthRequest(`${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`, {
+      method: 'PUT',
+      body: formData, // FormData will be handled properly by createAuthRequest
+    });
   },
 
   logout: async () => {
@@ -330,6 +351,18 @@ export const useAuth = () => {
     },
     onError: (error: Error) => {
       setError({ message: error.message });
+    },
+  });
+
+  const updateUserNameAndAvatar = useMutation({
+    mutationFn: ({ userId, profileData }: { userId: string; profileData: ProfileUpdateData }) =>
+      authAPI.updateProfile(userId, profileData),
+    onSuccess: (data) => {
+      setError(null);
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+      console.error('Profile update failed:', error);
     },
   });
 
@@ -541,6 +574,22 @@ export const useAuth = () => {
     }
   }, [resendOtpMutation]);
 
+  // Update Profile function
+  const updateProfile = (async (userId: string, profileData: ProfileUpdateData): Promise<AuthResponse> => {
+    try {
+      return updateUserNameAndAvatar.mutateAsync({
+        userId,
+        profileData,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message: error instanceof Error ? error.message : 'Failed to update profile',
+      };
+      setError(authError);
+      throw authError;
+    }
+  });
+
   // Clear error function
   const clearError = useCallback(() => {
     setError(null);
@@ -554,7 +603,7 @@ export const useAuth = () => {
     authStorage,
 
     // Loading states from mutations
-    isLoading: state.isLoading || signupMutation.isPending || loginMutation.isPending || verifyOtpMutation.isPending || setPasswordMutation.isPending || resendOtpMutation.isPending || logoutMutation.isPending,
+    isLoading: state.isLoading || signupMutation.isPending || loginMutation.isPending || verifyOtpMutation.isPending || setPasswordMutation.isPending || resendOtpMutation.isPending || updateUserNameAndAvatar.isPending || logoutMutation.isPending,
 
     // Actions
     login,
@@ -563,6 +612,7 @@ export const useAuth = () => {
     verifyOTP,
     setPassword,
     resendOTP,
+    updateProfile,
     clearError,
     onHandleLoginmodal,
     handleProfileNavigation,
@@ -573,6 +623,7 @@ export const useAuth = () => {
     verifyOtpMutation,
     setPasswordMutation,
     resendOtpMutation,
+    updateUserNameAndAvatar,
     logoutMutation,
 
     // Utilities

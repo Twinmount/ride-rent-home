@@ -78,33 +78,75 @@ export const SignupSection = ({
     verifyOTP,
     setPassword: setUserPassword,
     resendOTP,
+    updateProfile,
     signupMutation,
     verifyOtpMutation,
     setPasswordMutation,
     resendOtpMutation,
+    updateUserNameAndAvatar,
     error,
     clearError,
+    auth,
   } = useAuthContext();
 
   const [signupData, setSignupData] = useState<any>(null);
   const [tempToken, setTempToken] = useState<string>('');
 
   const [profileName, setProfileName] = useState('');
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  console.log('profileName: ', profileName);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
+    null
+  );
 
-  const handleProfileSetupComplete = () => {
-    console.log('[v0] Profile setup completed successfully');
-    if (onLoginSuccess) {
-      onLoginSuccess();
+  const handleClose = () => {
+    setSignupStep(1);
+    setOtp(['', '', '', '']);
+    setOtpVerified(false);
+    setMobileNumber('');
+    setPassword('');
+    setConfirmPassword('');
+    setProfileName('');
+    setProfileImage(null);
+    setProfileImagePreview(null);
+    onClose();
+  };
+
+  const handleProfileSetupComplete = async () => {
+    if (profileName && auth?.user?.id) {
+      try {
+        clearError();
+        const res = await updateProfile(auth.user.id, {
+          name: profileName,
+          avatar: profileImage || undefined,
+        });
+        if (res.success) {
+          handleClose();
+        }
+      } catch (error) {
+        console.error('Failed to update profile:', error);
+      }
+    } else {
+      console.log('Profile update skipped - missing data:', {
+        profileName,
+        userId: auth?.user?.id,
+        authUserId: auth.user?.id,
+        signupUserId: signupData?.userId,
+      });
     }
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Store the actual file for API upload
+      setProfileImage(file);
+
+      // Create preview URL for display
       const reader = new FileReader();
       reader.onload = (e) => {
-        setProfileImage(e.target?.result as string);
+        const result = e.target?.result as string;
+        setProfileImagePreview(result);
       };
       reader.readAsDataURL(file);
     }
@@ -188,10 +230,6 @@ export const SignupSection = ({
   };
 
   const handleSignupComplete = async () => {
-    console.log('ererere');
-    console.log('password: ', password);
-    console.log('confirmPassword: ', confirmPassword);
-    console.log('tempToken: ', tempToken);
     if (password && confirmPassword && tempToken) {
       try {
         clearError();
@@ -202,28 +240,15 @@ export const SignupSection = ({
         });
 
         if (response.success) {
-          console.log('[SignupSection] Signup completed successfully');
           setSignupStep(4);
           if (onLoginSuccess) {
             onLoginSuccess();
           }
-
-          // onClose();
         }
       } catch (error) {
         console.error('Password setup failed:', error);
       }
     }
-  };
-
-  const handleClose = () => {
-    setSignupStep(1);
-    setOtp(['', '', '', '']);
-    setOtpVerified(false);
-    setMobileNumber('');
-    setPassword('');
-    setConfirmPassword('');
-    onClose();
   };
 
   return (
@@ -488,9 +513,9 @@ export const SignupSection = ({
                 htmlFor="profileImageUpload"
                 className="flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 transition-colors hover:border-orange-400 hover:bg-orange-50"
               >
-                {profileImage ? (
+                {profileImagePreview ? (
                   <img
-                    src={profileImage || '/placeholder.svg'}
+                    src={profileImagePreview}
                     alt="Profile"
                     className="h-full w-full rounded-2xl object-cover"
                   />
@@ -527,8 +552,11 @@ export const SignupSection = ({
           <Button
             className="h-12 w-full cursor-pointer rounded-xl bg-gray-900 text-base font-medium text-white hover:bg-gray-800"
             onClick={handleProfileSetupComplete}
+            disabled={updateUserNameAndAvatar.isPending}
           >
-            Start Booking
+            {updateUserNameAndAvatar.isPending
+              ? 'Updating Profile...'
+              : 'Start Booking'}
           </Button>
         </div>
       )}
