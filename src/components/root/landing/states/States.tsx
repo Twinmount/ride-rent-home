@@ -77,7 +77,10 @@ export default async function States({
           </div>
         </div>
 
-        <ViewAllButton link={`/${country}/${state}/listing/${category}`} />
+        <ViewAllButton
+          type="state"
+          link={`/${country}/${state}/listing/${category}`}
+        />
       </div>
     </MotionSection>
   );
