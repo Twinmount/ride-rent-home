@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import VehicleListingGridWrapper from '@/components/common/VehicleListingGridWrapper';
 import VisibilityObserver from '@/components/common/VisibilityObserver';
 import { convertToLabel } from '@/helpers';
-import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
+import VehicleCard from '@/components/card/vehicle-card/main-card/VehicleCard';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 type VehicleListSectionProps = {

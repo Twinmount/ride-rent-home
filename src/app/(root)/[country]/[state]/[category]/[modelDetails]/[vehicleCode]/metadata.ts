@@ -8,14 +8,14 @@ import {
   generateCompanyProfilePageLink,
   generateModelDetailsUrl,
   generateVehicleDetailsUrl,
+  restoreVehicleCodeFormat,
   singularizeValue,
 } from '@/helpers';
-import { restoreVehicleCodeFormat } from '.';
 import { ENV } from '@/config/env';
 import { getAbsoluteUrl } from '@/helpers/metadata-helper';
 import { notFound } from 'next/navigation';
 
-export async function fetchVehicleMetaData(
+async function fetchVehicleMetaData(
   vehicleCode: string,
   country: string
 ): Promise<VehicleMetaDataResponse | null> {

@@ -1,38 +1,28 @@
-import "./VehicleCard.scss";
-import { VehicleCardType } from "@/types/vehicle-types";
-import {
-  convertToLabel,
-  generateVehicleDetailsUrl,
-  generateWhatsappUrl,
-  getFormattedPhoneNumber,
-} from "@/helpers";
-import ContactIcons from "@/components/common/contact-icons/ContactIcons";
-import SpecsGrid from "../SpecsGrid";
-import ZeroDeposit from "../ZeroDeposit";
-
-import CompanyLogo from "../CompanyLogo";
-import VehicleThumbnail from "../VehicleThumbnail";
-import HourlyRentalBadge from "./hourly-rental-badge/HourlyRentalBadge";
-import RentalDetails from "../RentalDetails";
-
-import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
-// import EnquireBestPrice from "../EnquireBestPrice";
-import { MapPin } from "lucide-react";
-import RentNowButton from "@/components/common/RentNowButton/RentNowButton";
-import LinkWrapper from "../LinkWrapper";
+import { NewVehicleCardType } from '@/types/vehicle-types';
+import { generateVehicleDetailsUrl } from '@/helpers';
+import VehicleThumbnail from '../VehicleThumbnail';
+import RentalDetails from '../RentalDetails';
+import LinkWrapper from '../LinkWrapper';
+import MotionStaggeredArticle from '@/components/general/framer-motion/MotionStaggeredArticle';
+import RentNowDialogTrigger from '../RentNowDialogTrigger';
+import { VehicleBadgesGroup } from '../vehicle-badge/VehicleBadgesGroup';
+import CardTitle from '../CardTitle';
 
 type VehicleCardProps = {
-  vehicle: VehicleCardType;
+  vehicle: NewVehicleCardType;
   index: number;
   country: string;
+  layoutType: 'grid' | 'carousel';
+  openInNewTab?: boolean;
 };
 
-const VehicleCard = ({ vehicle, index, country = "ae" }: VehicleCardProps) => {
-  const formattedPhoneNumber = getFormattedPhoneNumber(
-    vehicle.countryCode,
-    vehicle.phoneNumber,
-  );
-
+const VehicleCard = ({
+  vehicle,
+  index,
+  country = 'ae',
+  layoutType,
+  openInNewTab = false,
+}: VehicleCardProps) => {
   // dynamic link to navigate to vehicle details page
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
     vehicleTitle: vehicle.vehicleTitle,
@@ -42,86 +32,70 @@ const VehicleCard = ({ vehicle, index, country = "ae" }: VehicleCardProps) => {
     country: country,
   });
 
-  // whatsapp url with dynamic message attached
-  const whatsappUrl = generateWhatsappUrl({
-    whatsappPhone: vehicle.whatsappPhone,
-    whatsappCountryCode: vehicle.whatsappCountryCode,
-    model: vehicle.model,
-    vehicleDetailsPageLink,
-  });
+  // card styles based on layout type
+  const carouselCardStyle = `w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem] `;
+  const gridCardStyle = `w-full max-w-[26rem] min-w-[12rem]`;
+
+  // Conditionally set the styling based on layoutType
+  const classes = layoutType === 'carousel' ? carouselCardStyle : gridCardStyle;
 
   return (
-    <MotionStaggeredDiv index={index} className="main-card-container">
+    <MotionStaggeredArticle
+      index={index}
+      className={`flex w-full max-w-full flex-col gap-3 rounded border border-border-default bg-white p-2 ${classes}`}
+    >
       {/* card top */}
-      <LinkWrapper href={vehicleDetailsPageLink} className="card-top">
-        <div className="image-container">
-          {/* Thumbnail Image */}
+      <LinkWrapper
+        href={vehicleDetailsPageLink}
+        className="h-full w-full space-y-3"
+        newTab={openInNewTab}
+      >
+        <div className="relative">
+          {/* thumbnail with hover image cycling */}
           <VehicleThumbnail
             src={vehicle.thumbnail}
-            alt={vehicle.vehicleTitle || "Vehicle Image"}
-            width={350}
-            height={250}
-            className="vehicle-image"
+            alt={vehicle.vehicleTitle || 'Vehicle Image'}
+            width={250}
+            height={200}
+            layoutType={layoutType}
+            vehiclePhotos={vehicle.vehiclePhotos} // Pass the additional photos
           />
 
-          {/* Company Logo */}
-          <CompanyLogo
-            src={vehicle.companyLogo}
-            width={40}
-            height={40}
-            className="profile-icon"
-          />
-
-          <span className="brand notranslate">{vehicle.brandName}</span>
-
-          {/* zero deposit */}
-          <ZeroDeposit enabled={vehicle?.securityDeposit.enabled} />
-
-          {/* Hourly Rentals Slanted Badge */}
-          <HourlyRentalBadge
-            isHourlyRental={vehicle?.rentalDetails?.hour?.enabled}
+          {/* badge group */}
+          <VehicleBadgesGroup
+            hasZeroDeposit={!vehicle.securityDeposit.enabled}
+            hasFancyNumber={vehicle.isFancyNumber} // Use actual value instead of hardcoded true
+            hasHourlyRental={!!vehicle?.rentalDetails?.hour?.enabled}
           />
         </div>
+
+        <CardTitle
+          vehicleTitle={vehicle.vehicleTitle}
+          rating={vehicle.rating}
+          layoutType={layoutType}
+        />
       </LinkWrapper>
 
       {/* card bottom */}
-      <div className="card-bottom">
-        <LinkWrapper href={vehicleDetailsPageLink}>
-          {/* title */}
-          <div className="model-name">{vehicle.model}</div>
-
-          {/* vehicle specs grid */}
-          <SpecsGrid vehicle={vehicle} />
-
-          {/* location and rental details */}
-          <div className="location-box">
-            <div className="location">
-              <MapPin strokeWidth={1.5} size={18} />{" "}
-              <span className="state">
-                {convertToLabel(vehicle.state) || "N/A"}
-              </span>
-            </div>
-
-            {/* rental details */}
-            <RentalDetails rentalDetails={vehicle.rentalDetails} />
-          </div>
-        </LinkWrapper>
-        <div className="bottom-box">
-          {/* client component which handles the dialog logic via context */}
-          {/* <EnquireBestPrice vehicle={vehicle} /> */}
-          <LinkWrapper href={vehicleDetailsPageLink}>
-            <RentNowButton companyLogo={vehicle.companyLogo} />
-          </LinkWrapper>
-
-          <ContactIcons
-            vehicleId={vehicle.vehicleId}
-            whatsappUrl={whatsappUrl}
-            email={vehicle.email}
-            phoneNumber={formattedPhoneNumber}
+      <div className="flex-between">
+        <LinkWrapper
+          href={vehicleDetailsPageLink}
+          className="flex h-full w-full items-center"
+          newTab={openInNewTab}
+        >
+          <RentalDetails
+            rentalDetails={vehicle.rentalDetails}
+            layoutType={layoutType}
           />
-        </div>
+        </LinkWrapper>
+
+        <RentNowDialogTrigger
+          country={country}
+          vehicle={vehicle}
+          layoutType={layoutType}
+        />
       </div>
-    </MotionStaggeredDiv>
+    </MotionStaggeredArticle>
   );
 };
 

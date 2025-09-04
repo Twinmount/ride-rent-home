@@ -222,70 +222,6 @@ const formatSeatingCapacity = (seatingCapacity: string): string => {
   return seatingCapacity; // Fallback, just in case
 };
 
-// Helper function to generate dynamic FAQs for the vehicle details page
-export const generateDynamicFAQ = (vehicle: VehicleDetailsPageType) => {
-  const seatingCapacitySpec = vehicle.specs['Seating Capacity'];
-  const availableCities = vehicle.cities.join(', ');
-
-  // Prepare the FAQ array
-  const faqArray = [
-    {
-      question: `How can I connect with this vendor to rent this ${vehicle.brand.label} in ${vehicle.state.label}?`,
-      answer: `You can easily book this ${vehicle.brand.label} by unlocking the contact details and directly connecting with the seller. Our listed agents typically respond within 15 mins to all booking inquiries, ensuring a smooth and efficient process.
-
-      Ride.Rent support is available via phone at +971-502972335, via email at hello@ride.rent, or through live chat on our WhatsApp Support Line at +971-502972335 to assist you with the booking.`,
-    },
-    {
-      question: `In which areas of ${vehicle.state.label} is this vehicle rental available?`,
-      answer: `This vehicle is available for rent in various areas of ${vehicle.state.label}, including ${availableCities}.`,
-    },
-    {
-      question: `How can I contact Ride.Rent customer support in ${vehicle.state.label}?`,
-      answer: `You can reach Ride.Rent customer support via phone at +971-502972335, via email at hello@ride.rent, or through live chat on our WhatsApp Support Line at +971-502972335. Our team is available 24/7 to assist you with bookings, inquiries, and any issues.`,
-    },
-    {
-      question: `Is this vehicle available for lease in ${vehicle.state.label}?`,
-      answer: vehicle.isAvailableForLease
-        ? `Yes, this vehicle is available in ${vehicle.state.label} at a very affordable cost. Please feel free to connect with the vendor to secure the best deal.`
-        : `No, unfortunately, this vehicle is currently unavailable for any lease plans. However, you can explore the available options by unlocking the contact details and connecting directly with the vendor.`,
-    },
-  ];
-
-  // Add seating capacity question if it's available
-  if (seatingCapacitySpec && seatingCapacitySpec.value) {
-    const seatingCapacity = formatSeatingCapacity(seatingCapacitySpec.value);
-    faqArray.splice(1, 0, {
-      // Insert this as the second question
-      question: 'How many people can travel in this vehicle?',
-      answer: `This vehicle is a ${seatingCapacity} passenger carrier.`,
-    });
-  }
-
-  return faqArray;
-};
-
-// helper function to dynamically generate riderent features based on state
-export const createFeatureCards = (state: string) => [
-  {
-    key: 1,
-    icon: IoIosSpeedometer,
-    title: 'Easy & Fast Booking',
-    description: `From premium models to economy vehicles to rent in ${state}, find the perfect car at competitive rates. Secure your rental with just a few clicks and make the most of your ${state} trip. RIDE.RENT is the smart choice for 'Rent a Car in ${state}' services.`,
-  },
-  {
-    key: 2,
-    icon: FaCrown,
-    title: 'Many Pickup Locations',
-    description: `From premium models to economy vehicles to rent in ${state}, find the perfect car at competitive rates. Secure your rental with just a few clicks and make the most of your ${state} trip. RIDE.RENT is the smart choice for 'Rent a Car in ${state}' services.`,
-  },
-  {
-    key: 3,
-    icon: IoShieldCheckmark,
-    title: 'Ensured Delivery Promise',
-    description: `Our commitment to punctuality means your chosen vehicle from our extensive 'Rent a Car in ${state}' collection is delivered when and where you need it. Seamless booking, transparent rates, and steadfast service—that's the RIDE.RENT promise.`,
-  },
-];
-
 /**
  * Rearranges an array of states in the order of:
  * Dubai, Abu Dhabi, Sharjah, Ras Al Khaimah, Ajman, Al Ain, Fujairah, Umm Al Quwain.
@@ -645,3 +581,19 @@ export const shouldShowDesktopFeaturesButton = (
   // return true if there is more than 4 categories as well as  at least one category has more than 15 items
   return isMoreThanFourCategories || isLargeFeatureList;
 };
+
+/**
+ * Restores the vehicle code format by capitalizing the alphabetic part and
+ * combining it back with the numeric part.
+ */
+export function restoreVehicleCodeFormat(lowerCaseCode: string): string {
+  // Split the code into the alphabetic part and numeric part based on the hyphen
+  const [alphabets, numbers] = lowerCaseCode.split('-');
+
+  if (!alphabets || !numbers) {
+    return lowerCaseCode;
+  }
+
+  // Capitalize the alphabets and combine them back with the numbers
+  return `${alphabets.toUpperCase()}-${numbers}`;
+}
