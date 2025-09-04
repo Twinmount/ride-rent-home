@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { NewVehicleCardType } from '@/types/vehicle-types';
 import { generateVehicleDetailsUrl } from '@/helpers';
+import { useAuthContext } from '@/auth';
 
 type RentNowDialogTriggerProps = {
   vehicle: NewVehicleCardType;
@@ -16,8 +17,14 @@ export default function RentNowDialogTrigger({
   country = 'ae',
 }: RentNowDialogTriggerProps) {
   const router = useRouter();
+  const { auth, onHandleLoginmodal } = useAuthContext();
 
   const handleClick = () => {
+    if (!auth.isLoggedIn) {
+      onHandleLoginmodal({ isOpen: true });
+      return;
+    }
+
     // Generate the vehicle details page URL
     const vehicleDetailsPageLink = generateVehicleDetailsUrl({
       vehicleTitle: vehicle.vehicleTitle,
