@@ -1,7 +1,7 @@
 "use client";
 
 import "./ProfileCard.scss";
-
+import { memo } from 'react';
 import MotionDiv from '@/components/general/framer-motion/MotionDiv';
 import { ProfileCardDataType } from '@/types/vehicle-details-types';
 import useProfileData from '@/hooks/useProfileCardData';
@@ -17,17 +17,14 @@ type ProfileCardProps = {
   country: string;
 };
 
-const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
+const ProfileCard = memo(({ profileData, country }: ProfileCardProps) => {
   const { isCompanyValid, rentalDetails, securityDeposit } = useProfileData(
     profileData,
     country
   );
 
-  const {
-    company,
-    seriesDescription,
-    vehicleData: { state, model },
-  } = profileData;
+  const { company, seriesDescription, vehicleData } = profileData;
+  const { state, model } = vehicleData;
 
   return (
     <MotionDiv className="profile-card h-auto">
@@ -42,29 +39,14 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
         <p className="disabled-text">This vehicle is currently unavailable.</p>
       )}
 
-      {/* top container */}
       <VehicleStats state={state} />
-
-      {/* vehicle specifications */}
       <VehicleDescription description={seriesDescription} />
-
-      {/* rental details tab */}
       <RentalDetailsTab
         rentalDetails={rentalDetails}
         securityDeposit={securityDeposit}
       />
-
       <CompanySpecifications specs={company.companySpecs} />
 
-      {/* <div className="bottom">
-        <RentNowSection
-          vehicleId={vehicleId}
-          whatsappUrl={whatsappUrl}
-          email={company.contactDetails?.email}
-          formattedPhoneNumber={formattedPhoneNumber}
-          isPing={true}
-        />
-      </div> */}
       <div className="py-2">
         <RentNowbuttonWide
           contactDetails={company.contactDetails}
@@ -74,6 +56,8 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
       </div>
     </MotionDiv>
   );
-};
+});
 
+ProfileCard.displayName = 'ProfileCard';
 export default ProfileCard;
+

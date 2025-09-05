@@ -1,23 +1,35 @@
-import { ENV } from "@/config/env";
+import Image from 'next/image';
+import { ENV } from '@/config/env';
 
 type BrandImageProps = {
   category: string;
   brandValue: string;
   className: string;
+  priority?: boolean;
+  sizes?: string;
 };
 
-export default function BrandImage({
+const BrandImage = ({
   category,
   brandValue,
   className,
-}: BrandImageProps) {
+  priority = false,
+  sizes = '72px',
+}: BrandImageProps) => {
   const baseAssetsUrl = ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL;
+  const imageSrc = `${baseAssetsUrl}/icons/brands/${category}/${brandValue}.png`;
 
   return (
-    <img
-      src={`${baseAssetsUrl}/icons/brands/${category}/${brandValue}.png`}
-      alt={brandValue}
+    <Image
+      src={imageSrc}
+      alt={`${brandValue} brand logo`}
+      fill
       className={className}
+      priority={priority}
+      sizes={sizes}
+      quality={90}
     />
   );
-}
+};
+
+export default BrandImage;
