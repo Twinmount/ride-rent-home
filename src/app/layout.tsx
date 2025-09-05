@@ -1,4 +1,6 @@
 import './globals.scss';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 import { ReactQueryProvider } from '@/app/ReactQueryProvider';
 import type { Metadata } from 'next';
 import { Fira_Sans, Poppins } from 'next/font/google';
