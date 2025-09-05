@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useImmer } from 'use-immer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,47 +37,95 @@ import {
 } from 'lucide-react';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useAuthContext } from '@/auth';
+import { ProfileBreadcrumb } from '@/components/user-profile';
 
 interface UserProfileProps {
   className?: string;
 }
 
 export const UserProfile2 = ({ className }: UserProfileProps) => {
-  const [profileMobile, setProfileMobile] = useState('+971 9019122332');
-  const [profileEmail, setProfileEmail] = useState('dubai.badass@email.com');
   const [languages, setLanguages] = useState('English, Arabic');
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
 
+  // Profile data state
+  const [profileData, setProfileData] = useImmer<{
+    name: string;
+    email: string | null;
+    avatar: string | null;
+    phoneNumber: string | null;
+    countryCode: string | null;
+    isPhoneVerified: boolean;
+    isEmailVerified: boolean;
+    joinedAt?: string;
+  } | null>(null);
+
+  // Editing states
   const [isEditingMobile, setIsEditingMobile] = useState(false);
-  const [tempCountryCode, setTempCountryCode] = useState('+971');
-  const [tempMobileNumber, setTempMobileNumber] = useState('9019122332');
+  const [tempCountryCode, setTempCountryCode] = useState('');
+  const [tempMobileNumber, setTempMobileNumber] = useState('');
 
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [tempEmail, setTempEmail] = useState('');
 
-  const { authStorage } = useAuthContext();
+  const {
+    authStorage,
+    formatMemberSince,
+    useGetUserProfile,
+    updateUserNameAndAvatar,
+  } = useAuthContext();
+
+  const userId = authStorage.getUser()?.id.toString();
+
+  // Get user profile data
+  const userProfileQuery = useGetUserProfile(userId!, !!userId);
 
   const { userCarActionCountsQuery } = useUserProfile({
-    userId: authStorage.getUser()?.id.toString()!,
+    userId: userId!,
   });
 
   useEffect(() => {
     if (!userCarActionCountsQuery.isLoading) {
       const data = userCarActionCountsQuery.data;
-      console.log('data: ', data);
+      console.log('userCarActionCountsQuery data: ', data);
     }
   }, [userCarActionCountsQuery.data]);
 
+  useEffect(() => {
+    if (userProfileQuery.data?.success) {
+      const fetchedProfileData = userProfileQuery.data.data;
+      console.log('User profile data: ', fetchedProfileData);
+
+      // Update profile data state using useImmer
+      setProfileData({
+        name: fetchedProfileData.name || 'User',
+        email: fetchedProfileData.email,
+        avatar: fetchedProfileData.avatar,
+        phoneNumber: fetchedProfileData.phoneNumber || null,
+        countryCode: fetchedProfileData.countryCode || null,
+        isPhoneVerified: fetchedProfileData.isPhoneVerified || false,
+        isEmailVerified: fetchedProfileData.isEmailVerified || false,
+        joinedAt: fetchedProfileData.joinedAt,
+      });
+    }
+  }, [userProfileQuery.data, setProfileData]);
+
   const handleEditMobile = () => {
-    const [code, number] = profileMobile.split(' ');
-    setTempCountryCode(code);
-    setTempMobileNumber(number);
+    if (profileData) {
+      setTempCountryCode(profileData.countryCode || '+971');
+      setTempMobileNumber(profileData.phoneNumber || '');
+    }
     setIsEditingMobile(true);
   };
 
   const handleSaveMobile = () => {
-    setProfileMobile(`${tempCountryCode} ${tempMobileNumber}`);
+    // Update profile data with new mobile number
+    setProfileData((draft) => {
+      if (draft) {
+        draft.countryCode = tempCountryCode;
+        draft.phoneNumber = tempMobileNumber;
+      }
+    });
     setIsEditingMobile(false);
   };
 
@@ -85,17 +134,43 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
   };
 
   const handleEditEmail = () => {
-    setTempEmail(profileEmail);
+    setTempEmail(profileData?.email || '');
     setIsEditingEmail(true);
   };
 
   const handleSaveEmail = () => {
-    setProfileEmail(tempEmail);
+    // Update profile data with new email
+    setProfileData((draft) => {
+      if (draft) {
+        draft.email = tempEmail;
+      }
+    });
     setIsEditingEmail(false);
   };
 
   const handleCancelEmail = () => {
     setIsEditingEmail(false);
+  };
+
+  const handleSaveAllChanges = async () => {
+    if (!profileData || !userId) return;
+
+    try {
+      // If there's profile data, we can call the update API
+      await updateUserNameAndAvatar.mutateAsync({
+        userId,
+        profileData: {
+          name: profileData.name,
+          avatar: null, // For now, not handling avatar upload here
+        },
+      });
+
+      console.log('Profile updated successfully');
+      // Refetch the profile data to get the latest
+      userProfileQuery.refetch();
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    }
   };
 
   const stats = [
@@ -156,6 +231,29 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
 
   return (
     <div className={`mx-auto max-w-7xl space-y-8 p-6 ${className || ''}`}>
+      {/* Profile Breadcrumb */}
+      <ProfileBreadcrumb
+        userName={profileData?.name || 'User'}
+        className="mt-2"
+      />
+
+      {/* Profile loading error */}
+      {userProfileQuery.error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+          <p className="text-red-600">
+            Failed to load profile data: {userProfileQuery.error.message}
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => userProfileQuery.refetch()}
+            className="mt-2"
+          >
+            Retry
+          </Button>
+        </div>
+      )}
+
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-red-500 p-8 text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative flex items-center justify-between">
@@ -174,8 +272,11 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
               Premium Member
             </Badge>
             <div className="text-right">
-              <p className="text-sm text-orange-100">Member since</p>
-              <p className="font-semibold">January 2024</p>
+              <p className="text-sm text-orange-100">
+                {profileData?.joinedAt
+                  ? formatMemberSince(profileData.joinedAt)
+                  : 'Member since January 2024'}
+              </p>
             </div>
           </div>
         </div>
@@ -285,6 +386,9 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                   <Settings className="h-5 w-5 text-orange-600" />
                 </div>
                 Profile Information
+                {userProfileQuery.isLoading && (
+                  <span className="text-sm text-gray-500">(Loading...)</span>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-8">
@@ -292,11 +396,13 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                 <div className="relative">
                   <Avatar className="h-20 w-20 shadow-lg ring-4 ring-white">
                     <AvatarImage
-                      src="/professional-man-suit.png"
+                      src={profileData?.avatar || '/professional-man-suit.png'}
                       alt="Profile"
                     />
                     <AvatarFallback className="bg-gradient-to-br from-orange-400 to-orange-600 text-xl font-bold text-white">
-                      DB
+                      {profileData?.name
+                        ? profileData.name.charAt(0).toUpperCase()
+                        : 'U'}
                     </AvatarFallback>
                   </Avatar>
                   <Button
@@ -309,13 +415,36 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                 </div>
                 <div className="flex-1">
                   <h3 className="mb-1 text-2xl font-bold text-gray-900">
-                    Hello Dubai Badass
+                    {profileData?.name || 'User'}
+                    {userProfileQuery.isLoading && (
+                      <span className="ml-2 text-sm text-gray-500">
+                        (Loading...)
+                      </span>
+                    )}
                   </h3>
                   <div className="mb-3 flex items-center gap-3">
                     <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
                       <Star className="mr-1 h-3 w-3" />
                       Premium Member
                     </Badge>
+                    {profileData?.isPhoneVerified && (
+                      <Badge
+                        variant="outline"
+                        className="border-green-200 text-green-600"
+                      >
+                        <Phone className="mr-1 h-3 w-3" />
+                        Phone Verified
+                      </Badge>
+                    )}
+                    {profileData?.isEmailVerified && (
+                      <Badge
+                        variant="outline"
+                        className="border-blue-200 text-blue-600"
+                      >
+                        <Mail className="mr-1 h-3 w-3" />
+                        Email Verified
+                      </Badge>
+                    )}
                     <Badge
                       variant="outline"
                       className="border-green-200 text-green-600"
@@ -327,11 +456,7 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                   <div className="flex items-center gap-4 text-sm text-gray-600">
                     <span className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
-                      Joined Jan 2024
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Eye className="h-4 w-4" />
-                      1.2k profile views
+                      {formatMemberSince(profileData?.joinedAt || '')}
                     </span>
                   </div>
                 </div>
@@ -346,7 +471,9 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                   </Label>
                   {!isEditingMobile ? (
                     <div className="flex items-center justify-between rounded-lg border bg-gray-50 p-3">
-                      <span className="text-gray-900">{profileMobile}</span>
+                      <span className="text-gray-900">
+                        {`${profileData?.countryCode || ''} ${profileData?.phoneNumber || ''}`}
+                      </span>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -412,12 +539,19 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                   </Label>
                   {!isEditingEmail ? (
                     <div className="flex items-center justify-between rounded-lg border bg-gray-50 p-3">
-                      <span className="text-gray-900">{profileEmail}</span>
+                      <span
+                        className={`${!profileData?.email ? 'italic text-gray-500' : 'text-gray-900'}`}
+                      >
+                        {userProfileQuery.isLoading
+                          ? 'Loading...'
+                          : profileData?.email || 'No email provided'}
+                      </span>
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={handleEditEmail}
                         className="cursor-pointer text-orange-600 hover:bg-orange-50 hover:text-orange-700"
+                        disabled={userProfileQuery.isLoading}
                       >
                         <Edit2 className="mr-1 h-4 w-4" />
                         Change
@@ -455,7 +589,7 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                   )}
                 </div>
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label className="flex items-center gap-2 text-sm font-medium">
                     <Globe className="h-4 w-4 text-gray-500" />
                     Languages I Speak
@@ -465,7 +599,7 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                     onChange={(e) => setLanguages(e.target.value)}
                     placeholder="Enter languages you speak"
                   />
-                </div>
+                </div> */}
               </div>
 
               {/* Preferences */}
@@ -511,8 +645,14 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                 </div>
               </div>
 
-              <Button className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-orange-500 to-red-500 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:from-orange-600 hover:to-red-600 hover:shadow-xl">
-                Save All Changes
+              <Button
+                onClick={handleSaveAllChanges}
+                disabled={updateUserNameAndAvatar.isPending}
+                className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-orange-500 to-red-500 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:from-orange-600 hover:to-red-600 hover:shadow-xl disabled:opacity-50"
+              >
+                {updateUserNameAndAvatar.isPending
+                  ? 'Saving...'
+                  : 'Save All Changes'}
               </Button>
             </CardContent>
           </Card>

@@ -125,10 +125,7 @@ export const Navbar = () => {
   };
 
   // Get user name from auth state
-  const userName =
-    user?.firstName && user?.lastName
-      ? `${user.firstName} ${user.lastName}`
-      : 'User';
+  const userName = user ? `${user.name}` : 'User';
 
   return (
     <header
@@ -177,7 +174,7 @@ export const Navbar = () => {
               {auth.isLoggedIn && (
                 <div className="flex items-center space-x-2">
                   {/* Notifications */}
-                  <Button
+                  {/* <Button
                     variant="ghost"
                     size="sm"
                     className="relative cursor-pointer"
@@ -186,16 +183,13 @@ export const Navbar = () => {
                     <Badge className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 p-0 text-xs text-white">
                       3
                     </Badge>
-                  </Button>
+                  </Button> */}
 
                   {/* Dropdown Menu for Avatar */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-orange-200 transition-all hover:ring-orange-300">
-                        <AvatarImage
-                          src="/professional-man-suit.png"
-                          alt={userName}
-                        />
+                        <AvatarImage src={user?.avatar} alt={userName} />
                         <AvatarFallback className="bg-orange-100 font-semibold text-orange-600">
                           {userName
                             .split(' ')
@@ -215,7 +209,7 @@ export const Navbar = () => {
                             {userName}
                           </p>
                           <p className="text-xs leading-none text-muted-foreground">
-                            dubai.badass@example.com
+                            {user?.email}
                           </p>
                         </div>
                       </DropdownMenuLabel>

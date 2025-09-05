@@ -73,10 +73,10 @@ export interface ProfileUpdateData {
  */
 export interface User {
   id: string;
-  firstName?: string;
-  lastName?: string;
+  name?: string;
   email?: string;
-  phoneNumber: string;
+  avatar?: string
+  phoneNumber?: string;
   countryCode?: string;
   isVerified?: boolean;
   isPhoneVerified?: boolean;
@@ -101,6 +101,8 @@ export interface AuthResponse {
     phoneNumber?: string;
     countryCode?: string;
     email?: string;
+    name?: string;
+    avatar?: string;
     isEmailVerified?: boolean;
     isPhoneVerified?: boolean;
   };
@@ -150,6 +152,7 @@ export interface AuthEndpoints {
   SET_PASSWORD: string;
   RESEND_OTP: string;
   PROFILE: string;
+  GET_USER_PROFILE: string;
   UPDATE_PROFILE: string;
   FORGOT_PASSWORD: string;
   RESET_PASSWORD: string;
@@ -198,6 +201,7 @@ export interface AuthAPIInterface {
   setPassword: (passwordData: SetPasswordData) => Promise<AuthResponse>;
   resendOtp: (resendData: ResendOtpData) => Promise<AuthResponse>;
   getProfile: () => Promise<AuthResponse>;
+  getUserProfile: (userId: string) => Promise<AuthResponse>;
   updateProfile: (userId: string, profileData: ProfileUpdateData) => Promise<AuthResponse>;
   logout: () => Promise<AuthResponse>;
 }
@@ -227,6 +231,9 @@ export interface UseAuthReturn {
   onHandleLoginmodal: (config: { isOpen: boolean }) => void;
   handleProfileNavigation: () => void;
 
+  // Queries
+  useGetUserProfile: (userId: string, enabled?: boolean) => any; // UseQueryResult from @tanstack/react-query
+
   // React Query mutations
   signupMutation: any; // UseMutationResult from @tanstack/react-query
   loginMutation: any;
@@ -240,6 +247,7 @@ export interface UseAuthReturn {
   validateEmail: (email: string) => boolean;
   validatePhoneNumber: (phoneNumber: string) => boolean;
   validatePassword: (password: string) => PasswordValidationResult;
+  formatMemberSince: (dateString: string) => string
 }
 
 /**

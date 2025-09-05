@@ -61,7 +61,7 @@ export const LoginDialog = ({
     otpVerified: false,
   });
 
-  const [signupStep, setSignupStep] = useState(4); // 1: basic info, 2: OTP verification, 3: password setup
+  const [signupStep, setSignupStep] = useState(1); // 1: basic info, 2: OTP verification, 3: password setup
   const [mobileNumber, setMobileNumber] = useState('');
   const [countryCode, setCountryCode] = useState('+971');
   const [otp, setOtp] = useState(['', '', '', '']);

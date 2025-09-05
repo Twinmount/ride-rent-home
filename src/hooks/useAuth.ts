@@ -49,6 +49,7 @@ const AUTH_ENDPOINTS: AuthEndpoints = {
   SET_PASSWORD: `${API_BASE_URL}/v1/riderent/auth/set-password`,
   RESEND_OTP: `${API_BASE_URL}/v1/riderent/auth/resend-otp`,
   PROFILE: `${API_BASE_URL}/v1/riderent/auth/profile`,
+  GET_USER_PROFILE: `${API_BASE_URL}/v1/riderent/auth/user/profile`,
   UPDATE_PROFILE: `${API_BASE_URL}/v1/riderent/auth/user/profile`,
   FORGOT_PASSWORD: `${API_BASE_URL}/v1/riderent/auth/forgot-password`,
   RESET_PASSWORD: `${API_BASE_URL}/v1/riderent/auth/reset-password`,
@@ -185,6 +186,10 @@ const authAPI: AuthAPIInterface = {
     return createAuthRequest(AUTH_ENDPOINTS.PROFILE);
   },
 
+  getUserProfile: async (userId: string) => {
+    return createAuthRequest(`${AUTH_ENDPOINTS.GET_USER_PROFILE}/${userId}`);
+  },
+
   updateProfile: async (userId: string, profileData: ProfileUpdateData) => {
     // Create FormData for file upload
     const formData = new FormData();
@@ -253,9 +258,11 @@ export const useAuth = () => {
 
         const user: User = {
           id: data?.data?.userId!,
+          name: data?.data?.name!,
+          avatar: data?.data?.avatar!,
+          email: data?.data?.email!,
           phoneNumber: data?.data?.phoneNumber!,
           countryCode: data?.data?.countryCode!,
-          email: data?.data?.email!,
           isEmailVerified: data?.data?.isEmailVerified!,
           isPhoneVerified: data?.data?.isPhoneVerified!,
         };
@@ -319,6 +326,8 @@ export const useAuth = () => {
           email: data?.data?.email!,
           isEmailVerified: data?.data?.isEmailVerified!,
           isPhoneVerified: data?.data?.isPhoneVerified!,
+          avatar: data.data.avatar,
+          name: data.data.name,
         };
 
         setAuthenticated(
@@ -359,6 +368,43 @@ export const useAuth = () => {
       authAPI.updateProfile(userId, profileData),
     onSuccess: (data) => {
       setError(null);
+      console.log('Profile updated successfully:', data);
+
+      // Update user state with new name and avatar, preserving existing fields
+      updateState(draft => {
+        if (draft.user) {
+          // Only update name and avatar fields, keep all other user data
+          if (data?.data?.name) {
+            draft.user.name = data.data.name;
+          }
+          if (data?.data?.avatar) {
+            draft.user.avatar = data.data.avatar;
+          }
+        }
+      });
+
+      // Update auth state as well
+      setAuth((draft) => {
+        if (draft.user) {
+          // Only update name and avatar fields, keep all other user data
+          if (data?.data?.name) {
+            draft.user.name = data.data.name;
+          }
+          if (data?.data?.avatar) {
+            draft.user.avatar = data.data.avatar;
+          }
+        }
+      });
+
+      // Update storage with the updated user object
+      if (state.user) {
+        const updatedUser = {
+          ...state.user,
+          ...(data?.data?.name && { name: data.data.name }),
+          ...(data?.data?.avatar && { avatar: data.data.avatar })
+        };
+        authStorage.setUser(updatedUser, true); // Save to localStorage
+      }
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -390,6 +436,17 @@ export const useAuth = () => {
       });
     },
   });
+
+  // React Query for getUserProfile
+  const useGetUserProfile = (userId: string, enabled: boolean = true) => {
+    return useQuery({
+      queryKey: ['userProfile', userId],
+      queryFn: () => authAPI.getUserProfile(userId),
+      enabled: !!userId && enabled && !!authStorage.getToken(),
+      // retry: 2,
+      // refetchOnWindowFocus: false,
+    });
+  };
 
   const onHandleLoginmodal = ({ isOpen }: { isOpen: boolean }) => {
     setLoginOpen((draft) => {
@@ -590,6 +647,25 @@ export const useAuth = () => {
     }
   });
 
+  const formatMemberSince = (createdAt: string): string => {
+    if (!createdAt) return "Member since -"; // fallback if empty
+
+    const date = new Date(createdAt);
+
+    if (isNaN(date.getTime())) {
+      return "Member since -"; // fallback if invalid date
+    }
+
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      timeZone: "UTC", // keep consistent formatting
+    };
+
+    const formattedDate = new Intl.DateTimeFormat("en-US", options).format(date);
+    return `Member since ${formattedDate}`;
+  }
+
   // Clear error function
   const clearError = useCallback(() => {
     setError(null);
@@ -617,6 +693,9 @@ export const useAuth = () => {
     onHandleLoginmodal,
     handleProfileNavigation,
 
+    // Queries
+    useGetUserProfile,
+
     // Mutation states for granular loading control
     signupMutation,
     loginMutation,
@@ -630,6 +709,7 @@ export const useAuth = () => {
     validateEmail,
     validatePhoneNumber,
     validatePassword,
+    formatMemberSince
   };
 };
 
