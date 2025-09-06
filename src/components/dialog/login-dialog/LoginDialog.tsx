@@ -22,6 +22,8 @@ import {
 import { Eye, EyeOff, Lock, Phone, Check, ArrowLeft } from 'lucide-react';
 import { useAuthContext } from '@/auth';
 import { SignupSection } from './SignupSection';
+import { PhoneInput } from '@/components/ui/phone-input';
+import { parsePhoneNumber } from 'react-phone-number-input';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -40,7 +42,6 @@ export const LoginDialog = ({
   // Login form state using useImmer
   const [loginForm, updateLoginForm] = useImmer({
     phoneNumber: '',
-    countryCode: '+971',
     password: '',
     rememberMe: false,
   });
@@ -55,7 +56,6 @@ export const LoginDialog = ({
   // Forgot password state using useImmer
   const [forgotPasswordForm, updateForgotPasswordForm] = useImmer({
     step: 1,
-    countryCode: '+971',
     mobile: '',
     otp: ['', '', '', ''],
     otpVerified: false,
@@ -85,10 +85,30 @@ export const LoginDialog = ({
         return;
       }
 
+      // Parse phone number to extract country code and national number
+      let countryCode = '';
+      let phoneNumber = '';
+
+      try {
+        const parsed = parsePhoneNumber(loginForm.phoneNumber);
+        if (parsed) {
+          countryCode = `+${parsed.countryCallingCode}`;
+          phoneNumber = parsed.nationalNumber;
+        } else {
+          // Fallback if parsing fails
+          countryCode = '+971';
+          phoneNumber = loginForm.phoneNumber;
+        }
+      } catch (e) {
+        // Fallback if parsing fails
+        countryCode = '+971';
+        phoneNumber = loginForm.phoneNumber;
+      }
+
       await login({
-        countryCode: loginForm.countryCode,
+        countryCode,
         password: loginForm.password,
-        phoneNumber: loginForm.phoneNumber,
+        phoneNumber,
         rememberMe: loginForm.rememberMe,
       });
 
@@ -115,7 +135,6 @@ export const LoginDialog = ({
     // Reset forgot password state
     updateForgotPasswordForm((draft) => {
       draft.step = 1;
-      draft.countryCode = '+971';
       draft.mobile = '';
       draft.otp = ['', '', '', ''];
       draft.otpVerified = false;
@@ -124,7 +143,6 @@ export const LoginDialog = ({
     // Reset login form
     updateLoginForm((draft) => {
       draft.phoneNumber = '';
-      draft.countryCode = '+971';
       draft.password = '';
       draft.rememberMe = false;
     });
@@ -139,11 +157,7 @@ export const LoginDialog = ({
 
   const handleSendForgotOtp = () => {
     // TODO: Implement forgot password OTP sending
-    console.log(
-      'Sending forgot password OTP to:',
-      forgotPasswordForm.countryCode,
-      forgotPasswordForm.mobile
-    );
+    console.log('Sending forgot password OTP to:', forgotPasswordForm.mobile);
     updateForgotPasswordForm((draft) => {
       draft.step = 2;
     });
@@ -219,46 +233,17 @@ export const LoginDialog = ({
 
                 <div className="space-y-2">
                   <Label htmlFor="forgotMobile">Mobile Number</Label>
-                  <div className="flex gap-2">
-                    <Select
-                      value={forgotPasswordForm.countryCode}
-                      onValueChange={(value) =>
-                        updateForgotPasswordForm((draft) => {
-                          draft.countryCode = value;
-                        })
-                      }
-                    >
-                      <SelectTrigger className="w-24">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                        <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                        <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                        <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                        <SelectItem value="+966">🇸🇦 +966</SelectItem>
-                        <SelectItem value="+974">🇶🇦 +974</SelectItem>
-                        <SelectItem value="+965">🇰🇼 +965</SelectItem>
-                        <SelectItem value="+973">🇧🇭 +973</SelectItem>
-                        <SelectItem value="+968">🇴🇲 +968</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <div className="relative flex-1">
-                      <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
-                      <Input
-                        id="forgotMobile"
-                        type="tel"
-                        placeholder="50 123 4567"
-                        className="pl-10"
-                        value={forgotPasswordForm.mobile}
-                        onChange={(e) =>
-                          updateForgotPasswordForm((draft) => {
-                            draft.mobile = e.target.value;
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
+                  <PhoneInput
+                    value={forgotPasswordForm.mobile}
+                    onChange={(value) =>
+                      updateForgotPasswordForm((draft) => {
+                        draft.mobile = value || '';
+                      })
+                    }
+                    defaultCountry="AE"
+                    placeholder="Enter phone number"
+                    className="w-full"
+                  />
                 </div>
 
                 <Button
@@ -275,8 +260,7 @@ export const LoginDialog = ({
               <div className="space-y-4">
                 <div className="space-y-2 text-center">
                   <p className="text-sm text-gray-600">
-                    We've sent a 4-digit code to{' '}
-                    {forgotPasswordForm.countryCode} {forgotPasswordForm.mobile}
+                    We've sent a 4-digit code to {forgotPasswordForm.mobile}
                   </p>
                 </div>
 
@@ -455,47 +439,17 @@ export const LoginDialog = ({
 
                 <div className="space-y-2">
                   <Label htmlFor="mobile">Mobile Number</Label>
-                  <div className="flex gap-2">
-                    <Select
-                      value={loginForm.countryCode}
-                      onValueChange={(value) =>
-                        updateLoginForm((draft) => {
-                          draft.countryCode = value;
-                        })
-                      }
-                    >
-                      <SelectTrigger className="w-24">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                        <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                        <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                        <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                        <SelectItem value="+966">🇸🇦 +966</SelectItem>
-                        <SelectItem value="+974">🇶🇦 +974</SelectItem>
-                        <SelectItem value="+965">🇰🇼 +965</SelectItem>
-                        <SelectItem value="+973">🇧🇭 +973</SelectItem>
-                        <SelectItem value="+968">🇴🇲 +968</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <div className="relative flex-1">
-                      <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
-                      <Input
-                        id="mobile"
-                        name="mobile"
-                        type="tel"
-                        placeholder="50 123 4567"
-                        className="pl-10"
-                        value={loginForm.phoneNumber}
-                        onChange={(e) =>
-                          updateLoginForm((draft) => {
-                            draft.phoneNumber = e.target.value;
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
+                  <PhoneInput
+                    value={loginForm.phoneNumber}
+                    onChange={(value) =>
+                      updateLoginForm((draft) => {
+                        draft.phoneNumber = value || '';
+                      })
+                    }
+                    defaultCountry="AE"
+                    placeholder="Enter phone number"
+                    className="w-full"
+                  />
                 </div>
 
                 <div className="space-y-2">

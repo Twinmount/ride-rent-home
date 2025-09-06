@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/select';
 import { Eye, EyeOff, Lock, Phone, Check, Camera, Upload } from 'lucide-react';
 import { useAuthContext } from '@/auth';
+import { PhoneInput } from '@/components/ui/phone-input';
+import { parsePhoneNumber } from 'react-phone-number-input';
 
 // Country code to ID mapping
 const COUNTRY_MAPPINGS: Record<string, number> = {
@@ -285,35 +287,38 @@ export const SignupSection = ({
 
           <div className="space-y-2">
             <Label htmlFor="signupMobile">Mobile Number</Label>
-            <div className="flex gap-2">
-              <Select value={countryCode} onValueChange={setCountryCode}>
-                <SelectTrigger className="w-24">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                  <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                  <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                  <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                  <SelectItem value="+966">🇸🇦 +966</SelectItem>
-                  <SelectItem value="+974">🇶🇦 +974</SelectItem>
-                  <SelectItem value="+965">🇰🇼 +965</SelectItem>
-                  <SelectItem value="+973">🇧🇭 +973</SelectItem>
-                  <SelectItem value="+968">🇴🇲 +968</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="relative flex-1">
-                <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
-                <Input
-                  id="signupMobile"
-                  type="tel"
-                  placeholder="50 123 4567"
-                  className="pl-10"
-                  value={mobileNumber}
-                  onChange={(e) => setMobileNumber(e.target.value)}
-                />
-              </div>
-            </div>
+            <PhoneInput
+              value={
+                countryCode && mobileNumber
+                  ? `${countryCode}${mobileNumber}`
+                  : ''
+              }
+              onChange={(value) => {
+                if (value) {
+                  try {
+                    const parsed = parsePhoneNumber(value);
+                    if (parsed) {
+                      setCountryCode(`+${parsed.countryCallingCode}`);
+                      setMobileNumber(parsed.nationalNumber);
+                    } else {
+                      // Fallback if parsing fails
+                      setCountryCode('+971');
+                      setMobileNumber(value);
+                    }
+                  } catch (e) {
+                    // Fallback if parsing fails
+                    setCountryCode('+971');
+                    setMobileNumber(value);
+                  }
+                } else {
+                  setCountryCode('+971');
+                  setMobileNumber('');
+                }
+              }}
+              defaultCountry="AE"
+              placeholder="Enter phone number"
+              className="w-full"
+            />
           </div>
 
           <Button
