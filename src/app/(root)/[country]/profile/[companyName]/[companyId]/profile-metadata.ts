@@ -1,7 +1,6 @@
-import { getDefaultMetadata } from '@/app/root-metadata';
 import { ENV } from '@/config/env';
 import { convertToValue } from '@/helpers';
-import { getAbsoluteUrl } from '@/helpers/metadata-helper';
+import { getDefaultMetadata, getAbsoluteUrl } from '@/helpers/metadata-helper';
 import { CompanyMetadataResponse } from '@/types';
 import { Metadata } from 'next';
 
@@ -40,7 +39,7 @@ export async function generateCompanyMetadata(
   const companyDetails = data?.result;
 
   if (!companyDetails) {
-    return getDefaultMetadata();
+    return getDefaultMetadata({ country });
   }
 
   const companyName = companyDetails.companyName;

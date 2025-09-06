@@ -1,5 +1,69 @@
-import { ENV } from "@/config/env";
-import { convertToLabel } from ".";
+import { ENV } from '@/config/env';
+import { convertToLabel } from '.';
+import type { Metadata } from 'next';
+
+export function getDefaultMetadata({
+  country,
+  canonicalUrl,
+}: {
+  country?: string;
+  canonicalUrl?: string;
+}): Metadata {
+  // open graph image
+  const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const pageUrl = !!canonicalUrl ? canonicalUrl : 'https://ride.rent';
+
+  const metaTitle = `Ride.Rent${country ? ` - ${country}` : ''} | For Hassle-Free Vehicle Rental Experience`;
+
+  const metaDescription = `Ride.Rent${country ? ` - ${country}` : ''} makes vehicle rental effortless and flexible. Enjoy deposit-free booking, the best rates, and quick delivery for your next ride.`;
+
+  return {
+    title: metaTitle,
+    description: metaDescription,
+    openGraph: {
+      title: metaTitle,
+      description: metaDescription,
+      url: pageUrl,
+      type: 'website',
+      images: [
+        {
+          url: ogImage,
+          alt: 'Ride.Rent - The Ultimate Vehicle Rental Platform',
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Ride.Rent - The Ultimate Vehicle Rental Platform',
+      description:
+        'Find the best rental vehicles across UAE, India, from cars, yachts, and more!',
+      images: [ogImage],
+    },
+    manifest: '/manifest.webmanifest',
+    robots: {
+      index: true,
+      follow: true,
+      nocache: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        noimageindex: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    alternates: {
+      canonical: pageUrl,
+    },
+    other: {
+      'norton-safeweb-site-verification':
+        '478TC4UCWMH35PE0IF94SQ618OVMCU0NEQVN4IQORPWKYD5H-A-THWSBRLX06AH6IHUTYOWIW2K8WZ0BH4AHNVQGB5QJ4WNDIC7T4NHWJX4IT5DKQQZKOJG4UYHQQXF4',
+    },
+  };
+}
 
 /**
  * Converts a relative URL to an absolute URL using the site domain from ENV.
@@ -9,9 +73,9 @@ import { convertToLabel } from ".";
  */
 export function getAbsoluteUrl(relativePath: string): string {
   const baseUrl =
-    ENV.SITE_URL || ENV.NEXT_PUBLIC_SITE_URL || "https://ride.rent";
+    ENV.SITE_URL || ENV.NEXT_PUBLIC_SITE_URL || 'https://ride.rent';
 
-  const remainingUrl = relativePath.startsWith("/")
+  const remainingUrl = relativePath.startsWith('/')
     ? relativePath
     : `/${relativePath}`;
 
@@ -40,8 +104,8 @@ export function injectBrandKeyword(text: string, brand?: string): string {
   const brandCapitalized = convertToLabel(brand);
 
   const lowerText = cleanText.toLowerCase();
-  const rentIndex = lowerText.indexOf("rent");
-  const hireIndex = lowerText.indexOf("hire");
+  const rentIndex = lowerText.indexOf('rent');
+  const hireIndex = lowerText.indexOf('hire');
 
   let insertAt = -1;
 
@@ -54,7 +118,7 @@ export function injectBrandKeyword(text: string, brand?: string): string {
   if (insertAt !== -1) {
     return (
       cleanText.slice(0, insertAt) +
-      " " +
+      ' ' +
       brandCapitalized +
       cleanText.slice(insertAt)
     );
