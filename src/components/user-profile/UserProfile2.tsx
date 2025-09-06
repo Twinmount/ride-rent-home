@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { AvatarUpload } from '@/components/ui/avatar-upload';
 import { Badge } from '@/components/ui/badge';
 import {
   Select,
@@ -447,26 +448,25 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
             </CardHeader>
             <CardContent className="space-y-8">
               <div className="flex items-center gap-6 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 p-6">
-                <div className="relative">
-                  <Avatar className="h-20 w-20 shadow-lg ring-4 ring-white">
-                    <AvatarImage
-                      src={profileData?.avatar || '/professional-man-suit.png'}
-                      alt="Profile"
-                    />
-                    <AvatarFallback className="bg-gradient-to-br from-orange-400 to-orange-600 text-xl font-bold text-white">
-                      {profileData?.name
-                        ? profileData.name.charAt(0).toUpperCase()
-                        : 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="absolute -bottom-2 -right-2 h-8 w-8 cursor-pointer rounded-full border-2 border-white bg-white p-0 shadow-lg hover:bg-orange-50"
-                  >
-                    <Camera className="h-4 w-4 text-orange-600" />
-                  </Button>
-                </div>
+                <AvatarUpload
+                  currentAvatar={profileData?.avatar}
+                  userName={profileData?.name || 'User'}
+                  userId={userId}
+                  size="lg"
+                  onUploadSuccess={(avatarUrl) => {
+                    // Update local state with new avatar
+                    setProfileData((draft) => {
+                      if (draft) {
+                        draft.avatar = avatarUrl;
+                      }
+                    });
+                    // Refetch profile to ensure data consistency
+                    userProfileQuery.refetch();
+                  }}
+                  onUploadError={(error) => {
+                    console.error('Avatar upload failed:', error);
+                  }}
+                />
                 <div className="flex-1">
                   {!isEditingName ? (
                     <div className="mb-1 flex items-center gap-2">
