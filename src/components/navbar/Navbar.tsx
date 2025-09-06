@@ -121,7 +121,7 @@ export const Navbar = () => {
 
   // Handle logout function
   const handleLogout = () => {
-    logout();
+    logout(auth?.user?.id || '');
   };
 
   // Get user name from auth state

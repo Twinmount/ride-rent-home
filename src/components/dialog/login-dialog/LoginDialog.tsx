@@ -12,13 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Eye, EyeOff, Lock, Phone, Check, ArrowLeft } from 'lucide-react';
 import { useAuthContext } from '@/auth';
 import { SignupSection } from './SignupSection';
@@ -46,6 +39,8 @@ export const LoginDialog = ({
     rememberMe: false,
   });
 
+  console.log('loginForm: ', loginForm);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -64,6 +59,7 @@ export const LoginDialog = ({
   const [signupStep, setSignupStep] = useState(1); // 1: basic info, 2: OTP verification, 3: password setup
   const [mobileNumber, setMobileNumber] = useState('');
   const [countryCode, setCountryCode] = useState('+971');
+  console.log('countryCode: ', countryCode);
   const [otp, setOtp] = useState(['', '', '', '']);
   const [otpVerified, setOtpVerified] = useState(false);
   const [password, setPassword] = useState('');
@@ -91,6 +87,7 @@ export const LoginDialog = ({
 
       try {
         const parsed = parsePhoneNumber(loginForm.phoneNumber);
+        console.log('parsed: ', parsed);
         if (parsed) {
           countryCode = `+${parsed.countryCallingCode}`;
           phoneNumber = parsed.nationalNumber;

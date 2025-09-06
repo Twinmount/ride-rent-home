@@ -53,7 +53,7 @@ const AUTH_ENDPOINTS: AuthEndpoints = {
   UPDATE_PROFILE: `${API_BASE_URL}/v1/riderent/auth/user/profile`,
   FORGOT_PASSWORD: `${API_BASE_URL}/v1/riderent/auth/forgot-password`,
   RESET_PASSWORD: `${API_BASE_URL}/v1/riderent/auth/reset-password`,
-  REFRESH_TOKEN: `${API_BASE_URL}/v1/riderent/auth/refresh-token`,
+  REFRESH_TOKEN: `${API_BASE_URL}/v1/riderent/auth/refresh-access-token`,
   LOGOUT: `${API_BASE_URL}/v1/riderent/auth/logout`,
 };
 
@@ -220,6 +220,13 @@ const authAPI: AuthAPIInterface = {
         body: JSON.stringify(profileData), // Send as JSON string
       }
     );
+  },
+
+  refreshAccessToken: async (userId: string) => {
+    return createAuthRequest(AUTH_ENDPOINTS.REFRESH_TOKEN, {
+      method: 'POST',
+      body: JSON.stringify({ userId }),
+    });
   },
 
   logout: async () => {
@@ -429,7 +436,7 @@ export const useAuth = () => {
   });
 
   const logoutMutation = useMutation({
-    mutationFn: authAPI.logout,
+    mutationFn: ({ userId }: { userId: string }) => authAPI.logout(userId),
     onSuccess: () => {
       setAuthenticated(null);
       setAuth((draft) => {
@@ -596,9 +603,9 @@ export const useAuth = () => {
   );
 
   // Logout function
-  const logout = async (): Promise<void> => {
+  const logout = async (id: string): Promise<void> => {
     try {
-      await logoutMutation.mutateAsync();
+      await logoutMutation.mutateAsync({ userId: id });
     } catch (error) {
       console.warn('Logout request failed:', error);
     }

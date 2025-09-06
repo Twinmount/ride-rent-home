@@ -195,7 +195,7 @@ export interface AuthStorageInterface {
  * Auth API functions interface
  */
 export interface AuthAPIInterface {
-  logout: () => Promise<AuthResponse>;
+  logout: (id: string) => Promise<AuthResponse>;
   getProfile: () => Promise<AuthResponse>;
   login: (loginData: LoginData) => Promise<AuthResponse>;
   getUserProfile: (userId: string) => Promise<AuthResponse>;
@@ -211,6 +211,7 @@ export interface AuthAPIInterface {
     userId: string,
     profileData: User
   ) => Promise<AuthResponse>;
+  refreshAccessToken: (userId: string) => Promise<AuthResponse>;
 }
 
 /**
@@ -229,7 +230,7 @@ export interface UseAuthReturn {
   // Actions
   login: (loginData: LoginData) => Promise<AuthResponse>;
   signup: (signupData: PhoneSignupData) => Promise<AuthResponse>;
-  logout: () => Promise<void>;
+  logout: (id: string) => Promise<void>;
   verifyOTP: (
     userId: string,
     otpId: string,

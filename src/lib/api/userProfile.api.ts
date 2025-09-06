@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { mainApiClient, authApiClient } from './axios.config';
 import type {
   UserCarActionCounts,
   UserCarActionCountsResponse,
@@ -11,8 +11,9 @@ export const getUserCarActionCounts = async (
 ): Promise<UserCarActionCounts> => {
   const baseURL = ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
   console.log('baseURL: ', baseURL);
-  const response = await axios.get<UserCarActionCountsResponse>(
-    `${baseURL}/user-cars/counts/${userId}`
+  // Use relative URL since baseURL is handled by the client
+  const response = await mainApiClient.get<UserCarActionCountsResponse>(
+    `/user-cars/counts/${userId}`
   );
   console.log('response.data: ', response.data);
   return response.data.result;
@@ -23,8 +24,7 @@ export const trackCarView = async (
   carId: string,
   metadata: Record<string, any> = {}
 ): Promise<void> => {
-  const baseURL = ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
-  const response = await axios.post(`${baseURL}/user-cars/view`, {
+  const response = await mainApiClient.post(`/user-cars/view`, {
     userId,
     carId,
     metadata,
@@ -36,15 +36,12 @@ export const updateUserProfile = async (
   userId: string,
   profileData: Partial<User>
 ): Promise<void> => {
-  const baseURL = ENV.NEXT_PUBLIC_AUTH_API_URL;
-  const response = await axios.put(
-    `${baseURL}/user/profile/${userId}/profile`,
-    {
-      userId,
-      name: profileData.name,
-      email: profileData.email,
-      phoneNumber: profileData.phoneNumber,
-    }
-  );
+  // This uses auth API since it's user profile related
+  const response = await authApiClient.put(`/user/profile/${userId}/profile`, {
+    userId,
+    name: profileData.name,
+    email: profileData.email,
+    phoneNumber: profileData.phoneNumber,
+  });
   console.log('User profile updated: ', response.data);
 };
