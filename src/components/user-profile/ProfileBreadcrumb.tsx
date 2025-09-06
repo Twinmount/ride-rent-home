@@ -15,7 +15,10 @@ type ProfileSection =
   | 'settings'
   | 'favorites'
   | 'activity'
-  | 'enquiries';
+  | 'enquiries'
+  | 'saved-vehicles'
+  | 'viewed-vehicles'
+  | 'enquired-vehicles';
 
 type ProfileBreadcrumbProps = {
   userName?: string;
@@ -41,9 +44,24 @@ const sectionConfig = {
     icon: MessageSquare,
     path: '/user-profile/enquiries',
   },
+  'saved-vehicles': {
+    label: 'Saved Vehicles',
+    icon: Heart,
+    path: '/user-profile/saved-vehicles',
+  },
+  'viewed-vehicles': {
+    label: 'Recently Viewed',
+    icon: Eye,
+    path: '/user-profile/viewed-vehicles',
+  },
+  'enquired-vehicles': {
+    label: 'Enquired Vehicles',
+    icon: MessageSquare,
+    path: '/user-profile/enquired-vehicles',
+  },
 };
 
-export default function ProfileBreadcrumb({
+export function ProfileBreadcrumb({
   userName = 'User',
   currentSection = 'dashboard',
   className = '',
@@ -117,3 +135,6 @@ export default function ProfileBreadcrumb({
     </MotionDiv>
   );
 }
+
+export default ProfileBreadcrumb;
+export type { ProfileSection };

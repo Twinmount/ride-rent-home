@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useImmer } from 'use-immer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -45,6 +46,7 @@ interface UserProfileProps {
 }
 
 export const UserProfile2 = ({ className }: UserProfileProps) => {
+  const router = useRouter();
   const [languages, setLanguages] = useState('English, Arabic');
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
@@ -238,7 +240,9 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
       color: 'from-blue-500 to-blue-600',
       bgColor: 'bg-blue-50',
       textColor: 'text-blue-700',
-      description: 'This month',
+      description: '',
+      action: 'enquired',
+      navigationPath: '/user-profile/enquired-vehicles',
     },
     {
       label: 'Saved Vehicles',
@@ -250,6 +254,8 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
       bgColor: 'bg-red-50',
       textColor: 'text-red-700',
       description: 'All time favorites',
+      action: 'saved',
+      navigationPath: '/user-profile/saved-vehicles',
     },
     {
       label: 'Profile Views',
@@ -260,7 +266,9 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
       color: 'from-purple-500 to-purple-600',
       bgColor: 'bg-purple-50',
       textColor: 'text-purple-700',
-      description: 'Last 30 days',
+      description: '',
+      action: 'viewed',
+      navigationPath: '/user-profile/viewed-vehicles',
     },
   ];
 
@@ -421,6 +429,7 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                   <Button
                     variant="ghost"
                     size="sm"
+                    onClick={() => router.push(stat.navigationPath)}
                     className="w-full cursor-pointer justify-center hover:bg-gray-50"
                   >
                     View Details
