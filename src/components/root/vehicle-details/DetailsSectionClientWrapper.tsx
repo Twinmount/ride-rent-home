@@ -34,8 +34,6 @@ const DetailsSectionClientWrapper = ({
   profileData,
   country,
 }: DetailsSectionClientWrapperProps) => {
-  console.log('profileData: ', profileData);
-
   const { vehicleCode, vehicleId } = profileData;
   const { authStorage } = useAuthContext();
   const userId = authStorage.getUser()?.id.toString();

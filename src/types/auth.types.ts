@@ -75,7 +75,7 @@ export interface User {
   id: string;
   name?: string;
   email?: string;
-  avatar?: string
+  avatar?: string;
   phoneNumber?: string;
   countryCode?: string;
   isVerified?: boolean;
@@ -195,15 +195,22 @@ export interface AuthStorageInterface {
  * Auth API functions interface
  */
 export interface AuthAPIInterface {
-  signup: (signupData: PhoneSignupData) => Promise<AuthResponse>;
+  logout: () => Promise<AuthResponse>;
+  getProfile: () => Promise<AuthResponse>;
   login: (loginData: LoginData) => Promise<AuthResponse>;
+  getUserProfile: (userId: string) => Promise<AuthResponse>;
+  signup: (signupData: PhoneSignupData) => Promise<AuthResponse>;
+  resendOtp: (resendData: ResendOtpData) => Promise<AuthResponse>;
   verifyOtp: (otpData: OtpVerificationData) => Promise<AuthResponse>;
   setPassword: (passwordData: SetPasswordData) => Promise<AuthResponse>;
-  resendOtp: (resendData: ResendOtpData) => Promise<AuthResponse>;
-  getProfile: () => Promise<AuthResponse>;
-  getUserProfile: (userId: string) => Promise<AuthResponse>;
-  updateProfile: (userId: string, profileData: ProfileUpdateData) => Promise<AuthResponse>;
-  logout: () => Promise<AuthResponse>;
+  updateProfile: (
+    userId: string,
+    profileData: ProfileUpdateData
+  ) => Promise<AuthResponse>;
+  updateUserProfile: (
+    userId: string,
+    profileData: User
+  ) => Promise<AuthResponse>;
 }
 
 /**
@@ -217,16 +224,26 @@ export interface UseAuthReturn {
   error: AuthError | null;
   isLoginOpen: boolean;
   isLoading: boolean;
-  authStorage: AuthStorageInterface
+  authStorage: AuthStorageInterface;
 
   // Actions
   login: (loginData: LoginData) => Promise<AuthResponse>;
   signup: (signupData: PhoneSignupData) => Promise<AuthResponse>;
   logout: () => Promise<void>;
-  verifyOTP: (userId: string, otpId: string, otp: string) => Promise<AuthResponse>;
+  verifyOTP: (
+    userId: string,
+    otpId: string,
+    otp: string
+  ) => Promise<AuthResponse>;
   setPassword: (passwordData: SetPasswordData) => Promise<AuthResponse>;
-  resendOTP: (phoneNumber: string, countryCode: string) => Promise<AuthResponse>;
-  updateProfile: (userId: string, profileData: ProfileUpdateData) => Promise<AuthResponse>;
+  resendOTP: (
+    phoneNumber: string,
+    countryCode: string
+  ) => Promise<AuthResponse>;
+  updateProfile: (
+    userId: string,
+    profileData: ProfileUpdateData
+  ) => Promise<AuthResponse>;
   clearError: () => void;
   onHandleLoginmodal: (config: { isOpen: boolean }) => void;
   handleProfileNavigation: () => void;
@@ -247,7 +264,7 @@ export interface UseAuthReturn {
   validateEmail: (email: string) => boolean;
   validatePhoneNumber: (phoneNumber: string) => boolean;
   validatePassword: (password: string) => PasswordValidationResult;
-  formatMemberSince: (dateString: string) => string
+  formatMemberSince: (dateString: string) => string;
 }
 
 /**
@@ -331,7 +348,7 @@ export enum AuthFlow {
   VERIFY_OTP = 'verify_otp',
   SET_PASSWORD = 'set_password',
   LOGIN = 'login',
-  COMPLETED = 'completed'
+  COMPLETED = 'completed',
 }
 
 /**

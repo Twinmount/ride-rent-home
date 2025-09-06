@@ -37,7 +37,7 @@ import {
   clearAuthStorage,
   getStorageType,
   parseStoredUser,
-  createAuthError
+  createAuthError,
 } from '@/utils/auth.utils';
 
 // API endpoints configuration
@@ -70,8 +70,10 @@ export const authStorage: AuthStorageInterface = {
 
   getToken: (): string | null => {
     if (typeof window === 'undefined') return null;
-    return localStorage.getItem(AUTH_STORAGE_KEYS.TOKEN) ||
-      sessionStorage.getItem(AUTH_STORAGE_KEYS.TOKEN);
+    return (
+      localStorage.getItem(AUTH_STORAGE_KEYS.TOKEN) ||
+      sessionStorage.getItem(AUTH_STORAGE_KEYS.TOKEN)
+    );
   },
 
   setRefreshToken: (refreshToken: string, rememberMe: boolean = false) => {
@@ -83,8 +85,10 @@ export const authStorage: AuthStorageInterface = {
 
   getRefreshToken: (): string | null => {
     if (typeof window === 'undefined') return null;
-    return localStorage.getItem(AUTH_STORAGE_KEYS.REFRESH_TOKEN) ||
-      sessionStorage.getItem(AUTH_STORAGE_KEYS.REFRESH_TOKEN);
+    return (
+      localStorage.getItem(AUTH_STORAGE_KEYS.REFRESH_TOKEN) ||
+      sessionStorage.getItem(AUTH_STORAGE_KEYS.REFRESH_TOKEN)
+    );
   },
 
   setUser: (user: User, rememberMe: boolean = false) => {
@@ -96,14 +100,15 @@ export const authStorage: AuthStorageInterface = {
 
   getUser: (): User | null => {
     if (typeof window === 'undefined') return null;
-    const userStr = localStorage.getItem(AUTH_STORAGE_KEYS.USER) ||
+    const userStr =
+      localStorage.getItem(AUTH_STORAGE_KEYS.USER) ||
       sessionStorage.getItem(AUTH_STORAGE_KEYS.USER);
     return parseStoredUser(userStr);
   },
 
   clear: () => {
     clearAuthStorage();
-  }
+  },
 };
 
 // HTTP client utility
@@ -191,19 +196,30 @@ const authAPI: AuthAPIInterface = {
   },
 
   updateProfile: async (userId: string, profileData: ProfileUpdateData) => {
-    // Create FormData for file upload
     const formData = new FormData();
     formData.append('name', profileData.name);
 
     if (profileData.avatar && profileData.avatar instanceof File) {
       formData.append('avatar', profileData.avatar);
     }
-    console.log('formData: ', formData);
 
-    return createAuthRequest(`${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`, {
-      method: 'PUT',
-      body: formData, // FormData will be handled properly by createAuthRequest
-    });
+    return createAuthRequest(
+      `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`,
+      {
+        method: 'PUT',
+        body: formData, // FormData will be handled properly by createAuthRequest
+      }
+    );
+  },
+
+  updateUserProfile: async (userId: string, profileData: User) => {
+    return createAuthRequest(
+      `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(profileData), // Send as JSON string
+      }
+    );
   },
 
   logout: async () => {
@@ -225,17 +241,13 @@ export const useAuth = () => {
     user: authStorage.getUser(),
   });
 
-
-  const [] = useImmer({
-
-  })
+  const [] = useImmer({});
 
   const [auth, setAuth] = useImmer<InternalAuthState>({
-
     isLoggedIn: !!authStorage.getToken(),
     user: authStorage.getUser(),
     token: authStorage.getToken(),
-    refreshToken: authStorage.getRefreshToken()
+    refreshToken: authStorage.getRefreshToken(),
   });
 
   const [isLoginOpen, setLoginOpen] = useImmer(false);
@@ -255,7 +267,6 @@ export const useAuth = () => {
     mutationFn: authAPI.login,
     onSuccess: (data) => {
       if (data.success) {
-
         const user: User = {
           id: data?.data?.userId!,
           name: data?.data?.name!,
@@ -364,14 +375,19 @@ export const useAuth = () => {
   });
 
   const updateUserNameAndAvatar = useMutation({
-    mutationFn: ({ userId, profileData }: { userId: string; profileData: ProfileUpdateData }) =>
-      authAPI.updateProfile(userId, profileData),
+    mutationFn: ({
+      userId,
+      profileData,
+    }: {
+      userId: string;
+      profileData: ProfileUpdateData;
+    }) => authAPI.updateProfile(userId, profileData),
     onSuccess: (data) => {
       setError(null);
       console.log('Profile updated successfully:', data);
 
       // Update user state with new name and avatar, preserving existing fields
-      updateState(draft => {
+      updateState((draft) => {
         if (draft.user) {
           // Only update name and avatar fields, keep all other user data
           if (data?.data?.name) {
@@ -401,7 +417,7 @@ export const useAuth = () => {
         const updatedUser = {
           ...state.user,
           ...(data?.data?.name && { name: data.data.name }),
-          ...(data?.data?.avatar && { avatar: data.data.avatar })
+          ...(data?.data?.avatar && { avatar: data.data.avatar }),
         };
         authStorage.setUser(updatedUser, true); // Save to localStorage
       }
@@ -452,9 +468,8 @@ export const useAuth = () => {
     setLoginOpen((draft) => {
       draft = isOpen;
       return draft;
-    })
-  }
-
+    });
+  };
 
   const handleProfileNavigation = () => {
     // console.log('handleProfileNavigation called');
@@ -468,22 +483,32 @@ export const useAuth = () => {
 
     // console.log('Navigating to /user-profile');
     router.push('/user-profile');
-  }
+  };
 
+  const setLoading = useCallback(
+    (loading: boolean) => {
+      updateState((draft) => {
+        draft.isLoading = loading;
+      });
+    },
+    [updateState]
+  );
 
-  const setLoading = useCallback((loading: boolean) => {
-    updateState(draft => {
-      draft.isLoading = loading;
-    });
-  }, [updateState]);
+  const setError = useCallback(
+    (error: AuthError | null) => {
+      updateState((draft) => {
+        draft.error = error;
+      });
+    },
+    [updateState]
+  );
 
-  const setError = useCallback((error: AuthError | null) => {
-    updateState(draft => {
-      draft.error = error;
-    });
-  }, [updateState]);
-
-  const setAuthenticated = (user: User | null, token?: string, refreshToken?: string, rememberMe: boolean = false) => {
+  const setAuthenticated = (
+    user: User | null,
+    token?: string,
+    refreshToken?: string,
+    rememberMe: boolean = false
+  ) => {
     console.log('token: setAuthenticated', token);
     console.log('user:setAuthenticated ', user);
     if (user && token) {
@@ -492,14 +517,14 @@ export const useAuth = () => {
       if (refreshToken) {
         authStorage.setRefreshToken(refreshToken, rememberMe);
       }
-      updateState(draft => {
+      updateState((draft) => {
         draft.isAuthenticated = true;
         draft.user = user;
         draft.error = null;
       });
     } else {
       authStorage.clear();
-      updateState(draft => {
+      updateState((draft) => {
         draft.isAuthenticated = false;
         draft.user = null;
       });
@@ -510,7 +535,7 @@ export const useAuth = () => {
 
   const login = async (loginData: LoginData): Promise<AuthResponse> => {
     try {
-      console.log("login function called");
+      console.log('login function called');
 
       // Validate input
       if (!validatePhoneNumber(loginData.phoneNumber)) {
@@ -537,35 +562,38 @@ export const useAuth = () => {
   };
 
   // Signup function
-  const signup = useCallback(async (signupData: PhoneSignupData): Promise<AuthResponse> => {
-    try {
-      // Validate input
-      if (!validatePhoneNumber(signupData.phoneNumber)) {
-        throw new Error(ERROR_MESSAGES.INVALID_PHONE);
-      }
+  const signup = useCallback(
+    async (signupData: PhoneSignupData): Promise<AuthResponse> => {
+      try {
+        // Validate input
+        if (!validatePhoneNumber(signupData.phoneNumber)) {
+          throw new Error(ERROR_MESSAGES.INVALID_PHONE);
+        }
 
-      if (!signupData.countryCode) {
-        throw new Error(ERROR_MESSAGES.COUNTRY_CODE_REQUIRED);
-      }
+        if (!signupData.countryCode) {
+          throw new Error(ERROR_MESSAGES.COUNTRY_CODE_REQUIRED);
+        }
 
-      if (!signupData.countryId) {
-        throw new Error(ERROR_MESSAGES.COUNTRY_ID_REQUIRED);
-      }
+        if (!signupData.countryId) {
+          throw new Error(ERROR_MESSAGES.COUNTRY_ID_REQUIRED);
+        }
 
-      // Use React Query mutation
-      return signupMutation.mutateAsync({
-        phoneNumber: signupData.phoneNumber,
-        countryCode: signupData.countryCode,
-        countryId: signupData.countryId,
-      });
-    } catch (error) {
-      const authError = createAuthError(
-        error instanceof Error ? error.message : ERROR_MESSAGES.SIGNUP_FAILED
-      );
-      setError(authError);
-      throw authError;
-    }
-  }, [signupMutation]);
+        // Use React Query mutation
+        return signupMutation.mutateAsync({
+          phoneNumber: signupData.phoneNumber,
+          countryCode: signupData.countryCode,
+          countryId: signupData.countryId,
+        });
+      } catch (error) {
+        const authError = createAuthError(
+          error instanceof Error ? error.message : ERROR_MESSAGES.SIGNUP_FAILED
+        );
+        setError(authError);
+        throw authError;
+      }
+    },
+    [signupMutation]
+  );
 
   // Logout function
   const logout = async (): Promise<void> => {
@@ -577,62 +605,81 @@ export const useAuth = () => {
   };
 
   // Verify OTP function
-  const verifyOTP = useCallback(async (userId: string, otpId: string, otp: string): Promise<AuthResponse> => {
-    try {
-      return verifyOtpMutation.mutateAsync({
-        userId,
-        otpId,
-        otp,
-      });
-    } catch (error) {
-      const authError: AuthError = {
-        message: error instanceof Error ? error.message : 'OTP verification failed',
-      };
-      setError(authError);
-      throw authError;
-    }
-  }, [verifyOtpMutation]);
-
-  // Set Password function  
-  const setPassword = useCallback(async (passwordData: SetPasswordData): Promise<AuthResponse> => {
-    try {
-      const passwordValidation = validatePassword(passwordData.password);
-      if (!passwordValidation.isValid) {
-        throw new Error(passwordValidation.errors[0]);
+  const verifyOTP = useCallback(
+    async (
+      userId: string,
+      otpId: string,
+      otp: string
+    ): Promise<AuthResponse> => {
+      try {
+        return verifyOtpMutation.mutateAsync({
+          userId,
+          otpId,
+          otp,
+        });
+      } catch (error) {
+        const authError: AuthError = {
+          message:
+            error instanceof Error ? error.message : 'OTP verification failed',
+        };
+        setError(authError);
+        throw authError;
       }
+    },
+    [verifyOtpMutation]
+  );
 
-      if (passwordData.password !== passwordData.confirmPassword) {
-        throw new Error('Passwords do not match');
+  // Set Password function
+  const setPassword = useCallback(
+    async (passwordData: SetPasswordData): Promise<AuthResponse> => {
+      try {
+        const passwordValidation = validatePassword(passwordData.password);
+        if (!passwordValidation.isValid) {
+          throw new Error(passwordValidation.errors[0]);
+        }
+
+        if (passwordData.password !== passwordData.confirmPassword) {
+          throw new Error('Passwords do not match');
+        }
+
+        return setPasswordMutation.mutateAsync(passwordData);
+      } catch (error) {
+        const authError: AuthError = {
+          message:
+            error instanceof Error ? error.message : 'Failed to set password',
+        };
+        setError(authError);
+        throw authError;
       }
-
-      return setPasswordMutation.mutateAsync(passwordData);
-    } catch (error) {
-      const authError: AuthError = {
-        message: error instanceof Error ? error.message : 'Failed to set password',
-      };
-      setError(authError);
-      throw authError;
-    }
-  }, [setPasswordMutation]);
+    },
+    [setPasswordMutation]
+  );
 
   // Resend OTP function
-  const resendOTP = useCallback(async (phoneNumber: string, countryCode: string): Promise<AuthResponse> => {
-    try {
-      return resendOtpMutation.mutateAsync({
-        phoneNumber,
-        countryCode,
-      });
-    } catch (error) {
-      const authError: AuthError = {
-        message: error instanceof Error ? error.message : 'Failed to resend OTP',
-      };
-      setError(authError);
-      throw authError;
-    }
-  }, [resendOtpMutation]);
+  const resendOTP = useCallback(
+    async (phoneNumber: string, countryCode: string): Promise<AuthResponse> => {
+      try {
+        return resendOtpMutation.mutateAsync({
+          phoneNumber,
+          countryCode,
+        });
+      } catch (error) {
+        const authError: AuthError = {
+          message:
+            error instanceof Error ? error.message : 'Failed to resend OTP',
+        };
+        setError(authError);
+        throw authError;
+      }
+    },
+    [resendOtpMutation]
+  );
 
   // Update Profile function
-  const updateProfile = (async (userId: string, profileData: ProfileUpdateData): Promise<AuthResponse> => {
+  const updateProfile = async (
+    userId: string,
+    profileData: ProfileUpdateData
+  ): Promise<AuthResponse> => {
     try {
       return updateUserNameAndAvatar.mutateAsync({
         userId,
@@ -640,31 +687,34 @@ export const useAuth = () => {
       });
     } catch (error) {
       const authError: AuthError = {
-        message: error instanceof Error ? error.message : 'Failed to update profile',
+        message:
+          error instanceof Error ? error.message : 'Failed to update profile',
       };
       setError(authError);
       throw authError;
     }
-  });
+  };
 
   const formatMemberSince = (createdAt: string): string => {
-    if (!createdAt) return "Member since -"; // fallback if empty
+    if (!createdAt) return 'Member since -'; // fallback if empty
 
     const date = new Date(createdAt);
 
     if (isNaN(date.getTime())) {
-      return "Member since -"; // fallback if invalid date
+      return 'Member since -'; // fallback if invalid date
     }
 
     const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      timeZone: "UTC", // keep consistent formatting
+      year: 'numeric',
+      month: 'long',
+      timeZone: 'UTC', // keep consistent formatting
     };
 
-    const formattedDate = new Intl.DateTimeFormat("en-US", options).format(date);
+    const formattedDate = new Intl.DateTimeFormat('en-US', options).format(
+      date
+    );
     return `Member since ${formattedDate}`;
-  }
+  };
 
   // Clear error function
   const clearError = useCallback(() => {
@@ -679,7 +729,15 @@ export const useAuth = () => {
     authStorage,
 
     // Loading states from mutations
-    isLoading: state.isLoading || signupMutation.isPending || loginMutation.isPending || verifyOtpMutation.isPending || setPasswordMutation.isPending || resendOtpMutation.isPending || updateUserNameAndAvatar.isPending || logoutMutation.isPending,
+    isLoading:
+      state.isLoading ||
+      signupMutation.isPending ||
+      loginMutation.isPending ||
+      verifyOtpMutation.isPending ||
+      setPasswordMutation.isPending ||
+      resendOtpMutation.isPending ||
+      updateUserNameAndAvatar.isPending ||
+      logoutMutation.isPending,
 
     // Actions
     login,
@@ -709,8 +767,6 @@ export const useAuth = () => {
     validateEmail,
     validatePhoneNumber,
     validatePassword,
-    formatMemberSince
+    formatMemberSince,
   };
 };
-
-

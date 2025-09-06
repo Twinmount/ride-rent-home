@@ -11,6 +11,7 @@ import { useVehicleCardContext } from '@/context/VehicleCardContext';
 interface BookingPopupProps {
   onComplete?: () => void;
   onCancel?: () => void;
+  isOpen?: boolean;
 }
 
 const BOOKING_MESSAGES = [
@@ -22,10 +23,11 @@ const BOOKING_MESSAGES = [
 export const BookingPopup = ({
   onComplete,
   onCancel,
+  isOpen: propIsOpen,
 }: BookingPopupProps = {}) => {
   const { selectedVehicle, closeDialog } = useVehicleCardContext();
   console.log('selectedVehicle: ', selectedVehicle);
-  const isOpen = Boolean(selectedVehicle); // Force open for testing/static display
+  const isOpen = propIsOpen !== undefined ? propIsOpen : Boolean(selectedVehicle); // Use prop if provided, otherwise use context
 
   const [currentStep, setCurrentStep] = useState(0);
   const [showCancel, setShowCancel] = useState(true);

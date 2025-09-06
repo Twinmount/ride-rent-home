@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { generateWhatsappUrl, getFormattedPhoneNumber } from '@/helpers';
 import ContactPopup from '../dialog/ContactPopup';
+import { useCarRent } from '@/hooks/useCarRent';
+import { DateRangePicker } from '../dialog/date-range-picker/DateRangePicker';
+import { BookingPopup } from '../dialog/BookingPopup';
 
 export type ContactDetails = {
   email: string;
@@ -32,6 +35,20 @@ const RentNowButtonWide = ({
   state,
 }: RentNowButtonWideProps) => {
   const [showContactPopup, setShowContactPopup] = useState(false);
+  const {
+    open,
+    carRentDate,
+    setOpen,
+    handleConfirm,
+    handleClose,
+    showBookingPopup,
+    formatDateRange,
+    handleDateChange,
+    handleBookingComplete,
+    handleBookingCancel,
+  } = useCarRent();
+
+  console.log('contactDetails: ', contactDetails);
 
   // Define size classes based on variant
   const sizeClasses =
@@ -61,7 +78,8 @@ const RentNowButtonWide = ({
   const handleClick = () => {
     // If contactDetails are provided and not null, show popup
     if (contactDetails) {
-      setShowContactPopup(true);
+      // setShowContactPopup(true);
+      setOpen(true);
     }
 
     // Also call the original onClick if provided
@@ -81,6 +99,27 @@ const RentNowButtonWide = ({
       </button>
 
       {/* Contact Popup */}
+
+      {open && (
+        <DateRangePicker
+          open={open}
+          handleClose={handleClose}
+          carRentDate={carRentDate}
+          handleConfirm={handleConfirm}
+          formatDateRange={formatDateRange}
+          handleDateChange={handleDateChange}
+        />
+      )}
+
+      {/* Booking Popup */}
+      {showBookingPopup && (
+        <BookingPopup
+          isOpen={showBookingPopup}
+          onComplete={handleBookingComplete}
+          onCancel={handleBookingCancel}
+        />
+      )}
+
       {contactDetails && (
         <ContactPopup
           vehicleId="contact-inquiry"

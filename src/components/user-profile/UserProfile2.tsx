@@ -68,6 +68,10 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [tempEmail, setTempEmail] = useState('');
 
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [tempName, setTempName] = useState('');
+  console.log('tempName: ', tempName);
+
   const {
     authStorage,
     formatMemberSince,
@@ -80,7 +84,11 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
   // Get user profile data
   const userProfileQuery = useGetUserProfile(userId!, !!userId);
 
-  const { userCarActionCountsQuery } = useUserProfile({
+  const {
+    userCarActionCountsQuery,
+    handleUpdateProfile,
+    updateProfileMutation,
+  } = useUserProfile({
     userId: userId!,
   });
 
@@ -110,6 +118,34 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
     }
   }, [userProfileQuery.data, setProfileData]);
 
+  const handleEditName = () => {
+    setTempName(profileData?.name || '');
+    setIsEditingName(true);
+  };
+
+  const handleSaveName = async () => {
+    try {
+      await handleUpdateProfile({
+        name: tempName,
+      });
+
+      // Update local state
+      setProfileData((draft) => {
+        if (draft) {
+          draft.name = tempName;
+        }
+      });
+      setIsEditingName(false);
+      console.log('Name updated successfully');
+    } catch (error) {
+      console.error('Failed to update name:', error);
+    }
+  };
+
+  const handleCancelName = () => {
+    setIsEditingName(false);
+  };
+
   const handleEditMobile = () => {
     if (profileData) {
       setTempCountryCode(profileData.countryCode || '+971');
@@ -118,15 +154,25 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
     setIsEditingMobile(true);
   };
 
-  const handleSaveMobile = () => {
-    // Update profile data with new mobile number
-    setProfileData((draft) => {
-      if (draft) {
-        draft.countryCode = tempCountryCode;
-        draft.phoneNumber = tempMobileNumber;
-      }
-    });
-    setIsEditingMobile(false);
+  const handleSaveMobile = async () => {
+    try {
+      await handleUpdateProfile({
+        phoneNumber: tempMobileNumber,
+        countryCode: tempCountryCode,
+      });
+
+      // Update local state
+      setProfileData((draft) => {
+        if (draft) {
+          draft.countryCode = tempCountryCode;
+          draft.phoneNumber = tempMobileNumber;
+        }
+      });
+      setIsEditingMobile(false);
+      console.log('Mobile number updated successfully');
+    } catch (error) {
+      console.error('Failed to update mobile number:', error);
+    }
   };
 
   const handleCancelMobile = () => {
@@ -138,14 +184,23 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
     setIsEditingEmail(true);
   };
 
-  const handleSaveEmail = () => {
-    // Update profile data with new email
-    setProfileData((draft) => {
-      if (draft) {
-        draft.email = tempEmail;
-      }
-    });
-    setIsEditingEmail(false);
+  const handleSaveEmail = async () => {
+    try {
+      await handleUpdateProfile({
+        email: tempEmail,
+      });
+
+      // Update local state
+      setProfileData((draft) => {
+        if (draft) {
+          draft.email = tempEmail;
+        }
+      });
+      setIsEditingEmail(false);
+      console.log('Email updated successfully');
+    } catch (error) {
+      console.error('Failed to update email:', error);
+    }
   };
 
   const handleCancelEmail = () => {
@@ -156,13 +211,12 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
     if (!profileData || !userId) return;
 
     try {
-      // If there's profile data, we can call the update API
-      await updateUserNameAndAvatar.mutateAsync({
-        userId,
-        profileData: {
-          name: profileData.name,
-          avatar: null, // For now, not handling avatar upload here
-        },
+      // Update user profile using the new handle function
+      await handleUpdateProfile({
+        name: profileData.name,
+        email: profileData.email || undefined,
+        phoneNumber: profileData.phoneNumber || undefined,
+        countryCode: profileData.countryCode || undefined,
       });
 
       console.log('Profile updated successfully');
@@ -414,14 +468,62 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                   </Button>
                 </div>
                 <div className="flex-1">
-                  <h3 className="mb-1 text-2xl font-bold text-gray-900">
-                    {profileData?.name || 'User'}
-                    {userProfileQuery.isLoading && (
-                      <span className="ml-2 text-sm text-gray-500">
-                        (Loading...)
-                      </span>
-                    )}
-                  </h3>
+                  {!isEditingName ? (
+                    <div className="mb-1 flex items-center gap-2">
+                      <h3 className="text-2xl font-bold text-gray-900">
+                        {profileData?.name || 'User'}
+                        {userProfileQuery.isLoading && (
+                          <span className="ml-2 text-sm text-gray-500">
+                            (Loading...)
+                          </span>
+                        )}
+                      </h3>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleEditName}
+                        className="cursor-pointer text-orange-600 hover:bg-orange-50 hover:text-orange-700"
+                        disabled={userProfileQuery.isLoading}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="mb-1 space-y-2">
+                      <div className="flex gap-2">
+                        <Input
+                          value={tempName}
+                          onChange={(e) => setTempName(e.target.value)}
+                          placeholder="Enter your name"
+                          className="flex-1 text-xl font-bold"
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={handleSaveName}
+                          disabled={
+                            !tempName.trim() || updateProfileMutation.isPending
+                          }
+                          className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
+                        >
+                          <Check className="mr-1 h-4 w-4" />
+                          {updateProfileMutation.isPending
+                            ? 'Saving...'
+                            : 'Save'}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={handleCancelName}
+                          className="cursor-pointer bg-transparent"
+                        >
+                          <X className="mr-1 h-4 w-4" />
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                   <div className="mb-3 flex items-center gap-3">
                     <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
                       <Star className="mr-1 h-3 w-3" />
@@ -513,10 +615,13 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                         <Button
                           size="sm"
                           onClick={handleSaveMobile}
-                          className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
+                          disabled={updateProfileMutation.isPending}
+                          className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
                         >
                           <Check className="mr-1 h-4 w-4" />
-                          Save
+                          {updateProfileMutation.isPending
+                            ? 'Saving...'
+                            : 'Save'}
                         </Button>
                         <Button
                           size="sm"
@@ -538,42 +643,93 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
                     Email Address
                   </Label>
                   {!isEditingEmail ? (
-                    <div className="flex items-center justify-between rounded-lg border bg-gray-50 p-3">
-                      <span
-                        className={`${!profileData?.email ? 'italic text-gray-500' : 'text-gray-900'}`}
-                      >
-                        {userProfileQuery.isLoading
-                          ? 'Loading...'
-                          : profileData?.email || 'No email provided'}
-                      </span>
+                    <div
+                      className={`flex items-center justify-between rounded-lg border p-3 ${
+                        !profileData?.email
+                          ? 'border-orange-200 bg-orange-50'
+                          : 'bg-gray-50'
+                      }`}
+                    >
+                      <div className="flex-1">
+                        {!profileData?.email ? (
+                          <div className="flex items-center gap-2">
+                            <div className="rounded-full bg-orange-100 p-1">
+                              <Mail className="h-3 w-3 text-orange-600" />
+                            </div>
+                            <span className="font-medium text-orange-700">
+                              Add your email address
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-gray-900">
+                            {userProfileQuery.isLoading
+                              ? 'Loading...'
+                              : profileData.email}
+                          </span>
+                        )}
+                      </div>
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={handleEditEmail}
-                        className="cursor-pointer text-orange-600 hover:bg-orange-50 hover:text-orange-700"
+                        className={`cursor-pointer ${
+                          !profileData?.email
+                            ? 'text-orange-600 hover:bg-orange-100 hover:text-orange-700'
+                            : 'text-orange-600 hover:bg-orange-50 hover:text-orange-700'
+                        }`}
                         disabled={userProfileQuery.isLoading}
                       >
-                        <Edit2 className="mr-1 h-4 w-4" />
-                        Change
+                        {!profileData?.email ? (
+                          <>
+                            <Mail className="mr-1 h-4 w-4" />
+                            Add Email
+                          </>
+                        ) : (
+                          <>
+                            <Edit2 className="mr-1 h-4 w-4" />
+                            Change
+                          </>
+                        )}
                       </Button>
                     </div>
                   ) : (
                     <div className="space-y-3 rounded-lg border bg-blue-50 p-3">
-                      <Input
-                        type="email"
-                        value={tempEmail}
-                        onChange={(e) => setTempEmail(e.target.value)}
-                        placeholder="Enter email address"
-                        className="w-full"
-                      />
+                      <div className="space-y-2">
+                        <Input
+                          type="email"
+                          value={tempEmail}
+                          onChange={(e) => setTempEmail(e.target.value)}
+                          placeholder={
+                            !profileData?.email
+                              ? 'Enter your email address'
+                              : 'Update email address'
+                          }
+                          className="w-full"
+                        />
+                        {!profileData?.email && (
+                          <p className="text-xs text-blue-600">
+                            Adding an email will help you receive important
+                            notifications and recover your account.
+                          </p>
+                        )}
+                      </div>
                       <div className="flex gap-2">
                         <Button
                           size="sm"
                           onClick={handleSaveEmail}
-                          className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
+                          disabled={
+                            !tempEmail.trim() ||
+                            !tempEmail.includes('@') ||
+                            updateProfileMutation.isPending
+                          }
+                          className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           <Check className="mr-1 h-4 w-4" />
-                          Save
+                          {updateProfileMutation.isPending
+                            ? 'Saving...'
+                            : !profileData?.email
+                              ? 'Add Email'
+                              : 'Save'}
                         </Button>
                         <Button
                           size="sm"
@@ -647,10 +803,10 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
 
               <Button
                 onClick={handleSaveAllChanges}
-                disabled={updateUserNameAndAvatar.isPending}
+                disabled={updateProfileMutation.isPending}
                 className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-orange-500 to-red-500 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:from-orange-600 hover:to-red-600 hover:shadow-xl disabled:opacity-50"
               >
-                {updateUserNameAndAvatar.isPending
+                {updateProfileMutation.isPending
                   ? 'Saving...'
                   : 'Save All Changes'}
               </Button>

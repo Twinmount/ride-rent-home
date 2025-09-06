@@ -1,6 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getUserCarActionCounts, trackCarView } from '@/lib/api/userProfile.api';
+import {
+  trackCarView,
+  updateUserProfile,
+  getUserCarActionCounts,
+} from '@/lib/api/userProfile.api';
 import type { UserCarActionCounts } from '@/lib/api/userProfile.api.types';
+import { User } from '@/auth';
 
 export const useUserProfile = ({ userId }: { userId: string }) => {
   const queryClient = useQueryClient();
@@ -12,33 +17,83 @@ export const useUserProfile = ({ userId }: { userId: string }) => {
     enabled: !!userId,
   });
 
-  console.log('userCarActionCountsQuery: ', userCarActionCountsQuery);
-
   // Mutation to track car view
   const trackCarViewMutation = useMutation({
-    mutationFn: async ({ carId, metadata }: { carId: string; metadata?: Record<string, any> }) => {
+    mutationFn: async ({
+      carId,
+      metadata,
+    }: {
+      carId: string;
+      metadata?: Record<string, any>;
+    }) => {
       return trackCarView(userId, carId, metadata);
     },
     onSuccess: () => {
       // Invalidate and refetch user car action counts after tracking a view
-      queryClient.invalidateQueries({ queryKey: ['userCarActionCounts', userId] });
+      queryClient.invalidateQueries({
+        queryKey: ['userCarActionCounts', userId],
+      });
     },
   });
 
-  // Example mutation (if you later need one)
+  // Mutation to update user profile
   const updateProfileMutation = useMutation({
-    mutationFn: async (data: any) => {
-      // call your update API
+    mutationFn: async ({
+      userId,
+      profileData,
+    }: {
+      userId: string;
+      profileData: Partial<User>;
+    }) => {
+      return updateUserProfile(userId, profileData);
     },
     onSuccess: () => {
-      // refresh queries after mutation
-      // queryClient.invalidateQueries(['userCarActionCounts', userId]);
+      // Invalidate user profile queries to refetch updated data
+      queryClient.invalidateQueries({
+        queryKey: ['userProfile', userId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['userCarActionCounts', userId],
+      });
+    },
+    onError: (error) => {
+      console.error('Failed to update user profile:', error);
     },
   });
+
+  // Handle function to update user profile
+  const handleUpdateProfile = async ({
+    name,
+    email,
+    phoneNumber,
+    countryCode,
+  }: {
+    name?: string;
+    email?: string;
+    phoneNumber?: string;
+    countryCode?: string;
+  }) => {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+
+    const profileData: Partial<User> = {};
+
+    if (name !== undefined) profileData.name = name;
+    if (email !== undefined) profileData.email = email;
+    if (phoneNumber !== undefined) profileData.phoneNumber = phoneNumber;
+    if (countryCode !== undefined) profileData.countryCode = countryCode;
+
+    return updateProfileMutation.mutateAsync({
+      userId,
+      profileData,
+    });
+  };
 
   return {
     userCarActionCountsQuery, // contains { data, error, isLoading }
-    trackCarViewMutation,     // mutation to track car views
-    updateProfileMutation,    // mutation helpers
+    trackCarViewMutation, // mutation to track car views
+    updateProfileMutation, // mutation helpers
+    handleUpdateProfile, // handle function for updating profile
   };
 };

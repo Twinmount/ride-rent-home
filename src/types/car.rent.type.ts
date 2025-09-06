@@ -11,5 +11,9 @@ export interface UseCarRentReturn {
   setOpen: (open: boolean) => void;
   handleDateChange: (item: any) => void;
   handleConfirm: () => void;
+  handleClose: () => void;
   formatDateRange: () => string;
+  showBookingPopup: boolean;
+  handleBookingComplete: () => void;
+  handleBookingCancel: () => void;
 }
