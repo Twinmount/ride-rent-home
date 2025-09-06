@@ -11,6 +11,7 @@ interface LinkWrapperProps {
   children: React.ReactNode;
   className?: string;
   newTab?: boolean;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 const LinkWrapper = ({
@@ -18,12 +19,22 @@ const LinkWrapper = ({
   href,
   className,
   newTab = false,
+  onClick,
 }: LinkWrapperProps) => {
   const { setIsPageLoading } = useGlobalContext();
 
   const currentPath = usePathname(); // Get the current route
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Call the custom onClick handler first
+    if (onClick) {
+      onClick(e);
+      // If the custom handler prevented default, don't proceed
+      if (e.defaultPrevented) {
+        return;
+      }
+    }
+
     // Skip global loading if opening in a new tab
     if (newTab) {
       return;

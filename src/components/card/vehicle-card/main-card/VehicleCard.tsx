@@ -1,3 +1,5 @@
+'use client';
+
 import { NewVehicleCardType } from '@/types/vehicle-types';
 import { generateVehicleDetailsUrl } from '@/helpers';
 import VehicleThumbnail from '../VehicleThumbnail';
@@ -7,6 +9,7 @@ import MotionStaggeredArticle from '@/components/general/framer-motion/MotionSta
 import RentNowDialogTrigger from '../RentNowDialogTrigger';
 import { VehicleBadgesGroup } from '../vehicle-badge/VehicleBadgesGroup';
 import CardTitle from '../CardTitle';
+import { useAuthContext } from '@/auth';
 
 type VehicleCardProps = {
   vehicle: NewVehicleCardType;
@@ -23,6 +26,8 @@ const VehicleCard = ({
   layoutType,
   openInNewTab = false,
 }: VehicleCardProps) => {
+  const { auth, onHandleLoginmodal } = useAuthContext();
+
   // dynamic link to navigate to vehicle details page
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
     vehicleTitle: vehicle.vehicleTitle,
@@ -31,6 +36,15 @@ const VehicleCard = ({
     vehicleCode: vehicle.vehicleCode,
     country: country,
   });
+
+  // Handle click for protected navigation
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (!auth.isLoggedIn) {
+      e.preventDefault();
+      onHandleLoginmodal({ isOpen: true });
+      return;
+    }
+  };
 
   // card styles based on layout type
   const carouselCardStyle = `w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem] `;
@@ -49,6 +63,7 @@ const VehicleCard = ({
         href={vehicleDetailsPageLink}
         className="h-full w-full space-y-3"
         newTab={openInNewTab}
+        onClick={handleCardClick}
       >
         <div className="relative">
           {/* thumbnail with hover image cycling */}
@@ -82,6 +97,7 @@ const VehicleCard = ({
           href={vehicleDetailsPageLink}
           className="flex h-full w-full items-center"
           newTab={openInNewTab}
+          onClick={handleCardClick}
         >
           <RentalDetails
             rentalDetails={vehicle.rentalDetails}

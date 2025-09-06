@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import MobileProfileCard from '@/components/root/vehicle-details/profile-card/mobile-profile-card/MobileProfileCard';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { sendPortfolioVisit } from '@/lib/api/general-api';
@@ -41,20 +41,18 @@ const DetailsSectionClientWrapper = ({
   const detailsSectionRef = useRef(null);
   const isInViewPort = useIntersectionObserver(detailsSectionRef);
 
+  // Ref to track if the API has already been called to prevent double calls
+  const hasTrackedView = useRef(false);
+
   // Use the existing useUserProfile hook to get trackCarViewMutation
   const { trackCarViewMutation } = useUserProfile({
     userId: userId || '',
   });
 
-  useQuery({
-    queryKey: ['portfolioVisit', vehicleCode],
-    queryFn: () => sendPortfolioVisit(vehicleCode, country),
-    staleTime: 0,
-  });
-
-  // Track car view when component mounts (page loads)
-  useEffect(() => {
-    if (userId && vehicleId) {
+  // Memoized function to track car view to prevent recreation on every render
+  const trackCarView = useCallback(() => {
+    if (userId && vehicleId && !hasTrackedView.current) {
+      hasTrackedView.current = true;
       trackCarViewMutation.mutate({
         carId: vehicleId,
         metadata: {
@@ -66,7 +64,12 @@ const DetailsSectionClientWrapper = ({
         },
       });
     }
-  }, [userId, vehicleId]);
+  }, [userId, vehicleId, vehicleCode, country, trackCarViewMutation]);
+
+  // Track car view when component mounts (page loads) - only once
+  useEffect(() => {
+    trackCarView();
+  }, [trackCarView]);
 
   return (
     <section ref={detailsSectionRef}>
