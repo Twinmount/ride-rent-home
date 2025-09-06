@@ -90,21 +90,3 @@ export function SearchDialog({ state, category }: SearchDialogProps) {
     </BlurDialog>
   );
 }
-
-export function SearchTriggerButton() {
-  const isMobile = useIsMobile();
-
-  return isMobile ? (
-    <button>
-      <Search className="h-4 w-4" strokeWidth={2} />
-    </button>
-  ) : (
-    <button
-      aria-label="Open Search Dialog"
-      className="placeholder:text-grey-500 p-regular-16 flex h-[2.2rem] min-w-[14rem] items-center gap-2 rounded-xl border bg-white px-4 py-3 text-text-secondary placeholder:italic focus-visible:ring-transparent focus-visible:ring-offset-0"
-    >
-      <Search className="h-4 w-4" strokeWidth={2} />
-      <span className="relative">Search Vehicle</span>
-    </button>
-  );
-}

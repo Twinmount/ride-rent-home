@@ -1,7 +1,7 @@
 import { FetchVehicleCardsResponseV2 } from '@/types/vehicle-types';
 import { Suspense } from 'react';
 import Pagination from '../common/Pagination';
-import VehicleCard from '../card/new-vehicle-card/main-card/VehicleCard';
+import VehicleCard from '../card/vehicle-card/main-card/VehicleCard';
 import { API } from '@/utils/API';
 
 type Props = {

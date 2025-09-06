@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import AnimatedSkelton from '@/components/skelton/AnimatedSkelton';
 import NoResultsFound from './NoResultsFound';
 import { useInView } from 'react-intersection-observer';
 import LoadingWheel from '@/components/common/LoadingWheel';
@@ -11,7 +11,7 @@ import { convertToLabel } from '@/helpers';
 import { useQuery } from '@tanstack/react-query';
 import { fetchRelatedSeriesList } from '@/lib/api/general-api';
 import { useFetchListingVehiclesBySeries } from '@/hooks/useFetchListingVehiclesBySeries';
-import VehicleCard from '@/components/card/new-vehicle-card/main-card/VehicleCard';
+import VehicleCard from '@/components/card/vehicle-card/main-card/VehicleCard';
 
 type SeriesListingGridProps = {
   series: string;
@@ -247,7 +247,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
                         </div>
                       )}
 
-                      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-4 2xl:grid-cols-4">
+                      <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                         {vehicleList.map((vehicle: any, index) => {
                           const animationIndex = index % 8;
                           return (

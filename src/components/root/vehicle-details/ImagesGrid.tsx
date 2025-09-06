@@ -1,12 +1,16 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useRef, memo, useMemo, useState, useCallback } from 'react';
+import Image from 'next/image';
 import { Fancybox } from '@fancyapps/ui';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
 type MediaItem = {
   source: string;
   type: 'image' | 'video';
+  thumbnail?: string;
+  width?: number;
+  height?: number;
 };
 
 type Props = {
@@ -15,61 +19,112 @@ type Props = {
   className?: string;
 };
 
-const ImagesGrid = ({ mediaItems, imageAlt, className = '' }: Props) => {
-  useEffect(() => {
-    Fancybox.bind("[data-fancybox='gallery']", {
-      Thumbs: true,
-      Toolbar: {
-        display: {
-          left: ['infobar'],
-          middle: [
-            'zoomIn',
-            'zoomOut',
-            'toggle1to1',
-            'rotateCCW',
-            'rotateCW',
-            'flipX',
-            'flipY',
-          ],
-          right: ['slideshow', 'thumbs', 'close'],
-        },
-      },
-    });
-    return () => Fancybox.destroy();
+const ImageSkeleton = ({ className = '' }: { className?: string }) => (
+  <div className={`animate-pulse rounded-xl bg-gray-200 ${className}`} />
+);
+
+const ImagesGrid = ({
+  mediaItems,
+  imageAlt = 'Gallery image',
+  className = '',
+}: Props) => {
+  const fancyboxInitialized = useRef(false);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+
+  const handleImageLoad = useCallback((index: number) => {
+    setLoadedImages((prev) => new Set([...prev, index]));
   }, []);
 
-  // Organize media items for display
-  const videoItem = mediaItems.find((item) => item.type === 'video');
-  const imageItems = mediaItems.filter((item) => item.type === 'image');
+  // Organize media items
+  const { mainItem, sideItems, visibleThumbnails, remainingCount } =
+    useMemo(() => {
+      if (!mediaItems.length) {
+        return {
+          mainItem: null,
+          sideItems: [],
+          visibleThumbnails: [],
+          remainingCount: 0,
+        };
+      }
 
-  const mainItem = videoItem || mediaItems[0];
-  const sideItems = videoItem ? imageItems.slice(0, 2) : mediaItems.slice(1, 3);
-  const thumbnailItems = videoItem ? imageItems.slice(2) : mediaItems.slice(3);
+      const main = mediaItems[0];
+      const side = mediaItems.slice(1, 3);
+      const thumbnails = mediaItems.slice(3, 7);
+      const remaining = Math.max(0, mediaItems.length - 7);
 
-  const remainingCount = Math.max(0, thumbnailItems.length - 4);
-  const visibleThumbnails = thumbnailItems.slice(0, 4);
+      return {
+        mainItem: main,
+        sideItems: side,
+        visibleThumbnails: thumbnails,
+        remainingCount: remaining,
+      };
+    }, [mediaItems]);
+
+  // Initialize Fancybox
+  useEffect(() => {
+    if (!mediaItems.length || fancyboxInitialized.current) return;
+
+    try {
+      Fancybox.bind("[data-fancybox='gallery']", {
+        Thumbs: true,
+        Toolbar: {
+          display: {
+            left: ['infobar'],
+            middle: [
+              'zoomIn',
+              'zoomOut',
+              'toggle1to1',
+              'rotateCCW',
+              'rotateCW',
+            ],
+            right: ['slideshow', 'thumbs', 'close'],
+          },
+        },
+        Images: { zoom: true },
+        Hash: false,
+      });
+      fancyboxInitialized.current = true;
+    } catch (error) {
+      console.error('Fancybox initialization error:', error);
+    }
+
+    return () => {
+      try {
+        if (fancyboxInitialized.current) {
+          Fancybox.destroy();
+          fancyboxInitialized.current = false;
+        }
+      } catch (error) {
+        console.error('Fancybox cleanup error:', error);
+      }
+    };
+  }, [mediaItems.length]);
 
   const renderMediaItem = (
     item: MediaItem,
     index: number,
-    overlayCount?: number
+    overlayCount?: number,
+    priority = false
   ) => {
-    const isVideo = item.type === 'video';
-    const baseClasses = 'h-full w-full rounded-xl object-cover';
-
-    if (isVideo) {
+    if (item.type === 'video') {
       return (
-        <div className="relative h-full w-full overflow-hidden rounded-xl bg-black">
+        <div className="relative h-full w-full">
+          {!loadedImages.has(index) && (
+            <ImageSkeleton className="absolute inset-0 z-10" />
+          )}
           <video
             src={item.source}
-            className={baseClasses}
+            className="h-full w-full rounded-xl object-cover"
             controls
             muted
-            autoPlay
-            loop
-            controlsList="nodownload noplaybackrate"
-            disablePictureInPicture
             playsInline
+            poster={item.thumbnail}
+            preload="metadata"
+            onLoadedData={() => handleImageLoad(index)}
+            onError={() => {
+              console.error('Video failed to load:', item.source);
+              handleImageLoad(index);
+            }}
           />
         </div>
       );
@@ -81,14 +136,32 @@ const ImagesGrid = ({ mediaItems, imageAlt, className = '' }: Props) => {
         data-fancybox="gallery"
         className="group relative block h-full w-full overflow-hidden rounded-xl"
       >
-        <img
-          src={item.source}
-          alt={imageAlt || `Gallery image ${index + 1}`}
-          className={`${baseClasses} transition-transform duration-300 group-hover:scale-105`}
-          loading="lazy"
+        {!loadedImages.has(index) && (
+          <ImageSkeleton className="absolute inset-0 z-10" />
+        )}
+        <Image
+          src={item.thumbnail || item.source}
+          alt={`${imageAlt} ${index + 1}`}
+          fill
+          className={`object-cover transition-all duration-300 group-hover:scale-105 ${
+            loadedImages.has(index) ? 'opacity-100' : 'opacity-0'
+          }`}
+          priority={priority}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          quality={priority ? 85 : 75}
+          onLoad={() => handleImageLoad(index)}
+          onError={(e) => {
+            console.error('Image failed to load:', item.source);
+            const target = e.currentTarget;
+            if (item.thumbnail && target.src !== item.source) {
+              target.src = item.source;
+            } else {
+              handleImageLoad(index);
+            }
+          }}
         />
-        {overlayCount && overlayCount > 0 && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-xl font-semibold text-white backdrop-blur-sm md:text-2xl">
+        {overlayCount && overlayCount > 0 && loadedImages.has(index) && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center rounded-xl bg-black/60 text-xl font-semibold text-white">
             +{overlayCount}
           </div>
         )}
@@ -96,38 +169,44 @@ const ImagesGrid = ({ mediaItems, imageAlt, className = '' }: Props) => {
     );
   };
 
+  if (!mainItem) return null;
+
   return (
-    <div className={`h-full w-full ${className}`}>
-      {/* Desktop Layout - Adapts to container height with no internal padding */}
-      <div className="hidden h-full md:grid md:grid-rows-[1fr_auto] md:gap-3">
-        {/* Main Grid Area - Takes most of available height */}
-        <div className="grid h-full min-h-0 grid-cols-3 gap-3">
-          {/* Main Image/Video - Takes 2 columns, maintains aspect but fits container */}
-          <div className="col-span-2 overflow-hidden rounded-xl">
-            <div className="h-full w-full">{renderMediaItem(mainItem, 0)}</div>
+    <div className={`${className} w-full`}>
+      {/* Desktop Layout */}
+      <div className="hidden h-full md:flex md:flex-col md:gap-3">
+        <div className="flex flex-1 gap-3">
+          {/* Main Image */}
+          <div className="relative flex-[2] overflow-hidden rounded-xl">
+            {renderMediaItem(mainItem, 0, undefined, true)}
           </div>
 
-          {/* Side Column - Takes 1 column, divided into 2 equal rows */}
-          <div className="grid grid-rows-2 gap-3">
-            {sideItems.map((item, index) => (
-              <div key={index} className="overflow-hidden rounded-xl">
-                {renderMediaItem(item, index + 1)}
-              </div>
-            ))}
-          </div>
+          {/* Side Images */}
+          {sideItems.length > 0 && (
+            <div className="flex flex-1 flex-col gap-3">
+              {sideItems.map((item, index) => (
+                <div
+                  key={`side-${index}`}
+                  className="relative flex-1 overflow-hidden rounded-xl"
+                >
+                  {renderMediaItem(item, index + 1, undefined, index === 0)}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Thumbnail Row - Fixed height based on content */}
+        {/* Thumbnail Row */}
         {visibleThumbnails.length > 0 && (
-          <div className="flex h-20 justify-center gap-3 lg:h-24">
+          <div className="hidden h-20 gap-3 lg:flex xl:h-24">
             {visibleThumbnails.map((item, index) => (
               <div
-                key={index}
-                className="h-20 w-20 overflow-hidden rounded-xl lg:h-24 lg:w-[12.5rem]"
+                key={`thumb-${index}`}
+                className="relative flex-1 overflow-hidden rounded-xl"
               >
                 {renderMediaItem(
                   item,
-                  index + (videoItem ? 3 : 4),
+                  index + 1 + sideItems.length,
                   index === visibleThumbnails.length - 1
                     ? remainingCount
                     : undefined
@@ -138,18 +217,18 @@ const ImagesGrid = ({ mediaItems, imageAlt, className = '' }: Props) => {
         )}
       </div>
 
-      {/* Mobile Layout - Preserved as requested */}
-      <div className="flex h-full w-full flex-col px-2 md:hidden">
-        <div className="w-full flex-1 overflow-hidden rounded-xl">
-          {renderMediaItem(mediaItems[0], 0)}
+      {/* Mobile Layout */}
+      <div className="flex h-full flex-col gap-3 md:hidden">
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl">
+          {renderMediaItem(mediaItems[0], 0, undefined, true)}
         </div>
 
         {mediaItems.length > 1 && (
-          <div className="mt-4 flex h-20 justify-center gap-2 px-2">
+          <div className="flex h-20 gap-2">
             {mediaItems.slice(1, 4).map((item, index) => (
               <div
-                key={index}
-                className="h-full w-[30%] flex-shrink-0 overflow-hidden rounded-xl"
+                key={`mobile-${index}`}
+                className="relative flex-1 overflow-hidden rounded-xl"
               >
                 {renderMediaItem(
                   item,
@@ -164,12 +243,24 @@ const ImagesGrid = ({ mediaItems, imageAlt, className = '' }: Props) => {
         )}
       </div>
 
-      {/* Hidden lightbox items for remaining images */}
+      {/* Hidden lightbox items */}
       {remainingCount > 0 && (
-        <div className="hidden">
-          {thumbnailItems.slice(4).map((item, index) => (
-            <a key={index} href={item.source} data-fancybox="gallery">
-              <img src={item.source} alt={imageAlt} />
+        <div className="sr-only">
+          {mediaItems.slice(7).map((item, index) => (
+            <a
+              key={`hidden-${index}`}
+              href={item.source}
+              data-fancybox="gallery"
+              tabIndex={-1}
+            >
+              <Image
+                src={item.thumbnail || item.source}
+                alt={`${imageAlt} ${index + 8}`}
+                width={200}
+                height={150}
+                className="object-cover"
+                quality={60}
+              />
             </a>
           ))}
         </div>
@@ -177,5 +268,7 @@ const ImagesGrid = ({ mediaItems, imageAlt, className = '' }: Props) => {
     </div>
   );
 };
+
+ImagesGrid.displayName = 'ImagesGrid';
 
 export default ImagesGrid;

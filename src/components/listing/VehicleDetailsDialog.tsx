@@ -9,7 +9,7 @@ import {
 import { MapVehicleCardType } from '@/types/vehicle-types';
 import Link from 'next/link';
 import { generateVehicleDetailsUrl } from '@/helpers';
-import VehicleMapCard from '../card/new-vehicle-card/main-card/VehicleMapCard';
+import VehicleMapCard from '../card/vehicle-card/main-card/VehicleMapCard';
 import { Fragment } from 'react';
 
 export function VehicleDetailsDialog({
