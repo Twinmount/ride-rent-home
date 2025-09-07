@@ -1,0 +1,312 @@
+import type {
+  LoginData,
+  PhoneSignupData,
+  User,
+  AuthResponse,
+  OtpVerificationData,
+  SetPasswordData,
+  ResendOtpData,
+  ProfileUpdateData,
+} from '@/types/auth.types';
+
+import { createAuthenticatedRequest, authApiClient } from './axios.config';
+
+// API endpoints configuration (relative paths since base URL is handled by axios config)
+const AUTH_ENDPOINTS = {
+  SIGNUP: '/signup',
+  LOGIN: '/login',
+  VERIFY_OTP: '/verify-otp',
+  SET_PASSWORD: '/set-password',
+  RESEND_OTP: '/resend-otp',
+  PROFILE: '/profile',
+  GET_USER_PROFILE: '/user/profile',
+  UPDATE_PROFILE: '/user/profile',
+  FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
+  REFRESH_TOKEN: '/refresh-access-token',
+  LOGOUT: '/logout',
+} as const;
+
+// Auth API service class
+export class AuthAPI {
+  /**
+   * User signup with phone number
+   */
+  static async signup(signupData: PhoneSignupData): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.SIGNUP,
+        signupData
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || error.message || 'Signup failed'
+      );
+    }
+  }
+
+  /**
+   * User login with phone number and password
+   */
+  static async login(loginData: LoginData): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.LOGIN,
+        loginData
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || error.message || 'Login failed'
+      );
+    }
+  }
+
+  /**
+   * Verify OTP for phone number verification
+   */
+  static async verifyOtp(otpData: OtpVerificationData): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.VERIFY_OTP,
+        otpData
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          'OTP verification failed'
+      );
+    }
+  }
+
+  /**
+   * Set password after phone verification
+   */
+  static async setPassword(
+    passwordData: SetPasswordData
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.SET_PASSWORD,
+        passwordData
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          'Failed to set password'
+      );
+    }
+  }
+
+  /**
+   * Resend OTP for phone verification
+   */
+  static async resendOtp(resendData: ResendOtpData): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.RESEND_OTP,
+        resendData
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || error.message || 'Failed to resend OTP'
+      );
+    }
+  }
+
+  /**
+   * Get current user profile
+   */
+  static async getProfile(): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.get(
+        AUTH_ENDPOINTS.PROFILE
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          'Failed to get profile'
+      );
+    }
+  }
+
+  /**
+   * Get user profile by user ID
+   */
+  static async getUserProfile(userId: string): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.get(
+        `${AUTH_ENDPOINTS.GET_USER_PROFILE}/${userId}`
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          'Failed to get user profile'
+      );
+    }
+  }
+
+  /**
+   * Update user profile with name and avatar (FormData)
+   */
+  static async updateProfile(
+    userId: string,
+    profileData: ProfileUpdateData
+  ): Promise<AuthResponse> {
+    try {
+      const formData = new FormData();
+      formData.append('name', profileData.name);
+
+      if (profileData.avatar && profileData.avatar instanceof File) {
+        formData.append('avatar', profileData.avatar);
+      }
+
+      // Use axios client directly for FormData to ensure proper content-type handling
+      const response = await authApiClient.put(
+        `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`,
+        formData
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          'Failed to update profile'
+      );
+    }
+  }
+
+  /**
+   * Update user profile with JSON data
+   */
+  static async updateUserProfile(
+    userId: string,
+    profileData: User
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.put(
+        `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}`,
+        profileData
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          'Failed to update user profile'
+      );
+    }
+  }
+
+  /**
+   * Refresh access token
+   */
+  static async refreshAccessToken(userId: string): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.REFRESH_TOKEN,
+        { userId }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          'Failed to refresh token'
+      );
+    }
+  }
+
+  /**
+   * User logout
+   */
+  static async logout(userId?: string): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.LOGOUT,
+        userId ? { userId } : undefined
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || error.message || 'Logout failed'
+      );
+    }
+  }
+
+  /**
+   * Forgot password
+   */
+  static async forgotPassword(
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.FORGOT_PASSWORD,
+        { phoneNumber, countryCode }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          'Failed to send password reset'
+      );
+    }
+  }
+
+  /**
+   * Reset password
+   */
+  static async resetPassword(
+    userId: string,
+    otpId: string,
+    otp: string,
+    newPassword: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.RESET_PASSWORD,
+        { userId, otpId, otp, newPassword }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          'Failed to reset password'
+      );
+    }
+  }
+}
+
+// Export individual functions for easier usage
+export const authAPI = {
+  signup: AuthAPI.signup,
+  login: AuthAPI.login,
+  verifyOtp: AuthAPI.verifyOtp,
+  setPassword: AuthAPI.setPassword,
+  resendOtp: AuthAPI.resendOtp,
+  getProfile: AuthAPI.getProfile,
+  getUserProfile: AuthAPI.getUserProfile,
+  updateProfile: AuthAPI.updateProfile,
+  updateUserProfile: AuthAPI.updateUserProfile,
+  refreshAccessToken: AuthAPI.refreshAccessToken,
+  logout: AuthAPI.logout,
+  forgotPassword: AuthAPI.forgotPassword,
+  resetPassword: AuthAPI.resetPassword,
+};
+
+// Export default
+export default authAPI;

@@ -38,11 +38,11 @@ const VehicleCard = ({
   });
 
   // Handle click for protected navigation
-  const handleCardClick = (e: React.MouseEvent) => {
+  const handleCardClick = (e: React.MouseEvent): void => {
     if (!auth.isLoggedIn) {
       e.preventDefault();
+      e.stopPropagation();
       onHandleLoginmodal({ isOpen: true });
-      return;
     }
   };
 
@@ -60,8 +60,8 @@ const VehicleCard = ({
     >
       {/* card top */}
       <LinkWrapper
-        href={vehicleDetailsPageLink}
-        className="h-full w-full space-y-3"
+        href={auth.isLoggedIn ? vehicleDetailsPageLink : '#'}
+        className={`h-full w-full space-y-3 ${!auth.isLoggedIn ? 'cursor-pointer' : ''}`}
         newTab={openInNewTab}
         onClick={handleCardClick}
       >
@@ -94,8 +94,8 @@ const VehicleCard = ({
       {/* card bottom */}
       <div className="flex-between">
         <LinkWrapper
-          href={vehicleDetailsPageLink}
-          className="flex h-full w-full items-center"
+          href={auth.isLoggedIn ? vehicleDetailsPageLink : '#'}
+          className={`flex h-full w-full items-center ${!auth.isLoggedIn ? 'cursor-pointer' : ''}`}
           newTab={openInNewTab}
           onClick={handleCardClick}
         >

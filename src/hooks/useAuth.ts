@@ -13,17 +13,14 @@ import type {
   AuthError,
   AuthState,
   InternalAuthState,
-  AuthEndpoints,
   AuthStorageKeys,
   PasswordValidationResult,
   AuthStorageInterface,
-  AuthAPIInterface,
   UseAuthReturn,
   OtpVerificationData,
   SetPasswordData,
   ResendOtpData,
   ProfileUpdateData,
-  AuthRequestOptions,
 } from '@/types/auth.types';
 
 // Import constants
@@ -40,201 +37,11 @@ import {
   createAuthError,
 } from '@/utils/auth.utils';
 
-// API endpoints configuration
-const API_BASE_URL = 'http://localhost:5000';
-const AUTH_ENDPOINTS: AuthEndpoints = {
-  SIGNUP: `${API_BASE_URL}/v1/riderent/auth/signup`,
-  LOGIN: `${API_BASE_URL}/v1/riderent/auth/login`,
-  VERIFY_OTP: `${API_BASE_URL}/v1/riderent/auth/verify-otp`,
-  SET_PASSWORD: `${API_BASE_URL}/v1/riderent/auth/set-password`,
-  RESEND_OTP: `${API_BASE_URL}/v1/riderent/auth/resend-otp`,
-  PROFILE: `${API_BASE_URL}/v1/riderent/auth/profile`,
-  GET_USER_PROFILE: `${API_BASE_URL}/v1/riderent/auth/user/profile`,
-  UPDATE_PROFILE: `${API_BASE_URL}/v1/riderent/auth/user/profile`,
-  FORGOT_PASSWORD: `${API_BASE_URL}/v1/riderent/auth/forgot-password`,
-  RESET_PASSWORD: `${API_BASE_URL}/v1/riderent/auth/reset-password`,
-  REFRESH_TOKEN: `${API_BASE_URL}/v1/riderent/auth/refresh-access-token`,
-  LOGOUT: `${API_BASE_URL}/v1/riderent/auth/logout`,
-};
+// Import auth API service
+import { authAPI } from '@/lib/api/auth.api';
+import { authStorage } from '@/lib/auth/authStorage';
 
-// Local storage utilities
-const AUTH_STORAGE_KEYS: AuthStorageKeys = STORAGE_KEYS;
-
-export const authStorage: AuthStorageInterface = {
-  setToken: (token: string, rememberMe: boolean = false) => {
-    const storage = getStorageType(rememberMe);
-    if (storage) {
-      storage.setItem(AUTH_STORAGE_KEYS.TOKEN, token);
-    }
-  },
-
-  getToken: (): string | null => {
-    if (typeof window === 'undefined') return null;
-    return (
-      localStorage.getItem(AUTH_STORAGE_KEYS.TOKEN) ||
-      sessionStorage.getItem(AUTH_STORAGE_KEYS.TOKEN)
-    );
-  },
-
-  setRefreshToken: (refreshToken: string, rememberMe: boolean = false) => {
-    const storage = getStorageType(rememberMe);
-    if (storage) {
-      storage.setItem(AUTH_STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
-    }
-  },
-
-  getRefreshToken: (): string | null => {
-    if (typeof window === 'undefined') return null;
-    return (
-      localStorage.getItem(AUTH_STORAGE_KEYS.REFRESH_TOKEN) ||
-      sessionStorage.getItem(AUTH_STORAGE_KEYS.REFRESH_TOKEN)
-    );
-  },
-
-  setUser: (user: User, rememberMe: boolean = false) => {
-    const storage = getStorageType(rememberMe);
-    if (storage) {
-      storage.setItem(AUTH_STORAGE_KEYS.USER, JSON.stringify(user));
-    }
-  },
-
-  getUser: (): User | null => {
-    if (typeof window === 'undefined') return null;
-    const userStr =
-      localStorage.getItem(AUTH_STORAGE_KEYS.USER) ||
-      sessionStorage.getItem(AUTH_STORAGE_KEYS.USER);
-    return parseStoredUser(userStr);
-  },
-
-  clear: () => {
-    clearAuthStorage();
-  },
-};
-
-// HTTP client utility
-const createAuthRequest = async (
-  url: string,
-  options: AuthRequestOptions = {}
-): Promise<AuthResponse> => {
-  const token = authStorage.getToken();
-
-  const defaultHeaders: Record<string, string> = {};
-
-  // Only set Content-Type for non-FormData requests
-  if (!(options.body instanceof FormData)) {
-    defaultHeaders['Content-Type'] = 'application/json';
-  }
-
-  if (token) {
-    defaultHeaders.Authorization = `Bearer ${token}`;
-  }
-
-  try {
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        ...defaultHeaders,
-        ...options.headers,
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Request failed');
-    }
-
-    return data;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Network error');
-  }
-};
-
-// Auth API Functions
-const authAPI: AuthAPIInterface = {
-  signup: async (signupData: PhoneSignupData) => {
-    return createAuthRequest(AUTH_ENDPOINTS.SIGNUP, {
-      method: 'POST',
-      body: JSON.stringify(signupData),
-    });
-  },
-
-  login: async (loginData: LoginData) => {
-    return createAuthRequest(AUTH_ENDPOINTS.LOGIN, {
-      method: 'POST',
-      body: JSON.stringify(loginData),
-    });
-  },
-
-  verifyOtp: async (otpData: OtpVerificationData) => {
-    return createAuthRequest(AUTH_ENDPOINTS.VERIFY_OTP, {
-      method: 'POST',
-      body: JSON.stringify(otpData),
-    });
-  },
-
-  setPassword: async (passwordData: SetPasswordData) => {
-    return createAuthRequest(AUTH_ENDPOINTS.SET_PASSWORD, {
-      method: 'POST',
-      body: JSON.stringify(passwordData),
-    });
-  },
-
-  resendOtp: async (resendData: ResendOtpData) => {
-    return createAuthRequest(AUTH_ENDPOINTS.RESEND_OTP, {
-      method: 'POST',
-      body: JSON.stringify(resendData),
-    });
-  },
-
-  getProfile: async () => {
-    return createAuthRequest(AUTH_ENDPOINTS.PROFILE);
-  },
-
-  getUserProfile: async (userId: string) => {
-    return createAuthRequest(`${AUTH_ENDPOINTS.GET_USER_PROFILE}/${userId}`);
-  },
-
-  updateProfile: async (userId: string, profileData: ProfileUpdateData) => {
-    const formData = new FormData();
-    formData.append('name', profileData.name);
-
-    if (profileData.avatar && profileData.avatar instanceof File) {
-      formData.append('avatar', profileData.avatar);
-    }
-
-    return createAuthRequest(
-      `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`,
-      {
-        method: 'PUT',
-        body: formData, // FormData will be handled properly by createAuthRequest
-      }
-    );
-  },
-
-  updateUserProfile: async (userId: string, profileData: User) => {
-    return createAuthRequest(
-      `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`,
-      {
-        method: 'PUT',
-        body: JSON.stringify(profileData), // Send as JSON string
-      }
-    );
-  },
-
-  refreshAccessToken: async (userId: string) => {
-    return createAuthRequest(AUTH_ENDPOINTS.REFRESH_TOKEN, {
-      method: 'POST',
-      body: JSON.stringify({ userId }),
-    });
-  },
-
-  logout: async () => {
-    return createAuthRequest(AUTH_ENDPOINTS.LOGOUT, {
-      method: 'POST',
-    });
-  },
-};
+// Remove the old API_BASE_URL and AUTH_ENDPOINTS since they're now in the auth.api.ts file
 
 // Main authentication hook
 export const useAuth = () => {
@@ -436,7 +243,7 @@ export const useAuth = () => {
   });
 
   const logoutMutation = useMutation({
-    mutationFn: ({ userId }: { userId: string }) => authAPI.logout(userId),
+    mutationFn: ({ userId }: { userId?: string }) => authAPI.logout(userId),
     onSuccess: () => {
       setAuthenticated(null);
       setAuth((draft) => {
@@ -603,7 +410,7 @@ export const useAuth = () => {
   );
 
   // Logout function
-  const logout = async (id: string): Promise<void> => {
+  const logout = async (id?: string): Promise<void> => {
     try {
       await logoutMutation.mutateAsync({ userId: id });
     } catch (error) {

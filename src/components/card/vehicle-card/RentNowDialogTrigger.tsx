@@ -48,7 +48,7 @@ export default function RentNowDialogTrigger({
       onClick={handleClick}
       className={`flex-center whitespace-nowrap rounded bg-theme-gradient py-1 text-text-primary ${className}`}
     >
-      Rent Now
+      View Details
     </button>
   );
 }

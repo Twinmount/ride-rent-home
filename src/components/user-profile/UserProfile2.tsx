@@ -40,16 +40,33 @@ import {
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useAuthContext } from '@/auth';
 import { ProfileBreadcrumb } from '@/components/user-profile';
+import { ProtectedRoute } from '@/components/common';
 
 interface UserProfileProps {
   className?: string;
 }
 
 export const UserProfile2 = ({ className }: UserProfileProps) => {
+  return (
+    <ProtectedRoute showLoginModal={true}>
+      <UserProfileContent className={className} />
+    </ProtectedRoute>
+  );
+};
+
+const UserProfileContent = ({ className }: UserProfileProps) => {
   const router = useRouter();
   const [languages, setLanguages] = useState('English, Arabic');
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
+
+  // Get auth context
+  const {
+    authStorage,
+    formatMemberSince,
+    useGetUserProfile,
+    updateUserNameAndAvatar,
+  } = useAuthContext();
 
   // Profile data state
   const [profileData, setProfileData] = useImmer<{
@@ -74,13 +91,6 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [tempName, setTempName] = useState('');
   console.log('tempName: ', tempName);
-
-  const {
-    authStorage,
-    formatMemberSince,
-    useGetUserProfile,
-    updateUserNameAndAvatar,
-  } = useAuthContext();
 
   const userId = authStorage.getUser()?.id.toString();
 

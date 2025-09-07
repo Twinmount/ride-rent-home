@@ -4,7 +4,7 @@ import axios, {
   InternalAxiosRequestConfig,
   AxiosInstance,
 } from 'axios';
-import { authStorage } from '@/hooks/useAuth';
+import { authStorage } from '@/lib/auth/authStorage';
 import { ENV } from '@/config/env';
 
 // Define API base URLs

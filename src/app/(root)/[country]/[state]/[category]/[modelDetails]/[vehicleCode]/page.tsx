@@ -23,6 +23,7 @@ import { generateModelDetailsUrl } from '@/helpers';
 import SupplierDetails from '@/components/root/vehicle-details/SupplierDetails';
 import VehicleHeading from '@/components/root/vehicle-details/VehicleHeading';
 import ProfileCard from '@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard';
+import ProtectedVehicleDetails from '@/components/common/ProtectedVehicleDetails';
 
 type ParamsProps = {
   params: Promise<{
@@ -182,7 +183,7 @@ export default async function VehicleDetails(props: ParamsProps) {
   };
 
   return (
-    <>
+    <ProtectedVehicleDetails>
       {/* Inject JSON-LD into the <head> */}
       <JsonLd
         key={vehicleCode}
@@ -262,6 +263,6 @@ export default async function VehicleDetails(props: ParamsProps) {
         {/* Supplier Details */}
         <SupplierDetails {...SupplierDetailsPropsData} />
       </div>
-    </>
+    </ProtectedVehicleDetails>
   );
 }
