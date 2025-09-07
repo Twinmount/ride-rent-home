@@ -258,7 +258,7 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
       navigationPath: '/user-profile/saved-vehicles',
     },
     {
-      label: 'Profile Views',
+      label: 'Viewed Vehicles',
       value: userCarActionCountsQuery.data?.viewed || 0,
       trend: '+24%',
       trendUp: true,
