@@ -10,12 +10,10 @@ export const getUserCarActionCounts = async (
   userId: string
 ): Promise<UserCarActionCounts> => {
   const baseURL = ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
-  console.log('baseURL: ', baseURL);
   // Use relative URL since baseURL is handled by the client
   const response = await mainApiClient.get<UserCarActionCountsResponse>(
     `/user-cars/counts/${userId}`
   );
-  console.log('response.data: ', response.data);
   return response.data.result;
 };
 
@@ -29,7 +27,6 @@ export const trackCarView = async (
     carId,
     metadata,
   });
-  console.log('Car view tracked: ', response.data);
 };
 
 export const updateUserProfile = async (

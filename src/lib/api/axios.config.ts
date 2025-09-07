@@ -145,17 +145,18 @@ const createApiClient = (baseURL: string): AxiosInstance => {
             return client(originalRequest);
           }
         } catch (refreshError) {
+          console.log('refreshError: ', refreshError);
           isRefreshing = false;
           // Clear waiting subscribers
           refreshSubscribers = [];
 
           // Clear auth storage
-          authStorage.clear();
+          // authStorage.clear();
 
-          // Optionally redirect to login
-          if (typeof window !== 'undefined') {
-            window.location.href = '/';
-          }
+          // // Optionally redirect to login
+          // if (typeof window !== 'undefined') {
+          //   window.location.href = '/';
+          // }
 
           return Promise.reject(refreshError);
         }

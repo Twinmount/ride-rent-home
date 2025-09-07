@@ -12,6 +12,9 @@ interface BookingPopupProps {
   onComplete?: () => void;
   onCancel?: () => void;
   isOpen?: boolean;
+  onConfirmBooking?: (message?: string) => void;
+  isLoading?: boolean;
+  error?: string;
 }
 
 const BOOKING_MESSAGES = [
@@ -24,10 +27,14 @@ export const BookingPopup = ({
   onComplete,
   onCancel,
   isOpen: propIsOpen,
+  onConfirmBooking,
+  isLoading = false,
+  error,
 }: BookingPopupProps = {}) => {
   const { selectedVehicle, closeDialog } = useVehicleCardContext();
-  console.log('selectedVehicle: ', selectedVehicle);
-  const isOpen = propIsOpen !== undefined ? propIsOpen : Boolean(selectedVehicle); // Use prop if provided, otherwise use context
+
+  const isOpen =
+    propIsOpen !== undefined ? propIsOpen : Boolean(selectedVehicle); // Use prop if provided, otherwise use context
 
   const [currentStep, setCurrentStep] = useState(0);
   const [showCancel, setShowCancel] = useState(true);
@@ -55,6 +62,11 @@ export const BookingPopup = ({
       setCurrentStep(0);
       setShowCancel(true);
       setProgress(0);
+
+      // Trigger the rental enquiry when popup opens
+      if (onConfirmBooking && !isLoading) {
+        onConfirmBooking('I am interested in this car. Is it still available?');
+      }
 
       const progressInterval = setInterval(() => {
         setProgress((prev) => {
@@ -90,7 +102,7 @@ export const BookingPopup = ({
 
     // Return undefined when conditions aren't met
     return undefined;
-  }, [isOpen]);
+  }, [isOpen, onConfirmBooking, isLoading]);
 
   const handleCancelClick = () => {
     if (showCancel) {
@@ -219,9 +231,17 @@ export const BookingPopup = ({
 
                   {/* Status message centered below animation */}
                   <div className="w-full text-center">
-                    <p className="min-h-[20px] px-2 text-sm font-medium text-gray-900 sm:min-h-[24px] sm:text-base">
-                      {BOOKING_MESSAGES[currentStep]}
-                    </p>
+                    {error ? (
+                      <p className="min-h-[20px] px-2 text-sm font-medium text-red-600 sm:min-h-[24px] sm:text-base">
+                        {error}
+                      </p>
+                    ) : (
+                      <p className="min-h-[20px] px-2 text-sm font-medium text-gray-900 sm:min-h-[24px] sm:text-base">
+                        {isLoading
+                          ? 'Sending enquiry...'
+                          : BOOKING_MESSAGES[currentStep]}
+                      </p>
+                    )}
                   </div>
                 </div>
 

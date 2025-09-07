@@ -5,7 +5,6 @@ import MobileProfileCard from '@/components/root/vehicle-details/profile-card/mo
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { sendPortfolioVisit } from '@/lib/api/general-api';
 import { ProfileCardDataType } from '@/types/vehicle-details-types';
-import { useQuery } from '@tanstack/react-query';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useAuthContext } from '@/auth';
 
@@ -44,7 +43,6 @@ const DetailsSectionClientWrapper = ({
   // Ref to track if the API has already been called to prevent double calls
   const hasTrackedView = useRef(false);
 
-  // Use the existing useUserProfile hook to get trackCarViewMutation
   const { trackCarViewMutation } = useUserProfile({
     userId: userId || '',
   });

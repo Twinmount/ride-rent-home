@@ -27,6 +27,7 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
     company,
     seriesDescription,
     vehicleData: { state, model },
+    vehicleId,
   } = profileData;
 
   return (
@@ -67,9 +68,12 @@ const ProfileCard = ({ profileData, country }: ProfileCardProps) => {
       </div> */}
       <div className="py-2">
         <RentNowbuttonWide
-          contactDetails={company.contactDetails}
-          vehicleName={model}
           state={state}
+          country={country}
+          vehicleName={model}
+          vehicleId={vehicleId}
+          agentId={profileData.agentId}
+          contactDetails={company.contactDetails}
         />
       </div>
     </MotionDiv>

@@ -23,6 +23,9 @@ type RentNowButtonWideProps = {
   contactDetails?: ContactDetails | null;
   vehicleName?: string;
   state?: string;
+  vehicleId?: string;
+  agentId?: string;
+  country?: string;
 };
 
 const RentNowButtonWide = ({
@@ -33,6 +36,9 @@ const RentNowButtonWide = ({
   contactDetails,
   vehicleName,
   state,
+  vehicleId,
+  agentId,
+  country = 'ae',
 }: RentNowButtonWideProps) => {
   const [showContactPopup, setShowContactPopup] = useState(false);
   const {
@@ -46,9 +52,12 @@ const RentNowButtonWide = ({
     handleDateChange,
     handleBookingComplete,
     handleBookingCancel,
-  } = useCarRent();
-
-  console.log('contactDetails: ', contactDetails);
+    handleBookingConfirm,
+    rentalEnquiryMutation,
+  } = useCarRent(
+    undefined, // onDateChange callback
+    vehicleId && agentId ? { vehicleId, agentId, country } : undefined
+  );
 
   // Define size classes based on variant
   const sizeClasses =
@@ -106,19 +115,24 @@ const RentNowButtonWide = ({
           handleClose={handleClose}
           carRentDate={carRentDate}
           handleConfirm={handleConfirm}
+          title="Select Date Range"
+          ConfirmBtnTxt="Confirm Booking"
           formatDateRange={formatDateRange}
           handleDateChange={handleDateChange}
         />
       )}
 
       {/* Booking Popup */}
-      {showBookingPopup && (
-        <BookingPopup
-          isOpen={showBookingPopup}
-          onComplete={handleBookingComplete}
-          onCancel={handleBookingCancel}
-        />
-      )}
+      {/* {showBookingPopup && ( */}
+      {/* <BookingPopup
+        isOpen={showBookingPopup}
+        onComplete={handleBookingComplete}
+        onCancel={handleBookingCancel}
+        onConfirmBooking={handleBookingConfirm}
+        isLoading={rentalEnquiryMutation.isPending}
+        error={rentalEnquiryMutation.error?.message}
+      /> */}
+      {/* )} */}
 
       {contactDetails && (
         <ContactPopup

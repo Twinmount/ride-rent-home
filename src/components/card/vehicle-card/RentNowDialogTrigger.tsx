@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { NewVehicleCardType } from '@/types/vehicle-types';
 import { generateVehicleDetailsUrl } from '@/helpers';
 import { useAuthContext } from '@/auth';
+import { useVehicleCardContext } from '@/context/VehicleCardContext';
 
 type RentNowDialogTriggerProps = {
   vehicle: NewVehicleCardType;

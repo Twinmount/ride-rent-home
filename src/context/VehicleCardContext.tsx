@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { NewVehicleCardType } from "@/types/vehicle-types";
-import React, { createContext, useState, useContext } from "react";
+import { NewVehicleCardType } from '@/types/vehicle-types';
+import React, { createContext, useState, useContext } from 'react';
 
 interface VehicleCardContextType {
   selectedVehicle: NewVehicleCardType;
@@ -10,7 +10,7 @@ interface VehicleCardContextType {
 }
 
 const VehicleCardContext = createContext<VehicleCardContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export const VehicleCardContextProvider: React.FC<{
@@ -43,7 +43,7 @@ export const useVehicleCardContext = (): VehicleCardContextType => {
   const context = useContext(VehicleCardContext);
   if (!context) {
     throw new Error(
-      "useVehicleCardContext must be used within a VehicleCardProvider",
+      'useVehicleCardContext must be used within a VehicleCardProvider'
     );
   }
   return context;

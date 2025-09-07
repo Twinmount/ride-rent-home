@@ -2,10 +2,19 @@ import { useState } from 'react';
 import { addDays } from 'date-fns';
 import { DateRange, UseCarRentReturn } from '@/types/car.rent.type';
 import { useImmer } from 'use-immer';
+import { useMutation } from '@tanstack/react-query';
+import { sendRentalEnquiry } from '@/lib/api/general-api';
+import { useAuthContext } from '@/auth';
 
 export const useCarRent = (
-  onDateChange?: (range: { startDate: Date; endDate: Date }) => void
+  onDateChange?: (range: { startDate: Date; endDate: Date }) => void,
+  vehicleData?: {
+    vehicleId: string;
+    agentId: string;
+    country?: string;
+  }
 ): UseCarRentReturn => {
+  const { auth, authStorage } = useAuthContext();
 
   const initialDateRange = {
     startDate: new Date(),
@@ -13,12 +22,49 @@ export const useCarRent = (
     key: 'selection',
   };
 
-  const [carRentDate, setCarRentDate] = useImmer<DateRange[]>([initialDateRange]);
+  const [carRentDate, setCarRentDate] = useImmer<DateRange[]>([
+    initialDateRange,
+  ]);
   const [open, setOpen] = useImmer(false);
   const [showBookingPopup, setShowBookingPopup] = useImmer(false);
 
-  console.log('carRentDate: ', carRentDate);
+  // Rental enquiry mutation
+  const rentalEnquiryMutation = useMutation({
+    mutationFn: async ({
+      message,
+      startDate,
+      endDate,
+    }: {
+      message: string;
+      startDate: Date;
+      endDate: Date;
+    }) => {
+      const user = authStorage.getUser();
+      if (!user?.id) {
+        throw new Error('User must be logged in to send enquiry');
+      }
 
+      if (!vehicleData?.vehicleId || !vehicleData?.agentId) {
+        throw new Error('Vehicle data is required');
+      }
+
+      return sendRentalEnquiry({
+        message,
+        userId: user.id.toString(),
+        agentId: vehicleData.agentId,
+        carId: vehicleData.vehicleId,
+        rentalStartDate: startDate.toISOString(),
+        rentalEndDate: endDate.toISOString(),
+      });
+    },
+    onSuccess: () => {
+      console.log('Rental enquiry sent successfully');
+      handleBookingComplete();
+    },
+    onError: (error) => {
+      console.error('Failed to send rental enquiry:', error);
+    },
+  });
 
   const handleDateChange = (item: any) => {
     const { startDate, endDate, key } = item.selection;
@@ -37,10 +83,22 @@ export const useCarRent = (
     }
   };
 
+  const handleBookingConfirm = (
+    message: string = 'I am interested in this car. Is it still available?'
+  ) => {
+    const endDate = carRentDate[0].endDate;
+    const startDate = carRentDate[0].startDate;
+    rentalEnquiryMutation.mutate({
+      message,
+      startDate,
+      endDate,
+    });
+  };
+
   const handleConfirm = () => {
-    setOpen(false);
-    setShowBookingPopup(true);
-    setCarRentDate([initialDateRange]);
+    // setOpen(false);
+    handleBookingConfirm();
+    // setCarRentDate([initialDateRange]);
   };
 
   const handleClose = () => {
@@ -76,5 +134,7 @@ export const useCarRent = (
     showBookingPopup,
     handleBookingComplete,
     handleBookingCancel,
+    handleBookingConfirm,
+    rentalEnquiryMutation,
   };
 };

@@ -39,8 +39,6 @@ export const LoginDialog = ({
     rememberMe: false,
   });
 
-  console.log('loginForm: ', loginForm);
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -59,7 +57,6 @@ export const LoginDialog = ({
   const [signupStep, setSignupStep] = useState(1); // 1: basic info, 2: OTP verification, 3: password setup
   const [mobileNumber, setMobileNumber] = useState('');
   const [countryCode, setCountryCode] = useState('+971');
-  console.log('countryCode: ', countryCode);
   const [otp, setOtp] = useState(['', '', '', '']);
   const [otpVerified, setOtpVerified] = useState(false);
   const [password, setPassword] = useState('');

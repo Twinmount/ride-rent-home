@@ -4,7 +4,6 @@ export interface DateRange {
   key: string;
 }
 
-
 export interface UseCarRentReturn {
   carRentDate: DateRange[];
   open: boolean;
@@ -16,4 +15,6 @@ export interface UseCarRentReturn {
   showBookingPopup: boolean;
   handleBookingComplete: () => void;
   handleBookingCancel: () => void;
+  handleBookingConfirm: (message?: string) => void;
+  rentalEnquiryMutation: any; // You can type this more specifically if needed
 }

@@ -707,3 +707,60 @@ export const fetchRelatedSeriesList = async (
     }
   }
 };
+
+// Function to send rental enquiry
+export const sendRentalEnquiry = async ({
+  userId,
+  agentId,
+  carId,
+  message,
+  rentalStartDate,
+  rentalEndDate,
+  country = 'ae',
+}: {
+  userId: string;
+  agentId: string;
+  carId: string;
+  message: string;
+  rentalStartDate: string;
+  rentalEndDate: string;
+  country?: string;
+}) => {
+  try {
+    const BASE_URL =
+      country === 'in'
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
+
+    console.log('BASE_URL: ', BASE_URL);
+
+    const url = `${BASE_URL}/enquiries`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId,
+        agentId,
+        carId,
+        message,
+        rentalStartDate,
+        rentalEndDate,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to send rental enquiry');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error sending rental enquiry:', error);
+    throw error;
+  }
+};

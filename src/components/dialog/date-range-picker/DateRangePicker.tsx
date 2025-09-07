@@ -1,8 +1,11 @@
 'use client';
 
 import React from 'react';
-import { DateRange as RDateRange } from 'react-date-range';
-import { DateRangePicker as RDateRangePicker } from 'react-date-range';
+import {
+  defaultStaticRanges,
+  DateRange as RDateRange,
+  DateRangePicker as RDateRangePicker,
+} from 'react-date-range';
 import {
   Dialog,
   DialogContent,
@@ -22,6 +25,8 @@ interface CarDateRange {
 interface DateRangePickerProps {
   onDateChange?: (range: { startDate: Date; endDate: Date }) => void;
   triggerText?: string;
+  title?: string;
+  ConfirmBtnTxt?: string;
   className?: string;
   error?: string;
   hasError?: boolean;
@@ -37,14 +42,20 @@ interface DateRangePickerProps {
 
 export const DateRangePicker = ({
   error,
-  hasError = false,
+  title = '',
   open,
   carRentDate,
+  ConfirmBtnTxt,
+  hasError = false,
   handleDateChange,
   handleConfirm,
   handleClose,
 }: DateRangePickerProps) => {
   const isMobile = useIsMobile();
+
+  const customStaticRanges = defaultStaticRanges.filter(
+    (range) => range.label !== 'Last Month'
+  );
 
   return (
     <div className="w-full">
@@ -52,7 +63,7 @@ export const DateRangePicker = ({
         <DialogTrigger asChild></DialogTrigger>
         <DialogContent className="max-w-fit">
           <DialogHeader>
-            <DialogTitle>Select Date Range</DialogTitle>
+            <DialogTitle> {title} </DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-4">
             {isMobile ? (
@@ -61,21 +72,29 @@ export const DateRangePicker = ({
                 onChange={handleDateChange}
                 moveRangeOnFirstSelection={false}
                 ranges={carRentDate}
+                minDate={new Date()}
               />
             ) : (
               <RDateRangePicker
+                staticRanges={customStaticRanges}
                 onChange={handleDateChange}
                 moveRangeOnFirstSelection={false}
                 months={2}
                 ranges={carRentDate}
                 direction="horizontal"
+                minDate={new Date()}
               />
             )}
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button onClick={handleConfirm}>Confirm Selection</Button>
+              <Button
+                onClick={handleConfirm}
+                className="border-orange-600 bg-orange-600 hover:border-orange-700 hover:bg-orange-700"
+              >
+                {ConfirmBtnTxt || 'Confirm Booking'}
+              </Button>
             </div>
           </div>
         </DialogContent>

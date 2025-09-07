@@ -96,6 +96,7 @@ export default async function VehicleDetails(props: ParamsProps) {
   // generating prop data for profile card and mobile profile card
   const ProfileCardData: ProfileCardDataType = {
     company: vehicle?.company,
+    agentId: vehicle?.userId,
     rentalDetails: vehicle?.rentalDetails,
     vehicleId: vehicle.vehicleId,
     vehicleCode: vehicle.vehicleCode,

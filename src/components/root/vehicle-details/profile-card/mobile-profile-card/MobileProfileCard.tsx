@@ -14,6 +14,13 @@ const MobileProfileCard = ({
   profileData,
   country,
 }: MobileProfileCardProps) => {
+  // Destructure the needed values from profileData
+  const {
+    company,
+    vehicleData: { state, model },
+    vehicleId,
+  } = profileData;
+
   const { rentalDetails } = useProfileData(profileData, country);
 
   const { convert } = usePriceConverter();
@@ -78,7 +85,12 @@ const MobileProfileCard = ({
 
           <RentNowButtonWide
             variant="compact"
-            onClick={() => console.log('Rent now clicked')}
+            contactDetails={company.contactDetails}
+            vehicleName={model}
+            state={state}
+            vehicleId={vehicleId}
+            agentId={company.companyId}
+            country={country}
           />
         </div>
 

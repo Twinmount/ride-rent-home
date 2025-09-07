@@ -110,6 +110,7 @@ export type VehicleDetailsPageType = {
   vehicleTitleH1: string;
   location?: GPSLocation;
   mapImage?: string;
+  userId?: string;
   vehicleSeries?: {
     vehicleSeries: string;
     vehicleSeriesLabel: string;
@@ -139,6 +140,7 @@ export type VehicleMetaDataResponse = {
 
 export type ProfileCardDataType = {
   company: Company;
+  agentId?: string;
   rentalDetails: RentalDetails;
   vehicleId: string;
   vehicleCode: string;
