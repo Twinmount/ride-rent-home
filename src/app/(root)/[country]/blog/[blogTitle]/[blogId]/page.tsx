@@ -1,19 +1,19 @@
-import BlogCover from "@/components/blog/BlogCover";
-import { BlogBreadcrumb } from "@/components/blog/BlogBreadcrumb";
-import BlogMainContent from "@/components/blog/BlogMainContent";
-import RecentlyPublished from "@/components/blog/RecentlyPublished";
-import BlogsList from "@/components/blog/BlogsList";
-import { FetchSpecificBlogResponse } from "@/types/blog.types";
-import { notFound } from "next/navigation";
-import { Metadata } from "next";
-import BlogCardSkeleton from "@/components/skelton/BlogCardSkeleton";
-import { Suspense } from "react";
-import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
-import BlogsListSkeleton from "@/components/skelton/BlogsListSkeleton";
-import BottomBanner from "@/components/blog/BottomBanner";
-import BottomBannerSkeleton from "@/components/skelton/BottomBannerSkeleton";
-import { generateBlogMetadata } from "./metadata";
-import { API } from "@/utils/API";
+import BlogCover from '@/components/blog/BlogCover';
+import { BlogBreadcrumb } from '@/components/blog/BlogBreadcrumb';
+import BlogMainContent from '@/components/blog/BlogMainContent';
+import RecentlyPublished from '@/components/blog/RecentlyPublished';
+import BlogsList from '@/components/blog/BlogsList';
+import { FetchSpecificBlogResponse } from '@/types/blog.types';
+import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
+import BlogCardSkeleton from '@/components/skelton/BlogCardSkeleton';
+import { Suspense } from 'react';
+import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
+import BlogsListSkeleton from '@/components/skelton/BlogsListSkeleton';
+import BottomBanner from '@/components/blog/BottomBanner';
+import BottomBannerSkeleton from '@/components/skelton/BottomBannerSkeleton';
+import { generateBlogMetadata } from './metadata';
+import { API } from '@/utils/API';
 
 type PageProps = {
   params: Promise<{ country: string; blogId: string }>;
@@ -37,8 +37,8 @@ export default async function BlogDetails(props: PageProps) {
   const response = await API({
     path: `/blogs?blogId=${blogId}`,
     options: {
-      method: "GET",
-      cache: "no-cache",
+      method: 'GET',
+      cache: 'no-cache',
     },
     country: country,
   });
@@ -46,7 +46,7 @@ export default async function BlogDetails(props: PageProps) {
   const blogData: FetchSpecificBlogResponse = await response.json();
 
   if (
-    blogData?.status === "NOT_SUCCESS" ||
+    blogData?.status === 'NOT_SUCCESS' ||
     response.status === 400 ||
     !blogData.result
   ) {
@@ -77,10 +77,10 @@ export default async function BlogDetails(props: PageProps) {
             <div className="w-fit text-white">By {authorName}</div>
             <span className="mx-2 font-bold text-white">|</span>
             <div className="w-fit text-white">
-              {new Date(createdAt).toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
+              {new Date(createdAt).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
               })}
             </div>
           </div>

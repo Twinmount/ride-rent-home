@@ -1,6 +1,6 @@
-import MotionDiv from "@/components/general/framer-motion/MotionDiv";
-import AboutMain from "@/components/root/about/AboutMain";
-import AboutBottom from "@/components/root/about/AboutBottom";
+import MotionDiv from '@/components/general/framer-motion/MotionDiv';
+import AboutMain from '@/components/root/about/AboutMain';
+import AboutBottom from '@/components/root/about/AboutBottom';
 
 export async function generateMetadata() {
   const canonicalUrl = `https://ride.rent/about-us`;
@@ -16,10 +16,10 @@ export async function generateMetadata() {
       title,
       description,
       url: canonicalUrl,
-      type: "website",
+      type: 'website',
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title,
       description,
     },
@@ -31,7 +31,7 @@ export async function generateMetadata() {
 
 export default function AboutUs() {
   return (
-    <section className="pb-12">
+    <section className="no-global-padding pb-12">
       <MotionDiv>
         <AboutMain />
         <AboutBottom />

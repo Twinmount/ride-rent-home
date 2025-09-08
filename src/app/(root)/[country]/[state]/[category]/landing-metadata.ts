@@ -1,8 +1,8 @@
-import { getDefaultMetadata } from "@/app/root-metadata";
-import { ENV } from "@/config/env";
-import { convertToLabel } from "@/helpers";
-import { getAbsoluteUrl } from "@/helpers/metadata-helper";
-import { Metadata } from "next";
+import { ENV } from '@/config/env';
+import { convertToLabel } from '@/helpers';
+import { getAbsoluteUrl, getDefaultMetadata } from '@/helpers/metadata-helper';
+import { API } from '@/utils/API';
+import { Metadata } from 'next';
 
 type MetaDataResponse = {
   result: {
@@ -14,22 +14,21 @@ type MetaDataResponse = {
 async function fetchHomepageMetadata(
   state: string,
   category: string,
-  country: string,
+  country: string
 ): Promise<MetaDataResponse | null> {
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA || ENV.NEXT_PUBLIC_API_URL_INDIA : ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
-
   try {
-    const response = await fetch(
-      `${baseUrl}/metadata/homepage?state=${state}&category=${category}`,
-      {
-        method: "GET",
-        cache: "no-cache",
+    const response = await API({
+      path: `/metadata/homepage?state=${state}&category=${category}`,
+      options: {
+        method: 'GET',
+        cache: 'no-cache',
       },
-    );
+      country: country,
+    });
     if (!response.ok) return null;
     return await response.json();
   } catch (error) {
-    console.error("Failed to fetch homepage metadata:", error);
+    console.error('Failed to fetch homepage metadata:', error);
     return null;
   }
 }
@@ -37,15 +36,15 @@ async function fetchHomepageMetadata(
 export async function generateHomePageMetadata(
   state: string,
   category: string,
-  country: string,
+  country: string
 ): Promise<Metadata> {
   const data = await fetchHomepageMetadata(state, category, country);
 
-  if (!data?.result) {
-    return getDefaultMetadata();
-  }
-
   const canonicalUrl = `https://ride.rent/${country}/${state}/${category}`;
+
+  if (!data?.result) {
+    return getDefaultMetadata({ country, canonicalUrl });
+  }
 
   // open graph image
   const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
@@ -67,8 +66,8 @@ export async function generateHomePageMetadata(
     title: metaTitle,
     description: metaDescription,
     keywords: [
-      "ride rent",
-      "vehicle rental near me",
+      'ride rent',
+      'vehicle rental near me',
       `${category} rent near me`,
       `${category} rent in ${state}`,
     ],
@@ -76,7 +75,7 @@ export async function generateHomePageMetadata(
       title: shortTitle,
       description: shortDescription,
       url: canonicalUrl,
-      type: "website",
+      type: 'website',
       images: [
         {
           url: ogImage,
@@ -87,12 +86,12 @@ export async function generateHomePageMetadata(
       ],
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title: shortTitle,
       description: shortDescription,
       images: [ogImage],
     },
-    manifest: "/manifest.webmanifest",
+    manifest: '/manifest.webmanifest',
     robots: {
       index: true,
       follow: true,
@@ -101,9 +100,9 @@ export async function generateHomePageMetadata(
         index: true,
         follow: true,
         noimageindex: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
       },
     },
     alternates: {
@@ -122,45 +121,45 @@ export async function generateHomePageMetadata(
 export function getHomePageJsonLd(
   state: string,
   category: string,
-  country: string,
+  country: string
 ) {
   const homepageUrl = getAbsoluteUrl(`/${country}/${state}/${category}`);
 
   const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
 
   return {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
     name: `Rent ${convertToLabel(category)} in ${convertToLabel(state)} | Ride Rent`,
     description: `Find the best rental deals for ${convertToLabel(category)} in ${convertToLabel(state)}. Compare prices, book easily, and enjoy the ride.`,
     url: homepageUrl,
-    inLanguage: "en",
+    inLanguage: 'en',
     aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      bestRating: "5",
-      ratingCount: "680",
+      '@type': 'AggregateRating',
+      ratingValue: '4.9',
+      bestRating: '5',
+      ratingCount: '680',
       itemReviewed: {
-        "@type": "Service",
+        '@type': 'Service',
         name:
-          "Rentals for " +
+          'Rentals for ' +
           convertToLabel(category) +
-          " in " +
+          ' in ' +
           convertToLabel(state),
       },
     },
     image: rootImage,
     breadcrumb: {
-      "@type": "BreadcrumbList",
+      '@type': 'BreadcrumbList',
       itemListElement: [
         {
-          "@type": "ListItem",
+          '@type': 'ListItem',
           position: 1,
-          name: "Home",
-          item: getAbsoluteUrl("/"),
+          name: 'Home',
+          item: getAbsoluteUrl('/'),
         },
         {
-          "@type": "ListItem",
+          '@type': 'ListItem',
           position: 2,
           name: category,
           item: homepageUrl,
@@ -168,9 +167,9 @@ export function getHomePageJsonLd(
       ],
     },
     publisher: {
-      "@type": "Organization",
-      name: "Ride Rent",
-      url: getAbsoluteUrl("/"),
+      '@type': 'Organization',
+      name: 'Ride Rent',
+      url: getAbsoluteUrl('/'),
       logo: rootImage,
     },
   };

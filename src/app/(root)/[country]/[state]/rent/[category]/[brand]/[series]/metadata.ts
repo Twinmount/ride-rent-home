@@ -1,7 +1,6 @@
-import { getDefaultMetadata } from '@/app/root-metadata';
 import { ENV } from '@/config/env';
 import { convertToLabel } from '@/helpers';
-import { getAbsoluteUrl } from '@/helpers/metadata-helper';
+import { getDefaultMetadata, getAbsoluteUrl } from '@/helpers/metadata-helper';
 import { FetchVehicleSeriesInfo } from '@/types';
 import { Metadata } from 'next';
 
@@ -63,7 +62,7 @@ export async function generateSeriesListingPageMetadata({
 
   const canonicalUrl = `https://ride.rent/${country}/${state}/rent/${category}/${brand}/${series}`;
   if (!data || !data.result) {
-    return getDefaultMetadata(canonicalUrl);
+    return getDefaultMetadata({ country, canonicalUrl });
   }
 
   const {

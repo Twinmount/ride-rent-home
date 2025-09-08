@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef, memo } from 'react';
+import { useEffect, useRef, memo, useMemo, useState, useCallback } from 'react';
+import Image from 'next/image';
 import { Fancybox } from '@fancyapps/ui';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
 type MediaItem = {
   source: string;
   type: 'image' | 'video';
-  thumbnail?: string; // Add support for smaller thumbnails
+  thumbnail?: string;
   width?: number;
   height?: number;
 };
@@ -18,360 +19,255 @@ type Props = {
   className?: string;
 };
 
-// Memoized skeleton component
-const ImageSkeleton = memo(({ className = '' }: { className?: string }) => (
-  <div
-    className={`animate-pulse bg-gray-200 ${className}`}
-    role="presentation"
-    aria-hidden="true"
-  >
-    <div className="h-full w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
-  </div>
-));
-ImageSkeleton.displayName = 'ImageSkeleton';
+const ImageSkeleton = ({ className = '' }: { className?: string }) => (
+  <div className={`animate-pulse rounded-xl bg-gray-200 ${className}`} />
+);
 
-// Optimized image component with native lazy loading
-const LazyImage = memo(
-  ({
-    src,
-    alt,
-    className = '',
-    priority = false,
-    onLoad,
-    overlayCount,
-    thumbnail,
-    width,
-    height,
-  }: {
-    src: string;
-    alt: string;
-    className?: string;
-    priority?: boolean;
-    onLoad?: () => void;
-    overlayCount?: number;
-    thumbnail?: string;
-    width?: number;
-    height?: number;
-  }) => {
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [error, setError] = useState(false);
-    const imgRef = useRef<HTMLImageElement>(null);
+const ImagesGrid = ({
+  mediaItems,
+  imageAlt = 'Gallery image',
+  className = '',
+}: Props) => {
+  const fancyboxInitialized = useRef(false);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
 
-    const handleLoad = useCallback(() => {
-      setIsLoaded(true);
-      onLoad?.();
-    }, [onLoad]);
+  const handleImageLoad = useCallback((index: number) => {
+    setLoadedImages((prev) => new Set([...prev, index]));
+  }, []);
 
-    const handleError = useCallback(() => {
-      setError(true);
-      setIsLoaded(true);
-    }, []);
+  // Organize media items
+  const { mainItem, sideItems, visibleThumbnails, remainingCount } =
+    useMemo(() => {
+      if (!mediaItems.length) {
+        return {
+          mainItem: null,
+          sideItems: [],
+          visibleThumbnails: [],
+          remainingCount: 0,
+        };
+      }
 
-    // Use srcset for responsive images if thumbnail provided
-    const srcSet = thumbnail ? `${thumbnail} 400w, ${src} 800w` : undefined;
+      const main = mediaItems[0];
+      const side = mediaItems.slice(1, 3);
+      const thumbnails = mediaItems.slice(3, 7);
+      const remaining = Math.max(0, mediaItems.length - 7);
 
-    if (error) {
+      return {
+        mainItem: main,
+        sideItems: side,
+        visibleThumbnails: thumbnails,
+        remainingCount: remaining,
+      };
+    }, [mediaItems]);
+
+  // Initialize Fancybox
+  useEffect(() => {
+    if (!mediaItems.length || fancyboxInitialized.current) return;
+
+    try {
+      Fancybox.bind("[data-fancybox='gallery']", {
+        Thumbs: true,
+        Toolbar: {
+          display: {
+            left: ['infobar'],
+            middle: [
+              'zoomIn',
+              'zoomOut',
+              'toggle1to1',
+              'rotateCCW',
+              'rotateCW',
+            ],
+            right: ['slideshow', 'thumbs', 'close'],
+          },
+        },
+        Images: { zoom: true },
+        Hash: false,
+      });
+      fancyboxInitialized.current = true;
+    } catch (error) {
+      console.error('Fancybox initialization error:', error);
+    }
+
+    return () => {
+      try {
+        if (fancyboxInitialized.current) {
+          Fancybox.destroy();
+          fancyboxInitialized.current = false;
+        }
+      } catch (error) {
+        console.error('Fancybox cleanup error:', error);
+      }
+    };
+  }, [mediaItems.length]);
+
+  const renderMediaItem = (
+    item: MediaItem,
+    index: number,
+    overlayCount?: number,
+    priority = false
+  ) => {
+    if (item.type === 'video') {
       return (
-        <div
-          className={`${className} flex items-center justify-center bg-gray-200 text-gray-500`}
-        >
-          <span className="text-sm">Failed to load</span>
+        <div className="relative h-full w-full">
+          {!loadedImages.has(index) && (
+            <ImageSkeleton className="absolute inset-0 z-10" />
+          )}
+          <video
+            src={item.source}
+            className="h-full w-full rounded-xl object-cover"
+            controls
+            muted
+            playsInline
+            poster={item.thumbnail}
+            preload="metadata"
+            onLoadedData={() => handleImageLoad(index)}
+            onError={() => {
+              console.error('Video failed to load:', item.source);
+              handleImageLoad(index);
+            }}
+          />
         </div>
       );
     }
 
     return (
-      <>
-        {!isLoaded && <ImageSkeleton className="absolute inset-0 rounded-xl" />}
-        <img
-          ref={imgRef}
-          src={thumbnail || src}
-          srcSet={srcSet}
+      <a
+        href={item.source}
+        data-fancybox="gallery"
+        className="group relative block h-full w-full overflow-hidden rounded-xl"
+      >
+        {!loadedImages.has(index) && (
+          <ImageSkeleton className="absolute inset-0 z-10" />
+        )}
+        <Image
+          src={item.thumbnail || item.source}
+          alt={`${imageAlt} ${index + 1}`}
+          fill
+          className={`object-cover transition-all duration-300 group-hover:scale-105 ${
+            loadedImages.has(index) ? 'opacity-100' : 'opacity-0'
+          }`}
+          priority={priority}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          alt={alt}
-          width={width}
-          height={height}
-          className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
-          onLoad={handleLoad}
-          onError={handleError}
-          loading={priority ? 'eager' : 'lazy'}
-          decoding="async"
-          fetchPriority={priority ? 'high' : 'auto'}
+          quality={priority ? 85 : 75}
+          onLoad={() => handleImageLoad(index)}
+          onError={(e) => {
+            console.error('Image failed to load:', item.source);
+            const target = e.currentTarget;
+            if (item.thumbnail && target.src !== item.source) {
+              target.src = item.source;
+            } else {
+              handleImageLoad(index);
+            }
+          }}
         />
-        {overlayCount !== undefined && overlayCount > 0 && isLoaded && (
-          <div
-            className="absolute inset-0 flex items-center justify-center bg-black/60 text-xl font-semibold text-white backdrop-blur-sm md:text-2xl"
-            aria-label={`${overlayCount} more images`}
-          >
+        {overlayCount && overlayCount > 0 && loadedImages.has(index) && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center rounded-xl bg-black/60 text-xl font-semibold text-white">
             +{overlayCount}
           </div>
         )}
-      </>
+      </a>
     );
-  }
-);
-LazyImage.displayName = 'LazyImage';
+  };
 
-const ImagesGrid = memo(
-  ({ mediaItems, imageAlt = 'Gallery image', className = '' }: Props) => {
-    const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
-    const fancyboxInitialized = useRef(false);
+  if (!mainItem) return null;
 
-    useEffect(() => {
-      // Prevent multiple initializations
-      if (fancyboxInitialized.current) return;
+  return (
+    <div className={`${className} w-full`}>
+      {/* Desktop Layout */}
+      <div className="hidden h-full md:flex md:flex-col md:gap-3">
+        <div className="flex flex-1 gap-3">
+          {/* Main Image */}
+          <div className="relative flex-[2] overflow-hidden rounded-xl">
+            {renderMediaItem(mainItem, 0, undefined, true)}
+          </div>
 
-      // Small delay to ensure DOM is ready
-      const timer = requestAnimationFrame(() => {
-        Fancybox.bind("[data-fancybox='gallery']", {
-          Thumbs: true,
-          Toolbar: {
-            display: {
-              left: ['infobar'],
-              middle: [
-                'zoomIn',
-                'zoomOut',
-                'toggle1to1',
-                'rotateCCW',
-                'rotateCW',
-              ],
-              right: ['slideshow', 'thumbs', 'close'],
-            },
-          },
-          Images: {
-            zoom: true,
-          },
-          Hash: false, // Disable URL hash for better performance
-        });
-        fancyboxInitialized.current = true;
-      });
-
-      return () => {
-        cancelAnimationFrame(timer);
-        if (fancyboxInitialized.current) {
-          Fancybox.destroy();
-          fancyboxInitialized.current = false;
-        }
-      };
-    }, []);
-
-    const handleImageLoad = useCallback((index: number) => {
-      setLoadedImages((prev) => {
-        const next = new Set(prev);
-        next.add(index);
-        return next;
-      });
-    }, []);
-
-    // Organize media items for display
-    const videoItem = mediaItems.find((item) => item.type === 'video');
-    const imageItems = mediaItems.filter((item) => item.type === 'image');
-
-    const mainItem = videoItem || mediaItems[0];
-    const sideItems = videoItem
-      ? imageItems.slice(0, 2)
-      : mediaItems.slice(1, 3);
-    const thumbnailItems = videoItem
-      ? imageItems.slice(2)
-      : mediaItems.slice(3);
-
-    const remainingCount = Math.max(0, thumbnailItems.length - 4);
-    const visibleThumbnails = thumbnailItems.slice(0, 4);
-
-    const renderMediaItem = useCallback(
-      (
-        item: MediaItem,
-        index: number,
-        overlayCount?: number,
-        priority = false
-      ) => {
-        const isVideo = item.type === 'video';
-        const baseClasses = 'h-full w-full rounded-xl object-cover';
-
-        if (isVideo) {
-          return (
-            <div className="relative h-full w-full overflow-hidden rounded-xl bg-black">
-              {!loadedImages.has(index) && (
-                <ImageSkeleton className="absolute inset-0 rounded-xl" />
-              )}
-              <video
-                src={item.source}
-                className={`${baseClasses} ${loadedImages.has(index) ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
-                controls
-                muted
-                autoPlay
-                loop
-                controlsList="nodownload"
-                playsInline
-                onLoadedData={() => handleImageLoad(index)}
-                poster={item.thumbnail}
-                preload="metadata"
-              >
-                <track kind="captions" />
-              </video>
-            </div>
-          );
-        }
-
-        return (
-          <a
-            href={item.source}
-            data-fancybox="gallery"
-            className="group relative block h-full w-full overflow-hidden rounded-xl"
-            aria-label={`${imageAlt} ${index + 1}`}
-          >
-            <LazyImage
-              src={item.source}
-              alt={`${imageAlt} ${index + 1}`}
-              className={`${baseClasses} transition-transform duration-300 will-change-transform group-hover:scale-105`}
-              priority={priority}
-              onLoad={() => handleImageLoad(index)}
-              overlayCount={overlayCount}
-              thumbnail={item.thumbnail}
-              width={item.width}
-              height={item.height}
-            />
-          </a>
-        );
-      },
-      [loadedImages, handleImageLoad, imageAlt]
-    );
-
-    return (
-      <div className={`${className}`} role="region" aria-label="Image gallery">
-        {/* Desktop Layout */}
-        <div className="hidden h-full lg:flex lg:flex-col lg:gap-3">
-          {/* Main Grid Area */}
-          <div className="flex flex-1 gap-3">
-            {/* Main Image/Video */}
-            <div className="flex-[2] overflow-hidden rounded-xl">
-              {renderMediaItem(mainItem, 0, undefined, true)}
-            </div>
-
-            {/* Side Column */}
+          {/* Side Images */}
+          {sideItems.length > 0 && (
             <div className="flex flex-1 flex-col gap-3">
               {sideItems.map((item, index) => (
                 <div
                   key={`side-${index}`}
-                  className="flex-1 overflow-hidden rounded-xl"
+                  className="relative flex-1 overflow-hidden rounded-xl"
                 >
-                  {renderMediaItem(item, index + 1, undefined, true)}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Thumbnail Row - Now properly aligned */}
-          {visibleThumbnails.length > 0 && (
-            <div className="flex h-20 gap-3 xl:h-24">
-              {visibleThumbnails.map((item, index) => (
-                <div
-                  key={`thumb-${index}`}
-                  className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl xl:h-24 xl:w-[24%]"
-                >
-                  {renderMediaItem(
-                    item,
-                    index + (videoItem ? 3 : 4),
-                    index === visibleThumbnails.length - 1
-                      ? remainingCount
-                      : undefined
-                  )}
+                  {renderMediaItem(item, index + 1, undefined, index === 0)}
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Medium Layout */}
-        <div className="hidden h-full flex-col gap-3 md:flex lg:hidden">
-          <div className="h-64 w-full overflow-hidden rounded-xl sm:h-80">
-            {renderMediaItem(mainItem, 0, undefined, true)}
-          </div>
-
-          {sideItems.length > 0 && (
-            <div className="flex h-32 gap-3">
-              {sideItems.map((item, index) => (
-                <div
-                  key={`md-side-${index}`}
-                  className="flex-1 overflow-hidden rounded-xl"
-                >
-                  {renderMediaItem(item, index + 1)}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {visibleThumbnails.length > 0 && (
-            <div className="flex h-20 gap-2">
-              {visibleThumbnails.slice(0, 3).map((item, index) => (
-                <div
-                  key={`md-thumb-${index}`}
-                  className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl"
-                >
-                  {renderMediaItem(
-                    item,
-                    index + (videoItem ? 3 : 4),
-                    index === 2 && remainingCount > 0
-                      ? remainingCount
-                      : undefined
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Mobile Layout */}
-        <div className="flex h-full flex-col gap-3 md:hidden">
-          <div className="aspect-[4/3] w-full overflow-hidden rounded-xl">
-            {renderMediaItem(mediaItems[0], 0, undefined, true)}
-          </div>
-
-          {mediaItems.length > 1 && (
-            <div className="flex h-20 gap-2">
-              {mediaItems.slice(1, 4).map((item, index) => (
-                <div
-                  key={`mobile-${index}`}
-                  className="h-full flex-1 overflow-hidden rounded-xl"
-                >
-                  {renderMediaItem(
-                    item,
-                    index + 1,
-                    index === 2 && mediaItems.length > 4
-                      ? mediaItems.length - 4
-                      : undefined
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Hidden lightbox items for SEO and accessibility */}
-        {remainingCount > 0 && (
-          <div className="sr-only" aria-hidden="true">
-            {thumbnailItems.slice(4).map((item, index) => (
-              <a
-                key={`hidden-${index}`}
-                href={item.source}
-                data-fancybox="gallery"
-                tabIndex={-1}
+        {/* Thumbnail Row */}
+        {visibleThumbnails.length > 0 && (
+          <div className="hidden h-20 gap-3 lg:flex xl:h-24">
+            {visibleThumbnails.map((item, index) => (
+              <div
+                key={`thumb-${index}`}
+                className="relative flex-1 overflow-hidden rounded-xl"
               >
-                <img
-                  src={item.thumbnail || item.source}
-                  alt={`${imageAlt} ${index + 5}`}
-                  loading="lazy"
-                  width={item.width}
-                  height={item.height}
-                />
-              </a>
+                {renderMediaItem(
+                  item,
+                  index + 1 + sideItems.length,
+                  index === visibleThumbnails.length - 1
+                    ? remainingCount
+                    : undefined
+                )}
+              </div>
             ))}
           </div>
         )}
       </div>
-    );
-  }
-);
+
+      {/* Mobile Layout */}
+      <div className="flex h-full flex-col gap-3 md:hidden">
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl">
+          {renderMediaItem(mediaItems[0], 0, undefined, true)}
+        </div>
+
+        {mediaItems.length > 1 && (
+          <div className="flex h-20 gap-2">
+            {mediaItems.slice(1, 4).map((item, index) => (
+              <div
+                key={`mobile-${index}`}
+                className="relative flex-1 overflow-hidden rounded-xl"
+              >
+                {renderMediaItem(
+                  item,
+                  index + 1,
+                  index === 2 && mediaItems.length > 4
+                    ? mediaItems.length - 4
+                    : undefined
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Hidden lightbox items */}
+      {remainingCount > 0 && (
+        <div className="sr-only">
+          {mediaItems.slice(7).map((item, index) => (
+            <a
+              key={`hidden-${index}`}
+              href={item.source}
+              data-fancybox="gallery"
+              tabIndex={-1}
+            >
+              <Image
+                src={item.thumbnail || item.source}
+                alt={`${imageAlt} ${index + 8}`}
+                width={200}
+                height={150}
+                className="object-cover"
+                quality={60}
+              />
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 ImagesGrid.displayName = 'ImagesGrid';
 

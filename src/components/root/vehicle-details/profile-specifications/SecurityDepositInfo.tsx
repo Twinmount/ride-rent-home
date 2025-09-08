@@ -1,4 +1,4 @@
-import { HandCoins, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import Image from 'next/image';
 
 type SecurityDepositInfoProps = {
@@ -12,14 +12,17 @@ const SecurityDepositInfo = ({ securityDeposit }: SecurityDepositInfoProps) => {
   return (
     <div className="mx-4 flex items-center justify-center text-sm text-text-secondary">
       {securityDeposit?.enabled ? (
-        <Image
-          src="/assets/icons/detail-page/deposits.svg"
-          alt="deposit"
-          width={20}
-          height={20}
-        />
+        <div className="relative h-5 w-5 flex-shrink-0">
+          <Image
+            src="/assets/icons/detail-page/deposits.svg"
+            alt="deposit"
+            fill
+            className="object-contain"
+            sizes="20px"
+          />
+        </div>
       ) : (
-        <CheckCircle className="w-4" />
+        <CheckCircle className="h-4 w-4 flex-shrink-0" />
       )}
       <span className="ml-1 whitespace-nowrap text-sm font-normal capitalize">
         {securityDeposit?.enabled

@@ -1,20 +1,20 @@
-import { ENV } from "@/config/env";
+import { ENV } from '@/config/env';
 
 interface APIRequest {
   path: string;
   options?: RequestInit;
-  country: "ae" | "in" | string | undefined;
+  country: 'ae' | 'in' | string | undefined;
 }
 
 export async function API({
   path,
   options = {},
-  country = "ae",
+  country = 'ae',
 }: APIRequest): Promise<Response> {
-  const baseUrl = getBaseUrl(country as "ae" | "in");
+  const baseUrl = getBaseUrl(country as 'ae' | 'in');
 
   // Prepend the base URL if the path doesn't start with a slash
-  const url = path.startsWith("/") ? baseUrl + path : baseUrl + "/" + path;
+  const url = path.startsWith('/') ? baseUrl + path : baseUrl + '/' + path;
 
   const response = await fetch(`${url}`, options);
 
@@ -30,11 +30,11 @@ export async function API({
  * @param country
  * @returns
  */
-function getBaseUrl(country?: "ae" | "in"): string {
+function getBaseUrl(country?: 'ae' | 'in'): string {
   switch (country) {
-    case "ae":
+    case 'ae':
       return (ENV.API_URL as string) || (ENV.NEXT_PUBLIC_API_URL as string);
-    case "in":
+    case 'in':
       return (
         (ENV.API_URL_INDIA as string) ||
         (ENV.NEXT_PUBLIC_API_URL_INDIA as string)
