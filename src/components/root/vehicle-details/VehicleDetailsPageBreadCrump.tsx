@@ -1,4 +1,4 @@
-import MotionDiv from '@/components/general/framer-motion/MotionDiv';
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,11 +6,11 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { convertToLabel, singularizeValue } from '@/helpers';
-import Link from 'next/link';
+} from "@/components/ui/breadcrumb";
+import { convertToLabel, singularizeValue } from "@/helpers";
+import Link from "next/link";
 
-type CurrentPageBreadcrumbProps = {
+type VehicleDetailsPageBreadCrumpProps = {
   category: string;
   state: string;
   brand: { label: string; value: string };
@@ -18,13 +18,13 @@ type CurrentPageBreadcrumbProps = {
   country: string;
 };
 
-export default function CurrentPageBreadcrumb({
+export default function VehicleDetailsPageBreadCrump({
   category,
   state,
   brand,
   vehicleTitle,
   country,
-}: CurrentPageBreadcrumbProps) {
+}: VehicleDetailsPageBreadCrumpProps) {
   const formattedCategory = convertToLabel(singularizeValue(category));
 
   const formattedState = convertToLabel(state);
@@ -53,7 +53,7 @@ export default function CurrentPageBreadcrumb({
               asChild
             >
               <Link href={`/${country}/${state}/listing/${category}`}>
-                {formattedCategory} for rent{' '}
+                {formattedCategory} for rent{" "}
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>

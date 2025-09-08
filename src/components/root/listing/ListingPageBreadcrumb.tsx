@@ -1,3 +1,4 @@
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -38,13 +39,13 @@ export default function ListingPageBreadcrumb({
   const brandWithVehicleTypeHref = `${baseHref}/listing/${category}/${vehicleType}/brand/${brand}`;
 
   return (
-    <div className="my-6 w-fit rounded-xl bg-white px-4 py-3 shadow-sm">
+    <MotionDiv className="m-1 mb-3 ml-2 rounded-xl text-sm">
       <Breadcrumb className="w-fit rounded-2xl">
         <BreadcrumbList>
           {/* State */}
           <BreadcrumbItem>
             <BreadcrumbLink
-              className="font-semibold transition-colors hover:text-yellow hover:underline"
+              className="font-medium transition-colors hover:text-yellow hover:underline"
               asChild
             >
               <Link href={stateHref}>{formattedState}</Link>
@@ -56,8 +57,8 @@ export default function ListingPageBreadcrumb({
           <BreadcrumbItem>
             <BreadcrumbLink
               className={clsx(
-                "font-semibold transition-colors hover:text-yellow hover:underline",
-                { "text-yellow": !formattedBrand && !formattedVehicleType },
+                "font-medium transition-colors hover:text-yellow hover:underline",
+                { "text-accent": !formattedBrand && !formattedVehicleType }
               )}
               asChild
             >
@@ -72,8 +73,8 @@ export default function ListingPageBreadcrumb({
               <BreadcrumbItem>
                 <BreadcrumbLink
                   className={clsx(
-                    "font-semibold transition-colors hover:text-yellow hover:underline",
-                    { "text-yellow": !formattedBrand },
+                    "font-medium transition-colors hover:text-yellow hover:underline",
+                    { "text-accent": !formattedBrand }
                   )}
                   asChild
                 >
@@ -87,13 +88,13 @@ export default function ListingPageBreadcrumb({
           {formattedBrand && (
             <>
               <BreadcrumbSeparator />
-              <BreadcrumbPage className="cursor-default font-semibold text-yellow">
+              <BreadcrumbPage className="cursor-default font-medium text-accent">
                 {formattedBrand}
               </BreadcrumbPage>
             </>
           )}
         </BreadcrumbList>
       </Breadcrumb>
-    </div>
+    </MotionDiv>
   );
 }

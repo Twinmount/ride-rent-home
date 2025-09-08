@@ -1,11 +1,11 @@
-import MotionSection from '@/components/general/framer-motion/MotionSection';
-import { StateCategoryProps, VehicleHomeFilter } from '@/types';
-import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
-import { FetchVehicleCardsResponseV2 } from '@/types/vehicle-types';
-import { API } from '@/utils/API';
-import VehicleCard from '@/components/card/vehicle-card/main-card/VehicleCard';
-import ViewAllGridCard from '@/components/card/ViewAllGridCard';
-import { convertToLabel } from '@/helpers';
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { StateCategoryProps, VehicleHomeFilter } from "@/types";
+import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
+import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
+import { API } from "@/utils/API";
+import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
+import ViewAllGridCard from "@/components/card/ViewAllGridCard";
+import { convertToLabel } from "@/helpers";
 
 type FeaturedVehiclesProps = StateCategoryProps & {
   vehicleType: string | undefined;
@@ -18,23 +18,23 @@ const FeaturedVehicles = async ({
   country,
 }: FeaturedVehiclesProps) => {
   const params = new URLSearchParams({
-    page: '1',
-    limit: '9',
+    page: "1",
+    limit: "9",
     state,
     category,
-    sortOrder: 'DESC',
+    sortOrder: "DESC",
     filter: VehicleHomeFilter.NONE,
   });
 
   if (vehicleType) {
-    params.set('type', vehicleType);
+    params.set("type", vehicleType);
   }
 
   const response = await API({
     path: `/vehicle/home-page/list/v2?${params.toString()}`,
     options: {
-      method: 'GET',
-      cache: 'no-cache',
+      method: "GET",
+      cache: "no-cache",
     },
     country,
   });
@@ -82,6 +82,7 @@ const FeaturedVehicles = async ({
               />
             </div>
           ))}
+
           {gridThumbnails.length > 0 && (
             <div className="flex-shrink-0 snap-start lg:snap-align-none">
               <ViewAllGridCard

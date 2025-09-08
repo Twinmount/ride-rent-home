@@ -1,13 +1,13 @@
-import VehicleGrid from '@/components/root/listing/vehicle-grids/VehicleGrid';
-import PriceFilterTag from '@/components/root/listing/PriceFilterTag';
-import JsonLd from '@/components/common/JsonLd';
-import MapClientWrapper from '@/components/listing/MapClientWrapper';
-import ListingHeading from '@/components/root/listing/ListingHeading';
+import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
+import PriceFilterTag from "@/components/root/listing/PriceFilterTag";
+import JsonLd from "@/components/common/JsonLd";
+import MapClientWrapper from "@/components/listing/MapClientWrapper";
+import ListingHeading from "@/components/root/listing/ListingHeading";
 import {
   fetchListingMetadata,
   getListingPageJsonLd,
-} from '@/app/(root)/[country]/[state]/listing/listing-metadata';
-import ListingPageBreadcrumb from './ListingPageBreadcrumb';
+} from "@/app/(root)/[country]/[state]/listing/listing-metadata";
+import ListingPageBreadcrumb from "./ListingPageBreadcrumb";
 
 type ListingPageRendererProps = {
   category: string;
@@ -40,7 +40,7 @@ const ListingPageRenderer = async ({
     country,
     state,
     category,
-    vehicleType: vehicleType || 'other',
+    vehicleType: vehicleType || "other",
   });
 
   // Prepare JSON-LD schema
@@ -52,7 +52,7 @@ const ListingPageRenderer = async ({
     brand,
   });
 
-  const jsonLdId = `json-ld-listing-${country}-${state}-${category}-${vehicleType || 'all'}-${brand || 'all'}`;
+  const jsonLdId = `json-ld-listing-${country}-${state}-${category}-${vehicleType || "all"}-${brand || "all"}`;
 
   return (
     <>
@@ -73,13 +73,13 @@ const ListingPageRenderer = async ({
         <div className="hidden w-full px-2 lg:block lg:w-[45%]">
           <div
             className="sticky top-[4rem] p-3"
-            style={{ height: 'calc(90vh - 4rem)' }}
+            style={{ height: "calc(90vh - 4rem)" }}
           >
             <div
               style={{
-                borderRadius: '0.6rem',
-                overflow: 'hidden',
-                height: '100%',
+                borderRadius: "0.6rem",
+                overflow: "hidden",
+                height: "100%",
               }}
             >
               <MapClientWrapper />
@@ -90,13 +90,13 @@ const ListingPageRenderer = async ({
         {/* Right: Listing & Filters */}
         <div className="w-full px-2 lg:w-[55%]">
           <div className="relative mb-0 h-auto min-h-[90vh] px-1 pb-3">
-            {/* <ListingPageBreadcrumb
+            <ListingPageBreadcrumb
               country={country}
               state={state}
               category={category}
               vehicleType={vehicleType}
               brand={brand}
-            /> */}
+            />
 
             {/* <PriceFilterTag /> */}
 

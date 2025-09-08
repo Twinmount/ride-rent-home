@@ -1,30 +1,31 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { BlurDialog } from '@/components/ui/blur-dialog';
+"use client";
+import { useState, useEffect } from "react";
+import { BlurDialog } from "@/components/ui/blur-dialog";
 import {
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { FaLocationDot } from 'react-icons/fa6';
-import { useParams, useRouter, usePathname } from 'next/navigation';
-import { extractCategory } from '@/helpers';
-import useFetchStates from '@/hooks/useFetchStates';
-import { StateType } from '@/types';
-import ListGrid from './ListGrid';
-import { fetchCategories } from '@/lib/api/general-api';
-import FavouriteListSkeleton from './FavouriteListSkeleton';
-import { COUNTRIES } from '@/data';
-import LocationDialogStateCard from '@/components/card/LocationDialogStateCard';
-import CountryDropdown from '@/components/dropdown/CountryDropdown';
-import LocationDialogBanner from './LocationDialogBanner';
-import Link from 'next/link';
+} from "@/components/ui/dialog";
+import { FaLocationDot } from "react-icons/fa6";
+import { useParams, useRouter, usePathname } from "next/navigation";
+import { extractCategory } from "@/helpers";
+import useFetchStates from "@/hooks/useFetchStates";
+import { StateType } from "@/types";
+import ListGrid from "./ListGrid";
+import { fetchCategories } from "@/lib/api/general-api";
+import FavouriteListSkeleton from "./FavouriteListSkeleton";
+import { COUNTRIES } from "@/data";
+import LocationDialogStateCard from "@/components/card/LocationDialogStateCard";
+import CountryDropdown from "@/components/dropdown/CountryDropdown";
+import LocationDialogBanner from "./LocationDialogBanner";
+import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function LocationDialog() {
   const router = useRouter();
   const pathname = usePathname();
-  const [search, setSearch] = useState<string>('');
+  const [search, setSearch] = useState<string>("");
   const [favouriteStates, setFavouriteStates] = useState<StateType[]>([]);
   const [listedStates, setListedStates] = useState<StateType[]>([]);
   const [searchResult, setSearchResult] = useState<StateType[]>([]);
@@ -39,19 +40,21 @@ export function LocationDialog() {
   }>();
 
   const [selectedCountry, setSelectedCountry] = useState(
-    country === 'in' ? '68ea1314-08ed-4bba-a2b1-af549946523d' : COUNTRIES[0].id
+    country === "in" ? "68ea1314-08ed-4bba-a2b1-af549946523d" : COUNTRIES[0].id
   ); // default to India
 
   const [selectedState, setSelectedState] = useState<StateType | undefined>(
     undefined
   );
 
-  const selectedCategory = extractCategory(category || 'cars');
+  const selectedCategory = extractCategory(category || "cars");
+
+  const queryClient = useQueryClient();
 
   const { states, isLoading, isStatesFetching } = useFetchStates({
     countryId: selectedCountry,
     country:
-      selectedCountry === '68ea1314-08ed-4bba-a2b1-af549946523d' ? 'in' : 'ae',
+      selectedCountry === "68ea1314-08ed-4bba-a2b1-af549946523d" ? "in" : "ae",
   });
 
   const getMatchScore = (itemName: string, query: string): number => {
@@ -91,11 +94,11 @@ export function LocationDialog() {
     if (isLoading || isStatesFetching || states.length === 0) return;
 
     const shouldSkipRedirect =
-      pathname?.startsWith(`/${country}${'/blog'}`) ||
-      pathname?.startsWith(`/${country}${'/careers'}`) ||
-      pathname?.startsWith(`/${country}${'/interns'}`) ||
-      pathname === '/in' ||
-      pathname === '/ae';
+      pathname?.startsWith(`/${country}${"/blog"}`) ||
+      pathname?.startsWith(`/${country}${"/careers"}`) ||
+      pathname?.startsWith(`/${country}${"/interns"}`) ||
+      pathname === "/in" ||
+      pathname === "/ae";
 
     if (states.length > 0) {
       const foundState = states.find((data) => data.stateValue === state);
@@ -120,7 +123,7 @@ export function LocationDialog() {
       (country) => country.id === selectedCountry
     )?.value;
     let country =
-      selectedCountry === '68ea1314-08ed-4bba-a2b1-af549946523d' ? 'in' : 'ae';
+      selectedCountry === "68ea1314-08ed-4bba-a2b1-af549946523d" ? "in" : "ae";
     const res = await fetchCategories(stateValue, country);
     const categories: any = res?.result?.list;
 
@@ -129,21 +132,23 @@ export function LocationDialog() {
         (category: any) => category?.value === selectedCategory
       );
       let hasCars = categories?.find(
-        (category: any) => category?.value === 'cars'
+        (category: any) => category?.value === "cars"
       );
       setIsFetching(false);
       setOpen(false);
-      setSearch('');
+      setSearch("");
       router.push(
-        `/${selectedCountryURL}/${stateValue}/${!!isSelectedPresent ? selectedCategory : !!hasCars ? 'cars' : categories[0]?.value}`
+        `/${selectedCountryURL}/${stateValue}/${!!isSelectedPresent ? selectedCategory : !!hasCars ? "cars" : categories[0]?.value}`
       );
       return;
     } else {
-      setSearch('');
+      setSearch("");
       setIsFetching(false);
       setOpen(false);
       router.push(`/${selectedCountryURL}/${stateValue}/${selectedCategory}`);
     }
+
+    queryClient.invalidateQueries({ queryKey: ["categories"] });
   };
 
   const handleCountrySelect = (countryId: string) => {
@@ -161,7 +166,7 @@ export function LocationDialog() {
           >
             <FaLocationDot className="mr-[0.12rem] text-text-primary" />
             <span className="line-clamp-1 w-full max-w-[5rem] text-left text-sm font-medium capitalize sm:w-fit md:max-w-fit lg:text-base">
-              {selectedState ? selectedState?.stateName : 'Location'}
+              {selectedState ? selectedState?.stateName : "Location"}
             </span>
           </button>
         </DialogTrigger>
@@ -175,7 +180,7 @@ export function LocationDialog() {
             <LocationDialogBanner
               search={search}
               setSearch={setSearch}
-              showSearchResult={search?.trim() !== '' && states.length !== 0}
+              showSearchResult={search?.trim() !== "" && states.length !== 0}
               searchResult={searchResult}
               isLoading={isLoading}
               handleStateSelect={handleStateSelect}
@@ -228,7 +233,7 @@ export function LocationDialog() {
             {isFetching && (
               <div
                 className="absolute left-0 top-0 flex h-full w-full items-center justify-center"
-                style={{ zIndex: 500, backgroundColor: 'rgba(0,0,0,0.1)' }}
+                style={{ zIndex: 500, backgroundColor: "rgba(0,0,0,0.1)" }}
               >
                 <span className="inline-block select-none rounded bg-gray-600 px-3 py-1 text-sm text-white">
                   Please wait...
@@ -237,8 +242,9 @@ export function LocationDialog() {
             )}
 
             <Link
-              href={`/${country}/${selectedState?.stateValue}/cities?category=${selectedCategory}&city=&page=1`}
+              href={`/${country}/${selectedState?.stateValue}/cities?category=${selectedCategory}&page=1`}
               className="flex-center mx-auto mt-4 h-10 w-[21rem] rounded border border-border-default bg-white text-sm transition hover:border-yellow hover:text-yellow lg:w-[11.25rem]"
+              onClick={() => setOpen(false)}
             >
               View All
             </Link>

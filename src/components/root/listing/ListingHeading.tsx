@@ -1,5 +1,5 @@
-import { FilterSidebar } from '@/components/root/listing/filter/FilterSidebar';
-import { convertToLabel } from '@/helpers';
+import { FilterSidebar } from "@/components/root/listing/filter/FilterSidebar";
+import { convertToLabel } from "@/helpers";
 
 type ListingHeadingProps = {
   country: string;
@@ -22,20 +22,20 @@ export default function ListingHeading({
 }: ListingHeadingProps) {
   const formattedState = convertToLabel(state);
   const formattedCategory = convertToLabel(category);
-  const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : '';
-  const formattedBrand = brand ? convertToLabel(brand) : '';
+  const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : "";
+  const formattedBrand = brand ? convertToLabel(brand) : "";
 
   const headingH1 =
     heading ||
-    `Rent ${formattedBrand ? `${formattedBrand} ` : ''}${formattedVehicleType ? `${formattedVehicleType} ` : ''}${formattedCategory} in ${formattedState}`;
+    `Rent ${formattedBrand ? `${formattedBrand} ` : ""}${formattedVehicleType ? `${formattedVehicleType} ` : ""}${formattedCategory} in ${formattedState}`;
 
   const headingH2 =
     subheading ||
-    `Explore verified ${formattedBrand ? `${formattedBrand} ` : ''}${formattedVehicleType ? `${formattedVehicleType} ` : ''}${formattedCategory} rentals in ${formattedState}`;
+    `Explore verified ${formattedBrand ? `${formattedBrand} ` : ""}${formattedVehicleType ? `${formattedVehicleType} ` : ""}${formattedCategory} rentals in ${formattedState}`;
 
   return (
     <div className="flex-between mb-2 mt-[5rem] h-fit w-full">
-      <div className="overflow-wrap-anywhere max-w-[calc(100%-180px)] pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full">
+      <div className="w-full max-w-full pr-4 max-md:max-w-[calc(100%-90px)] max-sm:max-w-full lg:max-w-[calc(100%-150px)]">
         <h1 className="ml-2 break-words text-lg font-[500] max-md:mr-auto md:text-xl lg:text-3xl">
           {headingH1}
         </h1>

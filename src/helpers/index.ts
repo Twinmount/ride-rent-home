@@ -1,14 +1,14 @@
-import qs from 'query-string';
-import { RemoveUrlQueryParams, StateType, UrlQueryParams } from '@/types';
+import qs from "query-string";
+import { RemoveUrlQueryParams, StateType, UrlQueryParams } from "@/types";
 import {
   CardRentalDetails,
   FeatureType,
   MapCardRentalDetailsType,
-} from '@/types/vehicle-types';
-import { VehicleDetailsPageType } from '@/types/vehicle-details-types';
-import { IoIosSpeedometer } from 'react-icons/io';
-import { FaCrown } from 'react-icons/fa6';
-import { IoShieldCheckmark } from 'react-icons/io5';
+} from "@/types/vehicle-types";
+import { VehicleDetailsPageType } from "@/types/vehicle-details-types";
+import { IoIosSpeedometer } from "react-icons/io";
+import { FaCrown } from "react-icons/fa6";
+import { IoShieldCheckmark } from "react-icons/io5";
 
 // to form url params key/value
 export function formUrlQuery({ params, key, value }: UrlQueryParams) {
@@ -51,17 +51,17 @@ export const sortCategories = <T extends { value: string }>(
   if (!categories || categories.length === 0) return [];
 
   const order = [
-    'cars',
-    'sports-cars',
-    'motorcycles',
-    'sports-bikes',
-    'bicycles',
-    'buses',
-    'leisure-boats',
-    'yachts',
-    'vans',
-    'buggies',
-    'charters',
+    "cars",
+    "sports-cars",
+    "motorcycles",
+    "sports-bikes",
+    "bicycles",
+    "buses",
+    "leisure-boats",
+    "yachts",
+    "vans",
+    "buggies",
+    "charters",
   ];
 
   return [...categories].sort((a, b) => {
@@ -80,17 +80,17 @@ export const sortFilters = (
 ): { name: string; value: string }[] => {
   // Define the order of categories
   const order = [
-    'cars',
-    'sports-cars',
-    'motorcycles',
-    'sports-bikes',
-    'bicycles',
-    'buses',
-    'leisure-boats',
-    'yachts',
-    'vans',
-    'buggies',
-    'charters',
+    "cars",
+    "sports-cars",
+    "motorcycles",
+    "sports-bikes",
+    "bicycles",
+    "buses",
+    "leisure-boats",
+    "yachts",
+    "vans",
+    "buggies",
+    "charters",
   ];
 
   return filters
@@ -100,7 +100,7 @@ export const sortFilters = (
 
 // Helper function to format the key to match icon naming convention
 export const formatKeyForIcon = (key: string) => {
-  return key.toLowerCase().replace(/\s+/g, '-');
+  return key.toLowerCase().replace(/\s+/g, "-");
 };
 
 // Helper function to format phone numbers
@@ -110,12 +110,12 @@ export const formatPhoneNumber = (countryCode: string, phoneNumber: string) => {
 
 // change to singular
 export const singularizeValue = (type: string) => {
-  if (type.toLowerCase() === 'buses') {
-    return 'Bus';
-  } else if (type.toLowerCase() === 'buggies') {
-    return 'Buggy';
+  if (type.toLowerCase() === "buses") {
+    return "Bus";
+  } else if (type.toLowerCase() === "buggies") {
+    return "Buggy";
   }
-  return type.endsWith('s') ? type.slice(0, -1) : type;
+  return type.endsWith("s") ? type.slice(0, -1) : type;
 };
 
 /**
@@ -126,20 +126,20 @@ export const singularizeValue = (type: string) => {
  */
 export function convertToLabel(value: string | undefined): string {
   if (!value) {
-    return ''; // Return an empty string if value is undefined, null, or an empty string
+    return ""; // Return an empty string if value is undefined, null, or an empty string
   }
   // if (value.toLowerCase() === "suvs") {
   //   return "SUV's";
   // }
 
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return value
-      .split('-') // Split the value by hyphen
+      .split("-") // Split the value by hyphen
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
-      .join(' '); // Join the words back with spaces
+      .join(" "); // Join the words back with spaces
   }
 
-  return '';
+  return "";
 }
 
 // Helper function to determine which rental period is available
@@ -148,27 +148,27 @@ export const getRentalPeriodDetails = (
 ) => {
   if (rentalDetails?.hour?.enabled) {
     return {
-      period: 'Hour',
+      period: "Hour",
       rentInAED: rentalDetails.hour.rentInAED,
       label: `/ ${rentalDetails.hour.minBookingHours}Hrs`,
     };
   } else if (rentalDetails?.day?.enabled) {
     return {
-      period: 'Day',
+      period: "Day",
       rentInAED: rentalDetails.day.rentInAED,
-      label: '/ day',
+      label: "/ Day",
     };
   } else if (rentalDetails?.week?.enabled) {
     return {
-      period: 'Week',
+      period: "Week",
       rentInAED: rentalDetails.week.rentInAED,
-      label: '/ week',
+      label: "/ Week",
     };
   } else if (rentalDetails?.month?.enabled) {
     return {
-      period: 'Month',
+      period: "Month",
       rentInAED: rentalDetails.month.rentInAED,
-      label: '/ month',
+      label: "/ Month",
     };
   }
   return null;
@@ -179,27 +179,27 @@ export const getMapCardRentalPeriodDetails = (
 ) => {
   if (rentalDetails?.hour) {
     return {
-      period: 'Hour',
+      period: "Hour",
       rentInAED: rentalDetails.hour, // Since it's a string, you may need to parse or format it if required
-      label: '/ hour',
+      label: "/ hour",
     };
   } else if (rentalDetails?.day) {
     return {
-      period: 'Day',
+      period: "Day",
       rentInAED: rentalDetails.day, // Same here
-      label: '/ day',
+      label: "/ day",
     };
   } else if (rentalDetails?.week) {
     return {
-      period: 'Week',
+      period: "Week",
       rentInAED: rentalDetails.week, // Same here
-      label: '/ week',
+      label: "/ week",
     };
   } else if (rentalDetails?.month) {
     return {
-      period: 'Month',
+      period: "Month",
       rentInAED: rentalDetails.month, // Same here
-      label: '/ month',
+      label: "/ month",
     };
   }
   return null;
@@ -207,15 +207,15 @@ export const getMapCardRentalPeriodDetails = (
 
 // Helper function to format vehicle specifications
 export function formatVehicleSpecification(spec: string) {
-  if (!spec) return 'N/A';
-  return spec.replace('_SPEC', '').replace('_', ' ');
+  if (!spec) return "N/A";
+  return spec.replace("_SPEC", "").replace("_", " ");
 }
 
 // Helper function to format seating capacity
 const formatSeatingCapacity = (seatingCapacity: string): string => {
   const numberOfSeats = parseInt(seatingCapacity); // Extract number from string
   if (numberOfSeats === 1) {
-    return 'single seater';
+    return "single seater";
   } else if (numberOfSeats > 1) {
     return `${numberOfSeats}-seater`;
   }
@@ -232,17 +232,17 @@ export function rearrangeStates(
   states: StateType[],
   country: string
 ): StateType[] {
-  if (country != 'ae') return states;
+  if (country != "ae") return states;
 
   const order = [
-    'dubai',
-    'abu-dhabi',
-    'sharjah',
-    'ras-al-khaimah',
-    'ajman',
-    'al-ain',
-    'fujairah',
-    'umm-al-quwain',
+    "dubai",
+    "abu-dhabi",
+    "sharjah",
+    "ras-al-khaimah",
+    "ajman",
+    "al-ain",
+    "fujairah",
+    "umm-al-quwain",
   ];
 
   return states.sort((a, b) => {
@@ -254,9 +254,9 @@ export function rearrangeStates(
 export const formatAdditionalTypeName = (name: string) => {
   return name
     .toLowerCase()
-    .split(' ')
+    .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .join(" ");
 };
 
 /**
@@ -266,12 +266,12 @@ export const formatAdditionalTypeName = (name: string) => {
  * @returns The converted string.
  */
 export function convertToValue(word: string | null): string {
-  if (!word) return 'company-disabled';
+  if (!word) return "company-disabled";
   return word
     .toLowerCase() // Convert to lowercase
-    .replace(/[^a-z0-9\s]/g, '-') // Replace non-alphanumeric characters (except spaces) with hyphens
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/^-+|-+$/g, ''); // Remove leading and trailing hyphens
+    .replace(/[^a-z0-9\s]/g, "-") // Replace non-alphanumeric characters (except spaces) with hyphens
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/^-+|-+$/g, ""); // Remove leading and trailing hyphens
 }
 
 /**
@@ -326,7 +326,7 @@ export const generateAgentProfileWhatsappUrl = (
   }
 
   const message = `Hi *_${
-    companyName || 'the company'
+    companyName || "the company"
   }_*.\n\nI am interested in renting/leasing a vehicle from your fleet. 
 Kindly let me know the next steps or any additional information required to proceed. 
 I look forward to your prompt response.\n\nSent via Ride.Rent`;
@@ -348,14 +348,14 @@ export const getAgentFormattedPhoneNumber = (
 
 export function generateModelDetailsUrl(vehicleTitle?: string): string {
   // Fallback value for vehicleTitle
-  const fallbackVehicleTitle = 'vehicle';
+  const fallbackVehicleTitle = "vehicle";
 
   const cleanText = (text: string): string => {
     return text
       .toLowerCase() // Convert to lowercase
-      .replace(/ - /g, '-') // Handle hyphens within the string
-      .replace(/[^a-z0-9-]+/g, '-') // Replace non-alphanumeric characters and spaces with hyphen
-      .replace(/^-+|-+$/g, ''); // Remove any leading or trailing hyphens
+      .replace(/ - /g, "-") // Handle hyphens within the string
+      .replace(/[^a-z0-9-]+/g, "-") // Replace non-alphanumeric characters and spaces with hyphen
+      .replace(/^-+|-+$/g, ""); // Remove any leading or trailing hyphens
   };
 
   // Use vehicleTitle if it exists, otherwise use fallbackVehicleTitle
@@ -408,18 +408,18 @@ export const generateListingUrl = (
   state: string,
   category: string,
   country: string,
-  selectedPeriod: 'hour' | 'day' | 'week' | 'month' | null // Accept null
+  selectedPeriod: "hour" | "day" | "week" | "month" | null // Accept null
 ): string => {
-  if (!selectedPeriod) return '/'; // Fallback if no period
+  if (!selectedPeriod) return "/"; // Fallback if no period
 
   const [minPrice, maxPrice] = values;
 
   return `/${country}/${state}/listing/${category}?price=${minPrice}-${maxPrice}&period=${selectedPeriod}`;
 };
 
-type PeriodType = 'hour' | 'day' | 'week' | 'month';
+type PeriodType = "hour" | "day" | "week" | "month";
 
-const PERIOD_ORDER: PeriodType[] = ['day', 'week', 'month', 'hour'];
+const PERIOD_ORDER: PeriodType[] = ["day", "week", "month", "hour"];
 
 /**
  * Formats and sorts available rental periods for price range filter.
@@ -427,10 +427,10 @@ const PERIOD_ORDER: PeriodType[] = ['day', 'week', 'month', 'hour'];
  */
 export function formatAndSortPeriods(availablePeriods: PeriodType[]) {
   const periodLabels: Record<PeriodType, string> = {
-    day: 'Daily',
-    week: 'Weekly',
-    month: 'Monthly',
-    hour: 'Hourly',
+    day: "Daily",
+    week: "Weekly",
+    month: "Monthly",
+    hour: "Hourly",
   };
 
   // Filter available periods in the correct order
@@ -450,7 +450,7 @@ type PriceRange = { min: number; max: number };
 export function getAvailablePeriods(
   result: Record<string, PriceRange | null> | undefined
 ): PeriodType[] {
-  const periodOrder: PeriodType[] = ['day', 'week', 'month', 'hour'];
+  const periodOrder: PeriodType[] = ["day", "week", "month", "hour"];
 
   return periodOrder.filter((period) => result?.[period] !== null);
 }
@@ -499,7 +499,7 @@ export const debounce = <T extends any[]>(
 /******  0150f7f5-2c9b-44ba-8f86-bcbf9330e37e  *******/ export function capitalizeFirstLetter(
   input: string
 ): string {
-  if (!input) return ''; // Handle empty or undefined input
+  if (!input) return ""; // Handle empty or undefined input
   return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
 }
 
@@ -510,7 +510,7 @@ export const debounce = <T extends any[]>(
  * @returns {string} Processed category string
  */
 export const extractCategory = (category: string): string => {
-  return category.replace(/-for-rent$/, '');
+  return category.replace(/-for-rent$/, "");
 };
 
 // Generate blog URL title helper function
@@ -518,11 +518,11 @@ export function generateBlogUrlTitle(title: string): string {
   return title
     .trim() // Remove leading/trailing spaces
     .toLowerCase() // Convert to lowercase
-    .replace(/[^\w\s&!-]/g, '') // Allow letters, numbers, spaces, &, hyphens, and !
-    .replace(/\s*-\s*/g, '-') // Replace spaces around hyphens with a single hyphen
-    .replace(/\s+/g, '-') // Replace remaining spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple consecutive hyphens with a single one
-    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+    .replace(/[^\w\s&!-]/g, "") // Allow letters, numbers, spaces, &, hyphens, and !
+    .replace(/\s*-\s*/g, "-") // Replace spaces around hyphens with a single hyphen
+    .replace(/\s+/g, "-") // Replace remaining spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple consecutive hyphens with a single one
+    .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
 }
 
 /**
@@ -536,31 +536,31 @@ export function generateBlogUrlTitle(title: string): string {
 export const getTypewriterStrings = (category: string): string[] => {
   const categoryMap: Record<string, string[]> = {
     yachts: [
-      '70 Foot Luxury Yacht',
-      'Majesty 56 Yacht',
-      '88 Foot Luxury yacht ',
+      "70 Foot Luxury Yacht",
+      "Majesty 56 Yacht",
+      "88 Foot Luxury yacht ",
     ],
-    vans: ['Toyota Sienna', 'Volkswagen Crafter', 'Toyota Rush'],
-    'sports-cars': ['Ferrari 488', 'Lamborghini Huracán', 'Porsche 911'],
-    'sports-bikes': ['Ducati Panigale', 'Yamaha R1', 'Kawasaki Ninja'],
-    motorcycles: ['BMW F 800 GS', 'Harley-Davidson', 'Kawasaki NINJA'],
-    'leisure-boats': ['Malibu Wakesetter', 'Hobie Cat', 'Yamaha AR250'],
-    charters: ['Phenom 300', 'Airbus H135', 'Gulfstream G650'],
+    vans: ["Toyota Sienna", "Volkswagen Crafter", "Toyota Rush"],
+    "sports-cars": ["Ferrari 488", "Lamborghini Huracán", "Porsche 911"],
+    "sports-bikes": ["Ducati Panigale", "Yamaha R1", "Kawasaki Ninja"],
+    motorcycles: ["BMW F 800 GS", "Harley-Davidson", "Kawasaki NINJA"],
+    "leisure-boats": ["Malibu Wakesetter", "Hobie Cat", "Yamaha AR250"],
+    charters: ["Phenom 300", "Airbus H135", "Gulfstream G650"],
     cars: [
-      'Toyota Yaris',
-      'Tesla Cybertruck ',
-      'BMW 5 Series 520i',
-      'Mercedes C Class',
+      "Toyota Yaris",
+      "Tesla Cybertruck ",
+      "BMW 5 Series 520i",
+      "Mercedes C Class",
     ],
-    buses: ['Yutong 37 Seater', 'MAN Lion', 'VDL'],
-    buggies: ['Polaris RZR 200', 'Yamaha ATV 700', 'Honda Talon 1000R'],
-    bicycles: ['Yadea KS3', 'Polygon Siskiu T6e', 'Polygon Strattos S7'],
+    buses: ["Yutong 37 Seater", "MAN Lion", "VDL"],
+    buggies: ["Polaris RZR 200", "Yamaha ATV 700", "Honda Talon 1000R"],
+    bicycles: ["Yadea KS3", "Polygon Siskiu T6e", "Polygon Strattos S7"],
   };
 
   const fallbackArray = [
-    'Luxury Vehicles',
-    'Premium Rentals',
-    'Drive Your Dream',
+    "Luxury Vehicles",
+    "Premium Rentals",
+    "Drive Your Dream",
   ];
 
   return categoryMap[category] || fallbackArray;
@@ -588,7 +588,7 @@ export const shouldShowDesktopFeaturesButton = (
  */
 export function restoreVehicleCodeFormat(lowerCaseCode: string): string {
   // Split the code into the alphabetic part and numeric part based on the hyphen
-  const [alphabets, numbers] = lowerCaseCode.split('-');
+  const [alphabets, numbers] = lowerCaseCode.split("-");
 
   if (!alphabets || !numbers) {
     return lowerCaseCode;
@@ -596,4 +596,16 @@ export function restoreVehicleCodeFormat(lowerCaseCode: string): string {
 
   // Capitalize the alphabets and combine them back with the numbers
   return `${alphabets.toUpperCase()}-${numbers}`;
+}
+
+/**
+ * Returns the vehicle card style based on the layout type.
+ */
+export function getVehicleCardStyle(layoutType: "carousel" | "grid"): string {
+  const styles = {
+    carousel: `w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem]`,
+    grid: `w-full max-w-[26rem] min-w-[12rem]`,
+  };
+
+  return styles[layoutType] || "";
 }

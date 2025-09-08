@@ -1,28 +1,28 @@
-import Description from '@/components/root/vehicle-details/description/Description';
-import Specification from '@/components/root/vehicle-details/specification/Specification';
-import DetailsSectionClientWrapper from '@/components/root/vehicle-details/DetailsSectionClientWrapper';
-import VehicleFeatures from '@/components/root/vehicle-details/features/Features';
-import MotionDiv from '@/components/general/framer-motion/MotionDiv';
-import RelatedResults from '@/components/root/vehicle-details/RelatedResults';
+import Description from "@/components/root/vehicle-details/description/Description";
+import Specification from "@/components/root/vehicle-details/specification/Specification";
+import DetailsSectionClientWrapper from "@/components/root/vehicle-details/DetailsSectionClientWrapper";
+import VehicleFeatures from "@/components/root/vehicle-details/features/Features";
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import RelatedResults from "@/components/root/vehicle-details/RelatedResults";
 import {
   ProfileCardDataType,
   VehicleDetailsPageResponse,
-} from '@/types/vehicle-details-types';
-import { notFound, redirect } from 'next/navigation';
-import { Metadata } from 'next';
-import DynamicFAQ from '@/components/common/FAQ/DynamicFAQ';
-import { generateVehicleMetadata, getVehicleJsonLd } from './metadata';
-import CurrentPageBreadcrumb from '@/components/root/vehicle-details/CurrentPageBreadcrumb';
-import { restoreVehicleCodeFormat } from '@/helpers';
-import { ENV } from '@/config/env';
-import { Suspense } from 'react';
-import SectionLoading from '@/components/skelton/section-loading/SectionLoading';
-import JsonLd from '@/components/common/JsonLd';
-import ImagesGrid from '@/components/root/vehicle-details/ImagesGrid';
-import { generateModelDetailsUrl } from '@/helpers';
-import SupplierDetails from '@/components/root/vehicle-details/SupplierDetails';
-import VehicleHeading from '@/components/root/vehicle-details/VehicleHeading';
-import ProfileCard from '@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard';
+} from "@/types/vehicle-details-types";
+import { notFound, redirect } from "next/navigation";
+import { Metadata } from "next";
+import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
+import { generateVehicleMetadata, getVehicleJsonLd } from "./metadata";
+import VehicleDetailsPageBreadCrump from "@/components/root/vehicle-details/VehicleDetailsPageBreadCrump";
+import { restoreVehicleCodeFormat } from "@/helpers";
+import { ENV } from "@/config/env";
+import { Suspense } from "react";
+import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
+import JsonLd from "@/components/common/JsonLd";
+import ImagesGrid from "@/components/root/vehicle-details/ImagesGrid";
+import { generateModelDetailsUrl } from "@/helpers";
+import SupplierDetails from "@/components/root/vehicle-details/SupplierDetails";
+import VehicleHeading from "@/components/root/vehicle-details/VehicleHeading";
+import ProfileCard from "@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard";
 
 type ParamsProps = {
   params: Promise<{
@@ -48,18 +48,18 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   const { country, state, category, vehicleCode, modelDetails } = params;
 
-  const baseUrl = country === 'in' ? ENV.API_URL_INDIA : ENV.API_URL;
+  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
 
-  const formattedModelDetails = modelDetails.replace(/-for-rent$/, '');
+  const formattedModelDetails = modelDetails.replace(/-for-rent$/, "");
 
   // Fetch the vehicle data from the API
   const response = await fetch(
     `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}`,
     {
-      method: 'GET',
-      cache: 'no-cache',
+      method: "GET",
+      cache: "no-cache",
     }
   );
 
@@ -67,7 +67,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   // if the vehicle data is not found, return 404 not found
   if (
-    data?.status === 'NOT_SUCCESS' ||
+    data?.status === "NOT_SUCCESS" ||
     response.status === 400 ||
     !data.result
   ) {
@@ -123,7 +123,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   type MediaItem = {
     source: string;
-    type: 'video' | 'image';
+    type: "video" | "image";
   };
 
   const mediaSourceList: MediaItem[] = [];
@@ -143,7 +143,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     // Add video as the first item
     mediaSourceList.push({
       source: vehicle.vehicleVideos[0],
-      type: 'video',
+      type: "video",
     });
   }
 
@@ -151,7 +151,7 @@ export default async function VehicleDetails(props: ParamsProps) {
   for (const image of images) {
     mediaSourceList.push({
       source: image,
-      type: 'image',
+      type: "image",
     });
   }
   const brandValue = vehicle?.brand?.value;
@@ -195,7 +195,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         {/* Details heading */}
         <MotionDiv className="">
           {/* breadcrumb for current page path*/}
-          <CurrentPageBreadcrumb
+          <VehicleDetailsPageBreadCrump
             category={category}
             state={state}
             country={country}

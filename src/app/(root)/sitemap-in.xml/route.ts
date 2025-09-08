@@ -36,7 +36,7 @@ async function fetchCompaniesSitemap() {
         url: `${SITE_URL}${generateCompanyProfilePageLink(
           company.companyName,
           company.companyId,
-          COUNTRY,
+          COUNTRY
         )}`,
         lastModified: new Date().toISOString(),
         changeFrequency: "weekly",
@@ -67,7 +67,7 @@ async function fetchBlogsSitemap() {
 
     if (data.status === "SUCCESS" && data.result?.list) {
       return data.result.list.map((blog) => ({
-        url: `${SITE_URL}/blog/${generateBlogUrlTitle(blog.blogTitle)}/${blog.blogId}`,
+        url: `${SITE_URL}/${COUNTRY}/blog/${generateBlogUrlTitle(blog.blogTitle)}/${blog.blogId}`,
         lastModified: new Date().toISOString(),
         changeFrequency: "weekly",
         priority: 0.8,
@@ -126,7 +126,7 @@ async function fetchVehicleListingPageSitemap() {
 
     // Generate all valid relative listing page URL paths
     const relativeListingPageUrls = generateListingPageUrls(
-      nestedVehicleStructure,
+      nestedVehicleStructure
     );
 
     // Create full sitemap entries
@@ -271,7 +271,7 @@ function createStaticPageEntries() {
     { path: "/privacy-policy", priority: 0.7, changeFrequency: "monthly" },
     { path: "/terms-condition", priority: 0.7, changeFrequency: "monthly" },
     { path: `/${COUNTRY}`, priority: 0.9, changeFrequency: "weekly" },
-    { path: "/blog", priority: 0.8, changeFrequency: "weekly" },
+    { path: `/${COUNTRY}/blog`, priority: 0.8, changeFrequency: "weekly" },
   ];
 
   return staticPages.map((page) => ({
@@ -294,7 +294,7 @@ function generateSitemapXML(entries) {
             (img) => `
             <image:image>
               <image:loc>${escapeXml(img)}</image:loc>
-            </image:image>`,
+            </image:image>`
           )
           .join("") || "";
 
