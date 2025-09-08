@@ -1,12 +1,11 @@
-import { Suspense } from 'react';
-import BrandSearch from '@/components/root/brand/BrandSearch';
-import { FetchBrandsResponse } from '@/types';
-import Pagination from '@/components/common/Pagination';
-import { convertToLabel, singularizeValue } from '@/helpers';
-import BackButton from '@/components/common/BackButton';
-import BrandsList from '@/components/root/brand/BrandsList';
-import { generateBrandsListingPageMetadata } from './metadata';
-import { API } from '@/utils/API';
+import { Suspense } from "react";
+import BrandSearch from "@/components/root/brand/BrandSearch";
+import { FetchBrandsResponse } from "@/types";
+import Pagination from "@/components/common/Pagination";
+import { convertToLabel, singularizeValue } from "@/helpers";
+import BrandsList from "@/components/root/brand/BrandsList";
+import { generateBrandsListingPageMetadata } from "./metadata";
+import { API } from "@/utils/API";
 
 type ParamsProps = {
   params: Promise<{ country: string; state: string; category: string }>;
@@ -29,26 +28,26 @@ export default async function Brands(props: ParamsProps) {
   const searchParams = await props.searchParams;
   const { state, category, country } = await props.params;
 
-  const page = parseInt(searchParams.page || '1', 10);
-  const search = searchParams.search || '';
+  const page = parseInt(searchParams.page || "1", 10);
+  const search = searchParams.search || "";
 
   const queryParams = new URLSearchParams({
     page: page.toString(),
-    limit: '20',
-    sortOrder: 'ASC',
+    limit: "20",
+    sortOrder: "ASC",
     categoryValue: category,
-    hasVehicle: 'true',
+    hasVehicle: "true",
   });
 
   if (search) {
-    queryParams.set('search', search);
+    queryParams.set("search", search);
   }
 
   const response = await API({
     path: `/vehicle-brand/list?${queryParams.toString()}`,
     options: {
-      method: 'GET',
-      cache: 'no-cache',
+      method: "GET",
+      cache: "no-cache",
     },
     country,
   });
@@ -64,11 +63,10 @@ export default async function Brands(props: ParamsProps) {
     <section className="wrapper pb-8">
       <div>
         <div className="mt-24 flex items-center justify-start gap-x-4">
-          <BackButton />
           <h1 className="mb-4 text-2xl font-semibold lg:text-4xl">
             <span className="text-yellow">
               {convertToLabel(singularizeValue(category))}
-            </span>{' '}
+            </span>{" "}
             Brands
           </h1>
         </div>

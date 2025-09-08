@@ -1,10 +1,10 @@
-import MotionSection from '@/components/general/framer-motion/MotionSection';
-import { FetchStatesResponse } from '@/types';
-import { rearrangeStates } from '@/helpers';
-import StateCard from './StateCard';
-import { SectionHeading } from '@/components/common/SectionHeading';
-import { API } from '@/utils/API';
-import ViewAllButton from '@/components/common/ViewAllButton';
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { FetchStatesResponse } from "@/types";
+import { rearrangeStates } from "@/helpers";
+import StateCard from "./StateCard";
+import { SectionHeading } from "@/components/common/SectionHeading";
+import { API } from "@/utils/API";
+import ViewAllButton from "@/components/common/ViewAllButton";
 
 export default async function States({
   category,
@@ -18,7 +18,7 @@ export default async function States({
   // Fetch and process states data
   const response = await API({
     path: `/states/list?hasVehicle=true`,
-    options: { cache: 'no-cache' },
+    options: { cache: "no-cache" },
     country,
   });
 
@@ -31,12 +31,12 @@ export default async function States({
   // Get dynamic subtitle based on country
   const getSubtitle = (country: string) => {
     switch (country.toLowerCase()) {
-      case 'ae':
-        return 'Explore more from all Emirates.';
-      case 'in':
-        return 'Explore exclusive offers across Indian cities.';
+      case "ae":
+        return "Explore more from all Emirates.";
+      case "in":
+        return "Explore exclusive offers across Indian cities.";
       default:
-        return 'Lorem ipsum dolor sit amet consectetur.';
+        return "Lorem ipsum dolor sit amet consectetur.";
     }
   };
 
@@ -46,8 +46,8 @@ export default async function States({
         className="absolute bottom-0 left-0 right-0 top-0 z-0 -ml-16"
         style={{
           background:
-            'linear-gradient(350deg, rgba(255, 255, 255, 0) 85%, rgba(249, 168, 37, 0.4) 160%)',
-          pointerEvents: 'none',
+            "linear-gradient(350deg, rgba(255, 255, 255, 0) 85%, rgba(249, 168, 37, 0.4) 160%)",
+          pointerEvents: "none",
         }}
       />
 
@@ -79,7 +79,7 @@ export default async function States({
 
         <ViewAllButton
           type="state"
-          link={`/${country}/${state}/listing/${category}`}
+          link={`/${country}/${state}/cities?category=${category}&page=1`}
         />
       </div>
     </MotionSection>

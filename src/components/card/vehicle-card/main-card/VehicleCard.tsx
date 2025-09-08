@@ -1,25 +1,25 @@
-import { NewVehicleCardType } from '@/types/vehicle-types';
-import { generateVehicleDetailsUrl } from '@/helpers';
-import VehicleThumbnail from '../VehicleThumbnail';
-import RentalDetails from '../RentalDetails';
-import LinkWrapper from '../LinkWrapper';
-import MotionStaggeredArticle from '@/components/general/framer-motion/MotionStaggeredArticle';
-import RentNowDialogTrigger from '../RentNowDialogTrigger';
-import { VehicleBadgesGroup } from '../vehicle-badge/VehicleBadgesGroup';
-import CardTitle from '../CardTitle';
+import { NewVehicleCardType } from "@/types/vehicle-types";
+import { generateVehicleDetailsUrl, getVehicleCardStyle } from "@/helpers";
+import VehicleThumbnail from "../VehicleThumbnail";
+import RentalDetails from "../RentalDetails";
+import LinkWrapper from "../LinkWrapper";
+import MotionStaggeredArticle from "@/components/general/framer-motion/MotionStaggeredArticle";
+import RentNowDialogTrigger from "../RentNowDialogTrigger";
+import { VehicleBadgesGroup } from "../vehicle-badge/VehicleBadgesGroup";
+import CardTitle from "../CardTitle";
 
 type VehicleCardProps = {
   vehicle: NewVehicleCardType;
   index: number;
   country: string;
-  layoutType: 'grid' | 'carousel';
+  layoutType: "grid" | "carousel";
   openInNewTab?: boolean;
 };
 
 const VehicleCard = ({
   vehicle,
   index,
-  country = 'ae',
+  country = "ae",
   layoutType,
   openInNewTab = false,
 }: VehicleCardProps) => {
@@ -32,12 +32,7 @@ const VehicleCard = ({
     country: country,
   });
 
-  // card styles based on layout type
-  const carouselCardStyle = `w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem] `;
-  const gridCardStyle = `w-full max-w-[26rem] min-w-[12rem]`;
-
-  // Conditionally set the styling based on layoutType
-  const classes = layoutType === 'carousel' ? carouselCardStyle : gridCardStyle;
+  const classes = getVehicleCardStyle(layoutType);
 
   return (
     <MotionStaggeredArticle
@@ -54,7 +49,7 @@ const VehicleCard = ({
           {/* thumbnail with hover image cycling */}
           <VehicleThumbnail
             src={vehicle.thumbnail}
-            alt={vehicle.vehicleTitle || 'Vehicle Image'}
+            alt={vehicle.vehicleTitle || "Vehicle Image"}
             width={250}
             height={200}
             layoutType={layoutType}

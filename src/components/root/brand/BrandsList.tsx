@@ -1,6 +1,6 @@
-import BrandImage from '@/components/common/BrandImage';
-import { BrandType } from '@/types';
-import Link from 'next/link';
+import BrandImage from "@/components/common/BrandImage";
+import { BrandType } from "@/types";
+import Link from "next/link";
 
 type BrandsListProps = {
   brands: BrandType[];
@@ -37,11 +37,11 @@ export default function BrandsList({
           key={data.id}
           className="h-36 w-full min-w-32 rounded-xl border bg-white"
         >
-          <div className="flex-center h-[6.5rem] w-auto p-2">
+          <div className="flex-center relative h-[6.5rem] w-full p-2">
             <BrandImage
               category={category}
               brandValue={data.brandValue}
-              className="h-full w-[95%] max-w-28 object-contain"
+              className="mx-auto h-full w-[95%] max-w-28 object-contain"
             />
           </div>
           <div className="max-w-full text-center text-sm font-semibold">
