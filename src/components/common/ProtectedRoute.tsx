@@ -20,11 +20,18 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const router = useRouter();
   const {
+    auth,
     isAuthenticated,
     user,
     isLoading: authLoading,
     onHandleLoginmodal,
+    authStorage,
   } = useAuthContext();
+
+  // console.log('auth: ', auth);
+
+  const usersd = authStorage.getUser();
+
 
   // Authentication protection
   useEffect(() => {
@@ -73,7 +80,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // Not authenticated state
-  if (!isAuthenticated || !user) {
+  if (!auth.isLoggedIn) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="mx-auto max-w-md rounded-lg bg-white p-8 text-center shadow-lg">
@@ -123,11 +130,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // Verification required state
-  if (
-    requireVerification &&
-    user &&
-    (!user.isPhoneVerified || !user.isEmailVerified)
-  ) {
+  if (!auth.isLoggedIn || !auth.user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="mx-auto max-w-md rounded-lg bg-white p-8 text-center shadow-lg">
