@@ -46,8 +46,6 @@ const VehicleCard = ({
     }
   };
 
-
-
   const classes = getVehicleCardStyle(layoutType);
 
   return (
