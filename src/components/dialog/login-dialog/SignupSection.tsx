@@ -1,33 +1,33 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { TabsContent } from '@/components/ui/tabs';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { TabsContent } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Eye, EyeOff, Lock, Phone, Check, Camera, Upload } from 'lucide-react';
-import { useAuthContext } from '@/auth';
-import { PhoneInput } from '@/components/ui/phone-input';
-import { parsePhoneNumber } from 'react-phone-number-input';
+} from "@/components/ui/select";
+import { Eye, EyeOff, Lock, Phone, Check, Camera, Upload } from "lucide-react";
+import { useAuthContext } from "@/auth";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { parsePhoneNumber } from "react-phone-number-input";
 
 // Country code to ID mapping
 const COUNTRY_MAPPINGS: Record<string, number> = {
-  '+971': 1, // UAE
-  '+1': 2, // USA
-  '+44': 3, // UK
-  '+91': 4, // India
-  '+966': 5, // Saudi Arabia
-  '+974': 6, // Qatar
-  '+965': 7, // Kuwait
-  '+973': 8, // Bahrain
-  '+968': 9, // Oman
+  "+971": 1, // UAE
+  "+1": 2, // USA
+  "+44": 3, // UK
+  "+91": 4, // India
+  "+966": 5, // Saudi Arabia
+  "+974": 6, // Qatar
+  "+965": 7, // Kuwait
+  "+973": 8, // Bahrain
+  "+968": 9, // Oman
 };
 
 interface SignupSectionProps {
@@ -92,10 +92,10 @@ export const SignupSection = ({
   } = useAuthContext();
 
   const [signupData, setSignupData] = useState<any>(null);
-  const [tempToken, setTempToken] = useState<string>('');
+  const [tempToken, setTempToken] = useState<string>("");
 
-  const [profileName, setProfileName] = useState('');
-  console.log('profileName: ', profileName);
+  const [profileName, setProfileName] = useState("");
+  console.log("profileName: ", profileName);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
     null
@@ -103,12 +103,12 @@ export const SignupSection = ({
 
   const handleClose = () => {
     setSignupStep(1);
-    setOtp(['', '', '', '']);
+    setOtp(["", "", "", ""]);
     setOtpVerified(false);
-    setMobileNumber('');
-    setPassword('');
-    setConfirmPassword('');
-    setProfileName('');
+    setMobileNumber("");
+    setPassword("");
+    setConfirmPassword("");
+    setProfileName("");
     setProfileImage(null);
     setProfileImagePreview(null);
     onClose();
@@ -126,10 +126,10 @@ export const SignupSection = ({
           handleClose();
         }
       } catch (error) {
-        console.error('Failed to update profile:', error);
+        console.error("Failed to update profile:", error);
       }
     } else {
-      console.log('Profile update skipped - missing data:', {
+      console.log("Profile update skipped - missing data:", {
         profileName,
         userId: auth?.user?.id,
         authUserId: auth.user?.id,
@@ -167,8 +167,8 @@ export const SignupSection = ({
       }
 
       // Check if OTP is complete (4 digits)
-      if (newOtp.every((digit) => digit !== '')) {
-        handleVerifyOtp(newOtp.join(''));
+      if (newOtp.every((digit) => digit !== "")) {
+        handleVerifyOtp(newOtp.join(""));
       }
     }
   };
@@ -191,7 +191,7 @@ export const SignupSection = ({
           );
         }
       } catch (error) {
-        console.error('Signup failed:', error);
+        console.error("Signup failed:", error);
       }
     }
   };
@@ -207,13 +207,13 @@ export const SignupSection = ({
         );
 
         if (response.success) {
-          console.log('response: ', response);
+          console.log("response: ", response);
           setOtpVerified(true);
-          setTempToken(response?.tempToken || '');
+          setTempToken(response?.tempToken || "");
           setTimeout(() => setSignupStep(3), 1000);
         }
       } catch (error) {
-        console.error('OTP verification failed:', error);
+        console.error("OTP verification failed:", error);
         setOtpVerified(false);
       }
     }
@@ -224,9 +224,9 @@ export const SignupSection = ({
       try {
         clearError();
         await resendOTP(mobileNumber, countryCode);
-        console.log('OTP resent successfully');
+        console.log("OTP resent successfully");
       } catch (error) {
-        console.error('Failed to resend OTP:', error);
+        console.error("Failed to resend OTP:", error);
       }
     }
   };
@@ -248,7 +248,7 @@ export const SignupSection = ({
           }
         }
       } catch (error) {
-        console.error('Password setup failed:', error);
+        console.error("Password setup failed:", error);
       }
     }
   };
@@ -291,7 +291,7 @@ export const SignupSection = ({
               value={
                 countryCode && mobileNumber
                   ? `${countryCode}${mobileNumber}`
-                  : ''
+                  : ""
               }
               onChange={(value) => {
                 if (value) {
@@ -302,17 +302,17 @@ export const SignupSection = ({
                       setMobileNumber(parsed.nationalNumber);
                     } else {
                       // Fallback if parsing fails
-                      setCountryCode('+971');
+                      setCountryCode("+971");
                       setMobileNumber(value);
                     }
                   } catch (e) {
                     // Fallback if parsing fails
-                    setCountryCode('+971');
+                    setCountryCode("+971");
                     setMobileNumber(value);
                   }
                 } else {
-                  setCountryCode('+971');
-                  setMobileNumber('');
+                  setCountryCode("+971");
+                  setMobileNumber("");
                 }
               }}
               defaultCountry="AE"
@@ -326,18 +326,18 @@ export const SignupSection = ({
             onClick={handleSendOtp}
             disabled={!mobileNumber || signupMutation.isPending}
           >
-            {signupMutation.isPending ? 'Sending OTP...' : 'Send OTP'}
+            {signupMutation.isPending ? "Sending OTP..." : "Send OTP"}
           </Button>
 
           <div className="text-center text-sm text-gray-600">
-            By continuing, you agree to our{' '}
+            By continuing, you agree to our{" "}
             <Button
               variant="link"
               className="h-auto cursor-pointer p-0 text-orange-500 hover:text-orange-600"
             >
               Terms of Service
-            </Button>{' '}
-            and{' '}
+            </Button>{" "}
+            and{" "}
             <Button
               variant="link"
               className="h-auto cursor-pointer p-0 text-orange-500 hover:text-orange-600"
@@ -353,7 +353,7 @@ export const SignupSection = ({
           <div className="space-y-2 text-center">
             <h3 className="text-lg font-semibold">Verify Your Mobile Number</h3>
             <p className="text-sm text-gray-600">
-              We've sent a 4-digit code to {countryCode} {mobileNumber}
+              We&apos;ve sent a 4-digit code to {countryCode} {mobileNumber}
             </p>
           </div>
 
@@ -370,7 +370,7 @@ export const SignupSection = ({
                     value={digit}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Backspace' && !digit && index > 0) {
+                      if (e.key === "Backspace" && !digit && index > 0) {
                         const prevInput = document.getElementById(
                           `otp-${index - 1}`
                         );
@@ -399,7 +399,7 @@ export const SignupSection = ({
               onClick={handleResendOtp}
               disabled={resendOtpMutation.isPending}
             >
-              {resendOtpMutation.isPending ? 'Resending...' : 'Resend OTP'}
+              {resendOtpMutation.isPending ? "Resending..." : "Resend OTP"}
             </Button>
           </div>
         </div>
@@ -420,7 +420,7 @@ export const SignupSection = ({
               <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
               <Input
                 id="signupPassword"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 placeholder="Create a password"
                 className="pl-10 pr-10"
                 value={password}
@@ -448,7 +448,7 @@ export const SignupSection = ({
               <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
               <Input
                 id="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
+                type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm your password"
                 className="pl-10 pr-10"
                 value={confirmPassword}
@@ -484,8 +484,8 @@ export const SignupSection = ({
             }
           >
             {setPasswordMutation.isPending
-              ? 'Creating Account...'
-              : 'Create Account'}
+              ? "Creating Account..."
+              : "Create Account"}
           </Button>
         </div>
       )}
@@ -501,7 +501,8 @@ export const SignupSection = ({
               Welcome to Ride.Rent
             </h3>
             <p className="text-sm text-gray-600">
-              Let's ride in style, time to set up your profile.
+              We&apos;ve sent a 4-digit code to Let&s ride in style, time to set
+              up your profile.
             </p>
           </div>
 
@@ -560,8 +561,8 @@ export const SignupSection = ({
             disabled={updateUserNameAndAvatar.isPending}
           >
             {updateUserNameAndAvatar.isPending
-              ? 'Updating Profile...'
-              : 'Start Booking'}
+              ? "Updating Profile..."
+              : "Start Booking"}
           </Button>
         </div>
       )}

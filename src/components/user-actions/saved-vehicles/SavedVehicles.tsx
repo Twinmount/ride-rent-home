@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Heart, Trash2, RefreshCw, AlertCircle } from 'lucide-react';
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Heart, Trash2, RefreshCw, AlertCircle } from "lucide-react";
 import {
   useUserSavedVehicles,
   useRemoveFromSaved,
-} from '@/hooks/useUserActions';
-import { useAppContext } from '@/context/useAppContext';
-import VehicleListSection from '@/components/root/listing/vehicle-grids/VehicleListSection';
-import AnimatedSkelton from '@/components/skelton/AnimatedSkelton';
-import type { SavedVehicle } from '@/lib/api/userActions.api.types';
+} from "@/hooks/useUserActions";
+import { useAppContext } from "@/context/useAppContext";
+import VehicleListSection from "@/components/root/listing/vehicle-grids/VehicleListSection";
+import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
+import type { SavedVehicle } from "@/lib/api/userActions.api.types";
 
 interface SavedVehiclesProps {
   className?: string;
 }
 
-const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = '' }) => {
+const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
   const { auth } = useAppContext();
   const { user, authStorage } = auth;
   const [visibleVehicleIds, setVisibleVehicleIds] = useState<string[]>([]);
@@ -47,7 +47,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = '' }) => {
 
     // Group vehicles by location (using vehicleId as key for simplicity)
     const grouped: Record<string, any[]> = {
-      'saved-vehicles': savedVehicles.map((saved: SavedVehicle) => ({
+      "saved-vehicles": savedVehicles.map((saved: SavedVehicle) => ({
         ...saved.vehicle,
         savedAt: saved.savedAt,
         savedId: saved.id,
@@ -61,16 +61,16 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = '' }) => {
     try {
       await removeFromSavedMutation.mutateAsync(vehicleId);
     } catch (error) {
-      console.error('Failed to remove from saved:', error);
+      console.error("Failed to remove from saved:", error);
     }
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -142,11 +142,12 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = '' }) => {
                   No Saved Vehicles Yet
                 </p>
                 <p className="text-gray-600">
-                  Save vehicles you're interested in to view them here later.
+                  Save vehicles you&apos;re interested in to view them here
+                  later.
                 </p>
               </div>
               <Button
-                onClick={() => (window.location.href = '/cars')}
+                onClick={() => (window.location.href = "/cars")}
                 className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
               >
                 Browse Vehicles
@@ -168,8 +169,8 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = '' }) => {
               <Heart className="h-6 w-6 text-red-600" />
               Your Saved Vehicles
               <Badge variant="secondary" className="bg-red-50 text-red-700">
-                {savedVehicles.length}{' '}
-                {savedVehicles.length === 1 ? 'Vehicle' : 'Vehicles'}
+                {savedVehicles.length}{" "}
+                {savedVehicles.length === 1 ? "Vehicle" : "Vehicles"}
               </Badge>
             </div>
             <Button
@@ -180,7 +181,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = '' }) => {
               className="flex items-center gap-2"
             >
               <RefreshCw
-                className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`}
+                className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`}
               />
               Refresh
             </Button>
@@ -215,7 +216,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = '' }) => {
               >
                 <div className="flex-1">
                   <h4 className="font-medium text-gray-900">
-                    {saved.vehicle?.model || 'Vehicle'}
+                    {saved.vehicle?.model || "Vehicle"}
                   </h4>
                   <p className="mt-1 text-sm text-gray-600">
                     Saved on {formatDate(saved.savedAt)}

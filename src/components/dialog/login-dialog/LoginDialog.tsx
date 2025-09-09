@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useImmer } from 'use-immer';
+import { useState } from "react";
+import { useImmer } from "use-immer";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Eye, EyeOff, Lock, Phone, Check, ArrowLeft } from 'lucide-react';
-import { useAuthContext } from '@/auth';
-import { SignupSection } from './SignupSection';
-import { PhoneInput } from '@/components/ui/phone-input';
-import { parsePhoneNumber } from 'react-phone-number-input';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Eye, EyeOff, Lock, Phone, Check, ArrowLeft } from "lucide-react";
+import { useAuthContext } from "@/auth";
+import { SignupSection } from "./SignupSection";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { parsePhoneNumber } from "react-phone-number-input";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -34,8 +34,8 @@ export const LoginDialog = ({
 
   // Login form state using useImmer
   const [loginForm, updateLoginForm] = useImmer({
-    phoneNumber: '',
-    password: '',
+    phoneNumber: "",
+    password: "",
     rememberMe: false,
   });
 
@@ -49,18 +49,18 @@ export const LoginDialog = ({
   // Forgot password state using useImmer
   const [forgotPasswordForm, updateForgotPasswordForm] = useImmer({
     step: 1,
-    mobile: '',
-    otp: ['', '', '', ''],
+    mobile: "",
+    otp: ["", "", "", ""],
     otpVerified: false,
   });
 
   const [signupStep, setSignupStep] = useState(1); // 1: basic info, 2: OTP verification, 3: password setup
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [countryCode, setCountryCode] = useState('+971');
-  const [otp, setOtp] = useState(['', '', '', '']);
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("+971");
+  const [otp, setOtp] = useState(["", "", "", ""]);
   const [otpVerified, setOtpVerified] = useState(false);
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleLogin = async () => {
     try {
@@ -79,23 +79,23 @@ export const LoginDialog = ({
       }
 
       // Parse phone number to extract country code and national number
-      let countryCode = '';
-      let phoneNumber = '';
+      let countryCode = "";
+      let phoneNumber = "";
 
       try {
         const parsed = parsePhoneNumber(loginForm.phoneNumber);
-        console.log('parsed: ', parsed);
+        console.log("parsed: ", parsed);
         if (parsed) {
           countryCode = `+${parsed.countryCallingCode}`;
           phoneNumber = parsed.nationalNumber;
         } else {
           // Fallback if parsing fails
-          countryCode = '+971';
+          countryCode = "+971";
           phoneNumber = loginForm.phoneNumber;
         }
       } catch (e) {
         // Fallback if parsing fails
-        countryCode = '+971';
+        countryCode = "+971";
         phoneNumber = loginForm.phoneNumber;
       }
 
@@ -110,34 +110,34 @@ export const LoginDialog = ({
       onLoginSuccess?.();
       handleClose();
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
       // Error is handled by the auth context
     }
   };
 
   const handleClose = () => {
     setSignupStep(1);
-    setOtp(['', '', '', '']);
+    setOtp(["", "", "", ""]);
     setOtpVerified(false);
-    setMobileNumber('');
-    setCountryCode('+971');
-    setPassword('');
-    setConfirmPassword('');
+    setMobileNumber("");
+    setCountryCode("+971");
+    setPassword("");
+    setConfirmPassword("");
     setShowSignupPassword(false);
     setShowSignupConfirmPassword(false);
 
     // Reset forgot password state
     updateForgotPasswordForm((draft) => {
       draft.step = 1;
-      draft.mobile = '';
-      draft.otp = ['', '', '', ''];
+      draft.mobile = "";
+      draft.otp = ["", "", "", ""];
       draft.otpVerified = false;
     });
 
     // Reset login form
     updateLoginForm((draft) => {
-      draft.phoneNumber = '';
-      draft.password = '';
+      draft.phoneNumber = "";
+      draft.password = "";
       draft.rememberMe = false;
     });
 
@@ -151,7 +151,7 @@ export const LoginDialog = ({
 
   const handleSendForgotOtp = () => {
     // TODO: Implement forgot password OTP sending
-    console.log('Sending forgot password OTP to:', forgotPasswordForm.mobile);
+    console.log("Sending forgot password OTP to:", forgotPasswordForm.mobile);
     updateForgotPasswordForm((draft) => {
       draft.step = 2;
     });
@@ -173,9 +173,9 @@ export const LoginDialog = ({
     // Check if OTP is complete (for demo purposes, use 1234)
     const newOtp = [...forgotPasswordForm.otp];
     newOtp[index] = value;
-    const otpString = newOtp.join('');
+    const otpString = newOtp.join("");
     if (otpString.length === 4) {
-      if (otpString === '1234') {
+      if (otpString === "1234") {
         updateForgotPasswordForm((draft) => {
           draft.otpVerified = true;
         });
@@ -190,7 +190,7 @@ export const LoginDialog = ({
 
   const handlePasswordReset = () => {
     // TODO: Implement password reset
-    console.log('Resetting password');
+    console.log("Resetting password");
     setShowForgotPassword(false);
   };
 
@@ -231,7 +231,7 @@ export const LoginDialog = ({
                     value={forgotPasswordForm.mobile}
                     onChange={(value) =>
                       updateForgotPasswordForm((draft) => {
-                        draft.mobile = value || '';
+                        draft.mobile = value || "";
                       })
                     }
                     defaultCountry="AE"
@@ -254,7 +254,8 @@ export const LoginDialog = ({
               <div className="space-y-4">
                 <div className="space-y-2 text-center">
                   <p className="text-sm text-gray-600">
-                    We've sent a 4-digit code to {forgotPasswordForm.mobile}
+                    We&apos;ve sent a 4-digit code to{" "}
+                    {forgotPasswordForm.mobile}
                   </p>
                 </div>
 
@@ -278,7 +279,7 @@ export const LoginDialog = ({
                             }
                             onKeyDown={(e) => {
                               if (
-                                e.key === 'Backspace' &&
+                                e.key === "Backspace" &&
                                 !digit &&
                                 index > 0
                               ) {
@@ -333,7 +334,7 @@ export const LoginDialog = ({
                     <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                     <Input
                       id="newPassword"
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       placeholder="Create a new password"
                       className="pl-10 pr-10"
                     />
@@ -361,7 +362,7 @@ export const LoginDialog = ({
                     <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                     <Input
                       id="confirmNewPassword"
-                      type={showConfirmPassword ? 'text' : 'password'}
+                      type={showConfirmPassword ? "text" : "password"}
                       placeholder="Confirm your new password"
                       className="pl-10 pr-10"
                     />
@@ -437,7 +438,7 @@ export const LoginDialog = ({
                     value={loginForm.phoneNumber}
                     onChange={(value) =>
                       updateLoginForm((draft) => {
-                        draft.phoneNumber = value || '';
+                        draft.phoneNumber = value || "";
                       })
                     }
                     defaultCountry="AE"
@@ -452,7 +453,7 @@ export const LoginDialog = ({
                     <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                     <Input
                       id="password"
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
                       className="pl-10 pr-10"
                       value={loginForm.password}
@@ -512,8 +513,8 @@ export const LoginDialog = ({
                   }
                 >
                   {isLoading || loginMutation.isPending
-                    ? 'Logging in...'
-                    : 'Login'}
+                    ? "Logging in..."
+                    : "Login"}
                 </Button>
 
                 {/* <div className="relative">
