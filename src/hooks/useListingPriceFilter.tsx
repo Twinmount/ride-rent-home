@@ -1,9 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
-import { adjustMinMaxIfEqual, getAvailablePeriods } from '@/helpers';
-import { useFetchPriceFilter } from '@/components/dialog/price-filter-dialog/useFetchPriceFilter';
-import { FiltersType } from '@/hooks/useFilters';
+import { useState, useEffect, useMemo } from "react";
+import { adjustMinMaxIfEqual, getAvailablePeriods } from "@/helpers";
+import { FiltersType } from "@/hooks/useFilters";
+import { fetchPriceRange } from "@/lib/api/general-api";
+import { useQuery } from "@tanstack/react-query";
+import { useStateAndCategory } from "./useStateAndCategory";
 
-export type PeriodType = 'hour' | 'day' | 'week' | 'month';
+export type PeriodType = "hour" | "day" | "week" | "month";
 
 interface UseListingPriceFilterProps {
   selectedFilters: FiltersType;
@@ -18,7 +20,14 @@ export function useListingPriceFilter({
   selectedFilters,
   handlePeriodPriceChange,
 }: UseListingPriceFilterProps) {
-  const { data, isLoading } = useFetchPriceFilter();
+  const { state, category, country } = useStateAndCategory();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["priceRange", state, category],
+    queryFn: () => fetchPriceRange({ state, category, country }),
+    enabled: !!state && !!category && !!country,
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
+  });
 
   const availablePeriods = useMemo(
     () => getAvailablePeriods(data?.result),
@@ -47,7 +56,7 @@ export function useListingPriceFilter({
       const { min: apiMin, max: apiMax } = selectedPriceRange;
 
       if (priceFromFilters) {
-        const [rawMin, rawMax] = priceFromFilters.split('-').map(Number);
+        const [rawMin, rawMax] = priceFromFilters.split("-").map(Number);
 
         // Clamp values to API bounds
         const validMin = isNaN(rawMin) || rawMin < apiMin ? apiMin : rawMin;
@@ -64,7 +73,7 @@ export function useListingPriceFilter({
         setValues([apiMin, apiMax]);
       }
     } else {
-      // ❌ Invalid period — don't apply price either
+      // Invalid period — don't apply price either
       setValues([0, 100]); // Or omit this if you want it blanked
     }
   }, [selectedPeriod, selectedPriceRange, selectedFilters.price, data]);
@@ -79,7 +88,7 @@ export function useListingPriceFilter({
 
     if (isUnselect) {
       // Clear both
-      handlePeriodPriceChange('', '');
+      handlePeriodPriceChange("", "");
       setValues([0, 100]);
     } else {
       const backendRange = data?.result?.[newPeriod];

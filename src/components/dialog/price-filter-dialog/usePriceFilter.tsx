@@ -1,16 +1,22 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from "react";
 
-import { useStateAndCategory } from '@/hooks/useStateAndCategory';
-import { adjustMinMaxIfEqual, getAvailablePeriods } from '@/helpers';
-import { useFetchPriceFilter } from './useFetchPriceFilter';
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
+import { adjustMinMaxIfEqual, getAvailablePeriods } from "@/helpers";
+import { fetchPriceRange } from "@/lib/api/general-api";
+import { useQuery } from "@tanstack/react-query";
 
-export type PeriodType = 'hour' | 'day' | 'week' | 'month';
+export type PeriodType = "hour" | "day" | "week" | "month";
 
 export function usePriceFilter() {
   const { state, category, country } = useStateAndCategory();
 
   // Fetch price range
-  const { data, isLoading } = useFetchPriceFilter();
+  const { data, isLoading } = useQuery({
+    queryKey: ["priceRange", state, category],
+    queryFn: () => fetchPriceRange({ state, category, country }),
+    enabled: !!state && !!category && !!country, // Ensure valid state before fetching
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
+  });
 
   // Extract available periods
   const availablePeriods = useMemo(
