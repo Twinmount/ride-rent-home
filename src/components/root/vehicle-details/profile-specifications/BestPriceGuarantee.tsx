@@ -3,10 +3,19 @@ import { motion, Variants } from 'framer-motion';
 import { MdOutlineClose, MdOutlineVerifiedUser } from 'react-icons/md';
 import Image from 'next/image';
 
-const BestPriceGuarantee = () => {
+type BestPriceGuaranteeProps = {
+  isDisabled?: boolean;
+};
+
+const BestPriceGuarantee = ({
+  isDisabled = false,
+}: BestPriceGuaranteeProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
+  const openModal = () => {
+    if (isDisabled) return;
+    setIsModalOpen(true);
+  };
   const closeModal = () => setIsModalOpen(false);
 
   // Animation variants for the shield icon (coming from left)
@@ -15,7 +24,7 @@ const BestPriceGuarantee = () => {
     visible: {
       x: 0,
       opacity: 1,
-      transition: { duration: 0.8, ease: 'easeOut' },
+      transition: { duration: 0.8, ease: "easeOut" },
     },
   };
 
@@ -25,7 +34,7 @@ const BestPriceGuarantee = () => {
     visible: {
       x: 0,
       opacity: 1,
-      transition: { duration: 0.8, ease: 'easeOut' },
+      transition: { duration: 0.8, ease: "easeOut" },
     },
   };
 
@@ -33,11 +42,11 @@ const BestPriceGuarantee = () => {
   const shakeVariants: Variants = {
     initial: {},
     shake: {
-      x: [0, -2, 2, -2, 2, 0],
+      x: isDisabled ? 0 : [0, -2, 2, -2, 2, 0], // No shake when disabled
       transition: {
         duration: 0.5,
         delay: 1, // Start shaking 1 second after slide-in completes
-        repeat: 2, // Shake 3 times total
+        repeat: isDisabled ? 0 : 2, // No repeat when disabled
         repeatDelay: 2, // Wait 2 seconds between shake cycles
       },
     },
@@ -54,7 +63,12 @@ const BestPriceGuarantee = () => {
       >
         <button
           onClick={openModal}
-          className="flex items-center gap-x-1 text-yellow transition-colors hover:text-orange"
+          className={`flex items-center gap-x-1 transition-colors ${
+            isDisabled
+              ? "cursor-not-allowed text-gray-400"
+              : "text-yellow hover:text-orange"
+          }`}
+          disabled={isDisabled}
         >
           {/* Shield Icon - slides in from left */}
           <motion.div
@@ -62,12 +76,16 @@ const BestPriceGuarantee = () => {
             initial="hidden"
             animate="visible"
           >
-            <MdOutlineVerifiedUser className="h-4 w-4 text-yellow" />
+            <MdOutlineVerifiedUser
+              className={`h-4 w-4 ${isDisabled ? "text-gray-400" : "text-yellow"}`}
+            />
           </motion.div>
 
           {/* Text - slides in from right */}
           <motion.span
-            className="text-sm font-medium text-yellow underline"
+            className={`text-sm font-medium underline ${
+              isDisabled ? "text-gray-400" : "text-yellow"
+            }`}
             variants={textVariants}
             initial="hidden"
             animate="visible"
@@ -78,7 +96,7 @@ const BestPriceGuarantee = () => {
       </motion.div>
 
       {/* Modal Popup */}
-      {isModalOpen && (
+      {isModalOpen && !isDisabled && (
         <motion.div
           className="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 p-4 md:flex"
           initial={{ opacity: 0 }}
@@ -91,7 +109,7 @@ const BestPriceGuarantee = () => {
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ type: 'spring', duration: 0.5 }}
+            transition={{ type: "spring", duration: 0.5 }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
