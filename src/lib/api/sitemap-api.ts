@@ -15,9 +15,6 @@ export class SitemapAPI {
     private countryId: string
   ) {}
 
-  /**
-   * Get raw companies data from API
-   */
   async getCompaniesSitemapData() {
     try {
       const response = await API({
@@ -33,9 +30,6 @@ export class SitemapAPI {
     }
   }
 
-  /**
-   * Get raw blogs data from API
-   */
   async getBlogsSitemapData() {
     try {
       const response = await API({
@@ -51,9 +45,6 @@ export class SitemapAPI {
     }
   }
 
-  /**
-   * Get raw vehicle series data from API
-   */
   async getVehicleSeriesSitemapData() {
     try {
       const response = await API({
@@ -69,10 +60,6 @@ export class SitemapAPI {
     }
   }
 
-  /**
-   * Get raw vehicle listing data and process it into relative URLs
-   * Returns array of relative URL paths (not full sitemap objects)
-   */
   async getVehicleListingSitemapData() {
     try {
       const response = await API({
@@ -102,10 +89,6 @@ export class SitemapAPI {
     }
   }
 
-  /**
-   * Get raw states and vehicles data from API
-   * Returns both raw data and processed structures to avoid duplicate processing
-   */
   async getStatesAndVehiclesSitemapData() {
     try {
       const response = await API({

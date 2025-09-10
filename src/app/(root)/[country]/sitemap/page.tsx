@@ -1,6 +1,7 @@
 import { COUNTRY_CONFIGS, CountryCode } from "@/helpers/country-config";
 import { PageSitemapService } from "@/services/PageSitemapService";
 import { MetadataRoute } from "next";
+import { notFound } from "next/navigation";
 
 type PropsType = {
   params: Promise<{ country: string }>;
@@ -13,7 +14,7 @@ export default async function SitemapPage(props: PropsType) {
   // Get country configuration
   const config = COUNTRY_CONFIGS[country as CountryCode];
   if (!config) {
-    return <div>Invalid country</div>;
+    return notFound();
   }
 
   // Initialize service and fetch sitemap entries
