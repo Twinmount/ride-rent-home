@@ -39,7 +39,7 @@ export default async function CitiesPage(props: PageProps) {
   const formattedCountry = getCountryName(country);
   const formattedCategory = singularizeValue(convertToLabel(category));
 
-  // Fetch data using the generated UR
+  // Fetch data using the generated URL
   const response = await API({
     path: `/city/paginated/list?state=${state}&page=${page}&limit=${80}`,
     options: {
@@ -57,31 +57,43 @@ export default async function CitiesPage(props: PageProps) {
   const cities = data?.result?.list || [];
 
   return (
-    <div className="wrapper flex h-auto min-h-screen flex-col bg-lightGray pb-8 pt-4">
-      <h1 className="ml-2 break-words text-lg font-[500] max-md:mr-auto md:text-xl lg:text-3xl">
-        Car Rentals options across {formattedCountry} Cities - Find the Best
-        Deals
-      </h1>
+    <div className="min-h-screen">
+      {/* Hero Section with Headings */}
+      <div className="bg-white py-6 md:py-8">
+        <div className="wrapper">
+          <h1 className="text-center text-xl font-medium text-gray-900 md:text-center md:text-2xl md:font-semibold lg:text-left lg:text-3xl xl:text-4xl">
+            Car Rentals options across {formattedCountry} Cities - Find the Best
+            Deals
+          </h1>
 
-      <h2 className="ml-2 mt-2 break-words text-sm font-[400] max-md:mr-auto lg:text-base">
-        Find affordable {formattedCategory} Rental in {formattedCountry} Cities,
-        Economy, SUV, and Luxury Options
-      </h2>
+          <h2 className="mt-3 text-center text-sm text-text-secondary md:text-center md:text-base lg:text-left lg:text-lg">
+            Find affordable Car Rental in {formattedCountry} Cities, Economy,
+            SUV, and Luxury Options
+          </h2>
+        </div>
+      </div>
 
-      <section className="mt-8">
-        <StatesForCities state={state} category={category} country={country} />
+      {/* Main Content Section */}
+      <div className="wrapper flex h-auto min-h-screen flex-col bg-lightGray pb-8 pt-8">
+        <section>
+          <StatesForCities
+            state={state}
+            category={category}
+            country={country}
+          />
 
-        <CitiesGrid
-          cities={cities}
-          state={state}
-          category={category}
-          country={country}
-        />
+          <CitiesGrid
+            cities={cities}
+            state={state}
+            category={category}
+            country={country}
+          />
 
-        <Suspense fallback={<div>Loading Pagination...</div>}>
-          <Pagination page={page} totalPages={totalPages} />
-        </Suspense>
-      </section>
+          <Suspense fallback={<div>Loading Pagination...</div>}>
+            <Pagination page={page} totalPages={totalPages} />
+          </Suspense>
+        </section>
+      </div>
     </div>
   );
 }
