@@ -36,7 +36,38 @@ export function useListingPriceFilter({
 
   const [values, setValues] = useState<[number, number]>([0, 100]);
 
-  const selectedPeriod = (selectedFilters.period || null) as PeriodType | null;
+  // Get selectedPeriod from filters, with default to 'day' if available
+  const selectedPeriod = useMemo(() => {
+    const filterPeriod = selectedFilters.period as PeriodType | null;
+
+    // If there's a period in filters, use it
+    if (filterPeriod && availablePeriods.includes(filterPeriod)) {
+      return filterPeriod;
+    }
+
+    // If no period in filters and availablePeriods are loaded
+    if (availablePeriods.length > 0 && !filterPeriod) {
+      // Default to 'day' if available, otherwise first available period
+      return availablePeriods.includes("day") ? "day" : availablePeriods[0];
+    }
+
+    return filterPeriod;
+  }, [selectedFilters.period, availablePeriods]);
+
+  // Auto-select default period when availablePeriods load and no period is selected
+  useEffect(() => {
+    if (availablePeriods.length > 0 && !selectedFilters.period) {
+      const defaultPeriod = availablePeriods.includes("day")
+        ? "day"
+        : availablePeriods[0];
+      const backendRange = data?.result?.[defaultPeriod];
+
+      if (backendRange) {
+        const { min, max } = adjustMinMaxIfEqual(backendRange);
+        handlePeriodPriceChange(defaultPeriod, `${min}-${max}`);
+      }
+    }
+  }, [availablePeriods, selectedFilters.period, data, handlePeriodPriceChange]);
 
   // Get min/max range from backend for selected period
   const selectedPriceRange = useMemo(() => {

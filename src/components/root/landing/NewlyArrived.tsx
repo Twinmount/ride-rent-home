@@ -39,19 +39,21 @@ export default async function NewlyArrived({
   if (vehicleData.length === 0) return null;
 
   const formattedCategory = convertToLabel(category);
+    const formattedState = convertToLabel(state as string);
+
 
   return (
     <MotionSection className="section-container mx-auto">
       {/* Header section with View All button - respects container padding */}
       <div className="mx-auto flex items-center justify-between align-middle lg:my-6 lg:max-w-[92rem] lg:pr-6 lg:pt-3">
         <div
-          className={cn('mb-4 flex w-full flex-col gap-y-3 text-left lg:pl-6')}
+          className={cn("mb-4 flex w-full flex-col gap-y-3 text-left lg:pl-6")}
         >
           <h2 className="heading-primary text-text-primary">
             Newly arrived {formattedCategory}
           </h2>
           <p className="heading-secondary hidden lg:block">
-            Check out the newly arrived cars in {state}
+            Check out the newly arrived cars in {formattedState}
           </p>
         </div>
         <ViewAllLinkButton

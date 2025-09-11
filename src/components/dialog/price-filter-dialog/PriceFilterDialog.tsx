@@ -116,7 +116,13 @@ export default function PriceFilterDialog({
           />
         </div>
 
-        <MinAndMaxPrice min={values[0]} max={values[1]} />
+        <MinAndMaxPrice
+          min={values[0]}
+          max={values[1]}
+          onValueChange={setValues}
+          priceRangeMin={selectedPriceRange.min}
+          priceRangeMax={selectedPriceRange.max}
+        />
 
         {isListingPage ? (
           <button
@@ -124,7 +130,7 @@ export default function PriceFilterDialog({
             disabled={isNavigating}
             className="flex-center mx-auto w-4/5 rounded-xl bg-yellow/90 px-6 py-2 font-semibold text-white transition-colors hover:bg-yellow"
           >
-            {isNavigating ? 'Applying...' : 'Apply Filter'}
+            {isNavigating ? "Applying..." : "Apply Filter"}
           </button>
         ) : (
           <Link href={dynamicUrl} className="mx-auto w-4/5">

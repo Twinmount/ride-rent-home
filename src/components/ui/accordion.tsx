@@ -32,14 +32,14 @@ const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        'flex flex-1 items-center justify-between py-4 font-medium transition-all [&[data-state=open]>svg]:rotate-180',
-        'px-4 text-start text-sm font-normal text-text-secondary hover:no-underline lg:text-base',
+        "flex flex-1 items-center justify-between py-4 font-medium transition-all [&[data-state=open]>svg]:rotate-180",
+        "px-6 text-start text-[0.6rem] font-normal text-text-secondary hover:no-underline lg:px-4 lg:text-base",
         className
       )}
       {...props}
     >
-      <div className="flex items-start gap-3">
-        <CiCircleQuestion className="mt-0.5 h-6 w-6 flex-shrink-0 text-text-secondary" />
+      <div className="flex items-start gap-2">
+        <CiCircleQuestion className="mt-0.5 h-4 w-4 flex-shrink-0 text-text-secondary" />
         <span className="text-left leading-relaxed">{children}</span>
       </div>
       <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
@@ -59,7 +59,7 @@ const AccordionContent = React.forwardRef<
   >
     <div
       className={cn(
-        'text-text ml-9 bg-white px-4 pb-4 pt-0 leading-relaxed text-text-secondary',
+        "text-text ml-9 bg-white px-4 pb-4 pt-0 leading-relaxed text-text-secondary",
         className
       )}
     >
