@@ -60,7 +60,9 @@ export default async function VehicleSeriesInfo({
         <h1 className="custom-heading mb-2 text-lg font-[500] md:text-2xl">
           {heading}
         </h1>
-        <h2 className="text-sm text-text-secondary lg:text-lg">{subHeading}</h2>
+        <h2 className="text-sm text-text-secondary lg:text-base">
+          {subHeading}
+        </h2>
       </div>
 
       {/* info title and info description */}

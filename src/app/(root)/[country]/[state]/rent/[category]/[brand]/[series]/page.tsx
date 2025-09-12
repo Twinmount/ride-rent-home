@@ -53,14 +53,14 @@ export default async function VehicleSeriesPage(props: PageProps) {
         id={`json-ld-series-${brand}-${series}`}
         jsonLdData={jsonLdData}
       />
-      <div className="wrapper flex h-auto min-h-screen flex-col bg-lightGray pb-8 pt-4">
+      <div className="wrapper flex h-auto min-h-screen flex-col pb-8 pt-4">
         <VehicleSeriesInfo
           series={series}
           state={state}
           brand={brand}
           country={country}
         />
-       
+
         <SeriesListingGrid
           brand={brand}
           series={series}

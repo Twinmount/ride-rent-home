@@ -10,8 +10,11 @@ import { AlignRight } from "lucide-react";
 import { SidebarAccordion } from "./SidebarAccordion";
 import RideRentNavbarLogo from "../common/RideRentNavbarLogo";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 
 export default function MobileSidebar() {
+  const [isOpen, setIsOpen] = useState(false);
+
   const {
     country,
     state,
@@ -24,8 +27,12 @@ export default function MobileSidebar() {
 
   const stateValue = state ? state : country === "in" ? "bangalore" : "dubai";
 
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button className="w-fit border-none outline-none" size="icon">
           <AlignRight className="h-6 w-6" />
@@ -44,7 +51,7 @@ export default function MobileSidebar() {
             category={category}
           />
           {/* sidebar accordions */}
-          <SidebarAccordion />
+          <SidebarAccordion onLinkClick={handleClose} />
         </div>
       </SheetContent>
     </Sheet>

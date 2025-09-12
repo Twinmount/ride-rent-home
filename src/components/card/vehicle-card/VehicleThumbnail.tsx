@@ -4,13 +4,14 @@ import { VehicleCardImageSkeleton } from '@/components/skelton/VehicleCardImageS
 import Image from 'next/image';
 import { useState } from 'react';
 import { useImageCycling } from '@/hooks/useImageCycling';
+import { Images } from "lucide-react";
 
 type VehicleThumbnailProps = {
   src: string | null;
   alt: string;
   width: number;
   height: number;
-  layoutType: 'grid' | 'carousel';
+  layoutType: "grid" | "carousel";
   vehiclePhotos?: string[];
 };
 
@@ -106,6 +107,11 @@ const VehicleThumbnail = ({
         } `}
         quality={70}
         priority={currentIndex === 0}
+        sizes={
+          layoutType === "carousel"
+            ? "(max-width: 1024px) 8rem, 8.3rem"
+            : "(max-width: 1024px) 6rem, 7.5rem"
+        }
       />
 
       {/* Cycling Loading Indicator - Top Right */}
@@ -129,10 +135,10 @@ const VehicleThumbnail = ({
         </div>
       )}
 
-      {/* Image Counter Badge */}
+      {/* Gallery Icon - More Images Indicator */}
       {hasMultipleImages && allImages.length > 1 && !isTransitioning && (
-        <div className="absolute right-2 top-2 rounded-full bg-black/50 px-2 py-1 text-xs text-white backdrop-blur-sm">
-          +{allImages.length - 1}
+        <div className="absolute right-2 top-2 rounded-full bg-black/40 p-1.5 backdrop-blur-sm">
+          <Images className="h-3 w-3 text-white" />
         </div>
       )}
     </div>
