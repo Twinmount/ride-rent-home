@@ -115,14 +115,16 @@ const ImagesGrid = ({
           <video
             src={item.source}
             className="h-full w-full rounded-xl object-cover"
-            controls
+            autoPlay
+            loop
             muted
             playsInline
+            controls
             poster={item.thumbnail}
             preload="metadata"
             onLoadedData={() => handleImageLoad(index)}
             onError={() => {
-              console.error('Video failed to load:', item.source);
+              console.error("Video failed to load:", item.source);
               handleImageLoad(index);
             }}
           />

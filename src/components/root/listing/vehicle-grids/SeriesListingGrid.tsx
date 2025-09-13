@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchRelatedSeriesList } from "@/lib/api/general-api";
 import { useFetchListingVehiclesBySeries } from "@/hooks/useFetchListingVehiclesBySeries";
 import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
+import { FaCircleExclamation } from "react-icons/fa6";
 
 type SeriesListingGridProps = {
   series: string;
@@ -207,6 +208,16 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
                     {convertToLabel(originalSeries.replace(/-/g, " "))}. Showing
                     results from other series.
                   </p>
+                  <div className="flex-center my-12 w-full">
+                    <div className="flex w-[93%] items-center justify-center gap-2 rounded-xl border-2 border-yellow p-5 lg:w-1/3">
+                      <FaCircleExclamation className="h-12 w-12 text-yellow" />
+                      <div className="mt-2 flex flex-col lg:text-xl">
+                        Oops! No {category} found in{" "}
+                        {convertToLabel(originalSeries.replace(/-/g, " "))}.
+                        <div>Showing results from other series.</div>
+                      </div>
+                    </div>
+                  </div>
                 )}
 
                 {orderedSeriesKeys.map((currentSeriesKey) => {

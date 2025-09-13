@@ -74,7 +74,7 @@ export default async function CitiesPage(props: PageProps) {
       </div>
 
       {/* Main Content Section */}
-      <div className="wrapper flex h-auto min-h-screen flex-col bg-lightGray pb-8 pt-8">
+      <div className="wrapper flex h-auto min-h-screen flex-col items-center pb-8 pt-8">
         <section>
           <StatesForCities
             state={state}
