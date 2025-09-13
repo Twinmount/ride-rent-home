@@ -203,18 +203,20 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
             ) : (
               <>
                 {hasNoOriginalSeriesVehicles && (
-                  <p className="mb-10 mt-8 text-center text-base text-gray-600">
-                    No vehicles found in{" "}
-                    {convertToLabel(originalSeries.replace(/-/g, " "))}. Showing
-                    results from other series.
-                  </p>
-                  <div className="flex-center my-12 w-full">
-                    <div className="flex w-[93%] items-center justify-center gap-2 rounded-xl border-2 border-yellow p-5 lg:w-1/3">
-                      <FaCircleExclamation className="h-12 w-12 text-yellow" />
-                      <div className="mt-2 flex flex-col lg:text-xl">
-                        Oops! No {category} found in{" "}
-                        {convertToLabel(originalSeries.replace(/-/g, " "))}.
-                        <div>Showing results from other series.</div>
+                  <div>
+                    <p className="mb-10 mt-8 text-center text-base text-gray-600">
+                      No vehicles found in{" "}
+                      {convertToLabel(originalSeries.replace(/-/g, " "))}.
+                      Showing results from other series.
+                    </p>
+                    <div className="flex-center my-12 w-full">
+                      <div className="flex w-[93%] items-center justify-center gap-2 rounded-xl border-2 border-yellow p-5 lg:w-1/3">
+                        <FaCircleExclamation className="h-12 w-12 text-yellow" />
+                        <div className="mt-2 flex flex-col lg:text-xl">
+                          Oops! No {category} found in{" "}
+                          {convertToLabel(originalSeries.replace(/-/g, " "))}.
+                          <div>Showing results from other series.</div>
+                        </div>
                       </div>
                     </div>
                   </div>
