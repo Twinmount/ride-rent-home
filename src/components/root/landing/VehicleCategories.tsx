@@ -22,7 +22,7 @@ export default function VehicleCategories() {
     useFetchVehicleCategories();
 
   // Safe fallback - prevents 404 errors
-  const safeCategory = category || 'cars';
+  const safeCategory = category || "cars";
 
   // Memoize expensive operations for performance
   const imageSrc = useMemo(
@@ -43,20 +43,20 @@ export default function VehicleCategories() {
             disabled={isCategoriesLoading}
             className={`flex-center line-clamp-1 h-12 min-w-fit gap-2 rounded border px-3 py-1 text-sm font-semibold text-text-primary hover:text-text-primary lg:px-2 ${
               isCategoriesLoading
-                ? 'cursor-default text-gray-500'
-                : 'bg-theme-gradient hover:bg-theme-gradient'
+                ? "cursor-default text-gray-500"
+                : "bg-theme-gradient hover:bg-theme-gradient"
             }`}
           >
             <Image
               src={imageSrc}
               alt={`${safeCategory} vehicle category`}
               className={`transition-all duration-200 ease-out ${
-                safeCategory === 'sports-cars' ? 'scale-[1.02]' : ''
+                safeCategory === "sports-cars" ? "scale-[1.02]" : ""
               }`}
               width={35}
               height={35}
-              priority // Critical for homepage LCP
-              unoptimized={false} // Ensure Next.js optimization
+              priority
+              sizes="35px"
             />
 
             <span className="line-clamp-1 w-full max-w-full max-md:hidden">
@@ -65,18 +65,20 @@ export default function VehicleCategories() {
           </NavigationMenuTrigger>
 
           <NavigationMenuContent>
-            <ul className="flex h-full w-[12rem] min-w-[12rem] flex-col gap-0 p-0">
-              {sortedCategories.map((cat: CategoryType, index) => (
-                <VehicleCategoryCard
-                  key={cat.categoryId}
-                  cat={cat}
-                  index={index}
-                  selectedCategory={safeCategory}
-                  selectedState={state}
-                  selectedCountry={country}
-                />
-              ))}
-            </ul>
+            <div className="h-[280px] w-[12rem] overflow-y-auto md:h-56">
+              <ul className="flex flex-col gap-0 p-0">
+                {sortedCategories.map((cat: CategoryType, index) => (
+                  <VehicleCategoryCard
+                    key={cat.categoryId}
+                    cat={cat}
+                    index={index}
+                    selectedCategory={safeCategory}
+                    selectedState={state}
+                    selectedCountry={country}
+                  />
+                ))}
+              </ul>
+            </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
       </NavigationMenuList>

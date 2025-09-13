@@ -42,12 +42,30 @@ const BestPriceGuarantee = ({
   const shakeVariants: Variants = {
     initial: {},
     shake: {
-      x: isDisabled ? 0 : [0, -2, 2, -2, 2, 0], // No shake when disabled
+      x: isDisabled ? 0 : [0, -2, 2, -2, 2, 0],
       transition: {
         duration: 0.5,
-        delay: 1, // Start shaking 1 second after slide-in completes
-        repeat: isDisabled ? 0 : 2, // No repeat when disabled
-        repeatDelay: 2, // Wait 2 seconds between shake cycles
+        delay: 1,
+        repeat: isDisabled ? 0 : 2,
+        repeatDelay: 2,
+      },
+    },
+  };
+
+  // Pulsing glow animation for the shield in modal
+  const shieldGlowVariants: Variants = {
+    initial: { scale: 1, filter: "drop-shadow(0 0 0px rgba(255, 215, 0, 0))" },
+    animate: {
+      scale: [1, 1.05, 1],
+      filter: [
+        "drop-shadow(0 0 0px rgba(255, 215, 0, 0))",
+        "drop-shadow(0 0 20px rgba(255, 215, 0, 0.6))",
+        "drop-shadow(0 0 0px rgba(255, 215, 0, 0))",
+      ],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        ease: "easeInOut",
       },
     },
   };
@@ -69,6 +87,7 @@ const BestPriceGuarantee = ({
               : "text-yellow hover:text-orange"
           }`}
           disabled={isDisabled}
+          aria-label="Open Best Price Guarantee information"
         >
           {/* Shield Icon - slides in from left */}
           <motion.div
@@ -78,6 +97,7 @@ const BestPriceGuarantee = ({
           >
             <MdOutlineVerifiedUser
               className={`h-4 w-4 ${isDisabled ? "text-gray-400" : "text-yellow"}`}
+              aria-hidden="true"
             />
           </motion.div>
 
@@ -98,11 +118,15 @@ const BestPriceGuarantee = ({
       {/* Modal Popup */}
       {isModalOpen && !isDisabled && (
         <motion.div
-          className="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 p-4 md:flex"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={closeModal}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
         >
           <motion.div
             className="relative w-full max-w-lg rounded-2xl bg-white p-6"
@@ -115,35 +139,48 @@ const BestPriceGuarantee = ({
             {/* Close Button */}
             <button
               onClick={closeModal}
-              className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
+              className="absolute right-4 top-4 rounded text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow focus:ring-opacity-50"
+              aria-label="Close modal"
             >
               <MdOutlineClose className="h-5 w-5" />
             </button>
 
-            {/* Shield Icon */}
-            <div className="mb-4 flex justify-center">
-              <div className="flex items-center justify-center rounded-2xl bg-gradient-to-br">
+            {/* Animated Shield Icon */}
+            <motion.div
+              className="mb-4 flex justify-center"
+              variants={shieldGlowVariants}
+              initial="initial"
+              animate="animate"
+            >
+              <div className="flex items-center justify-center">
                 <Image
                   src="/assets/img/detailsPage/shield.webp"
-                  alt="Shield Icon"
+                  alt="Security shield representing our lowest price guarantee"
                   width={250}
                   height={250}
+                  priority
                 />
               </div>
-            </div>
+            </motion.div>
 
-            {/* Title - Normal black text with xl size */}
-            <h2 className="mb-4 text-center text-xl font-semibold text-black">
+            {/* Title */}
+            <h2
+              id="modal-title"
+              className="mb-4 text-center text-xl font-semibold text-black"
+            >
               Lowest Price Guarantee!
             </h2>
 
             {/* Description */}
-            <div className="space-y-4 text-center text-text-tertiary">
+            <div
+              id="modal-description"
+              className="space-y-4 text-center text-text-secondary"
+            >
               <p className="text-sm md:text-lg">
                 Helping you get the lowest prices every time.
               </p>
 
-              <p className="text-xs text-text-secondary">
+              <p className="text-[0.45rem] text-text-tertiary">
                 We use advanced machine learning and AI driven insights to track
                 local rates, compare prices, and apply smart pricing strategies
                 so you always get the best deals.​
