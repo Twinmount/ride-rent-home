@@ -21,7 +21,7 @@ export default async function AllSeriesPageHeading({
       <Link
         href={`/${country}/${state}/listing/${category}/brand/${brand}`}
         target="_blank"
-        className="flex-center w-13 h-12 overflow-hidden rounded-full border border-gray-300 bg-white p-1 group-hover:border-2 group-hover:border-yellow"
+        className="flex-center relative h-12 w-12 overflow-hidden rounded-full border border-gray-300 bg-white p-1 group-hover:border-2 group-hover:border-yellow"
       >
         <BrandImage
           category={category}

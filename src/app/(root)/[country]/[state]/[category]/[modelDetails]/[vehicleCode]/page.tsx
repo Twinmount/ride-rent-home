@@ -23,7 +23,7 @@ import { generateModelDetailsUrl } from "@/helpers";
 import SupplierDetails from "@/components/root/vehicle-details/SupplierDetails";
 import VehicleHeading from "@/components/root/vehicle-details/VehicleHeading";
 import ProfileCard from "@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard";
-import ProtectedVehicleDetails from '@/components/common/ProtectedVehicleDetails';
+import ProtectedVehicleDetails from "@/components/common/ProtectedVehicleDetails";
 
 type ParamsProps = {
   params: Promise<{
@@ -74,7 +74,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     return notFound();
   }
 
-  // 🆕 If the modelDetails in the URL (slug) doesn't match actual vehicle title, redirect to canonical URL
+  // If the modelDetails in the URL (slug) doesn't match actual vehicle title, redirect to canonical URL
 
   const normalizedActualTitle = generateModelDetailsUrl(
     data.result.vehicleTitle

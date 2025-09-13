@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ProtectedRoute } from '@/components/common/ProtectedRoute';
+import React from "react";
+import { ProtectedRoute } from "@/components/common/ProtectedRoute";
 
 interface ProtectedVehicleDetailsProps {
   children: React.ReactNode;

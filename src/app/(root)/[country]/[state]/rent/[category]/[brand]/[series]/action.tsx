@@ -1,8 +1,7 @@
 "use server";
 
-import { ENV } from "@/config/env";
-
 import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
+import { API } from "@/utils/API";
 
 type Props = {
   page: number;
@@ -28,22 +27,22 @@ export const fetchVehicleSeriesData = async ({
     sortOrder: "DESC",
   });
 
-  const API_URL = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-  const url = `${API_URL}/vehicle/vehicle-series/list?${params.toString()}`;
-
-  const response = await fetch(`${url}`, {
-    method: "GET",
-    cache: "no-cache",
+  const response = await API({
+    path: `/vehicle/vehicle-series/list?${params.toString()}`,
+    options: {
+      method: "GET",
+      cache: "no-cache",
+    },
+    country,
   });
 
   const data: FetchVehicleCardsResponse = await response.json();
 
-  // Return raw data in the same structure 
   return {
     result: {
       list: data.result.list || [],
       page: data.result.page,
       totalNumberOfPages: data.result.totalNumberOfPages,
-    }
+    },
   };
 };

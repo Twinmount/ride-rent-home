@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import AnimatedSkelton from '@/components/skelton/AnimatedSkelton';
-import NoResultsFound from './NoResultsFound';
-import { useInView } from 'react-intersection-observer';
-import LoadingWheel from '@/components/common/LoadingWheel';
-import { useImmer } from 'use-immer';
-import { convertToLabel } from '@/helpers';
-import { useQuery } from '@tanstack/react-query';
-import { fetchRelatedSeriesList } from '@/lib/api/general-api';
-import { useFetchListingVehiclesBySeries } from '@/hooks/useFetchListingVehiclesBySeries';
-import VehicleCard from '@/components/card/vehicle-card/main-card/VehicleCard';
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
+import NoResultsFound from "./NoResultsFound";
+import { useInView } from "react-intersection-observer";
+import LoadingWheel from "@/components/common/LoadingWheel";
+import { useImmer } from "use-immer";
+import { convertToLabel } from "@/helpers";
+import { useQuery } from "@tanstack/react-query";
+import { fetchRelatedSeriesList } from "@/lib/api/general-api";
+import { useFetchListingVehiclesBySeries } from "@/hooks/useFetchListingVehiclesBySeries";
+import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
 import { FaCircleExclamation } from "react-icons/fa6";
 
 type SeriesListingGridProps = {
@@ -199,10 +199,15 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
         ) : (
           <div className="relative z-10 w-full">
             {hasNoVehicles ? (
-              <NoResultsFound />
+              <NoResultsFound isListingPage={false} />
             ) : (
               <>
                 {hasNoOriginalSeriesVehicles && (
+                  <p className="mb-10 mt-8 text-center text-base text-gray-600">
+                    No vehicles found in{" "}
+                    {convertToLabel(originalSeries.replace(/-/g, " "))}. Showing
+                    results from other series.
+                  </p>
                   <div className="flex-center my-12 w-full">
                     <div className="flex w-[93%] items-center justify-center gap-2 rounded-xl border-2 border-yellow p-5 lg:w-1/3">
                       <FaCircleExclamation className="h-12 w-12 text-yellow" />

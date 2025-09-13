@@ -2,6 +2,7 @@ import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStagger
 import { ENV } from "@/config/env";
 import { convertToLabel, sortCategories } from "@/helpers";
 import { DirectoryCategory, FetchCategoriesForDirectory } from "@/types";
+import { API } from "@/utils/API";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,15 +13,14 @@ export default async function DirectoryCategories({
   state: string;
   country: string;
 }) {
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-
-  // Fetch the states data from the API
-  const response = await fetch(
-    `${baseUrl}/vehicle-category/directory?state=${state}`,
-    {
+  const response = await API({
+    path: `/vehicle-category/directory?state=${state}`,
+    options: {
+      method: "GET",
       cache: "no-cache",
     },
-  );
+    country: country,
+  });
 
   const data: FetchCategoriesForDirectory = await response.json();
 

@@ -1,7 +1,7 @@
 import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
-import { ENV } from "@/config/env";
 import { rearrangeStates } from "@/helpers";
 import { FetchStatesResponse, StateType } from "@/types";
+import { API } from "@/utils/API";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,11 +10,11 @@ export default async function DirectoryStates({
 }: {
   country: string;
 }) {
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-
   // Fetch the states data from the API
-  const response = await fetch(`${baseUrl}/states/list?hasVehicle=true`, {
-    cache: "no-cache",
+  const response = await API({
+    path: `/states/list?hasVehicle=true`,
+    options: { cache: "no-cache" },
+    country,
   });
 
   const data: FetchStatesResponse = await response.json();
@@ -24,7 +24,7 @@ export default async function DirectoryStates({
 
   if (states.length === 0) return null;
 
-  //   states = rearrangeStates(states, country);
+  states = rearrangeStates(states, country);
 
   return (
     <section className="mt-16 justify-items-center text-center">

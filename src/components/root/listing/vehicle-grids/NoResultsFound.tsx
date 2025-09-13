@@ -1,15 +1,21 @@
-import { SearchX } from 'lucide-react'
+import { SearchX } from "lucide-react";
 
-export default function NoResultsFound() {
+export default function NoResultsFound({
+  isListingPage = true,
+}: {
+  isListingPage?: boolean;
+}) {
   return (
-    <div className=" pt-64 h-screen w-full flex flex-col items-center  text-lg">
+    <div className="flex h-screen w-full flex-col items-center pt-64 text-lg">
       <div className="flex-center gap-x-2 text-lg">
         Oops! No results found! <SearchX width={30} height={30} />
       </div>
 
-      <span className="text-sm text-gray-500 italic">
-        Try adjusting your filter
-      </span>
+      {isListingPage && (
+        <span className="text-sm italic text-gray-500">
+          Try adjusting your filter
+        </span>
+      )}
     </div>
-  )
+  );
 }
