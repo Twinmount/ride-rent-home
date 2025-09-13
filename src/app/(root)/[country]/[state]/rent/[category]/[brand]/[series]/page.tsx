@@ -20,31 +20,35 @@ export type PageProps = {
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
- 
+
   const { country, state, category, brand, series } = params;
- 
+
   const categoryValue = extractCategory(category);
- 
+
   return generateSeriesListingPageMetadata({
     state,
     category: categoryValue,
     brand,
     series,
-    country
+    country,
   });
 }
 
-
 export default async function VehicleSeriesPage(props: PageProps) {
   const params = await props.params;
- 
+
   const { country, state, category, brand, series } = params;
 
- 
   const categoryValue = extractCategory(category);
- 
+
   // Generate JSON-LD
-  const jsonLdData = getSeriesListingPageJsonLd(state, brand, series, country, categoryValue);
+  const jsonLdData = getSeriesListingPageJsonLd(
+    state,
+    brand,
+    series,
+    country,
+    categoryValue
+  );
 
   return (
     <>
@@ -53,14 +57,14 @@ export default async function VehicleSeriesPage(props: PageProps) {
         id={`json-ld-series-${brand}-${series}`}
         jsonLdData={jsonLdData}
       />
-      <div className="wrapper flex h-auto min-h-screen flex-col bg-lightGray pb-8 pt-4">
+      <div className="wrapper flex h-auto min-h-screen flex-col bg-background pb-8 pt-4">
         <VehicleSeriesInfo
           series={series}
           state={state}
           brand={brand}
           country={country}
         />
-       
+
         <SeriesListingGrid
           brand={brand}
           series={series}

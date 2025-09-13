@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import AnimatedSkelton from '@/components/skelton/AnimatedSkelton';
-import NoResultsFound from './NoResultsFound';
-import { useInView } from 'react-intersection-observer';
-import LoadingWheel from '@/components/common/LoadingWheel';
-import { useImmer } from 'use-immer';
-import { convertToLabel } from '@/helpers';
-import { useQuery } from '@tanstack/react-query';
-import { fetchRelatedSeriesList } from '@/lib/api/general-api';
-import { useFetchListingVehiclesBySeries } from '@/hooks/useFetchListingVehiclesBySeries';
-import VehicleCard from '@/components/card/vehicle-card/main-card/VehicleCard';
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
+import NoResultsFound from "./NoResultsFound";
+import { useInView } from "react-intersection-observer";
+import LoadingWheel from "@/components/common/LoadingWheel";
+import { useImmer } from "use-immer";
+import { convertToLabel } from "@/helpers";
+import { useQuery } from "@tanstack/react-query";
+import { fetchRelatedSeriesList } from "@/lib/api/general-api";
+import { useFetchListingVehiclesBySeries } from "@/hooks/useFetchListingVehiclesBySeries";
+import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
 
 type SeriesListingGridProps = {
   series: string;
@@ -61,7 +61,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
   });
 
   const { data: relatedSeries } = useQuery({
-    queryKey: ['related-series', series],
+    queryKey: ["related-series", series],
     queryFn: () =>
       fetchRelatedSeriesList(category, brand, state, country, series),
     enabled: true,
@@ -108,7 +108,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
 
   // Auto-scroll to top on mount
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   // Update related series list from API
@@ -198,13 +198,13 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
         ) : (
           <div className="relative z-10 w-full">
             {hasNoVehicles ? (
-              <NoResultsFound />
+              <NoResultsFound isListingPage={false} />
             ) : (
               <>
                 {hasNoOriginalSeriesVehicles && (
                   <p className="mb-10 mt-8 text-center text-base text-gray-600">
-                    No vehicles found in{' '}
-                    {convertToLabel(originalSeries.replace(/-/g, ' '))}. Showing
+                    No vehicles found in{" "}
+                    {convertToLabel(originalSeries.replace(/-/g, " "))}. Showing
                     results from other series.
                   </p>
                 )}
@@ -228,17 +228,17 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
                         <div className="mb-8">
                           <div className="flex items-center gap-4">
                             <h3 className="text-lg font-medium text-gray-800">
-                              More{' '}
+                              More{" "}
                               <span className="capitalize text-gray-900">
-                                {convertToLabel(category.replace(/-/g, ' '))}
-                              </span>{' '}
-                              from{' '}
+                                {convertToLabel(category.replace(/-/g, " "))}
+                              </span>{" "}
+                              from{" "}
                               <span className="font-semibold text-gray-900">
-                                {convertToLabel(brand.replace(/-/g, ' '))}
-                              </span>{' '}
+                                {convertToLabel(brand.replace(/-/g, " "))}
+                              </span>{" "}
                               <span className="font-semibold text-gray-900">
                                 {convertToLabel(
-                                  currentSeriesKey.replace(/-/g, ' ')
+                                  currentSeriesKey.replace(/-/g, " ")
                                 )}
                               </span>
                             </h3>

@@ -1,6 +1,6 @@
-import { ENV } from "@/config/env";
 import { convertToLabel, singularizeValue } from "@/helpers";
 import { CategoryDirectoryStatsResponse } from "@/types";
+import { API } from "@/utils/API";
 
 type PropsType = {
   state: string;
@@ -13,14 +13,13 @@ export default async function CategoryDirectoryHeading({
   category,
   country,
 }: PropsType) {
-  // // Construct the full URL
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-  const url = `${baseUrl}/vehicle-brand/vehicle-series/directory/heading?state=${state}&category=${category}`;
-
-  // Fetch data using the generated URL
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "no-cache",
+  const response = await API({
+    path: `/vehicle-brand/vehicle-series/directory/heading?state=${state}&category=${category}`,
+    options: {
+      method: "GET",
+      cache: "no-cache",
+    },
+    country,
   });
 
   const data: CategoryDirectoryStatsResponse = await response.json();

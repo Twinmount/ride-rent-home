@@ -1,13 +1,12 @@
 import Pagination from "@/components/common/Pagination";
 import AllSeriesList from "@/components/root/series/directory/AllSeriesList";
 import AllSeriesPageHeading from "@/components/root/series/directory/AllSeriesPageHeading";
-
-import { ENV } from "@/config/env";
 import { FetchAllSeriesUnderBrandResponse } from "@/types";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { generateSeriesListPageMetadata } from "./metadata";
 import { extractCategory } from "@/helpers";
+import { API } from "@/utils/API";
 
 type PageProps = {
   params: Promise<{
@@ -50,14 +49,13 @@ export default async function BrandSeriesPage(props: PageProps) {
     state: state,
   }).toString();
 
-  // Construct the full URL
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-  const url = `${baseUrl}/vehicle-series/brands/list?${queryParams}`;
-
-  // Fetch data using the generated URL
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "no-cache",
+  const response = await API({
+    path: `/vehicle-series/brands/list?${queryParams}`,
+    options: {
+      method: "GET",
+      cache: "no-cache",
+    },
+    country,
   });
 
   // Parse the JSON response
@@ -84,9 +82,11 @@ export default async function BrandSeriesPage(props: PageProps) {
         category={categoryValue}
       />
 
-      <Suspense fallback={<div>Loading...</div>}>
-        <Pagination page={page} totalPages={totalPages} />
-      </Suspense>
+      {list.length > 0 && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <Pagination page={page} totalPages={totalPages} />
+        </Suspense>
+      )}
     </div>
   );
 }

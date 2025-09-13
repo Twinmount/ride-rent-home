@@ -15,6 +15,11 @@ export default function AllSeriesList({
   country,
   category,
 }: AllSeriesListProps) {
+  if (list.length === 0)
+    return (
+      <div className="flex-center my-32 h-[60vh]">Oops! No Series Found!</div>
+    );
+
   return (
     <div className="mt-12 h-auto">
       <ul className="mt-3 grid grid-cols-1 gap-3 max-md:pl-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
