@@ -55,6 +55,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     clearError,
     userAuthStep,
     logoutMutation,
+    loginMutation,
   } = useAuthContext();
 
   useEffect(() => {
@@ -67,6 +68,14 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
       clearError();
     }
   }, [logoutMutation.isSuccess]);
+
+  useEffect(() => {
+    if (loginMutation.isSuccess) {
+      setTimeout(() => {
+        handleClose();
+      }, 1000);
+    }
+  }, [loginMutation.isSuccess]);
 
   // Common State
   const [step, setStep] = useState<AuthStep>("phone");
@@ -203,6 +212,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
             )}
             {step === "password" && (
               <PasswordStep
+                userAuthStep={userAuthStep}
                 setStep={setStep}
                 setStatus={setStatus}
                 setStatusMessage={setStatusMessage}

@@ -59,6 +59,7 @@ export const useAuth = () => {
   const [userAuthStep, setUserAuthStep] = useImmer({
     userId: "",
     otpId: "",
+    name: "",
     otpExpiresIn: 5,
   });
 
@@ -72,7 +73,11 @@ export const useAuth = () => {
       countryCode: string;
     }) => authAPI.checkUserExists(phoneNumber, countryCode),
     onSuccess: (data) => {
-      console.log("data: ", data);
+      if (data.success && data.data) {
+        setUserAuthStep((draft) => {
+          draft.name = data?.data?.name || "";
+        });
+      }
       setError(null);
     },
     onError: (error: Error) => {
@@ -83,8 +88,6 @@ export const useAuth = () => {
   const signupMutation = useMutation({
     mutationFn: authAPI.signup,
     onSuccess: (data) => {
-      console.log("data:signupMutation ", data);
-
       // Store user ID and OTP ID for OTP verification
       if (data.success && data.data) {
         setUserAuthStep((draft) => {
@@ -129,7 +132,7 @@ export const useAuth = () => {
           draft.token = data?.accessToken!;
           draft.refreshToken = data?.refreshToken!;
         });
-        setLoginOpen(false);
+        // setLoginOpen(false);
         setError(null);
         console.log("Login successful:", data);
       }

@@ -1,5 +1,5 @@
 // Authentication related type definitions and interfaces
-import { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
+import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 
 /**
  * Login request data interface
@@ -195,6 +195,7 @@ export interface AuthStorageInterface {
 export interface UserAuthStep {
   userId: string;
   otpId: string;
+  name: string;
   otpExpiresIn: number;
 }
 
@@ -262,16 +263,49 @@ export interface UseAuthReturn {
   ) => Promise<AuthResponse>;
 
   // Queries
-  useGetUserProfile: (userId: string, enabled?: boolean) => UseQueryResult<AuthResponse, Error>;
+  useGetUserProfile: (
+    userId: string,
+    enabled?: boolean
+  ) => UseQueryResult<AuthResponse, Error>;
 
   // React Query mutations
-  checkUserExistsMutation: UseMutationResult<AuthResponse, Error, { phoneNumber: string; countryCode: string }, unknown>;
-  signupMutation: UseMutationResult<AuthResponse, Error, PhoneSignupData, unknown>;
+  checkUserExistsMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    { phoneNumber: string; countryCode: string },
+    unknown
+  >;
+  signupMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    PhoneSignupData,
+    unknown
+  >;
   loginMutation: UseMutationResult<AuthResponse, Error, LoginData, unknown>;
-  verifyOtpMutation: UseMutationResult<AuthResponse, Error, OtpVerificationData, unknown>;
-  setPasswordMutation: UseMutationResult<AuthResponse, Error, SetPasswordData, unknown>;
-  resendOtpMutation: UseMutationResult<AuthResponse, Error, ResendOtpData, unknown>;
-  updateUserNameAndAvatar: UseMutationResult<AuthResponse, Error, { userId: string; profileData: ProfileUpdateData }, unknown>;
+  verifyOtpMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    OtpVerificationData,
+    unknown
+  >;
+  setPasswordMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    SetPasswordData,
+    unknown
+  >;
+  resendOtpMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    ResendOtpData,
+    unknown
+  >;
+  updateUserNameAndAvatar: UseMutationResult<
+    AuthResponse,
+    Error,
+    { userId: string; profileData: ProfileUpdateData },
+    unknown
+  >;
   logoutMutation: UseMutationResult<void, Error, { userId?: string }, unknown>;
 
   // Utilities

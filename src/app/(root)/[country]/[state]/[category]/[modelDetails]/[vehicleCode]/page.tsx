@@ -131,6 +131,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   // const videos = vehicle?.vehicleVideos ?? [];
   const images = vehicle?.vehiclePhotos ?? [];
+  console.log("images: ", images);
 
   // // Add all videos first
   // for (const video of videos) {

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Lock, Loader2, Eye, EyeOff } from "lucide-react";
 
 export const PasswordStep = ({
+  userAuthStep,
   setStep,
   setStatus,
   setStatusMessage,
@@ -14,6 +15,8 @@ export const PasswordStep = ({
   login,
   clearError,
 }: any) => {
+  console.log("userAuthStep: ", userAuthStep);
+
   const [loginPassword, setLoginPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -48,7 +51,9 @@ export const PasswordStep = ({
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
           <Lock className="h-8 w-8 text-orange-600" />
         </div>
-        <h3 className="text-xl font-semibold">Welcome Back!</h3>
+        <h3 className="text-xl font-semibold">
+          Welcome Back{userAuthStep?.name ? `, ${userAuthStep.name}` : ""}!
+        </h3>
         <p className="text-balance text-muted-foreground">
           Enter your password for{" "}
           <span className="font-medium text-foreground">

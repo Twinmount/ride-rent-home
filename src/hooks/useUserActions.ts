@@ -1,7 +1,9 @@
-'use client';
+"use client";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAppContext } from '@/context/useAppContext';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAppContext } from "@/context/useAppContext";
+import { useImmer } from "use-immer";
+import { useEffect } from "react";
 import {
   getUserEnquiredVehicles,
   getUserSavedVehicles,
@@ -9,97 +11,126 @@ import {
   removeFromSaved,
   addToSaved,
   submitVehicleEnquiry,
-} from '@/lib/api/userActions.api';
+} from "@/lib/api/userActions.api";
 import type {
   EnquiredVehicle,
   SavedVehicle,
   ViewedVehicle,
-} from '@/lib/api/userActions.api.types';
+} from "@/lib/api/userActions.api.types";
 
 interface UseUserActionsOptions {
   userId?: string;
   enabled?: boolean;
   page?: number;
   limit?: number;
+  sortOrder?: "ASC" | "DESC";
 }
 
-export const useUserEnquiredVehicles = (
-  options: UseUserActionsOptions = {}
-) => {
-  const { auth } = useAppContext();
-  const { user, authStorage } = auth;
-
-  const userId = options.userId || user?.id || authStorage.getUser()?.id;
-  const { enabled = true, page = 1, limit = 20 } = options;
-
-  return useQuery({
-    queryKey: ['userEnquiredVehicles', userId, page, limit],
-    queryFn: () => getUserEnquiredVehicles(userId!, page, limit),
-    enabled: !!userId && enabled,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
-
-export const useUserSavedVehicles = (options: UseUserActionsOptions = {}) => {
-  const { auth } = useAppContext();
-  const { user, authStorage } = auth;
-
-  const userId = options.userId || user?.id || authStorage.getUser()?.id;
-  const { enabled = true, page = 1, limit = 20 } = options;
-
-  return useQuery({
-    queryKey: ['userSavedVehicles', userId, page, limit],
-    queryFn: () => getUserSavedVehicles(userId!, page, limit),
-    enabled: !!userId && enabled,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
-
-export const useUserViewedVehicles = (options: UseUserActionsOptions = {}) => {
-  const { auth } = useAppContext();
-  const { user, authStorage } = auth;
-
-  const userId = options.userId || user?.id || authStorage.getUser()?.id;
-  const { enabled = true, page = 1, limit = 20 } = options;
-
-  return useQuery({
-    queryKey: ['userViewedVehicles', userId, page, limit],
-    queryFn: () => getUserViewedVehicles(userId!, page, limit),
-    enabled: !!userId && enabled,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
-
-export const useRemoveFromSaved = () => {
+// Main user actions hook - returns all functions and state in a single object
+export const useUserActions = () => {
   const queryClient = useQueryClient();
   const { auth } = useAppContext();
   const { user, authStorage } = auth;
 
   const userId = user?.id || authStorage.getUser()?.id;
 
-  return useMutation({
+  // State for extracted saved vehicles data
+  const [savedVehiclesState, setSavedVehiclesState] = useImmer({
+    data: [] as any[],
+    isLoading: false,
+    error: null as Error | null,
+  });
+
+  console.log("savedVehiclesState: ", savedVehiclesState);
+
+  // Function to manually fetch and process saved vehicles
+  const fetchSavedVehicles = async (options: UseUserActionsOptions = {}) => {
+    const effectiveUserId = options.userId || userId;
+    const { page = 0, limit = 10 } = options;
+
+    if (!effectiveUserId) return;
+
+    setSavedVehiclesState((draft) => {
+      draft.isLoading = true;
+      draft.error = null;
+    });
+
+    try {
+      const data = await getUserSavedVehicles(effectiveUserId, page, limit);
+      const extractedData = extractViewedVehicles(data);
+      setSavedVehiclesState((draft) => {
+        draft.isLoading = false;
+        draft.error = null;
+        draft.data = extractedData;
+      });
+    } catch (error) {
+      setSavedVehiclesState((draft) => {
+        draft.isLoading = false;
+        draft.error = error as Error;
+        draft.data = [];
+      });
+    }
+  };
+
+  // Query hooks
+  const useUserEnquiredVehicles = (options: UseUserActionsOptions = {}) => {
+    const effectiveUserId = options.userId || userId;
+    const { enabled = true, page = 0, limit = 10 } = options;
+
+    return useQuery({
+      queryKey: ["userEnquiredVehicles", effectiveUserId, page, limit],
+      queryFn: () => getUserEnquiredVehicles(effectiveUserId!, page, limit),
+      enabled: !!effectiveUserId && enabled,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    });
+  };
+
+  const useUserSavedVehicles = (options: UseUserActionsOptions = {}) => {
+    const effectiveUserId = options.userId || userId;
+    const { enabled = true, page = 0, limit = 10 } = options;
+
+    return useQuery({
+      queryKey: ["userSavedVehicles", effectiveUserId, page, limit],
+      queryFn: () => getUserSavedVehicles(effectiveUserId!, page, limit),
+      enabled: !!effectiveUserId && enabled,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    });
+  };
+
+  const useUserViewedVehicles = (options: UseUserActionsOptions = {}) => {
+    const effectiveUserId = options.userId || userId;
+    const {
+      enabled = true,
+      page = 0,
+      limit = 10,
+      sortOrder = "DESC",
+    } = options;
+
+    return useQuery({
+      queryKey: ["userViewedVehicles", effectiveUserId, page, limit, sortOrder],
+      queryFn: () =>
+        getUserViewedVehicles(effectiveUserId!, page, limit, sortOrder),
+      enabled: !!effectiveUserId && enabled,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    });
+  };
+
+  // Mutation hooks
+  const removeFromSavedMutation = useMutation({
     mutationFn: (vehicleId: string) => removeFromSaved(userId!, vehicleId),
     onSuccess: () => {
       // Invalidate saved vehicles query
       queryClient.invalidateQueries({
-        queryKey: ['userSavedVehicles', userId],
+        queryKey: ["userSavedVehicles", userId],
       });
       // Invalidate user action counts
       queryClient.invalidateQueries({
-        queryKey: ['userCarActionCounts', userId],
+        queryKey: ["userCarActionCounts", userId],
       });
     },
   });
-};
 
-export const useAddToSaved = () => {
-  const queryClient = useQueryClient();
-  const { auth } = useAppContext();
-  const { user, authStorage } = auth;
-
-  const userId = user?.id || authStorage.getUser()?.id;
-
-  return useMutation({
+  const addToSavedMutation = useMutation({
     mutationFn: ({
       vehicleId,
       metadata = {},
@@ -110,24 +141,16 @@ export const useAddToSaved = () => {
     onSuccess: () => {
       // Invalidate saved vehicles query
       queryClient.invalidateQueries({
-        queryKey: ['userSavedVehicles', userId],
+        queryKey: ["userSavedVehicles", userId],
       });
       // Invalidate user action counts
       queryClient.invalidateQueries({
-        queryKey: ['userCarActionCounts', userId],
+        queryKey: ["userCarActionCounts", userId],
       });
     },
   });
-};
 
-export const useSubmitVehicleEnquiry = () => {
-  const queryClient = useQueryClient();
-  const { auth } = useAppContext();
-  const { user, authStorage } = auth;
-
-  const userId = user?.id || authStorage.getUser()?.id;
-
-  return useMutation({
+  const submitVehicleEnquiryMutation = useMutation({
     mutationFn: ({
       vehicleId,
       enquiryData,
@@ -135,19 +158,172 @@ export const useSubmitVehicleEnquiry = () => {
       vehicleId: string;
       enquiryData: {
         message?: string;
-        contactPreference?: 'phone' | 'email' | 'whatsapp';
+        contactPreference?: "phone" | "email" | "whatsapp";
         metadata?: Record<string, any>;
       };
     }) => submitVehicleEnquiry(userId!, vehicleId, enquiryData),
     onSuccess: () => {
       // Invalidate enquired vehicles query
       queryClient.invalidateQueries({
-        queryKey: ['userEnquiredVehicles', userId],
+        queryKey: ["userEnquiredVehicles", userId],
       });
       // Invalidate user action counts
       queryClient.invalidateQueries({
-        queryKey: ['userCarActionCounts', userId],
+        queryKey: ["userCarActionCounts", userId],
       });
     },
   });
+
+  // Action functions
+  const handleRemoveFromSaved = async (vehicleId: string) => {
+    return removeFromSavedMutation.mutateAsync(vehicleId);
+  };
+
+  const handleAddToSaved = async (
+    vehicleId: string,
+    metadata: Record<string, any> = {}
+  ) => {
+    return addToSavedMutation.mutateAsync({ vehicleId, metadata });
+  };
+
+  const handleSubmitVehicleEnquiry = async (
+    vehicleId: string,
+    enquiryData: {
+      message?: string;
+      contactPreference?: "phone" | "email" | "whatsapp";
+      metadata?: Record<string, any>;
+    }
+  ) => {
+    return submitVehicleEnquiryMutation.mutateAsync({ vehicleId, enquiryData });
+  };
+
+  const extractViewedVehicles = (apiResponse: any) => {
+    if (!apiResponse?.result?.list) {
+      return [];
+    }
+
+    const viewedVehicles = apiResponse.result.list.map(
+      (item: any, index: number) => {
+        const vehicle = item.vehicleDetails;
+        const viewInfo = item.viewInfo;
+
+        // Calculate time ago from viewedAt
+        const viewedDate = new Date(viewInfo.viewedAt);
+        const now = new Date();
+        const diffInHours = Math.floor(
+          (now.getTime() - viewedDate.getTime()) / (1000 * 60 * 60)
+        );
+
+        let timeAgo;
+        if (diffInHours < 1) {
+          timeAgo = "Just now";
+        } else if (diffInHours < 24) {
+          timeAgo = `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+        } else {
+          const diffInDays = Math.floor(diffInHours / 24);
+          timeAgo = `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+        }
+
+        // Extract rental price (using day rate if available, otherwise week/7, otherwise month/30)
+        let price = 0;
+        if (vehicle.rentalDetails?.day?.enabled) {
+          price = parseInt(vehicle.rentalDetails.day.rentInAED) || 0;
+        } else if (vehicle.rentalDetails?.week?.enabled) {
+          price =
+            Math.round(parseInt(vehicle.rentalDetails.week.rentInAED) / 7) || 0;
+        } else if (vehicle.rentalDetails?.month?.enabled) {
+          price =
+            Math.round(parseInt(vehicle.rentalDetails.month.rentInAED) / 30) ||
+            0;
+        }
+
+        // Extract features from vehicleFeatures
+        const features: string[] = [];
+        if (vehicle.vehicleFeatures) {
+          Object.values(vehicle.vehicleFeatures).forEach((category: any) => {
+            if (Array.isArray(category)) {
+              category.forEach((feature: any) => {
+                if (feature.selected) {
+                  features.push(feature.name);
+                }
+              });
+            }
+          });
+        }
+
+        // Determine category based on vehicle type/specs
+        let category = "luxury"; // default
+        const bodyType =
+          vehicle.vehicleSpecs?.["Body Type"]?.value?.toLowerCase() || "";
+        const vehicleModel = (vehicle.vehicleModel || "").toLowerCase();
+
+        if (
+          bodyType.includes("coupe") ||
+          vehicleModel.includes("mustang") ||
+          vehicleModel.includes("sports")
+        ) {
+          category = "sports";
+        } else if (bodyType.includes("suv") || vehicleModel.includes("suv")) {
+          category = "suv";
+        }
+
+        // Extract location
+        const location = vehicle.location?.address || "Dubai"; // fallback to Dubai
+
+        return {
+          id: vehicle._id || index + 1,
+          name:
+            vehicle.vehicleTitle || vehicle.vehicleModel || "Unknown Vehicle",
+          vendor: "Premium Car Rental", // This info isn't in the API response, so using a default
+          price: price,
+          rating: 4.8, // This info isn't in the API response, so using a default
+          location: location.includes("Dubai") ? "Dubai" : location,
+          image: vehicle.vehiclePhotos?.[0] || "/default-car.png", // First photo or default
+          viewedDate: timeAgo,
+          viewCount: 1, // This specific count isn't in the API response
+          category: category,
+          features: features.slice(0, 3), // Take first 3 features
+        };
+      }
+    );
+
+    return viewedVehicles;
+  };
+
+  return {
+    // User info
+    userId,
+    user,
+    authStorage,
+
+    // Query hooks
+    useUserEnquiredVehicles,
+    useUserSavedVehicles,
+    useUserViewedVehicles,
+
+    // Manual fetch functions
+    fetchSavedVehicles,
+
+    // Extracted saved vehicles state
+    savedVehicles: savedVehiclesState,
+
+    // Action functions
+    removeFromSaved: handleRemoveFromSaved,
+    addToSaved: handleAddToSaved,
+    submitVehicleEnquiry: handleSubmitVehicleEnquiry,
+
+    // Mutation objects for accessing loading states, etc.
+    removeFromSavedMutation,
+    addToSavedMutation,
+    submitVehicleEnquiryMutation,
+
+    // Loading state
+    isLoading:
+      removeFromSavedMutation.isPending ||
+      addToSavedMutation.isPending ||
+      submitVehicleEnquiryMutation.isPending,
+
+    // Utility function
+    extractViewedVehicles,
+  };
 };
