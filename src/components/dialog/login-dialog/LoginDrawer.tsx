@@ -28,6 +28,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
 }) => {
   // Auth hook
   const {
+    checkUserExists,
     signup,
     login,
     verifyOTP,
@@ -158,10 +159,9 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
                 setStatus={setStatus}
                 setStatusMessage={setStatusMessage}
                 setUserExists={setUserExists}
-                setDrawerState={setDrawerState}
-                drawerState={drawerState}
                 isCurrentlyLoading={isCurrentlyLoading}
                 signup={signup}
+                checkUserExists={checkUserExists}
                 clearError={clearError}
               />
             )}

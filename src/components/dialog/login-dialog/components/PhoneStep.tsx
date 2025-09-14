@@ -6,27 +6,36 @@ import "react-international-phone/style.css";
 import { Phone, Loader2 } from "lucide-react";
 import "../phone-input.css";
 import { useImmer } from "use-immer";
+import { getNumberAfterSpace, getNumberAfterSpaceStrict } from "@/utils/helper";
 
 export const PhoneStep = ({
   setStep,
   setStatus,
   setStatusMessage,
   setUserExists,
-  setDrawerState,
-  drawerState,
   isCurrentlyLoading,
   signup,
+  checkUserExists,
   clearError,
 }: any) => {
   const [phoneNumber, setPhoneNumber] = useImmer({
+    value: "",
     number: "",
     countryCode: "",
   });
 
   const onChangeCountryCode = (value: any, country: any) => {
+    console.log("country: ", country);
+
+    const phoneDetails = getNumberAfterSpaceStrict(country.inputValue);
+
+    // console.log("countryCode: ", countryCode);
+    // console.log("phoneNumber: ", phoneNumber);
+
     setPhoneNumber((draft) => {
-      draft.number = value;
-      draft.countryCode = country.dialCode;
+      draft.value = value;
+      draft.number = phoneDetails.phoneNumber;
+      draft.countryCode = phoneDetails.countryCode;
     });
   };
 
@@ -36,39 +45,37 @@ export const PhoneStep = ({
     clearError();
 
     try {
-      setDrawerState((prev: any) => ({
-        ...prev,
-        phoneNumber,
-      }));
-      try {
-        const signupResponse = await signup({
-          phoneNumber: phoneNumber.number,
-          countryCode: phoneNumber.countryCode,
-          countryId: drawerState.countryId || 1,
-        });
-        if (signupResponse.success && signupResponse.data) {
-          setDrawerState((prev: any) => ({
-            ...prev,
-            userId: signupResponse.data.userId,
-            otpId: signupResponse.data.otpId,
-          }));
-          setUserExists(false);
-          setStep("otp");
-          setStatus("success");
-          setStatusMessage("OTP sent successfully! Check your SMS.");
-        }
-      } catch (signupError: any) {
-        if (
-          signupError?.message?.includes("already exists") ||
-          signupError?.message?.includes("already registered") ||
-          signupError?.message?.includes("User already exists")
-        ) {
+      // First check if user exists
+      const userExistsResponse = await checkUserExists(
+        phoneNumber.number,
+        phoneNumber.countryCode
+      );
+
+      console.log("userExistsResponse: ", userExistsResponse);
+
+      if (userExistsResponse.success && userExistsResponse.data) {
+        if (userExistsResponse.data.userExists) {
           setUserExists(true);
           setStep("password");
           setStatus("success");
           setStatusMessage("Welcome back! Please enter your password.");
         } else {
-          throw signupError;
+          console.log("User doesn't exist - proceed with signup");
+          setStatus("loading");
+          setStatusMessage("New user detected! Sending verification code...");
+
+          const signupResponse = await signup({
+            phoneNumber: phoneNumber.number,
+            countryCode: phoneNumber.countryCode,
+            countryId: "",
+          });
+
+          if (signupResponse.success && signupResponse.data) {
+            setUserExists(false);
+            setStep("otp");
+            setStatus("success");
+            setStatusMessage("OTP sent successfully! Check your SMS.");
+          }
         }
       }
     } catch (error: any) {
@@ -98,7 +105,7 @@ export const PhoneStep = ({
           <div onKeyDown={(e) => e.key === "Enter" && handlePhoneSubmit()}>
             <PhoneInput
               defaultCountry="ae"
-              value={phoneNumber.number}
+              value={phoneNumber.value}
               onChange={onChangeCountryCode}
               disabled={isCurrentlyLoading}
               style={{ height: "48px" }}
@@ -116,7 +123,7 @@ export const PhoneStep = ({
         </div>
         <Button
           onClick={handlePhoneSubmit}
-          disabled={!phoneNumber.number.trim() || isCurrentlyLoading}
+          disabled={!phoneNumber.number || isCurrentlyLoading}
           className="w-full bg-gradient-to-r from-orange-500 to-orange-600 py-6 text-lg text-white hover:from-orange-600 hover:to-orange-700"
         >
           {isCurrentlyLoading ? (

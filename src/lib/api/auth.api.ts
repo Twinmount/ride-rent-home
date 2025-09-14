@@ -7,24 +7,25 @@ import type {
   SetPasswordData,
   ResendOtpData,
   ProfileUpdateData,
-} from '@/types/auth.types';
+} from "@/types/auth.types";
 
-import { createAuthenticatedRequest, authApiClient } from './axios.config';
+import { createAuthenticatedRequest, authApiClient } from "./axios.config";
 
 // API endpoints configuration (relative paths since base URL is handled by axios config)
 const AUTH_ENDPOINTS = {
-  SIGNUP: '/signup',
-  LOGIN: '/login',
-  VERIFY_OTP: '/verify-otp',
-  SET_PASSWORD: '/set-password',
-  RESEND_OTP: '/resend-otp',
-  PROFILE: '/profile',
-  GET_USER_PROFILE: '/user/profile',
-  UPDATE_PROFILE: '/user/profile',
-  FORGOT_PASSWORD: '/forgot-password',
-  RESET_PASSWORD: '/reset-password',
-  REFRESH_TOKEN: '/refresh-access-token',
-  LOGOUT: '/logout',
+  CHECK_USER_EXISTS: "/check-user-exists",
+  SIGNUP: "/signup",
+  LOGIN: "/login",
+  VERIFY_OTP: "/verify-otp",
+  SET_PASSWORD: "/set-password",
+  RESEND_OTP: "/resend-otp",
+  PROFILE: "/profile",
+  GET_USER_PROFILE: "/user/profile",
+  UPDATE_PROFILE: "/user/profile",
+  FORGOT_PASSWORD: "/forgot-password",
+  RESET_PASSWORD: "/reset-password",
+  REFRESH_TOKEN: "/refresh-access-token",
+  LOGOUT: "/logout",
 } as const;
 
 // Auth API service class
@@ -41,7 +42,7 @@ export class AuthAPI {
       return response.data;
     } catch (error: any) {
       throw new Error(
-        error.response?.data?.message || error.message || 'Signup failed'
+        error.response?.data?.message || error.message || "Signup failed"
       );
     }
   }
@@ -58,7 +59,7 @@ export class AuthAPI {
       return response.data;
     } catch (error: any) {
       throw new Error(
-        error.response?.data?.message || error.message || 'Login failed'
+        error.response?.data?.message || error.message || "Login failed"
       );
     }
   }
@@ -77,7 +78,7 @@ export class AuthAPI {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
-          'OTP verification failed'
+          "OTP verification failed"
       );
     }
   }
@@ -98,7 +99,7 @@ export class AuthAPI {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
-          'Failed to set password'
+          "Failed to set password"
       );
     }
   }
@@ -115,7 +116,7 @@ export class AuthAPI {
       return response.data;
     } catch (error: any) {
       throw new Error(
-        error.response?.data?.message || error.message || 'Failed to resend OTP'
+        error.response?.data?.message || error.message || "Failed to resend OTP"
       );
     }
   }
@@ -133,7 +134,7 @@ export class AuthAPI {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
-          'Failed to get profile'
+          "Failed to get profile"
       );
     }
   }
@@ -151,7 +152,7 @@ export class AuthAPI {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
-          'Failed to get user profile'
+          "Failed to get user profile"
       );
     }
   }
@@ -165,10 +166,10 @@ export class AuthAPI {
   ): Promise<AuthResponse> {
     try {
       const formData = new FormData();
-      formData.append('name', profileData.name);
+      formData.append("name", profileData.name);
 
       if (profileData.avatar && profileData.avatar instanceof File) {
-        formData.append('avatar', profileData.avatar);
+        formData.append("avatar", profileData.avatar);
       }
 
       // Use axios client directly for FormData to ensure proper content-type handling
@@ -181,7 +182,7 @@ export class AuthAPI {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
-          'Failed to update profile'
+          "Failed to update profile"
       );
     }
   }
@@ -203,7 +204,7 @@ export class AuthAPI {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
-          'Failed to update user profile'
+          "Failed to update user profile"
       );
     }
   }
@@ -222,7 +223,7 @@ export class AuthAPI {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
-          'Failed to refresh token'
+          "Failed to refresh token"
       );
     }
   }
@@ -239,7 +240,7 @@ export class AuthAPI {
       return response.data;
     } catch (error: any) {
       throw new Error(
-        error.response?.data?.message || error.message || 'Logout failed'
+        error.response?.data?.message || error.message || "Logout failed"
       );
     }
   }
@@ -261,7 +262,7 @@ export class AuthAPI {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
-          'Failed to send password reset'
+          "Failed to send password reset"
       );
     }
   }
@@ -285,7 +286,29 @@ export class AuthAPI {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
-          'Failed to reset password'
+          "Failed to reset password"
+      );
+    }
+  }
+
+  /**
+   * Check if user exists by phone number and country code
+   */
+  static async checkUserExists(
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.CHECK_USER_EXISTS,
+        { phoneNumber, countryCode }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to check user existence"
       );
     }
   }
@@ -306,6 +329,7 @@ export const authAPI = {
   logout: AuthAPI.logout,
   forgotPassword: AuthAPI.forgotPassword,
   resetPassword: AuthAPI.resetPassword,
+  checkUserExists: AuthAPI.checkUserExists,
 };
 
 // Export default
