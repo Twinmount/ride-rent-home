@@ -65,6 +65,13 @@ export const useAuth = () => {
   });
 
   const [isLoginOpen, setLoginOpen] = useImmer(false);
+  console.log("isLoginOpen: ", isLoginOpen);
+
+  const [userAuthStep, setUserAuthStep] = useImmer({
+    userId: "",
+    otpId: "",
+    otpExpiresIn: 5,
+  });
 
   // React Query Mutations
   const checkUserExistsMutation = useMutation({
@@ -76,6 +83,7 @@ export const useAuth = () => {
       countryCode: string;
     }) => authAPI.checkUserExists(phoneNumber, countryCode),
     onSuccess: (data) => {
+      console.log("data: ", data);
       setError(null);
     },
     onError: (error: Error) => {
@@ -86,6 +94,17 @@ export const useAuth = () => {
   const signupMutation = useMutation({
     mutationFn: authAPI.signup,
     onSuccess: (data) => {
+      console.log("data:signupMutation ", data);
+
+      // Store user ID and OTP ID for OTP verification
+      if (data.success && data.data) {
+        setUserAuthStep((draft) => {
+          draft.userId = data.data?.userId || "";
+          draft.otpId = data.data?.otpId || "";
+          draft.otpExpiresIn = data.data?.otpExpiresIn || 5;
+        });
+      }
+
       setError(null);
     },
     onError: (error: Error) => {
@@ -121,7 +140,7 @@ export const useAuth = () => {
           draft.token = data?.accessToken!;
           draft.refreshToken = data?.refreshToken!;
         });
-
+        setLoginOpen(false);
         setError(null);
         console.log("Login successful:", data);
       }
@@ -135,20 +154,6 @@ export const useAuth = () => {
   const verifyOtpMutation = useMutation({
     mutationFn: authAPI.verifyOtp,
     onSuccess: (data) => {
-      if (data.success && data.data && data.data.user && data.data.token) {
-        setAuthenticated(
-          data.data.user,
-          data.data.token,
-          data.data.refreshToken || undefined,
-          true
-        );
-        setAuth((draft) => {
-          draft.isLoggedIn = true;
-          draft.user = data.data!.user || null;
-          draft.token = data.data!.token || null;
-          draft.refreshToken = data.data!.refreshToken || null;
-        });
-      }
       setError(null);
     },
     onError: (error: Error) => {
@@ -185,6 +190,7 @@ export const useAuth = () => {
           draft.refreshToken = data?.refreshToken!;
         });
       }
+      setLoginOpen(false);
       setError(null);
       console.log("Password set successfully:", data);
     },
@@ -368,9 +374,9 @@ export const useAuth = () => {
       console.log("login function called");
 
       // Validate input
-      if (!validatePhoneNumber(loginData.phoneNumber)) {
-        throw new Error(ERROR_MESSAGES.INVALID_PHONE);
-      }
+      // if (!validatePhoneNumber(loginData.phoneNumber)) {
+      //   throw new Error(ERROR_MESSAGES.INVALID_PHONE);
+      // }
 
       if (!loginData.password) {
         throw new Error(ERROR_MESSAGES.PASSWORD_REQUIRED);
@@ -392,38 +398,25 @@ export const useAuth = () => {
   };
 
   // Signup function
-  const signup = useCallback(
-    async (signupData: PhoneSignupData): Promise<AuthResponse> => {
-      try {
-        // Validate input
-        if (!validatePhoneNumber(signupData.phoneNumber)) {
-          throw new Error(ERROR_MESSAGES.INVALID_PHONE);
-        }
-
-        if (!signupData.countryCode) {
-          throw new Error(ERROR_MESSAGES.COUNTRY_CODE_REQUIRED);
-        }
-
-        if (!signupData.countryId) {
-          throw new Error(ERROR_MESSAGES.COUNTRY_ID_REQUIRED);
-        }
-
-        // Use React Query mutation
-        return signupMutation.mutateAsync({
-          phoneNumber: signupData.phoneNumber,
-          countryCode: signupData.countryCode,
-          countryId: signupData.countryId,
-        });
-      } catch (error) {
-        const authError = createAuthError(
-          error instanceof Error ? error.message : ERROR_MESSAGES.SIGNUP_FAILED
-        );
-        setError(authError);
-        throw authError;
+  const signup = async (signupData: PhoneSignupData): Promise<AuthResponse> => {
+    try {
+      if (!signupData.countryCode) {
+        throw new Error(ERROR_MESSAGES.COUNTRY_CODE_REQUIRED);
       }
-    },
-    [signupMutation]
-  );
+      // Use React Query mutation
+      return signupMutation.mutateAsync({
+        phoneNumber: signupData.phoneNumber,
+        countryCode: signupData.countryCode,
+        countryId: signupData.countryId,
+      });
+    } catch (error) {
+      const authError = createAuthError(
+        error instanceof Error ? error.message : ERROR_MESSAGES.SIGNUP_FAILED
+      );
+      setError(authError);
+      throw authError;
+    }
+  };
 
   // Logout function
   const logout = async (id?: string): Promise<void> => {
@@ -435,55 +428,51 @@ export const useAuth = () => {
   };
 
   // Verify OTP function
-  const verifyOTP = useCallback(
-    async (
-      userId: string,
-      otpId: string,
-      otp: string
-    ): Promise<AuthResponse> => {
-      try {
-        return verifyOtpMutation.mutateAsync({
-          userId,
-          otpId,
-          otp,
-        });
-      } catch (error) {
-        const authError: AuthError = {
-          message:
-            error instanceof Error ? error.message : "OTP verification failed",
-        };
-        setError(authError);
-        throw authError;
-      }
-    },
-    [verifyOtpMutation]
-  );
+  const verifyOTP = async (
+    userId: string,
+    otpId: string,
+    otp: string
+  ): Promise<AuthResponse> => {
+    try {
+      return verifyOtpMutation.mutateAsync({
+        userId,
+        otpId,
+        otp,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error ? error.message : "OTP verification failed",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
 
   // Set Password function
-  const setPassword = useCallback(
-    async (passwordData: SetPasswordData): Promise<AuthResponse> => {
-      try {
-        const passwordValidation = validatePassword(passwordData.password);
-        if (!passwordValidation.isValid) {
-          throw new Error(passwordValidation.errors[0]);
-        }
-
-        if (passwordData.password !== passwordData.confirmPassword) {
-          throw new Error("Passwords do not match");
-        }
-
-        return setPasswordMutation.mutateAsync(passwordData);
-      } catch (error) {
-        const authError: AuthError = {
-          message:
-            error instanceof Error ? error.message : "Failed to set password",
-        };
-        setError(authError);
-        throw authError;
+  const setPassword = async (
+    passwordData: SetPasswordData
+  ): Promise<AuthResponse> => {
+    try {
+      const passwordValidation = validatePassword(passwordData.password);
+      if (!passwordValidation.isValid) {
+        throw new Error(passwordValidation.errors[0]);
       }
-    },
-    [setPasswordMutation]
-  );
+
+      if (passwordData.password !== passwordData.confirmPassword) {
+        throw new Error("Passwords do not match");
+      }
+
+      return setPasswordMutation.mutateAsync(passwordData);
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error ? error.message : "Failed to set password",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
 
   // Resend OTP function
   const resendOTP = useCallback(
@@ -526,26 +515,26 @@ export const useAuth = () => {
   };
 
   // Check if user exists function
-  const checkUserExists = useCallback(
-    async (phoneNumber: string, countryCode: string): Promise<AuthResponse> => {
-      try {
-        return checkUserExistsMutation.mutateAsync({
-          phoneNumber,
-          countryCode,
-        });
-      } catch (error) {
-        const authError: AuthError = {
-          message:
-            error instanceof Error
-              ? error.message
-              : "Failed to check user existence",
-        };
-        setError(authError);
-        throw authError;
-      }
-    },
-    [checkUserExistsMutation]
-  );
+  const checkUserExists = async (
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<AuthResponse> => {
+    try {
+      return checkUserExistsMutation.mutateAsync({
+        phoneNumber,
+        countryCode,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to check user existence",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
 
   const formatMemberSince = (createdAt: string): string => {
     if (!createdAt) return "Member since -"; // fallback if empty
@@ -579,6 +568,7 @@ export const useAuth = () => {
     ...state,
     isLoginOpen,
     authStorage,
+    userAuthStep,
 
     // Loading states from mutations
     isLoading:

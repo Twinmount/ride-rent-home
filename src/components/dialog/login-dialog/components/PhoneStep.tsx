@@ -7,6 +7,7 @@ import { Phone, Loader2 } from "lucide-react";
 import "../phone-input.css";
 import { useImmer } from "use-immer";
 import { getNumberAfterSpace, getNumberAfterSpaceStrict } from "@/utils/helper";
+import { LoginDrawerState } from "../LoginDrawer";
 
 export const PhoneStep = ({
   setStep,
@@ -17,6 +18,7 @@ export const PhoneStep = ({
   signup,
   checkUserExists,
   clearError,
+  setDrawerState,
 }: any) => {
   const [phoneNumber, setPhoneNumber] = useImmer({
     value: "",
@@ -45,6 +47,10 @@ export const PhoneStep = ({
     clearError();
 
     try {
+      setDrawerState((draft: LoginDrawerState) => {
+        draft.phoneNumber = phoneNumber.number;
+        draft.countryCode = phoneNumber.countryCode;
+      });
       // First check if user exists
       const userExistsResponse = await checkUserExists(
         phoneNumber.number,
@@ -79,6 +85,7 @@ export const PhoneStep = ({
         }
       }
     } catch (error: any) {
+      console.log("error: [password section]", error);
       setStatus("error");
       setStatusMessage(
         error?.message || "Failed to verify phone number. Please try again."

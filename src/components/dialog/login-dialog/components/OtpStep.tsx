@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Shield, Loader2 } from "lucide-react";
 
 export const OtpStep = ({
+  userAuthStep,
   setStep,
   setStatus,
   setStatusMessage,
@@ -56,8 +57,8 @@ export const OtpStep = ({
 
     try {
       const verifyResponse = await verifyOTP(
-        drawerState.userId,
-        drawerState.otpId,
+        userAuthStep.userId,
+        userAuthStep.otpId,
         code
       );
 

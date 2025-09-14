@@ -191,6 +191,12 @@ export interface AuthStorageInterface {
   clear: () => void;
 }
 
+export interface UserAuthStep {
+  userId: string;
+  otpId: string;
+  otpExpiresIn: number;
+}
+
 /**
  * Auth API functions interface
  */
@@ -226,6 +232,7 @@ export interface UseAuthReturn {
   isLoginOpen: boolean;
   isLoading: boolean;
   authStorage: AuthStorageInterface;
+  userAuthStep: UserAuthStep;
 
   // Actions
   login: (loginData: LoginData) => Promise<AuthResponse>;
@@ -248,6 +255,10 @@ export interface UseAuthReturn {
   clearError: () => void;
   onHandleLoginmodal: (config: { isOpen: boolean }) => void;
   handleProfileNavigation: () => void;
+  checkUserExists: (
+    phoneNumber: string,
+    countryCode: string
+  ) => Promise<AuthResponse>;
 
   // Queries
   useGetUserProfile: (userId: string, enabled?: boolean) => any; // UseQueryResult from @tanstack/react-query
@@ -345,11 +356,11 @@ export interface ValidationError {
  * Authentication flow step enum
  */
 export enum AuthFlow {
-  SIGNUP = 'signup',
-  VERIFY_OTP = 'verify_otp',
-  SET_PASSWORD = 'set_password',
-  LOGIN = 'login',
-  COMPLETED = 'completed',
+  SIGNUP = "signup",
+  VERIFY_OTP = "verify_otp",
+  SET_PASSWORD = "set_password",
+  LOGIN = "login",
+  COMPLETED = "completed",
 }
 
 /**

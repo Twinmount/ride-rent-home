@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Lock, Loader2 } from "lucide-react";
+import { Lock, Loader2, Eye, EyeOff } from "lucide-react";
 
 export const PasswordStep = ({
   setStep,
@@ -15,6 +15,7 @@ export const PasswordStep = ({
   clearError,
 }: any) => {
   const [loginPassword, setLoginPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handlePasswordLogin = async () => {
     if (!loginPassword.trim()) return;
@@ -61,16 +62,32 @@ export const PasswordStep = ({
           <label htmlFor="password" className="text-sm font-medium">
             Password
           </label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="Enter your password"
-            value={loginPassword}
-            onChange={(e) => setLoginPassword(e.target.value)}
-            className="text-lg focus:border-orange-500 focus:ring-orange-500"
-            disabled={isCurrentlyLoading}
-            onKeyDown={(e) => e.key === "Enter" && handlePasswordLogin()}
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+              className="pr-10 text-lg focus:border-orange-500 focus:ring-orange-500"
+              disabled={isCurrentlyLoading}
+              onKeyDown={(e) => e.key === "Enter" && handlePasswordLogin()}
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={isCurrentlyLoading}
+            >
+              {showPassword ? (
+                <EyeOff className="h-4 w-4 text-gray-400" />
+              ) : (
+                <Eye className="h-4 w-4 text-gray-400" />
+              )}
+            </Button>
+          </div>
         </div>
 
         <Button

@@ -13,14 +13,30 @@ import { PasswordStep } from "./components/PasswordStep";
 import { OtpStep } from "./components/OtpStep";
 import { RegisterStep } from "./components/RegisterStep";
 import { SuccessStep } from "./components/SuccessStep";
+import { useImmer } from "use-immer";
+import { useAuthContext } from "@/auth";
 
 export type AuthStep = "phone" | "password" | "otp" | "register" | "success";
 export type StatusType = "idle" | "loading" | "success" | "error";
+
+export interface LoginDrawerState {
+  otp?: string;
+  password?: string;
+  phoneNumber?: string;
+  countryCode?: string;
+}
 
 export interface LoginDrawerProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const initialDrawerState: LoginDrawerState = {
+  phoneNumber: "",
+  countryCode: "",
+  otp: "",
+  password: "",
+};
 
 export const LoginDrawer: React.FC<LoginDrawerProps> = ({
   isOpen,
@@ -38,7 +54,8 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     isLoading: authLoading,
     error: authError,
     clearError,
-  } = useAuth();
+    userAuthStep,
+  } = useAuthContext();
 
   // Common State
   const [step, setStep] = useState<AuthStep>("phone");
@@ -47,16 +64,23 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
   const [userExists, setUserExists] = useState<boolean>(false);
 
   // All other states
-  const [drawerState, setDrawerState] = useState<any>({});
+  const [drawerState, setDrawerState] = useImmer<LoginDrawerState>({
+    phoneNumber: "",
+    countryCode: "",
+    password: "",
+    otp: "",
+  });
 
   const resetState = () => {
     setStep("phone");
     setStatus("idle");
     setStatusMessage("");
     setUserExists(false);
-    setDrawerState({});
+    setDrawerState(initialDrawerState);
     clearError();
   };
+
+  console.log("authError: ", authError);
 
   useEffect(() => {
     if (authError) {
@@ -163,6 +187,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
                 signup={signup}
                 checkUserExists={checkUserExists}
                 clearError={clearError}
+                setDrawerState={setDrawerState}
               />
             )}
             {step === "password" && (
@@ -180,6 +205,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
             )}
             {step === "otp" && (
               <OtpStep
+                userAuthStep={userAuthStep}
                 setStep={setStep}
                 setStatus={setStatus}
                 setStatusMessage={setStatusMessage}
