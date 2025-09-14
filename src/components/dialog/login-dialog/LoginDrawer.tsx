@@ -42,20 +42,31 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
   isOpen,
   onClose,
 }) => {
-  // Auth hook
   const {
-    checkUserExists,
     signup,
     login,
     verifyOTP,
     setPassword,
     resendOTP,
     updateProfile,
+    checkUserExists,
     isLoading: authLoading,
     error: authError,
     clearError,
     userAuthStep,
+    logoutMutation,
   } = useAuthContext();
+
+  useEffect(() => {
+    if (logoutMutation.isSuccess) {
+      setStep("phone");
+      setStatus("idle");
+      setStatusMessage("");
+      setUserExists(false);
+      setDrawerState(initialDrawerState);
+      clearError();
+    }
+  }, [logoutMutation.isSuccess]);
 
   // Common State
   const [step, setStep] = useState<AuthStep>("phone");

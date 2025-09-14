@@ -308,16 +308,6 @@ export const useAuth = () => {
   };
 
   const handleProfileNavigation = () => {
-    // console.log('handleProfileNavigation called');
-    // console.log('isAuthenticated:', state.isAuthenticated);
-
-    // if (!state.isAuthenticated) {
-    //   console.log('User not authenticated, showing error');
-    //   setError({ message: 'Please login to access your profile' });
-    //   return;
-    // }
-
-    // console.log('Navigating to /user-profile');
     router.push("/user-profile");
   };
 
@@ -345,8 +335,6 @@ export const useAuth = () => {
     refreshToken?: string,
     rememberMe: boolean = false
   ) => {
-    console.log("token: setAuthenticated", token);
-    console.log("user:setAuthenticated ", user);
     if (user && token) {
       authStorage.setToken(token, rememberMe);
       authStorage.setUser(user, rememberMe);

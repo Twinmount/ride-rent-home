@@ -248,18 +248,10 @@ export const Navbar = () => {
                 </Button>
               )}
             </div>
-            {/* <LoginDialog
-              // login={login}
-              isOpen={isLoginOpen}
-              onClose={() => onHandleLoginmodal({ isOpen: false })}
-            /> */}
             <LoginDrawer
               isOpen={isLoginOpen}
               onClose={() => onHandleLoginmodal({ isOpen: false })}
             />
-            {/* <li className="max-sm:hidden">
-              <ProfileDropdown />
-            </li> */}
             {isMobile && (
               <li>
                 <MobileSidebar />
