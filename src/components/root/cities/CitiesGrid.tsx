@@ -18,7 +18,7 @@ export default function CitiesGrid({
     return <div className="flex-center my-32">Oops! No Cities Found!</div>;
 
   return (
-    <ul className="grid grid-cols-2 justify-center gap-3 sm:grid-cols-3 md:lg:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+    <ul className="grid grid-cols-2 justify-center gap-3 sm:grid-cols-3 md:lg:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7">
       {cities.map((city) => (
         <li key={city.cityValue}>
           <Link
