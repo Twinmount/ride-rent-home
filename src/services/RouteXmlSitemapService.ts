@@ -22,7 +22,7 @@ export class RouteXmlSitemapService {
   ) {
     this.api = new SitemapAPI(country, countryId);
     this.siteUrl = ENV.SITE_URL || ENV.NEXT_PUBLIC_SITE_URL;
-    this.assetsBaseUrl = "https://prod-api.ride.rent/v1/riderent"
+    this.assetsBaseUrl = this.country === "in" ? "https://prod-in-api.ride.rent/v1/riderent" : "https://prod-api.ride.rent/v1/riderent"
   }
 
   /**
