@@ -22,7 +22,7 @@ export class RouteXmlSitemapService {
   ) {
     this.api = new SitemapAPI(country, countryId);
     this.siteUrl = ENV.SITE_URL || ENV.NEXT_PUBLIC_SITE_URL;
-    this.assetsBaseUrl = ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL;
+    this.assetsBaseUrl = this.country === "in" ? "https://prod-in-api.ride.rent/v1/riderent" : "https://prod-api.ride.rent/v1/riderent"
   }
 
   /**
@@ -187,7 +187,9 @@ export class RouteXmlSitemapService {
         lastModified: new Date().toISOString(),
         changeFrequency: "monthly",
         priority: 0.7,
-        images: vehicle.vehiclePhoto ? [vehicle.vehiclePhoto] : [],
+        images: vehicle.vehiclePhoto
+          ? [`${this.assetsBaseUrl}/file/stream?path=${vehicle.vehiclePhoto}`]
+          : [],
       }));
 
       return {
