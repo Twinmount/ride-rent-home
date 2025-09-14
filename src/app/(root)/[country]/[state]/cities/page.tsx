@@ -24,7 +24,11 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
   const { country, state } = params;
 
-  return generateCitiesPageMetadata(state, category || "cars", country);
+  return generateCitiesPageMetadata({
+    country,
+    state,
+    category: category || "cars",
+  });
 }
 
 export default async function CitiesPage(props: PageProps) {

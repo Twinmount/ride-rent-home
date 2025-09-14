@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import AnimatedSkelton from '@/components/skelton/AnimatedSkelton';
-import NoResultsFound from './NoResultsFound';
-import { useInView } from 'react-intersection-observer';
-import { useFetchListingVehicles } from '@/hooks/useFetchListingVehicles';
-import LoadingWheel from '@/components/common/LoadingWheel';
-import { useImmer } from 'use-immer';
-import { convertToLabel } from '@/helpers';
-import { useQuery } from '@tanstack/react-query';
-import { fetchRelatedStateList } from '@/lib/api/general-api';
-import MapClientWrapper from '@/components/listing/MapClientWrapper';
-import { useGlobalContext } from '@/context/GlobalContext';
-import { useUserLocation } from '@/hooks/useUserLocation';
-import VehicleListSection from './VehicleListSection';
-import MapToggleButton from './MapToggleButton';
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
+import NoResultsFound from "./NoResultsFound";
+import { useInView } from "react-intersection-observer";
+import { useFetchListingVehicles } from "@/hooks/useFetchListingVehicles";
+import LoadingWheel from "@/components/common/LoadingWheel";
+import { useImmer } from "use-immer";
+import { convertToLabel } from "@/helpers";
+import { useQuery } from "@tanstack/react-query";
+import { fetchRelatedStateList } from "@/lib/api/general-api";
+import MapClientWrapper from "@/components/listing/MapClientWrapper";
+import { useGlobalContext } from "@/context/GlobalContext";
+import { useUserLocation } from "@/hooks/useUserLocation";
+import VehicleListSection from "./VehicleListSection";
+import MapToggleButton from "./MapToggleButton";
 
 type VehicleGridProps = {
   country: string;
@@ -23,14 +23,16 @@ type VehicleGridProps = {
   category: string;
   vehicleType?: string;
   brand?: string;
+  city?: string;
 };
 
 const VehicleGrid: React.FC<VehicleGridProps> = ({
-  country = 'ae',
+  country = "ae",
   state,
-  category = 'cars',
+  category = "cars",
   vehicleType,
   brand,
+  city,
 }) => {
   const searchParams = useSearchParams();
   const [stateValue, setStateValue] = useState(state);
@@ -57,7 +59,8 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
     category,
     vehicleType,
     brand,
-    limit: '8',
+    city,
+    limit: "8",
     searchParams: searchParams.toString(),
     coordinates: stateValue === state ? parsedCoordinates : null,
   });
@@ -68,7 +71,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
   const [mountMap, setMountMap] = useImmer(false);
 
   const { data: relatedState } = useQuery({
-    queryKey: ['related-state', state],
+    queryKey: ["related-state", state],
     queryFn: () => fetchRelatedStateList(state, country),
     enabled: true,
     staleTime: 0,
@@ -77,7 +80,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
   // when page load go to top, use case -> when filter change key of
   // this component change, so this effect will be triggerd
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   useEffect(() => {
@@ -213,11 +216,11 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
     };
 
     // Add resize event listener
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     // Cleanup the event listener on component unmount
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [mountMap, setMountMap]);
 
@@ -238,7 +241,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
             {/* List Layer (Always Mounted, visibility toggled) */}
             <div
               className={`relative z-10 w-full transition-opacity duration-300 ${
-                showMap ? 'pointer-events-none opacity-0' : 'opacity-100'
+                showMap ? "pointer-events-none opacity-0" : "opacity-100"
               }`}
             >
               {Object.keys(vehicles).length === 0 ? (
@@ -247,8 +250,8 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
                 <>
                   {(!vehicles[state] || vehicles[state]?.length === 0) && (
                     <p className="mb-10 mt-8 text-center text-base text-gray-600">
-                      No vehicles found in{' '}
-                      {convertToLabel(state.replace(/-/g, ' '))}. Showing
+                      No vehicles found in{" "}
+                      {convertToLabel(state.replace(/-/g, " "))}. Showing
                       results from nearby locations.
                     </p>
                   )}
@@ -285,8 +288,8 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
             <div
               className={`fixed inset-0 top-[4rem] transition-opacity duration-300 ${
                 showMap
-                  ? 'z-40 opacity-100'
-                  : 'pointer-events-none z-0 opacity-0'
+                  ? "z-40 opacity-100"
+                  : "pointer-events-none z-0 opacity-0"
               }`}
             >
               {mountMap && <MapClientWrapper />}

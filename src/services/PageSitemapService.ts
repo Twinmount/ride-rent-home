@@ -13,12 +13,14 @@ import { ENV } from "@/config/env";
  */
 export class PageSitemapService {
   private api: SitemapAPI;
-
+  private readonly siteUrl: string;
   constructor(
     private country: string,
     private countryId: string
   ) {
     this.api = new SitemapAPI(country, countryId);
+    this.siteUrl =
+      ENV.SITE_URL || ENV.NEXT_PUBLIC_SITE_URL || "https://ride.rent";
   }
 
   async fetchCompaniesSitemapForPage() {
@@ -27,7 +29,7 @@ export class PageSitemapService {
       if (data.status === "SUCCESS" && data.result?.list) {
         return data.result.list.map(
           (company: { companyName: string; companyId: string }) => ({
-            url: `https://ride.rent${generateCompanyProfilePageLink(
+            url: `${this.siteUrl}${generateCompanyProfilePageLink(
               company.companyName,
               company.companyId,
               this.country
@@ -46,7 +48,7 @@ export class PageSitemapService {
       const data = await this.api.getBlogsSitemapData();
       if (data.status === "SUCCESS" && data.result?.list) {
         return data.result.list.map((blog: BlogData) => ({
-          url: `https://ride.rent/${this.country}/blog/${generateBlogUrlTitle(blog.blogTitle)}/${blog.blogId}`,
+          url: `${this.siteUrl}/${this.country}/blog/${generateBlogUrlTitle(blog.blogTitle)}/${blog.blogId}`,
           title: blog.blogTitle,
           blogId: blog.blogId,
         }));
@@ -68,7 +70,7 @@ export class PageSitemapService {
             stateValue: string;
             category?: string;
           }) => ({
-            url: `https://ride.rent/${this.country}/${vehicle?.stateValue}/rent/${vehicle?.category || "vehicles"}/${vehicle?.brandValue}/${vehicle?.vehicleSeries}`,
+            url: `${this.siteUrl}/${this.country}/${vehicle?.stateValue}/rent/${vehicle?.category || "vehicles"}/${vehicle?.brandValue}/${vehicle?.vehicleSeries}`,
           })
         );
       }
@@ -82,15 +84,30 @@ export class PageSitemapService {
     try {
       const relativeListingPageUrls =
         await this.api.getVehicleListingSitemapData();
-      const siteUrl = ENV.SITE_URL || ENV.NEXT_PUBLIC_SITE_URL;
       return relativeListingPageUrls.map((url) => ({
-        url: `${siteUrl}/${this.country}${url}`,
+        url: `${this.siteUrl}/${this.country}${url}`,
         lastModified: new Date().toISOString(),
         changeFrequency: "weekly",
         priority: 0.9,
       }));
     } catch (error) {
       console.error("Error fetching vehicle listing page sitemap:", error);
+    }
+    return [];
+  }
+
+  async fetchVehicleCityListingSitemapForPage() {
+    try {
+      const relativeCityListingPageUrls =
+        await this.api.getVehicleCityListingSitemapData();
+      return relativeCityListingPageUrls.map((url) => ({
+        url: `${this.siteUrl}/${this.country}${url}`,
+        lastModified: new Date().toISOString(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+      }));
+    } catch (error) {
+      console.error("Error fetching vehicle city listing page sitemap:", error);
     }
     return [];
   }
@@ -119,7 +136,7 @@ export class PageSitemapService {
           ),
         };
       });
-      const siteBaseUrl = `https://ride.rent/${this.country}`;
+      const siteBaseUrl = `${this.siteUrl}/${this.country}`;
       const urls: string[] = [];
       formattedData.forEach(
         ({
@@ -151,20 +168,18 @@ export class PageSitemapService {
 
   async fetchAllSitemapEntriesForPage() {
     const staticPages = [
-      { url: "https://ride.rent/about-us" },
-      { url: "https://ride.rent/privacy-policy" },
-      { url: "https://ride.rent/terms-condition" },
+      { url: `${this.siteUrl}/about-us` },
+      { url: `${this.siteUrl}/privacy-policy` },
+      { url: `${this.siteUrl}/terms-condition` },
       {
         url:
-          this.country === "in"
-            ? "https://ride.rent/in"
-            : "https://ride.rent/ae",
+          this.country === "in" ? `${this.siteUrl}/in` : `${this.siteUrl}/ae`,
       },
       {
         url:
           this.country === "in"
-            ? "https://ride.rent/in/blog"
-            : "https://ride.rent/ae/blog",
+            ? `${this.siteUrl}/in/blog`
+            : `${this.siteUrl}/ae/blog`,
       },
     ];
     const [vehicleSeries, companyProfiles, blogPosts, allDatas] =
@@ -175,6 +190,9 @@ export class PageSitemapService {
         this.fetchAllSitemapDataForPage(),
       ]);
     const listingPageUrls = await this.fetchVehicleListingSitemapForPage();
+    const cityListingPageUrls =
+      await this.fetchVehicleCityListingSitemapForPage();
+
     const { urls, uniqueLocations, formattedVehicleData } = allDatas;
     const allDataUrl = urls.map((url) => ({
       url: url,
@@ -183,19 +201,19 @@ export class PageSitemapService {
       priority: 0.7,
     }));
     const statePage = uniqueLocations.map((stateValue) => ({
-      url: `https://ride.rent/${this.country}/${stateValue}`,
+      url: `${this.siteUrl}/${this.country}/${stateValue}`,
       lastModified: new Date().toISOString(),
       changeFrequency: "monthly",
       priority: 0.7,
     }));
     const faqPages = uniqueLocations.map((stateValue: string) => ({
-      url: `https://ride.rent/${this.country}/faq/${stateValue}`,
+      url: `${this.siteUrl}/${this.country}/faq/${stateValue}`,
       lastModified: new Date().toISOString(),
       changeFrequency: "monthly",
       priority: 0.7,
     }));
     const vehiclePages = formattedVehicleData.map((vehicle: VehicleData) => ({
-      url: `https://ride.rent${generateVehicleDetailsUrl({
+      url: `${this.siteUrl}${generateVehicleDetailsUrl({
         vehicleTitle: vehicle.vehicleTitle,
         state: vehicle.state,
         vehicleCategory: vehicle.category,
@@ -214,6 +232,7 @@ export class PageSitemapService {
       ...allDataUrl,
       ...vehiclePages,
       ...listingPageUrls,
+      ...cityListingPageUrls,
       ...vehicleSeries,
       ...blogPosts,
     ];

@@ -36,6 +36,7 @@ const config = {
         poppins: ["var(--font-poppins)", "sans-serif"],
       },
       colors: {
+        background: "#F8F8F8",
         footer: "#232323", // Footer background
         "accent-brand": "#F57F17", // Orange theme color
         "accent-light": "#F9A825", // Lighter orange
@@ -65,7 +66,6 @@ const config = {
         lightGray: "#f5f5f5", //bg light gray
 
         // shadcn/ui default colors
-        background: "#F8F8F8",
         foreground: "hsl(var(--foreground))",
         card: {
           DEFAULT: "hsl(var(--card))",
