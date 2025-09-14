@@ -1,0 +1,47 @@
+/* Custom styles for react-international-phone */
+.react-international-phone-input {
+  @apply w-full;
+}
+
+.react-international-phone-input .react-international-phone-input-container {
+  @apply w-full rounded-md border border-border bg-background;
+}
+
+.react-international-phone-input
+  .react-international-phone-country-selector-button {
+  @apply h-12 rounded-l-md border-0 border-r border-border bg-background px-3 hover:bg-muted;
+}
+
+.react-international-phone-input
+  .react-international-phone-country-selector-dropdown {
+  @apply z-50 max-h-60 overflow-y-auto rounded-md border-border bg-background shadow-lg;
+}
+
+.react-international-phone-input
+  .react-international-phone-country-selector-dropdown__list-item {
+  @apply cursor-pointer px-3 py-2 text-sm hover:bg-muted;
+}
+
+.react-international-phone-input
+  .react-international-phone-input-container
+  input {
+  @apply h-12 w-full rounded-r-md border-0 bg-transparent px-3 text-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0;
+}
+
+.react-international-phone-input
+  .react-international-phone-input-container:focus-within {
+  @apply border-orange-500 ring-2 ring-orange-500;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .react-international-phone-input
+    .react-international-phone-country-selector-dropdown {
+    @apply border-gray-700 bg-gray-900;
+  }
+
+  .react-international-phone-input
+    .react-international-phone-country-selector-dropdown__list-item {
+    @apply hover:bg-gray-800;
+  }
+}

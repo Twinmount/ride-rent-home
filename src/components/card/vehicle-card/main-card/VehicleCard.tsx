@@ -55,10 +55,10 @@ const VehicleCard = ({
     >
       {/* card top */}
       <LinkWrapper
-        href={auth.isLoggedIn ? vehicleDetailsPageLink : "#"}
+        href={vehicleDetailsPageLink}
         className={`h-full w-full space-y-3 ${!auth.isLoggedIn ? "cursor-pointer" : ""}`}
         newTab={openInNewTab}
-        onClick={handleCardClick}
+        // onClick={handleCardClick}
       >
         <div className="relative">
           {/* thumbnail with hover image cycling */}

@@ -11,9 +11,10 @@ export const ProtectedVehicleDetails: React.FC<
   ProtectedVehicleDetailsProps
 > = ({ children }) => {
   return (
-    <ProtectedRoute showLoginModal={true} fallbackPath="/">
-      {children}
-    </ProtectedRoute>
+    <div>{children}</div>
+    // <ProtectedRoute showLoginModal={true} fallbackPath="/">
+    //   {children}
+    // </ProtectedRoute>
   );
 };
 

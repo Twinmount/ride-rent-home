@@ -36,6 +36,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { LoginDrawer } from '../dialog/login-dialog/LoginDrawer';
 
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import('../sidebar/MobileSidebar'), {
@@ -148,7 +149,6 @@ export const Navbar = () => {
             <li>
               <SearchDialog state={state} category={category} />
             </li>
-
             <li>
               <LanguageSelector
                 theme="navbar"
@@ -158,14 +158,12 @@ export const Navbar = () => {
                 className="navbar-lang-selector"
               />
             </li>
-
             {/* Location */}
             {!shouldRenderDropdowns && (
               <li className="-mx-2 w-fit">
                 <LocationDialog />
               </li>
             )}
-
             {/* List Button */}
             <li className="hidden lg:block">
               <RegisterLinkButton country={country} />
@@ -192,9 +190,9 @@ export const Navbar = () => {
                         <AvatarImage src={user?.avatar} alt={userName} />
                         <AvatarFallback className="bg-orange-100 font-semibold text-orange-600">
                           {userName
-                            .split(' ')
+                            .split(" ")
                             .map((n) => n[0])
-                            .join('')}
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
                     </DropdownMenuTrigger>
@@ -249,16 +247,15 @@ export const Navbar = () => {
                 </Button>
               )}
             </div>
-            <LoginDialog
+            {/* <LoginDialog
               // login={login}
               isOpen={isLoginOpen}
               onClose={() => onHandleLoginmodal({ isOpen: false })}
-            />
-
+            /> */}
+            <LoginDrawer isOpen={isLoginOpen} onClose={() => onHandleLoginmodal({ isOpen: false })} />
             {/* <li className="max-sm:hidden">
               <ProfileDropdown />
             </li> */}
-
             {isMobile && (
               <li>
                 <MobileSidebar />

@@ -21,10 +21,10 @@ export default function RentNowDialogTrigger({
   const { auth, onHandleLoginmodal } = useAuthContext();
 
   const handleClick = () => {
-    if (!auth.isLoggedIn) {
-      onHandleLoginmodal({ isOpen: true });
-      return;
-    }
+    // if (!auth.isLoggedIn) {
+    //   onHandleLoginmodal({ isOpen: true });
+    //   return;
+    // }
 
     // Generate the vehicle details page URL
     const vehicleDetailsPageLink = generateVehicleDetailsUrl({
