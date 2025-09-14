@@ -1,312 +1,262 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Eye, Clock, RefreshCw, AlertCircle } from 'lucide-react';
-import { useUserViewedVehicles } from '@/hooks/useUserActions';
-import { useAppContext } from '@/context/useAppContext';
-import VehicleListSection from '@/components/root/listing/vehicle-grids/VehicleListSection';
-import AnimatedSkelton from '@/components/skelton/AnimatedSkelton';
-import type { ViewedVehicle } from '@/lib/api/userActions.api.types';
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Eye,
+  Search,
+  Filter,
+  Star,
+  MapPin,
+  Clock,
+  Heart,
+  ArrowLeft,
+} from "lucide-react";
+import Link from "next/link";
 
-interface ViewedVehiclesProps {
-  className?: string;
-}
+const ViewedVehicles = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("recent");
+  const [filterBy, setFilterBy] = useState("all");
 
-const ViewedVehicles: React.FC<ViewedVehiclesProps> = ({ className = '' }) => {
-  const { auth } = useAppContext();
-  const { user, authStorage } = auth;
-  const [visibleVehicleIds, setVisibleVehicleIds] = useState<string[]>([]);
-  const [page, setPage] = useState(1);
+  // Mock viewed vehicles data
+  const viewedVehicles = [
+    {
+      id: 1,
+      name: "Ferrari 296 GTB 2024",
+      vendor: "Prestige Car Rental",
+      price: 1200,
+      rating: 4.9,
+      location: "Dubai",
+      image: "/red-sports-car-racing-style-lightning-mcqueen.png",
+      viewedDate: "2 hours ago",
+      viewCount: 3,
+      category: "sports",
+      features: ["Supercar", "Track Ready", "Premium Insurance"],
+    },
+    {
+      id: 2,
+      name: "Range Rover Vogue 2023",
+      vendor: "Luxury Motors UAE",
+      price: 450,
+      rating: 4.8,
+      location: "Dubai",
+      image: "/bmw-x5-luxury-suv.png",
+      viewedDate: "1 day ago",
+      viewCount: 2,
+      category: "suv",
+      features: ["Luxury", "Off-road", "Chauffeur Available"],
+    },
+    {
+      id: 3,
+      name: "Porsche 911 Turbo S",
+      vendor: "Elite Sports Cars",
+      price: 800,
+      rating: 4.9,
+      location: "Abu Dhabi",
+      image: "/orange-mclaren-720s-supercar.png",
+      viewedDate: "3 days ago",
+      viewCount: 1,
+      category: "sports",
+      features: ["High Performance", "Track Package", "Carbon Fiber"],
+    },
+    {
+      id: 4,
+      name: "Mercedes S-Class 2024",
+      vendor: "Premium Rentals",
+      price: 380,
+      rating: 4.7,
+      location: "Dubai",
+      image: "/white-mercedes-benz-c300-amg-luxury-car.png",
+      viewedDate: "1 week ago",
+      viewCount: 2,
+      category: "luxury",
+      features: ["Business Class", "Massage Seats", "WiFi"],
+    },
+  ];
 
-  const userId = user?.id || authStorage.getUser()?.id;
-
-  const {
-    data: viewedVehicles,
-    isLoading,
-    error,
-    refetch,
-    isFetching,
-  } = useUserViewedVehicles({
-    userId: userId!,
-    enabled: !!userId,
-    page,
-    limit: 20,
-  });
-
-  // Transform viewed vehicles data to match VehicleListSection format
-  const transformedVehicles = React.useMemo(() => {
-    if (!viewedVehicles?.length) return {};
-
-    // Group vehicles by location (using vehicleId as key for simplicity)
-    const grouped: Record<string, any[]> = {
-      'viewed-vehicles': viewedVehicles.map((viewed: ViewedVehicle) => ({
-        ...viewed.vehicle,
-        lastViewedAt: viewed.lastViewedAt,
-        viewDuration: viewed.viewDuration,
-        viewId: viewed.id,
-      })),
-    };
-
-    return grouped;
-  }, [viewedVehicles]);
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60)
-    );
-
-    if (diffInMinutes < 60) {
-      return `${diffInMinutes} minutes ago`;
-    } else if (diffInMinutes < 24 * 60) {
-      const hours = Math.floor(diffInMinutes / 60);
-      return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
-    } else {
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      });
-    }
-  };
-
-  const formatDuration = (seconds?: number) => {
-    if (!seconds || seconds < 60) {
-      return `${seconds || 0}s`;
-    } else if (seconds < 3600) {
-      const minutes = Math.floor(seconds / 60);
-      return `${minutes}m`;
-    } else {
-      const hours = Math.floor(seconds / 3600);
-      const minutes = Math.floor((seconds % 3600) / 60);
-      return `${hours}h ${minutes}m`;
-    }
-  };
-
-  if (!userId) {
-    return (
-      <Card className="border-0 shadow-lg">
-        <CardContent className="pt-6 text-center">
-          <p className="text-gray-600">
-            Please log in to view your browsing history.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className={`space-y-6 ${className}`}>
-        <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <Eye className="h-6 w-6 text-purple-600" />
-              Recently Viewed Vehicles
-            </CardTitle>
-          </CardHeader>
-        </Card>
-        <AnimatedSkelton />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card className="border-0 shadow-lg">
-        <CardContent className="pt-6 text-center">
-          <div className="mb-4 flex items-center justify-center gap-2 text-red-600">
-            <AlertCircle className="h-5 w-5" />
-            <p>Failed to load viewed vehicles</p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Try Again
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!viewedVehicles?.length) {
-    return (
-      <div className={`space-y-6 ${className}`}>
-        <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <Eye className="h-6 w-6 text-purple-600" />
-              Recently Viewed Vehicles
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-6 text-center">
-            <div className="flex flex-col items-center gap-4">
-              <Eye className="h-12 w-12 text-gray-300" />
-              <div>
-                <p className="mb-2 text-lg font-medium text-gray-900">
-                  No Browsing History
-                </p>
-                <p className="text-gray-600">
-                  Vehicles you view will appear here for easy access.
-                </p>
-              </div>
-              <Button
-                onClick={() => (window.location.href = '/cars')}
-                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
-              >
-                Browse Vehicles
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Group views by time period
-  const today = viewedVehicles.filter((viewed) => {
-    const viewDate = new Date(viewed.lastViewedAt);
-    const now = new Date();
-    return viewDate.toDateString() === now.toDateString();
-  });
-
-  const yesterday = viewedVehicles.filter((viewed) => {
-    const viewDate = new Date(viewed.lastViewedAt);
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    return viewDate.toDateString() === yesterday.toDateString();
-  });
-
-  const older = viewedVehicles.filter((viewed) => {
-    const viewDate = new Date(viewed.lastViewedAt);
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    return viewDate < yesterday;
+  const filteredVehicles = viewedVehicles.filter((vehicle) => {
+    const matchesSearch =
+      vehicle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      vehicle.vendor.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filterBy === "all" || vehicle.category === filterBy;
+    return matchesSearch && matchesFilter;
   });
 
   return (
-    <div className={`space-y-6 ${className}`}>
-      {/* Header */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Eye className="h-6 w-6 text-purple-600" />
-              Recently Viewed Vehicles
-              <Badge
-                variant="secondary"
-                className="bg-purple-50 text-purple-700"
-              >
-                {viewedVehicles.length}{' '}
-                {viewedVehicles.length === 1 ? 'Vehicle' : 'Vehicles'}
-              </Badge>
+    <div className="min-h-screen bg-gray-50 px-4 py-8">
+      <div className="mx-auto max-w-7xl">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="mb-4 flex items-center gap-4">
+            <Link href="/profile">
+              <Button variant="ghost" size="sm" className="cursor-pointer">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Profile
+              </Button>
+            </Link>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="mb-2 text-3xl font-bold text-gray-900">
+                Recently Viewed
+              </h1>
+              <p className="text-gray-600">Vehicles you've recently browsed</p>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => refetch()}
-              disabled={isFetching}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw
-                className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`}
-              />
-              Refresh
-            </Button>
-          </CardTitle>
-        </CardHeader>
-      </Card>
-
-      {/* Viewing Statistics */}
-      <Card className="border-0 shadow-lg">
-        <CardContent className="pt-6">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="rounded-lg bg-blue-50 p-4 text-center">
-              <div className="mb-1 text-2xl font-bold text-blue-900">
-                {today.length}
-              </div>
-              <div className="text-sm text-blue-700">Today</div>
-            </div>
-            <div className="rounded-lg bg-green-50 p-4 text-center">
-              <div className="mb-1 text-2xl font-bold text-green-900">
-                {yesterday.length}
-              </div>
-              <div className="text-sm text-green-700">Yesterday</div>
-            </div>
-            <div className="rounded-lg bg-gray-50 p-4 text-center">
-              <div className="mb-1 text-2xl font-bold text-gray-900">
-                {older.length}
-              </div>
-              <div className="text-sm text-gray-700">Older</div>
+            <div className="flex items-center gap-2">
+              <Eye className="h-6 w-6 text-purple-500" />
+              <span className="text-2xl font-bold text-gray-900">
+                {viewedVehicles.length}
+              </span>
+              <span className="text-gray-600">viewed</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Vehicle List using VehicleListSection */}
-      <Card className="border-0 shadow-lg">
-        <CardContent className="pt-6">
-          <VehicleListSection
-            vehicles={transformedVehicles}
-            state="viewed-vehicles"
-            category="cars"
-            country="ae"
-            setVisibleVehicleIds={setVisibleVehicleIds}
-          />
-        </CardContent>
-      </Card>
+        {/* Filters */}
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+            <Input
+              placeholder="Search viewed vehicles..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-full cursor-pointer sm:w-48">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recent">Recently Viewed</SelectItem>
+              <SelectItem value="price-low">Price: Low to High</SelectItem>
+              <SelectItem value="price-high">Price: High to Low</SelectItem>
+              <SelectItem value="most-viewed">Most Viewed</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterBy} onValueChange={setFilterBy}>
+            <SelectTrigger className="w-full cursor-pointer sm:w-48">
+              <Filter className="mr-2 h-4 w-4" />
+              <SelectValue placeholder="Filter by type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="luxury">Luxury</SelectItem>
+              <SelectItem value="suv">SUV</SelectItem>
+              <SelectItem value="sports">Sports</SelectItem>
+              <SelectItem value="sedan">Sedan</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-      {/* Viewing Details */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-lg">Viewing History</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {viewedVehicles.map((viewed: ViewedVehicle) => (
-              <div
-                key={viewed.id}
-                className="flex items-center justify-between rounded-lg border bg-gray-50 p-4"
-              >
-                <div className="flex-1">
-                  <h4 className="font-medium text-gray-900">
-                    {viewed.vehicle?.model || 'Vehicle'}
-                  </h4>
-                  <p className="mt-1 text-sm text-gray-600">
-                    Viewed {formatDate(viewed.lastViewedAt)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  {viewed.viewDuration && (
-                    <Badge
-                      variant="outline"
-                      className="flex items-center gap-1 text-xs"
-                    >
-                      <Clock className="h-3 w-3" />
-                      {formatDuration(viewed.viewDuration)}
-                    </Badge>
-                  )}
-                  <Badge
+        {/* Vehicles Grid */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredVehicles.map((vehicle) => (
+            <Card
+              key={vehicle.id}
+              className="cursor-pointer overflow-hidden transition-shadow hover:shadow-lg"
+            >
+              <div className="relative">
+                <img
+                  src={vehicle.image || "/placeholder.svg"}
+                  alt={vehicle.name}
+                  className="h-48 w-full object-cover"
+                />
+                <div className="absolute right-3 top-3">
+                  <Button
+                    size="sm"
                     variant="secondary"
-                    className="bg-purple-50 text-purple-700"
+                    className="h-8 w-8 cursor-pointer bg-white/90 p-0 hover:bg-red-50"
                   >
+                    <Heart className="h-4 w-4 text-gray-600 hover:text-red-500" />
+                  </Button>
+                </div>
+                <div className="absolute left-3 top-3">
+                  <Badge className="bg-purple-500 text-white">
                     <Eye className="mr-1 h-3 w-3" />
-                    Viewed
+                    Viewed {vehicle.viewCount}x
                   </Badge>
                 </div>
               </div>
-            ))}
+              <CardContent className="p-4">
+                <div className="mb-2 flex items-start justify-between">
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    {vehicle.name}
+                  </h3>
+                  <div className="flex items-center gap-1">
+                    <Star className="text-yellow-400 h-4 w-4 fill-current" />
+                    <span className="text-sm font-medium">
+                      {vehicle.rating}
+                    </span>
+                  </div>
+                </div>
+                <p className="mb-3 text-sm text-gray-600">{vehicle.vendor}</p>
+                <div className="mb-3 flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">
+                    {vehicle.location}
+                  </span>
+                  <Clock className="ml-2 h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">
+                    {vehicle.viewedDate}
+                  </span>
+                </div>
+                <div className="mb-4 flex flex-wrap gap-1">
+                  {vehicle.features.slice(0, 2).map((feature, index) => (
+                    <Badge key={index} variant="outline" className="text-xs">
+                      {feature}
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-lg font-bold text-orange-600">
+                      {vehicle.price} AED
+                    </span>
+                    <span className="text-sm text-gray-500">/day</span>
+                  </div>
+                  <Button
+                    size="sm"
+                    className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
+                  >
+                    View Again
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {filteredVehicles.length === 0 && (
+          <div className="py-12 text-center">
+            <Eye className="mx-auto mb-4 h-16 w-16 text-gray-300" />
+            <h3 className="mb-2 text-xl font-semibold text-gray-900">
+              No viewed vehicles found
+            </h3>
+            <p className="mb-4 text-gray-600">
+              {searchQuery || filterBy !== "all"
+                ? "Try adjusting your search or filters"
+                : "Start browsing to see your viewing history"}
+            </p>
+            <Link href="/">
+              <Button className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600">
+                Browse Vehicles
+              </Button>
+            </Link>
           </div>
-        </CardContent>
-      </Card>
+        )}
+      </div>
     </div>
   );
 };

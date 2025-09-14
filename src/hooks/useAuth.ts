@@ -6,20 +6,13 @@ import { useImmer } from "use-immer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
   LoginData,
-  SignupData,
   PhoneSignupData,
   User,
   AuthResponse,
   AuthError,
   AuthState,
   InternalAuthState,
-  AuthStorageKeys,
-  PasswordValidationResult,
-  AuthStorageInterface,
-  UseAuthReturn,
-  OtpVerificationData,
   SetPasswordData,
-  ResendOtpData,
   ProfileUpdateData,
 } from "@/types/auth.types";
 
@@ -31,9 +24,6 @@ import {
   validateEmail,
   validatePhoneNumber,
   validatePassword,
-  clearAuthStorage,
-  getStorageType,
-  parseStoredUser,
   createAuthError,
 } from "@/utils/auth.utils";
 
@@ -65,7 +55,6 @@ export const useAuth = () => {
   });
 
   const [isLoginOpen, setLoginOpen] = useImmer(false);
-  console.log("isLoginOpen: ", isLoginOpen);
 
   const [userAuthStep, setUserAuthStep] = useImmer({
     userId: "",
