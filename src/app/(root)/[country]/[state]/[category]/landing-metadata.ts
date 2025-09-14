@@ -36,11 +36,14 @@ async function fetchHomepageMetadata(
 export async function generateHomePageMetadata(
   state: string,
   category: string,
-  country: string
+  country: string,
+  vehicleType: string | undefined | null = undefined,
 ): Promise<Metadata> {
   const data = await fetchHomepageMetadata(state, category, country);
 
-  const canonicalUrl = `https://ride.rent/${country}/${state}/${category}`;
+  const canonicalUrl = `https://ride.rent/${country}/${state}/${category}${
+    vehicleType ? `?type=${encodeURIComponent(vehicleType)}` : ""
+  }`;
 
   if (!data?.result) {
     return getDefaultMetadata({ country, canonicalUrl });

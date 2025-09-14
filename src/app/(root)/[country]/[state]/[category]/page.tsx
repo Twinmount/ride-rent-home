@@ -25,10 +25,12 @@ import PromotionDeals from "@/components/root/landing/PromotionDeals";
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
+  const searchParams = await props.searchParams;
 
   const { country, state, category } = params;
+  const vehicleType = searchParams.type;
 
-  return generateHomePageMetadata(state, category, country);
+  return generateHomePageMetadata(state, category, country, vehicleType);
 }
 
 export default async function Home(props: PageProps) {

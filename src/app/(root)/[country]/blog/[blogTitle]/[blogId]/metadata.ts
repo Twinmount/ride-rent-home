@@ -42,7 +42,7 @@ export async function generateBlogMetadata(
 
   const ogImage = blogImage || "/assets/share-me.webp";
   const href = generateBlogHref(country, title, blogId);
-  const canonicalUrl = `https://happenings.ride.rent/${href}`;
+  const canonicalUrl = `https://ride.rent${href}`;
 
   return {
     title: metaTitle,

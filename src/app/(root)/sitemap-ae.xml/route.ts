@@ -17,7 +17,6 @@ import { NextResponse } from "next/server";
 const SITE_URL = ENV.SITE_URL || ENV.NEXT_PUBLIC_SITE_URL;
 const COUNTRY = "ae";
 const COUNTRY_ID = "ee8a7c95-303d-4f55-bd6c-85063ff1cf48";
-const ASSETS_BASE_URL = ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL;
 
 /**
  * Fetches company data for sitemap generation
@@ -43,7 +42,7 @@ async function fetchCompaniesSitemap() {
         changeFrequency: "weekly",
         priority: 0.8,
         images: company.companyLogo
-          ? [`${ASSETS_BASE_URL}/file/stream?path=${company.companyLogo}`]
+          ? [`${company.companyLogo}`]
           : [],
       }));
     }
@@ -294,8 +293,8 @@ function generateSitemapXML(entries) {
           ?.map(
             (img) => `
             <image:image>
-              <image:loc>${escapeXml(img)}</image:loc>
-            </image:image>`
+              <image:loc>${escapeXml('https://prod-api.ride.rent/v1/riderent/file/stream?path='+img)}</image:loc>
+            </image:image>`,
           )
           .join("") || "";
 
