@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   MessageSquare,
   Clock,
   CheckCircle,
   AlertCircle,
   RefreshCw,
-} from 'lucide-react';
-import { useUserEnquiredVehicles } from '@/hooks/useUserActions';
-import { useAppContext } from '@/context/useAppContext';
-import VehicleListSection from '@/components/root/listing/vehicle-grids/VehicleListSection';
-import AnimatedSkelton from '@/components/skelton/AnimatedSkelton';
-import type { EnquiredVehicle } from '@/lib/api/userActions.api.types';
+} from "lucide-react";
+import { useUserEnquiredVehicles } from "@/hooks/useUserActions";
+import { useAppContext } from "@/context/useAppContext";
+import VehicleListSection from "@/components/root/listing/vehicle-grids/VehicleListSection";
+import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
+import type { EnquiredVehicle } from "@/lib/api/userActions.api.types";
 
 interface EnquiredVehiclesProps {
   className?: string;
 }
 
 const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
-  className = '',
+  className = "",
 }) => {
   const { auth } = useAppContext();
   const { user, authStorage } = auth;
@@ -50,7 +50,7 @@ const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
 
     // Group vehicles by location (using vehicleId as key for simplicity)
     const grouped: Record<string, any[]> = {
-      'enquired-vehicles': enquiredVehicles.map((enquiry: EnquiredVehicle) => ({
+      "enquired-vehicles": enquiredVehicles.map((enquiry: EnquiredVehicle) => ({
         ...enquiry.vehicle,
         enquiryDetails: enquiry.enquiryDetails,
         enquiredAt: enquiry.createdAt,
@@ -63,21 +63,21 @@ const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
 
   const getStatusBadge = (status?: string) => {
     switch (status) {
-      case 'contacted':
+      case "contacted":
         return (
           <Badge variant="secondary" className="bg-blue-50 text-blue-700">
             <CheckCircle className="mr-1 h-3 w-3" />
             Contacted
           </Badge>
         );
-      case 'resolved':
+      case "resolved":
         return (
           <Badge variant="secondary" className="bg-green-50 text-green-700">
             <CheckCircle className="mr-1 h-3 w-3" />
             Resolved
           </Badge>
         );
-      case 'pending':
+      case "pending":
       default:
         return (
           <Badge variant="secondary" className="bg-orange-50 text-orange-700">
@@ -90,12 +90,12 @@ const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -167,11 +167,11 @@ const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
                   No Enquiries Yet
                 </p>
                 <p className="text-gray-600">
-                  When you enquire about vehicles, they'll appear here.
+                  When you enquire about vehicles, theyapos&apos;ll appear here.
                 </p>
               </div>
               <Button
-                onClick={() => (window.location.href = '/cars')}
+                onClick={() => (window.location.href = "/cars")}
                 className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
               >
                 Browse Vehicles
@@ -196,8 +196,8 @@ const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
                 variant="secondary"
                 className="bg-orange-50 text-orange-700"
               >
-                {enquiredVehicles.length}{' '}
-                {enquiredVehicles.length === 1 ? 'Enquiry' : 'Enquiries'}
+                {enquiredVehicles.length}{" "}
+                {enquiredVehicles.length === 1 ? "Enquiry" : "Enquiries"}
               </Badge>
             </div>
             <Button
@@ -208,7 +208,7 @@ const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
               className="flex items-center gap-2"
             >
               <RefreshCw
-                className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`}
+                className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`}
               />
               Refresh
             </Button>
@@ -220,10 +220,10 @@ const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
       <Card className="border-0 shadow-lg">
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            {['pending', 'contacted', 'resolved'].map((status) => {
+            {["pending", "contacted", "resolved"].map((status) => {
               const count = enquiredVehicles.filter(
                 (enquiry) =>
-                  (enquiry.enquiryDetails?.status || 'pending') === status
+                  (enquiry.enquiryDetails?.status || "pending") === status
               ).length;
 
               return (
@@ -271,14 +271,14 @@ const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
               >
                 <div className="flex-1">
                   <h4 className="font-medium text-gray-900">
-                    {enquiry.vehicle?.model || 'Vehicle'}
+                    {enquiry.vehicle?.model || "Vehicle"}
                   </h4>
                   <p className="mt-1 text-sm text-gray-600">
                     Enquired on {formatDate(enquiry.createdAt)}
                   </p>
                   {enquiry.enquiryDetails?.message && (
                     <p className="mt-2 text-sm italic text-gray-700">
-                      "{enquiry.enquiryDetails.message}"
+                      {enquiry.enquiryDetails.message}
                     </p>
                   )}
                 </div>

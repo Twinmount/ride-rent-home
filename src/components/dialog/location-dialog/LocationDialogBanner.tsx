@@ -51,7 +51,7 @@ export default function LocationDialogBanner({
         {/* Heading */}
         <div className="text-center">
           <h2 className="text-xl font-medium">Select Your City</h2>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-xs text-neutral-500 lg:text-sm">
             {getLocationDescription()}
           </p>
         </div>

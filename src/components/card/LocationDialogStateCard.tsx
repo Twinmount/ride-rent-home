@@ -34,8 +34,8 @@ export default function LocationDialogStateCard({
       />
 
       {/* State name with enhanced styling */}
-      <figcaption className="z-1 relative mb-3 px-2 text-center">
-        <span className="text-base font-medium text-gray-800 drop-shadow-sm">
+      <figcaption className="z-1 relative mb-2 px-2 text-center">
+        <span className="text-sm font-normal text-gray-800 drop-shadow-sm">
           {state.stateName}
         </span>
       </figcaption>

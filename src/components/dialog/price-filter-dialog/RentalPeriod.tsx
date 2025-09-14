@@ -19,6 +19,11 @@ export default function RentalPeriod({
 
   const formattedPeriods = formatAndSortPeriods(availablePeriods);
 
+  // Set default to 'day' if no period is selected and 'day' is available
+  const currentSelectedPeriod =
+    selectedPeriod ||
+    (availablePeriods.includes("day") ? "day" : availablePeriods[0]);
+
   const boxClassNames = isListingPage
     ? ` px-2 py-1 text-sm`
     : ` px-3 py-1 text-sm`;
@@ -31,8 +36,8 @@ export default function RentalPeriod({
           onClick={() => setSelectedPeriod(key)}
           className={`cursor-pointer rounded-[0.4rem] ${
             selectedPeriod === key
-              ? 'bg-yellow text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              ? "bg-yellow text-white"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           } ${boxClassNames}`}
         >
           {label}

@@ -1,9 +1,11 @@
-import { FetchBrandsWithSeriesResponse } from "@/types";
+import { FetchBrandsWithSeriesResponse, SeriesUnderBrandType } from "@/types";
 import { Suspense } from "react";
 import Pagination from "@/components/common/Pagination";
 import { ENV } from "@/config/env";
 import Link from "next/link";
-import SeriesSubList from "./SeriesSubList";
+import SeriesListLink from "./SeriesListLink";
+import { ArrowRight } from "lucide-react";
+import { API } from "@/utils/API";
 
 type PropsType = {
   state: string;
@@ -26,14 +28,14 @@ export default async function VehicleSeriesGrid({
     state: state,
     category: category,
   }).toString();
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-  // Construct the full URL with the query string
-  const url = `${baseUrl}/vehicle-brand/vehicle-series/list?${params}`;
 
-  // Fetch data using the generated URL
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "no-cache",
+  const response = await API({
+    path: `/vehicle-brand/vehicle-series/list?${params}`,
+    options: {
+      method: "GET",
+      cache: "no-cache",
+    },
+    country: country,
   });
 
   // Parse the JSON response
@@ -94,6 +96,52 @@ export default async function VehicleSeriesGrid({
       <Suspense fallback={<div>Loading Pagination...</div>}>
         <Pagination page={page} totalPages={totalPages} />
       </Suspense>
+    </div>
+  );
+}
+
+/**
+ * A component which renders a sub list of series (upto 5) under a brand.
+ */
+type SeriesSubListProps = {
+  state: string;
+  category: string;
+  brand: SeriesUnderBrandType;
+  country: string;
+};
+
+function SeriesSubList({
+  state,
+  brand,
+  category,
+  country,
+}: SeriesSubListProps) {
+  return (
+    <div className="flex flex-col">
+      <ul className="h-full w-full gap-y-2 p-2">
+        {/* mapping over  array and rendering link for each series which redirects to series page  */}
+        {brand.vehicleSeries.map((series) => (
+          <SeriesListLink
+            key={series.seriesName}
+            state={state}
+            brandValue={brand.brandValue}
+            series={series}
+            country={country}
+            category={category}
+          />
+        ))}
+      </ul>
+
+      {/* show view all only if the count is more than 5 */}
+      {brand.seriesCount > 0 && (
+        <Link
+          href={`/${country}/${state}/vehicle-rentals/${category}-for-rent/${brand.brandValue}`}
+          className="flex-center absolute bottom-2 right-2 ml-auto mt-auto w-fit justify-end gap-2 rounded-xl border border-slate-800 px-3 py-1 text-sm transition-colors hover:bg-slate-700 hover:text-white"
+        >
+          View All
+          <ArrowRight className="relative bottom-[2px] w-3" />
+        </Link>
+      )}
     </div>
   );
 }

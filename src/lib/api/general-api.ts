@@ -1,5 +1,5 @@
-import { FetchVehicleCardsResponse } from '@/types/vehicle-types';
-import { handleError } from '../utils';
+import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
+import { handleError } from "../utils";
 import {
   FetcFAQResponse,
   FetchBrandsResponse,
@@ -12,8 +12,8 @@ import {
   FetchSearchResultsResponse,
   FetchStatesResponse,
   FetchTypesResponse,
-} from '@/types';
-import { API } from '@/utils/API';
+} from "@/types";
+import { API } from "@/utils/API";
 
 interface FetchVehicleByFiltersParams {
   query: string;
@@ -30,9 +30,9 @@ interface FetchVehicleByFiltersParams {
 // Function to fetch vehicles based on filters using a POST request
 export const FetchVehicleByFilters = async ({
   query,
-  state = 'dubai',
+  state = "dubai",
   pageParam = 1,
-  limit = '8',
+  limit = "8",
   country,
   coordinates,
   category,
@@ -43,55 +43,55 @@ export const FetchVehicleByFilters = async ({
   const params = new URLSearchParams(query);
 
   const BASE_URL =
-    country === 'in'
+    country === "in"
       ? process.env.NEXT_PUBLIC_API_URL_INDIA
       : process.env.NEXT_PUBLIC_API_URL;
 
   // Utility function to safely parse parameter values
-  const getParamValue = (key: string, defaultValue: string = ''): string => {
+  const getParamValue = (key: string, defaultValue: string = ""): string => {
     const value = params.get(key);
     return value !== null ? value : defaultValue;
   };
 
   const getParamArray = (key: string): string[] => {
     const value = params.get(key);
-    return value ? value.split(',') : [];
+    return value ? value.split(",") : [];
   };
 
   // Build the payload for the POST request
   const payload: Record<string, any> = {
     page: pageParam.toString(), // Use the pageParam directly
     limit, // Ensure it's a string
-    sortOrder: 'DESC',
-    category: category || 'cars',
-    state: getParamValue('state', state),
+    sortOrder: "DESC",
+    category: category || "cars",
+    state: getParamValue("state", state),
     coordinates,
   };
 
   // Extract price and selectedPeriod from URL params
-  const priceParam = getParamValue('price'); // Example: "45-250"
-  const selectedPeriod = getParamValue('period', 'hour'); // Default to "hour"
+  const priceParam = getParamValue("price"); // Example: "45-250"
+  const selectedPeriod = getParamValue("period", "hour"); // Default to "hour"
 
   // Only add priceRange if both price and period are available
   if (priceParam && selectedPeriod) {
-    const [minPrice, maxPrice] = priceParam.split('-');
+    const [minPrice, maxPrice] = priceParam.split("-");
     payload.priceRange = {
       [selectedPeriod]: {
-        min: minPrice || '',
-        max: maxPrice || '',
+        min: minPrice || "",
+        max: maxPrice || "",
       },
     };
   }
 
   // Add optional fields only if they are non-empty
   const optionalFields = {
-    color: getParamArray('color'),
-    fuelType: getParamArray('fuelType'),
-    modelYear: getParamValue('modelYear'),
-    seats: getParamValue('seats'),
-    transmission: getParamArray('transmission'),
-    filter: getParamValue('filter'),
-    city: getParamValue('city'),
+    color: getParamArray("color"),
+    fuelType: getParamArray("fuelType"),
+    modelYear: getParamValue("modelYear"),
+    seats: getParamValue("seats"),
+    transmission: getParamArray("transmission"),
+    filter: getParamValue("filter"),
+    city: getParamValue("city"),
   };
 
   if (vehicleType) {
@@ -105,22 +105,22 @@ export const FetchVehicleByFilters = async ({
   Object.entries(optionalFields).forEach(([key, value]) => {
     if (Array.isArray(value) && value.length > 0) {
       payload[key] = value;
-    } else if (typeof value === 'string' && value !== '') {
+    } else if (typeof value === "string" && value !== "") {
       payload[key] = value;
     }
   });
 
   // Send the POST request to the API
   const response = await fetch(`${BASE_URL}/vehicle/filter`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch vehicles');
+    throw new Error("Failed to fetch vehicles");
   }
 
   const data: FetchVehicleCardsResponse = await response.json();
@@ -130,7 +130,7 @@ export const FetchVehicleByFilters = async ({
 
 export const FetchVehicleByFiltersGPS = async (
   query: string,
-  state: string = 'dubai',
+  state: string = "dubai",
   limit: number, // Accept pageParam here directly
   country: string,
   coordinates: { latitude: number; longitude: number } | null
@@ -139,77 +139,77 @@ export const FetchVehicleByFiltersGPS = async (
   const params = new URLSearchParams(query);
 
   const BASE_URL =
-    country === 'in'
+    country === "in"
       ? process.env.NEXT_PUBLIC_API_URL_INDIA
       : process.env.NEXT_PUBLIC_API_URL;
 
   // Utility function to safely parse parameter values
-  const getParamValue = (key: string, defaultValue: string = ''): string => {
+  const getParamValue = (key: string, defaultValue: string = ""): string => {
     const value = params.get(key);
     return value !== null ? value : defaultValue;
   };
 
   const getParamArray = (key: string): string[] => {
     const value = params.get(key);
-    return value ? value.split(',') : [];
+    return value ? value.split(",") : [];
   };
 
   // Build the payload for the POST request
   const payload: Record<string, any> = {
     limit,
-    category: getParamValue('category') || 'cars',
-    state: getParamValue('state', state),
+    category: getParamValue("category") || "cars",
+    state: getParamValue("state", state),
     coordinates,
   };
 
   // Extract price and selectedPeriod from URL params
-  const priceParam = getParamValue('price'); // Example: "45-250"
-  const selectedPeriod = getParamValue('period', 'hour'); // Default to "hour"
+  const priceParam = getParamValue("price"); // Example: "45-250"
+  const selectedPeriod = getParamValue("period", "hour"); // Default to "hour"
 
   // Only add priceRange if both price and period are available
   if (priceParam && selectedPeriod) {
-    const [minPrice, maxPrice] = priceParam.split('-');
+    const [minPrice, maxPrice] = priceParam.split("-");
     payload.priceRange = {
       [selectedPeriod]: {
-        min: minPrice || '',
-        max: maxPrice || '',
+        min: minPrice || "",
+        max: maxPrice || "",
       },
     };
   }
 
   // Add optional fields only if they are non-empty
   const optionalFields = {
-    category: getParamValue('category'),
-    brand: getParamArray('brand'),
-    color: getParamArray('color'),
-    fuelType: getParamArray('fuelType'),
-    modelYear: getParamValue('modelYear'),
-    seats: getParamValue('seats'),
-    transmission: getParamArray('transmission'),
-    vehicleTypes: getParamArray('vehicleTypes'),
-    filter: getParamValue('filter'),
-    city: getParamValue('city'),
+    category: getParamValue("category"),
+    brand: getParamArray("brand"),
+    color: getParamArray("color"),
+    fuelType: getParamArray("fuelType"),
+    modelYear: getParamValue("modelYear"),
+    seats: getParamValue("seats"),
+    transmission: getParamArray("transmission"),
+    vehicleTypes: getParamArray("vehicleTypes"),
+    filter: getParamValue("filter"),
+    city: getParamValue("city"),
   };
 
   Object.entries(optionalFields).forEach(([key, value]) => {
     if (Array.isArray(value) && value.length > 0) {
       payload[key] = value;
-    } else if (typeof value === 'string' && value !== '') {
+    } else if (typeof value === "string" && value !== "") {
       payload[key] = value;
     }
   });
 
   // Send the POST request to the API
   const response = await fetch(`${BASE_URL}/vehicle/filter-and-get-gps`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch vehicles');
+    throw new Error("Failed to fetch vehicles");
   }
 
   const data = await response.json();
@@ -224,16 +224,16 @@ export const sendPortfolioVisit = async (
 ) => {
   try {
     const BASE_URL =
-      country === 'in'
+      country === "in"
         ? process.env.NEXT_PUBLIC_API_URL_INDIA
         : process.env.NEXT_PUBLIC_API_URL;
     // Send a POST request to the API with the vehicleId in the request body
     const response = await fetch(
       `${BASE_URL}/portfolio`, // Assuming '/portfolio' is the correct endpoint
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ vehicleId }), // Wrapping vehicleId in an object
       }
@@ -244,7 +244,7 @@ export const sendPortfolioVisit = async (
       const errorData = await response.json();
       throw new Error(
         `Failed to send portfolio visit. Status: ${response.status}, Message: ${
-          errorData.message || 'Unknown error'
+          errorData.message || "Unknown error"
         }`
       );
     }
@@ -254,36 +254,36 @@ export const sendPortfolioVisit = async (
 
     return responseData; // Return the response data if needed
   } catch (error) {
-    console.error('Error sending portfolio visit:', error);
+    console.error("Error sending portfolio visit:", error);
   }
 };
 
 // Function to send POST request for queries
 export const sendQuery = async (
   vehicleId: string,
-  medium: 'EMAIL' | 'WHATSAPP' | 'OTHER',
+  medium: "EMAIL" | "WHATSAPP" | "OTHER",
   country: string
 ) => {
   try {
     const BASE_URL =
-      country === 'in'
+      country === "in"
         ? process.env.NEXT_PUBLIC_API_URL_INDIA
         : process.env.NEXT_PUBLIC_API_URL;
     const url = `${BASE_URL}/queries`;
 
     const response = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ vehicleId, medium }),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to send query');
+      throw new Error("Failed to send query");
     }
   } catch (error) {
-    console.error('Error sending query:', error);
+    console.error("Error sending query:", error);
   }
 };
 
@@ -296,13 +296,13 @@ export const fetchVehicleTypesByValue = async (
   try {
     // generating api URL
     const BASE_URL =
-      country === 'in'
+      country === "in"
         ? process.env.NEXT_PUBLIC_API_URL_INDIA
         : process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}&hasVehicle=true&state=${vehicleState}`;
 
     const response = await fetch(apiUrl, {
-      cache: 'no-cache',
+      cache: "no-cache",
     });
 
     // Check if the response is OK
@@ -316,7 +316,7 @@ export const fetchVehicleTypesByValue = async (
 
     return data;
   } catch (error) {
-    console.error('Error in fetchVehicleTypes:', error);
+    console.error("Error in fetchVehicleTypes:", error);
     handleError(error);
     return undefined;
   }
@@ -333,14 +333,16 @@ export const fetchPriceRange = async ({
   country: string;
 }): Promise<FetchPriceRangeResponse | undefined> => {
   try {
-    // generating api URL
-    const BASE_URL =
-      country === 'in'
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-    const apiUrl = `${BASE_URL}/vehicle/price-range?state=${state}&category=${category}`;
+    console.log("fetching price range");
 
-    const response = await fetch(apiUrl);
+    const response = await API({
+      path: `/vehicle/price-range?state=${state}&category=${category}`,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country,
+    });
 
     // Check if the response is OK
     if (!response.ok) {
@@ -350,10 +352,10 @@ export const fetchPriceRange = async ({
     }
 
     const data = await response.json();
-
+    console.log("data from api", data);
     return data;
   } catch (error) {
-    console.error('Error in fetchPriceRange:', error);
+    console.error("Error in fetchPriceRange:", error);
     return undefined;
   }
 };
@@ -365,7 +367,7 @@ export const fetchSearchResults = async (
 ): Promise<FetchSearchResultsResponse | undefined> => {
   try {
     const BASE_URL =
-      country === 'in'
+      country === "in"
         ? process.env.NEXT_PUBLIC_API_URL_INDIA
         : process.env.NEXT_PUBLIC_API_URL;
     let url = `${BASE_URL}/vehicle/search?search=${encodeURIComponent(search)}`;
@@ -383,7 +385,7 @@ export const fetchSearchResults = async (
     const data: FetchSearchResultsResponse = await res.json();
     return data;
   } catch (error) {
-    console.error('Error in fetchSearchResults:', error);
+    console.error("Error in fetchSearchResults:", error);
     return undefined;
   }
 };
@@ -399,8 +401,8 @@ export const fetchStates = async ({
     const res = await API({
       path: `/states/list?hasVehicle=true&countryId=${countryId}`,
       options: {
-        method: 'GET',
-        cache: 'no-cache',
+        method: "GET",
+        cache: "no-cache",
       },
       country,
     });
@@ -413,7 +415,7 @@ export const fetchStates = async ({
 
     return data;
   } catch (error) {
-    console.error('Error fetching states/locations:', error);
+    console.error("Error fetching states/locations:", error);
     throw error;
   }
 };
@@ -426,14 +428,14 @@ export const fetchCategories = async (
     const response = await API({
       path: `/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`,
       options: {
-        method: 'GET',
-        cache: 'no-cache',
+        method: "GET",
+        cache: "no-cache",
       },
       country,
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch categories data');
+      throw new Error("Failed to fetch categories data");
     }
     const data = await response.json();
 
@@ -451,14 +453,14 @@ export const fetchQuickLinksByValue = async (
 ): Promise<FetchLinksResponse | undefined> => {
   try {
     const BASE_URL =
-      country === 'in'
+      country === "in"
         ? process.env.NEXT_PUBLIC_API_URL_INDIA
         : process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/links/list?page=1&limit=20&sortOrder=ASC&stateValue=${stateValue}`;
 
     const response = await fetch(apiUrl, {
-      method: 'GET',
-      cache: 'no-store',
+      method: "GET",
+      cache: "no-store",
     });
 
     // Check if the response is OK
@@ -472,7 +474,7 @@ export const fetchQuickLinksByValue = async (
 
     return data;
   } catch (error) {
-    console.error('Error in fetchVehicleTypes:', error);
+    console.error("Error in fetchVehicleTypes:", error);
     handleError(error);
     return undefined;
   }
@@ -487,13 +489,13 @@ export const fetchVehicleBrandsByValue = async (
   try {
     // generating api URL
     const BASE_URL =
-      country === 'in'
+      country === "in"
         ? process.env.NEXT_PUBLIC_API_URL_INDIA
         : process.env.NEXT_PUBLIC_API_URL;
     const apiUrl = `${BASE_URL}/vehicle-brand/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategory}&search=${searchTerm}`;
 
     const response = await fetch(apiUrl, {
-      method: 'GET',
+      method: "GET",
     });
 
     // Check if the response is OK
@@ -505,7 +507,7 @@ export const fetchVehicleBrandsByValue = async (
 
     return data;
   } catch (error) {
-    console.error('Error in fetchVehicleTypes:', error);
+    console.error("Error in fetchVehicleTypes:", error);
     handleError(error);
     return undefined;
   }
@@ -518,14 +520,14 @@ export const fetchRelatedStateList = async (
   try {
     // generating api URL
     const BASE_URL =
-      country === 'in'
+      country === "in"
         ? process.env.NEXT_PUBLIC_API_URL_INDIA
         : process.env.NEXT_PUBLIC_API_URL;
 
     const apiUrl = `${BASE_URL}/states/related-state?stateValue=${state}`;
 
     const response = await fetch(apiUrl, {
-      method: 'GET',
+      method: "GET",
     });
 
     // Check if the response is OK
@@ -537,7 +539,7 @@ export const fetchRelatedStateList = async (
 
     return data;
   } catch (error) {
-    console.error('Error in fetchVehicleTypes:', error);
+    console.error("Error in fetchVehicleTypes:", error);
     handleError(error);
     return undefined;
   }
@@ -551,13 +553,13 @@ export const fetchExchangeRates = async ({
   try {
     // generating api URL
     const BASE_URL =
-      country === 'in'
+      country === "in"
         ? process.env.NEXT_PUBLIC_API_URL_INDIA
         : process.env.NEXT_PUBLIC_API_URL;
-    const apiUrl = `${BASE_URL}/exchange-rates/today${country === 'in' ? '-inr' : '-aed'}`;
+    const apiUrl = `${BASE_URL}/exchange-rates/today${country === "in" ? "-inr" : "-aed"}`;
 
     const response = await fetch(apiUrl, {
-      method: 'GET',
+      method: "GET",
     });
 
     // Check if the response is OK
@@ -569,7 +571,7 @@ export const fetchExchangeRates = async ({
 
     return data;
   } catch (error) {
-    console.error('Error in fetchVehicleTypes:', error);
+    console.error("Error in fetchVehicleTypes:", error);
     handleError(error);
     return undefined;
   }
@@ -583,8 +585,8 @@ export const fetchFAQ = async (
     const response = await API({
       path: `/state-faq/client/${stateValue}`,
       options: {
-        method: 'GET',
-        cache: 'no-cache',
+        method: "GET",
+        cache: "no-cache",
       },
       country,
     });
@@ -593,15 +595,15 @@ export const fetchFAQ = async (
     if (!response.ok) {
       return {
         result: {
-          stateId: '',
+          stateId: "",
           faqs: [
             {
-              question: '',
-              answer: '',
+              question: "",
+              answer: "",
             },
           ],
         },
-        status: '400',
+        status: "400",
         statusCode: 400,
       };
     }
@@ -610,7 +612,7 @@ export const fetchFAQ = async (
 
     return data;
   } catch (error) {
-    console.error('Error in fetchVehicleTypes:', error);
+    console.error("Error in fetchVehicleTypes:", error);
     handleError(error);
     return undefined;
   }
@@ -627,19 +629,19 @@ export const fetchRelatedSeriesList = async (
 ): Promise<{ result: { relatedSeries: string[] } }> => {
   // Determine base URL based on country
   const BASE_URL =
-    country === 'in'
+    country === "in"
       ? process.env.NEXT_PUBLIC_API_URL_INDIA
       : process.env.NEXT_PUBLIC_API_URL;
 
   if (!BASE_URL) {
-    throw new Error('Base URL is not defined in environment variables');
+    throw new Error("Base URL is not defined in environment variables");
   }
 
   // Construct query parameters
   const queryParams = new URLSearchParams({
-    page: '1',
-    limit: '1000',
-    sortOrder: 'DESC',
+    page: "1",
+    limit: "1000",
+    sortOrder: "DESC",
     state: state,
     category: category,
     brand: brand,
@@ -649,9 +651,9 @@ export const fetchRelatedSeriesList = async (
 
   try {
     const response = await fetch(fullUrl, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -667,7 +669,7 @@ export const fetchRelatedSeriesList = async (
     // Extract series data from API response
     let seriesData: string[] = [];
 
-    if (data.status === 'SUCCESS' && data.result && data.result.list) {
+    if (data.status === "SUCCESS" && data.result && data.result.list) {
       seriesData = data.result.list;
     } else if (data.success && data.result && data.result.list) {
       seriesData = data.result.list;
@@ -696,13 +698,13 @@ export const fetchRelatedSeriesList = async (
     };
   } catch (error) {
     // Handle specific error types
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new Error('Network error: Unable to connect to the API');
+    if (error instanceof TypeError && error.message.includes("fetch")) {
+      throw new Error("Network error: Unable to connect to the API");
     } else if (error instanceof SyntaxError) {
-      throw new Error('Invalid JSON response from API');
+      throw new Error("Invalid JSON response from API");
     } else {
       throw new Error(
-        `Failed to fetch related series list: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Failed to fetch related series list: ${error instanceof Error ? error.message : "Unknown error"}`
       );
     }
   }
@@ -716,7 +718,7 @@ export const sendRentalEnquiry = async ({
   message,
   rentalStartDate,
   rentalEndDate,
-  country = 'ae',
+  country = "ae",
 }: {
   userId: string;
   agentId: string;
@@ -728,19 +730,19 @@ export const sendRentalEnquiry = async ({
 }) => {
   try {
     const BASE_URL =
-      country === 'in'
+      country === "in"
         ? process.env.NEXT_PUBLIC_API_URL_INDIA
         : process.env.NEXT_PUBLIC_API_URL;
 
-    console.log('BASE_URL: ', BASE_URL);
+    console.log("BASE_URL: ", BASE_URL);
 
     const url = `${BASE_URL}/enquiries`;
 
     const response = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/json',
+        accept: "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         userId,
@@ -754,13 +756,13 @@ export const sendRentalEnquiry = async ({
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to send rental enquiry');
+      throw new Error(errorData.message || "Failed to send rental enquiry");
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error sending rental enquiry:', error);
+    console.error("Error sending rental enquiry:", error);
     throw error;
   }
 };

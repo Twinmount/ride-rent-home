@@ -17,6 +17,9 @@ import { formUrlQuery, removeKeysFromQuery } from '@/helpers';
 import { VehicleTypeCard } from '../../../card/VehicleTypeCard';
 import { useTopLoader } from 'nextjs-toploader';
 
+// Priority vehicle types - using correct values
+const PRIORITY_TYPES = ['suvs', 'sedan', 'luxury', 'monthly-rentals'];
+
 export default function VehicleTypesCarousel() {
   const { state, category, country } = useStateAndCategory();
 
@@ -37,8 +40,20 @@ export default function VehicleTypesCarousel() {
     enabled: !!category && !!country,
   });
 
-  const vehicleTypes: VehicleTypeType[] = data?.result?.list || [];
-  // console.log('vehicleTypes', vehicleTypes);
+  let vehicleTypes: VehicleTypeType[] = data?.result?.list || [];
+
+  // Simple sorting - priority types first
+  if (vehicleTypes.length > 0) {
+    vehicleTypes = vehicleTypes.sort((a, b) => {
+      const aIndex = PRIORITY_TYPES.indexOf(a.value);
+      const bIndex = PRIORITY_TYPES.indexOf(b.value);
+
+      if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+      if (aIndex !== -1) return -1;
+      if (bIndex !== -1) return 1;
+      return 0;
+    });
+  }
 
   // Save vehicleTypes to sessionStorage
   useEffect(() => {

@@ -5,15 +5,15 @@ import type {
   AuthError,
   PasswordValidationResult,
   TokenPayload,
-  Country
-} from '@/types/auth.types';
+  Country,
+} from "@/types/auth.types";
 import {
   VALIDATION_PATTERNS,
   PASSWORD_ERRORS,
   ERROR_MESSAGES,
   STORAGE_KEYS,
-  COMMON_COUNTRIES
-} from '@/constants/auth.constants';
+  COMMON_COUNTRIES,
+} from "@/constants/auth.constants";
 
 /**
  * Validate email address format
@@ -26,13 +26,15 @@ export const validateEmail = (email: string): boolean => {
  * Validate phone number format
  */
 export const validatePhoneNumber = (phoneNumber: string): boolean => {
-  return VALIDATION_PATTERNS.PHONE.test(phoneNumber.replace(/\s+/g, ''));
+  return VALIDATION_PATTERNS.PHONE.test(phoneNumber.replace(/\s+/g, ""));
 };
 
 /**
  * Validate password strength with detailed error messages
  */
-export const validatePassword = (password: string): PasswordValidationResult => {
+export const validatePassword = (
+  password: string
+): PasswordValidationResult => {
   const errors: string[] = [];
 
   if (password.length < VALIDATION_PATTERNS.PASSWORD.MIN_LENGTH) {
@@ -53,24 +55,29 @@ export const validatePassword = (password: string): PasswordValidationResult => 
 
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 };
 
 /**
  * Format phone number with country code
  */
-export const formatPhoneNumber = (phoneNumber: string, countryCode: string): string => {
-  const cleanPhone = phoneNumber.replace(/\D/g, '');
-  const cleanCountryCode = countryCode.replace(/\D/g, '');
+export const formatPhoneNumber = (
+  phoneNumber: string,
+  countryCode: string
+): string => {
+  const cleanPhone = phoneNumber.replace(/\D/g, "");
+  const cleanCountryCode = countryCode.replace(/\D/g, "");
   return `+${cleanCountryCode}${cleanPhone}`;
 };
 
 /**
  * Parse phone number to separate country code and number
  */
-export const parsePhoneNumber = (fullPhoneNumber: string): { countryCode: string; phoneNumber: string } => {
-  const cleaned = fullPhoneNumber.replace(/\D/g, '');
+export const parsePhoneNumber = (
+  fullPhoneNumber: string
+): { countryCode: string; phoneNumber: string } => {
+  const cleaned = fullPhoneNumber.replace(/\D/g, "");
 
   // Common country codes (simplified logic)
   const countryCodeLengths = [1, 2, 3]; // US: 1, UAE: 971 (3), India: 91 (2)
@@ -82,15 +89,15 @@ export const parsePhoneNumber = (fullPhoneNumber: string): { countryCode: string
     if (potentialPhoneNumber.length >= 8 && potentialPhoneNumber.length <= 15) {
       return {
         countryCode: potentialCountryCode,
-        phoneNumber: potentialPhoneNumber
+        phoneNumber: potentialPhoneNumber,
       };
     }
   }
 
   // Default fallback
   return {
-    countryCode: '91', // Default to India
-    phoneNumber: cleaned
+    countryCode: "91", // Default to India
+    phoneNumber: cleaned,
   };
 };
 
@@ -98,36 +105,36 @@ export const parsePhoneNumber = (fullPhoneNumber: string): { countryCode: string
  * Get country information by country code
  */
 export const getCountryByCode = (countryCode: string): Country | null => {
-  return COMMON_COUNTRIES.find(country =>
-    country.dialCode === `+${countryCode}` ||
-    country.code === countryCode.toUpperCase()
-  ) || null;
+  return (
+    COMMON_COUNTRIES.find(
+      (country) =>
+        country.dialCode === `+${countryCode}` ||
+        country.code === countryCode.toUpperCase()
+    ) || null
+  );
 };
 
 /**
  * Get country information by country ID
  */
 export const getCountryById = (countryId: string): Country | null => {
-  return COMMON_COUNTRIES.find(country => country.id === countryId) || null;
+  return COMMON_COUNTRIES.find((country) => country.id === countryId) || null;
 };
 
 /**
  * Generate display name from user object
  */
 export const generateDisplayName = (user: User): string => {
-  if (user.firstName && user.lastName) {
-    return `${user.firstName} ${user.lastName}`;
-  }
-  if (user.firstName) {
-    return user.firstName;
+  if (user.name) {
+    return user.name;
   }
   if (user.email) {
-    return user.email.split('@')[0];
+    return user.email.split("@")[0];
   }
   if (user.phoneNumber) {
     return user.phoneNumber;
   }
-  return 'User';
+  return "User";
 };
 
 /**
@@ -136,9 +143,9 @@ export const generateDisplayName = (user: User): string => {
 export const generateUserInitials = (user: User): string => {
   const displayName = generateDisplayName(user);
   return displayName
-    .split(' ')
+    .split(" ")
     .map((name: string) => name[0])
-    .join('')
+    .join("")
     .toUpperCase()
     .substring(0, 2);
 };
@@ -148,8 +155,7 @@ export const generateUserInitials = (user: User): string => {
  */
 export const isProfileComplete = (user: User): boolean => {
   return !!(
-    user.firstName &&
-    user.lastName &&
+    user.name &&
     user.email &&
     user.phoneNumber &&
     user.isPhoneVerified
@@ -169,7 +175,7 @@ export const createAuthError = (
     message,
     field,
     code,
-    statusCode
+    statusCode,
   };
 };
 
@@ -178,7 +184,7 @@ export const createAuthError = (
  */
 export const isTokenExpired = (token: string): boolean => {
   try {
-    const payload = JSON.parse(atob(token.split('.')[1])) as TokenPayload;
+    const payload = JSON.parse(atob(token.split(".")[1])) as TokenPayload;
     const currentTime = Date.now() / 1000;
     return payload.exp ? payload.exp < currentTime : false;
   } catch {
@@ -191,7 +197,7 @@ export const isTokenExpired = (token: string): boolean => {
  */
 export const getTokenExpiry = (token: string): Date | null => {
   try {
-    const payload = JSON.parse(atob(token.split('.')[1])) as TokenPayload;
+    const payload = JSON.parse(atob(token.split(".")[1])) as TokenPayload;
     return payload.exp ? new Date(payload.exp * 1000) : null;
   } catch {
     return null;
@@ -222,9 +228,9 @@ export const parseStoredUser = (userString: string | null): User | null => {
  * Clear all authentication data from storage
  */
 export const clearAuthStorage = (): void => {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
-  Object.values(STORAGE_KEYS).forEach(key => {
+  Object.values(STORAGE_KEYS).forEach((key) => {
     localStorage.removeItem(key);
     sessionStorage.removeItem(key);
   });
@@ -234,7 +240,7 @@ export const clearAuthStorage = (): void => {
  * Get storage type based on remember me preference
  */
 export const getStorageType = (rememberMe: boolean): Storage | null => {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === "undefined") return null;
   return rememberMe ? localStorage : sessionStorage;
 };
 
@@ -242,13 +248,16 @@ export const getStorageType = (rememberMe: boolean): Storage | null => {
  * Sanitize phone number input
  */
 export const sanitizePhoneNumber = (phoneNumber: string): string => {
-  return phoneNumber.replace(/\D/g, '');
+  return phoneNumber.replace(/\D/g, "");
 };
 
 /**
  * Format phone number for display
  */
-export const formatPhoneNumberDisplay = (phoneNumber: string, countryCode?: string): string => {
+export const formatPhoneNumberDisplay = (
+  phoneNumber: string,
+  countryCode?: string
+): string => {
   const sanitized = sanitizePhoneNumber(phoneNumber);
 
   // Add country code if provided
@@ -285,24 +294,32 @@ export const debounce = <T extends (...args: any[]) => any>(
  * Generate random string for session IDs
  */
 export const generateSessionId = (): string => {
-  return Math.random().toString(36).substring(2, 15) +
-    Math.random().toString(36).substring(2, 15);
+  return (
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15)
+  );
 };
 
 /**
  * Mask sensitive data for logging
  */
 export const maskSensitiveData = (data: any): any => {
-  if (typeof data !== 'object' || data === null) {
+  if (typeof data !== "object" || data === null) {
     return data;
   }
 
   const masked = { ...data };
-  const sensitiveFields = ['password', 'token', 'refreshToken', 'otp', 'confirmPassword'];
+  const sensitiveFields = [
+    "password",
+    "token",
+    "refreshToken",
+    "otp",
+    "confirmPassword",
+  ];
 
-  sensitiveFields.forEach(field => {
+  sensitiveFields.forEach((field) => {
     if (masked[field]) {
-      masked[field] = '***MASKED***';
+      masked[field] = "***MASKED***";
     }
   });
 
@@ -316,20 +333,24 @@ export const validateRequiredFields = (
   data: Record<string, any>,
   requiredFields: string[]
 ): { isValid: boolean; missingFields: string[] } => {
-  const missingFields = requiredFields.filter(field =>
-    !data[field] || (typeof data[field] === 'string' && !data[field].trim())
+  const missingFields = requiredFields.filter(
+    (field) =>
+      !data[field] || (typeof data[field] === "string" && !data[field].trim())
   );
 
   return {
     isValid: missingFields.length === 0,
-    missingFields
+    missingFields,
   };
 };
 
 /**
  * Create API error from response
  */
-export const createApiError = (response: any, fallbackMessage: string): AuthError => {
+export const createApiError = (
+  response: any,
+  fallbackMessage: string
+): AuthError => {
   return createAuthError(
     response?.message || fallbackMessage,
     response?.field,
@@ -359,7 +380,7 @@ export const retryWithBackoff = async <T>(
       }
 
       const delay = baseDelay * Math.pow(2, attempt);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 

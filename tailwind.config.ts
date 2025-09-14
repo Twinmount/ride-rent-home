@@ -32,11 +32,10 @@ const config = {
     },
     extend: {
       fontFamily: {
-        'fira-sans': ['var(--font-fira-sans)', 'sans-serif'],
-        'poppins': ['var(--font-poppins)', 'sans-serif'],
+        "fira-sans": ["var(--font-fira-sans)", "sans-serif"],
+        poppins: ["var(--font-poppins)", "sans-serif"],
       },
       colors: {
-        // **************redesign colors start***************
         footer: "#232323", // Footer background
         "accent-brand": "#F57F17", // Orange theme color
         "accent-light": "#F9A825", // Lighter orange
@@ -47,7 +46,6 @@ const config = {
         "border-default": "#DDE5EB", // Default borders
         "gradient-from": "#F9A825", // Gradient start
         "gradient-to": "#F57F17", // Gradient end
-        //  ***************redesign colors end***************
 
         yellow: "#ffa733",
         orange: {
@@ -57,7 +55,7 @@ const config = {
           200: "#fbd9a5",
           300: "#f8bd6d",
           400: "#f59532",
-          500: "#ea7b0b", // Your custom orange as 500
+          500: "#ea7b0b",
           600: "#db5f0a",
           700: "#b6480c",
           800: "#933a10",
@@ -65,9 +63,9 @@ const config = {
           950: "#411505",
         },
         lightGray: "#f5f5f5", //bg light gray
-        
+
         // shadcn/ui default colors
-        background: "hsl(var(--background))",
+        background: "#F8F8F8",
         foreground: "hsl(var(--foreground))",
         card: {
           DEFAULT: "hsl(var(--card))",
@@ -197,24 +195,24 @@ const config = {
         {
           "bg-grid": (value: any) => ({
             backgroundImage: `url("${svgToDataUri(
-              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`,
+              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`
             )}")`,
           }),
           "bg-grid-small": (value: any) => ({
             backgroundImage: `url("${svgToDataUri(
-              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="8" height="8" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`,
+              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="8" height="8" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`
             )}")`,
           }),
           "bg-dot": (value: any) => ({
             backgroundImage: `url("${svgToDataUri(
-              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="none"><circle fill="${value}" id="pattern-circle" cx="10" cy="10" r="1.6257413380501518"></circle></svg>`,
+              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="none"><circle fill="${value}" id="pattern-circle" cx="10" cy="10" r="1.6257413380501518"></circle></svg>`
             )}")`,
           }),
         },
         {
           values: flattenColorPalette(theme("backgroundColor")),
           type: "color",
-        },
+        }
       );
     },
   ],

@@ -50,7 +50,7 @@
     "next": "15.2.4",
     "nextjs-toploader": "^3.8.16",
     "query-string": "^9.1.0",
-    "react": "^19.0.0",
+    "react": "19.0.0",
     "react-date-range": "^2.0.1",
     "react-dom": "19.0.0",
     "react-error-boundary": "^6.0.0",

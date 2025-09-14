@@ -391,7 +391,11 @@ export const getFormattedPhoneNumber = (
   phoneNumber: string | null | undefined
 ): string | null => {
   if (!countryCode || !phoneNumber) return null;
-  return formatPhoneNumber(countryCode, phoneNumber);
+  const formattedCountryCode = countryCode.startsWith("+")
+    ? countryCode
+    : `+${countryCode}`;
+
+  return `${formattedCountryCode} ${phoneNumber}`;
 };
 
 /**

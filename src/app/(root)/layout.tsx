@@ -1,8 +1,7 @@
-import Footer from '@/components/footer/Footer';
-import MobileNavbar from '@/components/navbar/MobileNavbar';
-import { Navbar } from '@/components/navbar/Navbar';
-import GlobalPageLoadingIndicator from './GlobalPageLoadingIndicator';
-import BookingDialog from '@/components/dialog/BookingDialog';
+import Footer from "@/components/footer/Footer";
+import MobileNavbar from "@/components/navbar/MobileNavbar";
+import { Navbar } from "@/components/navbar/Navbar";
+import GlobalPageLoadingIndicator from "./GlobalPageLoadingIndicator";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

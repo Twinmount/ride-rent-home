@@ -3,6 +3,8 @@ import { PriceRangeSlider } from '@/components/ui/price-range-slider';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FiltersType } from '@/hooks/useFilters';
 import { useListingPriceFilter } from '@/hooks/useListingPriceFilter';
+import { useGlobalContext } from "@/context/GlobalContext";
+import { useState, useEffect } from "react";
 
 interface ListingPriceFilterProps {
   selectedFilters: FiltersType;
@@ -13,6 +15,8 @@ export default function ListingPriceFilter({
   selectedFilters,
   handlePeriodPriceChange,
 }: ListingPriceFilterProps) {
+  const { currency } = useGlobalContext();
+
   const {
     selectedPeriod,
     values,
@@ -27,6 +31,26 @@ export default function ListingPriceFilter({
     selectedFilters,
     handlePeriodPriceChange,
   });
+
+  const [minInput, setMinInput] = useState(values[0].toString());
+  const [maxInput, setMaxInput] = useState(values[1].toString());
+
+  useEffect(() => {
+    setMinInput(values[0].toString());
+    setMaxInput(values[1].toString());
+  }, [values]);
+
+  const handleMinBlur = () => {
+    const numValue = parseInt(minInput) || minPrice;
+    const validMin = Math.max(minPrice, Math.min(numValue, values[1] - 10));
+    handlePriceChange([validMin, values[1]]);
+  };
+
+  const handleMaxBlur = () => {
+    const numValue = parseInt(maxInput) || maxPrice;
+    const validMax = Math.min(maxPrice, Math.max(numValue, values[0] + 10));
+    handlePriceChange([values[0], validMax]);
+  };
 
   return (
     <div className="border-b pb-6">
@@ -48,40 +72,59 @@ export default function ListingPriceFilter({
       )}
 
       <div>
-        <div
-          className={`flex-between my-2 text-sm ${
-            isPriceSliderDisabled ? 'text-gray-300' : 'text-accent'
-          }`}
-        >
-          <span className="rounded-2xl py-2 font-medium">AED {values[0]}</span>
-          <span className="rounded-2xl py-2 font-medium">AED {values[1]}</span>
+        <div className="px-4 py-2">
+          <PriceRangeSlider
+            value={values}
+            onValueChange={handlePriceChange}
+            disabled={isPriceSliderDisabled}
+            min={minPrice}
+            max={maxPrice}
+            step={10}
+          />
         </div>
 
-        <PriceRangeSlider
-          value={values}
-          onValueChange={handlePriceChange}
-          disabled={isPriceSliderDisabled}
-          min={minPrice}
-          max={maxPrice}
-          step={10}
-        />
+        <div className="flex justify-between px-4 py-2">
+          <div className="relative">
+            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-700">
+              {currency}
+            </span>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={minInput}
+              onChange={(e) =>
+                setMinInput(e.target.value.replace(/[^\d]/g, ""))
+              }
+              onBlur={handleMinBlur}
+              disabled={isPriceSliderDisabled}
+              className="w-20 rounded-lg border border-slate-300 py-1.5 pl-8 pr-2 text-center text-xs font-medium focus:outline-none focus:ring-1 focus:ring-yellow/50"
+              placeholder="0"
+            />
+          </div>
 
-        <div
-          className={`flex-between mt-3 w-full text-xs ${
-            isPriceSliderDisabled ? 'text-gray-300' : 'text-text-tertiary'
-          }`}
-        >
-          <span>Minimum</span>
-          <span>Maximum</span>
+          <div className="relative">
+            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-700">
+              {currency}
+            </span>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={maxInput}
+              onChange={(e) =>
+                setMaxInput(e.target.value.replace(/[^\d]/g, ""))
+              }
+              onBlur={handleMaxBlur}
+              disabled={isPriceSliderDisabled}
+              className="w-20 rounded-lg border border-slate-300 py-1.5 pl-8 pr-2 text-center text-xs font-medium focus:outline-none focus:ring-1 focus:ring-yellow/50"
+              placeholder="0"
+            />
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-/**
- * Skeleton for loading periods (day, week, month, hour)
- */
 const PeriodSkeleton = ({ boxClassNames }: { boxClassNames: string }) => {
   return (
     <div className="flex w-full max-w-full justify-center gap-2 px-4 py-2">

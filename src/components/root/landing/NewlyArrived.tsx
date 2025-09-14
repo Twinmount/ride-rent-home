@@ -1,12 +1,12 @@
-import VehicleCard from '@/components/card/vehicle-card/main-card/VehicleCard';
-import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
-import ViewAllLinkButton from '@/components/common/ViewAllLinkButton';
-import MotionSection from '@/components/general/framer-motion/MotionSection';
-import { convertToLabel } from '@/helpers';
-import { StateCategoryProps, VehicleHomeFilter } from '@/types';
-import { FetchVehicleCardsResponseV2 } from '@/types/vehicle-types';
-import { API } from '@/utils/API';
-import { cn } from '@/lib/utils';
+import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
+import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
+import ViewAllLinkButton from "@/components/common/ViewAllLinkButton";
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { convertToLabel } from "@/helpers";
+import { StateCategoryProps, VehicleHomeFilter } from "@/types";
+import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
+import { API } from "@/utils/API";
+import { cn } from "@/lib/utils";
 
 export default async function NewlyArrived({
   state,
@@ -14,19 +14,19 @@ export default async function NewlyArrived({
   country,
 }: StateCategoryProps) {
   const params = new URLSearchParams({
-    page: '1',
-    limit: '6',
+    page: "1",
+    limit: "6",
     state: state,
-    sortOrder: 'DESC',
+    sortOrder: "DESC",
     category: category,
     filter: VehicleHomeFilter.POPULAR_MODELS,
   });
 
   const response = await API({
-    path: `/vehicle/home-page/list?${params.toString()}`,
+    path: `/vehicle/home-page/list/v2?${params.toString()}`,
     options: {
-      method: 'GET',
-      cache: 'no-cache',
+      method: "GET",
+      cache: "no-cache",
     },
     country,
   });
@@ -39,19 +39,20 @@ export default async function NewlyArrived({
   if (vehicleData.length === 0) return null;
 
   const formattedCategory = convertToLabel(category);
+  const formattedState = convertToLabel(state as string);
 
   return (
     <MotionSection className="section-container mx-auto">
       {/* Header section with View All button - respects container padding */}
       <div className="mx-auto flex items-center justify-between align-middle lg:my-6 lg:max-w-[92rem] lg:pr-6 lg:pt-3">
         <div
-          className={cn('mb-4 flex w-full flex-col gap-y-3 text-left lg:pl-6')}
+          className={cn("mb-4 flex w-full flex-col gap-y-3 text-left lg:pl-6")}
         >
           <h2 className="heading-primary text-text-primary">
             Newly arrived {formattedCategory}
           </h2>
           <p className="heading-secondary hidden lg:block">
-            Check out the newly arrived cars in {state}
+            Check out the newly arrived cars in {formattedState}
           </p>
         </div>
         <ViewAllLinkButton

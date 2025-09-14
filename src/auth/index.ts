@@ -1,21 +1,20 @@
 // Main authentication exports
 
+import { authStorage } from "@/lib/auth";
+
 // Hook
-export { useAuth } from '../hooks/useAuth';
+export { useAuth } from "../hooks/useAuth";
 
 // Context
-export { 
-  AuthContextProvider, 
+export {
+  AuthContextProvider,
   useAuthContext,
   AuthContext,
-  type AuthContextType 
-} from '../context/AuthContext';
+  type AuthContextType,
+} from "../context/AuthContext";
 
 // Combined app context
-export { 
-  useAppContext,
-  type AppContextType 
-} from '../context/useAppContext';
+export { useAppContext, type AppContextType } from "../context/useAppContext";
 
 // Types
 export type {
@@ -43,7 +42,7 @@ export type {
   AuthMutationOptions,
   AuthQueryOptions,
   AuthFlow,
-} from '../types/auth.types';
+} from "../types/auth.types";
 
 // Utilities
 export {
@@ -71,7 +70,7 @@ export {
   validateRequiredFields,
   createApiError,
   retryWithBackoff,
-} from '../utils/auth.utils';
+} from "../utils/auth.utils";
 
 // Constants
 export {
@@ -94,7 +93,6 @@ export {
   ROUTES,
   ENV_KEYS,
   DEFAULTS,
-} from '../constants/auth.constants';
+} from "../constants/auth.constants";
 
 // Storage utilities
-export { authStorage } from '../hooks/useAuth';

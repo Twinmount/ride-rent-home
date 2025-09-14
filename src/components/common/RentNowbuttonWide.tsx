@@ -47,12 +47,9 @@ const RentNowButtonWide = ({
     setOpen,
     handleConfirm,
     handleClose,
-    showBookingPopup,
     formatDateRange,
     handleDateChange,
-    handleBookingComplete,
-    handleBookingCancel,
-    handleBookingConfirm,
+
     rentalEnquiryMutation,
   } = useCarRent(
     undefined, // onDateChange callback
@@ -79,8 +76,8 @@ const RentNowButtonWide = ({
     ? generateWhatsappUrl({
         whatsappPhone: contactDetails.whatsappPhone,
         whatsappCountryCode: contactDetails.whatsappCountryCode,
-        model: vehicleName || '',
-        vehicleDetailsPageLink: '', // We can leave this empty or make it optional
+        model: vehicleName || "",
+        vehicleDetailsPageLink: "",
       })
     : null;
 

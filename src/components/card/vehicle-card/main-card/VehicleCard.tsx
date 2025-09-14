@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
 import { NewVehicleCardType } from "@/types/vehicle-types";
 import { generateVehicleDetailsUrl, getVehicleCardStyle } from "@/helpers";
 import VehicleThumbnail from "../VehicleThumbnail";
 import RentalDetails from "../RentalDetails";
 import LinkWrapper from "../LinkWrapper";
-import MotionStaggeredArticle from "@/components/general/framer-motion/MotionStaggeredArticle";
 import RentNowDialogTrigger from "../RentNowDialogTrigger";
 import { VehicleBadgesGroup } from "../vehicle-badge/VehicleBadgesGroup";
 import CardTitle from "../CardTitle";
-import { useAuthContext } from '@/auth';
+import { useAuthContext } from "@/auth";
+import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
 
 type VehicleCardProps = {
   vehicle: NewVehicleCardType;
@@ -49,14 +49,14 @@ const VehicleCard = ({
   const classes = getVehicleCardStyle(layoutType);
 
   return (
-    <MotionStaggeredArticle
+    <MotionStaggeredDiv
       index={index}
       className={`flex w-full max-w-full flex-col gap-3 rounded border border-border-default bg-white p-2 ${classes}`}
     >
       {/* card top */}
       <LinkWrapper
-        href={auth.isLoggedIn ? vehicleDetailsPageLink : '#'}
-        className={`h-full w-full space-y-3 ${!auth.isLoggedIn ? 'cursor-pointer' : ''}`}
+        href={auth.isLoggedIn ? vehicleDetailsPageLink : "#"}
+        className={`h-full w-full space-y-3 ${!auth.isLoggedIn ? "cursor-pointer" : ""}`}
         newTab={openInNewTab}
         onClick={handleCardClick}
       >
@@ -89,8 +89,8 @@ const VehicleCard = ({
       {/* card bottom */}
       <div className="flex-between">
         <LinkWrapper
-          href={auth.isLoggedIn ? vehicleDetailsPageLink : '#'}
-          className={`flex h-full w-full items-center ${!auth.isLoggedIn ? 'cursor-pointer' : ''}`}
+          href={auth.isLoggedIn ? vehicleDetailsPageLink : "#"}
+          className={`flex h-full w-full items-center ${!auth.isLoggedIn ? "cursor-pointer" : ""}`}
           newTab={openInNewTab}
           onClick={handleCardClick}
         >
@@ -106,7 +106,7 @@ const VehicleCard = ({
           layoutType={layoutType}
         />
       </div>
-    </MotionStaggeredArticle>
+    </MotionStaggeredDiv>
   );
 };
 

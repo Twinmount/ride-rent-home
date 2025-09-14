@@ -17,9 +17,11 @@ export async function generateCitiesPageMetadata(
   const formattedState = convertToLabel(state);
   const formattedCategory = singularizeValue(convertToLabel(category));
 
-  const metaTitle = `${formattedCategory} Rentals in ${formattedCountry} Cities | Rent a ${formattedCategory} by ${formattedState} - Ride.Rent`;
+  // Updated meta title to match your desired format
+  const metaTitle = `Car Rentals in ${formattedCountry} Cities | Rent a Car by Location - Ride.Rent`;
 
-  const metaDescription = `Explore ${formattedCategory} rental across all ${formattedCountry} cities with Ride.Rent. Find cheap ${formattedCategory} rental, SUVs, luxury cars, and self drive options with daily, weekly, and monthly plans.`;
+  // Updated meta description to match your desired format
+  const metaDescription = `Explore car rental across all ${formattedCountry} cities with Ride.Rent. Find cheap car rental, SUVs, luxury cars, and self drive options with daily, weekly, and monthly plans.`;
 
   const shortTitle =
     metaTitle.length > 60 ? `${metaTitle.substring(0, 57)}...` : metaTitle;
@@ -35,8 +37,10 @@ export async function generateCitiesPageMetadata(
     keywords: [
       "ride rent",
       "vehicle rental near me",
-      `${category} rent near me`,
-      `${category} rent in ${state}`,
+      `car rent near me`,
+      `car rent in ${state}`,
+      `car rental ${formattedCountry}`,
+      `car rental cities ${formattedCountry}`,
     ],
     openGraph: {
       title: shortTitle,

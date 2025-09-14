@@ -1,8 +1,8 @@
-import { Metadata } from 'next';
+import { Metadata } from "next";
 import {
   VehicleDetailsPageType,
   VehicleMetaDataResponse,
-} from '@/types/vehicle-details-types';
+} from "@/types/vehicle-details-types";
 import {
   convertToLabel,
   generateCompanyProfilePageLink,
@@ -10,23 +10,26 @@ import {
   generateVehicleDetailsUrl,
   restoreVehicleCodeFormat,
   singularizeValue,
-} from '@/helpers';
-import { ENV } from '@/config/env';
-import { getAbsoluteUrl } from '@/helpers/metadata-helper';
-import { notFound } from 'next/navigation';
+} from "@/helpers";
+import { ENV } from "@/config/env";
+import { getAbsoluteUrl } from "@/helpers/metadata-helper";
+import { notFound } from "next/navigation";
+import { API } from "@/utils/API";
 
 async function fetchVehicleMetaData(
   vehicleCode: string,
   country: string
 ): Promise<VehicleMetaDataResponse | null> {
-  const API_URL = country === 'in' ? ENV.API_URL_INDIA : ENV.API_URL;
-
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
-  const url = `${API_URL}/metadata/vehicle?vehicle=${formattedVehicleCode}`;
+
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-      cache: 'no-cache',
+    const response = await API({
+      path: `/metadata/vehicle?vehicle=${formattedVehicleCode}`,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country,
     });
 
     if (!response.ok) {
@@ -35,7 +38,7 @@ async function fetchVehicleMetaData(
 
     return await response.json();
   } catch (error) {
-    console.error('Failed to fetch vehicle data:', error);
+    console.error("Failed to fetch vehicle data:", error);
     return null;
   }
 }
@@ -79,7 +82,7 @@ export async function generateVehicleMetadata(
       title: metaTitle,
       description: metaDescription,
       url: canonicalUrl,
-      type: 'website',
+      type: "website",
       images: [
         {
           url: ogImage,
@@ -90,12 +93,12 @@ export async function generateVehicleMetadata(
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: metaTitle,
       description: metaDescription,
       images: [ogImage],
     },
-    manifest: '/manifest.webmanifest',
+    manifest: "/manifest.webmanifest",
     robots: {
       index: true,
       follow: true,
@@ -104,9 +107,9 @@ export async function generateVehicleMetadata(
         index: true,
         follow: true,
         noimageindex: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
       },
     },
     alternates: {
@@ -148,57 +151,57 @@ export function getVehicleJsonLd(
     !!vehicle?.company?.companyName && !!vehicle?.company?.companyProfile;
 
   return {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
+    "@context": "https://schema.org",
+    "@type": "Product",
     name: vehicle.vehicleTitle || vehicle.modelName,
     description: vehicle.description,
     aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      bestRating: '5',
-      ratingCount: '680',
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      bestRating: "5",
+      ratingCount: "680",
     },
     brand: {
-      '@type': 'Brand',
+      "@type": "Brand",
       name: vehicle.brand.label,
     },
     model: vehicle.modelName,
     image: vehicle.vehiclePhotos?.[0],
     url: vehicleDetailsPageLink,
     offers: {
-      '@type': 'Offer',
-      price: vehicle.rentalDetails?.day?.rentInAED || '0',
-      priceCurrency: 'AED',
+      "@type": "Offer",
+      price: vehicle.rentalDetails?.day?.rentInAED || "0",
+      priceCurrency: "AED",
       availability: isVehicleAvailable
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/OutOfStock',
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
       validFrom: new Date().toISOString(),
       priceValidUntil: new Date(
         new Date().setFullYear(new Date().getFullYear() + 1)
       ).toISOString(),
       seller: {
-        '@type': 'Organization',
+        "@type": "Organization",
         name: vehicle.company.companyName,
         url: companyPortfolioPageLink,
       },
     },
     breadcrumb: {
-      '@type': 'BreadcrumbList',
+      "@type": "BreadcrumbList",
       itemListElement: [
         {
-          '@type': 'ListItem',
+          "@type": "ListItem",
           position: 1,
-          name: 'Home',
-          item: getAbsoluteUrl('/'),
+          name: "Home",
+          item: getAbsoluteUrl("/"),
         },
         {
-          '@type': 'ListItem',
+          "@type": "ListItem",
           position: 2,
           name: category,
           item: getAbsoluteUrl(`/${country}/${state}/${category}`),
         },
         {
-          '@type': 'ListItem',
+          "@type": "ListItem",
           position: 3,
           name: vehicle.modelName,
           item: vehicleDetailsPageLink,
@@ -206,9 +209,9 @@ export function getVehicleJsonLd(
       ],
     },
     publisher: {
-      '@type': 'Organization',
-      name: 'Ride Rent',
-      url: getAbsoluteUrl('/'),
+      "@type": "Organization",
+      name: "Ride Rent",
+      url: getAbsoluteUrl("/"),
       logo: rootImage,
     },
   };

@@ -6,6 +6,7 @@ import { API } from "@/utils/API";
 import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
 import ViewAllGridCard from "@/components/card/ViewAllGridCard";
 import { convertToLabel } from "@/helpers";
+import { ChevronRight } from "lucide-react";
 
 type FeaturedVehiclesProps = StateCategoryProps & {
   vehicleType: string | undefined;
@@ -93,6 +94,23 @@ const FeaturedVehicles = async ({
               />
             </div>
           )}
+        </div>
+
+        <div className="mx-2 mt-4 md:hidden">
+          <a href={viewAllLink}>
+            <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-yellow to-orange-500 p-4 text-white">
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center">
+                  <ChevronRight className="h-5 w-5" />
+                  <ChevronRight className="-ml-3 h-5 w-5" />
+                  <ChevronRight className="-ml-3 h-5 w-5" />
+                </div>
+                <span className="text-sm font-medium">
+                  Explore {totalVehicles}+ More Options
+                </span>
+              </div>
+            </div>
+          </a>
         </div>
       </div>
     </MotionSection>
