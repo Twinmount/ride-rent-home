@@ -25,6 +25,7 @@ interface FetchVehicleByFiltersParams {
   category: string;
   vehicleType?: string;
   brand?: string;
+  city?: string;
 }
 
 // Function to fetch vehicles based on filters using a POST request
@@ -38,6 +39,7 @@ export const FetchVehicleByFilters = async ({
   category,
   vehicleType,
   brand,
+  city,
 }: FetchVehicleByFiltersParams): Promise<FetchVehicleCardsResponse> => {
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);
@@ -91,7 +93,7 @@ export const FetchVehicleByFilters = async ({
     seats: getParamValue("seats"),
     transmission: getParamArray("transmission"),
     filter: getParamValue("filter"),
-    city: getParamValue("city"),
+    city: city || getParamValue("city"),
   };
 
   if (vehicleType) {
@@ -333,8 +335,6 @@ export const fetchPriceRange = async ({
   country: string;
 }): Promise<FetchPriceRangeResponse | undefined> => {
   try {
-    console.log("fetching price range");
-
     const response = await API({
       path: `/vehicle/price-range?state=${state}&category=${category}`,
       options: {
@@ -352,7 +352,7 @@ export const fetchPriceRange = async ({
     }
 
     const data = await response.json();
-    console.log("data from api", data);
+
     return data;
   } catch (error) {
     console.error("Error in fetchPriceRange:", error);
@@ -733,8 +733,6 @@ export const sendRentalEnquiry = async ({
       country === "in"
         ? process.env.NEXT_PUBLIC_API_URL_INDIA
         : process.env.NEXT_PUBLIC_API_URL;
-
-    console.log("BASE_URL: ", BASE_URL);
 
     const url = `${BASE_URL}/enquiries`;
 

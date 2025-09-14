@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { convertToLabel, singularizeValue } from "@/helpers";
+import { convertToLabel } from "@/helpers";
 import clsx from "clsx";
 import Link from "next/link";
 
@@ -17,6 +17,7 @@ type ListingPageBreadcrumbProps = {
   category: string;
   vehicleType?: string;
   brand?: string;
+  city?: string;
 };
 
 export default function ListingPageBreadcrumb({
@@ -25,21 +26,29 @@ export default function ListingPageBreadcrumb({
   category,
   vehicleType,
   brand,
+  city,
 }: ListingPageBreadcrumbProps) {
   const formattedState = convertToLabel(state);
   const formattedCategory = convertToLabel(category);
   const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : null;
   const formattedBrand = brand ? convertToLabel(brand) : null;
+  const formattedCity = city ? convertToLabel(city) : null;
 
   const baseHref = `/${country}/${state}`;
   const stateHref = `${baseHref}/vehicle-rentals`;
   const categoryHref = `${baseHref}/listing/${category}`;
   const vehicleTypeHref = `${baseHref}/listing/${category}/${vehicleType}`;
-  const brandHref = `${baseHref}/listing/${category}/brand/${brand}`;
-  const brandWithVehicleTypeHref = `${baseHref}/listing/${category}/${vehicleType}/brand/${brand}`;
+
+  // Determine if current page is the final breadcrumb (should not be clickable)
+  const isCategoryLast =
+    !formattedVehicleType && !formattedBrand && !formattedCity;
+  const isVehicleTypeLast =
+    formattedVehicleType && !formattedBrand && !formattedCity;
+  const isBrandLast = formattedBrand && !formattedCity;
+  const isCityLast = !!formattedCity;
 
   return (
-    <MotionDiv className="m-1 mb-3 ml-2 rounded-xl text-sm">
+    <MotionDiv className="mb-3 rounded-xl text-sm">
       <Breadcrumb className="w-fit rounded-2xl">
         <BreadcrumbList>
           {/* State */}
@@ -57,8 +66,10 @@ export default function ListingPageBreadcrumb({
           <BreadcrumbItem>
             <BreadcrumbLink
               className={clsx(
-                "font-medium transition-colors hover:text-yellow hover:underline",
-                { "text-accent": !formattedBrand && !formattedVehicleType }
+                "font-medium text-text-tertiary transition-colors hover:text-yellow hover:underline",
+                {
+                  "text-yellow": isCategoryLast,
+                }
               )}
               asChild
             >
@@ -73,8 +84,8 @@ export default function ListingPageBreadcrumb({
               <BreadcrumbItem>
                 <BreadcrumbLink
                   className={clsx(
-                    "font-medium transition-colors hover:text-yellow hover:underline",
-                    { "text-accent": !formattedBrand }
+                    "font-medium text-text-tertiary transition-colors hover:text-yellow hover:underline",
+                    { "text-yellow": isVehicleTypeLast }
                   )}
                   asChild
                 >
@@ -88,8 +99,28 @@ export default function ListingPageBreadcrumb({
           {formattedBrand && (
             <>
               <BreadcrumbSeparator />
-              <BreadcrumbPage className="cursor-default font-medium text-accent">
+              <BreadcrumbPage
+                className={clsx(
+                  "cursor-default font-medium text-accent text-text-tertiary",
+                  { "text-yellow": isBrandLast }
+                )}
+              >
                 {formattedBrand}
+              </BreadcrumbPage>
+            </>
+          )}
+
+          {/* City */}
+          {formattedCity && (
+            <>
+              <BreadcrumbSeparator />
+              <BreadcrumbPage
+                className={clsx(
+                  "cursor-default font-medium text-accent text-yellow",
+                  { "text-yellow": isCityLast }
+                )}
+              >
+                {formattedCity}
               </BreadcrumbPage>
             </>
           )}

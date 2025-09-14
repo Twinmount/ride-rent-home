@@ -22,7 +22,7 @@ export default function CitiesGrid({
       {cities.map((city) => (
         <li key={city.cityValue}>
           <Link
-            href={`/${country}/${state}/listing/${category}?city=${city.cityValue}`}
+            href={`/${country}/${state}/listing/${category}/city/${city.cityValue}`}
             className="flex items-center gap-x-2 transition-colors hover:text-yellow lg:gap-x-4"
             prefetch={false}
           >

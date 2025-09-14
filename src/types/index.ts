@@ -1,9 +1,9 @@
-import { ContactDetails } from './vehicle-details-types';
+import { ContactDetails } from "./vehicle-details-types";
 import {
   FeatureType,
   RentalDetailsType,
   SpecificationType,
-} from './vehicle-types';
+} from "./vehicle-types";
 
 export type PageProps = {
   params: Promise<{
@@ -12,6 +12,7 @@ export type PageProps = {
     category: string;
     vehicleType: string;
     brand: string;
+    city: string;
   }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
@@ -349,12 +350,12 @@ export interface ListingPageMetaResponse {
 }
 
 export enum VehicleHomeFilter {
-  AFFORDABLE_VEHICLE = 'affordable-vehicle',
-  POPULAR_MODELS = 'popular-models',
-  TOP_BRANDS = 'top-brands',
-  LATEST_MODELS = 'latest-models',
-  HOURLY_RENTAL_VEHICLE = 'hourly-rental-vehicle',
-  NONE = 'none',
+  AFFORDABLE_VEHICLE = "affordable-vehicle",
+  POPULAR_MODELS = "popular-models",
+  TOP_BRANDS = "top-brands",
+  LATEST_MODELS = "latest-models",
+  HOURLY_RENTAL_VEHICLE = "hourly-rental-vehicle",
+  NONE = "none",
 }
 
 export type CompanyProfileDataType = {
