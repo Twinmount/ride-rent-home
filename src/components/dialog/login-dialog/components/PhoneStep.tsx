@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PhoneInput } from "react-international-phone";
+
 import "react-international-phone/style.css";
 import { Phone, Loader2 } from "lucide-react";
+import "../phone-input.css";
+import { useImmer } from "use-immer";
 
 export const PhoneStep = ({
   setStep,
@@ -15,38 +18,32 @@ export const PhoneStep = ({
   signup,
   clearError,
 }: any) => {
-  const [phoneNumber, setPhoneNumber] = useState(drawerState.phoneNumber || "");
+  const [phoneNumber, setPhoneNumber] = useImmer({
+    number: "",
+    countryCode: "",
+  });
 
-  const extractPhoneData = (fullPhoneNumber: string) => {
-    const countryCodeMatch = fullPhoneNumber.match(/^\+(\d{1,4})/);
-    const extractedCountryCode = countryCodeMatch
-      ? `+${countryCodeMatch[1]}`
-      : "+1";
-    const phoneOnly = fullPhoneNumber.replace(extractedCountryCode, "");
-    return {
-      countryCode: extractedCountryCode,
-      phoneNumber: phoneOnly,
-      fullPhone: fullPhoneNumber,
-    };
+  const onChangeCountryCode = (value: any, country: any) => {
+    setPhoneNumber((draft) => {
+      draft.number = value;
+      draft.countryCode = country.dialCode;
+    });
   };
 
   const handlePhoneSubmit = async () => {
-    if (!phoneNumber.trim()) return;
     setStatus("loading");
     setStatusMessage("Checking phone number...");
     clearError();
 
     try {
-      const phoneData = extractPhoneData(phoneNumber);
       setDrawerState((prev: any) => ({
         ...prev,
         phoneNumber,
-        countryCode: phoneData.countryCode,
       }));
       try {
         const signupResponse = await signup({
-          phoneNumber: phoneData.phoneNumber,
-          countryCode: phoneData.countryCode,
+          phoneNumber: phoneNumber.number,
+          countryCode: phoneNumber.countryCode,
           countryId: drawerState.countryId || 1,
         });
         if (signupResponse.success && signupResponse.data) {
@@ -100,9 +97,9 @@ export const PhoneStep = ({
           </label>
           <div onKeyDown={(e) => e.key === "Enter" && handlePhoneSubmit()}>
             <PhoneInput
-              defaultCountry="us"
-              value={phoneNumber}
-              onChange={setPhoneNumber}
+              defaultCountry="ae"
+              value={phoneNumber.number}
+              onChange={onChangeCountryCode}
               disabled={isCurrentlyLoading}
               style={{ height: "48px" }}
               inputStyle={{
@@ -119,7 +116,7 @@ export const PhoneStep = ({
         </div>
         <Button
           onClick={handlePhoneSubmit}
-          disabled={!phoneNumber.trim() || isCurrentlyLoading}
+          disabled={!phoneNumber.number.trim() || isCurrentlyLoading}
           className="w-full bg-gradient-to-r from-orange-500 to-orange-600 py-6 text-lg text-white hover:from-orange-600 hover:to-orange-700"
         >
           {isCurrentlyLoading ? (

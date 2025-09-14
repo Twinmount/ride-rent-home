@@ -28,6 +28,11 @@
   @apply h-12 w-full rounded-r-md border-0 bg-transparent px-3 text-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0;
 }
 
+.react-international-phone-input-container button:first-of-type {
+  /* Your style here */
+  height: 100%;
+}
+
 .react-international-phone-input
   .react-international-phone-input-container:focus-within {
   @apply border-orange-500 ring-2 ring-orange-500;

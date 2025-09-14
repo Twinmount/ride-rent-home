@@ -23,6 +23,7 @@ export const OtpStep = ({
       const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [resendTimer]);
 
   const handleOtpChange = (index: number, value: string) => {
