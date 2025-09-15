@@ -96,9 +96,9 @@ export function BookingConfirmationModal({
                 <DialogTitle className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-2xl font-bold text-transparent">
                   Confirm Your Booking
                 </DialogTitle>
-                <Button variant="ghost" size="icon" onClick={handleClose}>
+                {/* <Button variant="ghost" size="icon" onClick={handleClose}>
                   <X className="h-4 w-4" />
-                </Button>
+                </Button> */}
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Car className="h-4 w-4 text-orange-500" />
@@ -149,7 +149,7 @@ export function BookingConfirmationModal({
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  {/* <div className="flex items-center gap-3">
                     <Clock className="h-5 w-5 text-orange-500" />
                     <div>
                       <p className="text-sm font-medium">Pickup Time</p>
@@ -157,7 +157,7 @@ export function BookingConfirmationModal({
                         {bookingData.pickupTime || "10:00 AM"}
                       </p>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
@@ -169,7 +169,7 @@ export function BookingConfirmationModal({
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  {/* <div className="flex items-center gap-3">
                     <Clock className="h-5 w-5 text-red-500" />
                     <div>
                       <p className="text-sm font-medium">Return Time</p>
@@ -177,7 +177,7 @@ export function BookingConfirmationModal({
                         {bookingData.returnTime || "10:00 AM"}
                       </p>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
