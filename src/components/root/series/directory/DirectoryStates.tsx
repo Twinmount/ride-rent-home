@@ -58,7 +58,7 @@ function StateCard({
     <MotionStaggeredDiv index={index} delay={0.1}>
       <Link
         href={`/${country}/${state.stateValue}/vehicle-rentals`}
-        className="group relative flex h-[6rem] w-[6rem] cursor-pointer items-center justify-center overflow-hidden rounded-full text-center shadow-[2px_2px_4px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in lg:h-[9rem] lg:w-[10rem]"
+        className="group relative flex h-[7rem] w-[8rem] cursor-pointer items-center justify-center overflow-hidden rounded-xl text-center shadow-[2px_2px_4px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in lg:h-[9rem] lg:w-[10rem]"
       >
         <div className="absolute bottom-0 left-0 h-1/4 w-full bg-gradient-to-t from-black/80 to-transparent" />
 
@@ -69,7 +69,7 @@ function StateCard({
           alt={`${state.stateName} logo`}
           className="h-full w-full max-w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
         />
-        <figcaption className="absolute bottom-[0.54rem] z-[2] m-0 line-clamp-1 whitespace-nowrap p-0 text-[0.75rem] font-bold text-white">
+        <figcaption className="absolute bottom-[0.54rem] z-[2] m-0 mx-auto line-clamp-1 w-full max-w-[95%] truncate whitespace-nowrap p-0 text-[0.75rem] font-bold text-white">
           {state.stateName}
         </figcaption>
       </Link>

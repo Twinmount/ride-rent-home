@@ -13,7 +13,7 @@ export default function RideRentNavbarLogo({
 }: RideRentNavbarLogoProps) {
   return (
     <a
-      href={`/${country}/${state}/${category}`}
+      href={`/${country}`}
       className="notranslate max-w-fit p-0 text-right text-xs font-normal text-gray-500"
     >
       <Image

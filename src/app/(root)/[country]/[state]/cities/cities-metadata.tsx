@@ -21,11 +21,9 @@ export async function generateCitiesPageMetadata({
   const formattedState = convertToLabel(state);
   const formattedCategory = singularizeValue(convertToLabel(category));
 
-  // Updated meta title to match your desired format
-  const metaTitle = `${formattedCategory} Rentals in ${formattedState} Cities | Ride.Rent ${formattedCountry}`;
+  const metaTitle = `${formattedCategory} Rentals in ${formattedCountry} Cities | Rent a ${formattedCategory} by  ${formattedState} - Ride.Rent`;
 
-  // Updated meta description to match your desired format
-  const metaDescription = `Explore ${formattedCategory} rental across all ${formattedState} cities with Ride.Rent ${formattedCountry}. Find cheap ${formattedCategory} rental, SUVs, luxury ${formattedCategory}s, and self drive options with daily, weekly, and monthly plans.`;
+  const metaDescription = `Explore ${formattedCategory} rental across all ${formattedCountry} cities with Ride.Rent. Find cheap ${formattedCategory} rental, SUVs, luxury ${formattedCategory}s, and self drive options with daily, weekly, and monthly plans.`;
 
   const shortTitle =
     metaTitle.length > 60 ? `${metaTitle.substring(0, 57)}...` : metaTitle;

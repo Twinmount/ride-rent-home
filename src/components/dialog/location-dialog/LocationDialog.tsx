@@ -210,7 +210,7 @@ export function LocationDialog() {
             ) : (
               <div className="mt-3">
                 <h2 className="mb-3 text-sm font-bold">Popular Cities</h2>
-                <div className="mx-auto grid max-w-6xl grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-4 lg:max-w-fit lg:gap-6">
+                <div className="mx-auto grid w-fit max-w-6xl grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-4 lg:max-w-fit lg:gap-6">
                   {favouriteStates.map((state) => (
                     <LocationDialogStateCard
                       key={state.stateId}

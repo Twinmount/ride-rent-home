@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
 const VehicleListingGridWrapper = ({
   children,
-  classNames = '',
+  classNames = "",
 }: {
   children: React.ReactNode;
   classNames?: string;

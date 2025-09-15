@@ -74,8 +74,10 @@ export const FetchVehicleByFilters = async ({
   const priceParam = getParamValue("price"); // Example: "45-250"
   const selectedPeriod = getParamValue("period", "hour"); // Default to "hour"
 
+  const validPeriods = ["hour", "day", "week", "month"];
+
   // Only add priceRange if both price and period are available
-  if (priceParam && selectedPeriod) {
+  if (priceParam && selectedPeriod && validPeriods.includes(selectedPeriod)) {
     const [minPrice, maxPrice] = priceParam.split("-");
     payload.priceRange = {
       [selectedPeriod]: {

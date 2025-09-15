@@ -5,10 +5,7 @@ import {
   FeatureType,
   MapCardRentalDetailsType,
 } from "@/types/vehicle-types";
-import { VehicleDetailsPageType } from "@/types/vehicle-details-types";
-import { IoIosSpeedometer } from "react-icons/io";
-import { FaCrown } from "react-icons/fa6";
-import { IoShieldCheckmark } from "react-icons/io5";
+import { Period } from "@/components/card/vehicle-card/RentalDetails";
 
 // to form url params key/value
 export function formUrlQuery({ params, key, value }: UrlQueryParams) {
@@ -142,35 +139,70 @@ export function convertToLabel(value: string | undefined): string {
   return "";
 }
 
-// Helper function to determine which rental period is available
+// find the rental period based on preferred period or lowest available rental option
 export const getRentalPeriodDetails = (
-  rentalDetails: CardRentalDetails | undefined
+  rentalDetails: CardRentalDetails | undefined,
+  preferredPeriod?: Period
 ) => {
-  if (rentalDetails?.hour?.enabled) {
-    return {
-      period: "Hour",
-      rentInAED: rentalDetails.hour.rentInAED,
-      label: `/ ${rentalDetails.hour.minBookingHours}Hrs`,
-    };
-  } else if (rentalDetails?.day?.enabled) {
-    return {
-      period: "Day",
-      rentInAED: rentalDetails.day.rentInAED,
-      label: "/ Day",
-    };
-  } else if (rentalDetails?.week?.enabled) {
-    return {
-      period: "Week",
-      rentInAED: rentalDetails.week.rentInAED,
-      label: "/ Week",
-    };
-  } else if (rentalDetails?.month?.enabled) {
-    return {
-      period: "Month",
-      rentInAED: rentalDetails.month.rentInAED,
-      label: "/ Month",
-    };
+  // If no rental details, return null
+  if (!rentalDetails) return null;
+
+  // period priority order (from lowest to highest)
+  const periodOrder = ["hour", "day", "week", "month"] as const;
+
+  // Helper function to get details for a specific period
+  const getPeriodDetails = (period: PeriodType) => {
+    const periodData = rentalDetails[period];
+    if (!periodData?.enabled) return null;
+
+    switch (period) {
+      case "hour":
+        const hourData = periodData as NonNullable<typeof rentalDetails.hour>;
+        return {
+          period: "Hour",
+          rentInAED: hourData.rentInAED,
+          label: `/ ${hourData.minBookingHours}Hrs`,
+        };
+      case "day":
+        return {
+          period: "Day",
+          rentInAED: periodData.rentInAED,
+          label: "/ Day",
+        };
+      case "week":
+        return {
+          period: "Week",
+          rentInAED: periodData.rentInAED,
+          label: "/ Week",
+        };
+      case "month":
+        return {
+          period: "Month",
+          rentInAED: periodData.rentInAED,
+          label: "/ Month",
+        };
+    }
+  };
+
+  // If preferred period is specified and valid, try to use it
+  if (preferredPeriod) {
+    const normalizedPeriod = preferredPeriod.toLowerCase() as Period;
+    if (periodOrder.includes(normalizedPeriod)) {
+      const preferredDetails = getPeriodDetails(normalizedPeriod);
+      if (preferredDetails) {
+        return preferredDetails;
+      }
+    }
   }
+
+  // Fallback: Find the lowest available period
+  for (const period of periodOrder) {
+    const details = getPeriodDetails(period);
+    if (details) {
+      return details;
+    }
+  }
+
   return null;
 };
 
