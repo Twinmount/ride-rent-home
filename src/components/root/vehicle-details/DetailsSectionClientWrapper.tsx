@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useRef, useEffect, useCallback } from 'react';
-import MobileProfileCard from '@/components/root/vehicle-details/profile-card/mobile-profile-card/MobileProfileCard';
-import useIntersectionObserver from '@/hooks/useIntersectionObserver';
-import { sendPortfolioVisit } from '@/lib/api/general-api';
-import { ProfileCardDataType } from '@/types/vehicle-details-types';
-import { useUserProfile } from '@/hooks/useUserProfile';
-import { useAuthContext } from '@/auth';
+import { useRef, useEffect, useCallback } from "react";
+import MobileProfileCard from "@/components/root/vehicle-details/profile-card/mobile-profile-card/MobileProfileCard";
+import useIntersectionObserver from "@/hooks/useIntersectionObserver";
+import { sendPortfolioVisit } from "@/lib/api/general-api";
+import { ProfileCardDataType } from "@/types/vehicle-details-types";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { useAuthContext } from "@/auth";
 
 type DetailsSectionClientWrapperProps = {
   children: React.ReactNode;
@@ -44,7 +44,7 @@ const DetailsSectionClientWrapper = ({
   const hasTrackedView = useRef(false);
 
   const { trackCarViewMutation } = useUserProfile({
-    userId: userId || '',
+    userId: userId || "",
   });
 
   // Memoized function to track car view to prevent recreation on every render
@@ -55,10 +55,10 @@ const DetailsSectionClientWrapper = ({
         carId: vehicleId,
         metadata: {
           timestamp: new Date().toISOString(),
-          page: 'vehicle-details',
+          page: "vehicle-details",
           vehicleCode: vehicleCode,
           country: country,
-          action: 'page-load',
+          action: "page-load",
         },
       });
     }

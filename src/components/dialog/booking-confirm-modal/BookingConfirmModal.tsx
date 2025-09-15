@@ -23,26 +23,29 @@ import {
   Mail,
   CreditCard,
 } from "lucide-react";
+import { VehicleDetailsData } from "@/types/car.rent.type";
 
 interface BookingConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  bookingData?: {
-    carName: string;
-    carImage: string;
-    startDate: string;
-    endDate: string;
-    totalDays: number;
-    pricePerDay: number;
-    totalPrice: number;
-    location: string;
-  };
+  onConfirm?: () => void;
+  vehicleData?: VehicleDetailsData;
+  isProcessing?: boolean;
 }
 
 export function BookingConfirmationModal({
   isOpen,
   onClose,
-  bookingData = {
+  onConfirm,
+  vehicleData,
+  isProcessing = false,
+}: BookingConfirmationModalProps) {
+  const [step, setStep] = useState<"confirmation" | "success">("confirmation");
+
+  console.log("vehicleData: ", vehicleData);
+
+  // Default data fallback
+  const bookingData = vehicleData || {
     carName: "Ford Mustang GT 2024",
     carImage: "/ford-mustang-gt-2024.jpg",
     startDate: "Sep 15, 2025",
@@ -51,29 +54,35 @@ export function BookingConfirmationModal({
     pricePerDay: 250,
     totalPrice: 750,
     location: "Dubai, UAE",
-  },
-}: BookingConfirmationModalProps) {
-  const [step, setStep] = useState<"confirmation" | "success">("confirmation");
-  const [isProcessing, setIsProcessing] = useState(false);
+    // insurance: 50, // commented out for now
+    // serviceFee: 25, // commented out for now
+    customer: {
+      name: "John Doe",
+      phone: "+971 50 123 4567",
+      email: "john.doe@email.com",
+      // paymentMethod: "**** **** **** 1234", // commented out for now
+    },
+    pickupTime: "10:00 AM",
+    returnTime: "10:00 AM",
+  };
 
   const handleConfirmBooking = async () => {
-    setIsProcessing(true);
-    // Simulate booking process
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setStep("success");
-    setIsProcessing(false);
+    if (onConfirm) {
+      onConfirm();
+    } else {
+      // Default behavior - simulate booking process
+      setStep("success");
+    }
   };
 
   const handleClose = () => {
     setStep("confirmation");
-    setIsProcessing(false);
     onClose();
   };
 
   useEffect(() => {
     if (!isOpen) {
       setStep("confirmation");
-      setIsProcessing(false);
     }
   }, [isOpen]);
 
@@ -144,7 +153,9 @@ export function BookingConfirmationModal({
                     <Clock className="h-5 w-5 text-orange-500" />
                     <div>
                       <p className="text-sm font-medium">Pickup Time</p>
-                      <p className="text-sm text-muted-foreground">10:00 AM</p>
+                      <p className="text-sm text-muted-foreground">
+                        {bookingData.pickupTime || "10:00 AM"}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -162,7 +173,9 @@ export function BookingConfirmationModal({
                     <Clock className="h-5 w-5 text-red-500" />
                     <div>
                       <p className="text-sm font-medium">Return Time</p>
-                      <p className="text-sm text-muted-foreground">10:00 AM</p>
+                      <p className="text-sm text-muted-foreground">
+                        {bookingData.returnTime || "10:00 AM"}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -176,20 +189,28 @@ export function BookingConfirmationModal({
                 <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
                   <div className="flex items-center gap-3">
                     <User className="h-4 w-4 text-orange-500" />
-                    <span>John Doe</span>
+                    <span>{bookingData.customer?.name || "John Doe"}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="h-4 w-4 text-orange-500" />
-                    <span>+971 50 123 4567</span>
+                    <span>
+                      {bookingData.customer?.phone || "+971 50 123 4567"}
+                    </span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Mail className="h-4 w-4 text-orange-500" />
-                    <span>john.doe@email.com</span>
+                    <span>
+                      {bookingData.customer?.email || "john.doe@email.com"}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-3">
+                  {/* Payment method - commented out for now, can be enabled in future */}
+                  {/* <div className="flex items-center gap-3">
                     <CreditCard className="h-4 w-4 text-orange-500" />
-                    <span>**** **** **** 1234</span>
-                  </div>
+                    <span>
+                      {bookingData.customer?.paymentMethod ||
+                        "**** **** **** 1234"}
+                    </span>
+                  </div> */}
                 </div>
               </div>
 
@@ -205,19 +226,20 @@ export function BookingConfirmationModal({
                       {bookingData.pricePerDay} AED × {bookingData.totalDays}
                     </span>
                   </div>
-                  <div className="flex justify-between">
+                  {/* Insurance and Service fee - commented out for now, can be enabled in future */}
+                  {/* <div className="flex justify-between">
                     <span>Insurance</span>
-                    <span>50 AED</span>
+                    <span>{bookingData.insurance || 50} AED</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Service fee</span>
-                    <span>25 AED</span>
-                  </div>
+                    <span>{bookingData.serviceFee || 25} AED</span>
+                  </div> */}
                   <Separator />
                   <div className="flex justify-between text-lg font-semibold">
                     <span>Total</span>
                     <span className="text-orange-600">
-                      {bookingData.totalPrice + 75} AED
+                      {bookingData.totalPrice} AED
                     </span>
                   </div>
                 </div>
@@ -244,7 +266,7 @@ export function BookingConfirmationModal({
                       Processing...
                     </div>
                   ) : (
-                    `Confirm Booking - ${bookingData.totalPrice + 75} AED`
+                    `Confirm Booking - ${bookingData.totalPrice} AED`
                   )}
                 </Button>
               </div>
@@ -276,8 +298,14 @@ export function BookingConfirmationModal({
               </div>
 
               <div className="space-y-1 text-sm text-muted-foreground">
-                <p>📧 Confirmation email sent to john.doe@email.com</p>
-                <p>📱 SMS confirmation sent to +971 50 123 4567</p>
+                <p>
+                  📧 Confirmation email sent to{" "}
+                  {bookingData.customer?.email || "john.doe@email.com"}
+                </p>
+                <p>
+                  📱 SMS confirmation sent to{" "}
+                  {bookingData.customer?.phone || "+971 50 123 4567"}
+                </p>
               </div>
 
               <div className="flex gap-3">

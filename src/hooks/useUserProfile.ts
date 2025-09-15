@@ -1,18 +1,19 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   trackCarView,
   updateUserProfile,
   getUserCarActionCounts,
-} from '@/lib/api/userProfile.api';
-import type { UserCarActionCounts } from '@/lib/api/userProfile.api.types';
-import { User } from '@/auth';
+} from "@/lib/api/userProfile.api";
+import type { UserCarActionCounts } from "@/lib/api/userProfile.api.types";
+import { User } from "@/auth";
+import { authStorage } from "@/lib/auth/authStorage";
 
 export const useUserProfile = ({ userId }: { userId: string }) => {
   const queryClient = useQueryClient();
 
   // Call useQuery directly inside the main hook
   const userCarActionCountsQuery = useQuery<UserCarActionCounts>({
-    queryKey: ['userCarActionCounts', userId],
+    queryKey: ["userCarActionCounts", userId],
     queryFn: () => getUserCarActionCounts(userId),
     enabled: !!userId,
   });
@@ -31,7 +32,7 @@ export const useUserProfile = ({ userId }: { userId: string }) => {
     onSuccess: () => {
       // Invalidate and refetch user car action counts after tracking a view
       queryClient.invalidateQueries({
-        queryKey: ['userCarActionCounts', userId],
+        queryKey: ["userCarActionCounts", userId],
       });
     },
   });
@@ -47,17 +48,31 @@ export const useUserProfile = ({ userId }: { userId: string }) => {
     }) => {
       return updateUserProfile(userId, profileData);
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      // Update local storage with the updated profile data
+      const currentUser = authStorage.getUser();
+      if (currentUser) {
+        const updatedUser = {
+          ...currentUser,
+          ...variables.profileData, // Merge the updated profile data
+        };
+        authStorage.setUser(updatedUser, true); // Save to localStorage
+        console.log(
+          "Local storage updated with new profile data:",
+          updatedUser
+        );
+      }
+
       // Invalidate user profile queries to refetch updated data
       queryClient.invalidateQueries({
-        queryKey: ['userProfile', userId],
+        queryKey: ["userProfile", userId],
       });
       queryClient.invalidateQueries({
-        queryKey: ['userCarActionCounts', userId],
+        queryKey: ["userCarActionCounts", userId],
       });
     },
     onError: (error) => {
-      console.error('Failed to update user profile:', error);
+      console.error("Failed to update user profile:", error);
     },
   });
 
@@ -74,7 +89,7 @@ export const useUserProfile = ({ userId }: { userId: string }) => {
     countryCode?: string;
   }) => {
     if (!userId) {
-      throw new Error('User ID is required');
+      throw new Error("User ID is required");
     }
 
     const profileData: Partial<User> = {};

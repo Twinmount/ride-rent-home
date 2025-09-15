@@ -1,10 +1,14 @@
-import { useState } from 'react';
-import { addDays } from 'date-fns';
-import { DateRange, UseCarRentReturn } from '@/types/car.rent.type';
-import { useImmer } from 'use-immer';
-import { useMutation } from '@tanstack/react-query';
-import { sendRentalEnquiry } from '@/lib/api/general-api';
-import { useAuthContext } from '@/auth';
+import { useState } from "react";
+import { addDays } from "date-fns";
+import {
+  DateRange,
+  UseCarRentReturn,
+  VehicleDetailsData,
+} from "@/types/car.rent.type";
+import { useImmer } from "use-immer";
+import { useMutation } from "@tanstack/react-query";
+import { sendRentalEnquiry } from "@/lib/api/general-api";
+import { useAuthContext } from "@/auth";
 
 export const useCarRent = (
   onDateChange?: (range: { startDate: Date; endDate: Date }) => void,
@@ -12,14 +16,22 @@ export const useCarRent = (
     vehicleId: string;
     agentId: string;
     country?: string;
+    vehicle?: any;
   }
 ): UseCarRentReturn => {
-  const { auth, authStorage } = useAuthContext();
+  const { auth, authStorage, useGetUserProfile } = useAuthContext();
+  const { vehicleId, agentId, country, vehicle } = vehicleData || {};
+
+  const { data: userProfile } = useGetUserProfile(
+    auth?.user?.id || "",
+    !!auth?.user?.id
+  );
+  console.log("userProfile:[useCarRent] ", userProfile);
 
   const initialDateRange = {
     startDate: new Date(),
     endDate: addDays(new Date(), 0),
-    key: 'selection',
+    key: "selection",
   };
 
   const [carRentDate, setCarRentDate] = useImmer<DateRange[]>([
@@ -27,6 +39,116 @@ export const useCarRent = (
   ]);
   const [open, setOpen] = useImmer(false);
   const [showBookingPopup, setShowBookingPopup] = useImmer(false);
+
+  // Calculate dynamic values
+  const totalDays =
+    Math.ceil(
+      (carRentDate[0].endDate.getTime() - carRentDate[0].startDate.getTime()) /
+        (1000 * 60 * 60 * 24)
+    ) || 1;
+  const pricePerDay = parseInt(vehicle?.rentalDetails?.day?.rentInAED || "0");
+
+  const VehicleDetailsData: VehicleDetailsData = {
+    // Car Information
+    carName:
+      vehicle?.vehicleTitleH1 || vehicle?.vehicleTitle || vehicle?.modelName,
+    carImage: vehicle?.vehiclePhotos?.[0] || "/default-car-image.jpg",
+    location: `${vehicle?.state?.label || "Unknown State"}, ${country === "in" ? "India" : "UAE"}`,
+
+    // Vehicle Basic Info
+    brand: vehicle?.brand?.value,
+    model: vehicle?.modelName,
+    category: vehicle?.category || "Unknown Category",
+    vehicleCode: vehicle?.vehicleCode,
+    vehicleId: vehicle?.vehicleId,
+
+    // Booking Dates & Duration (dynamic based on selected dates)
+    startDate: carRentDate[0].startDate.toLocaleDateString(),
+    endDate: carRentDate[0].endDate.toLocaleDateString(),
+    totalDays: totalDays,
+
+    // Pricing - Using rentInAED from daily rental
+    pricePerDay: pricePerDay,
+    totalPrice: pricePerDay * totalDays,
+    // insurance: 50, // commented out for now, can be enabled in future
+    // serviceFee: 25, // commented out for now, can be enabled in future
+    securityDeposit: parseInt(vehicle?.securityDeposit?.amountInAED || "0"),
+
+    // Pickup/Return Times (example data - would be dynamic)
+    pickupTime: "10:00 AM",
+    returnTime: "10:00 AM",
+
+    // Customer Information (dynamic based on authenticated user)
+    customer: {
+      name: userProfile?.data?.name || "",
+      phone: userProfile?.data?.phoneNumber || "",
+      email: userProfile?.data?.email || "",
+      // paymentMethod: "", // commented out for now, can be enabled in future
+    },
+
+    // Vehicle Features/Status
+    isInsured: true,
+    isVerified: true, // would be determined by business logic
+    isLease: vehicle?.isAvailableForLease || false,
+
+    // Additional Vehicle Details
+    description: vehicle?.description,
+    specifications: vehicle?.specs,
+    features: vehicle?.features,
+    videos: vehicle?.vehicleVideos,
+    images: vehicle?.vehiclePhotos,
+
+    // Rental Options
+    rentalPeriods: {
+      hourly: {
+        enabled: vehicle?.rentalDetails?.hour?.enabled,
+        rentInAED: vehicle?.rentalDetails?.hour?.rentInAED,
+        mileageLimit: vehicle?.rentalDetails?.hour?.mileageLimit,
+        minBookingHours: vehicle?.rentalDetails?.hour?.minBookingHours,
+      },
+      daily: {
+        enabled: vehicle?.rentalDetails?.day?.enabled,
+        rentInAED: vehicle?.rentalDetails?.day?.rentInAED,
+        mileageLimit: vehicle?.rentalDetails?.day?.mileageLimit,
+        unlimitedMileage: vehicle?.rentalDetails?.day?.unlimitedMileage,
+      },
+      weekly: {
+        enabled: vehicle?.rentalDetails?.week?.enabled,
+        rentInAED: vehicle?.rentalDetails?.week?.rentInAED,
+        mileageLimit: vehicle?.rentalDetails?.week?.mileageLimit,
+        unlimitedMileage: vehicle?.rentalDetails?.week?.unlimitedMileage,
+      },
+      monthly: {
+        enabled: vehicle?.rentalDetails?.month?.enabled,
+        rentInAED: vehicle?.rentalDetails?.month?.rentInAED,
+        mileageLimit: vehicle?.rentalDetails?.month?.mileageLimit,
+        unlimitedMileage: vehicle?.rentalDetails?.month?.unlimitedMileage,
+      },
+    },
+
+    // Company/Supplier Information
+    supplier: {
+      companyName: vehicle?.company?.companyName,
+      companyId: vehicle?.company?.companyId,
+      agentId: vehicle?.userId,
+      companyProfile: vehicle?.company?.companyProfile,
+      contactDetails: vehicle?.company?.contactDetails,
+      companySpecs: vehicle?.company?.companySpecs,
+    },
+
+    // Location & GPS
+    gpsLocation: vehicle?.location,
+    mapImage: vehicle?.mapImage,
+    cities: vehicle?.cities,
+
+    // Series Information (if available)
+    seriesDescription: vehicle?.vehicleSeries?.vehicleSeriesInfoDescription,
+    seriesLabel: vehicle?.vehicleSeries?.vehicleSeriesLabel,
+    subTitle: vehicle?.subTitle,
+
+    // Additional Vehicle Types
+    additionalVehicleTypes: vehicle?.additionalVehicleTypes,
+  };
 
   // Rental enquiry mutation
   const rentalEnquiryMutation = useMutation({
@@ -41,11 +163,11 @@ export const useCarRent = (
     }) => {
       const user = authStorage.getUser();
       if (!user?.id) {
-        throw new Error('User must be logged in to send enquiry');
+        throw new Error("User must be logged in to send enquiry");
       }
 
       if (!vehicleData?.vehicleId || !vehicleData?.agentId) {
-        throw new Error('Vehicle data is required');
+        throw new Error("Vehicle data is required");
       }
 
       return sendRentalEnquiry({
@@ -58,11 +180,11 @@ export const useCarRent = (
       });
     },
     onSuccess: () => {
-      console.log('Rental enquiry sent successfully');
+      console.log("Rental enquiry sent successfully");
       handleBookingComplete();
     },
     onError: (error) => {
-      console.error('Failed to send rental enquiry:', error);
+      console.error("Failed to send rental enquiry:", error);
     },
   });
 
@@ -72,7 +194,7 @@ export const useCarRent = (
       {
         startDate: startDate ?? new Date(),
         endDate: endDate ?? addDays(new Date(), 7),
-        key: key ?? 'selection',
+        key: key ?? "selection",
       },
     ];
     setCarRentDate(newState);
@@ -84,7 +206,7 @@ export const useCarRent = (
   };
 
   const handleBookingConfirm = (
-    message: string = 'I am interested in this car. Is it still available?'
+    message: string = "I am interested in this car. Is it still available?"
   ) => {
     const endDate = carRentDate[0].endDate;
     const startDate = carRentDate[0].startDate;
@@ -136,5 +258,6 @@ export const useCarRent = (
     handleBookingCancel,
     handleBookingConfirm,
     rentalEnquiryMutation,
+    VehicleDetailsData, // Added the comprehensive vehicle details object
   };
 };

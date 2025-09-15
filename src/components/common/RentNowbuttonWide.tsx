@@ -6,6 +6,7 @@ import ContactPopup from "../dialog/ContactPopup";
 import { useCarRent } from "@/hooks/useCarRent";
 import { DateRangePicker } from "../dialog/date-range-picker/DateRangePicker";
 import { BookingPopup } from "../dialog/BookingPopup";
+import { BookingConfirmationModal } from "../dialog/booking-confirm-modal/BookingConfirmModal";
 import { useAuthContext } from "@/auth";
 
 export type ContactDetails = {
@@ -27,6 +28,7 @@ type RentNowButtonWideProps = {
   vehicleId?: string;
   agentId?: string;
   country?: string;
+  vehicle?: any;
 };
 
 const RentNowButtonWide = ({
@@ -40,8 +42,10 @@ const RentNowButtonWide = ({
   vehicleId,
   agentId,
   country = "ae",
+  vehicle,
 }: RentNowButtonWideProps) => {
   const [showContactPopup, setShowContactPopup] = useState(false);
+  const [showBookingConfirm, setShowBookingConfirm] = useState(false);
   const {
     open,
     carRentDate,
@@ -50,11 +54,29 @@ const RentNowButtonWide = ({
     handleClose,
     formatDateRange,
     handleDateChange,
+    VehicleDetailsData,
     rentalEnquiryMutation,
   } = useCarRent(
     undefined, // onDateChange callback
-    vehicleId && agentId ? { vehicleId, agentId, country } : undefined
+    vehicleId && agentId ? { vehicleId, agentId, country, vehicle } : undefined
   );
+
+  // Custom handle confirm for date picker
+  const handleDateConfirm = () => {
+    setOpen(false); // Close date picker
+    setShowBookingConfirm(true); // Show booking confirmation modal
+  };
+
+  // Handle booking confirmation
+  const handleBookingConfirm = () => {
+    setShowBookingConfirm(false);
+    handleConfirm(); // This will trigger the rental enquiry
+  };
+
+  // Handle booking confirmation modal close
+  const handleBookingConfirmClose = () => {
+    setShowBookingConfirm(false);
+  };
 
   const { auth, onHandleLoginmodal } = useAuthContext();
 
@@ -117,11 +139,22 @@ const RentNowButtonWide = ({
           open={open}
           handleClose={handleClose}
           carRentDate={carRentDate}
-          handleConfirm={handleConfirm}
-          title="Select Date Range"
-          ConfirmBtnTxt="Confirm Booking"
+          handleConfirm={handleDateConfirm}
+          title={VehicleDetailsData.carName}
+          ConfirmBtnTxt="Continue to Booking"
           formatDateRange={formatDateRange}
           handleDateChange={handleDateChange}
+        />
+      )}
+
+      {/* Booking Confirmation Modal */}
+      {showBookingConfirm && (
+        <BookingConfirmationModal
+          isOpen={showBookingConfirm}
+          onClose={handleBookingConfirmClose}
+          onConfirm={handleBookingConfirm}
+          vehicleData={VehicleDetailsData}
+          isProcessing={rentalEnquiryMutation.isPending}
         />
       )}
 
