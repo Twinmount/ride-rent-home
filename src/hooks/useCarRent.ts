@@ -40,12 +40,31 @@ export const useCarRent = (
   const [open, setOpen] = useImmer(false);
   const [showBookingPopup, setShowBookingPopup] = useImmer(false);
 
-  // Calculate dynamic values
-  const totalDays =
-    Math.ceil(
-      (carRentDate[0].endDate.getTime() - carRentDate[0].startDate.getTime()) /
-        (1000 * 60 * 60 * 24)
-    ) || 1;
+  // Calculate dynamic values - inclusive day counting for car rental
+  // If pickup is Sept 15 and return is Sept 17, you have the car for 2 full days (15th and 16th)
+  // Same day pickup and return = 1 day minimum
+  const startDate = new Date(carRentDate[0].startDate);
+  const endDate = new Date(carRentDate[0].endDate);
+
+  // Reset time to midnight to avoid timezone issues
+  startDate.setHours(0, 0, 0, 0);
+  endDate.setHours(0, 0, 0, 0);
+
+  const diffInDays = Math.ceil(
+    (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  // Car rental logic: same day = 1 day, otherwise it's the difference
+  // If user selects 2 consecutive days (like Sept 15 pickup, Sept 16 return), that's 1 day of rental
+  // If user selects Sept 15 pickup, Sept 17 return, that's 2 days of rental
+  const totalDays = Math.max(1, diffInDays);
+
+  console.log("Date calculation debug:", {
+    startDate: startDate.toDateString(),
+    endDate: endDate.toDateString(),
+    diffInDays,
+    totalDays,
+  });
   const pricePerDay = parseInt(vehicle?.rentalDetails?.day?.rentInAED || "0");
 
   const VehicleDetailsData: VehicleDetailsData = {
