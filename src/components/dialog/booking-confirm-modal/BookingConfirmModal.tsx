@@ -1,0 +1,301 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import {
+  Calendar,
+  MapPin,
+  Clock,
+  Car,
+  Shield,
+  CheckCircle,
+  X,
+  User,
+  Phone,
+  Mail,
+  CreditCard,
+} from "lucide-react";
+
+interface BookingConfirmationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  bookingData?: {
+    carName: string;
+    carImage: string;
+    startDate: string;
+    endDate: string;
+    totalDays: number;
+    pricePerDay: number;
+    totalPrice: number;
+    location: string;
+  };
+}
+
+export function BookingConfirmationModal({
+  isOpen,
+  onClose,
+  bookingData = {
+    carName: "Ford Mustang GT 2024",
+    carImage: "/ford-mustang-gt-2024.jpg",
+    startDate: "Sep 15, 2025",
+    endDate: "Sep 18, 2025",
+    totalDays: 3,
+    pricePerDay: 250,
+    totalPrice: 750,
+    location: "Dubai, UAE",
+  },
+}: BookingConfirmationModalProps) {
+  const [step, setStep] = useState<"confirmation" | "success">("confirmation");
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleConfirmBooking = async () => {
+    setIsProcessing(true);
+    // Simulate booking process
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setStep("success");
+    setIsProcessing(false);
+  };
+
+  const handleClose = () => {
+    setStep("confirmation");
+    setIsProcessing(false);
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      setStep("confirmation");
+      setIsProcessing(false);
+    }
+  }, [isOpen]);
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+        {step === "confirmation" ? (
+          <>
+            <DialogHeader className="space-y-4">
+              <div className="flex items-center justify-between">
+                <DialogTitle className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-2xl font-bold text-transparent">
+                  Confirm Your Booking
+                </DialogTitle>
+                <Button variant="ghost" size="icon" onClick={handleClose}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Car className="h-4 w-4 text-orange-500" />
+                <span>Ride.Rent - Premium Car Rental</span>
+              </div>
+            </DialogHeader>
+
+            <div className="space-y-6">
+              {/* Car Details */}
+              <div className="rounded-lg border border-orange-200 bg-gradient-to-r from-orange-50 to-red-50 p-4">
+                <div className="flex gap-4">
+                  <img
+                    src={bookingData.carImage || "/placeholder.svg"}
+                    alt={bookingData.carName}
+                    className="h-16 w-24 rounded-md object-cover"
+                  />
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold">
+                      {bookingData.carName}
+                    </h3>
+                    <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      <span>{bookingData.location}</span>
+                    </div>
+                    <div className="mt-2 flex gap-2">
+                      <Badge className="bg-orange-100 text-xs text-orange-700 hover:bg-orange-200">
+                        <Shield className="mr-1 h-3 w-3" />
+                        Insured
+                      </Badge>
+                      <Badge className="bg-green-100 text-xs text-green-700 hover:bg-green-200">
+                        <CheckCircle className="mr-1 h-3 w-3" />
+                        Verified
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Booking Details */}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Calendar className="h-5 w-5 text-orange-500" />
+                    <div>
+                      <p className="text-sm font-medium">Pickup Date</p>
+                      <p className="text-sm text-muted-foreground">
+                        {bookingData.startDate}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-5 w-5 text-orange-500" />
+                    <div>
+                      <p className="text-sm font-medium">Pickup Time</p>
+                      <p className="text-sm text-muted-foreground">10:00 AM</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Calendar className="h-5 w-5 text-red-500" />
+                    <div>
+                      <p className="text-sm font-medium">Return Date</p>
+                      <p className="text-sm text-muted-foreground">
+                        {bookingData.endDate}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-5 w-5 text-red-500" />
+                    <div>
+                      <p className="text-sm font-medium">Return Time</p>
+                      <p className="text-sm text-muted-foreground">10:00 AM</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Customer Details */}
+              <div className="space-y-4">
+                <h4 className="font-semibold">Customer Details</h4>
+                <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
+                  <div className="flex items-center gap-3">
+                    <User className="h-4 w-4 text-orange-500" />
+                    <span>John Doe</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Phone className="h-4 w-4 text-orange-500" />
+                    <span>+971 50 123 4567</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Mail className="h-4 w-4 text-orange-500" />
+                    <span>john.doe@email.com</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CreditCard className="h-4 w-4 text-orange-500" />
+                    <span>**** **** **** 1234</span>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Price Breakdown */}
+              <div className="space-y-4">
+                <h4 className="font-semibold">Price Breakdown</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>Car rental ({bookingData.totalDays} days)</span>
+                    <span>
+                      {bookingData.pricePerDay} AED × {bookingData.totalDays}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Insurance</span>
+                    <span>50 AED</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Service fee</span>
+                    <span>25 AED</span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between text-lg font-semibold">
+                    <span>Total</span>
+                    <span className="text-orange-600">
+                      {bookingData.totalPrice + 75} AED
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={handleClose}
+                  className="flex-1 border-orange-200 bg-transparent text-orange-600 hover:bg-orange-50"
+                  disabled={isProcessing}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleConfirmBooking}
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600"
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? (
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      Processing...
+                    </div>
+                  ) : (
+                    `Confirm Booking - ${bookingData.totalPrice + 75} AED`
+                  )}
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Success State */}
+            <div className="space-y-6 py-8 text-center">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-orange-500 to-red-500">
+                <CheckCircle className="h-10 w-10 text-white" />
+              </div>
+
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold">Booking Confirmed!</h2>
+                <p className="text-muted-foreground">
+                  Your {bookingData.carName} has been successfully booked.
+                </p>
+              </div>
+
+              <div className="rounded-lg border border-orange-200 bg-gradient-to-r from-orange-50 to-red-50 p-4 text-left">
+                <h3 className="mb-2 font-semibold">Booking Reference</h3>
+                <p className="font-mono text-2xl font-bold text-orange-600">
+                  RR-{Date.now().toString().slice(-6)}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Save this reference number for your records
+                </p>
+              </div>
+
+              <div className="space-y-1 text-sm text-muted-foreground">
+                <p>📧 Confirmation email sent to john.doe@email.com</p>
+                <p>📱 SMS confirmation sent to +971 50 123 4567</p>
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={handleClose}
+                  className="flex-1 border-orange-200 bg-transparent text-orange-600 hover:bg-orange-50"
+                >
+                  Close
+                </Button>
+                <Button className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600">
+                  View My Bookings
+                </Button>
+              </div>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -12,11 +12,6 @@ import {
   addToSaved,
   submitVehicleEnquiry,
 } from "@/lib/api/userActions.api";
-import type {
-  EnquiredVehicle,
-  SavedVehicle,
-  ViewedVehicle,
-} from "@/lib/api/userActions.api.types";
 
 interface UseUserActionsOptions {
   userId?: string;
