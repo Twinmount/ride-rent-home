@@ -11,7 +11,7 @@ import {
   AlertCircle,
   RefreshCw,
 } from "lucide-react";
-import { useUserEnquiredVehicles } from "@/hooks/useUserActions";
+import { useUserActions } from "@/hooks/useUserActions";
 import { useAppContext } from "@/context/useAppContext";
 import VehicleListSection from "@/components/root/listing/vehicle-grids/VehicleListSection";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
@@ -30,6 +30,8 @@ const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
   const [page, setPage] = useState(1);
 
   const userId = user?.id || authStorage.getUser()?.id;
+
+  const { useUserEnquiredVehicles } = useUserActions();
 
   const {
     data: enquiredVehicles,
@@ -222,7 +224,7 @@ const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {["pending", "contacted", "resolved"].map((status) => {
               const count = enquiredVehicles.filter(
-                (enquiry) =>
+                (enquiry: EnquiredVehicle) =>
                   (enquiry.enquiryDetails?.status || "pending") === status
               ).length;
 
