@@ -195,24 +195,24 @@ const ViewedVehicles = () => {
                       <Heart className="h-4 w-4 text-gray-600 hover:text-red-500" />
                     </Button>
                   </div>
-                  <div className="absolute left-3 top-3">
+                  {/* <div className="absolute left-3 top-3">
                     <Badge className="bg-purple-500 text-white">
                       <Eye className="mr-1 h-3 w-3" />
                       Viewed {vehicle.viewCount || 1}x
                     </Badge>
-                  </div>
+                  </div> */}
                 </div>
                 <CardContent className="p-4">
                   <div className="mb-2 flex items-start justify-between">
                     <h3 className="text-sm font-semibold text-gray-900">
                       {vehicle.name || "Unknown Vehicle"}
                     </h3>
-                    <div className="flex items-center gap-1">
+                    {/* <div className="flex items-center gap-1">
                       <Star className="text-yellow-400 h-4 w-4 fill-current" />
                       <span className="text-sm font-medium">
                         {vehicle.rating || 4.5}
                       </span>
-                    </div>
+                    </div> */}
                   </div>
                   <p className="mb-3 text-sm text-gray-600">
                     {vehicle.vendor || "Premium Car Rental"}

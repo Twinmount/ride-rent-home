@@ -31,16 +31,18 @@ export const getUserVehiclesByAction = async (
 export const getUserEnquiredVehicles = async (
   userId: string,
   page: number = 0,
-  limit: number = 10
-): Promise<EnquiredVehicle[]> => {
-  const response = await getUserVehiclesByAction({
-    userId,
-    actionType: "enquired",
-    page,
-    limit,
+  limit: number = 10,
+  sortOrder: "ASC" | "DESC" = "DESC"
+): Promise<any> => {
+  const response = await mainApiClient.get(`/user-cars/enquired/${userId}`, {
+    params: {
+      page,
+      limit,
+      sortOrder,
+    },
   });
 
-  return response.result.vehicles as EnquiredVehicle[];
+  return response.data;
 };
 
 // Specific function for saved vehicles

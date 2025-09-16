@@ -1,304 +1,368 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   MessageSquare,
+  Search,
+  Filter,
+  Star,
+  MapPin,
+  Calendar,
+  Phone,
+  Mail,
+  ArrowLeft,
   Clock,
-  CheckCircle,
-  AlertCircle,
-  RefreshCw,
 } from "lucide-react";
-import { useUserActions } from "@/hooks/useUserActions";
-import { useAppContext } from "@/context/useAppContext";
-import VehicleListSection from "@/components/root/listing/vehicle-grids/VehicleListSection";
-import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
-import type { EnquiredVehicle } from "@/lib/api/userActions.api.types";
+import Link from "next/link";
 
-interface EnquiredVehiclesProps {
-  className?: string;
-}
+export default function EnquiredVehiclesPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("recent");
+  const [filterBy, setFilterBy] = useState("all");
 
-const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
-  className = "",
-}) => {
-  const { auth } = useAppContext();
-  const { user, authStorage } = auth;
-  const [visibleVehicleIds, setVisibleVehicleIds] = useState<string[]>([]);
-  const [page, setPage] = useState(1);
+  // Mock enquired vehicles data
+  const enquiredVehicles = [
+    {
+      id: 1,
+      name: "Lamborghini Huracan 2024",
+      vendor: "Supercar Rentals Dubai",
+      price: 1500,
+      rating: 4.9,
+      location: "Dubai",
+      image: "/orange-mclaren-720s-supercar.png",
+      enquiredDate: "2 days ago",
+      status: "pending",
+      responseTime: "Usually responds within 2 hours",
+      category: "sports",
+      enquiryDetails: {
+        dates: "Dec 15-17, 2024",
+        duration: "3 days",
+        message: "Looking for weekend rental with delivery to hotel",
+      },
+    },
+    {
+      id: 2,
+      name: "Rolls Royce Ghost 2023",
+      vendor: "Platinum Car Hire",
+      price: 2000,
+      rating: 5.0,
+      location: "Dubai",
+      image: "/black-ford-mustang-gt-muscle-car.png",
+      enquiredDate: "1 week ago",
+      status: "responded",
+      responseTime: "Responded in 30 minutes",
+      category: "luxury",
+      enquiryDetails: {
+        dates: "Dec 20-25, 2024",
+        duration: "5 days",
+        message: "Need for business meetings and airport transfers",
+      },
+    },
+    {
+      id: 3,
+      name: "McLaren 720S Spider",
+      vendor: "Elite Supercars",
+      price: 1800,
+      rating: 4.8,
+      location: "Abu Dhabi",
+      image: "/red-sports-car-racing-style-lightning-mcqueen.png",
+      enquiredDate: "2 weeks ago",
+      status: "booked",
+      responseTime: "Booking confirmed",
+      category: "sports",
+      enquiryDetails: {
+        dates: "Nov 28-30, 2024",
+        duration: "2 days",
+        message: "Special occasion rental with track day package",
+      },
+    },
+  ];
 
-  const userId = user?.id || authStorage.getUser()?.id;
-
-  const { useUserEnquiredVehicles } = useUserActions();
-
-  const {
-    data: enquiredVehicles,
-    isLoading,
-    error,
-    refetch,
-    isFetching,
-  } = useUserEnquiredVehicles({
-    userId: userId!,
-    enabled: !!userId,
-    page,
-    limit: 20,
-  });
-
-  // Transform enquired vehicles data to match VehicleListSection format
-  const transformedVehicles = React.useMemo(() => {
-    if (!enquiredVehicles?.length) return {};
-
-    // Group vehicles by location (using vehicleId as key for simplicity)
-    const grouped: Record<string, any[]> = {
-      "enquired-vehicles": enquiredVehicles.map((enquiry: EnquiredVehicle) => ({
-        ...enquiry.vehicle,
-        enquiryDetails: enquiry.enquiryDetails,
-        enquiredAt: enquiry.createdAt,
-        enquiryId: enquiry.id,
-      })),
-    };
-
-    return grouped;
-  }, [enquiredVehicles]);
-
-  const getStatusBadge = (status?: string) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case "contacted":
-        return (
-          <Badge variant="secondary" className="bg-blue-50 text-blue-700">
-            <CheckCircle className="mr-1 h-3 w-3" />
-            Contacted
-          </Badge>
-        );
-      case "resolved":
-        return (
-          <Badge variant="secondary" className="bg-green-50 text-green-700">
-            <CheckCircle className="mr-1 h-3 w-3" />
-            Resolved
-          </Badge>
-        );
       case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "responded":
+        return "bg-blue-100 text-blue-800";
+      case "booked":
+        return "bg-green-100 text-green-800";
       default:
-        return (
-          <Badge variant="secondary" className="bg-orange-50 text-orange-700">
-            <Clock className="mr-1 h-3 w-3" />
-            Pending
-          </Badge>
-        );
+        return "bg-gray-100 text-gray-800";
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <Clock className="h-3 w-3" />;
+      case "responded":
+        return <Mail className="h-3 w-3" />;
+      case "booked":
+        return <Calendar className="h-3 w-3" />;
+      default:
+        return <MessageSquare className="h-3 w-3" />;
+    }
   };
 
-  if (!userId) {
-    return (
-      <Card className="border-0 shadow-lg">
-        <CardContent className="pt-6 text-center">
-          <p className="text-gray-600">
-            Please log in to view your enquired vehicles.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className={`space-y-6 ${className}`}>
-        <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <MessageSquare className="h-6 w-6 text-orange-600" />
-              Your Enquired Vehicles
-            </CardTitle>
-          </CardHeader>
-        </Card>
-        <AnimatedSkelton />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card className="border-0 shadow-lg">
-        <CardContent className="pt-6 text-center">
-          <div className="mb-4 flex items-center justify-center gap-2 text-red-600">
-            <AlertCircle className="h-5 w-5" />
-            <p>Failed to load enquired vehicles</p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Try Again
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!enquiredVehicles?.length) {
-    return (
-      <div className={`space-y-6 ${className}`}>
-        <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <MessageSquare className="h-6 w-6 text-orange-600" />
-              Your Enquired Vehicles
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-6 text-center">
-            <div className="flex flex-col items-center gap-4">
-              <MessageSquare className="h-12 w-12 text-gray-300" />
-              <div>
-                <p className="mb-2 text-lg font-medium text-gray-900">
-                  No Enquiries Yet
-                </p>
-                <p className="text-gray-600">
-                  When you enquire about vehicles, theyapos&apos;ll appear here.
-                </p>
-              </div>
-              <Button
-                onClick={() => (window.location.href = "/cars")}
-                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
-              >
-                Browse Vehicles
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const filteredVehicles = enquiredVehicles.filter((vehicle) => {
+    const matchesSearch =
+      vehicle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      vehicle.vendor.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filterBy === "all" || vehicle.status === filterBy;
+    return matchesSearch && matchesFilter;
+  });
 
   return (
-    <div className={`space-y-6 ${className}`}>
-      {/* Header */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <MessageSquare className="h-6 w-6 text-orange-600" />
-              Your Enquired Vehicles
-              <Badge
-                variant="secondary"
-                className="bg-orange-50 text-orange-700"
-              >
-                {enquiredVehicles.length}{" "}
-                {enquiredVehicles.length === 1 ? "Enquiry" : "Enquiries"}
-              </Badge>
+    <div className="min-h-screen bg-gray-50 px-4 py-8">
+      <div className="mx-auto max-w-7xl">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="mb-4 flex items-center gap-4">
+            <Link href="/profile">
+              <Button variant="ghost" size="sm" className="cursor-pointer">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Profile
+              </Button>
+            </Link>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="mb-2 text-3xl font-bold text-gray-900">
+                My Enquiries
+              </h1>
+              <p className="text-gray-600">
+                Track your rental enquiries and responses
+              </p>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => refetch()}
-              disabled={isFetching}
-              className="flex items-center gap-2"
+            <div className="flex items-center gap-2">
+              <MessageSquare className="h-6 w-6 text-blue-500" />
+              <span className="text-2xl font-bold text-gray-900">
+                {enquiredVehicles.length}
+              </span>
+              <span className="text-gray-600">enquiries</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+            <Input
+              placeholder="Search enquiries..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-full cursor-pointer sm:w-48">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recent">Most Recent</SelectItem>
+              <SelectItem value="price-low">Price: Low to High</SelectItem>
+              <SelectItem value="price-high">Price: High to Low</SelectItem>
+              <SelectItem value="status">Status</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterBy} onValueChange={setFilterBy}>
+            <SelectTrigger className="w-full cursor-pointer sm:w-48">
+              <Filter className="mr-2 h-4 w-4" />
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="responded">Responded</SelectItem>
+              <SelectItem value="booked">Booked</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Enquiries List */}
+        <div className="space-y-6">
+          {filteredVehicles.map((vehicle) => (
+            <Card
+              key={vehicle.id}
+              className="overflow-hidden transition-shadow hover:shadow-lg"
             >
-              <RefreshCw
-                className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`}
-              />
-              Refresh
-            </Button>
-          </CardTitle>
-        </CardHeader>
-      </Card>
-
-      {/* Enquiry Status Summary */}
-      <Card className="border-0 shadow-lg">
-        <CardContent className="pt-6">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            {["pending", "contacted", "resolved"].map((status) => {
-              const count = enquiredVehicles.filter(
-                (enquiry: EnquiredVehicle) =>
-                  (enquiry.enquiryDetails?.status || "pending") === status
-              ).length;
-
-              return (
-                <div
-                  key={status}
-                  className="rounded-lg bg-gray-50 p-4 text-center"
-                >
-                  <div className="mb-1 text-2xl font-bold text-gray-900">
-                    {count}
+              <CardContent className="p-6">
+                <div className="flex flex-col gap-6 lg:flex-row">
+                  {/* Vehicle Image */}
+                  <div className="flex-shrink-0 lg:w-64">
+                    <img
+                      src={vehicle.image || "/placeholder.svg"}
+                      alt={vehicle.name}
+                      className="h-40 w-full rounded-lg object-cover lg:h-32"
+                    />
                   </div>
-                  <div className="flex items-center justify-center gap-1">
-                    {getStatusBadge(status)}
+
+                  {/* Vehicle Details */}
+                  <div className="flex-1 space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="mb-1 text-xl font-semibold text-gray-900">
+                          {vehicle.name}
+                        </h3>
+                        <p className="mb-2 text-gray-600">{vehicle.vendor}</p>
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="h-4 w-4" />
+                            {vehicle.location}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Star className="text-yellow-400 h-4 w-4 fill-current" />
+                            {vehicle.rating}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
+                            {vehicle.enquiredDate}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="mb-1 text-2xl font-bold text-orange-600">
+                          {vehicle.price} AED
+                          <span className="text-sm font-normal text-gray-500">
+                            /day
+                          </span>
+                        </div>
+                        <Badge
+                          className={`${getStatusColor(vehicle.status)} capitalize`}
+                        >
+                          {getStatusIcon(vehicle.status)}
+                          <span className="ml-1">{vehicle.status}</span>
+                        </Badge>
+                      </div>
+                    </div>
+
+                    {/* Enquiry Details */}
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <h4 className="mb-2 font-medium text-gray-900">
+                        Enquiry Details
+                      </h4>
+                      <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-3">
+                        <div>
+                          <span className="text-gray-500">Rental Dates:</span>
+                          <p className="font-medium">
+                            {vehicle.enquiryDetails.dates}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Duration:</span>
+                          <p className="font-medium">
+                            {vehicle.enquiryDetails.duration}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Response Time:</span>
+                          <p className="font-medium">{vehicle.responseTime}</p>
+                        </div>
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-gray-500">Message:</span>
+                        <p className="mt-1 text-gray-900">
+                          {vehicle.enquiryDetails.message}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap gap-3">
+                      {/* {vehicle.status === "pending" && (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="cursor-pointer bg-transparent"
+                          >
+                            <Phone className="mr-2 h-4 w-4" />
+                            Call Vendor
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="cursor-pointer bg-transparent"
+                          >
+                            <Mail className="mr-2 h-4 w-4" />
+                            Send Message
+                          </Button>
+                        </>
+                      )} */}
+                      {/* {vehicle.status === "responded" && (
+                        <>
+                          <Button
+                            size="sm"
+                            className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
+                          >
+                            View Response
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="cursor-pointer bg-transparent"
+                          >
+                            <Phone className="mr-2 h-4 w-4" />
+                            Call Vendor
+                          </Button>
+                        </>
+                      )}
+                      {vehicle.status === "booked" && (
+                        <>
+                          <Button
+                            size="sm"
+                            className="cursor-pointer bg-green-500 text-white hover:bg-green-600"
+                          >
+                            View Booking
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="cursor-pointer bg-transparent"
+                          >
+                            Download Receipt
+                          </Button>
+                        </>
+                      )} */}
+                    </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-      {/* Vehicle List using VehicleListSection */}
-      <Card className="border-0 shadow-lg">
-        <CardContent className="pt-6">
-          <VehicleListSection
-            vehicles={transformedVehicles}
-            state="enquired-vehicles"
-            category="cars"
-            country="ae"
-            setVisibleVehicleIds={setVisibleVehicleIds}
-          />
-        </CardContent>
-      </Card>
-
-      {/* Enquiry Details */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-lg">Enquiry Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {enquiredVehicles.map((enquiry: EnquiredVehicle) => (
-              <div
-                key={enquiry.id}
-                className="flex items-center justify-between rounded-lg border bg-gray-50 p-4"
-              >
-                <div className="flex-1">
-                  <h4 className="font-medium text-gray-900">
-                    {enquiry.vehicle?.model || "Vehicle"}
-                  </h4>
-                  <p className="mt-1 text-sm text-gray-600">
-                    Enquired on {formatDate(enquiry.createdAt)}
-                  </p>
-                  {enquiry.enquiryDetails?.message && (
-                    <p className="mt-2 text-sm italic text-gray-700">
-                      {enquiry.enquiryDetails.message}
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center gap-3">
-                  {enquiry.enquiryDetails?.contactPreference && (
-                    <Badge variant="outline" className="text-xs">
-                      {enquiry.enquiryDetails.contactPreference}
-                    </Badge>
-                  )}
-                  {getStatusBadge(enquiry.enquiryDetails?.status)}
-                </div>
-              </div>
-            ))}
+        {filteredVehicles.length === 0 && (
+          <div className="py-12 text-center">
+            <MessageSquare className="mx-auto mb-4 h-16 w-16 text-gray-300" />
+            <h3 className="mb-2 text-xl font-semibold text-gray-900">
+              No enquiries found
+            </h3>
+            <p className="mb-4 text-gray-600">
+              {searchQuery || filterBy !== "all"
+                ? "Try adjusting your search or filters"
+                : "Start browsing vehicles and make your first enquiry"}
+            </p>
+            <Link href="/">
+              <Button className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600">
+                Browse Vehicles
+              </Button>
+            </Link>
           </div>
-        </CardContent>
-      </Card>
+        )}
+      </div>
     </div>
   );
-};
-
-export default EnquiredVehicles;
+}

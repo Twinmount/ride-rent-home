@@ -21,6 +21,31 @@ interface UseUserActionsOptions {
   sortOrder?: "ASC" | "DESC";
 }
 
+type RawVehicleEnquiry = {
+  _id: string;
+  vehicleDetails: any;
+  enquiryInfo: {
+    enquiredAt: string;
+    notes: string;
+    enquiryId: string;
+    status?: string;
+    contactPreference?: "phone" | "email" | "whatsapp";
+  };
+  createdAt: string;
+};
+
+type ApiResponse = {
+  status: string;
+  result: {
+    list: RawVehicleEnquiry[];
+    page: number;
+    limit: number;
+    total: number;
+    totalNumberOfPages: number;
+  };
+  statusCode: number;
+};
+
 // Main user actions hook - returns all functions and state in a single object
 export const useUserActions = () => {
   const queryClient = useQueryClient();
@@ -36,7 +61,14 @@ export const useUserActions = () => {
     error: null as Error | null,
   });
 
-  console.log("savedVehiclesState: ", savedVehiclesState);
+  // State for extracted enquired vehicles data
+  const [enquiredVehiclesState, setEnquiredVehiclesState] = useImmer({
+    data: [] as any[],
+    isLoading: false,
+    error: null as Error | null,
+  });
+
+  console.log("enquiredVehiclesState: ", enquiredVehiclesState);
 
   // Function to manually fetch and process saved vehicles
   const fetchSavedVehicles = async (options: UseUserActionsOptions = {}) => {
@@ -67,14 +99,60 @@ export const useUserActions = () => {
     }
   };
 
+  // Function to manually fetch and process enquired vehicles
+  const fetchEnquiredVehicles = async (options: UseUserActionsOptions = {}) => {
+    const effectiveUserId = options.userId || userId;
+    const { page = 0, limit = 10, sortOrder = "DESC" } = options;
+
+    if (!effectiveUserId) return;
+
+    setEnquiredVehiclesState((draft) => {
+      draft.isLoading = true;
+      draft.error = null;
+    });
+
+    try {
+      const data = await getUserEnquiredVehicles(
+        effectiveUserId,
+        page,
+        limit,
+        sortOrder
+      );
+      const extractedData = extractEnquiredVehicles(data);
+      setEnquiredVehiclesState((draft) => {
+        draft.isLoading = false;
+        draft.error = null;
+        draft.data = extractedData;
+      });
+    } catch (error) {
+      setEnquiredVehiclesState((draft) => {
+        draft.isLoading = false;
+        draft.error = error as Error;
+        draft.data = [];
+      });
+    }
+  };
+
   // Query hooks
   const useUserEnquiredVehicles = (options: UseUserActionsOptions = {}) => {
     const effectiveUserId = options.userId || userId;
-    const { enabled = true, page = 0, limit = 10 } = options;
+    const {
+      enabled = true,
+      page = 0,
+      limit = 10,
+      sortOrder = "DESC",
+    } = options;
 
     return useQuery({
-      queryKey: ["userEnquiredVehicles", effectiveUserId, page, limit],
-      queryFn: () => getUserEnquiredVehicles(effectiveUserId!, page, limit),
+      queryKey: [
+        "userEnquiredVehicles",
+        effectiveUserId,
+        page,
+        limit,
+        sortOrder,
+      ],
+      queryFn: () =>
+        getUserEnquiredVehicles(effectiveUserId!, page, limit, sortOrder),
       enabled: !!effectiveUserId && enabled,
       staleTime: 5 * 60 * 1000, // 5 minutes
     });
@@ -271,7 +349,7 @@ export const useUserActions = () => {
             vehicle.vehicleTitle || vehicle.vehicleModel || "Unknown Vehicle",
           vendor: "Premium Car Rental", // This info isn't in the API response, so using a default
           price: price,
-          rating: 4.8, // This info isn't in the API response, so using a default
+          rating: null, // This info isn't in the API response, so using a default
           location: location.includes("Dubai") ? "Dubai" : location,
           image: vehicle.vehiclePhotos?.[0] || "/default-car.png", // First photo or default
           viewedDate: timeAgo,
@@ -283,6 +361,102 @@ export const useUserActions = () => {
     );
 
     return viewedVehicles;
+  };
+
+  const extractEnquiredVehicles = (apiData: ApiResponse) => {
+    if (!apiData?.result?.list?.length) return [];
+
+    return apiData.result.list.map((enquiry) => {
+      const vehicle = enquiry.vehicleDetails;
+      const enquiryInfo = enquiry.enquiryInfo;
+
+      // Calculate time ago from enquiredAt
+      const enquiredDate = new Date(enquiry.createdAt);
+      const now = new Date();
+      const diffInHours = Math.floor(
+        (now.getTime() - enquiredDate.getTime()) / (1000 * 60 * 60)
+      );
+
+      let timeAgo;
+      if (diffInHours < 1) {
+        timeAgo = "Just now";
+      } else if (diffInHours < 24) {
+        timeAgo = `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+      } else {
+        const diffInDays = Math.floor(diffInHours / 24);
+        timeAgo = `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+      }
+
+      // Extract rental price (using day rate if available, otherwise week/7, otherwise month/30)
+      let price = 0;
+      if (vehicle?.rentalDetails?.day?.enabled) {
+        price = parseInt(vehicle.rentalDetails.day.rentInAED) || 0;
+      } else if (vehicle?.rentalDetails?.week?.enabled) {
+        price =
+          Math.round(parseInt(vehicle.rentalDetails.week.rentInAED) / 7) || 0;
+      } else if (vehicle?.rentalDetails?.month?.enabled) {
+        price =
+          Math.round(parseInt(vehicle.rentalDetails.month.rentInAED) / 30) || 0;
+      }
+
+      // Extract features from vehicleFeatures
+      const features: string[] = [];
+      if (vehicle?.vehicleFeatures) {
+        Object.values(vehicle.vehicleFeatures).forEach((category: any) => {
+          if (Array.isArray(category)) {
+            category.forEach((feature: any) => {
+              if (feature.selected) {
+                features.push(feature.name);
+              }
+            });
+          }
+        });
+      }
+
+      // Determine category based on vehicle type/specs
+      let category = "luxury"; // default
+      const bodyType =
+        vehicle?.vehicleSpecs?.["Body Type"]?.value?.toLowerCase() || "";
+      const vehicleModel = (vehicle?.vehicleModel || "").toLowerCase();
+
+      if (
+        bodyType.includes("coupe") ||
+        vehicleModel.includes("mustang") ||
+        vehicleModel.includes("sports")
+      ) {
+        category = "sports";
+      } else if (bodyType.includes("suv") || vehicleModel.includes("suv")) {
+        category = "suv";
+      }
+
+      // Extract location
+      const location = vehicle?.location?.address || "Dubai"; // fallback to Dubai
+
+      return {
+        id: vehicle?._id || enquiry._id,
+        name:
+          vehicle?.vehicleTitle || vehicle?.vehicleModel || "Unknown Vehicle",
+        vendor: vehicle?.companyName || "Premium Car Rental",
+        price: price,
+        rating: vehicle?.rating || 4.8,
+        location: location.includes("Dubai") ? "Dubai" : location,
+        image: vehicle?.vehiclePhotos?.[0] || "/default-car.png",
+        enquiredDate: timeAgo,
+        category: category,
+        features: features.slice(0, 3),
+        // Enquiry-specific details
+        enquiryDetails: {
+          enquiryId: enquiry._id,
+          notes: enquiryInfo?.notes,
+          status: enquiryInfo?.status || "pending",
+          contactPreference: enquiryInfo?.contactPreference,
+          enquiredAt: enquiry.createdAt,
+        },
+        // Original vehicle details for reference
+        vehicleDetails: vehicle,
+        enquiryInfo: enquiryInfo,
+      };
+    });
   };
 
   return {
@@ -298,9 +472,13 @@ export const useUserActions = () => {
 
     // Manual fetch functions
     fetchSavedVehicles,
+    fetchEnquiredVehicles,
 
     // Extracted saved vehicles state
     savedVehicles: savedVehiclesState,
+
+    // Extracted enquired vehicles state
+    enquiredVehicles: enquiredVehiclesState,
 
     // Action functions
     removeFromSaved: handleRemoveFromSaved,
@@ -318,7 +496,8 @@ export const useUserActions = () => {
       addToSavedMutation.isPending ||
       submitVehicleEnquiryMutation.isPending,
 
-    // Utility function
+    // Utility functions
     extractViewedVehicles,
+    extractEnquiredVehicles,
   };
 };

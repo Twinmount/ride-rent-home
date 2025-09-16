@@ -73,7 +73,7 @@ const VehicleCard = ({
 
           {/* badge group */}
           <VehicleBadgesGroup
-            hasZeroDeposit={!vehicle.securityDeposit.enabled}
+            hasZeroDeposit={!vehicle.securityDeposit?.enabled}
             hasFancyNumber={vehicle.isFancyNumber} // Use actual value instead of hardcoded true
             hasHourlyRental={!!vehicle?.rentalDetails?.hour?.enabled}
           />

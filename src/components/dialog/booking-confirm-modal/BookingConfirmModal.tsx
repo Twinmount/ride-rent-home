@@ -237,7 +237,7 @@ export function BookingConfirmationModal({
                   </div> */}
                   <Separator />
                   <div className="flex justify-between text-lg font-semibold">
-                    <span>Total</span>
+                    <span>Rental charges (approx.)</span>
                     <span className="text-orange-600">
                       {bookingData.totalPrice} AED
                     </span>
@@ -266,7 +266,8 @@ export function BookingConfirmationModal({
                       Processing...
                     </div>
                   ) : (
-                    `Confirm Booking - ${bookingData.totalPrice} AED`
+                    // `Confirm Booking - ${bookingData.totalPrice} AED`
+                    `Send enquiry`
                   )}
                 </Button>
               </div>
