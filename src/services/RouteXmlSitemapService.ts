@@ -118,6 +118,26 @@ export class RouteXmlSitemapService {
     return [];
   }
 
+  async fetchVehicleCityListingSitemapForXML() {
+    try {
+      const relativeCityListingPageUrls =
+        await this.api.getVehicleCityListingSitemapData();
+
+      // Create full sitemap entries for city pages
+      const fullCitySitemapEntries = relativeCityListingPageUrls.map((url) => ({
+        url: `${this.siteUrl}/${this.country}${url}`,
+        lastModified: new Date().toISOString(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+      }));
+
+      return fullCitySitemapEntries;
+    } catch (error) {
+      console.error("Error fetching vehicle city listing page sitemap:", error);
+    }
+    return [];
+  }
+
   /**
    * Fetches states and vehicles data formatted for XML sitemap
    */
@@ -256,6 +276,8 @@ export class RouteXmlSitemapService {
 
     // Fetch vehicle listing page sitemap
     const listingPageUrls = await this.fetchVehicleListingSitemapForXML();
+    const cityListingPageUrls =
+      await this.fetchVehicleCityListingSitemapForXML();
 
     const { locationUrls, categoryUrls, faqUrls, vehicleUrls } =
       statesAndVehicles;
@@ -270,6 +292,7 @@ export class RouteXmlSitemapService {
       faqUrls,
       vehicleUrls,
       listingPageUrls,
+      cityListingPageUrls,
     };
   }
 }

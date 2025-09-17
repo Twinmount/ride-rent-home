@@ -68,13 +68,13 @@ const VehicleCard = ({
             width={250}
             height={200}
             layoutType={layoutType}
-            vehiclePhotos={vehicle.vehiclePhotos} // Pass the additional photos
+            vehiclePhotos={vehicle.vehiclePhotos}
           />
 
           {/* badge group */}
           <VehicleBadgesGroup
             hasZeroDeposit={!vehicle.securityDeposit?.enabled}
-            hasFancyNumber={vehicle.isFancyNumber} // Use actual value instead of hardcoded true
+            hasFancyNumber={vehicle.isFancyNumber}
             hasHourlyRental={!!vehicle?.rentalDetails?.hour?.enabled}
           />
         </div>

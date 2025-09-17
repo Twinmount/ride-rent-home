@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { NewVehicleCardType } from '@/types/vehicle-types';
-import { generateVehicleDetailsUrl } from '@/helpers';
-import { useAuthContext } from '@/auth';
-import { useVehicleCardContext } from '@/context/VehicleCardContext';
+import { useRouter } from "next/navigation";
+import { NewVehicleCardType } from "@/types/vehicle-types";
+import { generateVehicleDetailsUrl } from "@/helpers";
+import { useAuthContext } from "@/auth";
+import { useVehicleCardContext } from "@/context/VehicleCardContext";
 
 type RentNowDialogTriggerProps = {
   vehicle: NewVehicleCardType;
-  layoutType: 'grid' | 'carousel';
-  country: string; // Add country prop to generate the correct URL
+  layoutType: "grid" | "carousel";
+  country: string; 
 };
 
 export default function RentNowDialogTrigger({
   vehicle,
   layoutType,
-  country = 'ae',
+  country = "ae",
 }: RentNowDialogTriggerProps) {
   const router = useRouter();
   const { auth, onHandleLoginmodal } = useAuthContext();
@@ -40,9 +40,9 @@ export default function RentNowDialogTrigger({
   };
 
   const className =
-    layoutType === 'carousel'
-      ? 'h-[1.25rem] w-[4.5rem] lg:h-[2rem] lg:w-[5.5rem] text-sm px-6'
-      : 'w-[4.6rem] h-[1.75rem] text-xs px-4';
+    layoutType === "carousel"
+      ? "h-[1.5rem] w-[4.5rem] lg:h-[2rem] lg:w-[5.5rem] text-[0.6rem] lg:text-xs px-6"
+      : "w-[4.6rem] h-[1.75rem] text-xs px-4";
 
   return (
     <button

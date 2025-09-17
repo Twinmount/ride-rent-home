@@ -1,7 +1,12 @@
 import { API } from "@/utils/API";
-import { FetchListingPageSitemapResponse } from "@/types/sitemap";
 import {
+  FetchCityListingPageSitemapResponse,
+  FetchListingPageSitemapResponse,
+} from "@/types/sitemap";
+import {
+  generateCityListingPageUrls,
   generateListingPageUrls,
+  groupCityListingCombinations,
   groupListingCombinations,
 } from "@/helpers/sitemap-helper";
 
@@ -85,6 +90,34 @@ export class SitemapAPI {
       return relativeListingPageUrls;
     } catch (error) {
       console.error("Error fetching vehicle listing raw data:", error);
+      throw error;
+    }
+  }
+
+  async getVehicleCityListingSitemapData() {
+    try {
+      const response = await API({
+        path: `/vehicle/listing/city-sitemap?page=0&limit=5000&sortOrder=DESC&countryId=${this.countryId}`,
+        options: {
+          method: "GET",
+          cache: "no-cache",
+        },
+        country: this.country,
+      });
+
+      const data: FetchCityListingPageSitemapResponse = await response.json();
+      const flatList = data?.result?.list || [];
+
+      // Group city combinations by state → category → cities
+      const nestedCityStructure = groupCityListingCombinations(flatList);
+
+      // Generate all valid relative city listing page URL paths
+      const relativeCityListingPageUrls =
+        generateCityListingPageUrls(nestedCityStructure);
+
+      return relativeCityListingPageUrls;
+    } catch (error) {
+      console.error("Error fetching vehicle city listing raw data:", error);
       throw error;
     }
   }
