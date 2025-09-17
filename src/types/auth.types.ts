@@ -306,7 +306,7 @@ export interface UseAuthReturn {
     { userId: string; profileData: ProfileUpdateData },
     unknown
   >;
-  logoutMutation: UseMutationResult<void, Error, { userId?: string }, unknown>;
+  logoutMutation: UseMutationResult<AuthResponse, Error, { userId?: string }, unknown>;
 
   // Utilities
   validateEmail: (email: string) => boolean;

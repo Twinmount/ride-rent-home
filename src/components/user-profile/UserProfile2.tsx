@@ -113,20 +113,20 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
   }, [userCarActionCountsQuery.data]);
 
   useEffect(() => {
-    if (userProfileQuery.data?.success) {
+    if (userProfileQuery.data?.success && userProfileQuery.data.data) {
       const fetchedProfileData = userProfileQuery.data.data;
       console.log('User profile data: ', fetchedProfileData);
 
       // Update profile data state using useImmer
       setProfileData({
         name: fetchedProfileData.name || 'User',
-        email: fetchedProfileData.email,
-        avatar: fetchedProfileData.avatar,
+        email: fetchedProfileData.email || null,
+        avatar: fetchedProfileData.avatar || null,
         phoneNumber: fetchedProfileData.phoneNumber || null,
         countryCode: fetchedProfileData.countryCode || null,
         isPhoneVerified: fetchedProfileData.isPhoneVerified || false,
         isEmailVerified: fetchedProfileData.isEmailVerified || false,
-        joinedAt: fetchedProfileData.joinedAt,
+        joinedAt: (fetchedProfileData as any).createdAt || (fetchedProfileData as any).updatedAt || new Date().toISOString(),
       });
     }
   }, [userProfileQuery.data, setProfileData]);
