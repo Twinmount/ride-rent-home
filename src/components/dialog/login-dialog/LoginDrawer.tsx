@@ -259,7 +259,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
           {/* Footer */}
           <div className="border-t border-border p-6">
             <p className="text-balance text-center text-xs text-muted-foreground">
-              By continuing, you agree to Ride.Rent's Terms of Service and
+              By continuing, you agree to Ride.Rent&apos;s Terms of Service and
               Privacy Policy. Standard message and data rates may apply.
             </p>
           </div>
