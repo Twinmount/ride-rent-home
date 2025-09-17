@@ -23,3 +23,24 @@ export interface FetchListingPageSitemapResponse {
   status: string;
   statusCode: number;
 }
+
+// New type for city-based response
+export interface FetchCityListingPageSitemapResponse {
+  result: {
+    list: {
+      stateValue: string;
+      categoryValue: string;
+      cityValue: string;
+    }[];
+    page: number;
+    limit: number;
+    total: number;
+  };
+}
+
+// New nested structure for cities
+export interface VehicleCityListingSitemapNested {
+  [stateValue: string]: {
+    [categoryValue: string]: string[]; // Array of cityValues
+  };
+}

@@ -1,22 +1,38 @@
-import { notFound } from 'next/navigation';
+import { headers } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 
 export type LayoutProps = {
   params: Promise<{ country: string }>;
   children: React.ReactNode;
 };
 
-const COUNTRIES = ['ae', 'in'];
+const COUNTRIES = ["ae", "in"];
 
 /**
  * This layout wraps all pages in the `pages/(root)/[country]` directory.
  * If the country is not valid, it will return a 404 response.
+ * If the current path starts with "/blog", it will redirect to the same path but with "ae" prefixed.
  */
 export default async function Layout({ children, params }: LayoutProps) {
   const { country } = await params;
 
+  const headerList = await headers();
+  const currentPath = headerList.get("x-current-path") || "";
+
   if (!COUNTRIES.includes(country)) {
-    console.warn('country not found');
-    notFound();
+    if (
+      currentPath.startsWith("/blog") ||
+      currentPath.startsWith("/blog/") ||
+      country === "blog"
+    ) {
+      console.warn("redirecting to blog");
+
+      // Redirect to same path but with "ae" prefixed
+      redirect(`/ae${currentPath}`);
+    } else {
+      console.warn("country not found");
+      notFound();
+    }
   }
 
   return children;

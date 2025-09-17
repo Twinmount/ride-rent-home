@@ -3,12 +3,16 @@ import { convertToLabel, singularizeValue } from "@/helpers";
 import { getCountryName } from "@/utils/url";
 import { Metadata } from "next";
 
-export async function generateCitiesPageMetadata(
-  state: string,
-  category: string,
-  country: string
-): Promise<Metadata> {
-  const canonicalUrl = `https://ride.rent/${country}/${state}/${category}`;
+export async function generateCitiesPageMetadata({
+  country,
+  state,
+  category,
+}: {
+  country: string;
+  state: string;
+  category: string;
+}): Promise<Metadata> {
+  const canonicalUrl = `https://ride.rent/${country}/${state}/cities`;
 
   // open graph image
   const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
@@ -17,11 +21,9 @@ export async function generateCitiesPageMetadata(
   const formattedState = convertToLabel(state);
   const formattedCategory = singularizeValue(convertToLabel(category));
 
-  // Updated meta title to match your desired format
-  const metaTitle = `Car Rentals in ${formattedCountry} Cities | Rent a Car by Location - Ride.Rent`;
+  const metaTitle = `${formattedCategory} Rentals in ${formattedCountry} Cities | Rent a ${formattedCategory} by  ${formattedState} - Ride.Rent`;
 
-  // Updated meta description to match your desired format
-  const metaDescription = `Explore car rental across all ${formattedCountry} cities with Ride.Rent. Find cheap car rental, SUVs, luxury cars, and self drive options with daily, weekly, and monthly plans.`;
+  const metaDescription = `Explore ${formattedCategory} rental across all ${formattedCountry} cities with Ride.Rent. Find cheap ${formattedCategory} rental, SUVs, luxury ${formattedCategory}s, and self drive options with daily, weekly, and monthly plans.`;
 
   const shortTitle =
     metaTitle.length > 60 ? `${metaTitle.substring(0, 57)}...` : metaTitle;
@@ -34,14 +36,6 @@ export async function generateCitiesPageMetadata(
   return {
     title: metaTitle,
     description: metaDescription,
-    keywords: [
-      "ride rent",
-      "vehicle rental near me",
-      `car rent near me`,
-      `car rent in ${state}`,
-      `car rental ${formattedCountry}`,
-      `car rental cities ${formattedCountry}`,
-    ],
     openGraph: {
       title: shortTitle,
       description: shortDescription,
@@ -50,7 +44,7 @@ export async function generateCitiesPageMetadata(
       images: [
         {
           url: ogImage,
-          alt: `Ride.Rent - The Ultimate Vehicle Rental Platform`,
+          alt: `Ride.Rent ${formattedCountry} - The Ultimate Vehicle Rental Platform`,
           width: 1200,
           height: 630,
         },

@@ -1,5 +1,4 @@
 import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
-import PriceFilterTag from "@/components/root/listing/PriceFilterTag";
 import JsonLd from "@/components/common/JsonLd";
 import MapClientWrapper from "@/components/listing/MapClientWrapper";
 import ListingHeading from "@/components/root/listing/ListingHeading";
@@ -10,29 +9,32 @@ import {
 import ListingPageBreadcrumb from "./ListingPageBreadcrumb";
 
 type ListingPageRendererProps = {
+  country: string;
+  state: string;
   category: string;
   vehicleType?: string;
   brand?: string;
-  state: string;
-  country: string;
+  city?: string;
   searchParams: {
     [key: string]: string | undefined;
   };
 };
 
 /**
- * This centralized component renders the page content on all 4 types of listing pages such as:
+ * This centralized component renders the page content on all 5 types of listing pages such as:
  * /listing/[category]
  * /listing/[category]/[vehicleType]
  * /listing/[category]/brand/[brand]
  * /listing/[category]/[vehicleType]/brand/[brand]
+ * /listing/[category]/city/[city]
  */
 const ListingPageRenderer = async ({
+  country,
+  state,
   category,
   vehicleType,
   brand,
-  state,
-  country,
+  city,
   searchParams,
 }: ListingPageRendererProps) => {
   // Fetch metadata for heading h1 and h2
@@ -64,15 +66,16 @@ const ListingPageRenderer = async ({
         category={category}
         vehicleType={vehicleType}
         brand={brand}
+        city={city}
         heading={data?.result?.h1}
         subheading={data?.result?.h2}
       />
 
-      <div className="no-global-padding -mx-2 flex flex-wrap">
+      <div className="flex flex-wrap">
         {/* Left: Map */}
-        <div className="hidden w-full px-2 lg:block lg:w-[45%]">
+        <div className="hidden w-full lg:block lg:w-[45%]">
           <div
-            className="sticky top-[4rem] p-3"
+            className="sticky top-[4rem] pr-3 pt-3"
             style={{ height: "calc(90vh - 4rem)" }}
           >
             <div
@@ -88,17 +91,16 @@ const ListingPageRenderer = async ({
         </div>
 
         {/* Right: Listing & Filters */}
-        <div className="w-full px-2 lg:w-[55%]">
-          <div className="relative mb-0 h-auto min-h-[90vh] px-1 pb-3">
+        <div className="w-full pt-2 lg:w-[55%] lg:p-2">
+          <div className="relative mb-0 h-auto min-h-[90vh] pb-3">
             <ListingPageBreadcrumb
               country={country}
               state={state}
               category={category}
               vehicleType={vehicleType}
               brand={brand}
+              city={city}
             />
-
-            {/* <PriceFilterTag /> */}
 
             <VehicleGrid
               key={JSON.stringify(searchParams)}
@@ -107,6 +109,7 @@ const ListingPageRenderer = async ({
               category={category}
               vehicleType={vehicleType}
               brand={brand}
+              city={city}
             />
           </div>
         </div>

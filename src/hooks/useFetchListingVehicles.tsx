@@ -8,6 +8,7 @@ interface UseFetchListingVehiclesParams {
   category: string;
   vehicleType?: string;
   brand?: string;
+  city?: string;
   searchParams: string;
   coordinates: { latitude: number; longitude: number } | null;
 }
@@ -18,6 +19,7 @@ export const useFetchListingVehicles = ({
   category,
   vehicleType,
   brand,
+  city,
   searchParams,
   limit,
   coordinates,
@@ -32,6 +34,7 @@ export const useFetchListingVehicles = ({
         category,
         vehicleType,
         brand,
+        city,
         searchParams,
         coordinates,
       ],
@@ -40,13 +43,14 @@ export const useFetchListingVehicles = ({
         return FetchVehicleByFilters({
           query: searchParams,
           state,
-          pageParam,
-          limit: "8",
           country,
           coordinates,
           category,
           vehicleType,
           brand,
+          city,
+          pageParam,
+          limit: "8",
         });
       },
       initialPageParam: 1,

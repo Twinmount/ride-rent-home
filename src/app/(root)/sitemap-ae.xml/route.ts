@@ -29,6 +29,7 @@ export async function GET() {
       ...allData.categoryUrls,
       ...allData.vehicleUrls,
       ...allData.listingPageUrls,
+      ...allData.cityListingPageUrls,
       ...allData.vehicleSeries,
       ...allData.blogPosts,
     ];

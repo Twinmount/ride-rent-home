@@ -1,10 +1,7 @@
 import { PageProps } from "@/types";
 import { Metadata } from "next";
 import { FC } from "react";
-import {
-  fetchListingMetadata,
-  generateListingMetadata,
-} from "../../listing-metadata";
+import { generateListingMetadata } from "../../listing-metadata";
 
 import ListingPageRenderer from "@/components/root/listing/ListingPageRenderer";
 
@@ -13,14 +10,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
   const { country, state, category, vehicleType } = params;
 
-  const data = await fetchListingMetadata({
-    country,
-    state,
-    category,
-    vehicleType: vehicleType || "other",
-  });
-
-  return generateListingMetadata(data, {
+  return generateListingMetadata({
     country,
     state,
     category,

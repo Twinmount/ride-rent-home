@@ -24,7 +24,11 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
   const { country, state } = params;
 
-  return generateCitiesPageMetadata(state, category || "cars", country);
+  return generateCitiesPageMetadata({
+    country,
+    state,
+    category: category || "cars",
+  });
 }
 
 export default async function CitiesPage(props: PageProps) {
@@ -41,7 +45,7 @@ export default async function CitiesPage(props: PageProps) {
 
   // Fetch data using the generated URL
   const response = await API({
-    path: `/city/paginated/list?state=${state}&page=${page}&limit=${80}`,
+    path: `/city/paginated/list?state=${state}&category=${category}&page=${page}&limit=${80}`,
     options: {
       method: "GET",
       cache: "no-cache",
@@ -57,24 +61,24 @@ export default async function CitiesPage(props: PageProps) {
   const cities = data?.result?.list || [];
 
   return (
-    <div className="min-h-screen">
+    <div className="-auto min-h-screen">
       {/* Hero Section with Headings */}
-      <div className="bg-white py-6 md:py-8">
+      <div className="mb-2 mt-24">
         <div className="wrapper">
           <h1 className="text-center text-xl font-medium text-gray-900 md:text-center md:text-2xl md:font-semibold lg:text-left lg:text-3xl xl:text-4xl">
-            Car Rentals options across {formattedCountry} Cities - Find the Best
-            Deals
+            {formattedCategory} Rentals options across {formattedCountry} Cities
+            - Find the Best Deals
           </h1>
 
           <h2 className="mt-3 text-center text-sm text-text-secondary md:text-center md:text-base lg:text-left lg:text-lg">
-            Find affordable Car Rental in {formattedCountry} Cities, Economy,
-            SUV, and Luxury Options
+            Find affordable {formattedCategory} Rental in {formattedCountry}{" "}
+            Cities, Economy, SUV, and Luxury Options
           </h2>
         </div>
       </div>
 
       {/* Main Content Section */}
-      <div className="wrapper flex h-auto min-h-screen flex-col items-center pb-8 pt-8">
+      <div className="wrapper flex h-auto min-h-screen flex-col items-center py-6">
         <section>
           <StatesForCities
             state={state}
@@ -89,7 +93,7 @@ export default async function CitiesPage(props: PageProps) {
             country={country}
           />
 
-          <Suspense fallback={<div>Loading Pagination...</div>}>
+          <Suspense fallback={<div>Loading...</div>}>
             <Pagination page={page} totalPages={totalPages} />
           </Suspense>
         </section>

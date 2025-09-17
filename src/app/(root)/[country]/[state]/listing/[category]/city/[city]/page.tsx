@@ -1,26 +1,27 @@
 import { PageProps } from "@/types";
 import { Metadata } from "next";
 import { FC } from "react";
-import { generateListingMetadata } from "../../../listing-metadata";
 
 import ListingPageRenderer from "@/components/root/listing/ListingPageRenderer";
+import { generateListingMetadata } from "../../../listing-metadata";
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
 
-  const { country, state, category } = params;
+  const { country, state, category, city } = params;
 
   return generateListingMetadata({
     country,
     state,
     category,
+    city,
   });
 }
 
-const ListingCategoryBrandPage: FC<PageProps> = async (props) => {
+const ListingCategoryCityPage: FC<PageProps> = async (props) => {
   const params = await props.params;
 
-  const { country, state, category, brand } = params;
+  const { country, state, category, city } = params;
 
   const searchParams = await props.searchParams;
 
@@ -29,10 +30,10 @@ const ListingCategoryBrandPage: FC<PageProps> = async (props) => {
       country={country}
       state={state}
       category={category}
+      city={city}
       searchParams={searchParams}
-      brand={brand}
     />
   );
 };
 
-export default ListingCategoryBrandPage;
+export default ListingCategoryCityPage;

@@ -25,7 +25,7 @@ export default async function DirectoryPage(props: PageProps) {
   const { state, country } = params;
 
   return (
-    <div className="wrapper pt-6">
+    <div className="wrapper py-6">
       <h1 className="mb-2 text-2xl font-[500] md:text-3xl">
         Affordable Vehicle Rentals in {convertToLabel(state)} | Free Directory
       </h1>

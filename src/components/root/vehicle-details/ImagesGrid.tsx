@@ -106,7 +106,7 @@ const ImagesGrid = ({
     overlayCount?: number,
     priority = false
   ) => {
-    if (item.type === 'video') {
+    if (item.type === "video") {
       return (
         <div className="relative h-full w-full">
           {!loadedImages.has(index) && (
@@ -128,6 +128,11 @@ const ImagesGrid = ({
               handleImageLoad(index);
             }}
           />
+          {overlayCount && overlayCount > 0 && loadedImages.has(index) && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center rounded-xl bg-black/60 text-xl font-semibold text-white">
+              +{overlayCount}
+            </div>
+          )}
         </div>
       );
     }
@@ -146,14 +151,14 @@ const ImagesGrid = ({
           alt={`${imageAlt} ${index + 1}`}
           fill
           className={`object-cover transition-all duration-300 group-hover:scale-105 ${
-            loadedImages.has(index) ? 'opacity-100' : 'opacity-0'
+            loadedImages.has(index) ? "opacity-100" : "opacity-0"
           }`}
           priority={priority}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           quality={priority ? 85 : 75}
           onLoad={() => handleImageLoad(index)}
           onError={(e) => {
-            console.error('Image failed to load:', item.source);
+            console.error("Image failed to load:", item.source);
             const target = e.currentTarget;
             if (item.thumbnail && target.src !== item.source) {
               target.src = item.source;
@@ -204,7 +209,7 @@ const ImagesGrid = ({
             {visibleThumbnails.map((item, index) => (
               <div
                 key={`thumb-${index}`}
-                className="relative flex-1 overflow-hidden rounded-xl"
+                className="relative aspect-square flex-1 overflow-hidden rounded-xl"
               >
                 {renderMediaItem(
                   item,
@@ -221,7 +226,7 @@ const ImagesGrid = ({
 
       {/* Mobile Layout */}
       <div className="flex h-full flex-col gap-3 md:hidden">
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl">
+        <div className="relative aspect-square w-full overflow-hidden rounded-xl">
           {renderMediaItem(mediaItems[0], 0, undefined, true)}
         </div>
 
@@ -230,7 +235,7 @@ const ImagesGrid = ({
             {mediaItems.slice(1, 4).map((item, index) => (
               <div
                 key={`mobile-${index}`}
-                className="relative flex-1 overflow-hidden rounded-xl"
+                className="relative aspect-square flex-1 overflow-hidden rounded-xl"
               >
                 {renderMediaItem(
                   item,

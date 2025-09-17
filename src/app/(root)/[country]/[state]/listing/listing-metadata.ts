@@ -1,6 +1,10 @@
 import { ENV } from "@/config/env";
 import { convertToLabel } from "@/helpers";
 import { getAbsoluteUrl, injectBrandKeyword } from "@/helpers/metadata-helper";
+import {
+  buildListingCanonicalPath,
+  isValidListingUrlCombination,
+} from "@/helpers/sitemap-helper";
 import { ListingPageMetaResponse } from "@/types";
 import { API } from "@/utils/API";
 import { getCountryName } from "@/utils/url";
@@ -12,6 +16,7 @@ type ListingPageJsonLdParams = {
   category: string;
   vehicleType?: string;
   brand?: string;
+  city?: string;
 };
 
 type FetchListingMetadataParams = {
@@ -50,43 +55,61 @@ export async function fetchListingMetadata({
   }
 }
 
-export function generateListingMetadata(
-  data: ListingPageMetaResponse | null,
-  {
+export async function generateListingMetadata({
+  country,
+  state,
+  category,
+  vehicleType,
+  brand,
+  city,
+}: {
+  country: string;
+  state: string;
+  category: string;
+  vehicleType?: string;
+  brand?: string;
+  city?: string;
+}): Promise<Metadata> {
+  //  Validate URL combination
+  if (!isValidListingUrlCombination({ vehicleType, brand, city })) {
+    throw new Error(
+      `Invalid URL combination: vehicleType=${vehicleType}, brand=${brand}, city=${city}`
+    );
+  }
+
+  // Fetch metadata from api
+  const data = await fetchListingMetadata({
+    country,
+    state,
+    category,
+    vehicleType: vehicleType || "other",
+  });
+
+  const countryName = getCountryName(country);
+  const formattedState = convertToLabel(state);
+  const formattedCategory = convertToLabel(category);
+  const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : "";
+  const formattedBrand = brand ? convertToLabel(brand) : "";
+  const cityName = city ? convertToLabel(city) : "";
+
+  // Dynamically build canonical URL
+  const canonicalPath = buildListingCanonicalPath({
     country,
     state,
     category,
     vehicleType,
     brand,
-  }: {
-    country: string;
-    state: string;
-    category: string;
-    vehicleType?: string;
-    brand?: string;
-  },
-): Metadata {
-  const formattedCategory = convertToLabel(category);
-  const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : "";
-  const formattedBrand = brand ? convertToLabel(brand) : "";
-  const formattedState = convertToLabel(state);
-  const countryName = getCountryName(country);
-
-  // Dynamically build canonical URL
-  const parts = [
-    country,
-    state,
-    "listing",
-    category,
-    ...(vehicleType ? [vehicleType] : []),
-    ...(brand ? ["brand", brand] : []),
-  ];
-  const canonicalPath = "/" + parts.join("/");
+    city,
+  });
   const canonicalUrl = getAbsoluteUrl(canonicalPath);
 
-  const fallbackMetaTitle = `Rent ${formattedBrand ? formattedBrand + " " : ""}${formattedVehicleType ? formattedVehicleType + " " : ""}${formattedCategory} in ${formattedState} | Ride Rent - ${countryName}`;
+  const locationString = city
+    ? `${cityName}, ${formattedState}`
+    : formattedState;
 
-  const fallbackMetaDescription = `Discover and rent ${formattedBrand ? `${formattedBrand} ` : ""}${formattedVehicleType ? `${formattedVehicleType} ` : ""}${formattedCategory} vehicles in ${formattedState}, ${countryName}. Best prices, easy booking on Ride Rent.`;
+  const fallbackMetaTitle = `Rent ${formattedBrand ? formattedBrand + " " : ""}${formattedVehicleType ? formattedVehicleType + " " : ""}${formattedCategory} in ${locationString} | Ride Rent - ${countryName}`;
+
+  const fallbackMetaDescription = `Discover and rent ${formattedBrand ? `${formattedBrand} ` : ""}${formattedVehicleType ? `${formattedVehicleType} ` : ""}${formattedCategory} vehicles in ${locationString}, ${countryName}. Best prices, easy booking on Ride Rent.`;
 
   const metaTitleRaw = data?.result?.metaTitle ?? fallbackMetaTitle;
   const metaDescriptionRaw =
@@ -101,7 +124,7 @@ export function generateListingMetadata(
     ? injectBrandKeyword(metaDescriptionRaw, brand)
     : metaDescriptionRaw;
 
-  const ogImage = "/assets/icons/ride-rent.png";
+  const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
 
   const shortTitle =
     metaTitle.length > 60 ? `${metaTitle.substring(0, 57)}...` : metaTitle;
@@ -113,7 +136,6 @@ export function generateListingMetadata(
   return {
     title: metaTitle,
     description: metaDescription,
-    keywords: `${category}, ${vehicleType ?? ""}, ${brand ?? ""}, rental in ${state}, vehicle rental near me`,
     openGraph: {
       title: shortTitle,
       description: shortDescription,
@@ -158,9 +180,12 @@ export function generateListingMetadata(
  * Generates a structured JSON-LD schema for a vehicle listing page,
  * including breadcrumb hierarchy, canonical URL, and organizational metadata.
  *
- * This schema improves SEO by helping search engines understand the page's
- * context, location, and structure. It dynamically adapts to different levels
- * of the listing hierarchy (category, vehicle type, brand).
+ * URL Patterns Supported:
+ * /listing/[category]
+ * /listing/[category]/[vehicleType]
+ * /listing/[category]/brand/[brand]
+ * /listing/[category]/[vehicleType]/brand/[brand]
+ * /listing/[category]/city/[city]
  */
 export function getListingPageJsonLd({
   country,
@@ -168,9 +193,9 @@ export function getListingPageJsonLd({
   category,
   vehicleType,
   brand,
+  city,
 }: ListingPageJsonLdParams) {
   const breadcrumbs: { name: string; path: string }[] = [];
-
   const countryLabel = getCountryName(country);
 
   // 1. Country homepage (e.g. /ae)
@@ -186,35 +211,43 @@ export function getListingPageJsonLd({
   });
 
   // 3. Listing category (e.g. /ae/dubai/listing/cars)
-  // (category always present)
   breadcrumbs.push({
     name: convertToLabel(category),
     path: `/${country}/${state}/listing/${category}`,
   });
 
-  // 4. Optional vehicle type (e.g. /ae/dubai/listing/cars/suv)
-  if (vehicleType) {
+  // city-specific breadcrumb logic
+  if (city) {
+    // For city pages: /ae/dubai/listing/cars/city/downtown-dubai
     breadcrumbs.push({
-      name: convertToLabel(vehicleType),
-      path: `/${country}/${state}/listing/${category}/${vehicleType}`,
+      name: convertToLabel(city),
+      path: `/${country}/${state}/listing/${category}/city/${city}`,
     });
+  } else {
+    // Original logic for non-city pages
+    // 4. Optional vehicle type (e.g. /ae/dubai/listing/cars/suv)
+    if (vehicleType) {
+      breadcrumbs.push({
+        name: convertToLabel(vehicleType),
+        path: `/${country}/${state}/listing/${category}/${vehicleType}`,
+      });
+    }
+
+    // 5. Optional brand (e.g. /ae/dubai/listing/cars/suv/brand/bmw)
+    if (brand) {
+      const baseBrandPath = `/${country}/${state}/listing/${category}`;
+      const fullBrandPath =
+        `${baseBrandPath}` +
+        (vehicleType ? `/${vehicleType}` : "") +
+        `/brand/${brand}`;
+
+      breadcrumbs.push({
+        name: convertToLabel(brand),
+        path: fullBrandPath,
+      });
+    }
   }
 
-  // 5. Optional brand (e.g. /ae/dubai/listing/cars/suv/brand/bmw)
-  if (brand) {
-    const baseBrandPath = `/${country}/${state}/listing/${category}`;
-    const fullBrandPath =
-      `${baseBrandPath}` +
-      (vehicleType ? `/${vehicleType}` : "") +
-      `/brand/${brand}`;
-
-    breadcrumbs.push({
-      name: convertToLabel(brand),
-      path: fullBrandPath,
-    });
-  }
-
-  // Final structured data path
   const fullPageUrl = getAbsoluteUrl(breadcrumbs[breadcrumbs.length - 1].path);
 
   const itemListElement = breadcrumbs.map((crumb, index) => ({
@@ -226,13 +259,41 @@ export function getListingPageJsonLd({
 
   const siteImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
 
+  // City-aware page name and description
+  const locationString = city
+    ? `${convertToLabel(city)}, ${convertToLabel(state)}` // "Downtown Dubai, Dubai"
+    : convertToLabel(state); // "Dubai"
+
+  const pageName = city
+    ? `Explore ${convertToLabel(category)} Rentals in ${locationString}` // City-specific
+    : `Explore ${convertToLabel(category)} Rentals${vehicleType ? ` - ${convertToLabel(vehicleType)}` : ""}${brand ? ` from ${convertToLabel(brand)}` : ""} in ${convertToLabel(state)}`; // Original
+
+  const pageDescription = city
+    ? `Find and rent the best ${convertToLabel(category)} in ${locationString}, ${countryLabel}. Convenient city-specific vehicle rentals with Ride Rent.` // City-specific
+    : `Find and rent the best ${convertToLabel(category)}${vehicleType ? ` (${convertToLabel(vehicleType)})` : ""}${brand ? ` from ${convertToLabel(brand)}` : ""} in ${convertToLabel(state)}, ${countryLabel}. Book your ride now with Ride Rent.`; // Original
+
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     url: fullPageUrl,
-    name: `Explore ${convertToLabel(category)} Rentals${vehicleType ? ` - ${convertToLabel(vehicleType)}` : ""}${brand ? ` from ${convertToLabel(brand)}` : ""} in ${convertToLabel(state)}`,
-    description: `Find and rent the best ${convertToLabel(category)}${vehicleType ? ` (${convertToLabel(vehicleType)})` : ""}${brand ? ` from ${convertToLabel(brand)}` : ""} in ${convertToLabel(state)}, ${countryLabel}. Book your ride now with Ride Rent.`,
+    name: pageName,
+    description: pageDescription,
     image: siteImage,
+    //  location-specific properties for city pages
+    ...(city && {
+      spatialCoverage: {
+        "@type": "Place",
+        name: locationString,
+        containedInPlace: {
+          "@type": "AdministrativeArea",
+          name: convertToLabel(state),
+          containedInPlace: {
+            "@type": "Country",
+            name: countryLabel,
+          },
+        },
+      },
+    }),
     publisher: {
       "@type": "Organization",
       name: "Ride Rent",

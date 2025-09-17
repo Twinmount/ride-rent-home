@@ -1,8 +1,8 @@
-import RentalPeriod from '@/components/dialog/price-filter-dialog/RentalPeriod';
-import { PriceRangeSlider } from '@/components/ui/price-range-slider';
-import { Skeleton } from '@/components/ui/skeleton';
-import { FiltersType } from '@/hooks/useFilters';
-import { useListingPriceFilter } from '@/hooks/useListingPriceFilter';
+import RentalPeriod from "@/components/dialog/price-filter-dialog/RentalPeriod";
+import { PriceRangeSlider } from "@/components/ui/price-range-slider";
+import { Skeleton } from "@/components/ui/skeleton";
+import { FiltersType } from "@/hooks/useFilters";
+import { useListingPriceFilter } from "@/hooks/useListingPriceFilter";
 import { useGlobalContext } from "@/context/GlobalContext";
 import { useState, useEffect } from "react";
 
@@ -54,7 +54,7 @@ export default function ListingPriceFilter({
 
   return (
     <div className="border-b pb-6">
-      <div className="flex flex-1 items-center justify-between py-4 font-medium transition-all">
+      <div className="flex flex-1 items-center justify-between py-4 font-medium text-text-secondary transition-all">
         Price Filter
       </div>
 
