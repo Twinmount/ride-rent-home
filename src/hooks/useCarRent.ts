@@ -175,10 +175,16 @@ export const useCarRent = (
       message,
       startDate,
       endDate,
+      name,
+      phone,
+      email,
     }: {
       message: string;
       startDate: Date;
       endDate: Date;
+      name: string;
+      phone: string;
+      email: string;
     }) => {
       const user = authStorage.getUser();
       if (!user?.id) {
@@ -196,6 +202,9 @@ export const useCarRent = (
         carId: vehicleData.vehicleId,
         rentalStartDate: startDate.toISOString(),
         rentalEndDate: endDate.toISOString(),
+        name,
+        phone,
+        email,
       });
     },
     onSuccess: () => {
@@ -233,6 +242,9 @@ export const useCarRent = (
       message,
       startDate,
       endDate,
+      name: userProfile?.data?.name || "John Doe",
+      phone: userProfile?.data?.phoneNumber || "+1234567890",
+      email: userProfile?.data?.email || "john.doe@example.com",
     });
   };
 
