@@ -27,6 +27,8 @@ import {
 import Link from "next/link";
 import { getUserEnquiredVehicles } from "@/lib/api/userActions.api";
 import { authStorage } from "@/lib/auth";
+import { ENV } from "@/config/env";
+import { getPrimaryVehicleImageUrl, getVehicleImageUrl } from "@/utils/imageUrl";
 
 // Types for the API response
 interface VehicleSpecs {
@@ -190,7 +192,9 @@ export default function EnquiredVehiclesPage() {
       const response = await getUserEnquiredVehicles(user.id, page, 10, "DESC");
       
       if (response.status === 'SUCCESS') {
-        setEnquiredVehicles(response.result.list || []);
+        const vehicles = response.result.list || [];
+        console.log('🚗 Enquired vehicles API response sample:', vehicles[0]?.vehicleDetails?.vehiclePhotos);
+        setEnquiredVehicles(vehicles);
         setTotalEnquiries(response.result.total || 0);
         setTotalPages(response.result.totalNumberOfPages || 0);
         setCurrentPage(page);
@@ -211,12 +215,7 @@ export default function EnquiredVehiclesPage() {
 
   // Helper function to get vehicle image URL
   const getVehicleImage = (photos: string[]) => {
-    if (photos && photos.length > 0) {
-      // Assuming you have a base URL for your images
-      const baseUrl = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || process.env.NEXT_PUBLIC_API_URL || '';
-      return `${baseUrl}/api/images/${photos[0]}`;
-    }
-    return "/placeholder.svg";
+    return getPrimaryVehicleImageUrl(photos);
   };
 
   // Helper function to format date
@@ -457,11 +456,33 @@ export default function EnquiredVehiclesPage() {
                   <div className="flex flex-col gap-6 lg:flex-row">
                     {/* Vehicle Image */}
                     <div className="flex-shrink-0 lg:w-64">
-                      <img
-                        src={vehicleImage}
-                        alt={vehicle.vehicleDetails.vehicleModel}
-                        className="h-40 w-full rounded-lg object-cover lg:h-32"
-                      />
+                      <div className="relative h-40 w-full lg:h-32">
+                        <img
+                          src={vehicleImage}
+                          alt={vehicle.vehicleDetails.vehicleModel}
+                          className="h-full w-full rounded-lg object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            // Try alternative image sources if available
+                            if (vehicle.vehicleDetails.vehiclePhotos.length > 1 && !target.src.includes('placeholder')) {
+                              const nextImageIndex = vehicle.vehicleDetails.vehiclePhotos.findIndex(photo => target.src.includes(photo)) + 1;
+                              if (nextImageIndex < vehicle.vehicleDetails.vehiclePhotos.length) {
+                                target.src = getVehicleImageUrl(vehicle.vehicleDetails.vehiclePhotos[nextImageIndex]);
+                                return;
+                              }
+                            }
+                            // Final fallback to placeholder
+                            target.src = "/placeholder.svg";
+                          }}
+                          onLoad={() => {
+                            console.log('Image loaded successfully:', vehicleImage);
+                          }}
+                        />
+                        {/* Loading overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg opacity-0 transition-opacity duration-200 peer-loading:opacity-100">
+                          <div className="text-gray-400 text-sm">Loading...</div>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Vehicle Details */}
