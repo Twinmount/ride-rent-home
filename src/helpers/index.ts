@@ -102,7 +102,11 @@ export const formatKeyForIcon = (key: string) => {
 
 // Helper function to format phone numbers
 export const formatPhoneNumber = (countryCode: string, phoneNumber: string) => {
-  return `+${countryCode} ${phoneNumber}`;
+  const formattedCountryCode = countryCode.startsWith('+')
+    ? countryCode
+    : `+${countryCode}`;
+
+  return `${formattedCountryCode} ${phoneNumber}`;
 };
 
 // change to singular
