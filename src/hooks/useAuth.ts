@@ -1,45 +1,35 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
-import { useImmer } from 'use-immer';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
+import { useImmer } from "use-immer";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
   LoginData,
-  SignupData,
   PhoneSignupData,
   User,
   AuthResponse,
   AuthError,
   AuthState,
   InternalAuthState,
-  AuthStorageKeys,
-  PasswordValidationResult,
-  AuthStorageInterface,
-  UseAuthReturn,
-  OtpVerificationData,
   SetPasswordData,
-  ResendOtpData,
   ProfileUpdateData,
-} from '@/types/auth.types';
+} from "@/types/auth.types";
 
 // Import constants
-import { STORAGE_KEYS, ERROR_MESSAGES } from '@/constants/auth.constants';
+import { STORAGE_KEYS, ERROR_MESSAGES } from "@/constants/auth.constants";
 
 // Import utilities
 import {
   validateEmail,
   validatePhoneNumber,
   validatePassword,
-  clearAuthStorage,
-  getStorageType,
-  parseStoredUser,
   createAuthError,
-} from '@/utils/auth.utils';
+} from "@/utils/auth.utils";
 
 // Import auth API service
-import { authAPI } from '@/lib/api/auth.api';
-import { authStorage } from '@/lib/auth/authStorage';
+import { authAPI } from "@/lib/api/auth.api";
+import { authStorage } from "@/lib/auth/authStorage";
 
 // Remove the old API_BASE_URL and AUTH_ENDPOINTS since they're now in the auth.api.ts file
 
@@ -66,10 +56,47 @@ export const useAuth = () => {
 
   const [isLoginOpen, setLoginOpen] = useImmer(false);
 
+  const [userAuthStep, setUserAuthStep] = useImmer({
+    userId: "",
+    otpId: "",
+    name: "",
+    otpExpiresIn: 5,
+  });
+
   // React Query Mutations
+  const checkUserExistsMutation = useMutation({
+    mutationFn: ({
+      phoneNumber,
+      countryCode,
+    }: {
+      phoneNumber: string;
+      countryCode: string;
+    }) => authAPI.checkUserExists(phoneNumber, countryCode),
+    onSuccess: (data) => {
+      if (data.success && data.data) {
+        setUserAuthStep((draft) => {
+          draft.name = data?.data?.name || "";
+        });
+      }
+      setError(null);
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
   const signupMutation = useMutation({
     mutationFn: authAPI.signup,
     onSuccess: (data) => {
+      // Store user ID and OTP ID for OTP verification
+      if (data.success && data.data) {
+        setUserAuthStep((draft) => {
+          draft.userId = data.data?.userId || "";
+          draft.otpId = data.data?.otpId || "";
+          draft.otpExpiresIn = data.data?.otpExpiresIn || 5;
+        });
+      }
+
       setError(null);
     },
     onError: (error: Error) => {
@@ -105,34 +132,20 @@ export const useAuth = () => {
           draft.token = data?.accessToken!;
           draft.refreshToken = data?.refreshToken!;
         });
-
+        // setLoginOpen(false);
         setError(null);
-        console.log('Login successful:', data);
+        console.log("Login successful:", data);
       }
     },
     onError: (error: Error) => {
       setError({ message: error.message });
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     },
   });
 
   const verifyOtpMutation = useMutation({
     mutationFn: authAPI.verifyOtp,
     onSuccess: (data) => {
-      if (data.success && data.data && data.data.user && data.data.token) {
-        setAuthenticated(
-          data.data.user,
-          data.data.token,
-          data.data.refreshToken || undefined,
-          true
-        );
-        setAuth((draft) => {
-          draft.isLoggedIn = true;
-          draft.user = data.data!.user || null;
-          draft.token = data.data!.token || null;
-          draft.refreshToken = data.data!.refreshToken || null;
-        });
-      }
       setError(null);
     },
     onError: (error: Error) => {
@@ -169,8 +182,9 @@ export const useAuth = () => {
           draft.refreshToken = data?.refreshToken!;
         });
       }
+      setLoginOpen(false);
       setError(null);
-      console.log('Password set successfully:', data);
+      console.log("Password set successfully:", data);
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -181,7 +195,7 @@ export const useAuth = () => {
     mutationFn: authAPI.resendOtp,
     onSuccess: (data) => {
       setError(null);
-      console.log('OTP resent successfully:', data);
+      console.log("OTP resent successfully:", data);
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -198,7 +212,7 @@ export const useAuth = () => {
     }) => authAPI.updateProfile(userId, profileData),
     onSuccess: (data) => {
       setError(null);
-      console.log('Profile updated successfully:', data);
+      console.log("Profile updated successfully:", data);
 
       // Update user state with new name and avatar, preserving existing fields
       updateState((draft) => {
@@ -238,7 +252,7 @@ export const useAuth = () => {
     },
     onError: (error: Error) => {
       setError({ message: error.message });
-      console.error('Profile update failed:', error);
+      console.error("Profile update failed:", error);
     },
   });
 
@@ -255,7 +269,7 @@ export const useAuth = () => {
       queryClient.clear(); // Clear all cached data on logout
     },
     onError: (error) => {
-      console.warn('Logout request failed:', error);
+      console.warn("Logout request failed:", error);
       // Continue with logout even if server request fails
       setAuthenticated(null);
       setAuth((draft) => {
@@ -270,7 +284,7 @@ export const useAuth = () => {
   // React Query for getUserProfile
   const useGetUserProfile = (userId: string, enabled: boolean = true) => {
     return useQuery({
-      queryKey: ['userProfile', userId],
+      queryKey: ["userProfile", userId],
       queryFn: () => authAPI.getUserProfile(userId),
       enabled: !!userId && enabled && !!authStorage.getToken(),
       // retry: 2,
@@ -286,17 +300,7 @@ export const useAuth = () => {
   };
 
   const handleProfileNavigation = () => {
-    // console.log('handleProfileNavigation called');
-    // console.log('isAuthenticated:', state.isAuthenticated);
-
-    // if (!state.isAuthenticated) {
-    //   console.log('User not authenticated, showing error');
-    //   setError({ message: 'Please login to access your profile' });
-    //   return;
-    // }
-
-    // console.log('Navigating to /user-profile');
-    router.push('/user-profile');
+    router.push("/user-profile");
   };
 
   const setLoading = useCallback(
@@ -323,8 +327,6 @@ export const useAuth = () => {
     refreshToken?: string,
     rememberMe: boolean = false
   ) => {
-    console.log('token: setAuthenticated', token);
-    console.log('user:setAuthenticated ', user);
     if (user && token) {
       authStorage.setToken(token, rememberMe);
       authStorage.setUser(user, rememberMe);
@@ -349,12 +351,12 @@ export const useAuth = () => {
 
   const login = async (loginData: LoginData): Promise<AuthResponse> => {
     try {
-      console.log('login function called');
+      console.log("login function called");
 
       // Validate input
-      if (!validatePhoneNumber(loginData.phoneNumber)) {
-        throw new Error(ERROR_MESSAGES.INVALID_PHONE);
-      }
+      // if (!validatePhoneNumber(loginData.phoneNumber)) {
+      //   throw new Error(ERROR_MESSAGES.INVALID_PHONE);
+      // }
 
       if (!loginData.password) {
         throw new Error(ERROR_MESSAGES.PASSWORD_REQUIRED);
@@ -376,98 +378,81 @@ export const useAuth = () => {
   };
 
   // Signup function
-  const signup = useCallback(
-    async (signupData: PhoneSignupData): Promise<AuthResponse> => {
-      try {
-        // Validate input
-        if (!validatePhoneNumber(signupData.phoneNumber)) {
-          throw new Error(ERROR_MESSAGES.INVALID_PHONE);
-        }
-
-        if (!signupData.countryCode) {
-          throw new Error(ERROR_MESSAGES.COUNTRY_CODE_REQUIRED);
-        }
-
-        if (!signupData.countryId) {
-          throw new Error(ERROR_MESSAGES.COUNTRY_ID_REQUIRED);
-        }
-
-        // Use React Query mutation
-        return signupMutation.mutateAsync({
-          phoneNumber: signupData.phoneNumber,
-          countryCode: signupData.countryCode,
-          countryId: signupData.countryId,
-        });
-      } catch (error) {
-        const authError = createAuthError(
-          error instanceof Error ? error.message : ERROR_MESSAGES.SIGNUP_FAILED
-        );
-        setError(authError);
-        throw authError;
+  const signup = async (signupData: PhoneSignupData): Promise<AuthResponse> => {
+    try {
+      if (!signupData.countryCode) {
+        throw new Error(ERROR_MESSAGES.COUNTRY_CODE_REQUIRED);
       }
-    },
-    [signupMutation]
-  );
+      // Use React Query mutation
+      return signupMutation.mutateAsync({
+        phoneNumber: signupData.phoneNumber,
+        countryCode: signupData.countryCode,
+        countryId: signupData.countryId,
+      });
+    } catch (error) {
+      const authError = createAuthError(
+        error instanceof Error ? error.message : ERROR_MESSAGES.SIGNUP_FAILED
+      );
+      setError(authError);
+      throw authError;
+    }
+  };
 
   // Logout function
   const logout = async (id?: string): Promise<void> => {
     try {
       await logoutMutation.mutateAsync({ userId: id });
     } catch (error) {
-      console.warn('Logout request failed:', error);
+      console.warn("Logout request failed:", error);
     }
   };
 
   // Verify OTP function
-  const verifyOTP = useCallback(
-    async (
-      userId: string,
-      otpId: string,
-      otp: string
-    ): Promise<AuthResponse> => {
-      try {
-        return verifyOtpMutation.mutateAsync({
-          userId,
-          otpId,
-          otp,
-        });
-      } catch (error) {
-        const authError: AuthError = {
-          message:
-            error instanceof Error ? error.message : 'OTP verification failed',
-        };
-        setError(authError);
-        throw authError;
-      }
-    },
-    [verifyOtpMutation]
-  );
+  const verifyOTP = async (
+    userId: string,
+    otpId: string,
+    otp: string
+  ): Promise<AuthResponse> => {
+    try {
+      return verifyOtpMutation.mutateAsync({
+        userId,
+        otpId,
+        otp,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error ? error.message : "OTP verification failed",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
 
   // Set Password function
-  const setPassword = useCallback(
-    async (passwordData: SetPasswordData): Promise<AuthResponse> => {
-      try {
-        const passwordValidation = validatePassword(passwordData.password);
-        if (!passwordValidation.isValid) {
-          throw new Error(passwordValidation.errors[0]);
-        }
-
-        if (passwordData.password !== passwordData.confirmPassword) {
-          throw new Error('Passwords do not match');
-        }
-
-        return setPasswordMutation.mutateAsync(passwordData);
-      } catch (error) {
-        const authError: AuthError = {
-          message:
-            error instanceof Error ? error.message : 'Failed to set password',
-        };
-        setError(authError);
-        throw authError;
+  const setPassword = async (
+    passwordData: SetPasswordData
+  ): Promise<AuthResponse> => {
+    try {
+      const passwordValidation = validatePassword(passwordData.password);
+      if (!passwordValidation.isValid) {
+        throw new Error(passwordValidation.errors[0]);
       }
-    },
-    [setPasswordMutation]
-  );
+
+      if (passwordData.password !== passwordData.confirmPassword) {
+        throw new Error("Passwords do not match");
+      }
+
+      return setPasswordMutation.mutateAsync(passwordData);
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error ? error.message : "Failed to set password",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
 
   // Resend OTP function
   const resendOTP = useCallback(
@@ -480,7 +465,7 @@ export const useAuth = () => {
       } catch (error) {
         const authError: AuthError = {
           message:
-            error instanceof Error ? error.message : 'Failed to resend OTP',
+            error instanceof Error ? error.message : "Failed to resend OTP",
         };
         setError(authError);
         throw authError;
@@ -502,7 +487,29 @@ export const useAuth = () => {
     } catch (error) {
       const authError: AuthError = {
         message:
-          error instanceof Error ? error.message : 'Failed to update profile',
+          error instanceof Error ? error.message : "Failed to update profile",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
+  // Check if user exists function
+  const checkUserExists = async (
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<AuthResponse> => {
+    try {
+      return checkUserExistsMutation.mutateAsync({
+        phoneNumber,
+        countryCode,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to check user existence",
       };
       setError(authError);
       throw authError;
@@ -510,21 +517,21 @@ export const useAuth = () => {
   };
 
   const formatMemberSince = (createdAt: string): string => {
-    if (!createdAt) return 'Member since -'; // fallback if empty
+    if (!createdAt) return "Member since -"; // fallback if empty
 
     const date = new Date(createdAt);
 
     if (isNaN(date.getTime())) {
-      return 'Member since -'; // fallback if invalid date
+      return "Member since -"; // fallback if invalid date
     }
 
     const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      timeZone: 'UTC', // keep consistent formatting
+      year: "numeric",
+      month: "long",
+      timeZone: "UTC", // keep consistent formatting
     };
 
-    const formattedDate = new Intl.DateTimeFormat('en-US', options).format(
+    const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
       date
     );
     return `Member since ${formattedDate}`;
@@ -541,10 +548,12 @@ export const useAuth = () => {
     ...state,
     isLoginOpen,
     authStorage,
+    userAuthStep,
 
     // Loading states from mutations
     isLoading:
       state.isLoading ||
+      checkUserExistsMutation.isPending ||
       signupMutation.isPending ||
       loginMutation.isPending ||
       verifyOtpMutation.isPending ||
@@ -554,6 +563,7 @@ export const useAuth = () => {
       logoutMutation.isPending,
 
     // Actions
+    checkUserExists,
     login,
     signup,
     logout,
@@ -569,6 +579,7 @@ export const useAuth = () => {
     useGetUserProfile,
 
     // Mutation states for granular loading control
+    checkUserExistsMutation,
     signupMutation,
     loginMutation,
     verifyOtpMutation,

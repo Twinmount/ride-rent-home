@@ -720,6 +720,9 @@ export const sendRentalEnquiry = async ({
   message,
   rentalStartDate,
   rentalEndDate,
+  name,
+  phone,
+  email,
   country = "ae",
 }: {
   userId: string;
@@ -728,6 +731,9 @@ export const sendRentalEnquiry = async ({
   message: string;
   rentalStartDate: string;
   rentalEndDate: string;
+  name: string;
+  phone: string;
+  email: string;
   country?: string;
 }) => {
   try {
@@ -751,6 +757,9 @@ export const sendRentalEnquiry = async ({
         message,
         rentalStartDate,
         rentalEndDate,
+        name,
+        phone,
+        email,
       }),
     });
 

@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import { useParams } from 'next/navigation';
-import { useShouldRender } from '@/hooks/useShouldRender';
-import { SearchDialog } from '../dialog/search-dialog/SearchDialog';
-import { extractCategory } from '@/helpers';
-import { noStatesDropdownRoutes } from '.';
-import LanguageSelector from './LanguageSelector';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { LocationDialog } from '../dialog/location-dialog/LocationDialog';
-import { useEffect, useState } from 'react';
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import { useShouldRender } from "@/hooks/useShouldRender";
+import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
+import { extractCategory } from "@/helpers";
+import { noStatesDropdownRoutes } from ".";
+import LanguageSelector from "./LanguageSelector";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { LocationDialog } from "../dialog/location-dialog/LocationDialog";
+import { useEffect, useState } from "react";
 import {
   AlignRight,
   User,
@@ -20,14 +20,14 @@ import {
   Edit3,
   Settings,
   LogOut,
-} from 'lucide-react';
-import { Button } from '../ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Badge } from '../ui/badge';
-import RegisterLinkButton from '../common/RegisterLinkButton';
-import RideRentNavbarLogo from '../common/RideRentNavbarLogo';
-import { LoginDialog } from '../dialog/login-dialog';
-import { useAuthContext } from '@/auth';
+} from "lucide-react";
+import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Badge } from "../ui/badge";
+import RegisterLinkButton from "../common/RegisterLinkButton";
+import RideRentNavbarLogo from "../common/RideRentNavbarLogo";
+import { LoginDialog } from "../dialog/login-dialog";
+import { useAuthContext } from "@/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,10 +35,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
+} from "../ui/dropdown-menu";
+import { LoginDrawer } from "../dialog/login-dialog/LoginDrawer";
 
 // dynamic import for sidebar
-const MobileSidebar = dynamic(() => import('../sidebar/MobileSidebar'), {
+const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
   loading: () => (
     // fallback while loading sidebar
     <Button className="border-none outline-none" size="icon" disabled>
@@ -58,16 +59,17 @@ export const Navbar = () => {
     onHandleLoginmodal,
     handleProfileNavigation,
   } = useAuthContext();
+
   const params = useParams<{
     state: string;
     category: string;
     country: string;
   }>();
 
-  const country = (params?.country as string) || 'ae';
+  const country = (params?.country as string) || "ae";
 
-  const [state, setState] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
+  const [state, setState] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
 
   useEffect(() => {
     // Check if param values exist
@@ -76,42 +78,42 @@ export const Navbar = () => {
 
     // If present in params, store in localStorage
     if (paramState) {
-      localStorage.setItem('state', paramState);
+      localStorage.setItem("state", paramState);
     }
     if (paramCategory) {
-      localStorage.setItem('category', paramCategory);
+      localStorage.setItem("category", paramCategory);
     }
 
     // Fallback order: params → localStorage → default
-    const storedState = localStorage.getItem('state');
-    const storedCategory = localStorage.getItem('category');
+    const storedState = localStorage.getItem("state");
+    const storedCategory = localStorage.getItem("category");
 
     const finalState =
-      paramState || storedState || (country === 'in' ? 'bangalore' : 'dubai');
+      paramState || storedState || (country === "in" ? "bangalore" : "dubai");
 
-    const finalCategory = paramCategory || storedCategory || 'cars';
+    const finalCategory = paramCategory || storedCategory || "cars";
 
     setState(finalState);
     setCategory(extractCategory(finalCategory));
   }, [params, country]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'geolocation' in navigator) {
+    if (typeof window !== "undefined" && "geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           // Save to localStorage
           sessionStorage.setItem(
-            'userLocation',
+            "userLocation",
             JSON.stringify({ latitude, longitude })
           );
         },
         (error) => {
-          console.error('Error getting location:', error);
+          console.error("Error getting location:", error);
         }
       );
     } else {
-      console.warn('Geolocation is not supported');
+      console.warn("Geolocation is not supported");
     }
   }, []);
 
@@ -121,11 +123,11 @@ export const Navbar = () => {
 
   // Handle logout function
   const handleLogout = () => {
-    logout(auth?.user?.id || '');
+    logout(auth?.user?.id || "");
   };
 
   // Get user name from auth state
-  const userName = user ? `${user.name}` : 'User';
+  const userName = user ? `${user.name}` : "User";
 
   return (
     <header
@@ -148,7 +150,6 @@ export const Navbar = () => {
             <li>
               <SearchDialog state={state} category={category} />
             </li>
-
             <li>
               <LanguageSelector
                 theme="navbar"
@@ -158,14 +159,12 @@ export const Navbar = () => {
                 className="navbar-lang-selector"
               />
             </li>
-
             {/* Location */}
             {!shouldRenderDropdowns && (
               <li className="-mx-2 w-fit">
                 <LocationDialog />
               </li>
             )}
-
             {/* List Button */}
             <li className="hidden lg:block">
               <RegisterLinkButton country={country} />
@@ -192,9 +191,9 @@ export const Navbar = () => {
                         <AvatarImage src={user?.avatar} alt={userName} />
                         <AvatarFallback className="bg-orange-100 font-semibold text-orange-600">
                           {userName
-                            .split(' ')
+                            .split(" ")
                             .map((n) => n[0])
-                            .join('')}
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
                     </DropdownMenuTrigger>
@@ -249,16 +248,10 @@ export const Navbar = () => {
                 </Button>
               )}
             </div>
-            <LoginDialog
-              // login={login}
+            <LoginDrawer
               isOpen={isLoginOpen}
               onClose={() => onHandleLoginmodal({ isOpen: false })}
             />
-
-            {/* <li className="max-sm:hidden">
-              <ProfileDropdown />
-            </li> */}
-
             {isMobile && (
               <li>
                 <MobileSidebar />

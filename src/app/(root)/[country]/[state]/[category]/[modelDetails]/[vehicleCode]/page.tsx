@@ -92,6 +92,7 @@ export default async function VehicleDetails(props: ParamsProps) {
   }
 
   const vehicle = data.result;
+  // console.log("vehicle:[page] ", vehicle);
 
   // generating prop data for profile card and mobile profile card
   const ProfileCardData: ProfileCardDataType = {
@@ -131,6 +132,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   // const videos = vehicle?.vehicleVideos ?? [];
   const images = vehicle?.vehiclePhotos ?? [];
+  console.log("images: ", images);
 
   // // Add all videos first
   // for (const video of videos) {
@@ -210,8 +212,8 @@ export default async function VehicleDetails(props: ParamsProps) {
 
         {/* Wrapper to handle client side logic regarding mobile profile card */}
         <DetailsSectionClientWrapper
-          profileData={ProfileCardData}
           country={country}
+          profileData={ProfileCardData}
         >
           {/* Vehicle Images Grid */}
           <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-6">
@@ -224,7 +226,13 @@ export default async function VehicleDetails(props: ParamsProps) {
             </div>
 
             <div className="w-full p-2 lg:w-[45%]">
-              <ProfileCard profileData={ProfileCardData} country={country} />
+              {vehicle && (
+                <ProfileCard
+                  profileData={ProfileCardData}
+                  country={country}
+                  vehicle={vehicle}
+                />
+              )}
             </div>
           </div>
 

@@ -3,21 +3,24 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
   AxiosInstance,
-} from 'axios';
-import { authStorage } from '@/lib/auth/authStorage';
-import { ENV } from '@/config/env';
+} from "axios";
+import { authStorage } from "@/lib/auth/authStorage";
+import { ENV } from "@/config/env";
 
 // Define API base URLs
 const API_ENDPOINTS = {
   AUTH:
-    ENV.NEXT_PUBLIC_AUTH_API_URL || 'http://localhost:5000/v1/riderent/auth/',
-  MAIN: ENV.API_URL || ENV.NEXT_PUBLIC_API_URL || 'http://localhost:5000',
+    ENV.NEXT_PUBLIC_AUTH_API_URL || "http://localhost:5000/v1/riderent/auth/",
+  MAIN:
+    ENV.API_URL ||
+    ENV.NEXT_PUBLIC_API_URL ||
+    "http://localhost:3001/v1/riderent",
   INDIA:
     ENV.API_URL_INDIA ||
     ENV.NEXT_PUBLIC_API_URL_INDIA ||
-    'http://localhost:5000',
+    "http://localhost:5000",
   ASSETS:
-    ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL || 'http://localhost:5000',
+    ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL || "http://localhost:5000",
 } as const;
 
 // Flag to prevent multiple refresh attempts
@@ -40,7 +43,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
   try {
     const user = authStorage.getUser();
     if (!user?.id) {
-      throw new Error('No user found');
+      throw new Error("No user found");
     }
 
     // Use a fresh axios instance for refresh to avoid circular dependency
@@ -48,11 +51,11 @@ const refreshAccessToken = async (): Promise<string | null> => {
       baseURL: API_ENDPOINTS.AUTH,
       timeout: 10000,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
-    const response = await refreshClient.post('/refresh-access-token', {
+    const response = await refreshClient.post("/refresh-access-token", {
       userId: user.id,
     });
 
@@ -67,14 +70,14 @@ const refreshAccessToken = async (): Promise<string | null> => {
       return newToken;
     }
 
-    throw new Error('Failed to refresh token');
+    throw new Error("Failed to refresh token");
   } catch (error) {
-    console.error('Token refresh failed:', error);
+    console.error("Token refresh failed:", error);
     // Clear auth storage and redirect to login
     authStorage.clear();
     // Optionally redirect to login page
-    if (typeof window !== 'undefined') {
-      window.location.href = '/';
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
     }
     return null;
   }
@@ -86,7 +89,7 @@ const createApiClient = (baseURL: string): AxiosInstance => {
     baseURL,
     timeout: 10000,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
 
@@ -145,7 +148,7 @@ const createApiClient = (baseURL: string): AxiosInstance => {
             return client(originalRequest);
           }
         } catch (refreshError) {
-          console.log('refreshError: ', refreshError);
+          console.log("refreshError: ", refreshError);
           isRefreshing = false;
           // Clear waiting subscribers
           refreshSubscribers = [];

@@ -40,18 +40,18 @@ export const validatePassword = (
   if (password.length < VALIDATION_PATTERNS.PASSWORD.MIN_LENGTH) {
     errors.push(PASSWORD_ERRORS.MIN_LENGTH);
   }
-  if (!VALIDATION_PATTERNS.PASSWORD.LOWERCASE.test(password)) {
-    errors.push(PASSWORD_ERRORS.LOWERCASE);
-  }
-  if (!VALIDATION_PATTERNS.PASSWORD.UPPERCASE.test(password)) {
-    errors.push(PASSWORD_ERRORS.UPPERCASE);
-  }
-  if (!VALIDATION_PATTERNS.PASSWORD.DIGIT.test(password)) {
-    errors.push(PASSWORD_ERRORS.DIGIT);
-  }
-  if (!VALIDATION_PATTERNS.PASSWORD.SPECIAL.test(password)) {
-    errors.push(PASSWORD_ERRORS.SPECIAL);
-  }
+  // if (!VALIDATION_PATTERNS.PASSWORD.LOWERCASE.test(password)) {
+  //   errors.push(PASSWORD_ERRORS.LOWERCASE);
+  // }
+  // if (!VALIDATION_PATTERNS.PASSWORD.UPPERCASE.test(password)) {
+  //   errors.push(PASSWORD_ERRORS.UPPERCASE);
+  // }
+  // if (!VALIDATION_PATTERNS.PASSWORD.DIGIT.test(password)) {
+  //   errors.push(PASSWORD_ERRORS.DIGIT);
+  // }
+  // if (!VALIDATION_PATTERNS.PASSWORD.SPECIAL.test(password)) {
+  //   errors.push(PASSWORD_ERRORS.SPECIAL);
+  // }
 
   return {
     isValid: errors.length === 0,

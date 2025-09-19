@@ -1,4 +1,4 @@
-import { mainApiClient } from './axios.config';
+import { mainApiClient } from "./axios.config";
 import type {
   UserVehiclesResponse,
   UserVehiclesRequest,
@@ -6,7 +6,7 @@ import type {
   SavedVehicle,
   ViewedVehicle,
   UserAction,
-} from './userActions.api.types';
+} from "./userActions.api.types";
 
 // Generic function to fetch user vehicles by action type
 export const getUserVehiclesByAction = async (
@@ -30,28 +30,30 @@ export const getUserVehiclesByAction = async (
 // Specific function for enquired vehicles
 export const getUserEnquiredVehicles = async (
   userId: string,
-  page: number = 1,
-  limit: number = 20
-): Promise<EnquiredVehicle[]> => {
-  const response = await getUserVehiclesByAction({
-    userId,
-    actionType: 'enquired',
-    page,
-    limit,
+  page: number = 0,
+  limit: number = 10,
+  sortOrder: "ASC" | "DESC" = "DESC"
+): Promise<any> => {
+  const response = await mainApiClient.get(`/user-cars/enquired/${userId}`, {
+    params: {
+      page,
+      limit,
+      sortOrder,
+    },
   });
 
-  return response.result.vehicles as EnquiredVehicle[];
+  return response.data;
 };
 
 // Specific function for saved vehicles
 export const getUserSavedVehicles = async (
   userId: string,
-  page: number = 1,
-  limit: number = 20
+  page: number = 0,
+  limit: number = 10
 ): Promise<SavedVehicle[]> => {
   const response = await getUserVehiclesByAction({
     userId,
-    actionType: 'saved',
+    actionType: "saved",
     page,
     limit,
   });
@@ -62,17 +64,22 @@ export const getUserSavedVehicles = async (
 // Specific function for viewed vehicles
 export const getUserViewedVehicles = async (
   userId: string,
-  page: number = 1,
-  limit: number = 20
-): Promise<ViewedVehicle[]> => {
-  const response = await getUserVehiclesByAction({
-    userId,
-    actionType: 'viewed',
-    page,
-    limit,
-  });
+  page: number = 0,
+  limit: number = 10,
+  sortOrder: "ASC" | "DESC" = "DESC"
+): Promise<UserVehiclesResponse> => {
+  const response = await mainApiClient.get<UserVehiclesResponse>(
+    `/user-cars/viewed/${userId}`,
+    {
+      params: {
+        page,
+        limit,
+        sortOrder,
+      },
+    }
+  );
 
-  return response.result.vehicles as ViewedVehicle[];
+  return response.data;
 };
 
 // Function to remove a vehicle from user's saved list
@@ -89,7 +96,7 @@ export const addToSaved = async (
   vehicleId: string,
   metadata: Record<string, any> = {}
 ): Promise<void> => {
-  await mainApiClient.post('/user-cars/saved', {
+  await mainApiClient.post("/user-cars/saved", {
     userId,
     vehicleId,
     metadata,
@@ -102,11 +109,11 @@ export const submitVehicleEnquiry = async (
   vehicleId: string,
   enquiryData: {
     message?: string;
-    contactPreference?: 'phone' | 'email' | 'whatsapp';
+    contactPreference?: "phone" | "email" | "whatsapp";
     metadata?: Record<string, any>;
   }
 ): Promise<void> => {
-  await mainApiClient.post('/user-cars/enquiry', {
+  await mainApiClient.post("/user-cars/enquiry", {
     userId,
     vehicleId,
     ...enquiryData,

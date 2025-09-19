@@ -5,10 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Trash2, RefreshCw, AlertCircle } from "lucide-react";
-import {
-  useUserSavedVehicles,
-  useRemoveFromSaved,
-} from "@/hooks/useUserActions";
+import { useUserActions } from "@/hooks/useUserActions";
 import { useAppContext } from "@/context/useAppContext";
 import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
@@ -26,6 +23,10 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
 
   const userId = user?.id || authStorage.getUser()?.id;
 
+  // Use the useUserActions hook
+  const { useUserSavedVehicles, removeFromSaved, removeFromSavedMutation } =
+    useUserActions();
+
   const {
     data: savedVehicles,
     isLoading,
@@ -39,9 +40,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
     limit: 20,
   });
 
-  const removeFromSavedMutation = useRemoveFromSaved();
-
-  // Transform saved vehicles data to match VehicleGrid format
+  // Transform saved vehicles data to match VehicleListSection format
   const transformedVehicles = React.useMemo(() => {
     if (!savedVehicles?.length) return {};
 
@@ -59,7 +58,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
 
   const handleRemoveFromSaved = async (vehicleId: string) => {
     try {
-      await removeFromSavedMutation.mutateAsync(vehicleId);
+      await removeFromSaved(vehicleId);
     } catch (error) {
       console.error("Failed to remove from saved:", error);
     }

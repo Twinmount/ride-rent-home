@@ -1,4 +1,5 @@
 // Authentication related type definitions and interfaces
+import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 
 /**
  * Login request data interface
@@ -191,6 +192,13 @@ export interface AuthStorageInterface {
   clear: () => void;
 }
 
+export interface UserAuthStep {
+  userId: string;
+  otpId: string;
+  name: string;
+  otpExpiresIn: number;
+}
+
 /**
  * Auth API functions interface
  */
@@ -226,6 +234,7 @@ export interface UseAuthReturn {
   isLoginOpen: boolean;
   isLoading: boolean;
   authStorage: AuthStorageInterface;
+  userAuthStep: UserAuthStep;
 
   // Actions
   login: (loginData: LoginData) => Promise<AuthResponse>;
@@ -248,18 +257,56 @@ export interface UseAuthReturn {
   clearError: () => void;
   onHandleLoginmodal: (config: { isOpen: boolean }) => void;
   handleProfileNavigation: () => void;
+  checkUserExists: (
+    phoneNumber: string,
+    countryCode: string
+  ) => Promise<AuthResponse>;
 
   // Queries
-  useGetUserProfile: (userId: string, enabled?: boolean) => any; // UseQueryResult from @tanstack/react-query
+  useGetUserProfile: (
+    userId: string,
+    enabled?: boolean
+  ) => UseQueryResult<AuthResponse, Error>;
 
   // React Query mutations
-  signupMutation: any; // UseMutationResult from @tanstack/react-query
-  loginMutation: any;
-  verifyOtpMutation: any;
-  setPasswordMutation: any;
-  resendOtpMutation: any;
-  updateUserNameAndAvatar: any;
-  logoutMutation: any;
+  checkUserExistsMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    { phoneNumber: string; countryCode: string },
+    unknown
+  >;
+  signupMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    PhoneSignupData,
+    unknown
+  >;
+  loginMutation: UseMutationResult<AuthResponse, Error, LoginData, unknown>;
+  verifyOtpMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    OtpVerificationData,
+    unknown
+  >;
+  setPasswordMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    SetPasswordData,
+    unknown
+  >;
+  resendOtpMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    ResendOtpData,
+    unknown
+  >;
+  updateUserNameAndAvatar: UseMutationResult<
+    AuthResponse,
+    Error,
+    { userId: string; profileData: ProfileUpdateData },
+    unknown
+  >;
+  logoutMutation: UseMutationResult<AuthResponse, Error, { userId?: string }, unknown>;
 
   // Utilities
   validateEmail: (email: string) => boolean;
@@ -345,11 +392,11 @@ export interface ValidationError {
  * Authentication flow step enum
  */
 export enum AuthFlow {
-  SIGNUP = 'signup',
-  VERIFY_OTP = 'verify_otp',
-  SET_PASSWORD = 'set_password',
-  LOGIN = 'login',
-  COMPLETED = 'completed',
+  SIGNUP = "signup",
+  VERIFY_OTP = "verify_otp",
+  SET_PASSWORD = "set_password",
+  LOGIN = "login",
+  COMPLETED = "completed",
 }
 
 /**
