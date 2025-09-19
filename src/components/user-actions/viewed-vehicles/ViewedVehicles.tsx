@@ -90,7 +90,9 @@ const ViewedVehicles = () => {
               <h1 className="mb-2 text-3xl font-bold text-gray-900">
                 Recently Viewed
               </h1>
-              <p className="text-gray-600">Vehicles you&apos;ve recently browsed</p>
+              <p className="text-gray-600">
+                Vehicles you&apos;ve recently browsed
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <Eye className="h-6 w-6 text-purple-500" />
