@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useUserEnquiredVehicles } from "@/hooks/useUserActions";
 import { useAppContext } from "@/context/useAppContext";
-import VehicleListSection from "@/components/root/listing/vehicle-grids/VehicleListSection";
+import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import type { EnquiredVehicle } from "@/lib/api/userActions.api.types";
 
@@ -244,10 +244,10 @@ const EnquiredVehicles: React.FC<EnquiredVehiclesProps> = ({
         </CardContent>
       </Card>
 
-      {/* Vehicle List using VehicleListSection */}
+      {/* Vehicle Grid*/}
       <Card className="border-0 shadow-lg">
         <CardContent className="pt-6">
-          <VehicleListSection
+          <VehicleGrid
             vehicles={transformedVehicles}
             state="enquired-vehicles"
             category="cars"

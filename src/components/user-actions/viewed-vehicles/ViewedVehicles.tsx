@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Eye, Clock, RefreshCw, AlertCircle } from 'lucide-react';
-import { useUserViewedVehicles } from '@/hooks/useUserActions';
-import { useAppContext } from '@/context/useAppContext';
-import VehicleListSection from '@/components/root/listing/vehicle-grids/VehicleListSection';
-import AnimatedSkelton from '@/components/skelton/AnimatedSkelton';
-import type { ViewedVehicle } from '@/lib/api/userActions.api.types';
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Eye, Clock, RefreshCw, AlertCircle } from "lucide-react";
+import { useUserViewedVehicles } from "@/hooks/useUserActions";
+import { useAppContext } from "@/context/useAppContext";
+import VehicleListSection from "@/components/root/listing/vehicle-grids/VehicleGrid";
+import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
+import type { ViewedVehicle } from "@/lib/api/userActions.api.types";
 
 interface ViewedVehiclesProps {
   className?: string;
 }
 
-const ViewedVehicles: React.FC<ViewedVehiclesProps> = ({ className = '' }) => {
+const ViewedVehicles: React.FC<ViewedVehiclesProps> = ({ className = "" }) => {
   const { auth } = useAppContext();
   const { user, authStorage } = auth;
   const [visibleVehicleIds, setVisibleVehicleIds] = useState<string[]>([]);
@@ -42,7 +42,7 @@ const ViewedVehicles: React.FC<ViewedVehiclesProps> = ({ className = '' }) => {
 
     // Group vehicles by location (using vehicleId as key for simplicity)
     const grouped: Record<string, any[]> = {
-      'viewed-vehicles': viewedVehicles.map((viewed: ViewedVehicle) => ({
+      "viewed-vehicles": viewedVehicles.map((viewed: ViewedVehicle) => ({
         ...viewed.vehicle,
         lastViewedAt: viewed.lastViewedAt,
         viewDuration: viewed.viewDuration,
@@ -64,12 +64,12 @@ const ViewedVehicles: React.FC<ViewedVehiclesProps> = ({ className = '' }) => {
       return `${diffInMinutes} minutes ago`;
     } else if (diffInMinutes < 24 * 60) {
       const hours = Math.floor(diffInMinutes / 60);
-      return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
+      return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
     } else {
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
       });
     }
   };
@@ -159,7 +159,7 @@ const ViewedVehicles: React.FC<ViewedVehiclesProps> = ({ className = '' }) => {
                 </p>
               </div>
               <Button
-                onClick={() => (window.location.href = '/cars')}
+                onClick={() => (window.location.href = "/cars")}
                 className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
               >
                 Browse Vehicles
@@ -205,8 +205,8 @@ const ViewedVehicles: React.FC<ViewedVehiclesProps> = ({ className = '' }) => {
                 variant="secondary"
                 className="bg-purple-50 text-purple-700"
               >
-                {viewedVehicles.length}{' '}
-                {viewedVehicles.length === 1 ? 'Vehicle' : 'Vehicles'}
+                {viewedVehicles.length}{" "}
+                {viewedVehicles.length === 1 ? "Vehicle" : "Vehicles"}
               </Badge>
             </div>
             <Button
@@ -217,7 +217,7 @@ const ViewedVehicles: React.FC<ViewedVehiclesProps> = ({ className = '' }) => {
               className="flex items-center gap-2"
             >
               <RefreshCw
-                className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`}
+                className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`}
               />
               Refresh
             </Button>
@@ -278,7 +278,7 @@ const ViewedVehicles: React.FC<ViewedVehiclesProps> = ({ className = '' }) => {
               >
                 <div className="flex-1">
                   <h4 className="font-medium text-gray-900">
-                    {viewed.vehicle?.model || 'Vehicle'}
+                    {viewed.vehicle?.model || "Vehicle"}
                   </h4>
                   <p className="mt-1 text-sm text-gray-600">
                     Viewed {formatDate(viewed.lastViewedAt)}

@@ -26,7 +26,7 @@ export const FilterSidebar = () => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger className="mb-2 self-end">
+      <SheetTrigger>
         <motion.span
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}

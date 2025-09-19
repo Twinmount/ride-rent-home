@@ -10,7 +10,7 @@ import {
   useRemoveFromSaved,
 } from "@/hooks/useUserActions";
 import { useAppContext } from "@/context/useAppContext";
-import VehicleListSection from "@/components/root/listing/vehicle-grids/VehicleListSection";
+import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import type { SavedVehicle } from "@/lib/api/userActions.api.types";
 
@@ -41,7 +41,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
 
   const removeFromSavedMutation = useRemoveFromSaved();
 
-  // Transform saved vehicles data to match VehicleListSection format
+  // Transform saved vehicles data to match VehicleGrid format
   const transformedVehicles = React.useMemo(() => {
     if (!savedVehicles?.length) return {};
 
@@ -189,10 +189,10 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
         </CardHeader>
       </Card>
 
-      {/* Vehicle List using VehicleListSection */}
+      {/* Vehicle List using VehicleGrid */}
       <Card className="border-0 shadow-lg">
         <CardContent className="pt-6">
-          <VehicleListSection
+          <VehicleGrid
             vehicles={transformedVehicles}
             state="saved-vehicles"
             category="cars"
