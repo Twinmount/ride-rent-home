@@ -775,3 +775,98 @@ export const sendRentalEnquiry = async ({
     throw error;
   }
 };
+
+// Function to check if user has active enquiry for a car
+export const checkActiveEnquiry = async ({
+  carId,
+  userId,
+  country = "ae",
+}: {
+  carId: string;
+  userId: string;
+  country?: string;
+}): Promise<{ hasActiveEnquiry: boolean; result?: any }> => {
+  try {
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
+
+    const url = `${BASE_URL}/enquiries/check-active/${carId}/${userId}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      // If endpoint not found or error, assume no active enquiry
+      return { hasActiveEnquiry: false };
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error checking active enquiry:", error);
+    // On error, assume no active enquiry to allow user to proceed
+    return { hasActiveEnquiry: false };
+  }
+};
+
+// Function to get vehicle details with active enquiry status for authenticated user
+export const getVehicleWithEnquiryStatus = async ({
+  vehicleCode,
+  userId,
+  country = "ae",
+}: {
+  vehicleCode: string;
+  userId?: string;
+  country?: string;
+}): Promise<any> => {
+  try {
+    const BASE_URL =
+      country === "in"
+        ? process.env.NEXT_PUBLIC_API_URL_INDIA
+        : process.env.NEXT_PUBLIC_API_URL;
+
+    // First get vehicle details
+    const vehicleResponse = await fetch(
+      `${BASE_URL}/vehicle/details?vehicleCode=${vehicleCode}`,
+      {
+        method: "GET",
+        cache: "no-cache",
+      }
+    );
+
+    if (!vehicleResponse.ok) {
+      throw new Error("Failed to fetch vehicle details");
+    }
+
+    const vehicleData = await vehicleResponse.json();
+
+    // If user is logged in and vehicle data is valid, check for active enquiry
+    if (userId && vehicleData?.result?.vehicleId) {
+      const enquiryStatus = await checkActiveEnquiry({
+        carId: vehicleData.result.vehicleId,
+        userId,
+        country,
+      });
+
+      return {
+        ...vehicleData,
+        activeEnquiryStatus: enquiryStatus,
+      };
+    }
+
+    return {
+      ...vehicleData,
+      activeEnquiryStatus: { hasActiveEnquiry: false },
+    };
+  } catch (error) {
+    console.error("Error fetching vehicle with enquiry status:", error);
+    throw error;
+  }
+};

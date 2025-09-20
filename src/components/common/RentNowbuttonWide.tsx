@@ -8,6 +8,7 @@ import { DateRangePicker } from "../dialog/date-range-picker/DateRangePicker";
 import { BookingPopup } from "../dialog/BookingPopup";
 import { BookingConfirmationModal } from "../dialog/booking-confirm-modal/BookingConfirmModal";
 import { useAuthContext } from "@/auth";
+import ActiveEnquiryDialog from "../dialog/ActiveEnquiryDialog";
 
 export type ContactDetails = {
   email: string;
@@ -46,6 +47,7 @@ const RentNowButtonWide = ({
 }: RentNowButtonWideProps) => {
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showBookingConfirm, setShowBookingConfirm] = useState(false);
+  const [showActiveEnquiryDialog, setShowActiveEnquiryDialog] = useState(false);
   const {
     open,
     carRentDate,
@@ -56,6 +58,8 @@ const RentNowButtonWide = ({
     handleDateChange,
     VehicleDetailsData,
     rentalEnquiryMutation,
+    activeEnquiryData,
+    isCheckingActiveEnquiry,
   } = useCarRent(
     undefined, // onDateChange callback
     vehicleId && agentId ? { vehicleId, agentId, country, vehicle } : undefined
@@ -111,6 +115,12 @@ const RentNowButtonWide = ({
       return;
     }
 
+    // Check if user has an active enquiry for this vehicle
+    if (activeEnquiryData?.hasActiveEnquiry) {
+      setShowActiveEnquiryDialog(true);
+      return;
+    }
+
     if (contactDetails) {
       // setShowContactPopup(true);
       setOpen(true);
@@ -122,14 +132,23 @@ const RentNowButtonWide = ({
     }
   };
 
+  // Determine button text and styling based on active enquiry status
+  const hasActiveEnquiry = activeEnquiryData?.hasActiveEnquiry;
+  const buttonText = hasActiveEnquiry ? "Enquiry Pending" : "Rent Now";
+  const buttonClassName = hasActiveEnquiry 
+    ? `${widthClasses} ${marginClasses} ${sizeClasses} relative transform overflow-hidden rounded-[0.34rem] bg-gradient-to-r from-blue-400 to-blue-500 font-medium text-white shadow-md transition-transform duration-200 ease-in-out cursor-pointer hover:from-blue-500 hover:to-blue-600 active:scale-[0.98] ${className}`
+    : `${widthClasses} ${marginClasses} ${sizeClasses} relative transform overflow-hidden rounded-[0.34rem] bg-gradient-to-r from-orange to-yellow font-medium text-text-primary shadow-md transition-transform duration-200 ease-in-out before:absolute before:inset-0 before:bg-gradient-to-r before:from-yellow before:to-orange before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:shadow-lg hover:before:opacity-100 active:scale-[0.98] active:from-[#df7204] active:to-orange disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 ${className}`;
+
   return (
     <>
       <button
         onClick={handleClick}
-        disabled={disabled}
-        className={`${widthClasses} ${marginClasses} ${sizeClasses} relative transform overflow-hidden rounded-[0.34rem] bg-gradient-to-r from-orange to-yellow font-medium text-text-primary shadow-md transition-transform duration-200 ease-in-out before:absolute before:inset-0 before:bg-gradient-to-r before:from-yellow before:to-orange before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:shadow-lg hover:before:opacity-100 active:scale-[0.98] active:from-[#df7204] active:to-orange disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 ${className}`}
+        disabled={disabled || isCheckingActiveEnquiry}
+        className={buttonClassName}
       >
-        <span className="relative z-10">Rent Now</span>
+        <span className="relative z-10">
+          {isCheckingActiveEnquiry ? "Checking..." : buttonText}
+        </span>
       </button>
 
       {/* Contact Popup */}
@@ -180,6 +199,16 @@ const RentNowButtonWide = ({
           isOpen={showContactPopup}
           onClose={() => setShowContactPopup(false)}
           state={state}
+        />
+      )}
+
+      {/* Active Enquiry Dialog */}
+      {activeEnquiryData?.hasActiveEnquiry && (
+        <ActiveEnquiryDialog
+          isOpen={showActiveEnquiryDialog}
+          onClose={() => setShowActiveEnquiryDialog(false)}
+          enquiry={activeEnquiryData.enquiry}
+          vehicleName={vehicleName || "this vehicle"}
         />
       )}
     </>

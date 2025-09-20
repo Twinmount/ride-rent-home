@@ -6,8 +6,8 @@ import {
   VehicleDetailsData,
 } from "@/types/car.rent.type";
 import { useImmer } from "use-immer";
-import { useMutation } from "@tanstack/react-query";
-import { sendRentalEnquiry } from "@/lib/api/general-api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { sendRentalEnquiry, checkActiveEnquiry } from "@/lib/api/general-api";
 import { useAuthContext } from "@/auth";
 
 export const useCarRent = (
@@ -26,7 +26,6 @@ export const useCarRent = (
     auth?.user?.id || "",
     !!auth?.user?.id
   );
-  console.log("userProfile:[useCarRent] ", userProfile);
 
   const initialDateRange = {
     startDate: new Date(),
@@ -39,6 +38,22 @@ export const useCarRent = (
   ]);
   const [open, setOpen] = useImmer(false);
   const [showBookingPopup, setShowBookingPopup] = useImmer(false);
+
+  // Check for active enquiry for this car and user
+  const { data: activeEnquiryData, isLoading: isCheckingActiveEnquiry } =
+    useQuery({
+      queryKey: ["activeEnquiry", vehicleId, auth?.user?.id],
+      queryFn: () =>
+        checkActiveEnquiry({
+          carId: vehicleId || "",
+          userId: auth?.user?.id || "",
+          country: country || "ae",
+        }),
+      enabled: !!(vehicleId && auth?.user?.id),
+      refetchOnWindowFocus: true,
+    });
+
+  // console.log("activeEnquiryData: ", activeEnquiryData);
 
   // Calculate dynamic values - inclusive day counting for car rental
   // If pickup is Sept 15 and return is Sept 17, you have the car for 2 full days (15th and 16th)
@@ -59,12 +74,6 @@ export const useCarRent = (
   // If user selects Sept 15 pickup, Sept 17 return, that's 2 days of rental
   const totalDays = Math.max(1, diffInDays);
 
-  console.log("Date calculation debug:", {
-    startDate: startDate.toDateString(),
-    endDate: endDate.toDateString(),
-    diffInDays,
-    totalDays,
-  });
   const pricePerDay = parseInt(vehicle?.rentalDetails?.day?.rentInAED || "0");
 
   const VehicleDetailsData: VehicleDetailsData = {
@@ -208,7 +217,6 @@ export const useCarRent = (
       });
     },
     onSuccess: () => {
-      console.log("Rental enquiry sent successfully");
       handleBookingComplete();
     },
     onError: (error) => {
@@ -290,5 +298,7 @@ export const useCarRent = (
     handleBookingConfirm,
     rentalEnquiryMutation,
     VehicleDetailsData, // Added the comprehensive vehicle details object
+    activeEnquiryData,
+    isCheckingActiveEnquiry,
   };
 };

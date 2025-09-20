@@ -119,4 +119,6 @@ export interface UseCarRentReturn {
   handleBookingConfirm: (message?: string) => void;
   rentalEnquiryMutation: any; // You can type this more specifically if needed
   VehicleDetailsData: VehicleDetailsData; // Comprehensive vehicle details object
+  activeEnquiryData?: { hasActiveEnquiry: boolean; enquiry?: any };
+  isCheckingActiveEnquiry: boolean;
 }

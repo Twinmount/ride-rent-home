@@ -24,6 +24,7 @@ import SupplierDetails from "@/components/root/vehicle-details/SupplierDetails";
 import VehicleHeading from "@/components/root/vehicle-details/VehicleHeading";
 import ProfileCard from "@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard";
 import ProtectedVehicleDetails from "@/components/common/ProtectedVehicleDetails";
+import ActiveEnquiryBanner from "@/components/root/vehicle-details/ActiveEnquiryBanner";
 
 type ParamsProps = {
   params: Promise<{
@@ -209,6 +210,13 @@ export default async function VehicleDetails(props: ParamsProps) {
           {/* Heading and Brand logo */}
           <VehicleHeading {...VehicleHeadingPropsData} />
         </MotionDiv>
+
+        {/* Active Enquiry Banner */}
+        <ActiveEnquiryBanner
+          vehicleId={vehicle.vehicleId}
+          vehicleName={vehicle.vehicleTitleH1 || vehicle.vehicleTitle}
+          country={country}
+        />
 
         {/* Wrapper to handle client side logic regarding mobile profile card */}
         <DetailsSectionClientWrapper

@@ -100,7 +100,6 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     clearError();
   };
 
-  console.log("authError: ", authError);
 
   useEffect(() => {
     if (authError) {
