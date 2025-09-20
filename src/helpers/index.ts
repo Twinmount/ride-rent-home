@@ -102,7 +102,11 @@ export const formatKeyForIcon = (key: string) => {
 
 // Helper function to format phone numbers
 export const formatPhoneNumber = (countryCode: string, phoneNumber: string) => {
-  return `+${countryCode} ${phoneNumber}`;
+  const formattedCountryCode = countryCode.startsWith('+')
+    ? countryCode
+    : `+${countryCode}`;
+
+  return `${formattedCountryCode} ${phoneNumber}`;
 };
 
 // change to singular
@@ -640,7 +644,7 @@ export function restoreVehicleCodeFormat(lowerCaseCode: string): string {
 export function getVehicleCardStyle(layoutType: "carousel" | "grid"): string {
   const styles = {
     carousel: `w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem]`,
-    grid: `w-full max-w-[26rem] min-w-[12rem]`,
+    grid: `w-full max-w-[18rem] min-w-[12rem] justify-self-center`,
   };
 
   return styles[layoutType] || "";

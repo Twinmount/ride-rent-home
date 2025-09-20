@@ -2,7 +2,6 @@ import { PageProps } from "@/types";
 import { Metadata } from "next";
 import { FC } from "react";
 import { generateListingMetadata } from "../../../../listing-metadata";
-
 import ListingPageRenderer from "@/components/root/listing/ListingPageRenderer";
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {

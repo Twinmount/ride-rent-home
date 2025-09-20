@@ -1,9 +1,9 @@
-import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
+import VehicleGridWithInfiniteLoading from "@/components/root/listing/vehicle-grids/VehicleGridWithInfiniteLoading";
 import JsonLd from "@/components/common/JsonLd";
 import MapClientWrapper from "@/components/listing/MapClientWrapper";
 import ListingHeading from "@/components/root/listing/ListingHeading";
 import {
-  fetchListingMetadata,
+  generateListingHeadings,
   getListingPageJsonLd,
 } from "@/app/(root)/[country]/[state]/listing/listing-metadata";
 import ListingPageBreadcrumb from "./ListingPageBreadcrumb";
@@ -37,12 +37,13 @@ const ListingPageRenderer = async ({
   city,
   searchParams,
 }: ListingPageRendererProps) => {
-  // Fetch metadata for heading h1 and h2
-  const data = await fetchListingMetadata({
+  const pageHeading = await generateListingHeadings({
     country,
     state,
     category,
-    vehicleType: vehicleType || "other",
+    vehicleType,
+    brand,
+    city,
   });
 
   // Prepare JSON-LD schema
@@ -60,16 +61,7 @@ const ListingPageRenderer = async ({
     <>
       <JsonLd id={jsonLdId} key={jsonLdId} jsonLdData={jsonLdData} />
 
-      <ListingHeading
-        country={country}
-        state={state}
-        category={category}
-        vehicleType={vehicleType}
-        brand={brand}
-        city={city}
-        heading={data?.result?.h1}
-        subheading={data?.result?.h2}
-      />
+      <ListingHeading pageHeading={pageHeading} />
 
       <div className="flex flex-wrap">
         {/* Left: Map */}
@@ -102,7 +94,7 @@ const ListingPageRenderer = async ({
               city={city}
             />
 
-            <VehicleGrid
+            <VehicleGridWithInfiniteLoading
               key={JSON.stringify(searchParams)}
               country={country}
               state={state}

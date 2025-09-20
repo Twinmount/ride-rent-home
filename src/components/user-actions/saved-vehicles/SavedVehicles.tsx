@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, Trash2, RefreshCw, AlertCircle } from "lucide-react";
 import { useUserActions } from "@/hooks/useUserActions";
 import { useAppContext } from "@/context/useAppContext";
-import VehicleListSection from "@/components/root/listing/vehicle-grids/VehicleListSection";
+import VehicleGrid from "@/components/root/listing/vehicle-grids/VehicleGrid";
 import AnimatedSkelton from "@/components/skelton/AnimatedSkelton";
 import type { SavedVehicle } from "@/lib/api/userActions.api.types";
 
@@ -24,11 +24,8 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
   const userId = user?.id || authStorage.getUser()?.id;
 
   // Use the useUserActions hook
-  const { 
-    useUserSavedVehicles, 
-    removeFromSaved,
-    removeFromSavedMutation 
-  } = useUserActions();
+  const { useUserSavedVehicles, removeFromSaved, removeFromSavedMutation } =
+    useUserActions();
 
   const {
     data: savedVehicles,
@@ -191,10 +188,10 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
         </CardHeader>
       </Card>
 
-      {/* Vehicle List using VehicleListSection */}
+      {/* Vehicle List using VehicleGrid */}
       <Card className="border-0 shadow-lg">
         <CardContent className="pt-6">
-          <VehicleListSection
+          <VehicleGrid
             vehicles={transformedVehicles}
             state="saved-vehicles"
             category="cars"

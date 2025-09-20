@@ -1,6 +1,11 @@
 import { ENV } from "@/config/env";
-import { convertToLabel } from "@/helpers";
-import { getAbsoluteUrl, injectBrandKeyword } from "@/helpers/metadata-helper";
+import { convertToLabel, singularizeValue } from "@/helpers";
+import {
+  generateFallbackMetadata,
+  determineListingPageType,
+  ListingMetadataType,
+} from "@/helpers/listing-metadata.helper";
+import { getAbsoluteUrl } from "@/helpers/metadata-helper";
 import {
   buildListingCanonicalPath,
   isValidListingUrlCombination,
@@ -10,20 +15,13 @@ import { API } from "@/utils/API";
 import { getCountryName } from "@/utils/url";
 import { Metadata } from "next";
 
-type ListingPageJsonLdParams = {
+type ListingMetadataParams = {
   country: string;
-  state: string;
+  state?: string;
   category: string;
   vehicleType?: string;
   brand?: string;
   city?: string;
-};
-
-type FetchListingMetadataParams = {
-  country: string;
-  state: string;
-  category: string;
-  vehicleType: string;
 };
 
 export async function fetchListingMetadata({
@@ -31,12 +29,27 @@ export async function fetchListingMetadata({
   state,
   category,
   vehicleType,
-}: FetchListingMetadataParams): Promise<ListingPageMetaResponse | null> {
-  let apiUrl = `/metadata/listing?state=${state}&category=${category}&type=${vehicleType}`;
+  brand,
+}: ListingMetadataParams): Promise<ListingPageMetaResponse | null> {
+  const queryParams = new URLSearchParams({
+    category: category,
+  });
+
+  if (state) {
+    queryParams.set("state", state);
+  }
+
+  if (vehicleType) {
+    queryParams.set("type", vehicleType);
+  }
+
+  if (brand && !vehicleType) {
+    queryParams.set("brand", brand);
+  }
 
   try {
     const response = await API({
-      path: apiUrl,
+      path: `/metadata/listing?${queryParams.toString()}`,
       options: {
         method: "GET",
         cache: "no-cache",
@@ -55,6 +68,76 @@ export async function fetchListingMetadata({
   }
 }
 
+/*
+ * Fetch listing metadata with priority based on URL combination
+ */
+async function fetchListingMetadataWithPriority(params: ListingMetadataParams) {
+  const { country, state, category, vehicleType, brand, city } = params;
+
+  // PRIORITY 1: City-based (no API call - handled in frontend)
+  if (city) {
+    return null;
+  }
+
+  // PRIORITY 2: VehicleType + Brand (prioritize vehicleType)
+  if (vehicleType && brand) {
+    // Try vehicleType first
+    let data = await fetchListingMetadata({
+      country,
+      state,
+      category,
+      vehicleType,
+    });
+
+    // If vehicleType metadata not found, try brand (global - no state)
+    if (!data?.result) {
+      data = await fetchListingMetadata({
+        country,
+        category,
+        brand,
+      });
+    }
+
+    return data;
+  }
+
+  // PRIORITY 3: Brand-only (global - no state)
+  if (brand) {
+    return await fetchListingMetadata({
+      country,
+      category,
+      brand,
+    });
+  }
+
+  // PRIORITY 4: VehicleType-only
+  if (vehicleType) {
+    return await fetchListingMetadata({
+      country,
+      state,
+      category,
+      vehicleType,
+    });
+  }
+
+  // PRIORITY 5: Category-only
+  return await fetchListingMetadata({
+    country,
+    state,
+    category,
+  });
+}
+
+type GenerateListingMetadataParams = {
+  country: string;
+  state: string;
+  category: string;
+  vehicleType?: string;
+  brand?: string;
+  city?: string;
+};
+
+/****************Listing Page Metadata **************** */
 export async function generateListingMetadata({
   country,
   state,
@@ -62,14 +145,7 @@ export async function generateListingMetadata({
   vehicleType,
   brand,
   city,
-}: {
-  country: string;
-  state: string;
-  category: string;
-  vehicleType?: string;
-  brand?: string;
-  city?: string;
-}): Promise<Metadata> {
+}: GenerateListingMetadataParams): Promise<Metadata> {
   //  Validate URL combination
   if (!isValidListingUrlCombination({ vehicleType, brand, city })) {
     throw new Error(
@@ -78,19 +154,21 @@ export async function generateListingMetadata({
   }
 
   // Fetch metadata from api
-  const data = await fetchListingMetadata({
+  const data = await fetchListingMetadataWithPriority({
     country,
     state,
     category,
-    vehicleType: vehicleType || "other",
+    vehicleType,
+    brand,
+    city,
   });
 
   const countryName = getCountryName(country);
   const formattedState = convertToLabel(state);
-  const formattedCategory = convertToLabel(category);
+  const formattedCategory = singularizeValue(convertToLabel(category));
   const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : "";
   const formattedBrand = brand ? convertToLabel(brand) : "";
-  const cityName = city ? convertToLabel(city) : "";
+  const formattedCityName = city ? convertToLabel(city) : "";
 
   // Dynamically build canonical URL
   const canonicalPath = buildListingCanonicalPath({
@@ -103,26 +181,30 @@ export async function generateListingMetadata({
   });
   const canonicalUrl = getAbsoluteUrl(canonicalPath);
 
-  const locationString = city
-    ? `${cityName}, ${formattedState}`
-    : formattedState;
+  // metadata type for priority and fallback
+  const metadataType: ListingMetadataType = determineListingPageType({
+    vehicleType,
+    brand,
+    city,
+  });
 
-  const fallbackMetaTitle = `Rent ${formattedBrand ? formattedBrand + " " : ""}${formattedVehicleType ? formattedVehicleType + " " : ""}${formattedCategory} in ${locationString} | Ride Rent - ${countryName}`;
-
-  const fallbackMetaDescription = `Discover and rent ${formattedBrand ? `${formattedBrand} ` : ""}${formattedVehicleType ? `${formattedVehicleType} ` : ""}${formattedCategory} vehicles in ${locationString}, ${countryName}. Best prices, easy booking on Ride Rent.`;
-
-  const metaTitleRaw = data?.result?.metaTitle ?? fallbackMetaTitle;
-  const metaDescriptionRaw =
-    data?.result?.metaDescription ?? fallbackMetaDescription;
+  const fallbackMeta = generateFallbackMetadata(
+    {
+      formattedState,
+      formattedCategory,
+      formattedVehicleType,
+      formattedBrand,
+      formattedCityName,
+      formattedCountry: countryName,
+      hasCity: !!city,
+    },
+    metadataType
+  );
 
   // Only inject brand if using backend-provided meta (which is missing brand)
-  const metaTitle = data?.result?.metaTitle
-    ? injectBrandKeyword(metaTitleRaw, brand)
-    : metaTitleRaw;
-
-  const metaDescription = data?.result?.metaDescription
-    ? injectBrandKeyword(metaDescriptionRaw, brand)
-    : metaDescriptionRaw;
+  const metaTitle = data?.result?.metaTitle || fallbackMeta.metaTitle;
+  const metaDescription =
+    data?.result?.metaDescription || fallbackMeta.metaDescription;
 
   const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
 
@@ -175,6 +257,75 @@ export async function generateListingMetadata({
     },
   };
 }
+
+/* ************************* Listing Heading ************************ */
+export async function generateListingHeadings({
+  country,
+  state,
+  category,
+  vehicleType,
+  brand,
+  city,
+}: GenerateListingMetadataParams): Promise<{ h1: string; h2: string }> {
+  //  Validate URL combination
+  if (!isValidListingUrlCombination({ vehicleType, brand, city })) {
+    throw new Error(
+      `Invalid URL combination: vehicleType=${vehicleType}, brand=${brand}, city=${city}`
+    );
+  }
+
+  // Fetch metadata from api
+  const data = await fetchListingMetadataWithPriority({
+    country,
+    state,
+    category,
+    vehicleType,
+    brand,
+    city,
+  });
+
+  const countryName = getCountryName(country);
+  const formattedState = convertToLabel(state);
+  const formattedCategory = singularizeValue(convertToLabel(category));
+  const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : "";
+  const formattedBrand = brand ? convertToLabel(brand) : "";
+  const formattedCityName = city ? convertToLabel(city) : "";
+
+  // metadata type for priority and fallback
+  const metadataType: ListingMetadataType = determineListingPageType({
+    vehicleType,
+    brand,
+    city,
+  });
+
+  const fallbackMeta = generateFallbackMetadata(
+    {
+      formattedState,
+      formattedCategory,
+      formattedVehicleType,
+      formattedBrand,
+      formattedCityName,
+      formattedCountry: countryName,
+      hasCity: !!city,
+    },
+    metadataType
+  );
+
+  const h1 = data?.result?.h1 || fallbackMeta.h1;
+  const h2 = data?.result?.h2 || fallbackMeta.h2;
+
+  return { h1, h2 };
+}
+
+/* ************************* JSON-LD ************************ */
+type ListingPageJsonLdParams = {
+  country: string;
+  state: string;
+  category: string;
+  vehicleType?: string;
+  brand?: string;
+  city?: string;
+};
 
 /**
  * Generates a structured JSON-LD schema for a vehicle listing page,

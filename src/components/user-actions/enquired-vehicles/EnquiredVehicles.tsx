@@ -28,7 +28,10 @@ import Link from "next/link";
 import { getUserEnquiredVehicles } from "@/lib/api/userActions.api";
 import { authStorage } from "@/lib/auth";
 import { ENV } from "@/config/env";
-import { getPrimaryVehicleImageUrl, getVehicleImageUrl } from "@/utils/imageUrl";
+import {
+  getPrimaryVehicleImageUrl,
+  getVehicleImageUrl,
+} from "@/utils/imageUrl";
 
 // Types for the API response
 interface VehicleSpecs {
@@ -170,7 +173,9 @@ export default function EnquiredVehiclesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("recent");
   const [filterBy, setFilterBy] = useState("all");
-  const [enquiredVehicles, setEnquiredVehicles] = useState<EnquiredVehicle[]>([]);
+  const [enquiredVehicles, setEnquiredVehicles] = useState<EnquiredVehicle[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -181,29 +186,32 @@ export default function EnquiredVehiclesPage() {
   const fetchEnquiredVehicles = async (page: number = 0) => {
     try {
       setLoading(true);
-      
+
       // Get user from auth storage
       const user = authStorage.getUser();
       if (!user || !user.id) {
-        setError('Please log in to view your enquiries');
+        setError("Please log in to view your enquiries");
         return;
       }
 
       const response = await getUserEnquiredVehicles(user.id, page, 10, "DESC");
-      
-      if (response.status === 'SUCCESS') {
+
+      if (response.status === "SUCCESS") {
         const vehicles = response.result.list || [];
-        console.log('🚗 Enquired vehicles API response sample:', vehicles[0]?.vehicleDetails?.vehiclePhotos);
+        console.log(
+          "🚗 Enquired vehicles API response sample:",
+          vehicles[0]?.vehicleDetails?.vehiclePhotos
+        );
         setEnquiredVehicles(vehicles);
         setTotalEnquiries(response.result.total || 0);
         setTotalPages(response.result.totalNumberOfPages || 0);
         setCurrentPage(page);
       } else {
-        throw new Error('Failed to fetch enquired vehicles');
+        throw new Error("Failed to fetch enquired vehicles");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      console.error('Error fetching enquired vehicles:', err);
+      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Error fetching enquired vehicles:", err);
     } finally {
       setLoading(false);
     }
@@ -215,7 +223,15 @@ export default function EnquiredVehiclesPage() {
 
   // Helper function to get vehicle image URL
   const getVehicleImage = (photos: string[]) => {
-    return getPrimaryVehicleImageUrl(photos);
+    if (photos && photos.length > 0) {
+      // Assuming you have a base URL for your images
+      const baseUrl =
+        process.env.NEXT_PUBLIC_IMAGE_BASE_URL ||
+        process.env.NEXT_PUBLIC_API_URL ||
+        "";
+      return `${baseUrl}/api/images/${photos[0]}`;
+    }
+    return "/placeholder.svg";
   };
 
   // Helper function to format date
@@ -224,7 +240,7 @@ export default function EnquiredVehiclesPage() {
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 1) return "1 day ago";
     if (diffDays < 7) return `${diffDays} days ago`;
     if (diffDays < 14) return "1 week ago";
@@ -236,8 +252,9 @@ export default function EnquiredVehiclesPage() {
   const getStatus = (enquiredAt: string) => {
     const enquiryDate = new Date(enquiredAt);
     const now = new Date();
-    const diffHours = (now.getTime() - enquiryDate.getTime()) / (1000 * 60 * 60);
-    
+    const diffHours =
+      (now.getTime() - enquiryDate.getTime()) / (1000 * 60 * 60);
+
     if (diffHours < 24) return "pending";
     if (diffHours < 72) return "responded";
     if (diffHours > 168) return "booked"; // After 1 week, consider it might be booked
@@ -288,38 +305,51 @@ export default function EnquiredVehiclesPage() {
     }
   };
 
-  const filteredVehicles = enquiredVehicles.filter((vehicle) => {
-    const vehicleName = vehicle.vehicleDetails.vehicleModel;
-    const vehicleRegNumber = vehicle.vehicleDetails.vehicleRegistrationNumber;
-    const vehicleCode = vehicle.vehicleDetails.vehicleCode;
-    const status = getStatus(vehicle.enquiryInfo.enquiredAt);
-    
-    const matchesSearch =
-      vehicleName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      vehicleRegNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      vehicleCode.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = filterBy === "all" || status === filterBy;
-    return matchesSearch && matchesFilter;
-  }).sort((a, b) => {
-    switch (sortBy) {
-      case "recent":
-        return new Date(b.enquiryInfo.enquiredAt).getTime() - new Date(a.enquiryInfo.enquiredAt).getTime();
-      case "price-low":
-        const priceA = parseInt(getRentalPrice(a.vehicleDetails.rentalDetails));
-        const priceB = parseInt(getRentalPrice(b.vehicleDetails.rentalDetails));
-        return priceA - priceB;
-      case "price-high":
-        const priceA2 = parseInt(getRentalPrice(a.vehicleDetails.rentalDetails));
-        const priceB2 = parseInt(getRentalPrice(b.vehicleDetails.rentalDetails));
-        return priceB2 - priceA2;
-      case "status":
-        const statusA = getStatus(a.enquiryInfo.enquiredAt);
-        const statusB = getStatus(b.enquiryInfo.enquiredAt);
-        return statusA.localeCompare(statusB);
-      default:
-        return 0;
-    }
-  });
+  const filteredVehicles = enquiredVehicles
+    .filter((vehicle) => {
+      const vehicleName = vehicle.vehicleDetails.vehicleModel;
+      const vehicleRegNumber = vehicle.vehicleDetails.vehicleRegistrationNumber;
+      const vehicleCode = vehicle.vehicleDetails.vehicleCode;
+      const status = getStatus(vehicle.enquiryInfo.enquiredAt);
+
+      const matchesSearch =
+        vehicleName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        vehicleRegNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        vehicleCode.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesFilter = filterBy === "all" || status === filterBy;
+      return matchesSearch && matchesFilter;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "recent":
+          return (
+            new Date(b.enquiryInfo.enquiredAt).getTime() -
+            new Date(a.enquiryInfo.enquiredAt).getTime()
+          );
+        case "price-low":
+          const priceA = parseInt(
+            getRentalPrice(a.vehicleDetails.rentalDetails)
+          );
+          const priceB = parseInt(
+            getRentalPrice(b.vehicleDetails.rentalDetails)
+          );
+          return priceA - priceB;
+        case "price-high":
+          const priceA2 = parseInt(
+            getRentalPrice(a.vehicleDetails.rentalDetails)
+          );
+          const priceB2 = parseInt(
+            getRentalPrice(b.vehicleDetails.rentalDetails)
+          );
+          return priceB2 - priceA2;
+        case "status":
+          const statusA = getStatus(a.enquiryInfo.enquiredAt);
+          const statusB = getStatus(b.enquiryInfo.enquiredAt);
+          return statusA.localeCompare(statusB);
+        default:
+          return 0;
+      }
+    });
 
   // Loading state
   if (loading) {
@@ -346,18 +376,20 @@ export default function EnquiredVehiclesPage() {
             <div className="text-center">
               <MessageSquare className="mx-auto mb-4 h-16 w-16 text-red-300" />
               <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                {error.includes('log in') ? 'Authentication Required' : 'Error loading enquiries'}
+                {error.includes("log in")
+                  ? "Authentication Required"
+                  : "Error loading enquiries"}
               </h3>
               <p className="mb-4 text-gray-600">{error}</p>
-              {error.includes('log in') ? (
+              {error.includes("log in") ? (
                 <Link href="/auth/login">
                   <Button className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600">
                     Go to Login
                   </Button>
                 </Link>
               ) : (
-                <Button 
-                  onClick={() => window.location.reload()} 
+                <Button
+                  onClick={() => window.location.reload()}
                   className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
                 >
                   Try Again
@@ -443,10 +475,14 @@ export default function EnquiredVehiclesPage() {
           {filteredVehicles.map((vehicle) => {
             const status = getStatus(vehicle.enquiryInfo.enquiredAt);
             const price = getRentalPrice(vehicle.vehicleDetails.rentalDetails);
-            const period = getRentalPeriod(vehicle.vehicleDetails.rentalDetails);
-            const vehicleImage = getVehicleImage(vehicle.vehicleDetails.vehiclePhotos);
+            const period = getRentalPeriod(
+              vehicle.vehicleDetails.rentalDetails
+            );
+            const vehicleImage = getVehicleImage(
+              vehicle.vehicleDetails.vehiclePhotos
+            );
             const enquiredDate = formatDate(vehicle.enquiryInfo.enquiredAt);
-            
+
             return (
               <Card
                 key={vehicle._id}
@@ -464,10 +500,23 @@ export default function EnquiredVehiclesPage() {
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             // Try alternative image sources if available
-                            if (vehicle.vehicleDetails.vehiclePhotos.length > 1 && !target.src.includes('placeholder')) {
-                              const nextImageIndex = vehicle.vehicleDetails.vehiclePhotos.findIndex(photo => target.src.includes(photo)) + 1;
-                              if (nextImageIndex < vehicle.vehicleDetails.vehiclePhotos.length) {
-                                target.src = getVehicleImageUrl(vehicle.vehicleDetails.vehiclePhotos[nextImageIndex]);
+                            if (
+                              vehicle.vehicleDetails.vehiclePhotos.length > 1 &&
+                              !target.src.includes("placeholder")
+                            ) {
+                              const nextImageIndex =
+                                vehicle.vehicleDetails.vehiclePhotos.findIndex(
+                                  (photo) => target.src.includes(photo)
+                                ) + 1;
+                              if (
+                                nextImageIndex <
+                                vehicle.vehicleDetails.vehiclePhotos.length
+                              ) {
+                                target.src = getVehicleImageUrl(
+                                  vehicle.vehicleDetails.vehiclePhotos[
+                                    nextImageIndex
+                                  ]
+                                );
                                 return;
                               }
                             }
@@ -475,12 +524,17 @@ export default function EnquiredVehiclesPage() {
                             target.src = "/placeholder.svg";
                           }}
                           onLoad={() => {
-                            console.log('Image loaded successfully:', vehicleImage);
+                            console.log(
+                              "Image loaded successfully:",
+                              vehicleImage
+                            );
                           }}
                         />
                         {/* Loading overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg opacity-0 transition-opacity duration-200 peer-loading:opacity-100">
-                          <div className="text-gray-400 text-sm">Loading...</div>
+                        <div className="peer-loading:opacity-100 absolute inset-0 flex items-center justify-center rounded-lg bg-gray-100 opacity-0 transition-opacity duration-200">
+                          <div className="text-sm text-gray-400">
+                            Loading...
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -490,15 +544,20 @@ export default function EnquiredVehiclesPage() {
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="mb-1 text-xl font-semibold text-gray-900">
-                            {vehicle.vehicleDetails.vehicleModel} {vehicle.vehicleDetails.registredYear}
+                            {vehicle.vehicleDetails.vehicleModel}{" "}
+                            {vehicle.vehicleDetails.registredYear}
                           </h3>
                           <p className="mb-2 text-gray-600">
-                            {vehicle.vehicleDetails.vehicleCode} • {vehicle.vehicleDetails.vehicleRegistrationNumber}
+                            {vehicle.vehicleDetails.vehicleCode} •{" "}
+                            {vehicle.vehicleDetails.vehicleRegistrationNumber}
                           </p>
                           <div className="flex items-center gap-4 text-sm text-gray-500">
                             <div className="flex items-center gap-1">
                               <MapPin className="h-4 w-4" />
-                              {vehicle.vehicleDetails.vehicleSpefication === "UAE_SPEC" ? "UAE" : "International"}
+                              {vehicle.vehicleDetails.vehicleSpefication ===
+                              "UAE_SPEC"
+                                ? "UAE"
+                                : "International"}
                             </div>
                             <div className="flex items-center gap-1">
                               <Star className="text-yellow-400 h-4 w-4 fill-current" />
@@ -535,18 +594,24 @@ export default function EnquiredVehiclesPage() {
                           <div>
                             <span className="text-gray-500">Enquiry ID:</span>
                             <p className="font-medium">
-                              {vehicle.enquiryInfo.enquiryId.split('-')[0]}...
+                              {vehicle.enquiryInfo.enquiryId.split("-")[0]}...
                             </p>
                           </div>
                           <div>
                             <span className="text-gray-500">Vehicle Type:</span>
                             <p className="font-medium">
-                              {vehicle.vehicleDetails.vehicleSpecs?.["Body Type"]?.name || "N/A"}
+                              {vehicle.vehicleDetails.vehicleSpecs?.[
+                                "Body Type"
+                              ]?.name || "N/A"}
                             </p>
                           </div>
                           <div>
-                            <span className="text-gray-500">Approval Status:</span>
-                            <p className="font-medium capitalize">{vehicle.vehicleDetails.approvalStatus.toLowerCase()}</p>
+                            <span className="text-gray-500">
+                              Approval Status:
+                            </span>
+                            <p className="font-medium capitalize">
+                              {vehicle.vehicleDetails.approvalStatus.toLowerCase()}
+                            </p>
                           </div>
                         </div>
                         <div className="mt-3">
@@ -559,23 +624,44 @@ export default function EnquiredVehiclesPage() {
                         <div className="mt-4">
                           <span className="text-gray-500">Key Features:</span>
                           <div className="mt-2 flex flex-wrap gap-2">
-                            {vehicle.vehicleDetails.vehicleSpecs?.["Seating Capacity"] && (
+                            {vehicle.vehicleDetails.vehicleSpecs?.[
+                              "Seating Capacity"
+                            ] && (
                               <Badge variant="outline" className="text-xs">
-                                {vehicle.vehicleDetails.vehicleSpecs["Seating Capacity"].name}
+                                {
+                                  vehicle.vehicleDetails.vehicleSpecs[
+                                    "Seating Capacity"
+                                  ].name
+                                }
                               </Badge>
                             )}
-                            {vehicle.vehicleDetails.vehicleSpecs?.["Fuel Type"] && (
+                            {vehicle.vehicleDetails.vehicleSpecs?.[
+                              "Fuel Type"
+                            ] && (
                               <Badge variant="outline" className="text-xs">
-                                {vehicle.vehicleDetails.vehicleSpecs["Fuel Type"].name}
+                                {
+                                  vehicle.vehicleDetails.vehicleSpecs[
+                                    "Fuel Type"
+                                  ].name
+                                }
                               </Badge>
                             )}
-                            {vehicle.vehicleDetails.vehicleSpecs?.["Transmission"] && (
+                            {vehicle.vehicleDetails.vehicleSpecs?.[
+                              "Transmission"
+                            ] && (
                               <Badge variant="outline" className="text-xs">
-                                {vehicle.vehicleDetails.vehicleSpecs["Transmission"].name}
+                                {
+                                  vehicle.vehicleDetails.vehicleSpecs[
+                                    "Transmission"
+                                  ].name
+                                }
                               </Badge>
                             )}
                             {vehicle.vehicleDetails.isSpotDeliverySupported && (
-                              <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
+                              <Badge
+                                variant="outline"
+                                className="bg-green-50 text-xs text-green-700"
+                              >
                                 Spot Delivery
                               </Badge>
                             )}
@@ -598,7 +684,8 @@ export default function EnquiredVehiclesPage() {
                           className="cursor-pointer bg-transparent"
                         >
                           <Phone className="mr-2 h-4 w-4" />
-                          Call: {vehicle.vehicleDetails.countryCode} {vehicle.vehicleDetails.phoneNumber}
+                          Call: {vehicle.vehicleDetails.countryCode}{" "}
+                          {vehicle.vehicleDetails.phoneNumber}
                         </Button>
                         {status === "responded" && (
                           <Button
