@@ -32,26 +32,38 @@ import {
   getPrimaryVehicleImageUrl,
   getVehicleImageUrl,
 } from "@/utils/imageUrl";
+import { useUserActions } from "@/hooks/useUserActions";
+
+// Add custom CSS for line clamping
+const lineClampStyles = `
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+`;
+
+// Inject styles into head
+if (typeof window !== "undefined") {
+  const style = document.createElement("style");
+  style.textContent = lineClampStyles;
+  document.head.appendChild(style);
+}
 
 // Types for the API response
-interface VehicleSpecs {
-  [key: string]: {
-    name: string;
-    value: string;
-    selected: boolean;
-    hoverInfo?: string;
-  };
+interface VehiclePhoto {
+  originalPath: string;
+  signedUrl: string | null;
 }
 
-interface VehicleFeatures {
-  [category: string]: Array<{
-    name: string;
-    value: string;
-    selected: boolean;
-  }>;
-}
-
-interface RentalDetails {
+interface RentDetails {
   day: {
     enabled: boolean;
     rentInAED: string;
@@ -80,91 +92,38 @@ interface RentalDetails {
 }
 
 interface VehicleDetails {
-  _id: string;
-  brandId: string;
-  vehicleTypeId: string;
-  vehicleCategoryId: string;
-  vehicleModel: string;
-  registredYear: string;
-  stateId: string;
-  cityIds: string[];
-  vehiclePhotos: string[];
-  vehicleVideos: string[];
-  comercialLicense: string[];
-  isDisabled: boolean;
-  isModifiedData: boolean;
-  newRegistration: boolean;
-  vehicleRegistrationNumber: string;
-  isFancyNumber: boolean;
-  vehicleSpefication: string;
-  rentalDetails: RentalDetails;
-  levelsFilled: number;
-  companyId: string;
-  vehicleCode: string;
-  commercialLicenseExpiryDate: string;
-  approvalStatus: string;
-  isCryptoAccepted: boolean;
-  isTabbySupported: boolean;
-  isCashSupported: boolean;
-  isVehicleModified: boolean;
-  isCreditOrDebitCardsSupported: boolean;
-  securityDeposits: {
-    enabled: boolean;
-    amountInAED: string;
-  };
-  additionalVehicleTypes: string[];
-  isSpotDeliverySupported: boolean;
-  isAvailableForLease: boolean;
-  countryCode: string;
-  phoneNumber: string;
-  rank: number;
-  mapImage: string;
-  createdAt: string;
-  updatedAt: string;
-  version: number;
-  __v: number;
-  description: string;
-  disablePriceMatching: boolean;
-  disabledBy: string;
-  rejectionReason: string;
-  vehicleFeatures: VehicleFeatures;
-  vehicleMetaDescription: string;
-  vehicleMetaTitle: string;
-  vehicleSpecs: VehicleSpecs;
-  vehicleTitle: string;
-  vehicleTitleH1: string;
+  carId: string;
+  make: string;
+  model: string;
+  year: string;
+  registrationNumber: string;
+  photos: VehiclePhoto[];
 }
 
-interface EnquiryInfo {
-  enquiredAt: string;
-  notes: string;
+interface EnquiryDetails {
   enquiryId: string;
+  status: string;
+  message: string;
+  enquiredAt: string;
 }
 
 interface EnquiredVehicle {
   _id: string;
-  type: string;
-  userId: string;
-  carId: string;
-  actionAt: string;
-  notes: string;
-  enquiryId: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  vehicleSummary: Record<string, any>;
-  enquiryInfo: EnquiryInfo;
   vehicleDetails: VehicleDetails;
+  enquiryId: string;
+  enquiryStatus: string;
+  enquiryMessage: string;
+  enquiredAt: string;
+  rentDetails: RentDetails;
 }
 
 interface APIResponse {
   status: string;
   result: {
-    list: EnquiredVehicle[];
+    data: EnquiredVehicle[];
     page: number;
     limit: number;
     total: number;
-    totalNumberOfPages: number;
   };
   statusCode: number;
 }
@@ -173,63 +132,53 @@ export default function EnquiredVehiclesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("recent");
   const [filterBy, setFilterBy] = useState("all");
-  const [enquiredVehicles, setEnquiredVehicles] = useState<EnquiredVehicle[]>(
-    []
-  );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalEnquiries, setTotalEnquiries] = useState(0);
 
-  // Fetch enquired vehicles from API
-  const fetchEnquiredVehicles = async (page: number = 0) => {
-    try {
-      setLoading(true);
+  // Use the useUserActions hook
+  const {
+    useUserEnquiredVehicles,
+    enquiredVehicles: enquiredVehiclesState,
+    fetchEnquiredVehicles,
+    userId,
+  } = useUserActions();
 
-      // Get user from auth storage
-      const user = authStorage.getUser();
-      if (!user || !user.id) {
-        setError("Please log in to view your enquiries");
-        return;
-      }
+  // Query enquired vehicles using React Query
+  const {
+    data: apiResponse,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useUserEnquiredVehicles({
+    page: currentPage,
+    limit: 10,
+    sortOrder: "DESC",
+  });
 
-      const response = await getUserEnquiredVehicles(user.id, page, 10, "DESC");
-
-      if (response.status === "SUCCESS") {
-        const vehicles = response.result.list || [];
-        console.log(
-          "🚗 Enquired vehicles API response sample:",
-          vehicles[0]?.vehicleDetails?.vehiclePhotos
-        );
-        setEnquiredVehicles(vehicles);
-        setTotalEnquiries(response.result.total || 0);
-        setTotalPages(response.result.totalNumberOfPages || 0);
-        setCurrentPage(page);
-      } else {
-        throw new Error("Failed to fetch enquired vehicles");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      console.error("Error fetching enquired vehicles:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Extract vehicles from API response
+  const enquiredVehicles = apiResponse?.result?.data || [];
 
   useEffect(() => {
-    fetchEnquiredVehicles(0);
-  }, []);
+    if (apiResponse?.result) {
+      setTotalEnquiries(apiResponse.result.total || 0);
+      setTotalPages(Math.ceil((apiResponse.result.total || 0) / 10));
+    }
+  }, [apiResponse]);
+
+  // Manual refetch function for pagination
+  const fetchEnquiredVehiclesPage = async (page: number = 0) => {
+    setCurrentPage(page);
+    // The query will automatically refetch when currentPage changes
+  };
 
   // Helper function to get vehicle image URL
-  const getVehicleImage = (photos: string[]) => {
+  const getVehicleImage = (photos: VehiclePhoto[]) => {
     if (photos && photos.length > 0) {
-      // Assuming you have a base URL for your images
-      const baseUrl =
-        process.env.NEXT_PUBLIC_IMAGE_BASE_URL ||
-        process.env.NEXT_PUBLIC_API_URL ||
-        "";
-      return `${baseUrl}/api/images/${photos[0]}`;
+      // Use signed URL if available, otherwise use original path
+      return (
+        photos[0].signedUrl || photos[0].originalPath || "/placeholder.svg"
+      );
     }
     return "/placeholder.svg";
   };
@@ -262,20 +211,20 @@ export default function EnquiredVehiclesPage() {
   };
 
   // Helper function to get rental price
-  const getRentalPrice = (rentalDetails: RentalDetails) => {
-    if (rentalDetails.day.enabled) return rentalDetails.day.rentInAED;
-    if (rentalDetails.week.enabled) return rentalDetails.week.rentInAED;
-    if (rentalDetails.month.enabled) return rentalDetails.month.rentInAED;
-    if (rentalDetails.hour.enabled) return rentalDetails.hour.rentInAED;
+  const getRentalPrice = (rentDetails: RentDetails) => {
+    if (rentDetails.day.enabled) return rentDetails.day.rentInAED;
+    if (rentDetails.week.enabled) return rentDetails.week.rentInAED;
+    if (rentDetails.month.enabled) return rentDetails.month.rentInAED;
+    if (rentDetails.hour.enabled) return rentDetails.hour.rentInAED;
     return "0";
   };
 
   // Helper function to get rental period
-  const getRentalPeriod = (rentalDetails: RentalDetails) => {
-    if (rentalDetails.day.enabled) return "day";
-    if (rentalDetails.week.enabled) return "week";
-    if (rentalDetails.month.enabled) return "month";
-    if (rentalDetails.hour.enabled) return "hour";
+  const getRentalPeriod = (rentDetails: RentDetails) => {
+    if (rentDetails.day.enabled) return "day";
+    if (rentDetails.week.enabled) return "week";
+    if (rentDetails.month.enabled) return "month";
+    if (rentDetails.hour.enabled) return "hour";
     return "day";
   };
 
@@ -306,11 +255,11 @@ export default function EnquiredVehiclesPage() {
   };
 
   const filteredVehicles = enquiredVehicles
-    .filter((vehicle) => {
-      const vehicleName = vehicle.vehicleDetails.vehicleModel;
-      const vehicleRegNumber = vehicle.vehicleDetails.vehicleRegistrationNumber;
-      const vehicleCode = vehicle.vehicleDetails.vehicleCode;
-      const status = getStatus(vehicle.enquiryInfo.enquiredAt);
+    .filter((vehicle: EnquiredVehicle) => {
+      const vehicleName = vehicle.vehicleDetails.model;
+      const vehicleRegNumber = vehicle.vehicleDetails.registrationNumber;
+      const vehicleCode = vehicle.vehicleDetails.carId; // Using carId as vehicleCode
+      const status = getStatus(vehicle.enquiredAt);
 
       const matchesSearch =
         vehicleName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -319,32 +268,23 @@ export default function EnquiredVehiclesPage() {
       const matchesFilter = filterBy === "all" || status === filterBy;
       return matchesSearch && matchesFilter;
     })
-    .sort((a, b) => {
+    .sort((a: EnquiredVehicle, b: EnquiredVehicle) => {
       switch (sortBy) {
         case "recent":
           return (
-            new Date(b.enquiryInfo.enquiredAt).getTime() -
-            new Date(a.enquiryInfo.enquiredAt).getTime()
+            new Date(b.enquiredAt).getTime() - new Date(a.enquiredAt).getTime()
           );
         case "price-low":
-          const priceA = parseInt(
-            getRentalPrice(a.vehicleDetails.rentalDetails)
-          );
-          const priceB = parseInt(
-            getRentalPrice(b.vehicleDetails.rentalDetails)
-          );
+          const priceA = parseInt(getRentalPrice(a.rentDetails));
+          const priceB = parseInt(getRentalPrice(b.rentDetails));
           return priceA - priceB;
         case "price-high":
-          const priceA2 = parseInt(
-            getRentalPrice(a.vehicleDetails.rentalDetails)
-          );
-          const priceB2 = parseInt(
-            getRentalPrice(b.vehicleDetails.rentalDetails)
-          );
+          const priceA2 = parseInt(getRentalPrice(a.rentDetails));
+          const priceB2 = parseInt(getRentalPrice(b.rentDetails));
           return priceB2 - priceA2;
         case "status":
-          const statusA = getStatus(a.enquiryInfo.enquiredAt);
-          const statusB = getStatus(b.enquiryInfo.enquiredAt);
+          const statusA = getStatus(a.enquiredAt);
+          const statusB = getStatus(b.enquiredAt);
           return statusA.localeCompare(statusB);
         default:
           return 0;
@@ -369,6 +309,8 @@ export default function EnquiredVehiclesPage() {
 
   // Error state
   if (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An error occurred";
     return (
       <div className="min-h-screen bg-gray-50 px-4 py-8">
         <div className="mx-auto max-w-7xl">
@@ -376,12 +318,12 @@ export default function EnquiredVehiclesPage() {
             <div className="text-center">
               <MessageSquare className="mx-auto mb-4 h-16 w-16 text-red-300" />
               <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                {error.includes("log in")
+                {errorMessage.includes("log in")
                   ? "Authentication Required"
                   : "Error loading enquiries"}
               </h3>
-              <p className="mb-4 text-gray-600">{error}</p>
-              {error.includes("log in") ? (
+              <p className="mb-4 text-gray-600">{errorMessage}</p>
+              {errorMessage.includes("log in") ? (
                 <Link href="/auth/login">
                   <Button className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600">
                     Go to Login
@@ -435,277 +377,224 @@ export default function EnquiredVehiclesPage() {
         </div>
 
         {/* Filters */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
             <Input
-              placeholder="Search enquiries..."
+              placeholder="Search by vehicle name, registration, or ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
             />
           </div>
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full cursor-pointer sm:w-48">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="recent">Most Recent</SelectItem>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-              <SelectItem value="status">Status</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={filterBy} onValueChange={setFilterBy}>
-            <SelectTrigger className="w-full cursor-pointer sm:w-48">
-              <Filter className="mr-2 h-4 w-4" />
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="responded">Responded</SelectItem>
-              <SelectItem value="booked">Booked</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex gap-3 sm:gap-4">
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-full cursor-pointer sm:w-48">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="recent">Most Recent</SelectItem>
+                <SelectItem value="price-low">Price: Low to High</SelectItem>
+                <SelectItem value="price-high">Price: High to Low</SelectItem>
+                <SelectItem value="status">Status</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filterBy} onValueChange={setFilterBy}>
+              <SelectTrigger className="w-full cursor-pointer sm:w-48">
+                <Filter className="mr-2 h-4 w-4" />
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="responded">Responded</SelectItem>
+                <SelectItem value="booked">Booked</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        {/* Enquiries List */}
-        <div className="space-y-6">
-          {filteredVehicles.map((vehicle) => {
-            const status = getStatus(vehicle.enquiryInfo.enquiredAt);
-            const price = getRentalPrice(vehicle.vehicleDetails.rentalDetails);
-            const period = getRentalPeriod(
-              vehicle.vehicleDetails.rentalDetails
-            );
-            const vehicleImage = getVehicleImage(
-              vehicle.vehicleDetails.vehiclePhotos
-            );
-            const enquiredDate = formatDate(vehicle.enquiryInfo.enquiredAt);
+        {/* Enquiries List - Card Grid Layout */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+          {filteredVehicles.map((vehicle: EnquiredVehicle) => {
+            const status = getStatus(vehicle.enquiredAt);
+            const price = getRentalPrice(vehicle.rentDetails);
+            const period = getRentalPeriod(vehicle.rentDetails);
+            const vehicleImage = getVehicleImage(vehicle.vehicleDetails.photos);
+            const enquiredDate = formatDate(vehicle.enquiredAt);
 
             return (
               <Card
                 key={vehicle._id}
-                className="overflow-hidden transition-shadow hover:shadow-lg"
+                className="group overflow-hidden border border-gray-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
-                <CardContent className="p-6">
-                  <div className="flex flex-col gap-6 lg:flex-row">
-                    {/* Vehicle Image */}
-                    <div className="flex-shrink-0 lg:w-64">
-                      <div className="relative h-40 w-full lg:h-32">
-                        <img
-                          src={vehicleImage}
-                          alt={vehicle.vehicleDetails.vehicleModel}
-                          className="h-full w-full rounded-lg object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            // Try alternative image sources if available
-                            if (
-                              vehicle.vehicleDetails.vehiclePhotos.length > 1 &&
-                              !target.src.includes("placeholder")
-                            ) {
-                              const nextImageIndex =
-                                vehicle.vehicleDetails.vehiclePhotos.findIndex(
-                                  (photo) => target.src.includes(photo)
-                                ) + 1;
-                              if (
-                                nextImageIndex <
-                                vehicle.vehicleDetails.vehiclePhotos.length
-                              ) {
-                                target.src = getVehicleImageUrl(
-                                  vehicle.vehicleDetails.vehiclePhotos[
-                                    nextImageIndex
-                                  ]
-                                );
-                                return;
-                              }
-                            }
-                            // Final fallback to placeholder
-                            target.src = "/placeholder.svg";
-                          }}
-                          onLoad={() => {
-                            console.log(
-                              "Image loaded successfully:",
-                              vehicleImage
-                            );
-                          }}
-                        />
-                        {/* Loading overlay */}
-                        <div className="peer-loading:opacity-100 absolute inset-0 flex items-center justify-center rounded-lg bg-gray-100 opacity-0 transition-opacity duration-200">
-                          <div className="text-sm text-gray-400">
-                            Loading...
-                          </div>
-                        </div>
-                      </div>
+                <div className="relative">
+                  {/* Vehicle Image */}
+                  <div className="relative h-44 w-full overflow-hidden sm:h-48">
+                    <img
+                      src={vehicleImage}
+                      alt={vehicle.vehicleDetails.model}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        if (
+                          vehicle.vehicleDetails.photos.length > 1 &&
+                          !target.src.includes("placeholder")
+                        ) {
+                          const nextImageIndex =
+                            vehicle.vehicleDetails.photos.findIndex(
+                              (photo: VehiclePhoto) =>
+                                target.src.includes(photo.originalPath)
+                            ) + 1;
+                          if (
+                            nextImageIndex <
+                            vehicle.vehicleDetails.photos.length
+                          ) {
+                            target.src =
+                              vehicle.vehicleDetails.photos[nextImageIndex]
+                                .signedUrl ||
+                              vehicle.vehicleDetails.photos[nextImageIndex]
+                                .originalPath;
+                            return;
+                          }
+                        }
+                        target.src = "/placeholder.svg";
+                      }}
+                    />
+
+                    {/* Status Badge */}
+                    <div className="absolute right-2 top-2 sm:right-3 sm:top-3">
+                      <Badge
+                        className={`${getStatusColor(status)} text-xs capitalize shadow-md`}
+                      >
+                        {getStatusIcon(status)}
+                        <span className="ml-1">{status}</span>
+                      </Badge>
                     </div>
 
-                    {/* Vehicle Details */}
-                    <div className="flex-1 space-y-4">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="mb-1 text-xl font-semibold text-gray-900">
-                            {vehicle.vehicleDetails.vehicleModel}{" "}
-                            {vehicle.vehicleDetails.registredYear}
-                          </h3>
-                          <p className="mb-2 text-gray-600">
-                            {vehicle.vehicleDetails.vehicleCode} •{" "}
-                            {vehicle.vehicleDetails.vehicleRegistrationNumber}
-                          </p>
-                          <div className="flex items-center gap-4 text-sm text-gray-500">
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-4 w-4" />
-                              {vehicle.vehicleDetails.vehicleSpefication ===
-                              "UAE_SPEC"
-                                ? "UAE"
-                                : "International"}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Star className="text-yellow-400 h-4 w-4 fill-current" />
-                              {vehicle.vehicleDetails.rank}/5
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4" />
-                              {enquiredDate}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="mb-1 text-2xl font-bold text-orange-600">
-                            {price} AED
-                            <span className="text-sm font-normal text-gray-500">
-                              /{period}
-                            </span>
-                          </div>
-                          <Badge
-                            className={`${getStatusColor(status)} capitalize`}
-                          >
-                            {getStatusIcon(status)}
-                            <span className="ml-1">{status}</span>
-                          </Badge>
-                        </div>
-                      </div>
-
-                      {/* Enquiry Details */}
-                      <div className="rounded-lg bg-gray-50 p-4">
-                        <h4 className="mb-2 font-medium text-gray-900">
-                          Enquiry Details
-                        </h4>
-                        <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-3">
-                          <div>
-                            <span className="text-gray-500">Enquiry ID:</span>
-                            <p className="font-medium">
-                              {vehicle.enquiryInfo.enquiryId.split("-")[0]}...
-                            </p>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">Vehicle Type:</span>
-                            <p className="font-medium">
-                              {vehicle.vehicleDetails.vehicleSpecs?.[
-                                "Body Type"
-                              ]?.name || "N/A"}
-                            </p>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">
-                              Approval Status:
-                            </span>
-                            <p className="font-medium capitalize">
-                              {vehicle.vehicleDetails.approvalStatus.toLowerCase()}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="mt-3">
-                          <span className="text-gray-500">Your Message:</span>
-                          <p className="mt-1 text-gray-900">
-                            {vehicle.enquiryInfo.notes || vehicle.notes}
-                          </p>
-                        </div>
-                        {/* Vehicle Specifications Preview */}
-                        <div className="mt-4">
-                          <span className="text-gray-500">Key Features:</span>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {vehicle.vehicleDetails.vehicleSpecs?.[
-                              "Seating Capacity"
-                            ] && (
-                              <Badge variant="outline" className="text-xs">
-                                {
-                                  vehicle.vehicleDetails.vehicleSpecs[
-                                    "Seating Capacity"
-                                  ].name
-                                }
-                              </Badge>
-                            )}
-                            {vehicle.vehicleDetails.vehicleSpecs?.[
-                              "Fuel Type"
-                            ] && (
-                              <Badge variant="outline" className="text-xs">
-                                {
-                                  vehicle.vehicleDetails.vehicleSpecs[
-                                    "Fuel Type"
-                                  ].name
-                                }
-                              </Badge>
-                            )}
-                            {vehicle.vehicleDetails.vehicleSpecs?.[
-                              "Transmission"
-                            ] && (
-                              <Badge variant="outline" className="text-xs">
-                                {
-                                  vehicle.vehicleDetails.vehicleSpecs[
-                                    "Transmission"
-                                  ].name
-                                }
-                              </Badge>
-                            )}
-                            {vehicle.vehicleDetails.isSpotDeliverySupported && (
-                              <Badge
-                                variant="outline"
-                                className="bg-green-50 text-xs text-green-700"
-                              >
-                                Spot Delivery
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex flex-wrap gap-3">
-                        <Button
-                          size="sm"
-                          className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
-                        >
-                          <MessageSquare className="mr-2 h-4 w-4" />
-                          Contact Vendor
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="cursor-pointer bg-transparent"
-                        >
-                          <Phone className="mr-2 h-4 w-4" />
-                          Call: {vehicle.vehicleDetails.countryCode}{" "}
-                          {vehicle.vehicleDetails.phoneNumber}
-                        </Button>
-                        {status === "responded" && (
-                          <Button
-                            size="sm"
-                            className="cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
-                          >
-                            View Response
-                          </Button>
-                        )}
-                        {status === "booked" && (
-                          <Button
-                            size="sm"
-                            className="cursor-pointer bg-green-500 text-white hover:bg-green-600"
-                          >
-                            View Booking Details
-                          </Button>
-                        )}
+                    {/* Price Badge */}
+                    <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
+                      <div className="rounded-lg bg-white/90 px-2 py-1 backdrop-blur-sm sm:px-3">
+                        <span className="text-base font-bold text-orange-600 sm:text-lg">
+                          {price} AED
+                        </span>
+                        <span className="text-xs text-gray-500 sm:text-sm">
+                          /{period}
+                        </span>
                       </div>
                     </div>
                   </div>
+                </div>
+
+                <CardContent className="p-3 sm:p-4">
+                  {/* Vehicle Title */}
+                  <div className="mb-3">
+                    <h3 className="line-clamp-1 text-base font-semibold text-gray-900 sm:text-lg">
+                      {vehicle.vehicleDetails.model}{" "}
+                      {vehicle.vehicleDetails.year}
+                    </h3>
+                    <p className="mt-1 line-clamp-1 text-xs text-gray-500 sm:text-sm">
+                      {vehicle.vehicleDetails.registrationNumber}
+                    </p>
+                  </div>
+
+                  {/* Vehicle Info */}
+                  <div className="mb-3 flex items-center justify-between text-xs text-gray-500 sm:mb-4">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      <span>UAE</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Star className="text-yellow-400 h-3 w-3 fill-current" />
+                      <span>4.8</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      <span className="truncate">{enquiredDate}</span>
+                    </div>
+                  </div>
+
+                  {/* Enquiry Details */}
+                  <div className="mb-3 rounded-lg bg-gray-50 p-2 sm:mb-4 sm:p-3">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">
+                        Enquiry ID
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {vehicle.enquiryId.split("-")[0]}...
+                      </span>
+                    </div>
+                    <div className="line-clamp-2 text-xs text-gray-600">
+                      {vehicle.enquiryMessage}
+                    </div>
+                  </div>
+
+                  {/* Key Features */}
+                  <div className="mb-3 sm:mb-4">
+                    <div className="flex flex-wrap gap-1">
+                      <Badge
+                        variant="outline"
+                        className="px-1.5 py-0.5 text-xs"
+                      >
+                        {vehicle.vehicleDetails.model}
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className="px-1.5 py-0.5 text-xs"
+                      >
+                        {vehicle.vehicleDetails.year}
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className="bg-green-50 px-1.5 py-0.5 text-xs text-green-700"
+                      >
+                        Available
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="h-8 flex-1 bg-orange-500 text-xs text-white hover:bg-orange-600"
+                    >
+                      <MessageSquare className="mr-1 h-3 w-3" />
+                      <span className="hidden sm:inline">Contact</span>
+                      <span className="sm:hidden">Call</span>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 flex-1 text-xs"
+                    >
+                      <Phone className="mr-1 h-3 w-3" />
+                      <span className="hidden sm:inline">Call</span>
+                      <span className="sm:hidden">📞</span>
+                    </Button>
+                  </div>
+
+                  {/* Additional Action Buttons for Status */}
+                  {(status === "responded" || status === "booked") && (
+                    <div className="mt-2">
+                      {status === "responded" && (
+                        <Button
+                          size="sm"
+                          className="h-8 w-full bg-blue-500 text-xs text-white hover:bg-blue-600"
+                        >
+                          View Response
+                        </Button>
+                      )}
+                      {status === "booked" && (
+                        <Button
+                          size="sm"
+                          className="h-8 w-full bg-green-500 text-xs text-white hover:bg-green-600"
+                        >
+                          Booking Details
+                        </Button>
+                      )}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             );
@@ -718,7 +607,7 @@ export default function EnquiredVehiclesPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => fetchEnquiredVehicles(currentPage - 1)}
+              onClick={() => fetchEnquiredVehiclesPage(currentPage - 1)}
               disabled={currentPage === 0 || loading}
               className="cursor-pointer"
             >
@@ -730,7 +619,7 @@ export default function EnquiredVehiclesPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => fetchEnquiredVehicles(currentPage + 1)}
+              onClick={() => fetchEnquiredVehiclesPage(currentPage + 1)}
               disabled={currentPage >= totalPages - 1 || loading}
               className="cursor-pointer"
             >

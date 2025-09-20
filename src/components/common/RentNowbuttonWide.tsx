@@ -65,6 +65,8 @@ const RentNowButtonWide = ({
     vehicleId && agentId ? { vehicleId, agentId, country, vehicle } : undefined
   );
 
+  console.log("activeEnquiryData:[RentNowButtonWide] ", activeEnquiryData);
+
   // Custom handle confirm for date picker
   const handleDateConfirm = () => {
     setOpen(false); // Close date picker
@@ -135,7 +137,7 @@ const RentNowButtonWide = ({
   // Determine button text and styling based on active enquiry status
   const hasActiveEnquiry = activeEnquiryData?.hasActiveEnquiry;
   const buttonText = hasActiveEnquiry ? "Enquiry Pending" : "Rent Now";
-  const buttonClassName = hasActiveEnquiry 
+  const buttonClassName = hasActiveEnquiry
     ? `${widthClasses} ${marginClasses} ${sizeClasses} relative transform overflow-hidden rounded-[0.34rem] bg-gradient-to-r from-blue-400 to-blue-500 font-medium text-white shadow-md transition-transform duration-200 ease-in-out cursor-pointer hover:from-blue-500 hover:to-blue-600 active:scale-[0.98] ${className}`
     : `${widthClasses} ${marginClasses} ${sizeClasses} relative transform overflow-hidden rounded-[0.34rem] bg-gradient-to-r from-orange to-yellow font-medium text-text-primary shadow-md transition-transform duration-200 ease-in-out before:absolute before:inset-0 before:bg-gradient-to-r before:from-yellow before:to-orange before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:shadow-lg hover:before:opacity-100 active:scale-[0.98] active:from-[#df7204] active:to-orange disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 ${className}`;
 
@@ -176,18 +178,6 @@ const RentNowButtonWide = ({
           isProcessing={rentalEnquiryMutation.isPending}
         />
       )}
-
-      {/* Booking Popup */}
-      {/* {showBookingPopup && ( */}
-      {/* <BookingPopup
-        isOpen={showBookingPopup}
-        onComplete={handleBookingComplete}
-        onCancel={handleBookingCancel}
-        onConfirmBooking={handleBookingConfirm}
-        isLoading={rentalEnquiryMutation.isPending}
-        error={rentalEnquiryMutation.error?.message}
-      /> */}
-      {/* )} */}
 
       {contactDetails && (
         <ContactPopup

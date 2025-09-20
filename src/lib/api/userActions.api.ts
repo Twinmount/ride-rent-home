@@ -33,7 +33,16 @@ export const getUserEnquiredVehicles = async (
   page: number = 0,
   limit: number = 10,
   sortOrder: "ASC" | "DESC" = "DESC"
-): Promise<any> => {
+): Promise<{
+  status: string;
+  result: {
+    data: any[];
+    page: number;
+    limit: number;
+    total: number;
+  };
+  statusCode: number;
+}> => {
   const response = await mainApiClient.get(`/user-cars/enquired/${userId}`, {
     params: {
       page,

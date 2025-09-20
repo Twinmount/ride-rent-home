@@ -31,7 +31,10 @@ const ActiveEnquiryBanner = ({
     refetchOnWindowFocus: true,
   });
 
+  if (activeEnquiryData?.result?.hasActiveEnquiry !== true) return;
+
   const enquiry = activeEnquiryData?.result?.enquiry;
+
   const enquiryDate = enquiry?.createdAt
     ? new Date(enquiry.createdAt).toLocaleDateString("en-US", {
         year: "numeric",
@@ -52,6 +55,10 @@ const ActiveEnquiryBanner = ({
         return "border-gray-200 bg-gray-50 text-gray-800";
     }
   };
+
+  if (isLoading) {
+    return null; // or a loading spinner if needed
+  }
 
   return (
     <div

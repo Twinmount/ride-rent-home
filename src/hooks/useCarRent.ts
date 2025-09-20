@@ -6,7 +6,7 @@ import {
   VehicleDetailsData,
 } from "@/types/car.rent.type";
 import { useImmer } from "use-immer";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { sendRentalEnquiry, checkActiveEnquiry } from "@/lib/api/general-api";
 import { useAuthContext } from "@/auth";
 
@@ -21,6 +21,7 @@ export const useCarRent = (
 ): UseCarRentReturn => {
   const { auth, authStorage, useGetUserProfile } = useAuthContext();
   const { vehicleId, agentId, country, vehicle } = vehicleData || {};
+  const queryClient = useQueryClient();
 
   const { data: userProfile } = useGetUserProfile(
     auth?.user?.id || "",
@@ -40,18 +41,20 @@ export const useCarRent = (
   const [showBookingPopup, setShowBookingPopup] = useImmer(false);
 
   // Check for active enquiry for this car and user
-  const { data: activeEnquiryData, isLoading: isCheckingActiveEnquiry } =
-    useQuery({
-      queryKey: ["activeEnquiry", vehicleId, auth?.user?.id],
-      queryFn: () =>
-        checkActiveEnquiry({
-          carId: vehicleId || "",
-          userId: auth?.user?.id || "",
-          country: country || "ae",
-        }),
-      enabled: !!(vehicleId && auth?.user?.id),
-      refetchOnWindowFocus: true,
-    });
+  const {
+    data: { result: activeEnquiryData } = {},
+    isLoading: isCheckingActiveEnquiry,
+  } = useQuery({
+    queryKey: ["activeEnquiry", vehicleId, auth?.user?.id],
+    queryFn: () =>
+      checkActiveEnquiry({
+        carId: vehicleId || "",
+        userId: auth?.user?.id || "",
+        country: country || "ae",
+      }),
+    enabled: !!(vehicleId && auth?.user?.id),
+    refetchOnWindowFocus: true,
+  });
 
   // console.log("activeEnquiryData: ", activeEnquiryData);
 
@@ -217,6 +220,10 @@ export const useCarRent = (
       });
     },
     onSuccess: () => {
+      // Invalidate the active enquiry query to refetch updated data
+      queryClient.invalidateQueries({
+        queryKey: ["activeEnquiry", vehicleId, auth?.user?.id],
+      });
       handleBookingComplete();
     },
     onError: (error) => {

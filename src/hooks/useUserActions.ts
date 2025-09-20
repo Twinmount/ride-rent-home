@@ -21,27 +21,63 @@ interface UseUserActionsOptions {
   sortOrder?: "ASC" | "DESC";
 }
 
+type VehiclePhoto = {
+  originalPath: string;
+  signedUrl: string | null;
+};
+
+type RentDetails = {
+  day: {
+    enabled: boolean;
+    rentInAED: string;
+    mileageLimit: string;
+    unlimitedMileage: boolean;
+  };
+  week: {
+    enabled: boolean;
+    rentInAED: string;
+    mileageLimit: string;
+    unlimitedMileage: boolean;
+  };
+  month: {
+    enabled: boolean;
+    rentInAED: string;
+    mileageLimit: string;
+    unlimitedMileage: boolean;
+  };
+  hour: {
+    enabled: boolean;
+    rentInAED: string;
+    mileageLimit: string;
+    unlimitedMileage: boolean;
+    minBookingHours: string;
+  };
+};
+
 type RawVehicleEnquiry = {
   _id: string;
-  vehicleDetails: any;
-  enquiryInfo: {
-    enquiredAt: string;
-    notes: string;
-    enquiryId: string;
-    status?: string;
-    contactPreference?: "phone" | "email" | "whatsapp";
+  vehicleDetails: {
+    carId: string;
+    make: string;
+    model: string;
+    year: string;
+    registrationNumber: string;
+    photos: VehiclePhoto[];
   };
-  createdAt: string;
+  enquiryId: string;
+  enquiryStatus: string;
+  enquiryMessage: string;
+  enquiredAt: string;
+  rentDetails: RentDetails;
 };
 
 type ApiResponse = {
   status: string;
   result: {
-    list: RawVehicleEnquiry[];
+    data: RawVehicleEnquiry[];
     page: number;
     limit: number;
     total: number;
-    totalNumberOfPages: number;
   };
   statusCode: number;
 };
@@ -364,14 +400,14 @@ export const useUserActions = () => {
   };
 
   const extractEnquiredVehicles = (apiData: ApiResponse) => {
-    if (!apiData?.result?.list?.length) return [];
+    if (!apiData?.result?.data?.length) return [];
 
-    return apiData.result.list.map((enquiry) => {
+    return apiData.result.data.map((enquiry: RawVehicleEnquiry) => {
       const vehicle = enquiry.vehicleDetails;
-      const enquiryInfo = enquiry.enquiryInfo;
+      const rentDetails = enquiry.rentDetails;
 
       // Calculate time ago from enquiredAt
-      const enquiredDate = new Date(enquiry.createdAt);
+      const enquiredDate = new Date(enquiry.enquiredAt);
       const now = new Date();
       const diffInHours = Math.floor(
         (now.getTime() - enquiredDate.getTime()) / (1000 * 60 * 60)
@@ -389,72 +425,65 @@ export const useUserActions = () => {
 
       // Extract rental price (using day rate if available, otherwise week/7, otherwise month/30)
       let price = 0;
-      if (vehicle?.rentalDetails?.day?.enabled) {
-        price = parseInt(vehicle.rentalDetails.day.rentInAED) || 0;
-      } else if (vehicle?.rentalDetails?.week?.enabled) {
-        price =
-          Math.round(parseInt(vehicle.rentalDetails.week.rentInAED) / 7) || 0;
-      } else if (vehicle?.rentalDetails?.month?.enabled) {
-        price =
-          Math.round(parseInt(vehicle.rentalDetails.month.rentInAED) / 30) || 0;
+      let priceUnit = "day";
+
+      if (rentDetails?.day?.enabled && rentDetails.day.rentInAED) {
+        price = parseInt(rentDetails.day.rentInAED) || 0;
+        priceUnit = "day";
+      } else if (rentDetails?.week?.enabled && rentDetails.week.rentInAED) {
+        price = Math.round(parseInt(rentDetails.week.rentInAED) / 7) || 0;
+        priceUnit = "day";
+      } else if (rentDetails?.month?.enabled && rentDetails.month.rentInAED) {
+        price = Math.round(parseInt(rentDetails.month.rentInAED) / 30) || 0;
+        priceUnit = "day";
+      } else if (rentDetails?.hour?.enabled && rentDetails.hour.rentInAED) {
+        price = parseInt(rentDetails.hour.rentInAED) || 0;
+        priceUnit = "hour";
       }
 
-      // Extract features from vehicleFeatures
-      const features: string[] = [];
-      if (vehicle?.vehicleFeatures) {
-        Object.values(vehicle.vehicleFeatures).forEach((category: any) => {
-          if (Array.isArray(category)) {
-            category.forEach((feature: any) => {
-              if (feature.selected) {
-                features.push(feature.name);
-              }
-            });
-          }
-        });
-      }
+      // Get primary image with signed URL
+      const primaryImage =
+        vehicle?.photos?.length > 0
+          ? vehicle.photos[0].signedUrl || vehicle.photos[0].originalPath
+          : "/default-car.png";
 
-      // Determine category based on vehicle type/specs
-      let category = "luxury"; // default
-      const bodyType =
-        vehicle?.vehicleSpecs?.["Body Type"]?.value?.toLowerCase() || "";
-      const vehicleModel = (vehicle?.vehicleModel || "").toLowerCase();
-
-      if (
-        bodyType.includes("coupe") ||
-        vehicleModel.includes("mustang") ||
-        vehicleModel.includes("sports")
-      ) {
-        category = "sports";
-      } else if (bodyType.includes("suv") || vehicleModel.includes("suv")) {
-        category = "suv";
-      }
-
-      // Extract location
-      const location = vehicle?.location?.address || "Dubai"; // fallback to Dubai
+      // Get all image URLs
+      const imageUrls =
+        vehicle?.photos?.map(
+          (photo) => photo.signedUrl || photo.originalPath
+        ) || [];
 
       return {
-        id: vehicle?._id || enquiry._id,
-        name:
-          vehicle?.vehicleTitle || vehicle?.vehicleModel || "Unknown Vehicle",
-        vendor: vehicle?.companyName || "Premium Car Rental",
+        id: vehicle?.carId || enquiry._id,
+        name: vehicle?.model || "Unknown Vehicle",
+        make: vehicle?.make,
+        model: vehicle?.model,
+        year: vehicle?.year,
+        registrationNumber: vehicle?.registrationNumber,
+        vendor: "Premium Car Rental", // Default vendor name
         price: price,
-        rating: vehicle?.rating || 4.8,
-        location: location.includes("Dubai") ? "Dubai" : location,
-        image: vehicle?.vehiclePhotos?.[0] || "/default-car.png",
+        priceUnit: priceUnit,
+        rating: 4.8, // Default rating
+        location: "Dubai", // Default location
+        image: primaryImage,
+        images: imageUrls,
         enquiredDate: timeAgo,
-        category: category,
-        features: features.slice(0, 3),
+        category: "luxury", // Default category
+        features: [], // No features in this simplified response
+
         // Enquiry-specific details
         enquiryDetails: {
-          enquiryId: enquiry._id,
-          notes: enquiryInfo?.notes,
-          status: enquiryInfo?.status || "pending",
-          contactPreference: enquiryInfo?.contactPreference,
-          enquiredAt: enquiry.createdAt,
+          enquiryId: enquiry.enquiryId,
+          status: enquiry.enquiryStatus,
+          message: enquiry.enquiryMessage,
+          enquiredAt: enquiry.enquiredAt,
         },
-        // Original vehicle details for reference
-        vehicleDetails: vehicle,
-        enquiryInfo: enquiryInfo,
+
+        // Rent details
+        rentDetails: rentDetails,
+
+        // Original data for reference
+        originalData: enquiry,
       };
     });
   };
