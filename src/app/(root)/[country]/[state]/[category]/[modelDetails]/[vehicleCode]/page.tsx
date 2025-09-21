@@ -276,6 +276,10 @@ export default async function VehicleDetails(props: ParamsProps) {
             category={category}
             vehicleCode={vehicleCode}
             country={country}
+            currentVehicle={{
+              brandValue: vehicle.brand.value,
+              rentalDetails: vehicle.rentalDetails,
+            }}
           />
         </Suspense>
 
