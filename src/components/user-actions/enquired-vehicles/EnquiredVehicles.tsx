@@ -23,6 +23,7 @@ import {
   Mail,
   ArrowLeft,
   Clock,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { getUserEnquiredVehicles } from "@/lib/api/userActions.api";
@@ -135,6 +136,7 @@ export default function EnquiredVehiclesPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalEnquiries, setTotalEnquiries] = useState(0);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   // Use the useUserActions hook
   const {
@@ -166,6 +168,23 @@ export default function EnquiredVehiclesPage() {
     }
   }, [apiResponse]);
 
+  // Real-time update for NEW enquiries status
+  useEffect(() => {
+    const hasNewEnquiries = enquiredVehicles.some(
+      (vehicle: EnquiredVehicle) => vehicle.enquiryStatus === "NEW"
+    );
+
+    if (!hasNewEnquiries) return;
+
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+      // Force a re-render to update the timer and status
+      refetch();
+    }, 30000); // Update every 30 seconds for more responsive timer
+
+    return () => clearInterval(interval);
+  }, [enquiredVehicles, refetch]);
+
   // Manual refetch function for pagination
   const fetchEnquiredVehiclesPage = async (page: number = 0) => {
     setCurrentPage(page);
@@ -188,8 +207,15 @@ export default function EnquiredVehiclesPage() {
     const date = new Date(dateString);
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffMinutes = Math.floor(diffTime / (1000 * 60));
+    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
+    if (diffMinutes < 1) return "Just now";
+    if (diffMinutes < 60)
+      return `${diffMinutes} minute${diffMinutes === 1 ? "" : "s"} ago`;
+    if (diffHours < 24)
+      return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
     if (diffDays === 1) return "1 day ago";
     if (diffDays < 7) return `${diffDays} days ago`;
     if (diffDays < 14) return "1 week ago";
@@ -197,16 +223,32 @@ export default function EnquiredVehiclesPage() {
     return `${Math.ceil(diffDays / 30)} months ago`;
   };
 
-  // Helper function to get status (for now, we'll determine status based on enquiry age)
-  const getStatus = (enquiredAt: string) => {
+  // Helper function to get status based on enquiryStatus and time
+  const getStatus = (enquiredAt: string, enquiryStatus: string) => {
     const enquiryDate = new Date(enquiredAt);
     const now = new Date();
-    const diffHours =
-      (now.getTime() - enquiryDate.getTime()) / (1000 * 60 * 60);
+    const diffMinutes = (now.getTime() - enquiryDate.getTime()) / (1000 * 60);
+    const diffHours = diffMinutes / 60;
 
-    if (diffHours < 24) return "pending";
-    if (diffHours < 72) return "responded";
-    if (diffHours > 168) return "booked"; // After 1 week, consider it might be booked
+    // Handle NEW status with 30-minute timeout - ONLY for NEW status
+    // if (enquiryStatus === "NEW") {
+    //   if (diffMinutes > 30) {
+    //     return "cancelled"; // Auto-cancel after 30 minutes ONLY for NEW enquiries
+    //   }
+    //   return "pending"; // Show as pending for NEW status within 30 minutes
+    // }
+
+    // Handle other explicit statuses - these are not affected by time
+    if (enquiryStatus === "NEW") return "pending";
+    if (enquiryStatus === "CANCELLED") return "cancelled";
+    if (enquiryStatus === "RESPONDED") return "responded";
+    if (enquiryStatus === "BOOKED") return "booked";
+    if (enquiryStatus === "PENDING") return "pending";
+
+    // // Fallback logic based on time (for backwards compatibility when no explicit status)
+    // if (diffHours < 24) return "pending";
+    // if (diffHours < 72) return "responded";
+    // if (diffHours > 168) return "booked"; // After 1 week, consider it might be booked
     return "pending"; // Default status
   };
 
@@ -231,13 +273,15 @@ export default function EnquiredVehiclesPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return " text-yellow-400 border-yellow-300";
       case "responded":
-        return "bg-blue-100 text-blue-800";
+        return " text-blue-400 border-blue-300";
       case "booked":
-        return "bg-green-100 text-green-800";
+        return " text-green-400 border-green-300";
+      case "cancelled":
+        return " text-red-400 border-red-300";
       default:
-        return "bg-gray-100 text-gray-800";
+        return " text-gray-400 border-gray-300";
     }
   };
 
@@ -249,9 +293,29 @@ export default function EnquiredVehiclesPage() {
         return <Mail className="h-3 w-3" />;
       case "booked":
         return <Calendar className="h-3 w-3" />;
+      case "cancelled":
+        return <X className="h-3 w-3" />;
       default:
         return <MessageSquare className="h-3 w-3" />;
     }
+  };
+
+  // Helper function to get remaining time before cancellation for NEW enquiries
+  const getRemainingTime = (enquiredAt: string, enquiryStatus: string) => {
+    if (enquiryStatus !== "NEW") return null;
+
+    const enquiryDate = new Date(enquiredAt);
+    const now = new Date();
+    const diffMinutes = (now.getTime() - enquiryDate.getTime()) / (1000 * 60);
+    const remainingMinutes = 30 - diffMinutes;
+
+    if (remainingMinutes <= 0) return "Expired";
+
+    if (remainingMinutes < 1) {
+      return `${Math.floor(remainingMinutes * 60)}s left`;
+    }
+
+    return `${Math.floor(remainingMinutes)}m left`;
   };
 
   const filteredVehicles = enquiredVehicles
@@ -259,7 +323,7 @@ export default function EnquiredVehiclesPage() {
       const vehicleName = vehicle.vehicleDetails.model;
       const vehicleRegNumber = vehicle.vehicleDetails.registrationNumber;
       const vehicleCode = vehicle.vehicleDetails.carId; // Using carId as vehicleCode
-      const status = getStatus(vehicle.enquiredAt);
+      const status = getStatus(vehicle.enquiredAt, vehicle.enquiryStatus);
 
       const matchesSearch =
         vehicleName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -283,13 +347,15 @@ export default function EnquiredVehiclesPage() {
           const priceB2 = parseInt(getRentalPrice(b.rentDetails));
           return priceB2 - priceA2;
         case "status":
-          const statusA = getStatus(a.enquiredAt);
-          const statusB = getStatus(b.enquiredAt);
+          const statusA = getStatus(a.enquiredAt, a.enquiryStatus);
+          const statusB = getStatus(b.enquiredAt, b.enquiryStatus);
           return statusA.localeCompare(statusB);
         default:
           return 0;
       }
     });
+
+  console.log("filteredVehicles: ", filteredVehicles);
 
   // Loading state
   if (loading) {
@@ -409,24 +475,32 @@ export default function EnquiredVehiclesPage() {
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="responded">Responded</SelectItem>
                 <SelectItem value="booked">Booked</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
 
         {/* Enquiries List - Card Grid Layout */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {filteredVehicles.map((vehicle: EnquiredVehicle) => {
-            const status = getStatus(vehicle.enquiredAt);
+            const status = getStatus(vehicle.enquiredAt, vehicle.enquiryStatus);
             const price = getRentalPrice(vehicle.rentDetails);
             const period = getRentalPeriod(vehicle.rentDetails);
             const vehicleImage = getVehicleImage(vehicle.vehicleDetails.photos);
             const enquiredDate = formatDate(vehicle.enquiredAt);
+            console.log("vehicle.enquiredAt: ", vehicle.enquiredAt);
 
             return (
               <Card
                 key={vehicle._id}
-                className="group overflow-hidden border border-gray-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                className={`group overflow-hidden border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
+                  vehicle.enquiryStatus === "NEW" && status === "pending"
+                    ? "border-yellow-300 ring-yellow-200 shadow-lg ring-2 ring-opacity-50"
+                    : status === "cancelled"
+                      ? "border-red-200 bg-red-50/30"
+                      : "border-gray-200"
+                }`}
               >
                 <div className="relative">
                   {/* Vehicle Image */}
@@ -462,16 +536,6 @@ export default function EnquiredVehiclesPage() {
                       }}
                     />
 
-                    {/* Status Badge */}
-                    <div className="absolute right-2 top-2 sm:right-3 sm:top-3">
-                      <Badge
-                        className={`${getStatusColor(status)} text-xs capitalize shadow-md`}
-                      >
-                        {getStatusIcon(status)}
-                        <span className="ml-1">{status}</span>
-                      </Badge>
-                    </div>
-
                     {/* Price Badge */}
                     <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
                       <div className="rounded-lg bg-white/90 px-2 py-1 backdrop-blur-sm sm:px-3">
@@ -489,10 +553,29 @@ export default function EnquiredVehiclesPage() {
                 <CardContent className="p-3 sm:p-4">
                   {/* Vehicle Title */}
                   <div className="mb-3">
-                    <h3 className="line-clamp-1 text-base font-semibold text-gray-900 sm:text-lg">
-                      {vehicle.vehicleDetails.model}{" "}
-                      {vehicle.vehicleDetails.year}
-                    </h3>
+                    <div className="flex items-center justify-between bg-transparent">
+                      <h3 className="line-clamp-1 text-base font-semibold text-gray-900 sm:text-lg">
+                        {vehicle.vehicleDetails.model}{" "}
+                        {vehicle.vehicleDetails.year}
+                      </h3>
+                      {/* Status Badge */}
+                      <Badge
+                        style={{ backgroundColor: "transparent" }}
+                        className={`${getStatusColor(status)} border text-xs capitalize shadow-md ${
+                          vehicle.enquiryStatus === "NEW" &&
+                          status === "pending"
+                            ? "ring-yellow-400 animate-pulse ring-2 ring-opacity-50"
+                            : ""
+                        }`}
+                      >
+                        {getStatusIcon(status)}
+                        <span className="ml-1">{status}</span>
+                        {vehicle.enquiryStatus === "NEW" &&
+                          status === "pending" && (
+                            <span className="ml-1 text-xs font-bold">NEW!</span>
+                          )}
+                      </Badge>
+                    </div>
                     <p className="mt-1 line-clamp-1 text-xs text-gray-500 sm:text-sm">
                       {vehicle.vehicleDetails.registrationNumber}
                     </p>
@@ -504,10 +587,10 @@ export default function EnquiredVehiclesPage() {
                       <MapPin className="h-3 w-3" />
                       <span>UAE</span>
                     </div>
-                    <div className="flex items-center gap-1">
+                    {/* <div className="flex items-center gap-1">
                       <Star className="text-yellow-400 h-3 w-3 fill-current" />
                       <span>4.8</span>
-                    </div>
+                    </div> */}
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       <span className="truncate">{enquiredDate}</span>
@@ -524,6 +607,21 @@ export default function EnquiredVehiclesPage() {
                         {vehicle.enquiryId.split("-")[0]}...
                       </span>
                     </div>
+                    {/* Show timer for NEW enquiries */}
+                    {/* {vehicle.enquiryStatus === "NEW" &&
+                      status === "pending" && (
+                        <div className="bg-yellow-50 border-yellow-200 mb-2 flex items-center justify-between rounded-md border p-2">
+                          <span className="text-yellow-800 text-xs font-medium">
+                            Auto-cancel in:
+                          </span>
+                          <span className="text-yellow-800 text-xs font-bold">
+                            {getRemainingTime(
+                              vehicle.enquiredAt,
+                              vehicle.enquiryStatus
+                            )}
+                          </span>
+                        </div>
+                      )} */}
                     <div className="line-clamp-2 text-xs text-gray-600">
                       {vehicle.enquiryMessage}
                     </div>
@@ -555,23 +653,43 @@ export default function EnquiredVehiclesPage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      className="h-8 flex-1 bg-orange-500 text-xs text-white hover:bg-orange-600"
-                    >
-                      <MessageSquare className="mr-1 h-3 w-3" />
-                      <span className="hidden sm:inline">Contact</span>
-                      <span className="sm:hidden">Call</span>
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-8 flex-1 text-xs"
-                    >
-                      <Phone className="mr-1 h-3 w-3" />
-                      <span className="hidden sm:inline">Call</span>
-                      <span className="sm:hidden">📞</span>
-                    </Button>
+                    {status === "cancelled" ? (
+                      <Button
+                        size="sm"
+                        disabled
+                        className="h-8 w-full cursor-not-allowed bg-red-100 text-xs text-red-800"
+                      >
+                        <X className="mr-1 h-3 w-3" />
+                        Enquiry Cancelled
+                      </Button>
+                    ) : (
+                      <>
+                        {/* <Button
+                          size="sm"
+                          className="h-8 flex-1 bg-orange-500 text-xs text-white hover:bg-orange-600"
+                        >
+                          <MessageSquare className="mr-1 h-3 w-3" />
+                          <span className="hidden sm:inline">Contact</span>
+                          <span className="sm:hidden">Call</span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 flex-1 text-xs"
+                        >
+                          <Phone className="mr-1 h-3 w-3" />
+                          <span className="hidden sm:inline">Call</span>
+                          <span className="sm:hidden">📞</span>
+                        </Button> */}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 flex-1 text-xs"
+                        >
+                          <span className="hidden sm:inline">View details</span>
+                        </Button>
+                      </>
+                    )}
                   </div>
 
                   {/* Additional Action Buttons for Status */}
