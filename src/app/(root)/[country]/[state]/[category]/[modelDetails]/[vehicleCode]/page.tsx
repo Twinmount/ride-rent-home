@@ -34,6 +34,9 @@ type ParamsProps = {
     modelDetails: string;
     country: string;
   }>;
+  searchParams: Promise<{
+    ref?: string;
+  }>;
 };
 
 // dynamic meta data generate
@@ -47,8 +50,11 @@ export async function generateMetadata(props: ParamsProps): Promise<Metadata> {
 
 export default async function VehicleDetails(props: ParamsProps) {
   const params = await props.params;
+  const searchParams = await props.searchParams;
 
   const { country, state, category, vehicleCode, modelDetails } = params;
+  const { ref } = searchParams;
+  console.log("ref: ", ref);
 
   const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
@@ -205,6 +211,7 @@ export default async function VehicleDetails(props: ParamsProps) {
             country={country}
             brand={vehicle?.brand}
             vehicleTitle={vehicle?.vehicleTitleH1 || vehicle?.vehicleTitle}
+            ref={ref}
           />
 
           {/* Heading and Brand logo */}

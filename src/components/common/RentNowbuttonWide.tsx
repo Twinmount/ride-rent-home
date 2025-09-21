@@ -65,8 +65,6 @@ const RentNowButtonWide = ({
     vehicleId && agentId ? { vehicleId, agentId, country, vehicle } : undefined
   );
 
-  console.log("activeEnquiryData:[RentNowButtonWide] ", activeEnquiryData);
-
   // Custom handle confirm for date picker
   const handleDateConfirm = () => {
     setOpen(false); // Close date picker

@@ -34,6 +34,8 @@ import {
   getVehicleImageUrl,
 } from "@/utils/imageUrl";
 import { useUserActions } from "@/hooks/useUserActions";
+import { generateVehicleDetailsUrl } from "@/helpers";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 // Add custom CSS for line clamping
 const lineClampStyles = `
@@ -94,6 +96,7 @@ interface RentDetails {
 
 interface VehicleDetails {
   carId: string;
+  vehicleCode: string;
   make: string;
   model: string;
   year: string;
@@ -145,6 +148,9 @@ export default function EnquiredVehiclesPage() {
     fetchEnquiredVehicles,
     userId,
   } = useUserActions();
+
+  // Get current state and category from the hook
+  const { country, state, category } = useStateAndCategory();
 
   // Query enquired vehicles using React Query
   const {
@@ -268,6 +274,25 @@ export default function EnquiredVehiclesPage() {
     if (rentDetails.month.enabled) return "month";
     if (rentDetails.hour.enabled) return "hour";
     return "day";
+  };
+
+  // Helper function to generate vehicle details URL
+  const getVehicleDetailsUrl = (vehicle: EnquiredVehicle) => {
+    // Use available fields and current state/category from user's context
+    const currentState = state || "dubai";
+    const currentCategory = category || "cars";
+    const vehicleCode = vehicle.vehicleDetails.vehicleCode;
+    const currentCountry = country || "ae";
+
+    const navRoute = generateVehicleDetailsUrl({
+      vehicleTitle: vehicle.vehicleDetails.model,
+      state: currentState,
+      vehicleCategory: currentCategory,
+      vehicleCode,
+      country: currentCountry,
+    });
+
+    return `${navRoute}?ref=enquiries`;
   };
 
   const getStatusColor = (status: string) => {
@@ -503,61 +528,65 @@ export default function EnquiredVehiclesPage() {
                 }`}
               >
                 <div className="relative">
-                  {/* Vehicle Image */}
-                  <div className="relative h-44 w-full overflow-hidden sm:h-48">
-                    <img
-                      src={vehicleImage}
-                      alt={vehicle.vehicleDetails.model}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        if (
-                          vehicle.vehicleDetails.photos.length > 1 &&
-                          !target.src.includes("placeholder")
-                        ) {
-                          const nextImageIndex =
-                            vehicle.vehicleDetails.photos.findIndex(
-                              (photo: VehiclePhoto) =>
-                                target.src.includes(photo.originalPath)
-                            ) + 1;
+                  {/* Vehicle Image - Clickable */}
+                  <Link href={getVehicleDetailsUrl(vehicle)}>
+                    <div className="relative h-44 w-full cursor-pointer overflow-hidden sm:h-48">
+                      <img
+                        src={vehicleImage}
+                        alt={vehicle.vehicleDetails.model}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
                           if (
-                            nextImageIndex <
-                            vehicle.vehicleDetails.photos.length
+                            vehicle.vehicleDetails.photos.length > 1 &&
+                            !target.src.includes("placeholder")
                           ) {
-                            target.src =
-                              vehicle.vehicleDetails.photos[nextImageIndex]
-                                .signedUrl ||
-                              vehicle.vehicleDetails.photos[nextImageIndex]
-                                .originalPath;
-                            return;
+                            const nextImageIndex =
+                              vehicle.vehicleDetails.photos.findIndex(
+                                (photo: VehiclePhoto) =>
+                                  target.src.includes(photo.originalPath)
+                              ) + 1;
+                            if (
+                              nextImageIndex <
+                              vehicle.vehicleDetails.photos.length
+                            ) {
+                              target.src =
+                                vehicle.vehicleDetails.photos[nextImageIndex]
+                                  .signedUrl ||
+                                vehicle.vehicleDetails.photos[nextImageIndex]
+                                  .originalPath;
+                              return;
+                            }
                           }
-                        }
-                        target.src = "/placeholder.svg";
-                      }}
-                    />
+                          target.src = "/placeholder.svg";
+                        }}
+                      />
 
-                    {/* Price Badge */}
-                    <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
-                      <div className="rounded-lg bg-white/90 px-2 py-1 backdrop-blur-sm sm:px-3">
-                        <span className="text-base font-bold text-orange-600 sm:text-lg">
-                          {price} AED
-                        </span>
-                        <span className="text-xs text-gray-500 sm:text-sm">
-                          /{period}
-                        </span>
+                      {/* Price Badge */}
+                      <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
+                        <div className="rounded-lg bg-white/90 px-2 py-1 backdrop-blur-sm sm:px-3">
+                          <span className="text-base font-bold text-orange-600 sm:text-lg">
+                            {price} AED
+                          </span>
+                          <span className="text-xs text-gray-500 sm:text-sm">
+                            /{period}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
 
                 <CardContent className="p-3 sm:p-4">
                   {/* Vehicle Title */}
                   <div className="mb-3">
                     <div className="flex items-center justify-between bg-transparent">
-                      <h3 className="line-clamp-1 text-base font-semibold text-gray-900 sm:text-lg">
-                        {vehicle.vehicleDetails.model}{" "}
-                        {vehicle.vehicleDetails.year}
-                      </h3>
+                      <Link href={getVehicleDetailsUrl(vehicle)}>
+                        <h3 className="line-clamp-1 cursor-pointer text-base font-semibold text-gray-900 transition-colors hover:text-orange-600 sm:text-lg">
+                          {vehicle.vehicleDetails.model}{" "}
+                          {vehicle.vehicleDetails.year}
+                        </h3>
+                      </Link>
                       {/* Status Badge */}
                       <Badge
                         style={{ backgroundColor: "transparent" }}
@@ -681,13 +710,21 @@ export default function EnquiredVehiclesPage() {
                           <span className="hidden sm:inline">Call</span>
                           <span className="sm:hidden">📞</span>
                         </Button> */}
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-8 flex-1 text-xs"
+                        <Link
+                          href={getVehicleDetailsUrl(vehicle)}
+                          className="w-full flex-1"
                         >
-                          <span className="hidden sm:inline">View details</span>
-                        </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 w-full flex-1 cursor-pointer text-xs"
+                          >
+                            <span className="hidden sm:inline">
+                              View details
+                            </span>
+                            <span className="sm:hidden">Details</span>
+                          </Button>
+                        </Link>
                       </>
                     )}
                   </div>

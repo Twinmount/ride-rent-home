@@ -16,6 +16,7 @@ type VehicleDetailsPageBreadCrumpProps = {
   brand: { label: string; value: string };
   vehicleTitle: string;
   country: string;
+  ref?: string;
 };
 
 export default function VehicleDetailsPageBreadCrump({

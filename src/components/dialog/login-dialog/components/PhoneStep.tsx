@@ -27,12 +27,7 @@ export const PhoneStep = ({
   });
 
   const onChangeCountryCode = (value: any, country: any) => {
-    console.log("country: ", country);
-
     const phoneDetails = getNumberAfterSpaceStrict(country.inputValue);
-
-    // console.log("countryCode: ", countryCode);
-    // console.log("phoneNumber: ", phoneNumber);
 
     setPhoneNumber((draft) => {
       draft.value = value;
@@ -57,8 +52,6 @@ export const PhoneStep = ({
         phoneNumber.countryCode
       );
 
-      console.log("userExistsResponse: ", userExistsResponse);
-
       if (userExistsResponse.success && userExistsResponse.data) {
         if (userExistsResponse.data.userExists) {
           setUserExists(true);
@@ -66,7 +59,6 @@ export const PhoneStep = ({
           setStatus("success");
           setStatusMessage("Welcome back! Please enter your password.");
         } else {
-          console.log("User doesn't exist - proceed with signup");
           setStatus("loading");
           setStatusMessage("New user detected! Sending verification code...");
 
