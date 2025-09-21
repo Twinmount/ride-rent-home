@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import { ImageSrc } from './Banner';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { ImageSrc } from "./Banner";
 
 const CustomArrow = ({
   onClick,
   direction,
 }: {
   onClick?: () => void;
-  direction: 'prev' | 'next';
+  direction: "prev" | "next";
 }) => (
   <button
     className={`absolute top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center text-yellow focus:outline-none ${
-      direction === 'prev' ? 'left-4' : 'right-4'
+      direction === "prev" ? "left-4" : "right-4"
     }`}
     onClick={onClick}
-    aria-label={direction === 'prev' ? 'Previous slide' : 'Next slide'}
+    aria-label={direction === "prev" ? "Previous slide" : "Next slide"}
   >
     <svg
       width="24"
@@ -28,7 +28,7 @@ const CustomArrow = ({
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={`transition-all duration-100 hover:scale-125 ${direction === 'next' ? 'rotate-180' : ''}`}
+      className={`transition-all duration-100 hover:scale-125 ${direction === "next" ? "rotate-180" : ""}`}
     >
       <path d="m15 18-6-6 6-6" />
     </svg>
@@ -51,7 +51,7 @@ export default function BannerSlider({
     arrows: bannerImages?.length > 1, // Only show arrows if there are multiple slides
     fade: false,
     speed: 600,
-    cssEase: 'ease-in-out',
+    cssEase: "ease-in-out",
     pauseOnHover: true,
     // Custom arrows
     prevArrow: <CustomArrow direction="prev" />,
@@ -75,7 +75,7 @@ export default function BannerSlider({
                 <img
                   src={image?.src}
                   alt={`Banner ${index + 1}`}
-                  className="h-full w-full object-cover object-center"
+                  className="h-full w-full object-cover object-top"
                   loading="lazy"
                   onDragStart={(e) => e.preventDefault()}
                 />
