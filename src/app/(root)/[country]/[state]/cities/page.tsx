@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { generateCitiesPageMetadata } from "./cities-metadata";
 import { API } from "@/utils/API";
 import { getCountryName } from "@/utils/url";
+import CitySearch from "@/components/cities/CitySearch";
 
 type PageProps = {
   params: Promise<{
@@ -19,9 +20,7 @@ type PageProps = {
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
-
   const { category } = await props.searchParams;
-
   const { country, state } = params;
 
   return generateCitiesPageMetadata({
@@ -39,13 +38,26 @@ export default async function CitiesPage(props: PageProps) {
 
   const category = searchParams.category || "cars";
   const page = parseInt(searchParams.page || "1", 10);
+  const search = searchParams.search || ""; // ADD SEARCH PARAM
 
   const formattedCountry = getCountryName(country);
   const formattedCategory = singularizeValue(convertToLabel(category));
 
+  // ADD SEARCH TO API CALL
+  const apiParams = new URLSearchParams({
+    state,
+    category,
+    page: page.toString(),
+    limit: "80",
+  });
+
+  if (search.trim()) {
+    apiParams.set("search", search.trim());
+  }
+
   // Fetch data using the generated URL
   const response = await API({
-    path: `/city/paginated/list?state=${state}&category=${category}&page=${page}&limit=${80}`,
+    path: `/city/paginated/list?${apiParams.toString()}`, // USE SEARCH PARAMS
     options: {
       method: "GET",
       cache: "no-cache",
@@ -57,46 +69,60 @@ export default async function CitiesPage(props: PageProps) {
   const data: FetchCitiesResponse = await response.json();
 
   const totalPages = data?.result?.totalNumberOfPages || 1;
-
   const cities = data?.result?.list || [];
 
   return (
-    <div className="-auto min-h-screen">
-      {/* Hero Section with Headings */}
-      <div className="mb-2 mt-24">
-        <div className="wrapper">
-          <h1 className="text-center text-xl font-medium text-gray-900 md:text-center md:text-2xl md:font-semibold lg:text-left lg:text-3xl xl:text-4xl">
-            {formattedCategory} Rentals options across {formattedCountry} Cities
-            - Find the Best Deals
+    <div className="min-h-screen bg-white">
+      <div className="mb-10 mt-8">
+        <div className="wrapper mx-auto max-w-5xl text-center">
+          <h1 className="m-3 pt-3 text-3xl font-semibold text-gray-900 md:text-4xl lg:pt-7 lg:text-5xl">
+            <span className="text-gray-900">
+              {formattedCategory} Rentals options across{" "}
+            </span>
+            <span className="bg-gradient-to-r from-yellow to-orange-400 bg-clip-text text-transparent">
+              {formattedCountry} Cities
+            </span>
           </h1>
 
-          <h2 className="mt-3 text-center text-sm text-text-secondary md:text-center md:text-base lg:text-left lg:text-lg">
+          <p className="mx-auto max-w-[24rem] text-base text-gray-600 lg:max-w-2xl">
             Find affordable {formattedCategory} Rental in {formattedCountry}{" "}
             Cities, Economy, SUV, and Luxury Options
-          </h2>
+          </p>
         </div>
       </div>
 
       {/* Main Content Section */}
-      <div className="wrapper flex h-auto min-h-screen flex-col items-center py-6">
-        <section>
-          <StatesForCities
-            state={state}
-            category={category}
-            country={country}
-          />
+      <div className="wrapper">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-10">
+            <StatesForCities
+              state={state}
+              category={category}
+              country={country}
+            />
+          </div>
 
-          <CitiesGrid
-            cities={cities}
-            state={state}
-            category={category}
-            country={country}
-          />
+          <div className="mb-10">
+            <CitySearch state={state} category={category} country={country} />
+          </div>
 
-          <Suspense fallback={<div>Loading...</div>}>
-            <Pagination page={page} totalPages={totalPages} />
-          </Suspense>
-        </section>
+          <div className="mb-12">
+            <CitiesGrid
+              cities={cities}
+              state={state}
+              category={category}
+              country={country}
+              searchTerm={search}
+            />
+          </div>
+
+          {/* Pagination */}
+          <div className="flex justify-center pb-16">
+            <Suspense fallback={<div>Loading...</div>}>
+              <Pagination page={page} totalPages={totalPages} />
+            </Suspense>
+          </div>
+        </div>
       </div>
     </div>
   );
