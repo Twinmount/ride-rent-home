@@ -53,57 +53,54 @@ export default function CitySearch({ state, category, country }: CitySearchProps
     router.push(`${baseUrl}?${params.toString()}`);
   }, [searchParams, router, baseUrl]);
 
-  return (
-    <div className="max-w-lg mx-auto">
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-        
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          placeholder="Search cities..."
-          className="w-full pl-12 pr-10 py-4 bg-white border-2 border-gray-200 rounded-2xl
-                   text-gray-900 placeholder-gray-500 text-base
-                   focus:border-yellow focus:outline-none focus:ring-4 focus:ring-yellow/10
-                   transition-all duration-200 shadow-sm hover:shadow-md"
-          autoComplete="off"
-          spellCheck="false"
-        />
-        
-        {searchTerm && (
-          <button
-            type="button"
-            onClick={clearSearch}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 
-                     text-gray-400 hover:text-gray-600 hover:bg-gray-100
-                     rounded-full transition-all duration-200"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
-      </div>
+   return (
+     <div className="mx-auto max-w-lg">
+       <div className="relative">
+         <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
 
-      {/* Active search indicator */}
-      {currentSearch && (
-        <div className="mt-4 flex justify-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow/10 rounded-full border border-yellow/20">
-            <Search className="w-4 h-4 text-yellow" />
-            <span className="text-sm text-gray-700">
-              <span className="font-medium text-yellow">"{currentSearch}"</span>
-            </span>
-            <button
-              onClick={clearSearch}
-              className="ml-1 p-0.5 hover:bg-yellow/20 rounded-full transition-colors"
-            >
-              <X className="w-3 h-3 text-gray-500" />
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+         <input
+           type="text"
+           value={searchTerm}
+           onChange={handleInputChange}
+           onKeyDown={handleKeyDown}
+           onFocus={() => setIsFocused(true)}
+           onBlur={() => setIsFocused(false)}
+           placeholder="Search cities..."
+           className="w-full rounded-2xl border-2 border-gray-200 bg-white py-4 pl-12 pr-10 text-base text-gray-900 placeholder-gray-500 shadow-sm transition-all duration-200 hover:shadow-md focus:border-yellow focus:outline-none focus:ring-4 focus:ring-yellow/10"
+           autoComplete="off"
+           spellCheck="false"
+         />
+
+         {searchTerm && (
+           <button
+             type="button"
+             onClick={clearSearch}
+             className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-gray-400 transition-all duration-200 hover:bg-gray-100 hover:text-gray-600"
+           >
+             <X className="h-4 w-4" />
+           </button>
+         )}
+       </div>
+
+       {/* FIXED: Escape quotes properly */}
+       {currentSearch && (
+         <div className="mt-4 flex justify-center">
+           <div className="inline-flex items-center gap-2 rounded-full border border-yellow/20 bg-yellow/10 px-4 py-2">
+             <Search className="h-4 w-4 text-yellow" />
+             <span className="text-sm text-gray-700">
+               <span className="font-medium text-yellow">
+                 &ldquo;{currentSearch}&rdquo;
+               </span>
+             </span>
+             <button
+               onClick={clearSearch}
+               className="ml-1 rounded-full p-0.5 transition-colors hover:bg-yellow/20"
+             >
+               <X className="h-3 w-3 text-gray-500" />
+             </button>
+           </div>
+         </div>
+       )}
+     </div>
+   );
 }
