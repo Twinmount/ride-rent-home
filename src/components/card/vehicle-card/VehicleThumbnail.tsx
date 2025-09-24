@@ -86,6 +86,9 @@ const VehicleThumbnail = ({
     ${hasMultipleImages ? "cursor-pointer select-none" : ""}
   `;
 
+  // FIXED: Check if it's the first image to decide priority vs lazy loading
+  const isFirstImage = currentIndex === 0;
+
   return (
     <div
       className={containerClassName}
@@ -106,7 +109,8 @@ const VehicleThumbnail = ({
           isActive && hasMultipleImages ? "scale-[1.02]" : "scale-100"
         } `}
         quality={70}
-        priority={currentIndex === 0}
+        // FIXED: Only use priority for first image, lazy loading for others
+        {...(isFirstImage ? { priority: true } : { loading: "lazy" })}
         sizes={
           layoutType === "carousel"
             ? "(max-width: 1024px) 8rem, 8.3rem"
