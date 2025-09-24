@@ -55,22 +55,27 @@ export async function generateHomePageMetadata(
   const metaTitle = data.result.metaTitle;
   const metaDescription = data.result.metaDescription;
 
+  // ADD THIS: Fallback description if empty
+  const finalDescription =
+    metaDescription ||
+    `Find the best ${convertToLabel(category)} rental deals in ${convertToLabel(state)}. Compare prices, book easily, and enjoy premium ${convertToLabel(category)} rentals with Ride Rent.`;
+
   const shortTitle =
     data.result.metaTitle.length > 60
       ? `${data.result.metaTitle.substring(0, 57)}...`
       : data.result.metaTitle;
 
   const shortDescription =
-    data.result.metaDescription.length > 155
-      ? `${data.result.metaDescription.substring(0, 152)}...`
-      : data.result.metaDescription;
+    finalDescription.length > 155 // CHANGE THIS: Use finalDescription
+      ? `${finalDescription.substring(0, 152)}...`
+      : finalDescription;
 
   return {
     title: metaTitle,
-    description: metaDescription,
+    description: finalDescription, // CHANGE THIS: Use finalDescription instead of metaDescription
     keywords: [
-      'ride rent',
-      'vehicle rental near me',
+      "ride rent",
+      "vehicle rental near me",
       `${category} rent near me`,
       `${category} rent in ${state}`,
     ],
@@ -78,7 +83,7 @@ export async function generateHomePageMetadata(
       title: shortTitle,
       description: shortDescription,
       url: canonicalUrl,
-      type: 'website',
+      type: "website",
       images: [
         {
           url: ogImage,
@@ -89,12 +94,12 @@ export async function generateHomePageMetadata(
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: shortTitle,
       description: shortDescription,
       images: [ogImage],
     },
-    manifest: '/manifest.webmanifest',
+    manifest: "/manifest.webmanifest",
     robots: {
       index: true,
       follow: true,
@@ -103,9 +108,9 @@ export async function generateHomePageMetadata(
         index: true,
         follow: true,
         noimageindex: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
       },
     },
     alternates: {
@@ -113,6 +118,7 @@ export async function generateHomePageMetadata(
     },
   };
 }
+
 
 /**
  * Generates JSON-LD structured data for the homepage dynamically.

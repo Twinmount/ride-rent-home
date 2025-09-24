@@ -1,6 +1,5 @@
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
-import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { API } from "@/utils/API";
 import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";

@@ -14,22 +14,22 @@ export function VehicleCardSkeleton({
   const imageSkeletonHeight =
     layoutType === "carousel"
       ? "h-[8rem] lg:h-[8.3rem]"
-      : "h-[6rem] lg:h-[7.5rem]";
+      : "h-[6rem] lg:h-[7.5rem] ";
 
   return (
     <MotionStaggeredDiv
       index={index}
-      className={`flex w-full max-w-full flex-col gap-3 rounded border border-border-default bg-white p-2 ${classes}`}
+      className={`flex w-full max-w-full flex-col gap-2 rounded border border-border-default bg-white p-2 ${classes}`}
     >
       {/* Top Section */}
-      <div className="h-full w-full space-y-3">
+      <div className="space-y-3">
         {/* Image with Badges */}
         <div className="relative">
           <Skeleton
             className={`w-full rounded bg-gray-300 ${imageSkeletonHeight}`}
           />
 
-          {/* Simple Badges */}
+          {/* Badges */}
           <div className="absolute left-2 top-2 flex gap-1">
             <Skeleton className="h-6 w-12 rounded-full bg-white/80" />
             <Skeleton className="h-6 w-10 rounded-full bg-white/80" />
@@ -51,12 +51,8 @@ export function VehicleCardSkeleton({
           <Skeleton className="ml-1 h-3 w-6 rounded bg-gray-300" />
         </div>
 
-        {/* Button - FIXED THE CLASS ORDER */}
-        <Skeleton
-          className={`rounded bg-gray-300 ${
-            layoutType === "carousel" ? "h-6 w-16" : "w-18 h-7"
-          }`}
-        />
+        {/* Button */}
+        <Skeleton className="h-7 w-16 rounded bg-gray-300" />
       </div>
     </MotionStaggeredDiv>
   );
