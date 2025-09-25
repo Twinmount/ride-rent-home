@@ -170,15 +170,41 @@ export class AuthAPI {
 
       if (profileData.avatar && profileData.avatar instanceof File) {
         formData.append("avatar", profileData.avatar);
+        console.log(
+          "Avatar file being uploaded:",
+          profileData.avatar.name,
+          profileData.avatar.size
+        );
       }
 
-      // Use axios client directly for FormData to ensure proper content-type handling
+      console.log(
+        "Uploading to endpoint:",
+        `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`
+      );
+
+      // Use axios client directly for FormData with explicit headers
       const response = await authApiClient.put(
         `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`,
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          timeout: 30000, // 30 second timeout for file uploads
+        }
       );
+
+      console.log("Upload response:", response.data);
       return response.data;
     } catch (error: any) {
+      console.error("Upload error details:", {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message,
+        url: error.config?.url,
+      });
+
       throw new Error(
         error.response?.data?.message ||
           error.message ||
