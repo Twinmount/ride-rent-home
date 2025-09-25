@@ -27,7 +27,6 @@ export function SearchDialog({ state, category }: SearchDialogProps) {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  // Memoized debounce function
   const handleDebouncedSearch = useCallback(
     debounce((value: string) => setDebouncedSearch(value), 300),
     []
@@ -56,35 +55,55 @@ export function SearchDialog({ state, category }: SearchDialogProps) {
     <BlurDialog>
       <DialogTrigger asChild>
         {isMobile ? (
-          <button className="flex-center my-auto h-full">
+          <button
+            className="flex-center my-auto h-full min-h-[44px] min-w-[44px]"
+            aria-label="Open search dialog"
+          >
             <Search className="h-4 w-4" strokeWidth={2} />
           </button>
         ) : (
-          <div className="p-regular-16 flex h-[2.2rem] w-[14rem] cursor-pointer items-center justify-start gap-2 rounded-xl border bg-white px-4 py-3 text-text-secondary focus-visible:ring-transparent focus-visible:ring-offset-0">
-            <Search className="h-5 w-4" strokeWidth={2} />
-            <PlaceholderTypewriter category={category} />
+          <div
+            className="p-regular-16 flex h-[2.2rem] w-[14rem] min-w-[14rem] cursor-pointer items-center justify-start gap-2 rounded-xl border bg-white px-4 py-3 text-text-secondary focus-visible:ring-transparent focus-visible:ring-offset-0"
+            role="button"
+            tabIndex={0}
+            aria-label="Open search dialog"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                // Trigger dialog open
+              }
+            }}
+          >
+            <Search
+              className="h-5 w-4 flex-shrink-0"
+              strokeWidth={2}
+              aria-hidden="true"
+            />
+            <div className="flex-1 overflow-hidden">
+              <PlaceholderTypewriter category={category} />
+            </div>
           </div>
         )}
       </DialogTrigger>
 
       <DialogContent
         className={`h-fit rounded-xl bg-white py-6 max-md:w-[95%] sm:max-w-[500px]`}
+        aria-labelledby="search-dialog-title"
       >
-        <DialogHeader className="sr-only">
-          <DialogTitle className="sr-only">Search Vehicle</DialogTitle>
+        <DialogHeader>
+          <DialogTitle id="search-dialog-title">Search Vehicle</DialogTitle>
         </DialogHeader>
         <div className="flex h-auto max-h-[80vh] flex-col space-y-2">
-          {/* Search Input */}
           <SearchInput search={search} setSearch={setSearch} />
-
-          {/* Search Results */}
-          <SearchResults
-            debouncedSearch={debouncedSearch}
-            search={search}
-            results={results}
-            isLoading={isLoading}
-          />
-          {!hasSearchResult && <CompanyPromotionList />}
+          <div className="min-h-[200px]">
+            <SearchResults
+              debouncedSearch={debouncedSearch}
+              search={search}
+              results={results}
+              isLoading={isLoading}
+            />
+            {!hasSearchResult && <CompanyPromotionList />}
+          </div>
         </div>
       </DialogContent>
     </BlurDialog>

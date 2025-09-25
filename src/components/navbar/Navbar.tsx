@@ -11,22 +11,11 @@ import LanguageSelector from "./LanguageSelector";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { LocationDialog } from "../dialog/location-dialog/LocationDialog";
 import { useEffect, useState } from "react";
-import {
-  AlignRight,
-  User,
-  Globe,
-  MapPin,
-  Bell,
-  Edit3,
-  Settings,
-  LogOut,
-} from "lucide-react";
+import { AlignRight, User, Settings, LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Badge } from "../ui/badge";
 import RegisterLinkButton from "../common/RegisterLinkButton";
 import RideRentNavbarLogo from "../common/RideRentNavbarLogo";
-import { LoginDialog } from "../dialog/login-dialog";
 import { useAuthContext } from "@/auth";
 import {
   DropdownMenu,
@@ -118,7 +107,6 @@ export const Navbar = () => {
   }, []);
 
   const shouldRenderDropdowns = useShouldRender(noStatesDropdownRoutes);
-
   const isMobile = useIsMobile(640);
 
   // Handle logout function
@@ -130,136 +118,157 @@ export const Navbar = () => {
   const userName = user ? `${user.name}` : "User";
 
   return (
-    <header
-      className={`fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-white transition-all duration-200 ease-in-out`}
-    >
-      <nav className={`flex-between global-padding container`}>
-        <div className="flex w-fit items-center justify-center">
-          <div className="w-fit p-0">
-            <RideRentNavbarLogo
-              country={country}
-              state={state}
-              category={category}
-            />
-          </div>
-        </div>
-
-        <div className="flex w-fit items-center">
-          <ul className="flex w-full items-center justify-between gap-2 md:gap-4 lg:gap-5">
-            {/* Search Dialog */}
-            <li>
-              <SearchDialog state={state} category={category} />
-            </li>
-            <li>
-              <LanguageSelector
-                theme="navbar"
-                size="md"
-                showLanguageText={true}
-                position="left"
-                className="navbar-lang-selector"
+    <>
+      <header
+        className={`fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-white transition-all duration-200 ease-in-out`}
+      >
+        <nav
+          className={`flex-between global-padding container`}
+          aria-label="Main navigation"
+        >
+          <div className="flex w-fit items-center justify-center">
+            <div className="w-fit p-0">
+              <RideRentNavbarLogo
+                country={country}
+                state={state}
+                category={category}
               />
-            </li>
-            {/* Location */}
-            {!shouldRenderDropdowns && (
-              <li className="-mx-2 w-fit">
+            </div>
+          </div>
+
+          <div className="flex w-fit items-center">
+            <ul className="flex w-full items-center justify-between gap-2 md:gap-4 lg:gap-5">
+              {/* Search Dialog */}
+              <li>
+                <SearchDialog state={state} category={category} />
+              </li>
+
+              {/* Language Selector */}
+              <li>
+                <LanguageSelector
+                  theme="navbar"
+                  size="md"
+                  showLanguageText={true}
+                  position="left"
+                  className="navbar-lang-selector"
+                />
+              </li>
+
+              {/* Location - Conditional rendering inside li */}
+              <li
+                className={`-mx-2 w-fit ${shouldRenderDropdowns ? "hidden" : ""}`}
+              >
                 <LocationDialog />
               </li>
-            )}
-            {/* List Button */}
-            <li className="hidden lg:block">
-              <RegisterLinkButton country={country} />
-            </li>
-            <div className="flex items-center space-x-2">
-              {auth.isLoggedIn && (
-                <div className="flex items-center space-x-2">
-                  {/* Notifications */}
-                  {/* <Button
+
+              {/* List Button */}
+              <li className="hidden lg:block">
+                <RegisterLinkButton country={country} />
+              </li>
+
+              {/* User Menu */}
+              <li className="flex items-center space-x-2">
+                {auth.isLoggedIn && (
+                  <div className="flex items-center space-x-2">
+                    {/* Dropdown Menu for Avatar */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Avatar
+                          className="h-9 w-9 cursor-pointer ring-2 ring-orange-200 transition-all hover:ring-orange-300"
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`Open user menu for ${userName}`}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                            }
+                          }}
+                        >
+                          <AvatarImage
+                            src={user?.avatar}
+                            alt={`Profile picture of ${userName}`}
+                          />
+                          <AvatarFallback
+                            className="bg-orange-100 font-semibold text-orange-600"
+                            aria-label={`${userName} initials`}
+                          >
+                            {userName
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </AvatarFallback>
+                        </Avatar>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        className="w-56"
+                        align="end"
+                        forceMount
+                        aria-label="User account menu"
+                      >
+                        <DropdownMenuLabel className="font-normal">
+                          <div className="flex flex-col space-y-1">
+                            <p className="text-sm font-medium leading-none">
+                              {userName}
+                            </p>
+                            <p className="text-xs leading-none text-muted-foreground">
+                              {user?.email}
+                            </p>
+                          </div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={handleProfileNavigation}
+                          className="cursor-pointer"
+                        >
+                          <User className="mr-2 h-4 w-4" aria-hidden="true" />
+                          <span>My Profile</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer">
+                          <Settings
+                            className="mr-2 h-4 w-4"
+                            aria-hidden="true"
+                          />
+                          <span>Settings</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={handleLogout}
+                          className="cursor-pointer text-red-600 focus:text-red-600"
+                        >
+                          <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+                          <span>Log out</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                )}
+
+                {!auth.isLoggedIn && (
+                  <Button
                     variant="ghost"
-                    size="sm"
-                    className="relative cursor-pointer"
+                    size="icon"
+                    className="rounded-full"
+                    onClick={() => onHandleLoginmodal({ isOpen: true })}
+                    aria-label="Sign in to your account"
                   >
-                    <Bell className="h-5 w-5 text-gray-600" />
-                    <Badge className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 p-0 text-xs text-white">
-                      3
-                    </Badge>
-                  </Button> */}
+                    <User className="h-5 w-5" aria-hidden="true" />
+                  </Button>
+                )}
+              </li>
 
-                  {/* Dropdown Menu for Avatar */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-orange-200 transition-all hover:ring-orange-300">
-                        <AvatarImage src={user?.avatar} alt={userName} />
-                        <AvatarFallback className="bg-orange-100 font-semibold text-orange-600">
-                          {userName
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="w-56"
-                      align="end"
-                      forceMount
-                    >
-                      <DropdownMenuLabel className="font-normal">
-                        <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium leading-none">
-                            {userName}
-                          </p>
-                          <p className="text-xs leading-none text-muted-foreground">
-                            {user?.email}
-                          </p>
-                        </div>
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={handleProfileNavigation}
-                        className="cursor-pointer"
-                      >
-                        <User className="mr-2 h-4 w-4" />
-                        <span>My Profile</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer">
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={handleLogout}
-                        className="cursor-pointer text-red-600 focus:text-red-600"
-                      >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Log out</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              )}
-
-              {!auth.isLoggedIn && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full"
-                  onClick={() => onHandleLoginmodal({ isOpen: true })}
-                >
-                  <User className="h-5 w-5" />
-                </Button>
-              )}
-            </div>
-            <LoginDrawer
-              isOpen={isLoginOpen}
-              onClose={() => onHandleLoginmodal({ isOpen: false })}
-            />
-            {isMobile && (
-              <li>
+              {/* Mobile Sidebar - Conditional rendering inside li */}
+              <li className={`${!isMobile ? "hidden" : ""}`}>
                 <MobileSidebar />
               </li>
-            )}
-          </ul>
-        </div>
-      </nav>
-    </header>
+            </ul>
+          </div>
+        </nav>
+      </header>
+
+      <LoginDrawer
+        isOpen={isLoginOpen}
+        onClose={() => onHandleLoginmodal({ isOpen: false })}
+      />
+    </>
   );
 };

@@ -100,7 +100,6 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     clearError();
   };
 
-
   useEffect(() => {
     if (authError) {
       setStatus("error");
@@ -141,6 +140,9 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
           isOpen ? "opacity-100" : "pointer-events-none opacity-0"
         )}
         onClick={handleClose}
+        role="button"
+        tabIndex={-1}
+        aria-label="Close login drawer"
       />
 
       {/* Drawer */}
@@ -149,6 +151,9 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
           "fixed right-0 top-0 z-50 h-full w-full max-w-sm border-l border-border bg-background shadow-2xl transition-transform duration-300 ease-out",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="drawer-title"
       >
         <div className="flex h-full flex-col">
           <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6 text-white">
@@ -156,10 +161,14 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
-                  <span className="text-lg font-bold">🚗</span>
+                  <span className="text-lg font-bold" aria-hidden="true">
+                    🚗
+                  </span>
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">Ride.Rent</h2>
+                  <h2 id="drawer-title" className="text-xl font-bold">
+                    Ride.Rent
+                  </h2>
                   <p className="text-xs text-white/80">
                     {step === "register" ? "Complete Profile" : "Sign In"}
                   </p>
@@ -170,8 +179,9 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
                 size="icon"
                 onClick={handleClose}
                 className="text-white/80 hover:bg-white/10 hover:text-white"
+                aria-label="Close login drawer"
               >
-                <X className="h-5 w-5" />
+                <X className="h-5 w-5" aria-hidden="true" />
               </Button>
             </div>
           </div>
@@ -179,16 +189,18 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
           {/* Status Bar */}
           <div className="border-b border-border bg-orange-50/50 px-6 py-4">
             <div className="flex min-h-[20px] items-center gap-2">
-              {getStatusIcon()}
               <span
                 className={cn(
-                  "text-sm font-medium transition-colors duration-200",
+                  "flex items-center gap-2 text-sm font-medium transition-colors duration-200",
                   status === "success" && "text-green-600",
                   status === "error" && "text-red-600",
                   isCurrentlyLoading && "text-orange-600",
                   status === "idle" && "text-muted-foreground"
                 )}
+                role="status"
+                aria-live="polite"
               >
+                {getStatusIcon()}
                 {statusMessage || "Enter your phone number to continue"}
               </span>
             </div>

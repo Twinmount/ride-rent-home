@@ -75,23 +75,24 @@ export default function LanguageSelector({
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center space-x-1 ${sizes.padding} ${sizes.text} font-medium ${themeConfig.trigger} ${themeConfig.triggerBorder || ''} transition-colors ${
-          variant === 'footer' ? 'rounded-md' : ''
+        className={`flex items-center space-x-1 ${sizes.padding} ${sizes.text} font-medium ${themeConfig.trigger} ${themeConfig.triggerBorder || ""} transition-colors ${
+          variant === "footer" ? "rounded-md" : ""
         }`}
       >
         <IconComponent
-          className={`${sizes.icon} lg:${sizes.icon.replace('h-4 w-4', 'h-6 w-6')} ${
-            variant === 'footer' ? 'text-tertiary' : 'text-orange-500'
+          className={`${sizes.icon} lg:${sizes.icon.replace("h-4 w-4", "h-6 w-6")} ${
+            variant === "footer" ? "text-tertiary" : "text-orange-500"
           }`}
         />
         {showLanguageText && (
           <span className="max-sm:hidden">
-            {selectedLanguage?.name || 'English'}
+            {selectedLanguage?.name || "English"}
           </span>
         )}
-        <ChevronDown className="text-orange-500 h-4 w-4" />
+        <ChevronDown className="h-4 w-4 text-orange-500" />
       </button>
 
+      {/* Dropdown */}
       {/* Dropdown */}
       {isOpen && (
         <>
@@ -101,7 +102,7 @@ export default function LanguageSelector({
           />
 
           <div
-            className={`absolute z-50 mt-2 ${/* Mobile: Center the dropdown with proper positioning */ ''} left-1/2 -translate-x-1/2 transform sm:transform-none sm:${getDropdownPosition(position)} ${/* Responsive width handling */ ''} w-[calc(100vw-2rem)] max-w-[280px] rounded-xl border sm:w-60 sm:max-w-[280px] ${themeConfig.dropdown}`}
+            className={`absolute left-1/2 z-50 mt-2 -translate-x-1/2 transform sm:transform-none sm:${getDropdownPosition(position)} w-[calc(100vw-2rem)] min-w-[280px] max-w-[280px] rounded-xl border sm:w-60 sm:max-w-[280px] ${themeConfig.dropdown}`}
           >
             <div className="p-4">
               {/* Language Selection */}
@@ -164,7 +165,7 @@ export default function LanguageSelector({
                   >
                     {Object.keys(exchangeRates).map((curr) => (
                       <option key={curr} value={curr}>
-                        {`${curr} – ${currencySymbols[curr] || ''}`}
+                        {`${curr} – ${currencySymbols[curr] || ""}`}
                       </option>
                     ))}
                   </select>
@@ -183,7 +184,7 @@ export default function LanguageSelector({
       )}
 
       {/* Google Translate Element */}
-      {language !== 'en' && (
+      {language !== "en" && (
         <div className="hidden">
           <div id="google_translate_element"></div>
         </div>

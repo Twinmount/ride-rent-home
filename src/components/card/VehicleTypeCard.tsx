@@ -39,35 +39,48 @@ export function VehicleTypeCard({
 
   return (
     <MotionDivElm
-      custom={index} // Pass index for delay
+      custom={index}
       initial="hidden"
       animate="visible"
       variants={categoryVariants}
       className="h-full"
+      role="listitem"
     >
       <div
         onClick={() => handleTypeClick(type.value)}
         className={`group relative flex aspect-square h-[4rem] w-[5.75rem] min-w-[4rem] cursor-pointer flex-col justify-center gap-[0.2rem] rounded-[0.5rem] border border-border-default lg:h-[4.5rem] lg:w-[6rem]`}
+        role="button"
+        tabIndex={0}
+        aria-label={`Select ${type.name} vehicle type${isSelected ? " (currently selected)" : ""}`}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleTypeClick(type.value);
+          }
+        }}
       >
         <div
-          className={`mx-auto flex h-[57%] w-[65%] items-center justify-center rounded-[0.4rem] bg-gray-100`}
+          className={`image-stable mx-auto flex h-[57%] w-[65%] items-center justify-center rounded-[0.4rem] bg-gray-100`}
         >
           <Image
             width={90}
             height={60}
             src={`${baseAssetsUrl}/icons/vehicle-types/${category}/${type.value}.webp`}
-            alt={`${type.name} Icon`}
+            alt=""
             className={`transition-all duration-200 ease-out`}
+            priority={index < 3}
+            sizes="90px"
+            quality={85}
           />
         </div>
         <span
-          className={`line-clamp-1 w-full text-center text-[0.56rem] font-normal text-gray-600 lg:text-[0.65rem] ${isSelected && 'font-semibold text-black'}`}
+          className={`line-clamp-1 w-full text-center text-[0.56rem] font-normal text-gray-600 lg:text-[0.65rem] ${isSelected && "font-semibold text-black"}`}
         >
           {type.name}
         </span>
 
         <div
-          className={`absolute bottom-0 left-1/2 h-[0.20rem] w-[85%] -translate-x-1/2 transform rounded-full ${isSelected ? 'bg-yellow' : 'bg-yellow opacity-0 group-hover:opacity-100'}`}
+          className={`absolute bottom-0 left-1/2 h-[0.20rem] w-[85%] -translate-x-1/2 transform rounded-full ${isSelected ? "bg-yellow" : "bg-yellow opacity-0 group-hover:opacity-100"}`}
         />
       </div>
     </MotionDivElm>

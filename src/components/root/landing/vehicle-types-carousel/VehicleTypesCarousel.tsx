@@ -23,7 +23,6 @@ const PRIORITY_TYPES = ['suvs', 'sedan', 'luxury', 'monthly-rentals'];
 export default function VehicleTypesCarousel() {
   const { state, category, country } = useStateAndCategory();
 
-  //
   const [cachedVehicleTypes, setCachedVehicleTypes] = useState<
     VehicleTypeType[]
   >([]);
@@ -31,11 +30,10 @@ export default function VehicleTypesCarousel() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  // top page load progress hook
   const loader = useTopLoader();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['vehicleTypes', category, state],
+    queryKey: ["vehicleTypes", category, state],
     queryFn: () => fetchVehicleTypesByValue(category, state, country),
     enabled: !!category && !!country,
   });
@@ -72,7 +70,7 @@ export default function VehicleTypesCarousel() {
           shouldUpdate = false;
         }
       } catch (e) {
-        console.warn('Failed to parse cached vehicle types:', e);
+        console.warn("Failed to parse cached vehicle types:", e);
       }
     }
 
@@ -94,17 +92,16 @@ export default function VehicleTypesCarousel() {
           setCachedVehicleTypes(parsed);
         }
       } catch (e) {
-        console.warn('Failed to parse cached vehicle types:', e);
+        console.warn("Failed to parse cached vehicle types:", e);
       }
     }
   }, [storageKey]);
 
-  //
   const updateUrlType = useCallback(
     (type: string) => {
       const newUrl = formUrlQuery({
         params: searchParams.toString(),
-        key: 'type',
+        key: "type",
         value: type,
       });
       router.push(newUrl, { scroll: false });
@@ -113,31 +110,30 @@ export default function VehicleTypesCarousel() {
   );
 
   const handleTypeClick = (typeValue: string) => {
-    const currentlySelectedType = searchParams.get('type');
+    const currentlySelectedType = searchParams.get("type");
 
     if (currentlySelectedType === typeValue) {
       const newUrl = removeKeysFromQuery({
         params: searchParams.toString(),
-        keysToRemove: ['type'],
+        keysToRemove: ["type"],
       });
       router.push(newUrl, { scroll: false });
     } else {
       updateUrlType(typeValue);
     }
 
-    // trigger top page loader for 300ms
     loader.start();
     setTimeout(() => {
       loader.done();
     }, 500);
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 300, behavior: 'smooth' });
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 300, behavior: "smooth" });
     }
   };
 
   if (isLoading) return <VehicleTypesCarouselSkelton />;
 
-  const currentlySelectedType = searchParams.get('type');
+  const currentlySelectedType = searchParams.get("type");
 
   const list =
     vehicleTypes.length > 0
@@ -152,32 +148,40 @@ export default function VehicleTypesCarousel() {
     <VehicleTypesCarouselWrapper>
       <Carousel
         opts={{
-          align: 'start',
+          align: "start",
         }}
       >
-        <CarouselContent className="flex h-fit gap-x-3 px-1 py-0 lg:gap-x-4">
+        <CarouselContent
+          className="flex h-fit gap-x-3 px-1 py-0 lg:gap-x-4"
+          role="list"
+          aria-label="Vehicle type filters"
+        >
           {list.map((type, index) => (
-            <VehicleTypeCard
-              key={type.typeId}
-              type={type}
-              category={category}
-              index={index}
-              handleTypeClick={handleTypeClick}
-              currentType={currentlySelectedType}
-            />
+            <div key={type.typeId} className="vehicle-type-stable">
+              <VehicleTypeCard
+                type={type}
+                category={category}
+                index={index}
+                handleTypeClick={handleTypeClick}
+                currentType={currentlySelectedType}
+              />
+            </div>
           ))}
         </CarouselContent>
 
-        <CarouselPrevious className="max-md:hidden" />
-        <CarouselNext className="max-md:hidden" />
+        <CarouselPrevious
+          className="max-md:hidden"
+          aria-label="Previous vehicle types"
+        />
+        <CarouselNext
+          className="max-md:hidden"
+          aria-label="Next vehicle types"
+        />
       </Carousel>
     </VehicleTypesCarouselWrapper>
   );
 }
 
-/*
- extracted the wrapper div style logic to make it reusable in the VehicleTypesCarouselSkelton component also
-*/
 export const VehicleTypesCarouselWrapper = ({
   children,
 }: {
@@ -185,7 +189,7 @@ export const VehicleTypesCarouselWrapper = ({
 }) => {
   return (
     <div
-      className="h-fit w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[58%] md:ml-6 md:mr-8 md:max-w-[42%] lg:max-w-[57%] xl:max-w-[60%] 2xl:max-w-[60%]"
+      className="layout-stable h-fit w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[58%] md:ml-6 md:mr-8 md:max-w-[42%] lg:max-w-[57%] xl:max-w-[60%] 2xl:max-w-[60%]"
       id="categories"
     >
       {children}

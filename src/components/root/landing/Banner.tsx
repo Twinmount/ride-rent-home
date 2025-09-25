@@ -48,8 +48,19 @@ export default async function Banner({
   const bannerImages = await getBannerImages(state, isMobile, country);
 
   return (
-    <div className="no-global-padding relative">
-      <BannerSlider bannerImages={bannerImages} />
-    </div>
+    <>
+      {bannerImages.length > 0 && (
+        <link
+          rel="preload"
+          as="image"
+          href={bannerImages[0].src}
+          fetchPriority="high"
+        />
+      )}
+
+      <div className="no-global-padding relative">
+        <BannerSlider bannerImages={bannerImages} />
+      </div>
+    </>
   );
 }

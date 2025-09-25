@@ -55,10 +55,34 @@ export async function generateHomePageMetadata(
   const metaTitle = data.result.metaTitle;
   const metaDescription = data.result.metaDescription;
 
-  // ADD THIS: Fallback description if empty
-  const finalDescription =
-    metaDescription ||
-    `Find the best ${convertToLabel(category)} rental deals in ${convertToLabel(state)}. Compare prices, book easily, and enjoy premium ${convertToLabel(category)} rentals with Ride Rent.`;
+  const generateFallbackDescription = () => {
+    const stateLabel = convertToLabel(state);
+    const categoryLabel = convertToLabel(category);
+    const countryLabel = getCountryLabel(country);
+
+    // Handle vehicle type specific descriptions
+    if (vehicleType) {
+      const vehicleTypeLabel = convertToLabel(vehicleType);
+      return `Rent ${vehicleTypeLabel.toLowerCase()} ${categoryLabel.toLowerCase()} in ${stateLabel}, ${countryLabel}. Compare prices from trusted providers, book instantly, and enjoy premium ${vehicleTypeLabel.toLowerCase()} ${categoryLabel.toLowerCase()} rentals with Ride.Rent. Best rates guaranteed.`;
+    }
+
+    // Category specific fallbacks
+    const categoryDescriptions = {
+      cars: `Rent a car in ${stateLabel}, ${countryLabel} with Ride.Rent. Choose from economy, luxury, SUV, and premium vehicles. Instant booking, competitive rates, and 24/7 support. Your perfect car rental starts here.`,
+      motorcycles: `Rent motorcycles in ${stateLabel}, ${countryLabel}. Explore with sport bikes, cruisers, and scooters. Easy booking, flexible rentals, and premium motorcycle rental experience with Ride.Rent.`,
+      yachts: `Luxury yacht rentals in ${stateLabel}, ${countryLabel}. Charter premium yachts for parties, events, or leisure. Professional crew, world-class amenities, and unforgettable maritime experiences.`,
+      "jet-skis": `Jet ski rentals in ${stateLabel}, ${countryLabel}. Experience thrilling water sports with top-quality jet skis. Hourly and daily rentals available. Safety equipment included.`,
+      bicycles: `Bicycle rentals in ${stateLabel}, ${countryLabel}. Explore the city with mountain bikes, road bikes, and e-bikes. Eco-friendly transportation and adventure cycling experiences.`,
+      default: `Rent ${categoryLabel.toLowerCase()} in ${stateLabel}, ${countryLabel} with Ride.Rent. Compare prices, book easily, and enjoy premium ${categoryLabel.toLowerCase()} rentals. Best deals and trusted service guaranteed.`,
+    };
+
+    return (
+      categoryDescriptions[category as keyof typeof categoryDescriptions] ||
+      categoryDescriptions.default
+    );
+  };
+
+  const finalDescription = metaDescription || generateFallbackDescription();
 
   const shortTitle =
     data.result.metaTitle.length > 60
@@ -66,19 +90,36 @@ export async function generateHomePageMetadata(
       : data.result.metaTitle;
 
   const shortDescription =
-    finalDescription.length > 155 // CHANGE THIS: Use finalDescription
+    finalDescription.length > 155
       ? `${finalDescription.substring(0, 152)}...`
       : finalDescription;
 
+  const generateKeywords = () => {
+    const baseKeywords = [
+      "ride rent",
+      "vehicle rental",
+      `${category} rental ${state}`,
+      `rent ${category} ${state}`,
+      `${category} hire ${state}`,
+      `${state} ${category} rental`,
+      `${convertToLabel(state)} ${convertToLabel(category)} rental`,
+    ];
+
+    if (vehicleType) {
+      baseKeywords.push(
+        `${vehicleType} ${category} rental`,
+        `rent ${vehicleType} ${category} ${state}`,
+        `${vehicleType} ${category} ${state}`
+      );
+    }
+
+    return baseKeywords;
+  };
+
   return {
     title: metaTitle,
-    description: finalDescription, // CHANGE THIS: Use finalDescription instead of metaDescription
-    keywords: [
-      "ride rent",
-      "vehicle rental near me",
-      `${category} rent near me`,
-      `${category} rent in ${state}`,
-    ],
+    description: finalDescription,
+    keywords: generateKeywords(),
     openGraph: {
       title: shortTitle,
       description: shortDescription,
@@ -118,6 +159,20 @@ export async function generateHomePageMetadata(
     },
   };
 }
+
+function getCountryLabel(country: string): string {
+  const countryLabels: Record<string, string> = {
+    ae: "UAE",
+    in: "India",
+    sa: "Saudi Arabia",
+    us: "United States",
+    uk: "United Kingdom",
+    // Add more countries as needed
+  };
+
+  return countryLabels[country] || country.toUpperCase();
+}
+
 
 
 /**

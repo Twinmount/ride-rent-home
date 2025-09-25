@@ -140,6 +140,7 @@ const Carousel = React.forwardRef<
           className={cn("relative", className)}
           role="region"
           aria-roledescription="carousel"
+          aria-label="Content carousel"
           {...props}
         >
           {children}
@@ -212,13 +213,14 @@ const CarouselPrevious = React.forwardRef<
           ? "-left-16 top-1/2 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
         canScrollPrev ? "text-accent" : "text-gray-400",
-        className,
+        className
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
+      aria-label="Previous slide"
       {...props}
     >
-      <ChevronLeft />
+      <ChevronLeft aria-hidden="true" />
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -242,13 +244,14 @@ const CarouselNext = React.forwardRef<
           ? "-right-16 top-1/2 -translate-y-1/2"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
         canScrollNext ? "text-accent" : "text-gray-400",
-        className,
+        className
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
+      aria-label="Next slide"
       {...props}
     >
-      <ChevronRight />
+      <ChevronRight aria-hidden="true" />
       <span className="sr-only">Next slide</span>
     </Button>
   );

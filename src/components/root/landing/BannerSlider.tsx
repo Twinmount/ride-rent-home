@@ -4,6 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { ImageSrc } from "./Banner";
+import Image from "next/image";
 
 const CustomArrow = ({
   onClick,
@@ -48,15 +49,14 @@ export default function BannerSlider({
     autoplaySpeed: 4000,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: bannerImages?.length > 1, // Only show arrows if there are multiple slides
+    arrows: bannerImages?.length > 1,
     fade: false,
     speed: 600,
     cssEase: "ease-in-out",
     pauseOnHover: true,
-    // Custom arrows
+    lazyLoad: "ondemand" as const,
     prevArrow: <CustomArrow direction="prev" />,
     nextArrow: <CustomArrow direction="next" />,
-    /* Custom dot styling */
     customPaging: (i: number) => (
       <div className="h-2 w-2 cursor-pointer rounded-full bg-white/40 transition-all duration-300 hover:bg-white/80">
         <span className="sr-only">Slide {i + 1}</span>
@@ -72,11 +72,16 @@ export default function BannerSlider({
             /* Slide content structure */
             const slideContent = (
               <div className="relative h-full w-full">
-                <img
+                <Image
                   src={image?.src}
                   alt={`Banner ${index + 1}`}
-                  className="h-full w-full object-cover object-top"
-                  loading="lazy"
+                  fill
+                  className="object-cover object-top"
+                  priority={index === 0}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  fetchPriority={index === 0 ? "high" : "low"}
+                  sizes="100vw"
+                  quality={index === 0 ? 90 : 85}
                   onDragStart={(e) => e.preventDefault()}
                 />
               </div>
@@ -91,6 +96,7 @@ export default function BannerSlider({
                   href={image?.link}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Banner ${index + 1} - External link`}
                 >
                   {slideContent}
                 </a>
