@@ -22,35 +22,39 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
 }) => {
   const [showToast, setShowToast] = useState(false);
 
-  // Use saved vehicle hook if vehicleId is provided, otherwise fall back to local state
-  const savedVehicleHook = vehicleId
-    ? useSavedVehicle({
-        vehicleId,
-        onSaveSuccess: (isSaved) => {
-          onLike?.(isSaved);
-          if (isSaved) {
-            setShowToast(true);
-            setTimeout(() => setShowToast(false), 3000);
-          }
-        },
-        onSaveError: (error) => {
-          console.error("Error saving/unsaving vehicle:", error);
-          // Show appropriate error message
-          if (error.message.includes("login")) {
-            // Handle unauthenticated user - could show login modal
-            alert("Please login to save vehicles");
-          } else {
-            // Other errors
-            alert("Something went wrong. Please try again.");
-          }
-        },
-      })
-    : null;
+  // Always call the hook, but use a fallback vehicleId if not provided
+  const savedVehicleHook = useSavedVehicle({
+    vehicleId: vehicleId || "",
+    onSaveSuccess: (isSaved) => {
+      // Only trigger callbacks if we have a valid vehicleId
+      if (vehicleId) {
+        onLike?.(isSaved);
+        if (isSaved) {
+          setShowToast(true);
+          setTimeout(() => setShowToast(false), 3000);
+        }
+      }
+    },
+    onSaveError: (error) => {
+      // Only handle errors if we have a valid vehicleId
+      if (vehicleId) {
+        console.error("Error saving/unsaving vehicle:", error);
+        // Show appropriate error message
+        if (error.message.includes("login")) {
+          // Handle unauthenticated user - could show login modal
+          alert("Please login to save vehicles");
+        } else {
+          // Other errors
+          alert("Something went wrong. Please try again.");
+        }
+      }
+    },
+  });
 
-  // Use hook state if available, otherwise use local state
+  // Use hook state if vehicleId is available, otherwise use local state
   const [localIsLiked, setLocalIsLiked] = useState(initialLiked);
-  const isLiked = savedVehicleHook ? savedVehicleHook.isSaved : localIsLiked;
-  const isLoading = savedVehicleHook?.isLoading || false;
+  const isLiked = vehicleId ? savedVehicleHook.isSaved : localIsLiked;
+  const isLoading = vehicleId ? savedVehicleHook.isLoading : false;
 
   const handleShare = async () => {
     if (typeof window !== "undefined") {
@@ -84,7 +88,7 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
   };
 
   const handleLike = () => {
-    if (savedVehicleHook) {
+    if (vehicleId) {
       // Use the hook's toggle function
       savedVehicleHook.toggleSaved();
     } else {

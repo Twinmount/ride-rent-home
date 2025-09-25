@@ -148,7 +148,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
               Please log in to view your saved vehicles
             </h3>
             <p className="mb-4 text-gray-600">
-              Sign in to see the vehicles you've saved for later
+              Sign in to see the vehicles you&apos;ve saved for later
             </p>
           </div>
         </div>

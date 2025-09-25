@@ -90,7 +90,7 @@ const ViewedVehicles = () => {
               Please log in to view your browsing history
             </h3>
             <p className="mb-4 text-gray-600">
-              Sign in to see the vehicles you've recently viewed
+              Sign in to see the vehicles you&apos;ve recently viewed
             </p>
           </div>
         </div>
