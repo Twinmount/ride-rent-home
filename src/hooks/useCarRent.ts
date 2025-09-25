@@ -257,9 +257,9 @@ export const useCarRent = (
       message,
       startDate,
       endDate,
-      name: userProfile?.data?.name || "John Doe",
-      phone: userProfile?.data?.phoneNumber || "+1234567890",
-      email: userProfile?.data?.email || "john.doe@example.com",
+      name: userProfile?.data?.name || "",
+      phone: userProfile?.data?.phoneNumber || "",
+      email: userProfile?.data?.email || "",
     });
   };
 

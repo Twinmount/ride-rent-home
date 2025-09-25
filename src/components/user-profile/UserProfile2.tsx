@@ -835,7 +835,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
         <div className="space-y-6">
           {/* Achievements Card */}
-          <Card className="border-0 shadow-lg">
+          {/* <Card className="border-0 shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Award className="text-yellow-600 h-5 w-5" />
@@ -857,7 +857,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                 </div>
               ))}
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Recent Activity Card */}
           <Card className="border-0 shadow-lg">
