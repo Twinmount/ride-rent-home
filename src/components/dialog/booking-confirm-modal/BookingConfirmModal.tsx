@@ -198,12 +198,14 @@ export function BookingConfirmationModal({
                       {bookingData.customer?.phone || "+971 50 123 4567"}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-4 w-4 text-orange-500" />
-                    <span>
-                      {bookingData.customer?.email || "john.doe@email.com"}
-                    </span>
-                  </div>
+                  {bookingData.customer?.email ? (
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-4 w-4 text-orange-500" />
+                      <span>{bookingData.customer?.email}</span>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                   {/* Payment method - commented out for now, can be enabled in future */}
                   {/* <div className="flex items-center gap-3">
                     <CreditCard className="h-4 w-4 text-orange-500" />

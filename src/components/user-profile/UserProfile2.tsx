@@ -406,26 +406,15 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
             <Card
               key={index}
               className="group relative cursor-pointer overflow-hidden border-0 shadow-lg transition-all duration-300 hover:shadow-xl"
+              onClick={() => router.push(stat.navigationPath)}
             >
               <div
                 className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-5 transition-opacity group-hover:opacity-10`}
               ></div>
-              <CardContent className="relative p-6">
+              <CardContent className="relative p-4">
                 <div className="mb-4 flex items-start justify-between">
                   <div className={`rounded-xl p-3 ${stat.bgColor}`}>
                     <stat.icon className={`h-6 w-6 ${stat.textColor}`} />
-                  </div>
-                  <div
-                    className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${
-                      stat.trendUp
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}
-                  >
-                    <TrendingUp
-                      className={`h-3 w-3 ${stat.trendUp ? '' : 'rotate-180'}`}
-                    />
-                    {stat.trend}
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -433,17 +422,9 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                     {stat.value.toLocaleString()}
                   </h3>
                   <p className="font-medium text-gray-700">{stat.label}</p>
-                  <p className="text-sm text-gray-500">{stat.description}</p>
-                </div>
-                <div className="mt-4 border-t border-gray-100 pt-4">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => router.push(stat.navigationPath)}
-                    className="w-full cursor-pointer justify-center hover:bg-gray-50"
-                  >
-                    View Details
-                  </Button>
+                  {stat.description && (
+                    <p className="text-sm text-gray-500">{stat.description}</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
