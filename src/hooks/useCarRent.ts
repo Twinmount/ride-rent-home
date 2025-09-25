@@ -196,7 +196,7 @@ export const useCarRent = (
       endDate: Date;
       name: string;
       phone: string;
-      email: string;
+      email?: string;
     }) => {
       const user = authStorage.getUser();
       if (!user?.id) {
@@ -253,14 +253,22 @@ export const useCarRent = (
   ) => {
     const endDate = carRentDate[0].endDate;
     const startDate = carRentDate[0].startDate;
-    rentalEnquiryMutation.mutate({
+    const email = userProfile?.data?.email;
+
+    const mutationData: any = {
       message,
       startDate,
       endDate,
       name: userProfile?.data?.name || "",
       phone: userProfile?.data?.phoneNumber || "",
-      email: userProfile?.data?.email || "",
-    });
+    };
+
+    // Only include email if it has a value
+    if (email) {
+      mutationData.email = email;
+    }
+
+    rentalEnquiryMutation.mutate(mutationData);
   };
 
   const handleConfirm = () => {

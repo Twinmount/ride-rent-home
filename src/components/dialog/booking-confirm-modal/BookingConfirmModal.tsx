@@ -89,7 +89,7 @@ export function BookingConfirmationModal({
   return (
     //
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         {step === "confirmation" ? (
           <>
             <DialogHeader className="space-y-4">

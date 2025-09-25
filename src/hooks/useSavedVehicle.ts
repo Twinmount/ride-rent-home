@@ -106,6 +106,11 @@ export const useSavedVehicle = ({
     onSuccess: () => {
       // Invalidate and refetch saved vehicles
       queryClient.invalidateQueries({ queryKey: ["savedVehicles", userId] });
+      // Also invalidate all userSavedVehicles queries (including all pages/limits)
+      queryClient.invalidateQueries({
+        queryKey: ["userSavedVehicles", userId],
+        exact: false, // This will invalidate all queries that start with this key
+      });
       onSaveSuccess?.(true);
       setIsLoading(false);
     },
@@ -128,6 +133,11 @@ export const useSavedVehicle = ({
     onSuccess: () => {
       // Invalidate and refetch saved vehicles
       queryClient.invalidateQueries({ queryKey: ["savedVehicles", userId] });
+      // Also invalidate all userSavedVehicles queries (including all pages/limits)
+      queryClient.invalidateQueries({
+        queryKey: ["userSavedVehicles", userId],
+        exact: false, // This will invalidate all queries that start with this key
+      });
       onSaveSuccess?.(false);
       setIsLoading(false);
     },
