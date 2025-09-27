@@ -1,4 +1,4 @@
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
 
 interface RideRentNavbarLogoProps {
   country: string;
@@ -16,7 +16,7 @@ export default function RideRentNavbarLogo({
       href={`/${country}`}
       className="notranslate max-w-fit p-0 text-right text-xs font-normal text-gray-500"
     >
-      <Image
+      <SafeImage
         src="/assets/logo/Logo_Black.svg"
         alt="ride.rent logo"
         width={130}

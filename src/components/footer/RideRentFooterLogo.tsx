@@ -1,5 +1,6 @@
 "use client";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -13,7 +14,7 @@ export default function RideRentFooterLogo() {
   return (
     <div className="notranslate">
       <Link href={`/${country}/${state}/${category}`} className="header-logo">
-        <Image
+        <SafeImage
           src="/assets/logo/Logo_white.svg"
           width={200}
           height={120}

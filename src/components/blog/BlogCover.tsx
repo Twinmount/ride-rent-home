@@ -1,4 +1,4 @@
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
 
 interface BlogCoverProps {
   children: React.ReactNode;
@@ -10,7 +10,7 @@ export default function BlogCover({ children, thumbnail }: BlogCoverProps) {
     <div
       className={`max relative !h-[50vh] !max-h-[50vh] bg-[auto_105%] bg-[center_bottom] bg-no-repeat max-sm:!h-[35vh] max-sm:min-h-[280px] sm:min-h-[350px]`}
     >
-      <Image
+      <SafeImage
         src={thumbnail ?? "/assets/bg/blur.jpg"}
         alt="Picture of the author"
         fill

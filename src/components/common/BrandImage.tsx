@@ -1,5 +1,6 @@
-import Image from 'next/image';
-import { ENV } from '@/config/env';
+import SafeImage from "@/components/common/SafeImage";
+
+import { ENV } from "@/config/env";
 
 type BrandImageProps = {
   category: string;
@@ -14,13 +15,13 @@ const BrandImage = ({
   brandValue,
   className,
   priority = false,
-  sizes = '72px',
+  sizes = "72px",
 }: BrandImageProps) => {
   const baseAssetsUrl = ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL;
   const imageSrc = `${baseAssetsUrl}/icons/brands/${category}/${brandValue}.png`;
 
   return (
-    <Image
+    <SafeImage
       src={imageSrc}
       alt={`${brandValue} brand logo`}
       fill

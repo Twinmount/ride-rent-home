@@ -6,7 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import { Button } from "@/components/ui/button";
 import { FormModalState } from "./types";
 
@@ -35,7 +36,7 @@ export function FormSubmitModal({ modalState, setModalState }: ModalProps) {
             <DialogTitle className="sr-only">Form submit status</DialogTitle>
           </DialogHeader>
           <div>
-            <Image
+            <SafeImage
               src={
                 modalState?.type === "success"
                   ? "/assets/icons/verify-circle.svg"

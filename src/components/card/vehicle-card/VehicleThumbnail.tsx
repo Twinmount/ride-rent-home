@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { VehicleCardImageSkeleton } from '@/components/skelton/VehicleCardImageSkeleton';
-import Image from 'next/image';
-import { useState } from 'react';
-import { useImageCycling } from '@/hooks/useImageCycling';
+import { VehicleCardImageSkeleton } from "@/components/skelton/VehicleCardImageSkeleton";
+import SafeImage from "@/components/common/SafeImage";
+
+import { useState } from "react";
+import { useImageCycling } from "@/hooks/useImageCycling";
 import { Images } from "lucide-react";
 
 type VehicleThumbnailProps = {
@@ -100,7 +101,7 @@ const VehicleThumbnail = ({
     >
       {isImageLoading && <VehicleCardImageSkeleton />}
 
-      <Image
+      <SafeImage
         src={currentImageSrc}
         alt={alt}
         width={width}

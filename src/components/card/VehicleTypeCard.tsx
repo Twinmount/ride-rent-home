@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import { MotionDivElm } from '@/components/general/framer-motion/MotionElm';
-import Image from 'next/image';
-import { VehicleTypeType } from '@/types';
-import { ENV } from '@/config/env';
-import { easeOut } from 'framer-motion';
+import { MotionDivElm } from "@/components/general/framer-motion/MotionElm";
+import SafeImage from "@/components/common/SafeImage";
+
+import { VehicleTypeType } from "@/types";
+import { ENV } from "@/config/env";
+import { easeOut } from "framer-motion";
 
 export function VehicleTypeCard({
   type,
@@ -62,7 +63,7 @@ export function VehicleTypeCard({
         <div
           className={`image-stable mx-auto flex h-[57%] w-[65%] items-center justify-center rounded-[0.4rem] bg-gray-100`}
         >
-          <Image
+          <SafeImage
             width={90}
             height={60}
             src={`${baseAssetsUrl}/icons/vehicle-types/${category}/${type.value}.webp`}

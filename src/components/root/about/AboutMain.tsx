@@ -1,4 +1,5 @@
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import { aboutGridData } from ".";
 import Link from "next/link";
 
@@ -33,7 +34,12 @@ export default function AboutMain() {
               key={index}
               className="flex flex-col gap-1 rounded-xl border border-slate-800 p-2 transition-colors hover:bg-slate-900"
             >
-              <Image src={item.icon} alt={item.title} width={30} height={30} />
+              <SafeImage
+                src={item.icon}
+                alt={item.title}
+                width={30}
+                height={30}
+              />
               <div className="font-semibold">{item.title}</div>
               <div className="max-w-[90%] text-sm text-gray-300">
                 {item.subtitle}
@@ -46,7 +52,7 @@ export default function AboutMain() {
           href={`https://agent.ride.rent/ae/register`}
           target="_blank"
           rel="noopener noreferrer"
-          className={`bg-theme-gradient mx-auto mb-10 w-fit rounded-xl px-2 py-2 text-xl font-bold leading-relaxed text-black md:px-4`}
+          className={`mx-auto mb-10 w-fit rounded-xl bg-theme-gradient px-2 py-2 text-xl font-bold leading-relaxed text-black md:px-4`}
         >
           Register Your Fleet Today
         </Link>

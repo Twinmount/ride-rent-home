@@ -13,7 +13,7 @@ import { fetchQuickLinksByValue } from "@/lib/api/general-api";
 import { LinkType, BrandType, FetchTopBrandsResponse } from "@/types";
 import { API } from "@/utils/API";
 import { ENV } from "@/config/env";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
 
 interface CollapsibleSectionProps {
   title: string;
@@ -50,7 +50,11 @@ const CollapsibleSection = ({
   </div>
 );
 
-export function SidebarAccordion({ onLinkClick }: { onLinkClick?: () => void }) {
+export function SidebarAccordion({
+  onLinkClick,
+}: {
+  onLinkClick?: () => void;
+}) {
   const params = useParams<{ country: string }>();
   const country = (params?.country as string) || "ae";
   const { state, category } = useStateAndCategory();
@@ -186,7 +190,7 @@ export function SidebarAccordion({ onLinkClick }: { onLinkClick?: () => void }) 
                   >
                     <div className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-orange"></div>
                     <div className="relative h-4 w-4 flex-shrink-0">
-                      <Image
+                      <SafeImage
                         src={`${ENV.ASSETS_URL}/icons/brands/${category}/${brand.brandValue}.png`}
                         width={16}
                         height={16}

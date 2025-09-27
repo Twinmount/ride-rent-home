@@ -1,10 +1,11 @@
-import MotionSection from '@/components/general/framer-motion/MotionSection';
-import DocumentsRequired from './DocumentsRequired';
-import { convertToLabel, singularizeValue } from '@/helpers';
-import { StateCategoryProps } from '@/types';
-import Image from 'next/image';
-import { SectionHeading } from '@/components/common/SectionHeading';
-import { getHomePageDocuments } from '@/helpers/homepage-content.helper';
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import DocumentsRequired from "./DocumentsRequired";
+import { convertToLabel, singularizeValue } from "@/helpers";
+import { StateCategoryProps } from "@/types";
+import SafeImage from "@/components/common/SafeImage";
+
+import { SectionHeading } from "@/components/common/SectionHeading";
+import { getHomePageDocuments } from "@/helpers/homepage-content.helper";
 
 const Documents = ({ country, state, category }: StateCategoryProps) => {
   const formattedCategory = singularizeValue(convertToLabel(category));
@@ -31,7 +32,7 @@ const Documents = ({ country, state, category }: StateCategoryProps) => {
         <div className="z-1 relative hidden pt-[8rem] lg:block lg:h-full lg:w-[45%] lg:overflow-hidden lg:pl-[1.5rem]">
           <div className="relative flex h-full items-center justify-center lg:justify-between">
             <div className="relative">
-              <Image
+              <SafeImage
                 src="/assets/img/home-images/document-section-img.png"
                 alt="Document requirements illustration"
                 width={600}

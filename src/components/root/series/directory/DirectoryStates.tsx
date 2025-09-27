@@ -2,7 +2,8 @@ import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStagger
 import { rearrangeStates } from "@/helpers";
 import { FetchStatesResponse, StateType } from "@/types";
 import { API } from "@/utils/API";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import Link from "next/link";
 
 export default async function DirectoryStates({
@@ -62,7 +63,7 @@ function StateCard({
       >
         <div className="absolute bottom-0 left-0 h-1/4 w-full bg-gradient-to-t from-black/80 to-transparent" />
 
-        <Image
+        <SafeImage
           width={120}
           height={120}
           src={state.stateImage}
