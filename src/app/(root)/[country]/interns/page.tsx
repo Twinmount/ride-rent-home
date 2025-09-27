@@ -1,7 +1,7 @@
 import React from "react";
 import InternForm from "@/components/intern/InternForm";
 import { PageProps } from "@/types";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
 
 export async function generateMetadata(props: PageProps) {
   const { country } = await props.params;
@@ -42,7 +42,7 @@ const InternsPage = async (props: PageProps) => {
         <section className="px-8 py-4">
           <div className="relative flex items-end justify-end overflow-hidden rounded-[16px] md:h-[500px]">
             <div className="absolute left-0 top-0 z-[1] h-full w-full">
-              <Image
+              <SafeImage
                 src={`${STATIC_FILES_URL}/intern-page-banner.jpg`}
                 alt="interns banner"
                 className="h-full w-full object-cover"
@@ -76,7 +76,7 @@ const InternsPage = async (props: PageProps) => {
           <ul className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <li className="relative rounded-[12px] border p-6 md:p-8">
               <div className="mb-2 h-[50px] w-[50px]">
-                <Image
+                <SafeImage
                   className="h-[50px] w-[50px] align-middle"
                   src="/assets/icons/interns/grid-4.svg"
                   alt=""
@@ -95,7 +95,7 @@ const InternsPage = async (props: PageProps) => {
             </li>
             <li className="relative rounded-[12px] border p-6 md:p-8">
               <div className="mb-2 h-[50px] w-[50px]">
-                <Image
+                <SafeImage
                   className="h-[50px] w-[50px] align-middle"
                   src="/assets/icons/interns/suitcase.svg"
                   alt=""
@@ -114,7 +114,7 @@ const InternsPage = async (props: PageProps) => {
             </li>
             <li className="relative rounded-[12px] border p-6 md:p-8">
               <div className="mb-2 h-[50px] w-[50px]">
-                <Image
+                <SafeImage
                   className="h-[50px] w-[50px] align-middle"
                   src="/assets/icons/interns/globe-1.svg"
                   alt=""
@@ -132,7 +132,7 @@ const InternsPage = async (props: PageProps) => {
             </li>
             <li className="relative rounded-[12px] border p-6">
               <div className="mb-2 h-[50px] w-[50px]">
-                <Image
+                <SafeImage
                   className="h-[50px] w-[50px] align-middle"
                   src="/assets/icons/interns/like.svg"
                   alt=""

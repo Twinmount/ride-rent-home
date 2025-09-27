@@ -4,7 +4,7 @@ import { PageProps } from "@/types";
 import JobList from "@/components/career/JobList";
 import { JobsResponseType } from "@/types/careers";
 import { API } from "@/utils/API";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
 
 export async function generateMetadata(props: PageProps) {
   const { country } = await props.params;
@@ -102,7 +102,7 @@ const CareersPage = async (props: PageProps) => {
           </div>
           <div className="careers__features-list flex flex-col gap-10 md:flex-row">
             <div className="careers__feature relative basis-1/3 overflow-hidden rounded-[16px] md:min-h-[300px]">
-              <Image
+              <SafeImage
                 src={`${STATIC_FILES_URL}/career-feature-image-1.jpg`}
                 alt=""
                 className="h-full w-full object-cover"
@@ -123,7 +123,7 @@ const CareersPage = async (props: PageProps) => {
               </div>
             </div>
             <div className="careers__feature relative basis-1/3 overflow-hidden rounded-[16px] md:min-h-[300px]">
-              <Image
+              <SafeImage
                 src={`${STATIC_FILES_URL}/career-feature-image-2.jpg`}
                 alt=""
                 className="h-full w-full object-cover"
@@ -145,7 +145,7 @@ const CareersPage = async (props: PageProps) => {
               </div>
             </div>
             <div className="careers__feature relative basis-1/3 overflow-hidden rounded-[16px] md:min-h-[300px]">
-              <Image
+              <SafeImage
                 src={`${STATIC_FILES_URL}/career-feature-image-3.jpg`}
                 alt=""
                 className="h-full w-full object-cover"
@@ -199,7 +199,7 @@ const CareersPage = async (props: PageProps) => {
             <ul className="hire-steps__list ps-8 md:ps-20">
               <li className="relative border-s-[1px] border-solid border-gray-300 pb-14 ps-9">
                 <div className="absolute left-0 top-0 z-[1] -ms-6 flex h-[58px] w-[46px] items-center justify-center bg-white">
-                  <Image
+                  <SafeImage
                     className="h-[34px] w-[34px] align-middle"
                     src="/assets/icons/careers/attachment.svg"
                     alt=""
@@ -216,7 +216,7 @@ const CareersPage = async (props: PageProps) => {
               </li>
               <li className="relative border-s-[1px] border-solid border-gray-300 pb-14 ps-9">
                 <div className="absolute left-0 top-0 z-[1] -ms-6 flex h-[58px] w-[46px] items-center justify-center bg-white">
-                  <Image
+                  <SafeImage
                     className="h-[34px] w-[34px] align-middle"
                     src="/assets/icons/careers/phone.svg"
                     alt=""
@@ -236,7 +236,7 @@ const CareersPage = async (props: PageProps) => {
               </li>
               <li className="relative border-s-[1px] border-solid border-gray-300 pb-14 ps-9">
                 <div className="absolute left-0 top-0 z-[1] -ms-6 flex h-[58px] w-[46px] items-center justify-center bg-white">
-                  <Image
+                  <SafeImage
                     className="h-[34px] w-[34px] align-middle"
                     src="/assets/icons/careers/users-more.svg"
                     alt=""
@@ -254,7 +254,7 @@ const CareersPage = async (props: PageProps) => {
               </li>
               <li className="relative border-s-[1px] border-solid border-gray-300 pb-14 ps-9">
                 <div className="absolute left-0 top-0 z-[1] -ms-6 flex h-[58px] w-[46px] items-center justify-center bg-white">
-                  <Image
+                  <SafeImage
                     className="h-[34px] w-[34px] align-middle"
                     src="/assets/icons/careers/list-right.svg"
                     alt=""
@@ -274,7 +274,7 @@ const CareersPage = async (props: PageProps) => {
               </li>
               <li className="relative border-s-[1px] border-solid border-gray-300 pb-14 ps-9">
                 <div className="absolute left-0 top-0 z-[1] -ms-6 flex h-[58px] w-[46px] items-center justify-center bg-white">
-                  <Image
+                  <SafeImage
                     className="h-[34px] w-[34px] align-middle"
                     src="/assets/icons/careers/trophy.svg"
                     alt=""

@@ -1,6 +1,7 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { StateType } from '@/types';
+import SafeImage from "@/components/common/SafeImage";
+
+import Link from "next/link";
+import { StateType } from "@/types";
 
 type StateCardProps = {
   state: StateType;
@@ -22,8 +23,8 @@ export default function StateCard({
       style={{ boxShadow: '0rem 0rem 0.25rem 0rem #00000040' }}
       target="_blank"
     >
-      {/* Background state image with hover scale effect */}
-      <Image
+      {/* ✅ Simple optimized image - no GPU tricks */}
+      <SafeImage
         fill
         src={state.stateImage}
         alt={`${state.stateName} logo`}

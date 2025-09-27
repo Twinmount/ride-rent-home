@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useRef, memo, useMemo, useState, useCallback } from 'react';
-import Image from 'next/image';
-import { Fancybox } from '@fancyapps/ui';
-import '@fancyapps/ui/dist/fancybox/fancybox.css';
+import { useEffect, useRef, memo, useMemo, useState, useCallback } from "react";
+import SafeImage from "@/components/common/SafeImage";
+
+import { Fancybox } from "@fancyapps/ui";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
 type MediaItem = {
   source: string;
-  type: 'image' | 'video';
+  type: "image" | "video";
   thumbnail?: string;
   width?: number;
   height?: number;
@@ -19,14 +20,14 @@ type Props = {
   className?: string;
 };
 
-const ImageSkeleton = ({ className = '' }: { className?: string }) => (
+const ImageSkeleton = ({ className = "" }: { className?: string }) => (
   <div className={`animate-pulse rounded-xl bg-gray-200 ${className}`} />
 );
 
 const ImagesGrid = ({
   mediaItems,
-  imageAlt = 'Gallery image',
-  className = '',
+  imageAlt = "Gallery image",
+  className = "",
 }: Props) => {
   const fancyboxInitialized = useRef(false);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
@@ -69,15 +70,15 @@ const ImagesGrid = ({
         Thumbs: true,
         Toolbar: {
           display: {
-            left: ['infobar'],
+            left: ["infobar"],
             middle: [
-              'zoomIn',
-              'zoomOut',
-              'toggle1to1',
-              'rotateCCW',
-              'rotateCW',
+              "zoomIn",
+              "zoomOut",
+              "toggle1to1",
+              "rotateCCW",
+              "rotateCW",
             ],
-            right: ['slideshow', 'thumbs', 'close'],
+            right: ["slideshow", "thumbs", "close"],
           },
         },
         Images: { zoom: true },
@@ -85,7 +86,7 @@ const ImagesGrid = ({
       });
       fancyboxInitialized.current = true;
     } catch (error) {
-      console.error('Fancybox initialization error:', error);
+      console.error("Fancybox initialization error:", error);
     }
 
     return () => {
@@ -95,7 +96,7 @@ const ImagesGrid = ({
           fancyboxInitialized.current = false;
         }
       } catch (error) {
-        console.error('Fancybox cleanup error:', error);
+        console.error("Fancybox cleanup error:", error);
       }
     };
   }, [mediaItems.length]);
@@ -146,7 +147,7 @@ const ImagesGrid = ({
         {!loadedImages.has(index) && (
           <ImageSkeleton className="absolute inset-0 z-10" />
         )}
-        <Image
+        <SafeImage
           src={item.thumbnail || item.source}
           alt={`${imageAlt} ${index + 1}`}
           fill
@@ -260,7 +261,7 @@ const ImagesGrid = ({
               data-fancybox="gallery"
               tabIndex={-1}
             >
-              <Image
+              <SafeImage
                 src={item.thumbnail || item.source}
                 alt={`${imageAlt} ${index + 8}`}
                 width={200}
@@ -276,6 +277,6 @@ const ImagesGrid = ({
   );
 };
 
-ImagesGrid.displayName = 'ImagesGrid';
+ImagesGrid.displayName = "ImagesGrid";
 
 export default ImagesGrid;

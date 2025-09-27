@@ -3,7 +3,8 @@ import { ENV } from "@/config/env";
 import { convertToLabel, sortCategories } from "@/helpers";
 import { DirectoryCategory, FetchCategoriesForDirectory } from "@/types";
 import { API } from "@/utils/API";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import Link from "next/link";
 
 export default async function DirectoryCategories({
@@ -81,7 +82,7 @@ function VehicleCategoryCard({
         <div
           className={`flex-center mx-auto mt-1 h-[80%] w-[70%] rounded-[0.4rem]`}
         >
-          <Image
+          <SafeImage
             src={`${baseAssetsUrl}/icons/directory-categories/${cat.value}.webp`}
             alt={`${cat.name} Icon`}
             className={`h-full w-full object-contain transition-all duration-200 ease-out ${

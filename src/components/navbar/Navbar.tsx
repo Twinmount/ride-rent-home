@@ -1,7 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import { useParams } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
@@ -37,6 +37,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { LoginDrawer } from "../dialog/login-dialog/LoginDrawer";
+import dynamic from "next/dynamic";
 
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
@@ -264,3 +265,4 @@ export const Navbar = () => {
     </header>
   );
 };
+

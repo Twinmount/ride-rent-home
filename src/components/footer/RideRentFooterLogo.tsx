@@ -1,10 +1,9 @@
-'use client';
+"use client";
+import SafeImage from "@/components/common/SafeImage";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import React from 'react';
-import MotionDiv from '../general/framer-motion/MotionDiv';
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import MotionDiv from "../general/framer-motion/MotionDiv";
 
 export default function RideRentFooterLogo() {
   const { state, category, country } = useParams<{
@@ -16,8 +15,8 @@ export default function RideRentFooterLogo() {
   return (
     <MotionDiv className="notranslate">
       <Link href={`/${country}/${state}/${category}`} className="header-logo">
-        <Image
-          src={'/assets/logo/Logo_white.svg'}
+        <SafeImage
+          src="/assets/logo/Logo_white.svg"
           width={200}
           height={120}
           className="w-[8rem] sm:w-[10rem] md:w-40"

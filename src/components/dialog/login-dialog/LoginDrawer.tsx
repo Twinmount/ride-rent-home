@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import { useAuth } from "@/hooks/useAuth";
 
 // Step Components
@@ -152,18 +153,23 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
         )}
       >
         <div className="flex h-full flex-col">
-          <div className="p-6 text-white" style={{ background: 'linear-gradient(255.26deg, #f9a825 29.45%, #f57f17 88.69%)' }}>
+          <div
+            className="p-6 text-white"
+            style={{
+              background:
+                "linear-gradient(255.26deg, #f9a825 29.45%, #f57f17 88.69%)",
+            }}
+          >
             {/* Header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-               
-                  <Image
-                    src="/assets/logo/Logo_Black.svg"
-                    alt="Ride.Rent Logo"
-                    width={70}
-                    height={48}
-                    className="brightness-0 invert w-[135px]"
-                  />
+                <SafeImage
+                  src="/assets/logo/Logo_Black.svg"
+                  alt="Ride.Rent Logo"
+                  width={70}
+                  height={48}
+                  className="w-[135px] brightness-0 invert"
+                />
               </div>
               <Button
                 variant="ghost"
@@ -259,20 +265,20 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
           <div className="border-t border-border p-6">
             <p className="text-balance text-center text-[11px] text-muted-foreground">
               By continuing, you agree to Ride.Rent&apos;s{" "}
-              <a 
-                href="https://ride.rent/terms-condition" 
-                target="_blank" 
+              <a
+                href="https://ride.rent/terms-condition"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="text-orange-600 hover:text-orange-700 underline"
+                className="text-orange-600 underline hover:text-orange-700"
               >
                 Terms of Service
               </a>{" "}
               and{" "}
-              <a 
-                href="https://ride.rent/privacy-policy" 
-                target="_blank" 
+              <a
+                href="https://ride.rent/privacy-policy"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="text-orange-600 hover:text-orange-700 underline"
+                className="text-orange-600 underline hover:text-orange-700"
               >
                 Privacy Policy
               </a>

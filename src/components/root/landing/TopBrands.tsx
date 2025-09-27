@@ -1,13 +1,14 @@
-import MotionSection from '@/components/general/framer-motion/MotionSection';
-import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
-import ViewAllButton from '@/components/common/ViewAllButton';
-import { BrandType, FetchTopBrandsResponse } from '@/types';
-import Link from 'next/link';
-import { convertToLabel } from '@/helpers';
-import Image from 'next/image';
-import { ENV } from '@/config/env';
-import { API } from '@/utils/API';
-import { SectionHeading } from '@/components/common/SectionHeading';
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
+import ViewAllButton from "@/components/common/ViewAllButton";
+import { BrandType, FetchTopBrandsResponse } from "@/types";
+import Link from "next/link";
+import { convertToLabel } from "@/helpers";
+import SafeImage from "@/components/common/SafeImage";
+
+import { ENV } from "@/config/env";
+import { API } from "@/utils/API";
+import { SectionHeading } from "@/components/common/SectionHeading";
 
 export const revalidate = 3600;
 
@@ -82,7 +83,7 @@ function BrandCard({
       className="flex aspect-square h-[8rem] max-h-[8rem] min-h-[8rem] w-[8rem] min-w-[8rem] max-w-[8rem] cursor-pointer flex-col items-center justify-between rounded-[0.5rem] border border-black/10 bg-white p-2 shadow-[0px_2px_2px_rgba(0,0,0,0.2)] transition-transform duration-200 ease-out hover:shadow-[0px_2px_2px_rgba(0,0,0,0.5)]"
     >
       <div className="relative m-auto flex h-[6rem] min-h-[6rem] w-full min-w-full items-center justify-center">
-        <Image
+        <SafeImage
           src={`${baseAssetsUrl}/icons/brands/${category}/${brand.brandValue}.png`}
           width={80}
           height={80}

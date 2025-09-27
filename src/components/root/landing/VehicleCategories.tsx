@@ -1,8 +1,8 @@
-'use client';
-import { useStateAndCategory } from '@/hooks/useStateAndCategory';
-import { CategoryType } from '@/types';
-import { convertToLabel } from '@/helpers';
-import { useMemo } from 'react';
+"use client";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
+import { CategoryType } from "@/types";
+import { convertToLabel } from "@/helpers";
+import { useMemo } from "react";
 
 import {
   NavigationMenu,
@@ -10,10 +10,11 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
-import Image from 'next/image';
-import { useFetchVehicleCategories } from '@/hooks/useFetchVehicleCategories';
-import VehicleCategoryCard from '@/components/card/VehicleCategoryCard';
+} from "@/components/ui/navigation-menu";
+import SafeImage from "@/components/common/SafeImage";
+
+import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
+import VehicleCategoryCard from "@/components/card/VehicleCategoryCard";
 
 export default function VehicleCategories() {
   const { country, state, category } = useStateAndCategory();
@@ -47,17 +48,19 @@ export default function VehicleCategories() {
                 : "bg-theme-gradient hover:bg-theme-gradient"
             }`}
           >
-            <Image
-              src={imageSrc}
-              alt={`${safeCategory} vehicle category`}
-              className={`transition-all duration-200 ease-out ${
-                safeCategory === "sports-cars" ? "scale-[1.02]" : ""
-              }`}
-              width={35}
-              height={35}
-              priority
-              sizes="35px"
-            />
+            <div className="image-stable">
+              <SafeImage
+                src={imageSrc}
+                alt={`${safeCategory} vehicle category icon`}
+                className={`transition-all duration-200 ease-out ${
+                  safeCategory === "sports-cars" ? "scale-[1.02]" : ""
+                }`}
+                width={35}
+                height={35}
+                priority
+                sizes="35px"
+              />
+            </div>
 
             <span className="line-clamp-1 w-full max-w-full max-md:hidden">
               {categoryLabel}

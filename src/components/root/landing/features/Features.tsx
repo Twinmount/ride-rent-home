@@ -1,7 +1,8 @@
-import FeaturesCard from '@/components/card/features-card/FeaturesCard';
-import MotionSection from '@/components/general/framer-motion/MotionSection';
-import { StateCategoryProps } from '@/types';
-import { getHomePageFeatures } from '@/helpers/homepage-content.helper';
+import FeaturesCard from "@/components/card/features-card/FeaturesCard";
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { StateCategoryProps } from "@/types";
+import { getHomePageFeatures } from "@/helpers/homepage-content.helper";
+import SafeImage from "@/components/common/SafeImage";
 
 const Features = ({ state, category, country }: StateCategoryProps) => {
   // Generate dynamic feature cards based on state
@@ -47,7 +48,7 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
           className="absolute bottom-0 left-0"
           style={{ width: '78.5625rem', height: '33.4375rem' }}
         >
-          <img
+          <SafeImage
             src="/assets/img/bg/featuresWideBG.webp"
             alt=""
             className="h-full w-full object-cover opacity-30"
@@ -58,7 +59,7 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
           className="absolute bottom-[0.875rem] right-0"
           style={{ width: '26.625rem', height: '39.5rem' }}
         >
-          <img
+          <SafeImage
             src="/assets/img/bg/featuresBG.webp"
             alt=""
             className="h-full w-full object-cover pb-[0.875rem] opacity-30"
@@ -69,7 +70,7 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
       {/* Responsive car image positioned absolutely */}
       <div className="absolute bottom-0 right-0 z-10">
         <div className="relative flex items-end justify-end">
-          <img
+          <SafeImage
             src="/assets/cars/mustang.webp"
             alt="Red Mustang Car"
             className="h-[8.8125rem] w-[14rem] object-contain drop-shadow-2xl sm:lg:max-h-[15.625rem] lg:h-[21.875rem] lg:max-h-[20.3125rem] lg:w-auto"
