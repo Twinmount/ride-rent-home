@@ -423,3 +423,78 @@ body {
 .animate-wiggle {
   animation: wiggle 1.5s ease-in-out infinite;
 }
+
+
+
+
+/* Container-level fixes */
+.layout-stable {
+  contain: layout style;
+  will-change: auto;
+}
+
+/* Specific element fixes */
+.flex.gap-1.overflow-x-auto.px-4.pb-4 {
+  min-height: 80px !important;
+  contain: layout !important;
+  transform: translateZ(0); /* GPU acceleration */
+}
+
+.flex.gap-1.overflow-x-auto.px-4.pb-4 > * {
+  flex-shrink: 0 !important;
+  min-width: 92px !important; /* 5.75rem = 92px */
+  contain: layout !important;
+}
+
+/* Navigation menu fixes */
+[data-radix-collection-item] button {
+  min-width: 140px !important;
+  max-width: 200px !important;
+  contain: layout !important;
+}
+
+/* Image container fixes */
+.image-stable {
+  display: block !important;
+  position: relative !important;
+}
+
+.image-stable img {
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+}
+
+/* Vehicle type card specific fixes */
+.vehicle-type-stable {
+  width: 92px !important;
+  height: 64px !important;
+  min-width: 92px !important;
+  min-height: 64px !important;
+  max-width: 92px !important;
+  max-height: 64px !important;
+  flex-shrink: 0 !important;
+  contain: layout !important;
+}
+
+/* Category button stable */
+.category-stable {
+  min-width: 140px !important;
+  max-width: 200px !important;
+  height: 48px !important;
+  contain: layout !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.category-stable img {
+  width: 35px !important;
+  height: 35px !important;
+  flex-shrink: 0 !important;
+}
+
+
+

@@ -34,7 +34,17 @@ export default function RentalPeriod({
         <div
           key={key}
           onClick={() => setSelectedPeriod(key)}
-          className={`cursor-pointer rounded-[0.4rem] ${
+          role="button"
+          tabIndex={0}
+          aria-label={`Select ${label} rental period`}
+          aria-pressed={selectedPeriod === key}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setSelectedPeriod(key);
+            }
+          }}
+          className={`flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-[0.4rem] focus:outline-none focus:ring-2 focus:ring-yellow focus:ring-offset-2 ${
             selectedPeriod === key
               ? "bg-yellow text-white"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200"

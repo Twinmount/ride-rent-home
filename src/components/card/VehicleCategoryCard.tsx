@@ -55,18 +55,20 @@ function VehicleCategoryCard({
   };
 
   return (
-    <motion.li
+    <motion.div
       key={cat.categoryId}
-      custom={index} // Pass the index for staggered animation
+      custom={index}
       initial="hidden"
       animate="visible"
       variants={categoryVariants}
       className={`flex h-[3rem] min-h-[3rem] w-full cursor-pointer items-center overflow-hidden`}
+      role="listitem"
     >
       <Link
         href={`/${selectedCountry}/${selectedState}/${cat.value}`}
         key={cat.categoryId}
         onClick={handleNavigation}
+        aria-label={`Select ${cat.name} vehicle category`}
       >
         <NavigationMenuLink>
           <div
@@ -78,12 +80,13 @@ function VehicleCategoryCard({
           >
             <Image
               src={`${baseAssetsUrl}/icons/vehicle-categories/${cat.value}.png`}
-              alt={`${cat.name} Icon`}
+              alt=""
               className={`transition-all duration-200 ease-out ${
                 cat.value === "sports-cars" ? "scale-[1.02]" : ""
               }`}
               width={24}
               height={24}
+              loading={index < 3 ? "eager" : "lazy"}
             />
             <span
               className={`pl-1 text-sm ${
@@ -97,7 +100,7 @@ function VehicleCategoryCard({
           </div>
         </NavigationMenuLink>
       </Link>
-    </motion.li>
+    </motion.div>
   );
 }
 

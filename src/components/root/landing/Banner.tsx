@@ -13,11 +13,14 @@ async function getBannerImages(
   country: string
 ): Promise<ImageSrc[]> {
   try {
-    const baseUrl = country === 'in' ? ENV.API_URL_INDIA : ENV.API_URL;
-
+    const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
     const res = await fetch(
       `${baseUrl}/homepage-banners/list?state=${state}&isMobile=${isMobile}`,
-      { method: 'GET', cache: 'no-cache' }
+      {
+        method: "GET",
+        cache: "force-cache",
+        next: { revalidate: 7200 },
+      }
     );
 
     if (!res.ok) throw new Error('Failed to fetch banners');

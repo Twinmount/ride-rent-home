@@ -13,6 +13,8 @@ type VehicleThumbnailProps = {
   height: number;
   layoutType: "grid" | "carousel";
   vehiclePhotos?: string[];
+  priority?: boolean; // ✅ ADD THIS
+  loading?: "lazy" | "eager"; // ✅ ADD THIS
 };
 
 const VehicleThumbnail = ({
@@ -22,6 +24,8 @@ const VehicleThumbnail = ({
   height,
   layoutType,
   vehiclePhotos = [],
+  priority = false, // ✅ ADD THIS
+  loading = "lazy", // ✅ ADD THIS
 }: VehicleThumbnailProps) => {
   const [isImageLoading, setImageLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -86,9 +90,6 @@ const VehicleThumbnail = ({
     ${hasMultipleImages ? "cursor-pointer select-none" : ""}
   `;
 
-  // FIXED: Check if it's the first image to decide priority vs lazy loading
-  const isFirstImage = currentIndex === 0;
-
   return (
     <div
       className={containerClassName}
@@ -109,8 +110,8 @@ const VehicleThumbnail = ({
           isActive && hasMultipleImages ? "scale-[1.02]" : "scale-100"
         } `}
         quality={70}
-        // FIXED: Only use priority for first image, lazy loading for others
-        {...(isFirstImage ? { priority: true } : { loading: "lazy" })}
+        priority={priority}
+        loading={loading}
         sizes={
           layoutType === "carousel"
             ? "(max-width: 1024px) 8rem, 8.3rem"
@@ -142,7 +143,7 @@ const VehicleThumbnail = ({
       {/* Gallery Icon - More Images Indicator */}
       {hasMultipleImages && allImages.length > 1 && !isTransitioning && (
         <div className="absolute right-2 top-2 rounded-full bg-black/40 p-1.5 backdrop-blur-sm">
-          <Images className="h-3 w-3 text-white" />
+          <Images className="h-3 w-3 text-white" aria-hidden="true" />
         </div>
       )}
     </div>
