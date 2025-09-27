@@ -1,5 +1,6 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import SafeImage from "@/components/common/SafeImage";
+
+import Link from "next/link";
 
 export default function NotFound() {
   return (
@@ -25,8 +26,8 @@ export default function NotFound() {
         {/* Logo Section */}
         <div className="mb-5">
           <Link href="/" className="flex flex-col items-center">
-            <Image
-              src={'/assets/logo/Logo_Black.svg'}
+            <SafeImage
+              src={"/assets/logo/Logo_Black.svg"}
               width={200}
               height={120}
               className="header-img"
@@ -41,8 +42,8 @@ export default function NotFound() {
             <span className="font-bold text-black">Ride.Rent</span> ensures that
             you have access to the best and
             <span className="font-bold text-black">
-              {' '}
-              most affordable car rental services in Dubai.{' '}
+              {" "}
+              most affordable car rental services in Dubai.{" "}
             </span>
             Take advantage of our exceptional offers on car rentals throughout
             Dubai, with Ride On Rent, each car is well maintained and

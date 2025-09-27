@@ -1,8 +1,8 @@
-import FeaturesCard from '@/components/card/features-card/FeaturesCard';
-import MotionSection from '@/components/general/framer-motion/MotionSection';
-import { StateCategoryProps } from '@/types';
-import { getHomePageFeatures } from '@/helpers/homepage-content.helper';
-import Image from "next/image";
+import FeaturesCard from "@/components/card/features-card/FeaturesCard";
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { StateCategoryProps } from "@/types";
+import { getHomePageFeatures } from "@/helpers/homepage-content.helper";
+import SafeImage from "@/components/common/SafeImage";
 
 const Features = ({ state, category, country }: StateCategoryProps) => {
   const { heading, description, cards } = getHomePageFeatures({
@@ -43,7 +43,7 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
           className="absolute bottom-0 left-0"
           style={{ width: "78.5625rem", height: "33.4375rem" }}
         >
-          <Image
+          <SafeImage
             src="/assets/img/bg/featuresWideBG.webp"
             alt=""
             fill
@@ -58,7 +58,7 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
           className="absolute bottom-[0.875rem] right-0"
           style={{ width: "26.625rem", height: "39.5rem" }}
         >
-          <Image
+          <SafeImage
             src="/assets/img/bg/featuresBG.webp"
             alt=""
             fill
@@ -73,7 +73,7 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
       {/* ✅ Optimized Mustang car image */}
       <div className="absolute bottom-0 right-0 z-10">
         <div className="relative flex items-end justify-end">
-          <Image
+          <SafeImage
             src="/assets/cars/mustang.webp"
             alt="Red Mustang Car"
             width={350} // ✅ Set proper dimensions

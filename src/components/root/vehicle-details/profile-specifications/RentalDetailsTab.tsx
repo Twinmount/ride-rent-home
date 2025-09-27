@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { RentalDetails } from '@/types/vehicle-details-types';
-import { usePriceConverter } from '@/hooks/usePriceConverter';
-import SecurityDepositInfo from './SecurityDepositInfo';
-import BestPriceGuarantee from './BestPriceGuarantee';
-import AnimatedPriceDisplay from './AnimatedPriceDisplay';
-import MileageInfo from './MileageInfo';
-import Image from 'next/image';
+import { useState } from "react";
+import { RentalDetails } from "@/types/vehicle-details-types";
+import { usePriceConverter } from "@/hooks/usePriceConverter";
+import SecurityDepositInfo from "./SecurityDepositInfo";
+import BestPriceGuarantee from "./BestPriceGuarantee";
+import AnimatedPriceDisplay from "./AnimatedPriceDisplay";
+import MileageInfo from "./MileageInfo";
+import SafeImage from "@/components/common/SafeImage";
 
 type RentalDetailsTabProps = {
   rentalDetails: RentalDetails;
@@ -66,7 +66,7 @@ const RentalDetailsTab = ({
       {/* Header - Fixed container to prevent layout shift */}
       <div className="flex gap-1 lg:pb-2">
         <div className="relative h-5 w-6 flex-shrink-0">
-          <Image
+          <SafeImage
             src="/assets/icons/detail-page/Tag.svg"
             alt="rental details"
             fill

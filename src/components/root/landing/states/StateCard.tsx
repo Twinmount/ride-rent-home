@@ -1,6 +1,7 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { StateType } from '@/types';
+import SafeImage from "@/components/common/SafeImage";
+
+import Link from "next/link";
+import { StateType } from "@/types";
 
 type StateCardProps = {
   state: StateType;
@@ -24,7 +25,7 @@ export default function StateCard({
       target="_blank"
     >
       {/* ✅ Simple optimized image - no GPU tricks */}
-      <Image
+      <SafeImage
         fill
         src={state.stateImage}
         alt={`${state.stateName} location`}

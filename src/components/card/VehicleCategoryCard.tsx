@@ -6,7 +6,8 @@ import { CategoryType } from "@/types";
 import { ENV } from "@/config/env";
 import { useTopLoader } from "nextjs-toploader";
 import { NavigationMenuLink } from "../ui/navigation-menu";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import { useQueryClient } from "@tanstack/react-query";
 
 type PropsType = {
@@ -78,7 +79,7 @@ function VehicleCategoryCard({
                 : "bg-white text-text-tertiary"
             }`}
           >
-            <Image
+            <SafeImage
               src={`${baseAssetsUrl}/icons/vehicle-categories/${cat.value}.png`}
               alt=""
               className={`transition-all duration-200 ease-out ${

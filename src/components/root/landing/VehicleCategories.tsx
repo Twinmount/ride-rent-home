@@ -1,8 +1,8 @@
-'use client';
-import { useStateAndCategory } from '@/hooks/useStateAndCategory';
-import { CategoryType } from '@/types';
-import { convertToLabel } from '@/helpers';
-import { useMemo } from 'react';
+"use client";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
+import { CategoryType } from "@/types";
+import { convertToLabel } from "@/helpers";
+import { useMemo } from "react";
 
 import {
   NavigationMenu,
@@ -10,10 +10,11 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
-import Image from 'next/image';
-import { useFetchVehicleCategories } from '@/hooks/useFetchVehicleCategories';
-import VehicleCategoryCard from '@/components/card/VehicleCategoryCard';
+} from "@/components/ui/navigation-menu";
+import SafeImage from "@/components/common/SafeImage";
+
+import { useFetchVehicleCategories } from "@/hooks/useFetchVehicleCategories";
+import VehicleCategoryCard from "@/components/card/VehicleCategoryCard";
 
 export default function VehicleCategories() {
   const { country, state, category } = useStateAndCategory();
@@ -49,7 +50,7 @@ export default function VehicleCategories() {
             aria-label={`Select ${categoryLabel} vehicle category`}
           >
             <div className="image-stable">
-              <Image
+              <SafeImage
                 src={imageSrc}
                 alt={`${safeCategory} vehicle category icon`}
                 className={`transition-all duration-200 ease-out ${

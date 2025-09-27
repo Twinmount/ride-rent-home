@@ -1,5 +1,6 @@
 import { generateBlogHref } from "@/helpers/blog-helpers";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import Link from "next/link";
 
 interface BlogPopularCardProps {
@@ -25,7 +26,7 @@ const BlogPopularCard = ({
       className="mb-1 flex items-center gap-2 border-b border-gray-200 p-0 transition duration-200 hover:bg-gray-100"
     >
       {/* Blog Image */}
-      <Image
+      <SafeImage
         width={200}
         height={200}
         src={blogImage}

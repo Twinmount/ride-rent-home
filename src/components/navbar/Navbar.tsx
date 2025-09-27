@@ -1,6 +1,7 @@
 "use client";
 
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import { useParams } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";

@@ -1,4 +1,5 @@
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import Link from "next/link";
 import { generateBlogHref } from "@/helpers/blog-helpers";
 
@@ -18,7 +19,7 @@ export default function BlogCard({ blog, country }: BlogCardProps) {
       <Link href={href} className="flex h-full flex-col">
         <div className="overflow-hidden">
           {/* Image with zoom effect on card hover */}
-          <Image
+          <SafeImage
             width={400}
             height={300}
             src={blog.blogImage ?? "/assets/bg/blur.jpg"}

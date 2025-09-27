@@ -1,16 +1,17 @@
-import { MapVehicleCardType, VehicleCardType } from '@/types/vehicle-types';
-import { generateVehicleDetailsUrl } from '@/helpers';
+import { MapVehicleCardType, VehicleCardType } from "@/types/vehicle-types";
+import { generateVehicleDetailsUrl } from "@/helpers";
 
-import LinkWrapper from '../LinkWrapper';
-import Image from 'next/image';
-import MapCardRentalDetails from '../MapCardRentalDetails';
+import LinkWrapper from "../LinkWrapper";
+import SafeImage from "@/components/common/SafeImage";
+
+import MapCardRentalDetails from "../MapCardRentalDetails";
 
 type VehicleMapCardProps = {
   vehicle: MapVehicleCardType;
   country: string;
 };
 
-const VehicleMapCard = ({ vehicle, country = 'ae' }: VehicleMapCardProps) => {
+const VehicleMapCard = ({ vehicle, country = "ae" }: VehicleMapCardProps) => {
   // dynamic link to navigate to vehicle details page
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
     vehicleTitle: vehicle.vehicleTitle,
@@ -26,7 +27,7 @@ const VehicleMapCard = ({ vehicle, country = 'ae' }: VehicleMapCardProps) => {
       className="flex w-full max-w-80 items-center gap-2 rounded border bg-white p-1 shadow-md"
     >
       <div className="relative h-16 w-24 overflow-hidden rounded">
-        <Image
+        <SafeImage
           src={vehicle.thumbnail}
           alt={vehicle.vehicleTitle}
           fill
@@ -38,7 +39,7 @@ const VehicleMapCard = ({ vehicle, country = 'ae' }: VehicleMapCardProps) => {
         <h4 className="line-clamp-1">{vehicle.vehicleTitle}</h4>
         <MapCardRentalDetails
           rentalDetails={vehicle.rentalDetails}
-          layoutType={'carousel'}
+          layoutType={"carousel"}
         />
       </div>
     </LinkWrapper>
