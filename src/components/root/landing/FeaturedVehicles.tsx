@@ -35,13 +35,13 @@ const FeaturedVehicles = async ({
     path: `/vehicle/home-page/list/v2?${params.toString()}`,
     options: {
       method: "GET",
-      cache: "no-cache",
+      cache: "force-cache",
+      next: { revalidate: 900 },
     },
     country,
   });
 
   const data: FetchVehicleCardsResponseV2 = await response.json();
-
   const vehicles = data?.result?.list || [];
 
   if (vehicles.length === 0) {
@@ -96,8 +96,12 @@ const FeaturedVehicles = async ({
           )}
         </div>
 
-        {/* ✅ Fixed: Proper accessible link/button */}
-        <div className="mx-2 mt-4 md:hidden">
+        {/* FIXED: Reserve space for mobile button to prevent layout shift */}
+        {/* Alternative: CSS-based space reservation */}
+        <div
+          className="mx-2 md:hidden"
+          style={{ minHeight: "76px", paddingTop: "16px" }} // Reserve exact space
+        >
           <Link
             href={viewAllLink}
             className="block rounded-lg bg-gradient-to-r from-yellow to-orange-500 p-4 text-white transition-all duration-200 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"

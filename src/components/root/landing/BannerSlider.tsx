@@ -1,119 +1,138 @@
 "use client";
 
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { useState, useEffect, useRef } from "react";
 import { ImageSrc } from "./Banner";
-import Image from "next/image";
-
-const CustomArrow = ({
-  onClick,
-  direction,
-}: {
-  onClick?: () => void;
-  direction: "prev" | "next";
-}) => (
-  <button
-    className={`absolute top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center text-yellow focus:outline-none ${
-      direction === "prev" ? "left-4" : "right-4"
-    }`}
-    onClick={onClick}
-    aria-label={direction === "prev" ? "Previous slide" : "Next slide"}
-  >
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`transition-all duration-100 hover:scale-125 ${direction === "next" ? "rotate-180" : ""}`}
-    >
-      <path d="m15 18-6-6 6-6" />
-    </svg>
-  </button>
-);
 
 export default function BannerSlider({
   bannerImages,
 }: {
   bannerImages: ImageSrc[];
 }) {
-  /* Slider configuration */
-  const settings = {
-    dots: true,
-    infinite: bannerImages?.length > 1,
-    autoplay: bannerImages?.length > 1,
-    autoplaySpeed: 4000,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: bannerImages?.length > 1,
-    fade: false,
-    speed: 600,
-    cssEase: "ease-in-out",
-    pauseOnHover: true,
-    lazyLoad: "ondemand" as const,
-    prevArrow: <CustomArrow direction="prev" />,
-    nextArrow: <CustomArrow direction="next" />,
-    customPaging: (i: number) => (
-      <div className="h-2 w-2 cursor-pointer rounded-full bg-white/40 transition-all duration-300 hover:bg-white/80">
-        <span className="sr-only">Slide {i + 1}</span>
-      </div>
-    ),
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (bannerImages?.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % bannerImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [bannerImages.length]);
+
+  if (!bannerImages?.length) return null;
+
+  const current = bannerImages[currentSlide];
+
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      setCurrentSlide((prev) => (prev + 1) % bannerImages.length);
+    } else if (isRightSwipe) {
+      setCurrentSlide(
+        (prev) => (prev - 1 + bannerImages.length) % bannerImages.length
+      );
+    }
   };
 
   return (
-    <div className="modern-banner-slider absolute inset-0 w-full min-w-full">
-      <Slider {...settings}>
-        {bannerImages?.length > 0 &&
-          bannerImages?.map((image, index) => {
-            /* Slide content structure */
-            const slideContent = (
-              <div className="relative h-full w-full">
-                <Image
-                  src={image?.src}
-                  alt={`Banner ${index + 1}`}
-                  fill
-                  className="object-cover object-top"
-                  priority={index === 0}
-                  loading={index === 0 ? "eager" : "lazy"}
-                  fetchPriority={index === 0 ? "high" : "low"}
-                  sizes="100vw"
-                  quality={index === 0 ? 90 : 85}
-                  onDragStart={(e) => e.preventDefault()}
-                />
-              </div>
-            );
+    <div
+      className="modern-banner-slider absolute inset-0 w-full min-w-full"
+      ref={sliderRef}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      {current?.link ? (
+        <a
+          href={current.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block h-full w-full"
+        >
+          <img
+            src={current.src}
+            alt={`Banner ${currentSlide + 1}`}
+            className="h-full w-full object-cover object-top"
+            fetchPriority="high"
+            loading="eager"
+          />
+        </a>
+      ) : (
+        <img
+          src={current.src}
+          alt={`Banner ${currentSlide + 1}`}
+          className="h-full w-full object-cover object-top"
+          fetchPriority="high"
+          loading="eager"
+        />
+      )}
 
-            /* Conditional link wrapper */
-            if (!!image?.link) {
-              return (
-                <a
-                  key={`dashboard-banner-item__${index + 1}`}
-                  className="block h-full w-full"
-                  href={image?.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Banner ${index + 1} - External link`}
-                >
-                  {slideContent}
-                </a>
-              );
+      {/* Arrows - visible on all devices */}
+      {bannerImages.length > 1 && (
+        <>
+          <button
+            className="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center text-yellow focus:outline-none"
+            onClick={() =>
+              setCurrentSlide(
+                (prev) => (prev - 1 + bannerImages.length) % bannerImages.length
+              )
             }
-
-            /* Default slide without link */
-            return (
-              <div
-                key={`dashboard-banner-item__${index + 1}`}
-                className="h-full w-full"
-              >
-                {slideContent}
-              </div>
-            );
-          })}
-      </Slider>
+            aria-label="Previous slide"
+            type="button"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="transition-all duration-100 hover:scale-125"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            className="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center text-yellow focus:outline-none"
+            onClick={() =>
+              setCurrentSlide((prev) => (prev + 1) % bannerImages.length)
+            }
+            aria-label="Next slide"
+            type="button"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="rotate-180 transition-all duration-100 hover:scale-125"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+        </>
+      )}
     </div>
   );
 }

@@ -22,6 +22,7 @@ import JsonLd from "@/components/common/JsonLd";
 import Banner from "@/components/root/landing/Banner";
 import CarSection from "@/components/root/landing/CarSection";
 import PromotionDeals from "@/components/root/landing/PromotionDeals";
+import BannerSkeleton from "@/components/skelton/BannerSkeleton";
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
@@ -49,9 +50,9 @@ export default async function Home(props: PageProps) {
       {/* Inject JSON-LD into the <head> */}
       <JsonLd jsonLdData={jsonLdData} id="json-ld-homepage" />
 
-      {/* <Suspense fallback={<BannerSkeleton />}> */}
-      <Banner state={state} country={country} />
-      {/* </Suspense> */}
+      <Suspense fallback={<BannerSkeleton />}>
+        <Banner state={state} country={country} />
+      </Suspense>
 
       <HeroSection country={country} state={state} category={category} />
 
@@ -68,9 +69,9 @@ export default async function Home(props: PageProps) {
         />
       </Suspense>
 
-      <Suspense fallback={<SectionLoading />}>
-        <PromotionDeals state={state} country={country} />
-      </Suspense>
+      {/* <Suspense fallback={<SectionLoading />}> */}
+      <PromotionDeals state={state} country={country} />
+      {/* </Suspense> */}
 
       <Suspense
         fallback={<VehicleCardCarouselSkeleton layoutType="carousel" />}

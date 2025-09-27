@@ -15,10 +15,10 @@ interface LanguageSelectorProps {
   showCurrency?: boolean;
   showCountry?: boolean;
   showLanguageText?: boolean;
-  position?: 'left' | 'right';
+  position?: "left" | "right";
   size?: Size;
   className?: string;
-  variant?: 'default' | 'footer'; // Add variant prop to distinguish footer usage
+  variant?: "default" | "footer";
 }
 
 export default function LanguageSelector({
@@ -65,60 +65,80 @@ export default function LanguageSelector({
   };
 
   const selectedLanguage = languages.find((l) => l.code === displayLanguage);
-  const selectedCountry = countries.find((c) => c.code === country);
+  const IconComponent = variant === "footer" ? Globe : Languages;
 
-  // Choose icon based on variant
-  const IconComponent = variant === 'footer' ? Globe : Languages;
+  // Dynamic icon colors based on variant and theme
+  const getIconColor = () => {
+    if (variant === "footer") {
+      return theme === "dark" ? "text-white" : "text-text-primary";
+    }
+    return "text-text-primary"; // Match navbar text color
+  };
+
+  const getChevronColor = () => {
+    if (variant === "footer") {
+      return theme === "dark" ? "text-white" : "text-text-primary";
+    }
+    return "text-text-primary"; // Match navbar text color
+  };
 
   return (
     <div className={`notranslate relative ${className}`} ref={dropdownRef}>
-      {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`flex items-center space-x-1 ${sizes.padding} ${sizes.text} font-medium ${themeConfig.trigger} ${themeConfig.triggerBorder || ""} transition-colors ${
           variant === "footer" ? "rounded-md" : ""
         }`}
+        aria-label={`Language and currency selector. Current language: ${selectedLanguage?.name || "English"}`}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        type="button"
       >
         <IconComponent
-          className={`${sizes.icon} lg:${sizes.icon.replace("h-4 w-4", "h-6 w-6")} ${
-            variant === "footer" ? "text-tertiary" : "text-orange-500"
-          }`}
+          className={`${sizes.icon} lg:${sizes.icon.replace("h-4 w-4", "h-6 w-6")} ${getIconColor()}`}
+          aria-hidden="true"
         />
         {showLanguageText && (
           <span className="max-sm:hidden">
             {selectedLanguage?.name || "English"}
           </span>
         )}
-        <ChevronDown className="h-4 w-4 text-orange-500" />
+        <ChevronDown
+          className={`h-4 w-4 ${getChevronColor()}`}
+          aria-hidden="true"
+        />
       </button>
 
-      {/* Dropdown */}
-      {/* Dropdown */}
       {isOpen && (
         <>
           <div
             className="fixed inset-0 z-40 bg-black bg-opacity-25 sm:hidden"
             onClick={() => setIsOpen(false)}
+            aria-hidden="true"
           />
 
           <div
             className={`absolute left-1/2 z-50 mt-2 -translate-x-1/2 transform sm:transform-none sm:${getDropdownPosition(position)} w-[calc(100vw-2rem)] min-w-[280px] max-w-[280px] rounded-xl border sm:w-60 sm:max-w-[280px] ${themeConfig.dropdown}`}
+            role="dialog"
+            aria-label="Language and currency settings"
           >
             <div className="p-4">
-              {/* Language Selection */}
               <div className="mb-3">
                 <label
+                  htmlFor="language-select"
                   className={`block ${sizes.text} font-medium ${themeConfig.label} mb-1`}
                 >
                   Language
                 </label>
                 <select
+                  id="language-select"
                   className={`block w-full rounded-lg border p-2 ${sizes.text} ${themeConfig.select} min-h-[40px]`}
                   value={language}
                   onChange={(e) => {
                     setLanguage(e.target.value);
                     setHasLanguage(true);
                   }}
+                  aria-describedby="language-help"
                 >
                   {languages.map((lang) => (
                     <option key={lang.code} value={lang.code}>
@@ -126,42 +146,25 @@ export default function LanguageSelector({
                     </option>
                   ))}
                 </select>
+                <div id="language-help" className="sr-only">
+                  Select your preferred language for the website
+                </div>
               </div>
 
-              {/* Country Selection - Always show if showCountry is true */}
-              {/* {showCountry && (
-                <div className="mb-3">
-                  <label
-                    className={`block ${sizes.text} font-medium ${themeConfig.label} mb-1`}
-                  >
-                    Country
-                  </label>
-                  <select
-                    className={`block w-full rounded-lg border p-2 ${sizes.text} ${themeConfig.select} min-h-[40px]`}
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                  >
-                    {countries.map((ctry) => (
-                      <option key={ctry.code} value={ctry.code}>
-                        {`${ctry.flag} ${ctry.name}`}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )} */}
-
-              {/* Currency Selection - Always show if showCurrency is true */}
               {showCurrency && (
                 <div className="mb-4">
                   <label
+                    htmlFor="currency-select"
                     className={`block ${sizes.text} font-medium ${themeConfig.label} mb-1`}
                   >
                     Currency
                   </label>
                   <select
+                    id="currency-select"
                     className={`block w-full rounded-lg border p-2 ${sizes.text} ${themeConfig.select} min-h-[40px]`}
                     value={tempCurrency}
                     onChange={(e) => setTempCurrency(e.target.value)}
+                    aria-describedby="currency-help"
                   >
                     {Object.keys(exchangeRates).map((curr) => (
                       <option key={curr} value={curr}>
@@ -169,12 +172,17 @@ export default function LanguageSelector({
                       </option>
                     ))}
                   </select>
+                  <div id="currency-help" className="sr-only">
+                    Select your preferred currency for pricing
+                  </div>
                 </div>
               )}
 
               <button
                 onClick={handleUpdate}
                 className={`w-full rounded-lg py-3 ${sizes.text} min-h-[44px] bg-yellow font-medium text-text-primary transition-opacity hover:opacity-90`}
+                aria-label="Apply language and currency settings"
+                type="button"
               >
                 UPDATE
               </button>
@@ -183,7 +191,6 @@ export default function LanguageSelector({
         </>
       )}
 
-      {/* Google Translate Element */}
       {language !== "en" && (
         <div className="hidden">
           <div id="google_translate_element"></div>
