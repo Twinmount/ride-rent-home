@@ -57,9 +57,9 @@ export function BookingConfirmationModal({
     // insurance: 50, // commented out for now
     // serviceFee: 25, // commented out for now
     customer: {
-      name: "John Doe",
-      phone: "+971 50 123 4567",
-      email: "john.doe@email.com",
+      name: "",
+      phone: "",
+      email: "",
       // paymentMethod: "**** **** **** 1234", // commented out for now
     },
     pickupTime: "10:00 AM",
@@ -87,8 +87,9 @@ export function BookingConfirmationModal({
   }, [isOpen]);
 
   return (
+    //
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         {step === "confirmation" ? (
           <>
             <DialogHeader className="space-y-4">
@@ -194,22 +195,24 @@ export function BookingConfirmationModal({
                       {bookingData.customer?.phone || "+971 50 123 4567"}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Mail
+                  {bookingData.customer?.email ? (
+                    <div className="flex items-center gap-3">
+                      <Mail
                       className="h-4 w-4 text-orange-500"
                       aria-hidden="true"
                     />
-                    <span>
-                      {bookingData.customer?.email || "john.doe@email.com"}
-                    </span>
-                  </div>
+                      <span>{bookingData.customer?.email}</span>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               </div>
 
               <Separator />
 
               {/* Price Breakdown */}
-              <div className="space-y-4">
+              {/* <div className="space-y-4">
                 <h4 className="font-semibold">Price Breakdown</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -218,15 +221,24 @@ export function BookingConfirmationModal({
                       {bookingData.pricePerDay} AED × {bookingData.totalDays}
                     </span>
                   </div>
-                  <Separator />
+                  {/* Insurance and Service fee - commented out for now, can be enabled in future */}
+              {/* <div className="flex justify-between">
+                    <span>Insurance</span>
+                    <span>{bookingData.insurance || 50} AED</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Service fee</span>
+                    <span>{bookingData.serviceFee || 25} AED</span>
+                  </div> */}
+              {/* <Separator />
                   <div className="flex justify-between text-lg font-semibold">
                     <span>Rental charges (approx.)</span>
                     <span className="text-orange-600">
                       {bookingData.totalPrice} AED
                     </span>
                   </div>
-                </div>
-              </div>
+                </div> */}
+              {/* </div> */}
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4">

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 
 // Step Components
@@ -156,23 +157,18 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
         aria-labelledby="drawer-title"
       >
         <div className="flex h-full flex-col">
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6 text-white">
+          <div className="p-6 text-white" style={{ background: 'linear-gradient(255.26deg, #f9a825 29.45%, #f57f17 88.69%)' }}>
             {/* Header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
-                  <span className="text-lg font-bold" aria-hidden="true">
-                    🚗
-                  </span>
-                </div>
-                <div>
-                  <h2 id="drawer-title" className="text-xl font-bold">
-                    Ride.Rent
-                  </h2>
-                  <p className="text-xs text-white/80">
-                    {step === "register" ? "Complete Profile" : "Sign In"}
-                  </p>
-                </div>
+               
+                  <Image
+                    src="/assets/logo/Logo_Black.svg"
+                    alt="Ride.Rent Logo"
+                    width={70}
+                    height={48}
+                    className="brightness-0 invert w-[135px]"
+                  />
               </div>
               <Button
                 variant="ghost"
@@ -200,8 +196,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
                 role="status"
                 aria-live="polite"
               >
-                {getStatusIcon()}
-                {statusMessage || "Enter your phone number to continue"}
+                {statusMessage || "Create Account/Login to continue"}
               </span>
             </div>
           </div>
@@ -269,9 +264,26 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
 
           {/* Footer */}
           <div className="border-t border-border p-6">
-            <p className="text-balance text-center text-xs text-muted-foreground">
-              By continuing, you agree to Ride.Rent&apos;s Terms of Service and
-              Privacy Policy. Standard message and data rates may apply.
+            <p className="text-balance text-center text-[11px] text-muted-foreground">
+              By continuing, you agree to Ride.Rent&apos;s{" "}
+              <a 
+                href="https://ride.rent/terms-condition" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-orange-600 hover:text-orange-700 underline"
+              >
+                Terms of Service
+              </a>{" "}
+              and{" "}
+              <a 
+                href="https://ride.rent/privacy-policy" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-orange-600 hover:text-orange-700 underline"
+              >
+                Privacy Policy
+              </a>
+              . Standard message and data rates may apply.
             </p>
           </div>
         </div>

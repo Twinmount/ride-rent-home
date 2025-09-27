@@ -234,6 +234,7 @@ export const Navbar = () => {
                       <DropdownMenuLabel className="font-normal">
                         <div className="flex flex-col space-y-1">
                           <p className="text-sm font-medium leading-none">
+                            <span className="text-xs font-normal text-muted-foreground">Hello, </span>
                             {userName}
                           </p>
                           <p className="text-xs leading-none text-muted-foreground">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { generateWhatsappUrl, getFormattedPhoneNumber } from "@/helpers";
 import ContactPopup from "../dialog/ContactPopup";
 import { useCarRent } from "@/hooks/useCarRent";
@@ -9,6 +9,8 @@ import { BookingPopup } from "../dialog/BookingPopup";
 import { BookingConfirmationModal } from "../dialog/booking-confirm-modal/BookingConfirmModal";
 import { useAuthContext } from "@/auth";
 import ActiveEnquiryDialog from "../dialog/ActiveEnquiryDialog";
+import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle } from "lucide-react";
 
 export type ContactDetails = {
   email: string;
@@ -48,6 +50,7 @@ const RentNowButtonWide = ({
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showBookingConfirm, setShowBookingConfirm] = useState(false);
   const [showActiveEnquiryDialog, setShowActiveEnquiryDialog] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
   const {
     open,
     carRentDate,
@@ -76,6 +79,20 @@ const RentNowButtonWide = ({
     setShowBookingConfirm(false);
     handleConfirm(); // This will trigger the rental enquiry
   };
+
+  // Show success toast when enquiry is successful
+  useEffect(() => {
+    if (rentalEnquiryMutation.isSuccess) {
+      setShowSuccessToast(true);
+      // Auto hide toast after 4 seconds
+      const timer = setTimeout(() => {
+        setShowSuccessToast(false);
+      }, 4000);
+
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [rentalEnquiryMutation.isSuccess]);
 
   // Handle booking confirmation modal close
   const handleBookingConfirmClose = () => {
@@ -199,6 +216,35 @@ const RentNowButtonWide = ({
           vehicleName={vehicleName || "this vehicle"}
         />
       )}
+
+      {/* Success Toast */}
+      <AnimatePresence>
+        {showSuccessToast && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 30,
+            }}
+            className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 transform"
+          >
+            <div className="flex items-center justify-center gap-3 rounded-lg bg-green-600 px-6 py-4 text-white shadow-lg">
+              <CheckCircle size={20} className="text-white" />
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold">
+                  Enquiry Sent Successfully!
+                </span>
+                <span className="text-xs opacity-90">
+                  We&apos;ll get back to you soon
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

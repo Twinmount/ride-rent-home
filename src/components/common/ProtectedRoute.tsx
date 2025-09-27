@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -32,28 +32,31 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   const usersd = authStorage.getUser();
 
+  const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
+
   // Authentication protection
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      console.log("User not authenticated, redirecting...");
-      onHandleLoginmodal({ isOpen: true });
-      router.push(fallbackPath);
+    // Only perform auth checks after initial loading is complete
+    if (!authLoading) {
+      setHasInitiallyLoaded(true);
 
-      // if (showLoginModal) {
-      // } else {
-      // }
-      return;
-    }
+      if (!isAuthenticated) {
+        console.log("User not authenticated, redirecting...");
+        onHandleLoginmodal({ isOpen: true });
+        router.push(fallbackPath);
+        return;
+      }
 
-    // Additional verification check if required
-    if (
-      requireVerification &&
-      user &&
-      (!user.isPhoneVerified || !user.isEmailVerified)
-    ) {
-      console.log("User not verified, redirecting...");
-      router.push("/verify-account");
-      return;
+      // Additional verification check if required
+      if (
+        requireVerification &&
+        user &&
+        (!user.isPhoneVerified || !user.isEmailVerified)
+      ) {
+        console.log("User not verified, redirecting...");
+        router.push("/verify-account");
+        return;
+      }
     }
   }, [
     isAuthenticated,
@@ -63,11 +66,11 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     fallbackPath,
     showLoginModal,
     requireVerification,
-    // onHandleLoginmodal,
+    onHandleLoginmodal,
   ]);
 
-  // Loading state
-  if (authLoading) {
+  // Only show loading spinner on initial load, not on subsequent refetches
+  if (authLoading && !hasInitiallyLoaded) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">

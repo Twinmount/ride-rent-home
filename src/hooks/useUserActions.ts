@@ -71,6 +71,24 @@ type RawVehicleEnquiry = {
   rentDetails: RentDetails;
 };
 
+type RawSavedVehicle = {
+  _id: string;
+  vehicleDetails: {
+    carId: string;
+    vehicleCode: string;
+    make: string;
+    model: string;
+    year: string;
+    registrationNumber: string;
+    photos: VehiclePhoto[];
+  };
+  saveId: string;
+  saveStatus: string;
+  saveMessage: string;
+  savedAt: string;
+  rentDetails: RentDetails;
+};
+
 type ApiResponse = {
   status: string;
   result: {
@@ -82,7 +100,39 @@ type ApiResponse = {
   statusCode: number;
 };
 
-// Main user actions hook - returns all functions and state in a single object
+type SavedVehiclesApiResponse = {
+  status: string;
+  result: {
+    data: RawSavedVehicle[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+  statusCode: number;
+};
+
+/**
+ * Main user actions hook - returns all functions and state in a single object
+ * 
+ * Usage Example:
+ * ```tsx
+ * const { 
+ *   useUserSavedVehicles, 
+ *   extractSavedVehicles,
+ *   fetchSavedVehicles,
+ *   savedVehicles 
+ * } = useUserActions();
+ * 
+ * // Using the query hook
+ * const { data: savedVehiclesData } = useUserSavedVehicles({ page: 0, limit: 10 });
+ * const extractedSavedVehicles = extractSavedVehicles(savedVehiclesData);
+ * 
+ * // Using manual fetch
+ * useEffect(() => {
+ *   fetchSavedVehicles({ page: 0, limit: 10 });
+ * }, []);
+ * ```
+ */
 export const useUserActions = () => {
   const queryClient = useQueryClient();
   const { auth } = useAppContext();
@@ -120,7 +170,7 @@ export const useUserActions = () => {
 
     try {
       const data = await getUserSavedVehicles(effectiveUserId, page, limit);
-      const extractedData = extractViewedVehicles(data);
+      const extractedData = extractSavedVehicles(data);
       setSavedVehiclesState((draft) => {
         draft.isLoading = false;
         draft.error = null;
@@ -205,6 +255,7 @@ export const useUserActions = () => {
       staleTime: 5 * 60 * 1000, // 5 minutes
     });
   };
+
 
   const useUserViewedVehicles = (options: UseUserActionsOptions = {}) => {
     const effectiveUserId = options.userId || userId;
@@ -307,14 +358,17 @@ export const useUserActions = () => {
   };
 
   const extractViewedVehicles = (apiResponse: any) => {
-    if (!apiResponse?.result?.list) {
+    if (!apiResponse?.result?.data) {
       return [];
     }
 
-    const viewedVehicles = apiResponse.result.list.map(
+    const viewedVehicles = apiResponse.result.data.map(
       (item: any, index: number) => {
         const vehicle = item.vehicleDetails;
-        const viewInfo = item.viewInfo;
+        const viewInfo = item.viewInfo || {
+          viewedAt: item.actionAt,
+          metadata: item.metadata
+        };
 
         // Calculate time ago from viewedAt
         const viewedDate = new Date(viewInfo.viewedAt);
@@ -335,14 +389,15 @@ export const useUserActions = () => {
 
         // Extract rental price (using day rate if available, otherwise week/7, otherwise month/30)
         let price = 0;
-        if (vehicle.rentalDetails?.day?.enabled) {
-          price = parseInt(vehicle.rentalDetails.day.rentInAED) || 0;
-        } else if (vehicle.rentalDetails?.week?.enabled) {
+        const rentalDetails = vehicle.rentalDetails || vehicle.rentDetails;
+        if (rentalDetails?.day?.enabled) {
+          price = parseInt(rentalDetails.day.rentInAED) || 0;
+        } else if (rentalDetails?.week?.enabled) {
           price =
-            Math.round(parseInt(vehicle.rentalDetails.week.rentInAED) / 7) || 0;
-        } else if (vehicle.rentalDetails?.month?.enabled) {
+            Math.round(parseInt(rentalDetails.week.rentInAED) / 7) || 0;
+        } else if (rentalDetails?.month?.enabled) {
           price =
-            Math.round(parseInt(vehicle.rentalDetails.month.rentInAED) / 30) ||
+            Math.round(parseInt(rentalDetails.month.rentInAED) / 30) ||
             0;
         }
 
@@ -376,22 +431,36 @@ export const useUserActions = () => {
           category = "suv";
         }
 
-        // Extract location
-        const location = vehicle.location?.address || "Dubai"; // fallback to Dubai
+        // Location will be handled later in the return statement
+
+        // Get primary image with signed URL
+        const primaryImage = vehicle.images?.[0]?.signedUrl || 
+                            vehicle.vehiclePhotos?.[0] || 
+                            "/default-car.png";
+
+        // Get vehicle location
+        const vehicleLocation = vehicle.location?.address || "Dubai";
 
         return {
-          id: vehicle._id || index + 1,
-          name:
-            vehicle.vehicleTitle || vehicle.vehicleModel || "Unknown Vehicle",
+          id: vehicle._id || item.carId || index + 1,
+          name: vehicle.vehicleTitle || vehicle.vehicleModel || "Unknown Vehicle",
           vendor: "Premium Car Rental", // This info isn't in the API response, so using a default
           price: price,
           rating: null, // This info isn't in the API response, so using a default
-          location: location.includes("Dubai") ? "Dubai" : location,
-          image: vehicle.vehiclePhotos?.[0] || "/default-car.png", // First photo or default
+          location: vehicleLocation.includes("Dubai") ? "Dubai" : vehicleLocation,
+          image: primaryImage,
           viewedDate: timeAgo,
           viewCount: 1, // This specific count isn't in the API response
           category: category,
           features: features.slice(0, 3), // Take first 3 features
+          
+          // Additional data from the new API structure
+          vehicleCode: vehicle.vehicleCode,
+          make: vehicle.brandId, // This would need to be resolved to brand name
+          year: vehicle.registredYear,
+          
+          // Original data for reference
+          originalData: item,
         };
       }
     );
@@ -488,6 +557,118 @@ export const useUserActions = () => {
     });
   };
 
+  const extractSavedVehicles = (apiResponse: SavedVehiclesApiResponse) => {
+    if (!apiResponse?.result?.data || !Array.isArray(apiResponse.result.data)) {
+      return [];
+    }
+
+    const savedVehicles = apiResponse.result.data.map(
+      (item: RawSavedVehicle, index: number) => {
+        const vehicle = item.vehicleDetails || {};
+        const saveInfo = {
+          saveId: item.saveId,
+          saveStatus: item.saveStatus,
+          saveMessage: item.saveMessage,
+          savedAt: item.savedAt,
+        };
+        const rentDetails = item.rentDetails || {};
+
+        // Calculate time ago from savedAt
+        const savedDate = new Date(saveInfo.savedAt);
+        const now = new Date();
+        const diffInHours = Math.floor(
+          (now.getTime() - savedDate.getTime()) / (1000 * 60 * 60)
+        );
+
+        let timeAgo;
+        if (diffInHours < 1) {
+          timeAgo = "Just now";
+        } else if (diffInHours < 24) {
+          timeAgo = `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+        } else {
+          const diffInDays = Math.floor(diffInHours / 24);
+          timeAgo = `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+        }
+
+        // Extract rental price (using day rate if available, otherwise week/7, otherwise month/30)
+        let price = 0;
+        let priceUnit = "day";
+
+        if (rentDetails?.day?.enabled && rentDetails.day.rentInAED) {
+          price = parseInt(rentDetails.day.rentInAED) || 0;
+          priceUnit = "day";
+        } else if (rentDetails?.week?.enabled && rentDetails.week.rentInAED) {
+          price = Math.round(parseInt(rentDetails.week.rentInAED) / 7) || 0;
+          priceUnit = "day";
+        } else if (rentDetails?.month?.enabled && rentDetails.month.rentInAED) {
+          price = Math.round(parseInt(rentDetails.month.rentInAED) / 30) || 0;
+          priceUnit = "day";
+        } else if (rentDetails?.hour?.enabled && rentDetails.hour.rentInAED) {
+          price = parseInt(rentDetails.hour.rentInAED) || 0;
+          priceUnit = "hour";
+        }
+
+        // Get primary image with signed URL
+        const primaryImage =
+          vehicle?.photos?.length > 0
+            ? vehicle.photos[0]?.signedUrl || vehicle.photos[0]?.originalPath
+            : "/default-car.png";
+
+        // Get all image URLs
+        const imageUrls =
+          vehicle?.photos?.map(
+            (photo: any) => photo?.signedUrl || photo?.originalPath
+          ).filter(Boolean) || [];
+
+        // Determine category based on vehicle model
+        let category = "luxury"; // default
+        const vehicleModel = (vehicle.model || "").toLowerCase();
+
+        if (
+          vehicleModel.includes("sports") ||
+          vehicleModel.includes("coupe") ||
+          vehicleModel.includes("vanquish") ||
+          vehicleModel.includes("mustang")
+        ) {
+          category = "sports";
+        } else if (vehicleModel.includes("suv")) {
+          category = "suv";
+        }
+
+        return {
+          id: vehicle?.carId || item._id || index + 1,
+          name: vehicle?.model || "Unknown Vehicle",
+          make: vehicle?.make,
+          model: vehicle?.model,
+          year: vehicle?.year,
+          registrationNumber: vehicle?.registrationNumber,
+          vehicleCode: vehicle?.vehicleCode,
+          vendor: "Premium Car Rental", // Default vendor name
+          price: price,
+          priceUnit: priceUnit,
+          rating: 4.8, // Default rating
+          location: "Dubai", // Default location
+          image: primaryImage,
+          images: imageUrls,
+          savedDate: timeAgo,
+          category: category,
+          features: [], // No features in this simplified response
+
+          // Save-specific details
+          saveDetails: saveInfo,
+
+          // Rent details
+          rentDetails: rentDetails,
+
+          // Original data for reference
+          originalData: item,
+        };
+      }
+    );
+
+    return savedVehicles;
+  };
+
   return {
     // User info
     userId,
@@ -528,5 +709,6 @@ export const useUserActions = () => {
     // Utility functions
     extractViewedVehicles,
     extractEnquiredVehicles,
+    extractSavedVehicles,
   };
 };

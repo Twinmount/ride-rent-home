@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useUserActions } from "@/hooks/useUserActions";
+import { generateVehicleDetailsUrl } from "@/helpers";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 const ViewedVehicles = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,22 +34,69 @@ const ViewedVehicles = () => {
   const [filterBy, setFilterBy] = useState("all");
 
   // Use the useUserActions hook
-  const { useUserViewedVehicles, extractViewedVehicles } = useUserActions();
+  const { useUserViewedVehicles, extractViewedVehicles, userId } =
+    useUserActions();
+
+  // Get current state and category context
+  const { state, category, country } = useStateAndCategory();
 
   // Get viewed vehicles data - only call when this component is mounted
   const viewedVehiclesQuery = useUserViewedVehicles({
+    userId: userId!,
     page: 0,
     limit: 20,
     sortOrder: "DESC",
-    enabled: true, // Explicitly enable the query when this page loads
+    enabled: !!userId, // Only enable when userId is available
   });
+
+  console.log("viewedVehiclesQuery: ", viewedVehiclesQuery.data);
 
   // Use the viewed vehicles data directly
   const viewedVehicles = viewedVehiclesQuery.data
     ? extractViewedVehicles(viewedVehiclesQuery.data)
     : [];
 
+  console.log("extractedViewedVehicles: ", viewedVehicles);
+
   const isLoading = viewedVehiclesQuery.isLoading;
+
+  // Helper function to generate vehicle details URL
+  const getVehicleDetailsUrl = (vehicle: any) => {
+    // Use available fields and current state/category from user's context
+    const currentState = state || "dubai";
+    const currentCategory = category || "cars";
+    const vehicleCode = vehicle.vehicleCode || vehicle.id;
+    const currentCountry = country || "ae";
+
+    const navRoute = generateVehicleDetailsUrl({
+      vehicleTitle: vehicle.name || vehicle.model || "vehicle",
+      state: currentState,
+      vehicleCategory: currentCategory,
+      vehicleCode,
+      country: currentCountry,
+    });
+
+    return navRoute;
+  };
+
+  // Early return if no user is logged in
+  if (!userId) {
+    return (
+      <div className="min-h-screen bg-gray-50 px-4 py-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="py-12 text-center">
+            <Eye className="mx-auto mb-4 h-16 w-16 text-gray-300" />
+            <h3 className="mb-2 text-xl font-semibold text-gray-900">
+              Please log in to view your browsing history
+            </h3>
+            <p className="mb-4 text-gray-600">
+              Sign in to see the vehicles you&apos;ve recently viewed
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Filter and sort vehicles
   const filteredVehicles = viewedVehicles
@@ -163,6 +212,11 @@ const ViewedVehicles = () => {
             <p className="mb-4 text-gray-600">
               There was an error loading your viewing history. Please try again.
             </p>
+            {process.env.NODE_ENV === "development" && (
+              <p className="mb-4 text-sm text-red-600">
+                Error: {viewedVehiclesQuery.error?.message || "Unknown error"}
+              </p>
+            )}
             <Button
               onClick={() => {
                 viewedVehiclesQuery.refetch();
@@ -180,15 +234,29 @@ const ViewedVehicles = () => {
             {filteredVehicles.map((vehicle: any) => (
               <Card
                 key={vehicle.id}
-                className="cursor-pointer overflow-hidden transition-shadow hover:shadow-lg"
+                className="overflow-hidden transition-shadow hover:shadow-lg"
               >
                 <div className="relative">
-                  <img
-                    src={vehicle.image || "/placeholder.svg"}
-                    alt={vehicle.name || "Vehicle"}
-                    className="h-48 w-full object-cover"
-                  />
-                  <div className="absolute right-3 top-3">
+                  <Link href={getVehicleDetailsUrl(vehicle)}>
+                    <div className="cursor-pointer">
+                      {vehicle.image ? (
+                        <img
+                          src={vehicle.image}
+                          alt={vehicle.name || "Vehicle"}
+                          className="h-48 w-full object-cover transition-transform duration-300 hover:scale-105"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = "/default-car.png";
+                          }}
+                        />
+                      ) : (
+                        <div className="flex h-48 w-full items-center justify-center bg-gray-200">
+                          <span className="text-gray-500">No Image</span>
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                  {/* <div className="absolute right-3 top-3">
                     <Button
                       size="sm"
                       variant="secondary"
@@ -196,7 +264,7 @@ const ViewedVehicles = () => {
                     >
                       <Heart className="h-4 w-4 text-gray-600 hover:text-red-500" />
                     </Button>
-                  </div>
+                  </div> */}
                   {/* <div className="absolute left-3 top-3">
                     <Badge className="bg-purple-500 text-white">
                       <Eye className="mr-1 h-3 w-3" />
@@ -206,18 +274,20 @@ const ViewedVehicles = () => {
                 </div>
                 <CardContent className="p-4">
                   <div className="mb-2 flex items-start justify-between">
-                    <h3 className="text-sm font-semibold text-gray-900">
-                      {vehicle.name || "Unknown Vehicle"}
-                    </h3>
-                    {/* <div className="flex items-center gap-1">
-                      <Star className="text-yellow-400 h-4 w-4 fill-current" />
-                      <span className="text-sm font-medium">
-                        {vehicle.rating || 4.5}
-                      </span>
-                    </div> */}
+                    <Link href={getVehicleDetailsUrl(vehicle)}>
+                      <h3 className="cursor-pointer text-sm font-semibold text-gray-900 transition-colors hover:text-orange-600">
+                        {vehicle.name || "Unknown Vehicle"}
+                      </h3>
+                    </Link>
+                    {vehicle.vehicleCode && (
+                      <Badge variant="outline" className="text-xs">
+                        {vehicle.vehicleCode}
+                      </Badge>
+                    )}
                   </div>
                   <p className="mb-3 text-sm text-gray-600">
                     {vehicle.vendor || "Premium Car Rental"}
+                    {vehicle.year && <span> • {vehicle.year}</span>}
                   </p>
                   <div className="mb-3 flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-gray-400" />
@@ -245,16 +315,18 @@ const ViewedVehicles = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-lg font-bold text-orange-600">
-                        {vehicle.price || 0} AED
+                        AED {vehicle.price || 0}
                       </span>
                       <span className="text-sm text-gray-500">/day</span>
                     </div>
-                    <Button
-                      size="sm"
-                      className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
-                    >
-                      View Again
-                    </Button>
+                    <Link href={getVehicleDetailsUrl(vehicle)}>
+                      <Button
+                        size="sm"
+                        className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
+                      >
+                        View Details
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
