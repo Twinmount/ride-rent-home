@@ -43,6 +43,7 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { useAuthContext } from "@/auth";
 import { ProfileBreadcrumb } from "@/components/user-profile";
 import { ProtectedRoute } from "@/components/common";
+import { trimName } from "@/helpers";
 
 interface UserProfileProps {
   className?: string;
@@ -68,6 +69,9 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     formatMemberSince,
     useGetUserProfile,
     updateUserNameAndAvatar,
+    updateProfile,
+    auth,
+    user,
   } = useAuthContext();
 
   // Profile data state
@@ -92,7 +96,6 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [tempName, setTempName] = useState("");
-  console.log("tempName: ", tempName);
 
   // Toast state
   const [showSuccessToast, setShowSuccessToast] = useState(false);
@@ -113,14 +116,12 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
   useEffect(() => {
     if (!userCarActionCountsQuery.isLoading) {
       const data = userCarActionCountsQuery.data;
-      console.log("userCarActionCountsQuery data: ", data);
     }
   }, [userCarActionCountsQuery.data]);
 
   useEffect(() => {
     if (userProfileQuery.data?.success && userProfileQuery.data.data) {
       const fetchedProfileData = userProfileQuery.data.data;
-      console.log("User profile data: ", fetchedProfileData);
 
       // Update profile data state using useImmer
       setProfileData({
@@ -146,7 +147,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   const handleSaveName = async () => {
     try {
-      await handleUpdateProfile({
+      // Use auth context's updateProfile method to update both auth state and API
+      await updateProfile(userId!, {
         name: tempName,
       });
 
@@ -157,7 +159,9 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
         }
       });
       setIsEditingName(false);
-      console.log("Name updated successfully");
+
+      // Refetch user profile to ensure consistency
+      await userProfileQuery.refetch();
 
       // Show success toast
       setShowSuccessToast(true);
@@ -183,6 +187,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   const handleSaveMobile = async () => {
     try {
+      // Use custom handleUpdateProfile for phone number updates (API only)
       await handleUpdateProfile({
         phoneNumber: tempMobileNumber,
         countryCode: tempCountryCode,
@@ -196,7 +201,6 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
         }
       });
       setIsEditingMobile(false);
-      console.log("Mobile number updated successfully");
 
       // Show success toast
       setShowSuccessToast(true);
@@ -219,6 +223,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   const handleSaveEmail = async () => {
     try {
+      // Use custom handleUpdateProfile for email updates (API only)
       await handleUpdateProfile({
         email: tempEmail,
       });
@@ -230,7 +235,6 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
         }
       });
       setIsEditingEmail(false);
-      console.log("Email updated successfully");
 
       // Show success toast
       setShowSuccessToast(true);
@@ -258,7 +262,6 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
         countryCode: profileData.countryCode || undefined,
       });
 
-      console.log("Profile updated successfully");
       // Refetch the profile data to get the latest
       userProfileQuery.refetch();
 
@@ -275,7 +278,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   const stats = [
     {
-      label: "Total Enquiries",
+      label: "All Enquiries",
       value: userCarActionCountsQuery.data?.enquired || 0,
       trend: "+12%",
       trendUp: true,
@@ -288,7 +291,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
       navigationPath: "/user-profile/enquired-vehicles",
     },
     {
-      label: "Saved Vehicles",
+      label: "My Favorites",
       value: userCarActionCountsQuery.data?.saved || 0,
       trend: "+8%",
       trendUp: true,
@@ -296,12 +299,12 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
       color: "from-red-500 to-pink-600",
       bgColor: "bg-red-50",
       textColor: "text-red-700",
-      description: "All time favorites",
+      description: "",
       action: "saved",
       navigationPath: "/user-profile/saved-vehicles",
     },
     {
-      label: "Viewed Vehicles",
+      label: "Previously Viewed​",
       value: userCarActionCountsQuery.data?.viewed || 0,
       trend: "+24%",
       trendUp: true,
@@ -342,7 +345,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
       >
         {/* Profile Breadcrumb */}
         <ProfileBreadcrumb
-          userName={profileData?.name || "User"}
+          userName={trimName(profileData?.name || "", 5)}
           className="mt-1 sm:mt-2"
         />
 
@@ -374,20 +377,20 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1">
               <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl lg:text-4xl">
-                My Profile Dashboard
+                {`Hello ${trimName(profileData?.name || "", 15) || "User"}`}
               </h1>
               <p className="text-sm text-orange-100 sm:text-base lg:text-lg">
                 Manage your account and track your activity
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-              <Badge
+              {/* <Badge
                 variant="secondary"
                 className="w-fit border-white/30 bg-white/20 text-white backdrop-blur-sm"
               >
                 <Settings className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                 Premium Member
-              </Badge>
+              </Badge> */}
               <div className="text-left sm:text-right">
                 <p className="text-xs text-orange-100 sm:text-sm">
                   {profileData?.joinedAt
@@ -522,8 +525,6 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                         setTimeout(() => {
                           setShowSuccessToast(false);
                         }, 4000);
-
-                        console.log("Avatar updated successfully");
                       } catch (error) {
                         console.error(
                           "Failed to refetch profile after avatar upload:",
@@ -539,7 +540,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                     {!isEditingName ? (
                       <div className="mb-1 flex flex-col items-center gap-2 sm:flex-row">
                         <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">
-                          {profileData?.name || "User"}
+                          {trimName(profileData?.name || "") || "User"}
                           {userProfileQuery.isLoading && (
                             <span className="ml-2 text-sm text-gray-500">
                               (Loading...)
@@ -594,7 +595,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                       </div>
                     )}
                     <div className="mb-3 flex flex-wrap items-center justify-center gap-2 sm:justify-start sm:gap-3">
-                      <Badge
+                      {/* <Badge
                         className="text-xs text-white sm:text-sm"
                         style={{
                           background:
@@ -603,7 +604,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                       >
                         <Star className="mr-1 h-3 w-3" />
                         Premium Member
-                      </Badge>
+                      </Badge> */}
                       {profileData?.isPhoneVerified && (
                         <Badge
                           variant="outline"
@@ -660,7 +661,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                           className="cursor-pointer text-orange-600 hover:bg-orange-50 hover:text-orange-700"
                         >
                           <Edit2 className="mr-1 h-4 w-4" />
-                          Change
+                          Change Photo
                         </Button>
                       </div>
                     ) : (
@@ -788,7 +789,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                           {!profileData?.email && (
                             <p className="text-xs text-blue-600 sm:text-sm">
                               Adding an email will help you receive important
-                              notifications and recover your account.
+                              notifications and recover your account. Add your
+                              email to get important updates on your booking.
                             </p>
                           )}
                         </div>

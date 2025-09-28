@@ -103,22 +103,21 @@ const createApiClient = (baseURL: string): AxiosInstance => {
 
       // Handle FormData properly - let the browser set the content-type
       if (config.data instanceof FormData) {
-        delete config.headers['Content-Type'];
-        console.log('FormData detected, removing Content-Type header to let browser set it');
+        delete config.headers["Content-Type"];
       }
 
-      console.log('Request config:', {
+      console.log("Request config:", {
         url: config.url,
         method: config.method,
         hasAuth: !!config.headers.Authorization,
-        contentType: config.headers['Content-Type'],
+        contentType: config.headers["Content-Type"],
         isFormData: config.data instanceof FormData,
       });
 
       return config;
     },
     (error: AxiosError) => {
-      console.error('Request interceptor error:', error);
+      console.error("Request interceptor error:", error);
       return Promise.reject(error);
     }
   );
@@ -126,15 +125,15 @@ const createApiClient = (baseURL: string): AxiosInstance => {
   // Response interceptor to handle token refresh
   client.interceptors.response.use(
     (response: AxiosResponse) => {
-      console.log('Response received:', {
-        status: response.status,
-        url: response.config.url,
-        method: response.config.method,
-      });
+      // console.log('Response received:', {
+      //   status: response.status,
+      //   url: response.config.url,
+      //   method: response.config.method,
+      // });
       return response;
     },
     async (error: AxiosError) => {
-      console.error('Response error:', {
+      console.error("Response error:", {
         status: error.response?.status,
         statusText: error.response?.statusText,
         url: error.config?.url,

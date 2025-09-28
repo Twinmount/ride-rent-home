@@ -134,12 +134,10 @@ export const useAuth = () => {
         });
         // setLoginOpen(false);
         setError(null);
-        console.log("Login successful:", data);
       }
     },
     onError: (error: Error) => {
       setError({ message: error.message });
-      console.error("Login failed:", error);
     },
   });
 
@@ -184,7 +182,6 @@ export const useAuth = () => {
       }
       setLoginOpen(false);
       setError(null);
-      console.log("Password set successfully:", data);
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -195,7 +192,6 @@ export const useAuth = () => {
     mutationFn: authAPI.resendOtp,
     onSuccess: (data) => {
       setError(null);
-      console.log("OTP resent successfully:", data);
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -212,7 +208,6 @@ export const useAuth = () => {
     }) => authAPI.updateProfile(userId, profileData),
     onSuccess: (data) => {
       setError(null);
-      console.log("Profile updated successfully:", data);
 
       // Update user state with new name and avatar, preserving existing fields
       updateState((draft) => {
@@ -351,8 +346,6 @@ export const useAuth = () => {
 
   const login = async (loginData: LoginData): Promise<AuthResponse> => {
     try {
-      console.log("login function called");
-
       // Validate input
       // if (!validatePhoneNumber(loginData.phoneNumber)) {
       //   throw new Error(ERROR_MESSAGES.INVALID_PHONE);

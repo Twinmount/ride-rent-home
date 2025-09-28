@@ -127,7 +127,7 @@ const ViewedVehicles = () => {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-4">
-            <Link href="/profile">
+            <Link href="/user-profile">
               <Button variant="ghost" size="sm" className="cursor-pointer">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Profile
@@ -139,9 +139,7 @@ const ViewedVehicles = () => {
               <h1 className="mb-2 text-3xl font-bold text-gray-900">
                 Recently Viewed
               </h1>
-              <p className="text-gray-600">
-                Vehicles you&apos;ve recently browsed
-              </p>
+              <p className="text-gray-600">Revisit What You Viewed Before​</p>
             </div>
             <div className="flex items-center gap-2">
               <Eye className="h-6 w-6 text-purple-500" />
@@ -158,7 +156,7 @@ const ViewedVehicles = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
             <Input
-              placeholder="Search viewed vehicles..."
+              placeholder="Search viewed experiences​."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
