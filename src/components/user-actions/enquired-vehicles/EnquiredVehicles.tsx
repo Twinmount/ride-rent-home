@@ -441,7 +441,7 @@ export default function EnquiredVehiclesPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-4">
-            <Link href="/profile">
+            <Link href="/user-profile">
               <Button variant="ghost" size="sm" className="cursor-pointer">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Profile
