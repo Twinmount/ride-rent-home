@@ -16,6 +16,7 @@ export const RegisterStep = ({
 }: any) => {
   const [fullName, setFullName] = useState("");
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -25,6 +26,10 @@ export const RegisterStep = ({
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Store the actual file for upload
+      setProfileImageFile(file);
+
+      // Create preview URL for display
       const reader = new FileReader();
       reader.onload = (ev) => {
         setProfileImage(ev.target?.result as string);
@@ -61,10 +66,10 @@ export const RegisterStep = ({
         confirmPassword: confirmPassword,
       });
       if (passwordResponse.success && passwordResponse.data?.userId) {
-        if (fullName || profileImage) {
+        if (fullName || profileImageFile) {
           const profileData: any = {};
           if (fullName) profileData.name = fullName;
-          if (profileImage) profileData.avatar = profileImage;
+          if (profileImageFile) profileData.avatar = profileImageFile; // Use the File object, not base64 string
           await updateProfile(passwordResponse.data.userId, profileData);
         }
         setStep("success");

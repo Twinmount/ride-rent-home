@@ -59,15 +59,29 @@ export const getUserSavedVehicles = async (
   userId: string,
   page: number = 0,
   limit: number = 10
-): Promise<SavedVehicle[]> => {
-  const response = await getUserVehiclesByAction({
-    userId,
-    actionType: "saved",
-    page,
-    limit,
+): Promise<{
+  status: string;
+  result: {
+    data: any[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+  statusCode: number;
+}> => {
+  const response = await mainApiClient.get(`/user-cars/saved/${userId}`, {
+    params: {
+      page,
+      limit,
+      sortOrder: "DESC",
+      isActive: true,
+    },
   });
 
-  return response.result.vehicles as SavedVehicle[];
+  console.log("getUserSavedVehicles response: ", response.data);
+
+  // Return the full response to match the API structure
+  return response.data;
 };
 
 // Specific function for viewed vehicles
@@ -96,7 +110,12 @@ export const removeFromSaved = async (
   userId: string,
   vehicleId: string
 ): Promise<void> => {
-  await mainApiClient.delete(`/user-cars/saved/${userId}/${vehicleId}`);
+  await mainApiClient.delete("/user-cars/unsave", {
+    data: {
+      userId,
+      carId: vehicleId,
+    },
+  });
 };
 
 // Function to add a vehicle to user's saved list
@@ -105,10 +124,10 @@ export const addToSaved = async (
   vehicleId: string,
   metadata: Record<string, any> = {}
 ): Promise<void> => {
-  await mainApiClient.post("/user-cars/saved", {
+  await mainApiClient.post("/user-cars/save", {
     userId,
-    vehicleId,
-    metadata,
+    carId: vehicleId,
+    notes: metadata?.notes || undefined,
   });
 };
 

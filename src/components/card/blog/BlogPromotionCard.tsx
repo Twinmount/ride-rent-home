@@ -1,4 +1,5 @@
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import Link from "next/link";
 import HoverOverlay from "@/components/common/HoverOverlay";
 import { CarouselItem } from "../../ui/carousel";
@@ -25,7 +26,7 @@ const BlogPromotionCard = ({
         <div className="group relative h-full min-h-full w-full min-w-full cursor-pointer overflow-hidden rounded-xl bg-white shadow-lg">
           <figure className="relative flex h-full w-full items-center justify-center">
             {promotionImage ? (
-              <Image
+              <SafeImage
                 src={promotionImage}
                 alt="Promotion"
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -33,8 +34,8 @@ const BlogPromotionCard = ({
                 height={600}
               />
             ) : (
-              <Image
-                src={'/assets/bg/blur.jpg'}
+              <SafeImage
+                src={"/assets/bg/blur.jpg"}
                 alt="Promotion"
                 className="h-full w-full object-cover"
                 width={400}

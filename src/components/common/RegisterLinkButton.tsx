@@ -16,9 +16,9 @@ export default function RegisterLinkButton({
       href={`https://agent.ride.rent/${country}/register`}
       target="_blank"
       rel="noopener noreferrer"
-      className={`w-fit whitespace-nowrap rounded border border-black/10 bg-theme-gradient px-4 py-2 text-sm font-medium text-black shadow lg:text-base ${className}`}
+      className={`flex w-fit min-w-[140px] items-center justify-center whitespace-nowrap rounded border border-black/10 bg-theme-gradient px-4 py-2 text-sm font-medium text-black shadow lg:text-base ${className}`}
     >
-      {children || 'List Your Vehicle for FREE'}
+      {children || "List Your Vehicle for FREE"}
     </Link>
   );
 }

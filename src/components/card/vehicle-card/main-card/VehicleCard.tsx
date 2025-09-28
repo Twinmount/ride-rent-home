@@ -64,11 +64,13 @@ const VehicleCard = ({
           {/* thumbnail with hover image cycling */}
           <VehicleThumbnail
             src={vehicle.thumbnail}
-            alt={vehicle.vehicleTitle || "Vehicle Image"}
+            alt={`${vehicle.vehicleTitle} rental car available for booking`}
             width={250}
             height={200}
             layoutType={layoutType}
             vehiclePhotos={vehicle.vehiclePhotos}
+            priority={index < 2} // Only first 2 images get priority
+            loading={index < 2 ? "eager" : "lazy"} // Lazy load after 2nd image
           />
 
           {/* badge group */}

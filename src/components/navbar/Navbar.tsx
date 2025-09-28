@@ -1,32 +1,20 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import { useParams } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
 import { extractCategory } from "@/helpers";
 import { noStatesDropdownRoutes } from ".";
 import LanguageSelector from "./LanguageSelector";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { LocationDialog } from "../dialog/location-dialog/LocationDialog";
-import { useEffect, useState } from "react";
-import {
-  AlignRight,
-  User,
-  Globe,
-  MapPin,
-  Bell,
-  Edit3,
-  Settings,
-  LogOut,
-} from "lucide-react";
+import { useEffect, useState, useLayoutEffect } from "react";
+import { AlignRight, User, Settings, LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Badge } from "../ui/badge";
 import RegisterLinkButton from "../common/RegisterLinkButton";
 import RideRentNavbarLogo from "../common/RideRentNavbarLogo";
-import { LoginDialog } from "../dialog/login-dialog";
 import { useAuthContext } from "@/auth";
 import {
   DropdownMenu,
@@ -38,22 +26,10 @@ import {
 } from "../ui/dropdown-menu";
 import { LoginDrawer } from "../dialog/login-dialog/LoginDrawer";
 
-// dynamic import for sidebar
-const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
-  loading: () => (
-    // fallback while loading sidebar
-    <Button className="border-none outline-none" size="icon" disabled>
-      <AlignRight className="h-6 w-6" />
-      <span className="sr-only">Toggle navigation</span>
-    </Button>
-  ),
-});
-
 export const Navbar = () => {
   const {
     user,
     auth,
-    login,
     logout,
     isLoginOpen,
     onHandleLoginmodal,
@@ -68,198 +44,205 @@ export const Navbar = () => {
 
   const country = (params?.country as string) || "ae";
 
-  const [state, setState] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
+  // Initialize with SSR-safe default values to prevent hydration mismatch
+  const [state, setState] = useState<string>(() => {
+    if (typeof window === "undefined") {
+      return params?.state || (country === "in" ? "bangalore" : "dubai");
+    }
+    const storedState = localStorage.getItem("state");
+    return (
+      params?.state || storedState || (country === "in" ? "bangalore" : "dubai")
+    );
+  });
+
+  const [category, setCategory] = useState<string>(() => {
+    if (typeof window === "undefined") {
+      return extractCategory(params?.category || "cars");
+    }
+    const storedCategory = localStorage.getItem("category");
+    return extractCategory(params?.category || storedCategory || "cars");
+  });
+
+  const [mounted, setMounted] = useState(false);
+
+  // Handle client-side mounting
+  useLayoutEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
-    // Check if param values exist
-    const paramState = params?.state as string | undefined;
-    const paramCategory = params?.category as string | undefined;
+    if (!mounted) return;
 
-    // If present in params, store in localStorage
-    if (paramState) {
-      localStorage.setItem("state", paramState);
-    }
-    if (paramCategory) {
-      localStorage.setItem("category", paramCategory);
-    }
+    const paramState = params?.state;
+    const paramCategory = params?.category;
 
-    // Fallback order: params → localStorage → default
-    const storedState = localStorage.getItem("state");
-    const storedCategory = localStorage.getItem("category");
-
-    const finalState =
-      paramState || storedState || (country === "in" ? "bangalore" : "dubai");
-
-    const finalCategory = paramCategory || storedCategory || "cars";
+    const finalState = paramState || (country === "in" ? "bangalore" : "dubai");
+    const finalCategory = extractCategory(paramCategory || "cars");
 
     setState(finalState);
-    setCategory(extractCategory(finalCategory));
-  }, [params, country]);
+    setCategory(finalCategory);
 
+    // Update localStorage
+    if (paramState) localStorage.setItem("state", paramState);
+    if (paramCategory) localStorage.setItem("category", paramCategory);
+  }, [params, country, mounted]);
+
+  // Background geolocation
   useEffect(() => {
     if (typeof window !== "undefined" && "geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          // Save to localStorage
           sessionStorage.setItem(
             "userLocation",
             JSON.stringify({ latitude, longitude })
           );
         },
-        (error) => {
-          console.error("Error getting location:", error);
-        }
+        () => {}
       );
-    } else {
-      console.warn("Geolocation is not supported");
     }
   }, []);
 
   const shouldRenderDropdowns = useShouldRender(noStatesDropdownRoutes);
 
-  const isMobile = useIsMobile(640);
-
-  // Handle logout function
   const handleLogout = () => {
     logout(auth?.user?.id || "");
   };
 
-  // Get user name from auth state
   const userName = user ? `${user.name}` : "User";
+  const isMobile =
+    mounted && typeof window !== "undefined" && window.innerWidth < 640;
 
   return (
-    <header
-      className={`fixed left-0 right-0 top-0 z-50 flex h-[4rem] flex-col items-center justify-center gap-y-5 border-b bg-white transition-all duration-200 ease-in-out`}
-    >
-      <nav className={`flex-between global-padding container`}>
-        <div className="flex w-fit items-center justify-center">
-          <div className="w-fit p-0">
+    <>
+      <header className="fixed left-0 right-0 top-0 z-50 h-16 border-b bg-white">
+        <nav
+          className="container mx-auto flex h-full items-center px-4"
+          aria-label="Main navigation"
+        >
+          {/* Logo with extra spacing */}
+          <div className="mr-8 lg:mr-12">
             <RideRentNavbarLogo
               country={country}
               state={state}
               category={category}
             />
           </div>
-        </div>
 
-        <div className="flex w-fit items-center">
-          <ul className="flex w-full items-center justify-between gap-2 md:gap-4 lg:gap-5">
-            {/* Search Dialog */}
-            <li>
-              <SearchDialog state={state} category={category} />
-            </li>
-            <li>
-              <LanguageSelector
-                theme="navbar"
-                size="md"
-                showLanguageText={true}
-                position="left"
-                className="navbar-lang-selector"
-              />
-            </li>
-            {/* Location */}
-            {!shouldRenderDropdowns && (
-              <li className="-mx-2 w-fit">
-                <LocationDialog />
-              </li>
-            )}
-            {/* List Button */}
-            <li className="hidden lg:block">
+          {/* Navigation Items - ml-auto pushes to right, gap-2 for tight spacing */}
+          <div className="ml-auto flex items-center gap-1 lg:gap-2">
+            {/* Search - Always rendered to prevent shift */}
+            <SearchDialog state={state} category={category} />
+
+            {/* Language Selector - Always visible */}
+            <LanguageSelector
+              theme="navbar"
+              size="md"
+              showLanguageText={true}
+              position="left"
+              className="navbar-lang-selector"
+            />
+
+            {/* Location Dialog - Conditional but space reserved */}
+            <div className="min-w-[5rem]">
+              {!shouldRenderDropdowns && <LocationDialog />}
+            </div>
+
+            {/* Register Button - Hidden on mobile but space reserved */}
+            <div className="hidden lg:block">
               <RegisterLinkButton country={country} />
-            </li>
-            <div className="flex items-center space-x-2">
-              {auth.isLoggedIn && (
-                <div className="flex items-center space-x-2">
-                  {/* Notifications */}
-                  {/* <Button
-                    variant="ghost"
-                    size="sm"
-                    className="relative cursor-pointer"
-                  >
-                    <Bell className="h-5 w-5 text-gray-600" />
-                    <Badge className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 p-0 text-xs text-white">
-                      3
-                    </Badge>
-                  </Button> */}
+            </div>
 
-                  {/* Dropdown Menu for Avatar */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-orange-200 transition-all hover:ring-orange-300">
-                        <AvatarImage src={user?.avatar} alt={userName} />
-                        <AvatarFallback className="bg-orange-100 font-semibold text-orange-600">
-                          {userName
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="w-56"
-                      align="end"
-                      forceMount
+            {/* User Menu - Fixed size container */}
+            <div className="h-9 w-9">
+              {auth.isLoggedIn ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Avatar
+                      className="h-9 w-9 cursor-pointer ring-2 ring-orange-200 transition-all hover:ring-orange-300"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Open user menu for ${userName}`}
                     >
-                      <DropdownMenuLabel className="font-normal">
-                        <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium leading-none">
-                            {userName}
-                          </p>
-                          <p className="text-xs leading-none text-muted-foreground">
-                            {user?.email}
-                          </p>
-                        </div>
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={handleProfileNavigation}
-                        className="cursor-pointer"
-                      >
-                        <User className="mr-2 h-4 w-4" />
-                        <span>My Profile</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer">
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={handleLogout}
-                        className="cursor-pointer text-red-600 focus:text-red-600"
-                      >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Log out</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              )}
-
-              {!auth.isLoggedIn && (
+                      <AvatarImage
+                        src={user?.avatar}
+                        alt={`Profile picture of ${userName}`}
+                      />
+                      <AvatarFallback className="bg-orange-100 font-semibold text-orange-600">
+                        {userName
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          <span className="text-xs font-normal text-muted-foreground">
+                            Hello,{" "}
+                          </span>
+                          {userName}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user?.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleProfileNavigation}
+                      className="cursor-pointer"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      <span>My Profile</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="cursor-pointer text-red-600 focus:text-red-600"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full"
+                  className="h-9 w-9 rounded-full p-0"
                   onClick={() => onHandleLoginmodal({ isOpen: true })}
+                  aria-label="Sign in to your account"
                 >
                   <User className="h-5 w-5" />
                 </Button>
               )}
             </div>
-            <LoginDrawer
-              isOpen={isLoginOpen}
-              onClose={() => onHandleLoginmodal({ isOpen: false })}
-            />
-            {isMobile && (
-              <li>
-                <MobileSidebar />
-              </li>
+
+            {/* Mobile Menu - Fixed size container */}
+            {mounted && isMobile && (
+              <div className="h-9 w-9">
+                <Button variant="ghost" size="icon" className="h-9 w-9 p-0">
+                  <AlignRight className="h-6 w-6" />
+                  <span className="sr-only">Toggle navigation</span>
+                </Button>
+              </div>
             )}
-          </ul>
-        </div>
-      </nav>
-    </header>
+          </div>
+        </nav>
+      </header>
+
+      <LoginDrawer
+        isOpen={isLoginOpen}
+        onClose={() => onHandleLoginmodal({ isOpen: false })}
+      />
+    </>
   );
 };

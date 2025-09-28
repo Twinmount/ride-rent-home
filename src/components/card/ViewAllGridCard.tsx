@@ -48,6 +48,7 @@ const ViewAllGridCard = ({
         className={`group relative flex h-[12rem] w-[10rem] min-w-[10rem] cursor-pointer flex-col gap-2 rounded border border-border-default bg-white p-2 transition-all duration-500 hover:border-yellow hover:shadow-lg md:w-[10.5rem] md:min-w-[10.5rem] lg:w-[11rem] lg:min-w-[11rem] ${
           isVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"
         }`}
+        aria-label={`View all ${totalCount} ${label} vehicles`}
       >
         {/* Thumbnail grid */}
         <div className="relative grid h-auto min-h-[75%] grid-cols-2 grid-rows-2 gap-1 overflow-hidden rounded-lg border">

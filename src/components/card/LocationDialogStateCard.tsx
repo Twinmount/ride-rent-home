@@ -1,5 +1,5 @@
 import { StateType } from "@/types";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
 
 type Props = {
   state: StateType;
@@ -17,7 +17,7 @@ export default function LocationDialogStateCard({
       onClick={() => handleStateSelect(state?.stateValue)}
     >
       {/* Background Image */}
-      <Image
+      <SafeImage
         fill
         src={state.stateImage}
         alt={`${state.stateName} logo`}

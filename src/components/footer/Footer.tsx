@@ -1,9 +1,8 @@
 import FooterGrid from './footer-grid/FooterGrid';
 import Social from './social/Social';
-import { FaRegCopyright, FaRegRegistered } from 'react-icons/fa6';
-import MotionDiv from '../general/framer-motion/MotionDiv';
+import { FaRegCopyright, FaRegRegistered } from "react-icons/fa6";
 import RideRentFooterLogo from './RideRentFooterLogo';
-import FooterSelectors from './FooterSelectors'; // Import the client component
+import FooterSelectors from "./FooterSelectors";
 import MadeWith from './MadeWith';
 
 const Footer = () => {
@@ -11,23 +10,17 @@ const Footer = () => {
     <div className="w-full bg-footer">
       <footer className="mx-auto max-w-7xl px-4 py-8 text-white md:px-8">
         <div>
-          {/* Top Section with Logo and Selectors */}
           <div className="mb-6 flex w-full max-w-full flex-col items-center border-b border-[#303030] pb-2 md:flex-row md:justify-between lg:pb-5">
-            {/* Logo - Left Side */}
             <div className="mb-3 sm:mb-0">
               <RideRentFooterLogo />
             </div>
-
-            {/* Language and Country Selectors - Right Side */}
             <FooterSelectors />
           </div>
 
-          {/* Footer Grid - Hidden on mobile */}
           <div className="hidden md:block">
             <FooterGrid />
           </div>
 
-          {/* Find Us On Section */}
           <div className="py-6 md:py-8">
             <h3 className="mb-3 text-center text-lg font-medium text-yellow">
               Find Us On
@@ -38,8 +31,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Bottom Description */}
-          <MotionDiv className="notranslate border-t border-[#303030] pt-6 text-center font-light text-gray-400 md:pt-8">
+          <div className="notranslate border-t border-[#303030] pt-6 text-center font-light text-gray-400 md:pt-8">
             <div className="text-sm leading-relaxed">
               <div className="text-xs text-gray-500">
                 <p className="mb-4 px-2">
@@ -62,7 +54,7 @@ const Footer = () => {
                 </div>
               </div>
             </div>
-          </MotionDiv>
+          </div>
         </div>
       </footer>
     </div>

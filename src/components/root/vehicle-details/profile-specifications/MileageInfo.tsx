@@ -1,7 +1,7 @@
-import React from 'react';
-import { Infinity } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
+import React from "react";
+import { Infinity } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import SafeImage from "@/components/common/SafeImage";
 
 type MileageInfoProps = {
   unlimitedMileage: boolean;
@@ -55,7 +55,7 @@ const MileageInfo = ({
               className="flex items-center gap-1"
             >
               <div className="relative h-[18px] w-[18px] flex-shrink-0">
-                <Image
+                <SafeImage
                   src="/assets/icons/detail-page/top-speed.svg"
                   alt="top speed"
                   fill
@@ -99,4 +99,4 @@ const MileageInfo = ({
   );
 };
 
-export default MileageInfo; 
+export default MileageInfo;

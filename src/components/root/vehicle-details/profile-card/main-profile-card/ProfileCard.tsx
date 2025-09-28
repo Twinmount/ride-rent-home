@@ -66,7 +66,7 @@ const ProfileCard = memo(
           <div className="p-2 text-lg font-normal text-text-primary md:text-2xl">
             {model}
           </div>
-          <ShareLikeComponent />
+          <ShareLikeComponent vehicleId={vehicleId} />
         </div>
 
         <VehicleStats state={state} />

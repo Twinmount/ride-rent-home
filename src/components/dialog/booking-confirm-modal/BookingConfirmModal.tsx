@@ -57,9 +57,9 @@ export function BookingConfirmationModal({
     // insurance: 50, // commented out for now
     // serviceFee: 25, // commented out for now
     customer: {
-      name: "John Doe",
-      phone: "+971 50 123 4567",
-      email: "john.doe@email.com",
+      name: "",
+      phone: "",
+      email: "",
       // paymentMethod: "**** **** **** 1234", // commented out for now
     },
     pickupTime: "10:00 AM",
@@ -87,8 +87,9 @@ export function BookingConfirmationModal({
   }, [isOpen]);
 
   return (
+    //
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         {step === "confirmation" ? (
           <>
             <DialogHeader className="space-y-4">
@@ -101,7 +102,7 @@ export function BookingConfirmationModal({
                 </Button> */}
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Car className="h-4 w-4 text-orange-500" />
+                <Car className="h-4 w-4 text-orange-500" aria-hidden="true" />
                 <span>Ride.Rent - Premium Car Rental</span>
               </div>
             </DialogHeader>
@@ -112,7 +113,7 @@ export function BookingConfirmationModal({
                 <div className="flex gap-4">
                   <img
                     src={bookingData.carImage || "/placeholder.svg"}
-                    alt={bookingData.carName}
+                    alt={`${bookingData.carName} vehicle`}
                     className="h-16 w-24 rounded-md object-cover"
                   />
                   <div className="flex-1">
@@ -120,16 +121,19 @@ export function BookingConfirmationModal({
                       {bookingData.carName}
                     </h3>
                     <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-                      <MapPin className="h-3 w-3" />
+                      <MapPin className="h-3 w-3" aria-hidden="true" />
                       <span>{bookingData.location}</span>
                     </div>
                     <div className="mt-2 flex gap-2">
                       <Badge className="bg-orange-100 text-xs text-orange-700 hover:bg-orange-200">
-                        <Shield className="mr-1 h-3 w-3" />
+                        <Shield className="mr-1 h-3 w-3" aria-hidden="true" />
                         Insured
                       </Badge>
                       <Badge className="bg-green-100 text-xs text-green-700 hover:bg-green-200">
-                        <CheckCircle className="mr-1 h-3 w-3" />
+                        <CheckCircle
+                          className="mr-1 h-3 w-3"
+                          aria-hidden="true"
+                        />
                         Verified
                       </Badge>
                     </div>
@@ -141,7 +145,10 @@ export function BookingConfirmationModal({
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <Calendar className="h-5 w-5 text-orange-500" />
+                    <Calendar
+                      className="h-5 w-5 text-orange-500"
+                      aria-hidden="true"
+                    />
                     <div>
                       <p className="text-sm font-medium">Pickup Date</p>
                       <p className="text-sm text-muted-foreground">
@@ -149,19 +156,13 @@ export function BookingConfirmationModal({
                       </p>
                     </div>
                   </div>
-                  {/* <div className="flex items-center gap-3">
-                    <Clock className="h-5 w-5 text-orange-500" />
-                    <div>
-                      <p className="text-sm font-medium">Pickup Time</p>
-                      <p className="text-sm text-muted-foreground">
-                        {bookingData.pickupTime || "10:00 AM"}
-                      </p>
-                    </div>
-                  </div> */}
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <Calendar className="h-5 w-5 text-red-500" />
+                    <Calendar
+                      className="h-5 w-5 text-red-500"
+                      aria-hidden="true"
+                    />
                     <div>
                       <p className="text-sm font-medium">Return Date</p>
                       <p className="text-sm text-muted-foreground">
@@ -169,15 +170,6 @@ export function BookingConfirmationModal({
                       </p>
                     </div>
                   </div>
-                  {/* <div className="flex items-center gap-3">
-                    <Clock className="h-5 w-5 text-red-500" />
-                    <div>
-                      <p className="text-sm font-medium">Return Time</p>
-                      <p className="text-sm text-muted-foreground">
-                        {bookingData.returnTime || "10:00 AM"}
-                      </p>
-                    </div>
-                  </div> */}
                 </div>
               </div>
 
@@ -188,36 +180,39 @@ export function BookingConfirmationModal({
                 <h4 className="font-semibold">Customer Details</h4>
                 <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
                   <div className="flex items-center gap-3">
-                    <User className="h-4 w-4 text-orange-500" />
+                    <User
+                      className="h-4 w-4 text-orange-500"
+                      aria-hidden="true"
+                    />
                     <span>{bookingData.customer?.name || "John Doe"}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Phone className="h-4 w-4 text-orange-500" />
+                    <Phone
+                      className="h-4 w-4 text-orange-500"
+                      aria-hidden="true"
+                    />
                     <span>
                       {bookingData.customer?.phone || "+971 50 123 4567"}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-4 w-4 text-orange-500" />
-                    <span>
-                      {bookingData.customer?.email || "john.doe@email.com"}
-                    </span>
-                  </div>
-                  {/* Payment method - commented out for now, can be enabled in future */}
-                  {/* <div className="flex items-center gap-3">
-                    <CreditCard className="h-4 w-4 text-orange-500" />
-                    <span>
-                      {bookingData.customer?.paymentMethod ||
-                        "**** **** **** 1234"}
-                    </span>
-                  </div> */}
+                  {bookingData.customer?.email ? (
+                    <div className="flex items-center gap-3">
+                      <Mail
+                      className="h-4 w-4 text-orange-500"
+                      aria-hidden="true"
+                    />
+                      <span>{bookingData.customer?.email}</span>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               </div>
 
               <Separator />
 
               {/* Price Breakdown */}
-              <div className="space-y-4">
+              {/* <div className="space-y-4">
                 <h4 className="font-semibold">Price Breakdown</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -227,7 +222,7 @@ export function BookingConfirmationModal({
                     </span>
                   </div>
                   {/* Insurance and Service fee - commented out for now, can be enabled in future */}
-                  {/* <div className="flex justify-between">
+              {/* <div className="flex justify-between">
                     <span>Insurance</span>
                     <span>{bookingData.insurance || 50} AED</span>
                   </div>
@@ -235,15 +230,15 @@ export function BookingConfirmationModal({
                     <span>Service fee</span>
                     <span>{bookingData.serviceFee || 25} AED</span>
                   </div> */}
-                  <Separator />
+              {/* <Separator />
                   <div className="flex justify-between text-lg font-semibold">
                     <span>Rental charges (approx.)</span>
                     <span className="text-orange-600">
                       {bookingData.totalPrice} AED
                     </span>
                   </div>
-                </div>
-              </div>
+                </div> */}
+              {/* </div> */}
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4">
@@ -252,6 +247,7 @@ export function BookingConfirmationModal({
                   onClick={handleClose}
                   className="flex-1 border-orange-200 bg-transparent text-orange-600 hover:bg-orange-50"
                   disabled={isProcessing}
+                  aria-label="Cancel booking process"
                 >
                   Cancel
                 </Button>
@@ -259,15 +255,23 @@ export function BookingConfirmationModal({
                   onClick={handleConfirmBooking}
                   className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600"
                   disabled={isProcessing}
+                  aria-label={
+                    isProcessing
+                      ? "Processing enquiry, please wait"
+                      : "Send enquiry for this vehicle"
+                  }
                 >
                   {isProcessing ? (
                     <div className="flex items-center gap-2">
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      <div
+                        className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+                        role="status"
+                        aria-label="Loading"
+                      />
                       Processing...
                     </div>
                   ) : (
-                    // `Confirm Booking - ${bookingData.totalPrice} AED`
-                    `Send enquiry`
+                    "Send enquiry"
                   )}
                 </Button>
               </div>
@@ -278,7 +282,10 @@ export function BookingConfirmationModal({
             {/* Success State */}
             <div className="space-y-6 py-8 text-center">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-orange-500 to-red-500">
-                <CheckCircle className="h-10 w-10 text-white" />
+                <CheckCircle
+                  className="h-10 w-10 text-white"
+                  aria-hidden="true"
+                />
               </div>
 
               <div className="space-y-2">
@@ -314,10 +321,14 @@ export function BookingConfirmationModal({
                   variant="outline"
                   onClick={handleClose}
                   className="flex-1 border-orange-200 bg-transparent text-orange-600 hover:bg-orange-50"
+                  aria-label="Close confirmation dialog"
                 >
                   Close
                 </Button>
-                <Button className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600">
+                <Button
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600"
+                  aria-label="View all your bookings"
+                >
                   View My Bookings
                 </Button>
               </div>
