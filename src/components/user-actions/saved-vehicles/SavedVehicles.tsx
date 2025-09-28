@@ -291,7 +291,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
                       )}
                     </div>
                   </Link>
-                  {/* <div className="absolute right-3 top-3">
+                  <div className="absolute right-3 top-3">
                     <Button
                       size="sm"
                       variant="secondary"
@@ -301,7 +301,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
                     >
                       <Trash2 className="h-4 w-4 text-red-500 hover:text-red-700" />
                     </Button>
-                  </div> */}
+                  </div>
                   <div className="absolute left-3 top-3">
                     <Badge className="bg-red-500 text-white">
                       <Heart className="mr-1 h-3 w-3" />
