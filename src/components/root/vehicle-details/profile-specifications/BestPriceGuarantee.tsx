@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { motion, Variants } from 'framer-motion';
-import { MdOutlineClose, MdOutlineVerifiedUser } from 'react-icons/md';
-import Image from 'next/image';
+import React, { useState } from "react";
+import { motion, Variants } from "framer-motion";
+import { MdOutlineClose, MdOutlineVerifiedUser } from "react-icons/md";
+import SafeImage from "@/components/common/SafeImage";
 
 type BestPriceGuaranteeProps = {
   isDisabled?: boolean;
@@ -153,7 +153,7 @@ const BestPriceGuarantee = ({
               animate="animate"
             >
               <div className="flex items-center justify-center">
-                <Image
+                <SafeImage
                   src="/assets/img/detailsPage/shield.webp"
                   alt="Security shield representing our lowest price guarantee"
                   width={250}

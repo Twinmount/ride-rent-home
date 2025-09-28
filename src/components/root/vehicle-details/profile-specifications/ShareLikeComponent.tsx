@@ -1,27 +1,63 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Share2, Heart } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from "react";
+import { Share2, Heart } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useSavedVehicle } from "@/hooks/useSavedVehicle";
 
 interface ShareLikeProps {
   className?: string;
+  vehicleId?: string;
   onShare?: () => void;
   onLike?: (isLiked: boolean) => void;
   initialLiked?: boolean; // Allow initial liked state
 }
 
 const ShareLikeComponent: React.FC<ShareLikeProps> = ({
-  className = '',
+  className = "",
+  vehicleId,
   onShare,
   onLike,
   initialLiked = false,
 }) => {
-  const [isLiked, setIsLiked] = useState(initialLiked);
   const [showToast, setShowToast] = useState(false);
 
+  // Always call the hook, but use a fallback vehicleId if not provided
+  const savedVehicleHook = useSavedVehicle({
+    vehicleId: vehicleId || "",
+    onSaveSuccess: (isSaved) => {
+      // Only trigger callbacks if we have a valid vehicleId
+      if (vehicleId) {
+        onLike?.(isSaved);
+        if (isSaved) {
+          setShowToast(true);
+          setTimeout(() => setShowToast(false), 3000);
+        }
+      }
+    },
+    onSaveError: (error) => {
+      // Only handle errors if we have a valid vehicleId
+      if (vehicleId) {
+        console.error("Error saving/unsaving vehicle:", error);
+        // Show appropriate error message
+        if (error.message.includes("login")) {
+          // Handle unauthenticated user - could show login modal
+          alert("Please login to save vehicles");
+        } else {
+          // Other errors
+          alert("Something went wrong. Please try again.");
+        }
+      }
+    },
+  });
+
+  // Use hook state if vehicleId is available, otherwise use local state
+  const [localIsLiked, setLocalIsLiked] = useState(initialLiked);
+  const isLiked = vehicleId ? savedVehicleHook.isSaved : localIsLiked;
+  const isLoading = vehicleId ? savedVehicleHook.isLoading : false;
+
   const handleShare = async () => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const url = window.location.href;
       const title = document.title;
 
@@ -33,13 +69,13 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
             url: url,
           });
         } catch (error) {
-          console.log('Share cancelled or failed');
+          console.log("Share cancelled or failed");
         }
       } else {
         // Fallback: Copy to clipboard
         try {
           await navigator.clipboard.writeText(url);
-          alert('Link copied to clipboard!');
+          alert("Link copied to clipboard!");
         } catch (error) {
           // Final fallback: Show URL in alert
           alert(`Share this link: ${url}`);
@@ -52,17 +88,23 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
   };
 
   const handleLike = () => {
-    const newLikedState = !isLiked;
-    setIsLiked(newLikedState);
-    onLike?.(newLikedState);
+    if (vehicleId) {
+      // Use the hook's toggle function
+      savedVehicleHook.toggleSaved();
+    } else {
+      // Fall back to local state management
+      const newLikedState = !localIsLiked;
+      setLocalIsLiked(newLikedState);
+      onLike?.(newLikedState);
 
-    // Show toast only when liking (not unliking)
-    if (newLikedState) {
-      setShowToast(true);
-      // Auto hide toast after 3 seconds
-      setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
+      // Show toast only when liking (not unliking)
+      if (newLikedState) {
+        setShowToast(true);
+        // Auto hide toast after 3 seconds
+        setTimeout(() => {
+          setShowToast(false);
+        }, 3000);
+      }
     }
   };
 
@@ -89,33 +131,39 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
         </motion.button>
 
         {/* Like Button */}
-        {/* <motion.button
+        <motion.button
           onClick={handleLike}
-          className="rounded-full p-2 transition-colors duration-200"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          aria-label={isLiked ? 'Unlike' : 'Like'}
+          disabled={isLoading}
+          className={`rounded-full p-2 transition-colors duration-200 ${
+            isLoading ? "cursor-not-allowed opacity-70" : ""
+          }`}
+          whileHover={{ scale: isLoading ? 1 : 1.1 }}
+          whileTap={{ scale: isLoading ? 1 : 0.95 }}
+          aria-label={isLiked ? "Unlike" : "Like"}
         >
           <motion.div
             animate={{
               scale: isLiked ? [1, 1.3, 1] : 1,
+              rotate: isLoading ? 360 : 0,
             }}
             transition={{
-              duration: 0.3,
-              times: [0, 0.5, 1],
-              ease: 'easeInOut',
+              duration: isLoading ? 1 : 0.3,
+              times: isLoading ? undefined : [0, 0.5, 1],
+              ease: "easeInOut",
+              repeat: isLoading ? Infinity : 0,
+              repeatType: isLoading ? "loop" : undefined,
             }}
           >
             <Heart
               size={28}
               className={`transition-all duration-300 ${
                 isLiked
-                  ? 'fill-yellow text-yellow'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
+                  ? "fill-red-500 text-red-500"
+                  : "text-gray-600 hover:text-red-400"
+              } ${isLoading ? "animate-pulse" : ""}`}
             />
           </motion.div>
-        </motion.button> */}
+        </motion.button>
       </div>
 
       {/* Toast Notification */}
@@ -126,14 +174,14 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{
-              type: 'spring',
+              type: "spring",
               stiffness: 300,
               damping: 30,
             }}
             className="fixed bottom-[12rem] left-[20%] right-[20%] z-50 -translate-x-1/2 transform md:left-1/3 md:right-1/3 lg:bottom-6"
           >
             <div className="flex items-center justify-center gap-2 rounded-full bg-gray-900 px-6 py-3 text-white shadow-lg">
-              <Heart size={16} className="fill-yellow text-yellow" />
+              <Heart size={16} className="fill-red-500 text-red-500" />
               <span className="block text-sm font-medium lg:hidden">
                 Added to your favorites!
               </span>

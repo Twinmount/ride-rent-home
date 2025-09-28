@@ -1,5 +1,5 @@
 import { CheckCircle } from "lucide-react";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
 
 type SecurityDepositInfoProps = {
   securityDeposit: {
@@ -21,7 +21,7 @@ const SecurityDepositInfo = ({
     >
       {securityDeposit?.enabled ? (
         <div className="relative h-5 w-5 flex-shrink-0">
-          <Image
+          <SafeImage
             src="/assets/icons/detail-page/deposits.svg"
             alt="deposit"
             fill

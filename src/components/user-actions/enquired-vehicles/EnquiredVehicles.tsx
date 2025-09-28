@@ -292,7 +292,7 @@ export default function EnquiredVehiclesPage() {
       country: currentCountry,
     });
 
-    return `${navRoute}?ref=enquiries`;
+    return navRoute;
   };
 
   const getStatusColor = (status: string) => {

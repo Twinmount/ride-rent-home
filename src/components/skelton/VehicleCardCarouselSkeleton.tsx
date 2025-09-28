@@ -1,15 +1,14 @@
-import CarouselWrapper from "../common/carousel-wrapper/CarouselWrapper";
 import { VehicleCardSkeleton } from "./VehicleCardSkeleton";
 
 export default function VehicleCardCarouselSkeleton({
-  count = 5,
-  layoutType = "grid",
+  count = 6,
+  layoutType = "carousel",
 }: {
   count?: number;
-  layoutType: "grid" | "carousel";
+  layoutType?: "grid" | "carousel";
 }) {
   return (
-    <CarouselWrapper>
+    <div className="flex gap-1 overflow-x-auto px-4 pb-4">
       {Array.from({ length: count }).map((_, index) => (
         <VehicleCardSkeleton
           key={index}
@@ -17,6 +16,6 @@ export default function VehicleCardCarouselSkeleton({
           layoutType={layoutType}
         />
       ))}
-    </CarouselWrapper>
+    </div>
   );
 }

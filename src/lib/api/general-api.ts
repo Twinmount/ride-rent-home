@@ -733,7 +733,7 @@ export const sendRentalEnquiry = async ({
   rentalEndDate: string;
   name: string;
   phone: string;
-  email: string;
+  email?: string;
   country?: string;
 }) => {
   try {

@@ -66,7 +66,7 @@ const ActiveEnquiryDialog = ({
         <div className="space-y-4">
           {/* Enquiry Status */}
           <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-gray-500" />
+            <Clock className="h-4 w-4 text-gray-500" aria-hidden="true" />
             <span className="text-sm text-gray-600">Status:</span>
             <span
               className={`rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(
@@ -79,7 +79,7 @@ const ActiveEnquiryDialog = ({
 
           {/* Enquiry Date */}
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-500" />
+            <Calendar className="h-4 w-4 text-gray-500" aria-hidden="true" />
             <span className="text-sm text-gray-600">Submitted:</span>
             <span className="text-sm font-medium">
               {formatDate(enquiry.createdAt)}
@@ -89,7 +89,7 @@ const ActiveEnquiryDialog = ({
           {/* Rental Dates if available */}
           {enquiry.rentalStartDate && enquiry.rentalEndDate && (
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-gray-500" />
+              <Calendar className="h-4 w-4 text-gray-500" aria-hidden="true" />
               <span className="text-sm text-gray-600">Rental Period:</span>
               <span className="text-sm font-medium">
                 {formatDate(enquiry.rentalStartDate)} -{" "}
@@ -102,7 +102,10 @@ const ActiveEnquiryDialog = ({
           {enquiry.message && (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <MessageSquare className="h-4 w-4 text-gray-500" />
+                <MessageSquare
+                  className="h-4 w-4 text-gray-500"
+                  aria-hidden="true"
+                />
                 <span className="text-sm text-gray-600">Your Message:</span>
               </div>
               <div className="rounded-md bg-gray-50 p-3">
@@ -121,11 +124,20 @@ const ActiveEnquiryDialog = ({
         </div>
 
         <div className="flex justify-between gap-3 pt-4">
-          <Button variant="outline" onClick={onClose} className="flex-1">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="flex-1"
+            aria-label="Close enquiry dialog"
+          >
             Close
           </Button>
           <Link href="/user-profile/enquired-vehicles" className="flex-1">
-            <Button className="w-full" onClick={onClose}>
+            <Button
+              className="w-full"
+              onClick={onClose}
+              aria-label="View all your enquiries"
+            >
               View All Enquiries
             </Button>
           </Link>

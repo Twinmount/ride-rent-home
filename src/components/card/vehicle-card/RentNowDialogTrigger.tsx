@@ -48,6 +48,7 @@ export default function RentNowDialogTrigger({
     <button
       onClick={handleClick}
       className={`flex-center whitespace-nowrap rounded bg-theme-gradient py-1 text-text-primary ${className}`}
+      aria-label={`View details for ${vehicle.vehicleTitle}`} // ADD THIS LINE ONLY
     >
       View Details
     </button>

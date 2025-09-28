@@ -53,9 +53,51 @@ export const DateRangePicker = ({
 }: DateRangePickerProps) => {
   const isMobile = useIsMobile();
 
-  const customStaticRanges = defaultStaticRanges.filter(
-    (range) => range.label !== 'Last Month'
-  );
+  const today = new Date();
+  const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  
+  // Calculate end of current week (Sunday)
+  const currentDay = today.getDay();
+  const daysUntilSunday = 6 - currentDay;
+  const endOfWeek = new Date(today);
+  endOfWeek.setDate(today.getDate() + daysUntilSunday);
+
+  const customStaticRanges = defaultStaticRanges
+    .filter(
+      (range) => !['Last Month', 'Yesterday', 'Last Week', 'This Month', 'This Week'].includes(range.label || '')
+    )
+    .concat([
+      {
+        label: 'This Week',
+        range: () => ({
+          startDate: today,
+          endDate: endOfWeek,
+        }),
+        isSelected: (range: any) => {
+          return (
+            range.startDate &&
+            range.endDate &&
+            range.startDate.getTime() === today.getTime() &&
+            range.endDate.getTime() === endOfWeek.getTime()
+          );
+        },
+      },
+      {
+        label: 'This Month',
+        range: () => ({
+          startDate: today,
+          endDate: endOfMonth,
+        }),
+        isSelected: (range: any) => {
+          return (
+            range.startDate &&
+            range.endDate &&
+            range.startDate.getTime() === today.getTime() &&
+            range.endDate.getTime() === endOfMonth.getTime()
+          );
+        },
+      },
+    ]);
 
   return (
     <div className="w-full">

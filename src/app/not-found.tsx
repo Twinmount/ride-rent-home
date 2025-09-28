@@ -1,4 +1,5 @@
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
+
 import Link from "next/link";
 
 export default function NotFound() {
@@ -25,7 +26,7 @@ export default function NotFound() {
         {/* Logo Section */}
         <div className="mb-5">
           <Link href="/" className="flex flex-col items-center">
-            <Image
+            <SafeImage
               src={"/assets/logo/Logo_Black.svg"}
               width={200}
               height={120}

@@ -1,12 +1,12 @@
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
-import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
 import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { API } from "@/utils/API";
 import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
 import ViewAllGridCard from "@/components/card/ViewAllGridCard";
 import { convertToLabel } from "@/helpers";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 type FeaturedVehiclesProps = StateCategoryProps & {
   vehicleType: string | undefined;
@@ -35,13 +35,13 @@ const FeaturedVehicles = async ({
     path: `/vehicle/home-page/list/v2?${params.toString()}`,
     options: {
       method: "GET",
-      cache: "no-cache",
+      cache: "force-cache",
+      next: { revalidate: 900 },
     },
     country,
   });
 
   const data: FetchVehicleCardsResponseV2 = await response.json();
-
   const vehicles = data?.result?.list || [];
 
   if (vehicles.length === 0) {
@@ -96,11 +96,20 @@ const FeaturedVehicles = async ({
           )}
         </div>
 
-        <div className="mx-2 mt-4 md:hidden">
-          <a href={viewAllLink}>
-            <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-yellow to-orange-500 p-4 text-white">
+        {/* FIXED: Reserve space for mobile button to prevent layout shift */}
+        {/* Alternative: CSS-based space reservation */}
+        <div
+          className="mx-2 md:hidden"
+          style={{ minHeight: "76px", paddingTop: "16px" }} // Reserve exact space
+        >
+          <Link
+            href={viewAllLink}
+            className="block rounded-lg bg-gradient-to-r from-yellow to-orange-500 p-4 text-white transition-all duration-200 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+            aria-label={`Explore all ${totalVehicles} ${formattedVehicleType || formattedCategory} options`}
+          >
+            <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <div className="flex items-center">
+                <div className="flex items-center" aria-hidden="true">
                   <ChevronRight className="h-5 w-5" />
                   <ChevronRight className="-ml-3 h-5 w-5" />
                   <ChevronRight className="-ml-3 h-5 w-5" />
@@ -110,7 +119,7 @@ const FeaturedVehicles = async ({
                 </span>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
     </MotionSection>

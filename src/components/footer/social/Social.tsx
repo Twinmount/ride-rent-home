@@ -1,12 +1,10 @@
 import { MdEmail } from "react-icons/md";
 import { socials } from ".";
 import { FaPhoneVolume } from "react-icons/fa6";
-import MotionDiv from "../../general/framer-motion/MotionDiv";
 
 const Social = () => {
   return (
-    <MotionDiv className="notranslate flex flex-col items-center justify-center gap-3">
-      {/* Social Media Icons */}
+    <div className="notranslate flex flex-col items-center justify-center gap-3">
       <div className="flex flex-wrap justify-center gap-3">
         {socials.map((social) => {
           const Icon = social.icon;
@@ -25,7 +23,6 @@ const Social = () => {
         })}
       </div>
 
-      {/* Description */}
       <div className="max-w-sm text-center text-sm leading-relaxed text-text-tertiary md:max-w-2xl">
         <p>
           Ride.Rent is an on-demand platform to rent cars, bikes, buses, yachts,
@@ -33,7 +30,7 @@ const Social = () => {
           worldwide.
         </p>
       </div>
-    </MotionDiv>
+    </div>
   );
 };
 

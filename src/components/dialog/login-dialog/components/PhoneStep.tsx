@@ -89,7 +89,7 @@ export const PhoneStep = ({
     <div className="space-y-6 duration-300 animate-in slide-in-from-right-4">
       <div className="space-y-2 text-center">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
-          <Phone className="h-8 w-8 text-orange-600" />
+          <Phone className="h-8 w-8 text-orange-600" aria-hidden="true" />
         </div>
         <h3 className="text-xl font-semibold">Welcome to Ride.Rent!</h3>
         <p className="text-balance text-muted-foreground">
@@ -117,17 +117,35 @@ export const PhoneStep = ({
                 backgroundColor: "hsl(var(--background))",
                 color: "hsl(var(--foreground))",
               }}
+              inputProps={{
+                id: "phone",
+                "aria-label": "Phone number",
+                "aria-describedby": "phone-help",
+              }}
             />
           </div>
+          <p id="phone-help" className="sr-only">
+            Enter your phone number to sign in or create an account
+          </p>
         </div>
         <Button
           onClick={handlePhoneSubmit}
           disabled={!phoneNumber.number || isCurrentlyLoading}
           className="w-full bg-gradient-to-r from-orange-500 to-orange-600 py-6 text-lg text-white hover:from-orange-600 hover:to-orange-700"
+          aria-label={
+            isCurrentlyLoading
+              ? "Checking phone number, please wait"
+              : !phoneNumber.number
+                ? "Continue - Please enter phone number first"
+                : "Continue with phone verification"
+          }
         >
           {isCurrentlyLoading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2
+                className="mr-2 h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
               Checking...
             </>
           ) : (
