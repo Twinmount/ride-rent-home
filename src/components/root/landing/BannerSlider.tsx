@@ -122,7 +122,6 @@ export default function BannerSlider({
       {bannerImages.length > 1 && (
         <div className="pointer-events-none absolute bottom-4 left-1/2 z-10 hidden -translate-x-1/2 space-x-2 md:flex">
           {" "}
-          {/* ✅ Added pointer-events-none */}
           {bannerImages.map((_, index) => (
             <div
               key={index}
