@@ -16,20 +16,15 @@ async function getBannerImages(
     const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
     const res = await fetch(
       `${baseUrl}/homepage-banners/list?state=${state}&isMobile=${isMobile}`,
-      {
-        method: "GET",
-        cache: "force-cache",
-        next: { revalidate: 7200 },
-      }
+      { method: "GET", cache: "no-cache" }
     );
 
-    if (!res.ok) throw new Error('Failed to fetch banners');
+    if (!res.ok) throw new Error("Failed to fetch banners");
     const data = await res.json();
 
-    if (data?.status === 'SUCCESS' && Array.isArray(data.result)) {
+    if (data?.status === "SUCCESS" && Array.isArray(data.result)) {
       return data.result;
     }
-
     return [];
   } catch (error) {
     console.error('Error fetching banner images:', error);

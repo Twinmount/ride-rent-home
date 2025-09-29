@@ -1,4 +1,3 @@
-import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { API } from "@/utils/API";
@@ -35,8 +34,7 @@ const FeaturedVehicles = async ({
     path: `/vehicle/home-page/list/v2?${params.toString()}`,
     options: {
       method: "GET",
-      cache: "force-cache",
-      next: { revalidate: 900 },
+      cache: "no-cache",
     },
     country,
   });
@@ -48,16 +46,11 @@ const FeaturedVehicles = async ({
     return null;
   }
 
-  // 5 vehicles for carousel
   const mainVehicles = vehicles.slice(0, 5);
-  // remaining 4 vehicles for view all grid
   const gridThumbnails = vehicles.slice(5, 9).map((v) => v.thumbnail);
   const totalVehicles = data?.result?.total || 0;
 
-  // view all link
   let viewAllLink = `/${country}/${state}/listing/${category}`;
-
-  // if vehicleType exists, add it in the link of the corresponding listing page
   if (vehicleType) {
     viewAllLink += `/${vehicleType}`;
   }
@@ -66,8 +59,8 @@ const FeaturedVehicles = async ({
   const formattedCategory = convertToLabel(category);
 
   return (
-    <MotionSection className="section-container">
-      {/* Full-width carousel section on mobile */}
+    <div className="section-container">
+      {" "}
       <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen lg:relative lg:left-auto lg:right-auto lg:ml-0 lg:mr-0 lg:w-full">
         <div className="mx-auto flex w-fit max-w-full snap-x snap-mandatory items-center justify-between gap-1 overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] lg:snap-none lg:px-1 xl:max-w-full [&::-webkit-scrollbar]:hidden">
           {mainVehicles.map((vehicle, index) => (
@@ -96,11 +89,9 @@ const FeaturedVehicles = async ({
           )}
         </div>
 
-        {/* FIXED: Reserve space for mobile button to prevent layout shift */}
-        {/* Alternative: CSS-based space reservation */}
         <div
           className="mx-2 md:hidden"
-          style={{ minHeight: "76px", paddingTop: "16px" }} // Reserve exact space
+          style={{ minHeight: "76px", paddingTop: "16px" }}
         >
           <Link
             href={viewAllLink}
@@ -122,7 +113,7 @@ const FeaturedVehicles = async ({
           </Link>
         </div>
       </div>
-    </MotionSection>
+    </div>
   );
 };
 
