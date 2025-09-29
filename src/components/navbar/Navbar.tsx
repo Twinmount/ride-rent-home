@@ -45,6 +45,7 @@ const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
     </Button>
   ),
 });
+import dynamic from "next/dynamic";
 
 export const Navbar = () => {
   const router = useRouter();
@@ -298,3 +299,4 @@ export const Navbar = () => {
     </>
   );
 };
+
