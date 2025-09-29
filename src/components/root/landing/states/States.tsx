@@ -15,12 +15,10 @@ export default async function States({
   state: string;
   country: string;
 }) {
-  // ✅ Enable smart caching (data rarely changes)
   const response = await API({
     path: `/states/list?hasVehicle=true`,
     options: {
-      cache: "force-cache",
-      next: { revalidate: 7200 }, // 2 hours cache
+      cache: "no-cache",
     },
     country,
   });
@@ -43,38 +41,26 @@ export default async function States({
   };
 
   return (
-    <MotionSection className="section-container relative w-full pt-[1.5rem] lg:pt-[2.5rem]">
-      {/* ✅ Preload first 3 critical state images */}
-      {states.slice(0, 3).map((stateItem, index) => (
-        <link
-          key={`preload-${stateItem.stateId}`}
-          rel="preload"
-          as="image"
-          href={stateItem.stateImage}
-          fetchPriority={index === 0 ? "high" : "low"}
-        />
-      ))}
-
+    <MotionSection className="section-container relative w-full pt-6 lg:pt-10">
+      {/* Simple background gradient */}
       <div
-        className="absolute bottom-0 left-0 right-0 top-0 z-0 -ml-16"
+        className="pointer-events-none absolute inset-0 z-0 -ml-16"
         style={{
           background:
             "linear-gradient(350deg, rgba(255, 255, 255, 0) 85%, rgba(249, 168, 37, 0.4) 160%)",
-          pointerEvents: "none",
-          // ✅ Remove transform: translateZ(0)
         }}
       />
 
       <div className="relative z-10 w-full">
         <SectionHeading
-          title={`Explore Rental Offers In Other Locations`}
+          title="Explore Rental Offers In Other Locations"
           subtitle={getSubtitle(country)}
         />
 
         <div className="mt-[1.75rem] flex w-full justify-center px-4">
           <div className="w-full max-w-[21.875rem] sm:max-w-[26.25rem] md:max-w-[35rem] lg:max-w-[50rem]">
             <div className="flex flex-wrap justify-center gap-x-7 gap-y-3 md:gap-x-8 lg:gap-x-6 lg:gap-y-6">
-              {states.map((stateItem, index) => (
+              {states.map((stateItem) => (
                 <div
                   key={stateItem.stateId}
                   className="mb-4 w-[6.25rem] sm:w-[7.8125rem] md:w-[8.125rem] lg:w-[10.3125rem]"
@@ -83,7 +69,6 @@ export default async function States({
                     state={stateItem}
                     category={category}
                     country={country}
-                    index={index}
                   />
                 </div>
               ))}
