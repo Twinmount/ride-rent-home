@@ -1,14 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { easeOut, motion } from "framer-motion";
 import { CategoryType } from "@/types";
 import { ENV } from "@/config/env";
-import { useTopLoader } from "nextjs-toploader";
 import { NavigationMenuLink } from "../ui/navigation-menu";
 import SafeImage from "@/components/common/SafeImage";
-
-import { useQueryClient } from "@tanstack/react-query";
 
 type PropsType = {
   cat: CategoryType;
@@ -18,62 +14,24 @@ type PropsType = {
   selectedCountry: string;
 };
 
-function VehicleCategoryCard({
+export default function VehicleCategoryCard({
   cat,
   index,
   selectedCategory,
   selectedState,
   selectedCountry,
 }: PropsType) {
-  const queryClient = useQueryClient();
-
-  // Animation variants for categories
-  const categoryVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: (index: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: index * 0.05,
-        duration: 0.5,
-        ease: easeOut,
-      },
-    }),
-  };
-
   const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
 
-  // top page load progress hook
-  const loader = useTopLoader();
-
-  // handle navigation to trigger top page load for 300ms
-  const handleNavigation = () => {
-    loader.start();
-    setTimeout(() => {
-      loader.done();
-    }, 300);
-    queryClient.invalidateQueries({ queryKey: ["states"] });
-  };
-
   return (
-    <motion.div
-      key={cat.categoryId}
-      custom={index}
-      initial="hidden"
-      animate="visible"
-      variants={categoryVariants}
-      className={`flex h-[3rem] min-h-[3rem] w-full cursor-pointer items-center overflow-hidden`}
-      role="listitem"
-    >
+    <div className="flex h-[3rem] min-h-[3rem] w-full cursor-pointer items-center overflow-hidden">
       <Link
         href={`/${selectedCountry}/${selectedState}/${cat.value}`}
-        key={cat.categoryId}
-        onClick={handleNavigation}
         aria-label={`Select ${cat.name} vehicle category`}
       >
         <NavigationMenuLink>
           <div
-            className={`ml-3 flex h-full min-w-40 items-center px-3 py-2 hover:bg-gray-50 ${
+            className={`ml-3 flex h-full min-w-40 items-center px-3 py-2 transition-colors duration-200 hover:bg-gray-50 ${
               selectedCategory === cat.value
                 ? "rounded-[0.4rem] bg-theme-gradient text-text-primary"
                 : "bg-white text-text-tertiary"
@@ -82,9 +40,7 @@ function VehicleCategoryCard({
             <SafeImage
               src={`${baseAssetsUrl}/icons/vehicle-categories/${cat.value}.png`}
               alt=""
-              className={`transition-all duration-200 ease-out ${
-                cat.value === "sports-cars" ? "scale-[1.02]" : ""
-              }`}
+              className={`transition-all duration-200 ease-out ${cat.value === "sports-cars" ? "scale-[1.02]" : ""}`}
               width={24}
               height={24}
               loading={index < 3 ? "eager" : "lazy"}
@@ -101,8 +57,6 @@ function VehicleCategoryCard({
           </div>
         </NavigationMenuLink>
       </Link>
-    </motion.div>
+    </div>
   );
 }
-
-export default VehicleCategoryCard;

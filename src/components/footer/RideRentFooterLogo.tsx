@@ -10,7 +10,7 @@ export default function RideRentFooterLogo() {
   const country = typeof params.country === "string" ? params.country : "in";
   const state = typeof params.state === "string" ? params.state : "karnataka";
   const category =
-    typeof params.category === "string" ? params.category : "car-rental";
+    typeof params.category === "string" ? params.category : "cars";
 
   return (
     <div className="notranslate">

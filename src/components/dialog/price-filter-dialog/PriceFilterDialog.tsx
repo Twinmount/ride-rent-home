@@ -62,7 +62,6 @@ export default function PriceFilterDialog({
     router.push(dynamicUrl);
   };
 
-  // 💡 Effect to watch for route change completion
   useEffect(() => {
     const currentUrl = `${pathname}?${searchParams.toString()}`;
 
@@ -82,7 +81,7 @@ export default function PriceFilterDialog({
         disabled={isPriceRangeEmpty || isLoading}
         className="me-0 max-sm:hidden md:me-2"
         aria-label="Open price filter dialog"
-        style={{ minWidth: "100px", minHeight: "40px" }} // ✅ INVISIBLE: Reserve trigger space
+        style={{ minWidth: "100px", minHeight: "40px" }}
       >
         {isVisible && (
           <PriceDialogTrigger
@@ -95,7 +94,7 @@ export default function PriceFilterDialog({
 
       <DialogContent
         className="!max-h-fit !w-[80vw] overflow-hidden rounded-2xl bg-white !px-2 py-4"
-        style={{ minHeight: "400px" }} // ✅ INVISIBLE: Reserve dialog height
+        style={{ minHeight: "400px" }}
       >
         <DialogHeader>
           <DialogTitle className="text-center text-lg text-gray-700">
@@ -103,7 +102,6 @@ export default function PriceFilterDialog({
           </DialogTitle>
         </DialogHeader>
 
-        {/* ✅ INVISIBLE: Reserve space for rental period section */}
         <div
           style={{ minHeight: availablePeriods.length > 0 ? "60px" : "0px" }}
         >
@@ -116,11 +114,7 @@ export default function PriceFilterDialog({
           )}
         </div>
 
-        {/* ✅ INVISIBLE: Reserve space for slider */}
-        <div
-          className="mt-4 w-full px-10"
-          style={{ minHeight: "60px" }} // Reserve slider space
-        >
+        <div className="mt-4 w-full px-10" style={{ minHeight: "60px" }}>
           <PriceRangeSlider
             value={values}
             onValueChange={setValues}
@@ -130,7 +124,6 @@ export default function PriceFilterDialog({
           />
         </div>
 
-        {/* ✅ INVISIBLE: Reserve space for min/max inputs */}
         <div style={{ minHeight: "80px" }}>
           <MinAndMaxPrice
             min={values[0]}
@@ -141,7 +134,6 @@ export default function PriceFilterDialog({
           />
         </div>
 
-        {/* ✅ INVISIBLE: Reserve space for button */}
         <div
           style={{
             minHeight: "60px",
@@ -158,7 +150,7 @@ export default function PriceFilterDialog({
               aria-label={
                 isNavigating ? "Applying price filter" : "Apply price filter"
               }
-              style={{ minWidth: "160px" }} // ✅ INVISIBLE: Consistent button width
+              style={{ minWidth: "160px" }}
             >
               {isNavigating ? "Applying..." : "Apply Filter"}
             </button>
@@ -167,7 +159,7 @@ export default function PriceFilterDialog({
               href={dynamicUrl}
               className="mx-auto w-4/5"
               aria-label="Apply price filter and view results"
-              style={{ minWidth: "160px" }} // ✅ INVISIBLE: Consistent link width
+              style={{ minWidth: "160px" }}
             >
               <span className="flex-center min-h-[44px] min-w-[44px] rounded-xl bg-yellow/90 px-6 py-2 font-semibold text-white transition-colors hover:bg-yellow focus:outline-none focus:ring-2 focus:ring-yellow focus:ring-offset-2">
                 Apply Filter

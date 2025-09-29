@@ -1,7 +1,6 @@
 import AgentProfile from "@/components/agent-profile/AgentProfile";
 import AgentVehicleFilter from "@/components/agent-profile/AgentVehicleFilter";
 import AgentVehicleGrid from "@/components/agent-profile/AgentVehicleGrid";
-import VehicleCardSkeletonGrid from "@/components/skelton/VehicleCardSkeleton";
 import { FetchCompanyDetailsResponse } from "@/types";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
@@ -14,6 +13,7 @@ import {
   sortFilters,
 } from "@/helpers";
 import { API } from "@/utils/API";
+import { VehicleCardSkeletonGrid } from "@/components/skelton/VehicleCardSkeletonGrid";
 
 type PropsType = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
