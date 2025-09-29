@@ -36,6 +36,12 @@ import {
 import { useUserActions } from "@/hooks/useUserActions";
 import { generateVehicleDetailsUrl } from "@/helpers";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
+import type { 
+  RawVehicleEnquiry, 
+  EnquiredVehiclesApiResponse,
+  VehiclePhoto,
+  RentDetails 
+} from "@/types/userActions.types";
 
 // Add custom CSS for line clamping
 const lineClampStyles = `
@@ -58,78 +64,6 @@ if (typeof window !== "undefined") {
   const style = document.createElement("style");
   style.textContent = lineClampStyles;
   document.head.appendChild(style);
-}
-
-// Types for the API response
-interface VehiclePhoto {
-  originalPath: string;
-  signedUrl: string | null;
-}
-
-interface RentDetails {
-  day: {
-    enabled: boolean;
-    rentInAED: string;
-    mileageLimit: string;
-    unlimitedMileage: boolean;
-  };
-  week: {
-    enabled: boolean;
-    rentInAED: string;
-    mileageLimit: string;
-    unlimitedMileage: boolean;
-  };
-  month: {
-    enabled: boolean;
-    rentInAED: string;
-    mileageLimit: string;
-    unlimitedMileage: boolean;
-  };
-  hour: {
-    enabled: boolean;
-    rentInAED: string;
-    mileageLimit: string;
-    unlimitedMileage: boolean;
-    minBookingHours: string;
-  };
-}
-
-interface VehicleDetails {
-  carId: string;
-  vehicleCode: string;
-  make: string;
-  model: string;
-  year: string;
-  registrationNumber: string;
-  photos: VehiclePhoto[];
-}
-
-interface EnquiryDetails {
-  enquiryId: string;
-  status: string;
-  message: string;
-  enquiredAt: string;
-}
-
-interface EnquiredVehicle {
-  _id: string;
-  vehicleDetails: VehicleDetails;
-  enquiryId: string;
-  enquiryStatus: string;
-  enquiryMessage: string;
-  enquiredAt: string;
-  rentDetails: RentDetails;
-}
-
-interface APIResponse {
-  status: string;
-  result: {
-    data: EnquiredVehicle[];
-    page: number;
-    limit: number;
-    total: number;
-  };
-  statusCode: number;
 }
 
 export default function EnquiredVehiclesPage() {
@@ -165,7 +99,7 @@ export default function EnquiredVehiclesPage() {
   });
 
   // Extract vehicles from API response
-  const enquiredVehicles = apiResponse?.result?.data || [];
+  const enquiredVehicles: RawVehicleEnquiry[] = apiResponse?.result?.data || [];
 
   useEffect(() => {
     if (apiResponse?.result) {
@@ -177,7 +111,7 @@ export default function EnquiredVehiclesPage() {
   // Real-time update for NEW enquiries status
   useEffect(() => {
     const hasNewEnquiries = enquiredVehicles.some(
-      (vehicle: EnquiredVehicle) => vehicle.enquiryStatus === "NEW"
+      (vehicle: RawVehicleEnquiry) => vehicle.enquiryStatus === "NEW"
     );
 
     if (!hasNewEnquiries) return;
@@ -277,11 +211,11 @@ export default function EnquiredVehiclesPage() {
   };
 
   // Helper function to generate vehicle details URL
-  const getVehicleDetailsUrl = (vehicle: EnquiredVehicle) => {
+  const getVehicleDetailsUrl = (vehicle: RawVehicleEnquiry) => {
     // Use available fields and current state/category from user's context
     const currentState = state || "dubai";
     const currentCategory = category || "cars";
-    const vehicleCode = vehicle.vehicleDetails.vehicleCode;
+    const vehicleCode = vehicle.vehicleDetails.carId; // Use carId as vehicleCode since vehicleCode is not available in RawVehicleEnquiry
     const currentCountry = country || "ae";
 
     const navRoute = generateVehicleDetailsUrl({
@@ -344,7 +278,7 @@ export default function EnquiredVehiclesPage() {
   };
 
   const filteredVehicles = enquiredVehicles
-    .filter((vehicle: EnquiredVehicle) => {
+    .filter((vehicle: RawVehicleEnquiry) => {
       const vehicleName = vehicle.vehicleDetails.model;
       const vehicleRegNumber = vehicle.vehicleDetails.registrationNumber;
       const vehicleCode = vehicle.vehicleDetails.carId; // Using carId as vehicleCode
@@ -357,7 +291,7 @@ export default function EnquiredVehiclesPage() {
       const matchesFilter = filterBy === "all" || status === filterBy;
       return matchesSearch && matchesFilter;
     })
-    .sort((a: EnquiredVehicle, b: EnquiredVehicle) => {
+    .sort((a: RawVehicleEnquiry, b: RawVehicleEnquiry) => {
       switch (sortBy) {
         case "recent":
           return (
@@ -508,7 +442,7 @@ export default function EnquiredVehiclesPage() {
 
         {/* Enquiries List - Card Grid Layout */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-          {filteredVehicles.map((vehicle: EnquiredVehicle) => {
+          {filteredVehicles.map((vehicle: RawVehicleEnquiry) => {
             const status = getStatus(vehicle.enquiredAt, vehicle.enquiryStatus);
             const price = getRentalPrice(vehicle.rentDetails);
             const period = getRentalPeriod(vehicle.rentDetails);

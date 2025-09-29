@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { Share2, Heart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSavedVehicle } from "@/hooks/useSavedVehicle";
+import { useUserActions } from "@/hooks/useUserActions";
+import LoginModal from "@/components/modals/LoginModal";
 
 interface ShareLikeProps {
   className?: string;
@@ -21,12 +22,15 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
   initialLiked = false,
 }) => {
   const [showToast, setShowToast] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  // Use the userActions hook
+  const { useSavedVehicle, isAuthenticated } = useUserActions();
 
   // Always call the hook, but use a fallback vehicleId if not provided
   const savedVehicleHook = useSavedVehicle({
     vehicleId: vehicleId || "",
-    onSaveSuccess: (isSaved) => {
-      // Only trigger callbacks if we have a valid vehicleId
+    onSaveSuccess: (isSaved: boolean) => {
       if (vehicleId) {
         onLike?.(isSaved);
         if (isSaved) {
@@ -35,14 +39,13 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
         }
       }
     },
-    onSaveError: (error) => {
-      // Only handle errors if we have a valid vehicleId
+    onSaveError: (error: Error) => {
+      // Handle authentication errors
       if (vehicleId) {
         console.error("Error saving/unsaving vehicle:", error);
-        // Show appropriate error message
-        if (error.message.includes("login")) {
-          // Handle unauthenticated user - could show login modal
-          alert("Please login to save vehicles");
+
+        if (error.message.includes("login") || !isAuthenticated) {
+          setShowLoginModal(true);
         } else {
           // Other errors
           alert("Something went wrong. Please try again.");
@@ -51,10 +54,12 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
     },
   });
 
-  // Use hook state if vehicleId is available, otherwise use local state
+  // Use hook state if vehicleId is available and user is authenticated, otherwise use local state
   const [localIsLiked, setLocalIsLiked] = useState(initialLiked);
-  const isLiked = vehicleId ? savedVehicleHook.isSaved : localIsLiked;
-  const isLoading = vehicleId ? savedVehicleHook.isLoading : false;
+  const isLiked =
+    vehicleId && isAuthenticated ? savedVehicleHook.isSaved : localIsLiked;
+  const isLoading =
+    vehicleId && isAuthenticated ? savedVehicleHook.isLoading : false;
 
   const handleShare = async () => {
     if (typeof window !== "undefined") {
@@ -89,6 +94,12 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
 
   const handleLike = () => {
     if (vehicleId) {
+      // Check if user is authenticated first
+      if (!isAuthenticated) {
+        setShowLoginModal(true);
+        return;
+      }
+
       // Use the hook's toggle function
       savedVehicleHook.toggleSaved();
     } else {
@@ -165,7 +176,6 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
           </motion.div>
         </motion.button>
       </div>
-
       {/* Toast Notification */}
       <AnimatePresence>
         {showToast && (

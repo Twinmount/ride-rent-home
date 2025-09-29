@@ -10,6 +10,7 @@ import CompanySpecifications from "../../profile-specifications/CompanySpecifica
 import RentNowbuttonWide from "@/components/common/RentNowbuttonWide";
 import ShareLikeComponent from "../../profile-specifications/ShareLikeComponent";
 import VehicleDescription from "../../profile-specifications/VehicleDescription";
+import { useUserActions } from "@/hooks/useUserActions";
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -19,8 +20,7 @@ type ProfileCardProps = {
 
 const ProfileCard = memo(
   ({ profileData, country, vehicle }: ProfileCardProps) => {
-    // console.log("profileData:[ProfileCard] ", profileData);
-    // console.log("vehicle:[ProfileCard] ", vehicle);
+    const { onHandleUserSavedCar } = useUserActions();
     const { isCompanyValid, rentalDetails, securityDeposit } = useProfileData(
       profileData,
       country
