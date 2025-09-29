@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { PhoneInput } from "react-international-phone";
 
 import "react-international-phone/style.css";
-import { Phone, Loader2 } from "lucide-react";
+import { Phone, Loader2, UserCircle } from "lucide-react";
 import "../phone-input.css";
 import { useImmer } from "use-immer";
 import { getNumberAfterSpace, getNumberAfterSpaceStrict } from "@/utils/helper";
@@ -141,7 +141,7 @@ export const PhoneStep = ({
     <div className="space-y-6 duration-300 animate-in slide-in-from-right-4">
       <div className="space-y-2 text-center">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
-          <Phone className="h-8 w-8 text-orange-600" aria-hidden="true" />
+          <UserCircle className="h-8 w-8 text-orange-600" aria-hidden="true" />
         </div>
         <h3 className="text-xl font-semibold">Welcome to Ride.Rent!</h3>
         <p className="text-balance text-muted-foreground">

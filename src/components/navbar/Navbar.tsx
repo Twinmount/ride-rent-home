@@ -35,6 +35,7 @@ import {
 import { LoginDrawer } from "../dialog/login-dialog/LoginDrawer";
 import { authStorage } from "@/lib/auth";
 
+
 // dynamic import for sidebar
 const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
   loading: () => (
@@ -45,7 +46,6 @@ const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
     </Button>
   ),
 });
-import dynamic from "next/dynamic";
 
 export const Navbar = () => {
   const router = useRouter();
