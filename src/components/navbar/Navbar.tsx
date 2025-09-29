@@ -130,7 +130,7 @@ export const Navbar = () => {
           </div>
 
           {/* Navigation Items - ml-auto pushes to right, gap-2 for tight spacing */}
-          <div className="ml-auto flex items-center gap-1 lg:gap-2">
+          <div className="ml-auto flex items-center lg:gap-2">
             {/* Search - Always rendered to prevent shift */}
             <SearchDialog state={state} category={category} />
 

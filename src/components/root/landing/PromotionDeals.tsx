@@ -35,7 +35,13 @@ export default async function PromotionDeals({
 
   return (
     <section className="no-global-padding relative mb-5 h-auto overflow-hidden py-10">
-      <link rel="preload" href="/assets/img/bg/promotion-bg.webp" as="image" />
+      <link
+        rel="preload"
+        href="/assets/img/bg/promotion-bg.webp"
+        as="image"
+        fetchPriority="high"
+      />
+
       <div
         className="absolute inset-0 scale-110 bg-cover bg-center"
         style={{
@@ -44,17 +50,17 @@ export default async function PromotionDeals({
         }}
       />
 
-      <div className="relative z-10">
-        <div className="my-8 flex w-full flex-col gap-y-3 text-center">
+      <div className="relative z-10 max-w-full overflow-hidden">
+        <div className="my-8 flex w-full flex-col gap-y-3 px-4 text-center">
           <h2 className="heading-primary !text-white">
             {promotionData.sectionTitle || `Best offers in ${formattedState}`}
           </h2>
-          <p className="text-[0.75rem] font-normal leading-[1] text-text-muted sm:text-[0.875rem] lg:text-base">
+          <p className="text-xs font-normal leading-none text-text-muted sm:text-sm lg:text-base">
             {promotionData.sectionSubtitle}
           </p>
         </div>
 
-        <div className="flex-center mx-auto w-full flex-wrap gap-6">
+        <div className="flex-center mx-auto w-full max-w-full flex-wrap gap-6 px-4">
           {promotions.map((promotion) => (
             <PromotionCard key={promotion._id} {...promotion} />
           ))}

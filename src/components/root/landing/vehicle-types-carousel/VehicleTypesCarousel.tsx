@@ -9,7 +9,6 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { fetchVehicleTypesByValue } from "@/lib/api/general-api";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
-import { VehicleTypeType } from "@/types";
 import VehicleTypesCarouselSkelton from "@/components/skelton/VehicleTypesCarouselSkelton";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
@@ -69,7 +68,7 @@ export default function VehicleTypesCarousel() {
   const currentType = searchParams.get("type");
 
   return (
-    <div className="layout-stable h-fit w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[58%] md:ml-6 md:mr-8 md:max-w-[42%] lg:max-w-[57%] xl:max-w-[60%] 2xl:max-w-[60%]">
+    <VehicleTypesCarouselWrapper>
       <Carousel opts={{ align: "start" }}>
         <CarouselContent className="flex h-fit gap-x-3 px-1 py-0 lg:gap-x-4">
           {vehicleTypes.map((type, index) => (
@@ -87,6 +86,18 @@ export default function VehicleTypesCarousel() {
         <CarouselPrevious className="max-md:hidden" />
         <CarouselNext className="max-md:hidden" />
       </Carousel>
-    </div>
+    </VehicleTypesCarouselWrapper>
   );
 }
+
+export const VehicleTypesCarouselWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <div className="layout-stable h-fit w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[58%] md:ml-6 md:mr-8 md:max-w-[42%] lg:max-w-[57%] xl:max-w-[60%] 2xl:max-w-[60%]">
+      {children}
+    </div>
+  );
+};

@@ -18,7 +18,6 @@ export function VehicleCardSkeleton({
     <div
       className={`flex w-full max-w-full flex-col gap-3 rounded border border-border-default bg-white p-2 ${classes}`}
     >
-      {" "}
       <div className="space-y-3">
         <div className="relative">
           <Skeleton
@@ -36,7 +35,6 @@ export function VehicleCardSkeleton({
         </div>
       </div>
       <div className="flex-between">
-        {" "}
         <div className="flex items-center">
           <Skeleton className="h-4 w-10 rounded bg-gray-300" />
           <Skeleton className="ml-1 h-3 w-6 rounded bg-gray-300" />
@@ -46,3 +44,5 @@ export function VehicleCardSkeleton({
     </div>
   );
 }
+
+

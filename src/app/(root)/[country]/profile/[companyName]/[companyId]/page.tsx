@@ -13,6 +13,7 @@ import {
   sortFilters,
 } from "@/helpers";
 import { API } from "@/utils/API";
+import { VehicleCardSkeletonGrid } from "@/components/skelton/VehicleCardSkeletonGrid";
 
 type PropsType = {
   searchParams: Promise<{ [key: string]: string | undefined }>;

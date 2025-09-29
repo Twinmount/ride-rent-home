@@ -46,7 +46,7 @@ export default function BannerSlider({
 
   return (
     <div
-      className="modern-banner-slider absolute inset-0 w-full min-w-full"
+      className="modern-banner-slider absolute inset-0 w-full overflow-hidden"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
@@ -62,6 +62,7 @@ export default function BannerSlider({
             alt={`Banner ${currentSlide + 1}`}
             className="h-full w-full object-cover object-top"
             loading="eager"
+            fetchPriority="high"
           />
         </a>
       ) : (
@@ -70,13 +71,14 @@ export default function BannerSlider({
           alt={`Banner ${currentSlide + 1}`}
           className="h-full w-full object-cover object-top"
           loading="eager"
+          fetchPriority="high"
         />
       )}
 
       {bannerImages.length > 1 && (
         <>
           <button
-            className="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center text-yellow focus:outline-none"
+            className="absolute left-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center text-yellow focus:outline-none md:left-4"
             onClick={() =>
               setCurrentSlide(
                 (prev) => (prev - 1 + bannerImages.length) % bannerImages.length
@@ -96,7 +98,7 @@ export default function BannerSlider({
             </svg>
           </button>
           <button
-            className="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center text-yellow focus:outline-none"
+            className="absolute right-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center text-yellow focus:outline-none md:right-4"
             onClick={() =>
               setCurrentSlide((prev) => (prev + 1) % bannerImages.length)
             }
@@ -115,6 +117,21 @@ export default function BannerSlider({
             </svg>
           </button>
         </>
+      )}
+
+      {bannerImages.length > 1 && (
+        <div className="pointer-events-none absolute bottom-4 left-1/2 z-10 hidden -translate-x-1/2 space-x-2 md:flex">
+          {" "}
+          {/* ✅ Added pointer-events-none */}
+          {bannerImages.map((_, index) => (
+            <div
+              key={index}
+              className={`h-3 w-3 rounded-full transition-all duration-200 ${
+                index === currentSlide ? "scale-125 bg-white" : "bg-white/60"
+              }`}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

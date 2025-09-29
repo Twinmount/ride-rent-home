@@ -40,13 +40,21 @@ export default async function Banner({
   country: string;
 }) {
   const headersList = await headers();
-  const userAgent = headersList.get('user-agent') || '';
+  const userAgent = headersList.get("user-agent") || "";
   const isMobile = /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent);
 
   const bannerImages = await getBannerImages(state, isMobile, country);
 
   return (
-    <div className="no-global-padding relative">
+    <div className="no-global-padding relative overflow-hidden">
+      {bannerImages.length > 0 && (
+        <link
+          rel="preload"
+          as="image"
+          href={bannerImages[0].src}
+          fetchPriority="high"
+        />
+      )}
       <BannerSlider bannerImages={bannerImages} />
     </div>
   );
