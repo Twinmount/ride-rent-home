@@ -23,6 +23,7 @@ import Banner from "@/components/root/landing/Banner";
 import CarSection from "@/components/root/landing/CarSection";
 import PromotionDeals from "@/components/root/landing/PromotionDeals";
 import BannerSkeleton from "@/components/skelton/BannerSkeleton";
+import PromotionSkeleton from "@/components/skelton/PromotionSkeleton";
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
@@ -69,9 +70,9 @@ export default async function Home(props: PageProps) {
         />
       </Suspense>
 
-      {/* <Suspense fallback={<SectionLoading />}> */}
-      <PromotionDeals state={state} country={country} />
-      {/* </Suspense> */}
+      <Suspense fallback={<PromotionSkeleton />}>
+        <PromotionDeals state={state} country={country} />
+      </Suspense>
 
       <Suspense
         fallback={<VehicleCardCarouselSkeleton layoutType="carousel" />}

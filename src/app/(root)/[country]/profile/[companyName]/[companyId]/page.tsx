@@ -1,7 +1,6 @@
 import AgentProfile from "@/components/agent-profile/AgentProfile";
 import AgentVehicleFilter from "@/components/agent-profile/AgentVehicleFilter";
 import AgentVehicleGrid from "@/components/agent-profile/AgentVehicleGrid";
-import VehicleCardSkeletonGrid from "@/components/skelton/VehicleCardSkeleton";
 import { FetchCompanyDetailsResponse } from "@/types";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
