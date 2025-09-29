@@ -3,6 +3,7 @@ import SafeImage from "@/components/common/SafeImage";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import MotionDiv from "../general/framer-motion/MotionDiv";
 
 export default function RideRentFooterLogo() {
   const params = useParams();

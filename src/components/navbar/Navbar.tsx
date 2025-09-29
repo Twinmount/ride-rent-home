@@ -25,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { LoginDrawer } from "../dialog/login-dialog/LoginDrawer";
+import dynamic from "next/dynamic";
 
 export const Navbar = () => {
   const {
@@ -246,3 +247,4 @@ export const Navbar = () => {
     </>
   );
 };
+
