@@ -77,20 +77,20 @@ const ActiveEnquiryDialog = ({
             </span>
           </div>
 
-          {/* Enquiry Date */}
+          {/* Enquiry Date
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-gray-500" aria-hidden="true" />
             <span className="text-sm text-gray-600">Submitted:</span>
             <span className="text-sm font-medium">
               {formatDate(enquiry.createdAt)}
             </span>
-          </div>
+          </div> */}
 
           {/* Rental Dates if available */}
           {enquiry.rentalStartDate && enquiry.rentalEndDate && (
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-gray-500" aria-hidden="true" />
-              <span className="text-sm text-gray-600">Rental Period:</span>
+              <span className="text-sm text-gray-600">Booking Period :</span>
               <span className="text-sm font-medium">
                 {formatDate(enquiry.rentalStartDate)} -{" "}
                 {formatDate(enquiry.rentalEndDate)}
@@ -117,8 +117,8 @@ const ActiveEnquiryDialog = ({
           {/* Information Message */}
           <div className="rounded-md bg-blue-50 p-3">
             <p className="text-sm text-blue-800">
-              Please wait for the agent to respond to your enquiry. You can
-              check the status and details in your profile.
+              The supplier will respond to your enquiry soon. You can check the
+              status and details in your profile.
             </p>
           </div>
         </div>
