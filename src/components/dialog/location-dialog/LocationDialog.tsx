@@ -169,10 +169,9 @@ export function LocationDialog() {
       <DialogTrigger asChild>
         <button
           aria-label="Open Location Selection Dialog"
-          className="flex-center min-w-[5rem] gap-x-1 px-2 py-1 text-black" // ✅ Fixed width
+          className="flex-center gap-x-1 px-2 py-1 text-black lg:min-w-[5rem]"
         >
           <FaLocationDot className="mr-[0.12rem] flex-shrink-0 text-text-primary" />{" "}
-          {/* ✅ Prevent shrinking */}
           <span className="line-clamp-1 w-full max-w-[5rem] truncate text-left text-sm font-medium capitalize sm:w-fit md:max-w-fit lg:text-base">
             {selectedState?.stateName || "Location"}
           </span>

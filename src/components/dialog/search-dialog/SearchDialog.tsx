@@ -56,7 +56,7 @@ export function SearchDialog({ state, category }: SearchDialogProps) {
       <DialogTrigger asChild>
         {isMobile ? (
           <button
-            className="flex-center my-auto h-full min-h-[44px] min-w-[44px]"
+            className="flex-center my-auto h-full lg:min-h-[44px] lg:min-w-[44px]"
             aria-label="Open search dialog"
           >
             <Search className="h-4 w-4" strokeWidth={2} />

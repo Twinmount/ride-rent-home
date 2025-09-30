@@ -9,7 +9,7 @@ const PromotionCard = ({
 }: RidePromotionCard) => {
   return (
     <Link href={link} target="_blank" rel="noopener noreferrer">
-      <div className="group relative aspect-[165.44/120] w-[10.34rem] cursor-pointer overflow-hidden rounded-[0.5rem] shadow-lg transition-transform duration-300 hover:scale-105 md:aspect-[16/14] md:w-64 lg:aspect-[18.5/16] lg:w-[18.5rem]">
+      <div className="group relative aspect-[165.44/120] w-[10rem] cursor-pointer overflow-hidden rounded-[0.5rem] shadow-lg transition-transform duration-300 hover:scale-105 min-[480px]:w-[11rem] md:aspect-[16/14] md:w-64 lg:aspect-[18.5/16] lg:w-[18.5rem]">
         <img
           src={image}
           alt={cardTitle}
@@ -18,7 +18,7 @@ const PromotionCard = ({
           decoding="async"
           width="296"
           height="256"
-          sizes="(max-width: 768px) 165px, (max-width: 1024px) 256px, 296px"
+          sizes="(max-width: 480px) 160px, (max-width: 768px) 176px, (max-width: 1024px) 256px, 296px"
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
