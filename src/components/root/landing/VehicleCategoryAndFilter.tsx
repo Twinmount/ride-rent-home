@@ -7,14 +7,12 @@ import PriceFilterDialog from "../../dialog/price-filter-dialog/PriceFilterDialo
 export default function VehicleCategoryAndFilter() {
   return (
     <div
-      className={`no-global-padding sticky z-30 mb-4 flex items-center justify-between bg-background py-2`}
+      className="no-global-padding sticky z-30 mb-4 flex items-center justify-between bg-background py-2"
       style={{
         top: "3.9rem",
       }}
     >
-      <div
-        className={`mx-auto flex w-full max-w-full items-center justify-center gap-x-4 p-0 md:gap-x-14`}
-      >
+      <div className="mx-auto flex w-full max-w-full items-center justify-center gap-x-4 p-0 md:gap-x-14">
         {/* vehicle categories menu bar */}
         <VehicleCategories />
 
