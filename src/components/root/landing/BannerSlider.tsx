@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ImageSrc } from "./Banner";
 
 export default function BannerSlider({
@@ -10,78 +10,105 @@ export default function BannerSlider({
 }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    if (bannerImages?.length <= 1) return;
-    const interval = setInterval(() => {
+  const startAutoSlide = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    intervalRef.current = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % bannerImages.length);
     }, 4000);
-    return () => clearInterval(interval);
-  }, [bannerImages.length]);
+  };
 
-  if (!bannerImages?.length) return null;
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+    startAutoSlide();
+  };
 
-  const current = bannerImages[currentSlide];
-  const minSwipeDistance = 50;
-
-  const onTouchStart = (e: React.TouchEvent) => {
+  // Touch handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
   };
 
-  const onTouchEnd = (e: React.TouchEvent) => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
     if (!touchStart) return;
-    const touchEnd = e.changedTouches[0].clientX;
-    const distance = touchStart - touchEnd;
-
-    if (Math.abs(distance) > minSwipeDistance) {
-      if (distance > 0) {
-        setCurrentSlide((prev) => (prev + 1) % bannerImages.length);
-      } else {
-        setCurrentSlide(
-          (prev) => (prev - 1 + bannerImages.length) % bannerImages.length
-        );
-      }
+    const distance = touchStart - e.changedTouches[0].clientX;
+    if (Math.abs(distance) > 50) {
+      const nextSlide =
+        distance > 0
+          ? (currentSlide + 1) % bannerImages.length
+          : (currentSlide - 1 + bannerImages.length) % bannerImages.length;
+      goToSlide(nextSlide);
     }
   };
 
-  return (
-    <div
-      className="modern-banner-slider absolute inset-0 w-full overflow-hidden"
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-    >
-      {current?.link ? (
-        <a
-          href={current.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block h-full w-full"
-        >
-          <img
-            src={current.src}
-            alt={`Banner ${currentSlide + 1}`}
-            className="h-full w-full object-cover object-top"
-            loading="eager"
-            fetchPriority="high"
-          />
-        </a>
-      ) : (
-        <img
-          src={current.src}
-          alt={`Banner ${currentSlide + 1}`}
-          className="h-full w-full object-cover object-top"
-          loading="eager"
-          fetchPriority="high"
-        />
-      )}
+  // useEffect - only depends on bannerImages.length
+  useEffect(() => {
+    if (bannerImages.length > 1) {
+      startAutoSlide();
+    }
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [bannerImages.length]);
 
+  if (!bannerImages.length) return null;
+
+  return (
+    <div className="modern-banner-slider absolute inset-0 w-full overflow-hidden">
+      <div className="relative h-full w-full">
+        {bannerImages.map((image, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 h-full w-full transition-all duration-500 ease-in-out ${
+              index === currentSlide
+                ? "translate-x-0 opacity-100"
+                : index < currentSlide
+                  ? "-translate-x-full opacity-0"
+                  : "translate-x-full opacity-0"
+            }`}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            {image?.link ? (
+              <a
+                href={image.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block h-full w-full"
+              >
+                <img
+                  src={image.src}
+                  alt={`Banner ${index + 1}`}
+                  className="h-full w-full object-cover object-top"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  fetchPriority={index === 0 ? "high" : "low"}
+                />
+              </a>
+            ) : (
+              <img
+                src={image.src}
+                alt={`Banner ${index + 1}`}
+                className="h-full w-full object-cover object-top"
+                loading={index === 0 ? "eager" : "lazy"}
+                fetchPriority={index === 0 ? "high" : "low"}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Navigation arrows */}
       {bannerImages.length > 1 && (
         <>
           <button
-            className="absolute left-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center text-yellow focus:outline-none md:left-4"
+            className="absolute left-1 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full text-yellow transition-colors hover:bg-black/20 focus:outline-none md:left-2"
             onClick={() =>
-              setCurrentSlide(
-                (prev) => (prev - 1 + bannerImages.length) % bannerImages.length
+              goToSlide(
+                (currentSlide - 1 + bannerImages.length) % bannerImages.length
               )
             }
             aria-label="Previous slide"
@@ -98,10 +125,8 @@ export default function BannerSlider({
             </svg>
           </button>
           <button
-            className="absolute right-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center text-yellow focus:outline-none md:right-4"
-            onClick={() =>
-              setCurrentSlide((prev) => (prev + 1) % bannerImages.length)
-            }
+            className="absolute right-1 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full text-yellow transition-colors hover:bg-black/20 focus:outline-none md:right-2"
+            onClick={() => goToSlide((currentSlide + 1) % bannerImages.length)}
             aria-label="Next slide"
           >
             <svg
@@ -119,13 +144,16 @@ export default function BannerSlider({
         </>
       )}
 
+      {/* Non-interactive dot indicators */}
       {bannerImages.length > 1 && (
-        <div className="pointer-events-none absolute bottom-4 left-1/2 z-10 hidden -translate-x-1/2 space-x-2 md:flex">
-          {" "}
+        <div
+          className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 space-x-1 md:space-x-2"
+          aria-hidden="true"
+        >
           {bannerImages.map((_, index) => (
-            <div
+            <span
               key={index}
-              className={`h-3 w-3 rounded-full transition-all duration-200 ${
+              className={`block h-2 w-2 rounded-full transition-all duration-200 lg:h-3 lg:w-3 ${
                 index === currentSlide ? "scale-125 bg-white" : "bg-white/60"
               }`}
             />

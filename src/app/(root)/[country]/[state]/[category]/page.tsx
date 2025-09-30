@@ -41,8 +41,8 @@ export default async function Home(props: PageProps) {
 
   const { country, state, category } = params;
 
-  // accessing vehicle type from the url if its available for the MainVehicleGrid component.
   const vehicleType = searchParams.type;
+  console.log("Page params:", { country, state, category });
 
   // Generate JSON-LD
   const jsonLdData = getHomePageJsonLd(state, category, country);

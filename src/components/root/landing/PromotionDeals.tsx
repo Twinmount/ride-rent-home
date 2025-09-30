@@ -60,7 +60,7 @@ export default async function PromotionDeals({
           </p>
         </div>
 
-        <div className="flex-center mx-auto w-full max-w-full flex-wrap gap-6 px-4">
+        <div className="flex-center *: w-full max-w-full flex-wrap gap-2 md:gap-6">
           {promotions.map((promotion) => (
             <PromotionCard key={promotion._id} {...promotion} />
           ))}
