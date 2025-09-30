@@ -207,7 +207,7 @@ export default function EnquiredVehiclesPage() {
     // Use available fields and current state/category from user's context
     const currentState = state || "dubai";
     const currentCategory = category || "cars";
-    const vehicleCode = vehicle.vehicleDetails.carId; // Use carId as vehicleCode since vehicleCode is not available in RawVehicleEnquiry
+    const vehicleCode = vehicle?.vehicleDetails?.vehicleCode; // Use carId as vehicleCode since vehicleCode is not available in RawVehicleEnquiry
     const currentCountry = country || "ae";
 
     const navRoute = generateVehicleDetailsUrl({
@@ -580,14 +580,14 @@ export default function EnquiredVehiclesPage() {
 
                   {/* Enquiry Details */}
                   <div className="mb-3 rounded-lg bg-gray-50 p-2 sm:mb-4 sm:p-3">
-                    <div className="mb-2 flex items-center justify-between">
+                    {/* <div className="mb-2 flex items-center justify-between">
                       <span className="text-xs font-medium text-gray-700">
                         Enquiry ID
                       </span>
                       <span className="text-xs text-gray-500">
                         {vehicle.enquiryId.split("-")[0]}...
                       </span>
-                    </div>
+                    </div> */}
                     {/* Show timer for NEW enquiries */}
                     {/* {vehicle.enquiryStatus === "NEW" &&
                       status === "pending" && (

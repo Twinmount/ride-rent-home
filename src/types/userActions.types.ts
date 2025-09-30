@@ -52,6 +52,7 @@ export interface RawVehicleEnquiry {
     year: string;
     registrationNumber: string;
     photos: VehiclePhoto[];
+    vehicleCode: string;
   };
   enquiryId: string;
   enquiryStatus: string;

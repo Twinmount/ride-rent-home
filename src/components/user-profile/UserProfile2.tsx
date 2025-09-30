@@ -522,22 +522,22 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                 key={index}
                 className="group relative cursor-pointer overflow-hidden border-0 shadow-lg transition-all duration-300 hover:shadow-xl"
               >
-                <CardContent className="relative p-4 sm:p-6">
-                  <div className="mb-3 flex items-start justify-between sm:mb-4">
-                    <div className="animate-pulse rounded-xl bg-gray-100 p-2 sm:p-3">
-                      <div className="h-5 w-5 rounded bg-gray-200 sm:h-6 sm:w-6"></div>
+                <CardContent className="relative p-3 sm:p-4 lg:p-6">
+                  <div className="mb-2 flex items-start justify-between sm:mb-3 lg:mb-4">
+                    <div className="animate-pulse rounded-xl bg-gray-100 p-2 sm:p-2 lg:p-3">
+                      <div className="h-4 w-4 rounded bg-gray-200 sm:h-5 sm:w-5 lg:h-6 lg:w-6"></div>
                     </div>
                     <div className="animate-pulse rounded-full bg-gray-100 px-2 py-1 text-xs font-medium">
                       <div className="h-3 w-3 rounded bg-gray-200"></div>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <div className="h-6 animate-pulse rounded bg-gray-200 sm:h-8"></div>
-                    <div className="h-3 animate-pulse rounded bg-gray-200 sm:h-4"></div>
+                  <div className="space-y-1 sm:space-y-2">
+                    <div className="h-5 animate-pulse rounded bg-gray-200 sm:h-6 lg:h-8"></div>
+                    <div className="h-3 animate-pulse rounded bg-gray-200 sm:h-3 lg:h-4"></div>
                     <div className="h-3 animate-pulse rounded bg-gray-200"></div>
                   </div>
-                  <div className="mt-3 border-t border-gray-100 pt-3 sm:mt-4 sm:pt-4">
-                    <div className="h-6 animate-pulse rounded bg-gray-200 sm:h-8"></div>
+                  <div className="mt-2 border-t border-gray-100 pt-2 sm:mt-3 sm:pt-3 lg:mt-4 lg:pt-4">
+                    <div className="h-5 animate-pulse rounded bg-gray-200 sm:h-6 lg:h-8"></div>
                   </div>
                 </CardContent>
               </Card>
@@ -570,23 +570,25 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-5 transition-opacity group-hover:opacity-10`}
                 ></div>
-                <CardContent className="relative p-4 sm:p-6">
-                  <div className="mb-3 flex items-start justify-between sm:mb-4">
-                    <div className={`rounded-xl p-2 sm:p-3 ${stat.bgColor}`}>
+                <CardContent className="relative p-3 sm:p-4 lg:p-6">
+                  <div className="mb-2 flex items-start justify-between sm:mb-3 lg:mb-4">
+                    <div
+                      className={`rounded-xl p-2 sm:p-2 lg:p-3 ${stat.bgColor}`}
+                    >
                       <stat.icon
-                        className={`h-5 w-5 sm:h-6 sm:w-6 ${stat.textColor}`}
+                        className={`h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 ${stat.textColor}`}
                       />
                     </div>
                   </div>
-                  <div className="space-y-1 sm:space-y-2">
-                    <h3 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+                  <div className="space-y-1 sm:space-y-1 lg:space-y-2">
+                    <h3 className="text-xl font-bold text-gray-900 sm:text-2xl lg:text-3xl">
                       {stat.value.toLocaleString()}
                     </h3>
-                    <p className="text-sm font-medium text-gray-700 sm:text-base">
+                    <p className="text-sm font-medium text-gray-700 sm:text-sm lg:text-base">
                       {stat.label}
                     </p>
                     {stat.description && (
-                      <p className="text-xs text-gray-500 sm:text-sm">
+                      <p className="text-xs text-gray-500 sm:text-xs lg:text-sm">
                         {stat.description}
                       </p>
                     )}
@@ -597,7 +599,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3 lg:gap-8">
           <div className="space-y-4 sm:space-y-6 lg:col-span-2">
             <Card className="border-0 shadow-lg">
               <CardHeader className="pb-4">
@@ -614,7 +616,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 sm:space-y-8">
-                <div className="flex flex-col items-center gap-4 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 p-4 sm:flex-row sm:items-center sm:gap-6 sm:p-6">
+                <div className="flex flex-col items-center gap-3 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 p-3 sm:flex-row sm:items-center sm:gap-4 sm:p-4 lg:gap-6 lg:p-6">
                   <AvatarUpload
                     currentAvatar={profileData?.avatar}
                     userName={profileData?.name || "User"}
@@ -841,12 +843,12 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 Verify Mobile Number
                               </h4>
                               <p className="text-sm text-gray-600">
-                                Enter the 6-digit code sent to {tempCountryCode}{" "}
+                                Enter the 4-digit code sent to {tempCountryCode}{" "}
                                 {tempMobileNumber}
                               </p>
                             </div>
-                            <div className="flex justify-center gap-2">
-                              {Array.from({ length: 6 }, (_, index) => (
+                            <div className="flex justify-center gap-1 sm:gap-2">
+                              {Array.from({ length: 4 }, (_, index) => (
                                 <Input
                                   key={index}
                                   type="text"
@@ -860,7 +862,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                     setMobileOtp(newOtp.join(""));
 
                                     // Auto-focus next input
-                                    if (value && index < 5) {
+                                    if (value && index < 3) {
                                       const nextInput = e.target.parentElement
                                         ?.children[
                                         index + 1
@@ -868,7 +870,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                       nextInput?.focus();
                                     }
                                   }}
-                                  className="h-12 w-12 text-center text-lg font-bold"
+                                  className="h-10 w-10 text-center text-base font-bold sm:h-12 sm:w-12 sm:text-lg"
                                   disabled={verifyOtpMutation.isPending}
                                 />
                               ))}
@@ -905,7 +907,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 size="sm"
                                 onClick={handleVerifyMobileOtp}
                                 disabled={
-                                  mobileOtp.length !== 6 ||
+                                  mobileOtp.length !== 4 ||
                                   verifyOtpMutation.isPending
                                 }
                                 className="cursor-pointer bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"
@@ -1054,11 +1056,11 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 Verify Email Address
                               </h4>
                               <p className="text-sm text-gray-600">
-                                Enter the 6-digit code sent to {tempEmail}
+                                Enter the 4-digit code sent to {tempEmail}
                               </p>
                             </div>
-                            <div className="flex justify-center gap-2">
-                              {Array.from({ length: 6 }, (_, index) => (
+                            <div className="flex justify-center gap-1 sm:gap-2">
+                              {Array.from({ length: 4 }, (_, index) => (
                                 <Input
                                   key={index}
                                   type="text"
@@ -1072,7 +1074,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                     setEmailOtp(newOtp.join(""));
 
                                     // Auto-focus next input
-                                    if (value && index < 5) {
+                                    if (value && index < 3) {
                                       const nextInput = e.target.parentElement
                                         ?.children[
                                         index + 1
@@ -1080,7 +1082,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                       nextInput?.focus();
                                     }
                                   }}
-                                  className="h-12 w-12 text-center text-lg font-bold"
+                                  className="h-10 w-10 text-center text-base font-bold sm:h-12 sm:w-12 sm:text-lg"
                                   disabled={verifyOtpMutation.isPending}
                                 />
                               ))}
@@ -1117,7 +1119,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 size="sm"
                                 onClick={handleVerifyEmailOtp}
                                 disabled={
-                                  emailOtp.length !== 6 ||
+                                  emailOtp.length !== 4 ||
                                   verifyOtpMutation.isPending
                                 }
                                 className="cursor-pointer bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"
@@ -1273,12 +1275,12 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   Array.from({ length: 3 }).map((_, index) => (
                     <div
                       key={index}
-                      className="flex items-start gap-3 rounded-lg p-3"
+                      className="flex items-start gap-2 rounded-lg p-2 sm:gap-3 sm:p-3"
                     >
-                      <div className="mt-1 h-6 w-6 animate-pulse rounded-full bg-gray-200"></div>
+                      <div className="mt-1 h-8 w-8 animate-pulse rounded-full bg-gray-200 sm:h-10 sm:w-10"></div>
                       <div className="min-w-0 flex-1 space-y-1">
-                        <div className="h-4 w-3/4 animate-pulse rounded bg-gray-200"></div>
-                        <div className="h-3 w-1/2 animate-pulse rounded bg-gray-200"></div>
+                        <div className="h-3 w-3/4 animate-pulse rounded bg-gray-200 sm:h-4"></div>
+                        <div className="h-2.5 w-1/2 animate-pulse rounded bg-gray-200 sm:h-3"></div>
                       </div>
                     </div>
                   ))
@@ -1299,8 +1301,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   </div>
                 ) : recentActivity.length === 0 ? (
                   // Empty state
-                  <div className="py-8 text-center">
-                    <Activity className="mx-auto mb-3 h-12 w-12 text-gray-300" />
+                  <div className="py-6 text-center sm:py-8">
+                    <Activity className="mx-auto mb-2 h-10 w-10 text-gray-300 sm:mb-3 sm:h-12 sm:w-12" />
                     <p className="text-sm text-gray-500">
                       No recent activity to show
                     </p>
@@ -1313,7 +1315,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   recentActivity.map((activity, index) => (
                     <div
                       key={`${activity.carId}-${index}`}
-                      className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-gray-50"
+                      className="flex cursor-pointer items-start gap-2 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-3 sm:p-3"
                       onClick={() => {
                         // Navigate to vehicle details page
                         // You can customize this route based on your app structure
@@ -1323,7 +1325,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                       }}
                     >
                       {/* Vehicle Image */}
-                      <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg">
+                      <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg sm:h-12 sm:w-12">
                         <img
                           src={getVehicleImageUrl(activity.vehicleImageUrl)}
                           alt={activity.vehicleName || "Vehicle"}
@@ -1336,7 +1338,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                         />
                         {/* Activity type overlay */}
                         <div
-                          className={`absolute -bottom-1 -right-1 rounded-full p-1 ${
+                          className={`absolute -bottom-0.5 -right-0.5 rounded-full p-0.5 sm:-bottom-1 sm:-right-1 sm:p-1 ${
                             activity.type === "view"
                               ? "bg-purple-100"
                               : activity.type === "save"
@@ -1345,11 +1347,11 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                           }`}
                         >
                           {activity.type === "view" ? (
-                            <Eye className="h-2.5 w-2.5 text-purple-600" />
+                            <Eye className="h-2 w-2 text-purple-600 sm:h-2.5 sm:w-2.5" />
                           ) : activity.type === "save" ? (
-                            <Heart className="h-2.5 w-2.5 text-red-600" />
+                            <Heart className="h-2 w-2 text-red-600 sm:h-2.5 sm:w-2.5" />
                           ) : (
-                            <MessageSquare className="h-2.5 w-2.5 text-blue-600" />
+                            <MessageSquare className="h-2 w-2 text-blue-600 sm:h-2.5 sm:w-2.5" />
                           )}
                         </div>
                       </div>
@@ -1361,7 +1363,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                         </p>
                         <p className="text-xs text-gray-500">{activity.time}</p>
                         {activity.vehicleName && (
-                          <p className="mt-0.5 text-xs font-medium text-orange-600">
+                          <p className="mt-0.5 truncate text-xs font-medium text-orange-600">
                             {activity.vehicleName}
                           </p>
                         )}

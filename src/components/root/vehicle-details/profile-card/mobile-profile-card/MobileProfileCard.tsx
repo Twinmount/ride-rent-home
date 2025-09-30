@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { ProfileCardDataType } from '@/types/vehicle-details-types';
-import useProfileData from '@/hooks/useProfileCardData';
-import AnimatedPriceDisplay from '../../profile-specifications/AnimatedPriceDisplay';
-import { usePriceConverter } from '@/hooks/usePriceConverter';
-import RentNowButtonWide from '@/components/common/RentNowbuttonWide';
+import { useState } from "react";
+import { ProfileCardDataType } from "@/types/vehicle-details-types";
+import useProfileData from "@/hooks/useProfileCardData";
+import AnimatedPriceDisplay from "../../profile-specifications/AnimatedPriceDisplay";
+import { usePriceConverter } from "@/hooks/usePriceConverter";
+import RentNowButtonWide from "@/components/common/RentNowbuttonWide";
 
 type MobileProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -27,10 +27,10 @@ const MobileProfileCard = ({
 
   // Filter and structure enabled rental periods (same logic as RentalDetailsTab)
   const enabledRentalPeriods = [
-    { period: 'Hour', details: rentalDetails.hour },
-    { period: 'Day', details: rentalDetails.day },
-    { period: 'Week', details: rentalDetails.week },
-    { period: 'Month', details: rentalDetails.month },
+    { period: "Hour", details: rentalDetails.hour },
+    { period: "Day", details: rentalDetails.day },
+    { period: "Week", details: rentalDetails.week },
+    { period: "Month", details: rentalDetails.month },
   ].filter((rental) => rental.details.enabled);
 
   // Initialize with first available rental period (same logic as RentalDetailsTab)
@@ -43,7 +43,7 @@ const MobileProfileCard = ({
 
   // Extract minBookingHours for hourly rentals (same logic as RentalDetailsTab)
   const getMinBookingHours = (period: string, details: any) => {
-    if (period === 'Hour' && 'minBookingHours' in details) {
+    if (period === "Hour" && "minBookingHours" in details) {
       return details.minBookingHours;
     }
     return undefined;
@@ -52,10 +52,10 @@ const MobileProfileCard = ({
   // Render period labels (same logic as RentalDetailsTab)
   const getPeriodLabel = (period: string) => {
     const labels = {
-      Hour: 'Hourly',
-      Day: 'Daily',
-      Week: 'Weekly',
-      Month: 'Monthly',
+      Hour: "Hourly",
+      Day: "Daily",
+      Week: "Weekly",
+      Month: "Monthly",
     };
     return labels[period as keyof typeof labels];
   };
@@ -68,10 +68,11 @@ const MobileProfileCard = ({
   return (
     <>
       {/* Mobile Profile Card - Simple Layout */}
-      <div className="fixed bottom-2 z-50 w-[96%] pr-4 lg:hidden">
+      <div className="pr-4">
+        {/* <div className="fixed bottom-2 z-50 w-[96%] pr-4 lg:hidden"> */}
         <div>
           <RentNowButtonWide
-            variant="compact"
+            // variant="compact"
             contactDetails={company.contactDetails}
             vehicleName={model}
             state={state}

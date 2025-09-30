@@ -303,7 +303,9 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       queryFn: () =>
         getUserEnquiredVehicles(effectiveUserId!, page, limit, sortOrder),
       enabled: !!effectiveUserId && enabled,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 0,
+      refetchInterval: 6000,
+      refetchIntervalInBackground: true,
     });
   };
 

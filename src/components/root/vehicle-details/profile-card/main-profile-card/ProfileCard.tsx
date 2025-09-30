@@ -86,7 +86,7 @@ const ProfileCard = memo(
         <CompanySpecifications specs={company.companySpecs} />
 
         {/* Rent Now button or Unavailable message */}
-        <div className="hidden py-2 lg:block">
+        <div className="py-2">
           {vehicleAvailable ? (
             <RentNowbuttonWide
               vehicle={vehicle}
