@@ -44,6 +44,7 @@ import { useAuthContext } from "@/auth";
 import { ProfileBreadcrumb } from "@/components/user-profile";
 import { ProtectedRoute } from "@/components/common";
 import { trimName } from "@/helpers";
+import { getVehicleImageUrl } from "@/utils/imageUrl";
 
 interface UserProfileProps {
   className?: string;
@@ -70,6 +71,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     useGetUserProfile,
     updateUserNameAndAvatar,
     updateProfile,
+    verifyOTP,
+    resendOTP,
+    verifyOtpMutation,
+    resendOtpMutation,
     auth,
     user,
   } = useAuthContext();
@@ -100,6 +105,14 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
   // Toast state
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
+  // OTP states
+  const [showMobileOtp, setShowMobileOtp] = useState(false);
+  const [showEmailOtp, setShowEmailOtp] = useState(false);
+  const [mobileOtp, setMobileOtp] = useState("");
+  const [emailOtp, setEmailOtp] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [otpCountdown, setOtpCountdown] = useState(0);
+
   const userId = authStorage.getUser()?.id.toString();
 
   // Get user profile data
@@ -107,6 +120,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   const {
     userCarActionCountsQuery,
+    userRecentActivitiesQuery,
     handleUpdateProfile,
     updateProfileMutation,
   } = useUserProfile({
@@ -139,6 +153,15 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
       });
     }
   }, [userProfileQuery.data, setProfileData]);
+
+  // OTP countdown timer
+  useEffect(() => {
+    if (otpCountdown > 0) {
+      const timer = setTimeout(() => setOtpCountdown(otpCountdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [otpCountdown]);
 
   const handleEditName = () => {
     setTempName(profileData?.name || "");
@@ -193,20 +216,11 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
         countryCode: tempCountryCode,
       });
 
-      // Update local state
-      setProfileData((draft) => {
-        if (draft) {
-          draft.countryCode = tempCountryCode;
-          draft.phoneNumber = tempMobileNumber;
-        }
-      });
-      setIsEditingMobile(false);
-
-      // Show success toast
-      setShowSuccessToast(true);
-      setTimeout(() => {
-        setShowSuccessToast(false);
-      }, 4000);
+      // Show OTP verification section
+      setShowMobileOtp(true);
+      setOtpCountdown(300); // 5 minutes
+      setOtpError("");
+      setMobileOtp("");
     } catch (error) {
       console.error("Failed to update mobile number:", error);
     }
@@ -214,6 +228,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   const handleCancelMobile = () => {
     setIsEditingMobile(false);
+    setShowMobileOtp(false);
+    setMobileOtp("");
+    setOtpError("");
+    setOtpCountdown(0);
   };
 
   const handleEditEmail = () => {
@@ -228,19 +246,11 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
         email: tempEmail,
       });
 
-      // Update local state
-      setProfileData((draft) => {
-        if (draft) {
-          draft.email = tempEmail;
-        }
-      });
-      setIsEditingEmail(false);
-
-      // Show success toast
-      setShowSuccessToast(true);
-      setTimeout(() => {
-        setShowSuccessToast(false);
-      }, 4000);
+      // Show OTP verification section
+      setShowEmailOtp(true);
+      setOtpCountdown(300); // 5 minutes
+      setOtpError("");
+      setEmailOtp("");
     } catch (error) {
       console.error("Failed to update email:", error);
     }
@@ -248,6 +258,103 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   const handleCancelEmail = () => {
     setIsEditingEmail(false);
+    setShowEmailOtp(false);
+    setEmailOtp("");
+    setOtpError("");
+    setOtpCountdown(0);
+  };
+
+  // OTP verification handlers
+  const handleVerifyMobileOtp = async () => {
+    try {
+      setOtpError("");
+      // For mobile OTP, we'll use the general OTP verification
+      // Note: You may need to get the otpId from the mobile update response
+      await verifyOTP(userId!, "mobile-otp-id", mobileOtp);
+
+      // Update local state
+      setProfileData((draft) => {
+        if (draft) {
+          draft.countryCode = tempCountryCode;
+          draft.phoneNumber = tempMobileNumber;
+          draft.isPhoneVerified = true;
+        }
+      });
+
+      // Reset states
+      setIsEditingMobile(false);
+      setShowMobileOtp(false);
+      setMobileOtp("");
+      setOtpCountdown(0);
+
+      // Show success toast
+      setShowSuccessToast(true);
+      setTimeout(() => {
+        setShowSuccessToast(false);
+      }, 4000);
+
+      // Refetch user profile
+      await userProfileQuery.refetch();
+    } catch (error: any) {
+      setOtpError(error.message || "Invalid OTP. Please try again.");
+    }
+  };
+
+  const handleVerifyEmailOtp = async () => {
+    try {
+      setOtpError("");
+      // For email OTP, we'll use the general OTP verification
+      // Note: You may need to get the otpId from the email update response
+      await verifyOTP(userId!, "email-otp-id", emailOtp);
+
+      // Update local state
+      setProfileData((draft) => {
+        if (draft) {
+          draft.email = tempEmail;
+          draft.isEmailVerified = true;
+        }
+      });
+
+      // Reset states
+      setIsEditingEmail(false);
+      setShowEmailOtp(false);
+      setEmailOtp("");
+      setOtpCountdown(0);
+
+      // Show success toast
+      setShowSuccessToast(true);
+      setTimeout(() => {
+        setShowSuccessToast(false);
+      }, 4000);
+
+      // Refetch user profile
+      await userProfileQuery.refetch();
+    } catch (error: any) {
+      setOtpError(error.message || "Invalid OTP. Please try again.");
+    }
+  };
+
+  const handleResendOtp = async (type: "mobile" | "email") => {
+    try {
+      setOtpError("");
+      if (type === "mobile") {
+        await resendOTP(tempMobileNumber, tempCountryCode);
+        setMobileOtp("");
+      } else {
+        // For email, you might need a different resend function
+        await resendOTP(tempEmail, ""); // Adjust based on your API
+        setEmailOtp("");
+      }
+      setOtpCountdown(300); // Reset countdown
+    } catch (error: any) {
+      setOtpError(error.message || "Failed to resend OTP.");
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const handleSaveAllChanges = async () => {
@@ -332,11 +439,16 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     { name: "Top Reviewer", icon: Star, color: "text-blue-600 bg-blue-100" },
   ];
 
-  const recentActivity = [
-    { action: "Viewed Mercedes C-Class", time: "2 hours ago", type: "view" },
-    { action: "Saved BMW X5", time: "1 day ago", type: "save" },
-    { action: "Enquired about Audi A6", time: "3 days ago", type: "enquiry" },
-  ];
+  // Transform API data to match the UI format
+  const recentActivity =
+    userRecentActivitiesQuery.data?.map((activity) => ({
+      action: activity.activityDescription,
+      time: activity.timeAgo,
+      type: activity.activityType.toLowerCase() as "view" | "save" | "enquiry",
+      vehicleName: activity.vehicleName,
+      vehicleImageUrl: activity.vehicleImageUrl,
+      carId: activity.carId,
+    })) || [];
 
   return (
     <>
@@ -649,11 +761,17 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                     </Label>
                     {!isEditingMobile ? (
                       <div className="flex items-center justify-between rounded-lg border bg-gray-50 p-3">
-                        <span className="text-gray-900">
+                        <div className="flex items-center gap-2">
                           <span className="text-sm text-gray-900 sm:text-base">
                             {`${profileData?.countryCode || ""} ${profileData?.phoneNumber || ""}`}
                           </span>
-                        </span>
+                          {profileData?.isPhoneVerified && (
+                            <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                              <CheckCircle className="mr-1 h-3 w-3" />
+                              Verified
+                            </Badge>
+                          )}
+                        </div>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -661,58 +779,153 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                           className="cursor-pointer text-orange-600 hover:bg-orange-50 hover:text-orange-700"
                         >
                           <Edit2 className="mr-1 h-4 w-4" />
-                          Change Photo
+                          Change
                         </Button>
                       </div>
                     ) : (
                       <div className="space-y-3 rounded-lg border bg-blue-50 p-3">
-                        <div className="flex flex-col gap-2 sm:flex-row">
-                          <Select
-                            value={tempCountryCode}
-                            onValueChange={setTempCountryCode}
-                          >
-                            <SelectTrigger className="w-full cursor-pointer sm:w-32">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                              <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                              <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                              <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                              <SelectItem value="+966">🇸🇦 +966</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <Input
-                            value={tempMobileNumber}
-                            onChange={(e) =>
-                              setTempMobileNumber(e.target.value)
-                            }
-                            placeholder="Enter mobile number"
-                            className="flex-1"
-                          />
-                        </div>
-                        <div className="flex flex-col gap-2 sm:flex-row">
-                          <Button
-                            size="sm"
-                            onClick={handleSaveMobile}
-                            disabled={updateProfileMutation.isPending}
-                            className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
-                          >
-                            <Check className="mr-1 h-4 w-4" />
-                            {updateProfileMutation.isPending
-                              ? "Saving..."
-                              : "Save"}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={handleCancelMobile}
-                            className="cursor-pointer bg-transparent"
-                          >
-                            <X className="mr-1 h-4 w-4" />
-                            Cancel
-                          </Button>
-                        </div>
+                        {!showMobileOtp ? (
+                          <>
+                            <div className="flex flex-col gap-2 sm:flex-row">
+                              <Select
+                                value={tempCountryCode}
+                                onValueChange={setTempCountryCode}
+                              >
+                                <SelectTrigger className="w-full cursor-pointer sm:w-32">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                                  <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                                  <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                                  <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                                  <SelectItem value="+966">🇸🇦 +966</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <Input
+                                value={tempMobileNumber}
+                                onChange={(e) =>
+                                  setTempMobileNumber(e.target.value)
+                                }
+                                placeholder="Enter mobile number"
+                                className="flex-1"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-2 sm:flex-row">
+                              <Button
+                                size="sm"
+                                onClick={handleSaveMobile}
+                                disabled={updateProfileMutation.isPending}
+                                className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
+                              >
+                                <Check className="mr-1 h-4 w-4" />
+                                {updateProfileMutation.isPending
+                                  ? "Saving..."
+                                  : "Save & Send OTP"}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={handleCancelMobile}
+                                className="cursor-pointer bg-transparent"
+                              >
+                                <X className="mr-1 h-4 w-4" />
+                                Cancel
+                              </Button>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="space-y-2 text-center">
+                              <h4 className="font-medium text-gray-900">
+                                Verify Mobile Number
+                              </h4>
+                              <p className="text-sm text-gray-600">
+                                Enter the 6-digit code sent to {tempCountryCode}{" "}
+                                {tempMobileNumber}
+                              </p>
+                            </div>
+                            <div className="flex justify-center gap-2">
+                              {Array.from({ length: 6 }, (_, index) => (
+                                <Input
+                                  key={index}
+                                  type="text"
+                                  inputMode="numeric"
+                                  maxLength={1}
+                                  value={mobileOtp[index] || ""}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    const newOtp = mobileOtp.split("");
+                                    newOtp[index] = value;
+                                    setMobileOtp(newOtp.join(""));
+
+                                    // Auto-focus next input
+                                    if (value && index < 5) {
+                                      const nextInput = e.target.parentElement
+                                        ?.children[
+                                        index + 1
+                                      ] as HTMLInputElement;
+                                      nextInput?.focus();
+                                    }
+                                  }}
+                                  className="h-12 w-12 text-center text-lg font-bold"
+                                  disabled={verifyOtpMutation.isPending}
+                                />
+                              ))}
+                            </div>
+
+                            {otpError && (
+                              <div className="text-center text-sm text-red-600">
+                                {otpError}
+                              </div>
+                            )}
+
+                            <div className="text-center text-sm text-gray-600">
+                              {otpCountdown > 0 ? (
+                                <span>
+                                  Resend OTP in {formatTime(otpCountdown)}
+                                </span>
+                              ) : (
+                                <Button
+                                  variant="link"
+                                  size="sm"
+                                  onClick={() => handleResendOtp("mobile")}
+                                  disabled={resendOtpMutation.isPending}
+                                  className="h-auto p-0 text-orange-600"
+                                >
+                                  {resendOtpMutation.isPending
+                                    ? "Sending..."
+                                    : "Resend OTP"}
+                                </Button>
+                              )}
+                            </div>
+
+                            <div className="flex flex-col gap-2 sm:flex-row">
+                              <Button
+                                size="sm"
+                                onClick={handleVerifyMobileOtp}
+                                disabled={
+                                  mobileOtp.length !== 6 ||
+                                  verifyOtpMutation.isPending
+                                }
+                                className="cursor-pointer bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"
+                              >
+                                {verifyOtpMutation.isPending
+                                  ? "Verifying..."
+                                  : "Verify OTP"}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={handleCancelMobile}
+                                className="cursor-pointer bg-transparent"
+                              >
+                                <X className="mr-1 h-4 w-4" />
+                                Cancel
+                              </Button>
+                            </div>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>
@@ -741,11 +954,19 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                               </span>
                             </div>
                           ) : (
-                            <span className="text-sm text-gray-900 sm:text-base">
-                              {userProfileQuery.isLoading
-                                ? "Loading..."
-                                : profileData.email}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-900 sm:text-base">
+                                {userProfileQuery.isLoading
+                                  ? "Loading..."
+                                  : profileData.email}
+                              </span>
+                              {profileData?.isEmailVerified && (
+                                <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                                  <CheckCircle className="mr-1 h-3 w-3" />
+                                  Verified
+                                </Badge>
+                              )}
+                            </div>
                           )}
                         </div>
                         <Button
@@ -774,54 +995,149 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                       </div>
                     ) : (
                       <div className="space-y-3 rounded-lg border bg-blue-50 p-3">
-                        <div className="space-y-2">
-                          <Input
-                            type="email"
-                            value={tempEmail}
-                            onChange={(e) => setTempEmail(e.target.value)}
-                            placeholder={
-                              !profileData?.email
-                                ? "Enter your email address"
-                                : "Update email address"
-                            }
-                            className="w-full"
-                          />
-                          {!profileData?.email && (
-                            <p className="text-xs text-blue-600 sm:text-sm">
-                              Adding an email will help you receive important
-                              notifications and recover your account. Add your
-                              email to get important updates on your booking.
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex flex-col gap-2 sm:flex-row">
-                          <Button
-                            size="sm"
-                            onClick={handleSaveEmail}
-                            disabled={
-                              !tempEmail.trim() ||
-                              !tempEmail.includes("@") ||
-                              updateProfileMutation.isPending
-                            }
-                            className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            <Check className="mr-1 h-4 w-4" />
-                            {updateProfileMutation.isPending
-                              ? "Saving..."
-                              : !profileData?.email
-                                ? "Add Email"
-                                : "Save"}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={handleCancelEmail}
-                            className="cursor-pointer bg-transparent"
-                          >
-                            <X className="mr-1 h-4 w-4" />
-                            Cancel
-                          </Button>
-                        </div>
+                        {!showEmailOtp ? (
+                          <>
+                            <div className="space-y-2">
+                              <Input
+                                type="email"
+                                value={tempEmail}
+                                onChange={(e) => setTempEmail(e.target.value)}
+                                placeholder={
+                                  !profileData?.email
+                                    ? "Enter your email address"
+                                    : "Update email address"
+                                }
+                                className="w-full"
+                              />
+                              {!profileData?.email && (
+                                <p className="text-xs text-blue-600 sm:text-sm">
+                                  Adding an email will help you receive
+                                  important notifications and recover your
+                                  account. Add your email to get important
+                                  updates on your booking.
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex flex-col gap-2 sm:flex-row">
+                              <Button
+                                size="sm"
+                                onClick={handleSaveEmail}
+                                disabled={
+                                  !tempEmail.trim() ||
+                                  !tempEmail.includes("@") ||
+                                  updateProfileMutation.isPending
+                                }
+                                className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                <Check className="mr-1 h-4 w-4" />
+                                {updateProfileMutation.isPending
+                                  ? "Saving..."
+                                  : !profileData?.email
+                                    ? "Add Email & Send OTP"
+                                    : "Save & Send OTP"}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={handleCancelEmail}
+                                className="cursor-pointer bg-transparent"
+                              >
+                                <X className="mr-1 h-4 w-4" />
+                                Cancel
+                              </Button>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="space-y-2 text-center">
+                              <h4 className="font-medium text-gray-900">
+                                Verify Email Address
+                              </h4>
+                              <p className="text-sm text-gray-600">
+                                Enter the 6-digit code sent to {tempEmail}
+                              </p>
+                            </div>
+                            <div className="flex justify-center gap-2">
+                              {Array.from({ length: 6 }, (_, index) => (
+                                <Input
+                                  key={index}
+                                  type="text"
+                                  inputMode="numeric"
+                                  maxLength={1}
+                                  value={emailOtp[index] || ""}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    const newOtp = emailOtp.split("");
+                                    newOtp[index] = value;
+                                    setEmailOtp(newOtp.join(""));
+
+                                    // Auto-focus next input
+                                    if (value && index < 5) {
+                                      const nextInput = e.target.parentElement
+                                        ?.children[
+                                        index + 1
+                                      ] as HTMLInputElement;
+                                      nextInput?.focus();
+                                    }
+                                  }}
+                                  className="h-12 w-12 text-center text-lg font-bold"
+                                  disabled={verifyOtpMutation.isPending}
+                                />
+                              ))}
+                            </div>
+
+                            {otpError && (
+                              <div className="text-center text-sm text-red-600">
+                                {otpError}
+                              </div>
+                            )}
+
+                            <div className="text-center text-sm text-gray-600">
+                              {otpCountdown > 0 ? (
+                                <span>
+                                  Resend OTP in {formatTime(otpCountdown)}
+                                </span>
+                              ) : (
+                                <Button
+                                  variant="link"
+                                  size="sm"
+                                  onClick={() => handleResendOtp("email")}
+                                  disabled={resendOtpMutation.isPending}
+                                  className="h-auto p-0 text-orange-600"
+                                >
+                                  {resendOtpMutation.isPending
+                                    ? "Sending..."
+                                    : "Resend OTP"}
+                                </Button>
+                              )}
+                            </div>
+
+                            <div className="flex flex-col gap-2 sm:flex-row">
+                              <Button
+                                size="sm"
+                                onClick={handleVerifyEmailOtp}
+                                disabled={
+                                  emailOtp.length !== 6 ||
+                                  verifyOtpMutation.isPending
+                                }
+                                className="cursor-pointer bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"
+                              >
+                                {verifyOtpMutation.isPending
+                                  ? "Verifying..."
+                                  : "Verify OTP"}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={handleCancelEmail}
+                                className="cursor-pointer bg-transparent"
+                              >
+                                <X className="mr-1 h-4 w-4" />
+                                Cancel
+                              </Button>
+                            </div>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>
@@ -944,46 +1260,126 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg lg:text-xl">
                   <Activity className="h-4 w-4 text-blue-600 sm:h-5 sm:w-5" />
                   Recent Activity
+                  {userRecentActivitiesQuery.isLoading && (
+                    <span className="text-xs text-gray-500 sm:text-sm">
+                      (Loading...)
+                    </span>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {recentActivity.map((activity, index) => (
-                  <div
-                    key={index}
-                    className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-gray-50"
-                  >
+                {userRecentActivitiesQuery.isLoading ? (
+                  // Loading skeleton
+                  Array.from({ length: 3 }).map((_, index) => (
                     <div
-                      className={`mt-1 rounded-full p-1.5 ${
-                        activity.type === "view"
-                          ? "bg-purple-100"
-                          : activity.type === "save"
-                            ? "bg-red-100"
-                            : "bg-blue-100"
-                      }`}
+                      key={index}
+                      className="flex items-start gap-3 rounded-lg p-3"
                     >
-                      {activity.type === "view" ? (
-                        <Eye className="h-3 w-3 text-purple-600" />
-                      ) : activity.type === "save" ? (
-                        <Heart className="h-3 w-3 text-red-600" />
-                      ) : (
-                        <MessageSquare className="h-3 w-3 text-blue-600" />
-                      )}
+                      <div className="mt-1 h-6 w-6 animate-pulse rounded-full bg-gray-200"></div>
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="h-4 w-3/4 animate-pulse rounded bg-gray-200"></div>
+                        <div className="h-3 w-1/2 animate-pulse rounded bg-gray-200"></div>
+                      </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-xs font-medium text-gray-900 sm:text-sm">
-                        {activity.action}
-                      </p>
-                      <p className="text-xs text-gray-500">{activity.time}</p>
-                    </div>
+                  ))
+                ) : userRecentActivitiesQuery.error ? (
+                  // Error state
+                  <div className="py-4 text-center">
+                    <p className="mb-2 text-sm text-red-600">
+                      Failed to load recent activities
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => userRecentActivitiesQuery.refetch()}
+                      className="cursor-pointer"
+                    >
+                      Retry
+                    </Button>
                   </div>
-                ))}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="mt-4 w-full cursor-pointer bg-transparent text-xs sm:text-sm"
-                >
-                  View All Activity
-                </Button>
+                ) : recentActivity.length === 0 ? (
+                  // Empty state
+                  <div className="py-8 text-center">
+                    <Activity className="mx-auto mb-3 h-12 w-12 text-gray-300" />
+                    <p className="text-sm text-gray-500">
+                      No recent activity to show
+                    </p>
+                    <p className="mt-1 text-xs text-gray-400">
+                      Start browsing cars to see your activity here
+                    </p>
+                  </div>
+                ) : (
+                  // Activity list
+                  recentActivity.map((activity, index) => (
+                    <div
+                      key={`${activity.carId}-${index}`}
+                      className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-gray-50"
+                      onClick={() => {
+                        // Navigate to vehicle details page
+                        // You can customize this route based on your app structure
+                        if (activity.carId) {
+                          router.push(`/vehicle/${activity.carId}`);
+                        }
+                      }}
+                    >
+                      {/* Vehicle Image */}
+                      <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg">
+                        <img
+                          src={getVehicleImageUrl(activity.vehicleImageUrl)}
+                          alt={activity.vehicleName || "Vehicle"}
+                          className="h-full w-full object-cover"
+                          onError={(e) => {
+                            // Fallback to placeholder on image load error
+                            (e.target as HTMLImageElement).src =
+                              "/placeholder.svg";
+                          }}
+                        />
+                        {/* Activity type overlay */}
+                        <div
+                          className={`absolute -bottom-1 -right-1 rounded-full p-1 ${
+                            activity.type === "view"
+                              ? "bg-purple-100"
+                              : activity.type === "save"
+                                ? "bg-red-100"
+                                : "bg-blue-100"
+                          }`}
+                        >
+                          {activity.type === "view" ? (
+                            <Eye className="h-2.5 w-2.5 text-purple-600" />
+                          ) : activity.type === "save" ? (
+                            <Heart className="h-2.5 w-2.5 text-red-600" />
+                          ) : (
+                            <MessageSquare className="h-2.5 w-2.5 text-blue-600" />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Activity Details */}
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-xs font-medium text-gray-900 sm:text-sm">
+                          {activity.action}
+                        </p>
+                        <p className="text-xs text-gray-500">{activity.time}</p>
+                        {activity.vehicleName && (
+                          <p className="mt-0.5 text-xs font-medium text-orange-600">
+                            {activity.vehicleName}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+                {!userRecentActivitiesQuery.isLoading &&
+                  !userRecentActivitiesQuery.error &&
+                  recentActivity.length > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-4 w-full cursor-pointer bg-transparent text-xs sm:text-sm"
+                    >
+                      View All Activity
+                    </Button>
+                  )}
               </CardContent>
             </Card>
           </div>

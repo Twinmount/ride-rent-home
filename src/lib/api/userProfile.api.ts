@@ -2,6 +2,8 @@ import { mainApiClient, authApiClient } from './axios.config';
 import type {
   UserCarActionCounts,
   UserCarActionCountsResponse,
+  UserRecentActivity,
+  UserRecentActivitiesResponse,
 } from './userProfile.api.types';
 import { ENV } from '@/config/env';
 import { User } from '@/auth';
@@ -41,4 +43,13 @@ export const updateUserProfile = async (
     phoneNumber: profileData.phoneNumber,
   });
   console.log('User profile updated: ', response.data);
+};
+
+export const getUserRecentActivities = async (
+  userId: string
+): Promise<UserRecentActivity[]> => {
+  const response = await mainApiClient.get<UserRecentActivitiesResponse>(
+    `/user-cars/recent-activities/${userId}`
+  );
+  return response.data.result;
 };
