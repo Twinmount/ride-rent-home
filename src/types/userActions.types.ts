@@ -8,6 +8,7 @@ export interface UseUserActionsOptions {
   page?: number;
   limit?: number;
   sortOrder?: "ASC" | "DESC";
+  useMultiCountry?: boolean; // Enable/disable multi-country API calls
 }
 
 export interface VehiclePhoto {

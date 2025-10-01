@@ -30,11 +30,11 @@ export interface UseUserActionsReturn {
   useUserEnquiredVehicles: (
     options?: UseUserActionsOptions
   ) => UseQueryResult<EnquiredVehiclesApiResponse, Error>;
-  
+
   useUserSavedVehicles: (
     options?: UseUserActionsOptions
   ) => UseQueryResult<SavedVehiclesApiResponse, Error>;
-  
+
   useUserViewedVehicles: (
     options?: UseUserActionsOptions
   ) => UseQueryResult<any, Error>;
@@ -52,7 +52,10 @@ export interface UseUserActionsReturn {
 
   // Action functions
   removeFromSaved: (vehicleId: string) => Promise<any>;
-  addToSaved: (vehicleId: string, metadata?: Record<string, any>) => Promise<any>;
+  addToSaved: (
+    vehicleId: string,
+    metadata?: Record<string, any>
+  ) => Promise<any>;
   submitVehicleEnquiry: (
     vehicleId: string,
     enquiryData: VehicleEnquiryData
@@ -61,7 +64,12 @@ export interface UseUserActionsReturn {
 
   // Mutations
   removeFromSavedMutation: UseMutationResult<any, Error, string, unknown>;
-  addToSavedMutation: UseMutationResult<any, Error, SaveVehicleOptions, unknown>;
+  addToSavedMutation: UseMutationResult<
+    any,
+    Error,
+    SaveVehicleOptions,
+    unknown
+  >;
   submitVehicleEnquiryMutation: UseMutationResult<
     any,
     Error,
@@ -77,6 +85,31 @@ export interface UseUserActionsReturn {
 
   // Utility functions
   extractViewedVehicles: (apiResponse: any) => ExtractedViewedVehicle[];
-  extractEnquiredVehicles: (apiData: EnquiredVehiclesApiResponse) => ExtractedEnquiredVehicle[];
-  extractSavedVehicles: (apiResponse: SavedVehiclesApiResponse) => ExtractedSavedVehicle[];
+  extractEnquiredVehicles: (
+    apiData: EnquiredVehiclesApiResponse
+  ) => ExtractedEnquiredVehicle[];
+  extractSavedVehicles: (
+    apiResponse: SavedVehiclesApiResponse
+  ) => ExtractedSavedVehicle[];
+
+  // Multi-country API functions (for advanced usage)
+  multiCountryApi: {
+    getUserSavedVehiclesAllCountries: (
+      userId: string,
+      page?: number,
+      limit?: number
+    ) => Promise<any>;
+    getUserEnquiredVehiclesAllCountries: (
+      userId: string,
+      page?: number,
+      limit?: number,
+      sortOrder?: "ASC" | "DESC"
+    ) => Promise<any>;
+    getUserViewedVehiclesAllCountries: (
+      userId: string,
+      page?: number,
+      limit?: number,
+      sortOrder?: "ASC" | "DESC"
+    ) => Promise<any>;
+  };
 }

@@ -3,29 +3,69 @@ import {
   trackCarView,
   updateUserProfile,
   getUserCarActionCounts,
+  getUserCarActionCountsAllCountries,
   getUserRecentActivities,
+  getUserRecentActivitiesAllCountries,
 } from "@/lib/api/userProfile.api";
-import type { 
+import type {
   UserCarActionCounts,
   UserRecentActivity,
 } from "@/lib/api/userProfile.api.types";
 import { User } from "@/auth";
 import { authStorage } from "@/lib/auth/authStorage";
+import { ENV } from "@/config/env";
 
-export const useUserProfile = ({ userId }: { userId: string }) => {
+export const useUserProfile = ({
+  userId,
+  useMultiCountry = true,
+}: {
+  userId: string;
+  useMultiCountry?: boolean;
+}) => {
   const queryClient = useQueryClient();
+  console.log("useMultiCountry: ", useMultiCountry);
 
-  // Call useQuery directly inside the main hook
-  const userCarActionCountsQuery = useQuery<UserCarActionCounts>({
-    queryKey: ["userCarActionCounts", userId],
-    queryFn: () => getUserCarActionCounts(userId),
+  // Call useQuery directly inside the main hook with multi-country support
+  const userCarActionCountsQuery = useQuery<
+    UserCarActionCounts & { multiCountryMetadata?: any }
+  >({
+    queryKey: ["userCarActionCounts", userId, useMultiCountry],
+    queryFn: async () => {
+      console.log("=== Query Function Called ===");
+      console.log("useMultiCountry:", useMultiCountry);
+      console.log("userId:", userId);
+
+      const result = useMultiCountry
+        ? await getUserCarActionCountsAllCountries(userId)
+        : await getUserCarActionCounts(userId);
+
+      console.log("Query function result:", result);
+      return result;
+    },
     enabled: !!userId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: true,
   });
 
-  // Query for user recent activities
-  const userRecentActivitiesQuery = useQuery<UserRecentActivity[]>({
-    queryKey: ["userRecentActivities", userId],
-    queryFn: () => getUserRecentActivities(userId),
+  console.log("userCarActionCountsQuery: ", userCarActionCountsQuery.data);
+
+  // Query for user recent activities with multi-country support
+  const userRecentActivitiesQuery = useQuery<
+    UserRecentActivity[] & { multiCountryMetadata?: any }
+  >({
+    queryKey: ["userRecentActivities", userId, useMultiCountry],
+    queryFn: async () => {
+      console.log("=== Recent Activities Query Function Called ===");
+      console.log("useMultiCountry:", useMultiCountry);
+      console.log("userId:", userId);
+
+      const result = useMultiCountry
+        ? await getUserRecentActivitiesAllCountries(userId)
+        : await getUserRecentActivities(userId);
+
+      console.log("Recent activities query function result:", result);
+      return result;
+    },
     enabled: !!userId,
     refetchOnWindowFocus: true, // Refetch when user returns to the tab
     refetchInterval: 3 * 60 * 1000, // Refetch every 3 minutes (3 * 60 * 1000 ms)
@@ -48,10 +88,12 @@ export const useUserProfile = ({ userId }: { userId: string }) => {
       // Invalidate and refetch user car action counts after tracking a view
       queryClient.invalidateQueries({
         queryKey: ["userCarActionCounts", userId],
+        exact: false,
       });
       // Also invalidate recent activities to show the new view
       queryClient.invalidateQueries({
         queryKey: ["userRecentActivities", userId],
+        exact: false,
       });
     },
   });
@@ -88,9 +130,11 @@ export const useUserProfile = ({ userId }: { userId: string }) => {
       });
       queryClient.invalidateQueries({
         queryKey: ["userCarActionCounts", userId],
+        exact: false,
       });
       queryClient.invalidateQueries({
         queryKey: ["userRecentActivities", userId],
+        exact: false,
       });
     },
     onError: (error) => {
@@ -128,10 +172,27 @@ export const useUserProfile = ({ userId }: { userId: string }) => {
   };
 
   return {
-    userCarActionCountsQuery, // contains { data, error, isLoading }
-    userRecentActivitiesQuery, // contains recent activities data
+    userCarActionCountsQuery, // contains { data, error, isLoading } with multi-country support
+    userRecentActivitiesQuery, // contains recent activities data with multi-country support
     trackCarViewMutation, // mutation to track car views
     updateProfileMutation, // mutation helpers
     handleUpdateProfile, // handle function for updating profile
+
+    // Multi-country utilities
+    multiCountryConfig: {
+      isEnabled: useMultiCountry,
+      metadata: {
+        carActionCounts: (userCarActionCountsQuery.data as any)
+          ?.multiCountryMetadata,
+        recentActivities: (userRecentActivitiesQuery.data as any)
+          ?.multiCountryMetadata,
+      },
+    },
+
+    // Direct multi-country API access (for advanced usage)
+    multiCountryApi: {
+      getUserCarActionCountsAllCountries,
+      getUserRecentActivitiesAllCountries,
+    },
   };
 };

@@ -4,10 +4,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppContext } from "@/context/useAppContext";
 import { useImmer } from "use-immer";
 import { useEffect, useState } from "react";
+import { ENV } from "@/config/env";
 import {
   getUserEnquiredVehicles,
+  getUserEnquiredVehiclesAllCountries,
   getUserSavedVehicles,
+  getUserSavedVehiclesAllCountries,
   getUserViewedVehicles,
+  getUserViewedVehiclesAllCountries,
   removeFromSaved,
   addToSaved,
   submitVehicleEnquiry,
@@ -89,7 +93,7 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
     // Query to check if vehicle is saved
     const { data: savedVehicles, isLoading: isCheckingStatus } = useQuery({
       queryKey: ["savedVehicles", userId],
-      queryFn: () => getUserSavedVehicles(userId!, 0, 100),
+      queryFn: () => getUserSavedVehiclesAllCountries(userId!, 0, 100),
       enabled: !!userId && isAuthenticated,
       staleTime: 5 * 60 * 1000, // 5 minutes
       retry: 2,
@@ -222,7 +226,11 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
   // Function to manually fetch and process saved vehicles
   const fetchSavedVehicles = async (options: UseUserActionsOptions = {}) => {
     const effectiveUserId = options.userId || userId;
-    const { page = 0, limit = 10 } = options;
+    const {
+      page = 0,
+      limit = 10,
+      useMultiCountry = ENV.ENABLE_MULTI_COUNTRY_API ?? true,
+    } = options;
 
     if (!effectiveUserId) return;
 
@@ -232,13 +240,25 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
     });
 
     try {
-      const data = await getUserSavedVehicles(effectiveUserId, page, limit);
+      // Use multi-country API by default, fallback to single country if needed
+      const data = useMultiCountry
+        ? await getUserSavedVehiclesAllCountries(effectiveUserId, page, limit)
+        : await getUserSavedVehicles(effectiveUserId, page, limit);
+
       const extractedData = extractSavedVehicles(data);
       setSavedVehiclesState((draft) => {
         draft.isLoading = false;
         draft.error = null;
         draft.data = extractedData;
       });
+
+      // Log multi-country metadata if available
+      if ("multiCountryMetadata" in data && data.multiCountryMetadata) {
+        console.log(
+          "Multi-country saved vehicles metadata:",
+          data.multiCountryMetadata
+        );
+      }
     } catch (error) {
       setSavedVehiclesState((draft) => {
         draft.isLoading = false;
@@ -251,7 +271,12 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
   // Function to manually fetch and process enquired vehicles
   const fetchEnquiredVehicles = async (options: UseUserActionsOptions = {}) => {
     const effectiveUserId = options.userId || userId;
-    const { page = 0, limit = 10, sortOrder = "DESC" } = options;
+    const {
+      page = 0,
+      limit = 10,
+      sortOrder = "DESC",
+      useMultiCountry = ENV.ENABLE_MULTI_COUNTRY_API ?? true,
+    } = options;
 
     if (!effectiveUserId) return;
 
@@ -261,18 +286,35 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
     });
 
     try {
-      const data = await getUserEnquiredVehicles(
-        effectiveUserId,
-        page,
-        limit,
-        sortOrder
-      );
+      // Use multi-country API by default, fallback to single country if needed
+      const data = useMultiCountry
+        ? await getUserEnquiredVehiclesAllCountries(
+            effectiveUserId,
+            page,
+            limit,
+            sortOrder
+          )
+        : await getUserEnquiredVehicles(
+            effectiveUserId,
+            page,
+            limit,
+            sortOrder
+          );
+
       const extractedData = extractEnquiredVehicles(data);
       setEnquiredVehiclesState((draft) => {
         draft.isLoading = false;
         draft.error = null;
         draft.data = extractedData;
       });
+
+      // Log multi-country metadata if available
+      if ("multiCountryMetadata" in data && data.multiCountryMetadata) {
+        console.log(
+          "Multi-country enquired vehicles metadata:",
+          data.multiCountryMetadata
+        );
+      }
     } catch (error) {
       setEnquiredVehiclesState((draft) => {
         draft.isLoading = false;
@@ -290,6 +332,7 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       page = 0,
       limit = 10,
       sortOrder = "DESC",
+      useMultiCountry = ENV.ENABLE_MULTI_COUNTRY_API ?? true,
     } = options;
 
     return useQuery({
@@ -299,9 +342,17 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
         page,
         limit,
         sortOrder,
+        useMultiCountry,
       ],
       queryFn: () =>
-        getUserEnquiredVehicles(effectiveUserId!, page, limit, sortOrder),
+        useMultiCountry
+          ? getUserEnquiredVehiclesAllCountries(
+              effectiveUserId!,
+              page,
+              limit,
+              sortOrder
+            )
+          : getUserEnquiredVehicles(effectiveUserId!, page, limit, sortOrder),
       enabled: !!effectiveUserId && enabled,
       staleTime: 0,
       refetchInterval: 6000,
@@ -311,11 +362,25 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
 
   const useUserSavedVehicles = (options: UseUserActionsOptions = {}) => {
     const effectiveUserId = options.userId || userId;
-    const { enabled = true, page = 0, limit = 10 } = options;
+    const {
+      enabled = true,
+      page = 0,
+      limit = 10,
+      useMultiCountry = ENV.ENABLE_MULTI_COUNTRY_API ?? true,
+    } = options;
 
     return useQuery({
-      queryKey: ["userSavedVehicles", effectiveUserId, page, limit],
-      queryFn: () => getUserSavedVehicles(effectiveUserId!, page, limit),
+      queryKey: [
+        "userSavedVehicles",
+        effectiveUserId,
+        page,
+        limit,
+        useMultiCountry,
+      ],
+      queryFn: () =>
+        useMultiCountry
+          ? getUserSavedVehiclesAllCountries(effectiveUserId!, page, limit)
+          : getUserSavedVehicles(effectiveUserId!, page, limit),
       enabled: !!effectiveUserId && enabled,
       staleTime: 5 * 60 * 1000, // 5 minutes
     });
@@ -328,12 +393,27 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       page = 0,
       limit = 10,
       sortOrder = "DESC",
+      useMultiCountry = ENV.ENABLE_MULTI_COUNTRY_API ?? true,
     } = options;
 
     return useQuery({
-      queryKey: ["userViewedVehicles", effectiveUserId, page, limit, sortOrder],
+      queryKey: [
+        "userViewedVehicles",
+        effectiveUserId,
+        page,
+        limit,
+        sortOrder,
+        useMultiCountry,
+      ],
       queryFn: () =>
-        getUserViewedVehicles(effectiveUserId!, page, limit, sortOrder),
+        useMultiCountry
+          ? getUserViewedVehiclesAllCountries(
+              effectiveUserId!,
+              page,
+              limit,
+              sortOrder
+            )
+          : getUserViewedVehicles(effectiveUserId!, page, limit, sortOrder),
       enabled: !!effectiveUserId && enabled,
       staleTime: 5 * 60 * 1000, // 5 minutes
     });
@@ -829,5 +909,12 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
     extractViewedVehicles,
     extractEnquiredVehicles,
     extractSavedVehicles,
+
+    // Multi-country API functions (for advanced usage)
+    multiCountryApi: {
+      getUserSavedVehiclesAllCountries,
+      getUserEnquiredVehiclesAllCountries,
+      getUserViewedVehiclesAllCountries,
+    },
   };
 };

@@ -30,13 +30,13 @@ const API_ENDPOINTS = {
 // Define countries configuration for future extensibility
 export const COUNTRIES_CONFIG = {
   INDIA: {
-    code: 'IN',
-    name: 'India',
+    code: "IN",
+    name: "India",
     baseUrl: API_ENDPOINTS.INDIA,
   },
   UAE: {
-    code: 'AE',
-    name: 'United Arab Emirates',
+    code: "AE",
+    name: "United Arab Emirates",
     baseUrl: API_ENDPOINTS.UAE,
   },
   // Future countries can be added here

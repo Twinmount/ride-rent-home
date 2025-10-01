@@ -148,15 +148,28 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     userRecentActivitiesQuery,
     handleUpdateProfile,
     updateProfileMutation,
+    multiCountryConfig,
   } = useUserProfile({
     userId: userId!,
+    useMultiCountry: true, // Enable multi-country by default
   });
 
   useEffect(() => {
     if (!userCarActionCountsQuery.isLoading) {
       const data = userCarActionCountsQuery.data;
+
+      // Log multi-country metadata for debugging
+      if (
+        multiCountryConfig.isEnabled &&
+        multiCountryConfig.metadata.carActionCounts
+      ) {
+        console.log(
+          "Multi-country car action counts metadata:",
+          multiCountryConfig.metadata.carActionCounts
+        );
+      }
     }
-  }, [userCarActionCountsQuery.data]);
+  }, [userCarActionCountsQuery.data, multiCountryConfig]);
 
   useEffect(() => {
     if (userProfileQuery.data?.success && userProfileQuery.data.data) {
