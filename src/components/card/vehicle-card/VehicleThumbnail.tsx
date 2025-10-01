@@ -14,8 +14,8 @@ type VehicleThumbnailProps = {
   height: number;
   layoutType: "grid" | "carousel";
   vehiclePhotos?: string[];
-  priority?: boolean; // ✅ ADD THIS
-  loading?: "lazy" | "eager"; // ✅ ADD THIS
+  priority?: boolean;
+  loading?: "lazy" | "eager";
 };
 
 const VehicleThumbnail = ({
@@ -25,8 +25,8 @@ const VehicleThumbnail = ({
   height,
   layoutType,
   vehiclePhotos = [],
-  priority = false, // ✅ ADD THIS
-  loading = "lazy", // ✅ ADD THIS
+  priority = false,
+  loading = "lazy",
 }: VehicleThumbnailProps) => {
   const [isImageLoading, setImageLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -87,7 +87,7 @@ const VehicleThumbnail = ({
 
   const containerClassName = `
     relative w-full overflow-hidden rounded 
-    ${layoutType === "carousel" ? "h-[8rem] lg:h-[8.3rem]" : "h-[6rem] lg:h-[7.5rem]"}
+    ${layoutType === "carousel" ? "h-[8rem] lg:h-[8.3rem]" : "h-[6.8rem] lg:h-[7.5rem]"}
     ${hasMultipleImages ? "cursor-pointer select-none" : ""}
   `;
 
