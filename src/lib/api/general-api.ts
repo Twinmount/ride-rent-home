@@ -14,6 +14,7 @@ import {
   FetchTypesResponse,
 } from "@/types";
 import { API } from "@/utils/API";
+import { mainApiClient } from "./axios.config";
 
 interface FetchVehicleByFiltersParams {
   query: string;
@@ -259,6 +260,7 @@ export const sendPortfolioVisit = async (
     return responseData; // Return the response data if needed
   } catch (error) {
     console.error("Error sending portfolio visit:", error);
+    throw error;
   }
 };
 
@@ -288,6 +290,7 @@ export const sendQuery = async (
     }
   } catch (error) {
     console.error("Error sending query:", error);
+    throw error;
   }
 };
 
@@ -737,39 +740,20 @@ export const sendRentalEnquiry = async ({
   country?: string;
 }) => {
   try {
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-
-    const url = `${BASE_URL}/enquiries`;
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId,
-        agentId,
-        carId,
-        message,
-        rentalStartDate,
-        rentalEndDate,
-        name,
-        phone,
-        email,
-      }),
+    // Use mainApiClient which automatically switches URL based on country
+    const response = await mainApiClient.post("/enquiries", {
+      userId,
+      agentId,
+      carId,
+      message,
+      rentalStartDate,
+      rentalEndDate,
+      name,
+      phone,
+      email,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to send rental enquiry");
-    }
-
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.error("Error sending rental enquiry:", error);
     throw error;
@@ -787,28 +771,12 @@ export const checkActiveEnquiry = async ({
   country?: string;
 }): Promise<{ hasActiveEnquiry: boolean; result?: any }> => {
   try {
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
+    // Use mainApiClient which automatically switches URL based on country
+    const response = await mainApiClient.get(
+      `/enquiries/check-active/${carId}/${userId}`
+    );
 
-    const url = `${BASE_URL}/enquiries/check-active/${carId}/${userId}`;
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      // If endpoint not found or error, assume no active enquiry
-      return { hasActiveEnquiry: false };
-    }
-
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.error("Error checking active enquiry:", error);
     // On error, assume no active enquiry to allow user to proceed
@@ -827,25 +795,12 @@ export const getVehicleWithEnquiryStatus = async ({
   country?: string;
 }): Promise<any> => {
   try {
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-
-    // First get vehicle details
-    const vehicleResponse = await fetch(
-      `${BASE_URL}/vehicle/details?vehicleCode=${vehicleCode}`,
-      {
-        method: "GET",
-        cache: "no-cache",
-      }
+    // Use mainApiClient which automatically switches URL based on country
+    const vehicleResponse = await mainApiClient.get(
+      `/vehicle/details?vehicleCode=${vehicleCode}`
     );
 
-    if (!vehicleResponse.ok) {
-      throw new Error("Failed to fetch vehicle details");
-    }
-
-    const vehicleData = await vehicleResponse.json();
+    const vehicleData = vehicleResponse.data;
 
     // If user is logged in and vehicle data is valid, check for active enquiry
     if (userId && vehicleData?.result?.vehicleId) {

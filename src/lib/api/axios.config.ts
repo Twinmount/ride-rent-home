@@ -18,10 +18,36 @@ const API_ENDPOINTS = {
   INDIA:
     ENV.API_URL_INDIA ||
     ENV.NEXT_PUBLIC_API_URL_INDIA ||
-    "http://localhost:5000",
+    "http://localhost:5000/v1/riderent",
+  UAE:
+    ENV.API_URL ||
+    ENV.NEXT_PUBLIC_API_URL ||
+    "http://localhost:3001/v1/riderent",
   ASSETS:
     ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL || "http://localhost:5000",
 } as const;
+
+// Define countries configuration for future extensibility
+export const COUNTRIES_CONFIG = {
+  INDIA: {
+    code: "IN",
+    name: "India",
+    baseUrl: API_ENDPOINTS.INDIA,
+  },
+  UAE: {
+    code: "AE",
+    name: "United Arab Emirates",
+    baseUrl: API_ENDPOINTS.UAE,
+  },
+  // Future countries can be added here
+  // SAUDI: {
+  //   code: 'SA',
+  //   name: 'Saudi Arabia',
+  //   baseUrl: 'your-saudi-api-url',
+  // },
+} as const;
+
+export type CountryCode = keyof typeof COUNTRIES_CONFIG;
 
 // Flag to prevent multiple refresh attempts
 let isRefreshing = false;
@@ -77,7 +103,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
     authStorage.clear();
     // Optionally redirect to login page
     if (typeof window !== "undefined") {
-      window.location.href = "/";
+      // window.location.href = "/";
     }
     return null;
   }
@@ -93,7 +119,7 @@ const createApiClient = (baseURL: string): AxiosInstance => {
     },
   });
 
-  // Request interceptor to add authorization header
+  // Request interceptor to add authorization header and handle dynamic URL switching
   client.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
       const token = authStorage.getToken();
@@ -106,13 +132,67 @@ const createApiClient = (baseURL: string): AxiosInstance => {
         delete config.headers["Content-Type"];
       }
 
-      console.log("Request config:", {
-        url: config.url,
-        method: config.method,
-        hasAuth: !!config.headers.Authorization,
-        contentType: config.headers["Content-Type"],
-        isFormData: config.data instanceof FormData,
-      });
+      return config;
+    },
+    (error: AxiosError) => {
+      console.error("Request interceptor error:", error);
+      return Promise.reject(error);
+    }
+  );
+
+  return client;
+};
+
+// Helper function to detect country from current URL
+function detectCountryFromUrl(): "ae" | "in" {
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname;
+    const pathname = window.location.pathname;
+
+    // Check if URL starts with /in or domain contains 'india'
+    if (pathname.startsWith("/in") || hostname.includes("india")) {
+      return "in";
+    }
+    // Check if URL starts with /ae or domain contains 'uae'
+    if (pathname.startsWith("/ae") || hostname.includes("uae")) {
+      return "ae";
+    }
+  }
+
+  // Default to UAE
+  return "ae";
+}
+
+// Function to create dynamic main API client that switches URL based on country
+const createDynamicMainApiClient = (): AxiosInstance => {
+  const client = axios.create({
+    timeout: 30000,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  // Request interceptor to add authorization header and dynamically set baseURL
+  client.interceptors.request.use(
+    (config: InternalAxiosRequestConfig) => {
+      // Dynamically set baseURL based on country detection
+      const country = detectCountryFromUrl();
+
+      const baseURL =
+        country === "in" ? API_ENDPOINTS.INDIA : API_ENDPOINTS.MAIN;
+      config.baseURL = baseURL;
+
+      console.log("baseURL: ", baseURL);
+
+      const token = authStorage.getToken();
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+
+      // Handle FormData properly - let the browser set the content-type
+      if (config.data instanceof FormData) {
+        delete config.headers["Content-Type"];
+      }
 
       return config;
     },
@@ -201,15 +281,74 @@ const createApiClient = (baseURL: string): AxiosInstance => {
 
 // Create multiple API clients for different services
 export const authApiClient = createApiClient(API_ENDPOINTS.AUTH);
-export const mainApiClient = createApiClient(API_ENDPOINTS.MAIN);
+export const mainApiClient = createDynamicMainApiClient(); // Dynamic client that switches based on URL
 export const indiaApiClient = createApiClient(API_ENDPOINTS.INDIA);
+export const uaeApiClient = createApiClient(API_ENDPOINTS.UAE);
 export const assetsApiClient = createApiClient(API_ENDPOINTS.ASSETS);
 
-// Default export (main API client)
+// Create country-specific API clients
+export const countryApiClients = {
+  INDIA: createApiClient(API_ENDPOINTS.INDIA),
+  UAE: createApiClient(API_ENDPOINTS.UAE),
+  // Future countries can be added here
+  // SAUDI: createApiClient(API_ENDPOINTS.SAUDI),
+} as const;
+
+// Default export (dynamic main API client)
 export default mainApiClient;
 
 // Export API endpoints for reference
 export { API_ENDPOINTS };
+
+// Helper function to get appropriate API client based on URL
+export const getApiClientByUrl = () => {
+  const country = detectCountryFromUrl();
+
+  switch (country) {
+    case "in":
+      return indiaApiClient;
+    case "ae":
+    default:
+      return mainApiClient;
+  }
+};
+
+// Enhanced request helper that auto-detects country from URL
+export const smartApiRequest = {
+  get: <T = any>(
+    url: string,
+    config?: InternalAxiosRequestConfig
+  ): Promise<AxiosResponse<T>> => {
+    const client = getApiClientByUrl();
+    return client.get<T>(url, config);
+  },
+
+  post: <T = any>(
+    url: string,
+    data?: any,
+    config?: InternalAxiosRequestConfig
+  ): Promise<AxiosResponse<T>> => {
+    const client = getApiClientByUrl();
+    return client.post<T>(url, data, config);
+  },
+
+  put: <T = any>(
+    url: string,
+    data?: any,
+    config?: InternalAxiosRequestConfig
+  ): Promise<AxiosResponse<T>> => {
+    const client = getApiClientByUrl();
+    return client.put<T>(url, data, config);
+  },
+
+  delete: <T = any>(
+    url: string,
+    config?: InternalAxiosRequestConfig
+  ): Promise<AxiosResponse<T>> => {
+    const client = getApiClientByUrl();
+    return client.delete<T>(url, config);
+  },
+};
 
 // Export helper functions for different APIs
 export const createAuthenticatedRequest = {

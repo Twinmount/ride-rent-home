@@ -80,7 +80,6 @@ export const PhoneStep = ({
     // const countryCode = country.inputValue.substring(0, firstSpaceIndex);
 
     const phoneDetails = getNumberAfterSpaceStrict(country.inputValue);
-    console.log("phoneDetails: ", phoneDetails);
 
     setPhoneNumber((draft) => {
       draft.value = value;
@@ -94,28 +93,77 @@ export const PhoneStep = ({
     clearError();
 
     try {
+      // Clean phone number by removing dashes and special characters
+      const cleanedPhoneNumber = phoneNumber.number.replace(/[-\s()]/g, "");
+
       setDrawerState((draft: LoginDrawerState) => {
-        draft.phoneNumber = phoneNumber.number;
+        draft.phoneNumber = cleanedPhoneNumber;
         draft.countryCode = phoneNumber.countryCode;
       });
+
       // First check if user exists
       const userExistsResponse = await checkUserExists(
-        phoneNumber.number,
+        cleanedPhoneNumber,
         phoneNumber.countryCode
       );
 
       if (userExistsResponse.success && userExistsResponse.data) {
-        if (userExistsResponse.data.userExists) {
-          setUserExists(true);
-          setStep("password");
-          setStatus("success");
-          setStatusMessage("Welcome back! Please enter your password.");
+        const userData = userExistsResponse.data;
+
+        if (userData.userExists) {
+          // Handle different types of existing users
+          if (
+            userData.isTempVerified === "TRUE" &&
+            userData?.isProfileNavigationRequired
+          ) {
+            // User has temporary verification - show remaining time
+            const remainingMinutes = userData.tempVerificationValidFor || 0;
+            setUserExists(true);
+            setStep("register");
+            setStatus("success");
+            setStatusMessage(
+              "Welcome back! Please complete your registration."
+            );
+          } else if (userData.isPhoneVerified) {
+            // Fully verified user - normal login flow
+            setUserExists(true);
+            setStep("password");
+            setStatus("success");
+            setStatusMessage("Welcome back! Please enter your password.");
+          } else {
+            // User exists but not verified - treat as new user
+            setStatus("loading");
+            setStatusMessage(
+              "Account found but not verified. Sending verification code..."
+            );
+
+            const signupResponse = await signup({
+              phoneNumber: cleanedPhoneNumber,
+              countryCode: phoneNumber.countryCode,
+              countryId: "",
+            });
+
+            if (signupResponse.success && signupResponse.data) {
+              setUserExists(false);
+              setStep("otp");
+              setStatus("success");
+              setStatusMessage("OTP sent successfully! Check your WhatsApp.");
+            }
+          }
         } else {
-          setStatus("loading");
-          setStatusMessage("New user detected! Sending verification code...");
+          // User doesn't exist or was cleaned up
+          if (userData.expiredTempUser) {
+            setStatus("loading");
+            setStatusMessage(
+              "Previous session expired. Creating new account..."
+            );
+          } else {
+            setStatus("loading");
+            setStatusMessage("New user detected! Sending verification code...");
+          }
 
           const signupResponse = await signup({
-            phoneNumber: phoneNumber.number,
+            phoneNumber: cleanedPhoneNumber,
             countryCode: phoneNumber.countryCode,
             countryId: "",
           });
@@ -124,12 +172,19 @@ export const PhoneStep = ({
             setUserExists(false);
             setStep("otp");
             setStatus("success");
-            setStatusMessage("OTP sent successfully! Check your Whatsapp.");
+            const message = userData.expiredTempUser
+              ? "New verification code sent! Previous session was expired."
+              : "OTP sent successfully! Check your WhatsApp.";
+            setStatusMessage(message);
           }
         }
+      } else {
+        // API call failed
+        setStatus("error");
+        setStatusMessage("Unable to verify phone number. Please try again.");
       }
     } catch (error: any) {
-      console.log("error: [password section]", error);
+      console.log("error: [phone submit]", error);
       setStatus("error");
       setStatusMessage(
         error?.message || "Failed to verify phone number. Please try again."

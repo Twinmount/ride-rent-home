@@ -7,6 +7,8 @@ import type {
   SetPasswordData,
   ResendOtpData,
   ProfileUpdateData,
+  PhoneChangeData,
+  PhoneChangeVerificationData,
 } from "@/types/auth.types";
 
 import { createAuthenticatedRequest, authApiClient } from "./axios.config";
@@ -26,6 +28,8 @@ const AUTH_ENDPOINTS = {
   RESET_PASSWORD: "/reset-password",
   REFRESH_TOKEN: "/refresh-access-token",
   LOGOUT: "/logout",
+  CHANGE_PHONE_NUMBER: "/change-phone-number",
+  VERIFY_PHONE_CHANGE: "/verify-phone-change",
 } as const;
 
 // Auth API service class
@@ -318,6 +322,52 @@ export class AuthAPI {
   }
 
   /**
+   * Request phone number change
+   */
+  static async requestPhoneNumberChange(
+    newPhoneNumber: string,
+    newCountryCode: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.CHANGE_PHONE_NUMBER,
+        { newPhoneNumber, newCountryCode }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to request phone number change"
+      );
+    }
+  }
+
+  /**
+   * Verify phone number change with OTP
+   */
+  static async verifyPhoneNumberChange(
+    otpId: string,
+    otp: string,
+    newPhoneNumber: string,
+    newCountryCode: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.VERIFY_PHONE_CHANGE,
+        { otpId, otp, newPhoneNumber, newCountryCode }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to verify phone number change"
+      );
+    }
+  }
+
+  /**
    * Check if user exists by phone number and country code
    */
   static async checkUserExists(
@@ -356,6 +406,8 @@ export const authAPI = {
   forgotPassword: AuthAPI.forgotPassword,
   resetPassword: AuthAPI.resetPassword,
   checkUserExists: AuthAPI.checkUserExists,
+  requestPhoneNumberChange: AuthAPI.requestPhoneNumberChange,
+  verifyPhoneNumberChange: AuthAPI.verifyPhoneNumberChange,
 };
 
 // Export default
