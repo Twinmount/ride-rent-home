@@ -21,9 +21,9 @@ export function getSectionConfig(
       const maxPrice = sectionData?.maxPrice || 1000;
       
       return {
-        title: `Best Offers Today`,
-        description: `Great deals on ${formattedCategory} with amazing discounts.`,
-        url: `${baseUrl}?period=${period}&price=${minPrice}-${maxPrice}`
+        title: `Best value offers`,
+        description: `Explore more choices curated for both budget and style.`,
+        url: `${baseUrl}?period=${period}&price=${minPrice}-${maxPrice}`,
       };
       
     case 'MORE_FROM_BRAND':
@@ -40,8 +40,8 @@ export function getSectionConfig(
       // URL: /{country}/{state}/listing/{category}?filter=latest-models
       return {
         title: `Newly Arrived`,
-        description: `Check out the latest ${formattedCategory} additions.`,
-        url: `${baseUrl}?filter=latest-models`
+        description: `Experience the latest arrivals at the best rates`,
+        url: `${baseUrl}?filter=latest-models`,
       };
       
     case 'SIMILAR_FALLBACK':

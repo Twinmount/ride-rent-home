@@ -1,12 +1,11 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef } from "react";
 import MobileProfileCard from "@/components/root/vehicle-details/profile-card/mobile-profile-card/MobileProfileCard";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 import { sendPortfolioVisit } from "@/lib/api/general-api";
 import { ProfileCardDataType } from "@/types/vehicle-details-types";
-import { useUserProfile } from "@/hooks/useUserProfile";
-import { useAuthContext } from "@/auth";
+import { useQuery } from "@tanstack/react-query";
 
 type DetailsSectionClientWrapperProps = {
   children: React.ReactNode;
@@ -33,50 +32,25 @@ const DetailsSectionClientWrapper = ({
   profileData,
   country,
 }: DetailsSectionClientWrapperProps) => {
-  const { vehicleCode, vehicleId } = profileData;
-  const { authStorage } = useAuthContext();
-  const userId = authStorage.getUser()?.id.toString();
+  const { vehicleCode } = profileData;
 
   const detailsSectionRef = useRef(null);
   const isInViewPort = useIntersectionObserver(detailsSectionRef);
 
-  // Ref to track if the API has already been called to prevent double calls
-  const hasTrackedView = useRef(false);
-
-  const { trackCarViewMutation } = useUserProfile({
-    userId: userId || "",
+  useQuery({
+    queryKey: ["portfolioVisit", vehicleCode],
+    queryFn: () => sendPortfolioVisit(vehicleCode, country),
+    staleTime: 0,
   });
-
-  // Memoized function to track car view to prevent recreation on every render
-  const trackCarView = useCallback(() => {
-    if (userId && vehicleId && !hasTrackedView.current) {
-      hasTrackedView.current = true;
-      trackCarViewMutation.mutate({
-        carId: vehicleId,
-        metadata: {
-          timestamp: new Date().toISOString(),
-          page: "vehicle-details",
-          vehicleCode: vehicleCode,
-          country: country,
-          action: "page-load",
-        },
-      });
-    }
-  }, [userId, vehicleId, vehicleCode, country, trackCarViewMutation]);
-
-  // Track car view when component mounts (page loads) - only once
-  useEffect(() => {
-    trackCarView();
-  }, [trackCarView]);
 
   return (
     <section ref={detailsSectionRef}>
       {children}
 
       {/* Conditionally render MobileProfileCard based on the visibility of DetailsSectionClientWrapper*/}
-      {/* {isInViewPort && (
+      {isInViewPort && (
         <MobileProfileCard profileData={profileData} country={country} />
-      )} */}
+      )}
     </section>
   );
 };

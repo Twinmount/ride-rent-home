@@ -109,7 +109,7 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
             {companyName && (
               <a
                 href={`https://www.google.com/maps/search/${encodeURIComponent(
-                  companyName,
+                  companyName
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -134,7 +134,7 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
       </div>
 
       {/* Right side contact options */}
-      <div className="flex h-fit w-fit items-center justify-center">
+      {/* <div className="flex h-fit w-fit items-center justify-center">
         {isCompanyValid && <GreenNotificationPing classes="mb-6 !mr-2" />}
         <div className="flex flex-col items-center lg:items-center">
           <AgentContactIcons
@@ -149,7 +149,7 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
               : "Contact not available"}
           </span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

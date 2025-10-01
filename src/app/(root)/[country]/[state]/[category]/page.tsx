@@ -42,7 +42,7 @@ export default async function Home(props: PageProps) {
   const { country, state, category } = params;
 
   const vehicleType = searchParams.type;
-  console.log("Page params:", { country, state, category });
+  // console.log("Page params:", { country, state, category });
 
   // Generate JSON-LD
   const jsonLdData = getHomePageJsonLd(state, category, country);
