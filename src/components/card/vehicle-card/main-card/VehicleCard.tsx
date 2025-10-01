@@ -9,6 +9,7 @@ import RentNowDialogTrigger from "../RentNowDialogTrigger";
 import { VehicleBadgesGroup } from "../vehicle-badge/VehicleBadgesGroup";
 import CardTitle from "../CardTitle";
 import { useAuthContext } from "@/auth";
+import { cn } from "@/lib/utils";
 
 type VehicleCardProps = {
   vehicle: NewVehicleCardType;
@@ -47,7 +48,10 @@ const VehicleCard = ({
 
   return (
     <div
-      className={`flex w-full max-w-full flex-col gap-3 rounded border border-border-default bg-white p-2 ${classes}`}
+      className={cn(
+        `flex w-full flex-col gap-3 rounded border border-border-default bg-white p-2`,
+        classes
+      )}
     >
       <LinkWrapper
         href={vehicleDetailsPageLink}
