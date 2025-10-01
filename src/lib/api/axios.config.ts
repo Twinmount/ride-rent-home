@@ -77,7 +77,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
     authStorage.clear();
     // Optionally redirect to login page
     if (typeof window !== "undefined") {
-      window.location.href = "/";
+      // window.location.href = "/";
     }
     return null;
   }

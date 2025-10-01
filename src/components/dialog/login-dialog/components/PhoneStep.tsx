@@ -94,13 +94,16 @@ export const PhoneStep = ({
     clearError();
 
     try {
+      // Clean phone number by removing dashes and special characters
+      const cleanedPhoneNumber = phoneNumber.number.replace(/[-\s()]/g, "");
+
       setDrawerState((draft: LoginDrawerState) => {
-        draft.phoneNumber = phoneNumber.number;
+        draft.phoneNumber = cleanedPhoneNumber;
         draft.countryCode = phoneNumber.countryCode;
       });
       // First check if user exists
       const userExistsResponse = await checkUserExists(
-        phoneNumber.number,
+        cleanedPhoneNumber,
         phoneNumber.countryCode
       );
 
@@ -115,7 +118,7 @@ export const PhoneStep = ({
           setStatusMessage("New user detected! Sending verification code...");
 
           const signupResponse = await signup({
-            phoneNumber: phoneNumber.number,
+            phoneNumber: cleanedPhoneNumber,
             countryCode: phoneNumber.countryCode,
             countryId: "",
           });

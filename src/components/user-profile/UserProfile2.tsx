@@ -1400,11 +1400,11 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
               stiffness: 300,
               damping: 30,
             }}
-            className="fixed bottom-4 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 transform sm:bottom-6 sm:w-auto"
+            className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-md sm:bottom-6 sm:left-1/2 sm:right-auto sm:w-auto sm:-translate-x-1/2 sm:transform"
           >
-            <div className="flex items-center justify-center gap-3 rounded-lg bg-green-600 px-4 py-3 text-white shadow-lg sm:px-6 sm:py-4">
-              <CheckCircle size={18} className="text-white sm:h-5 sm:w-5" />
-              <div className="flex flex-col">
+            <div className="flex items-center gap-3 rounded-lg bg-green-600 px-4 py-3 text-white shadow-lg sm:px-6 sm:py-4">
+              <CheckCircle size={18} className="flex-shrink-0 text-white sm:h-5 sm:w-5" />
+              <div className="flex min-w-0 flex-col">
                 <span className="text-xs font-semibold sm:text-sm">
                   Profile Updated Successfully!
                 </span>
