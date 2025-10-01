@@ -70,6 +70,24 @@ export interface ProfileUpdateData {
 }
 
 /**
+ * Phone number change request data interface
+ */
+export interface PhoneChangeData {
+  newPhoneNumber: string;
+  newCountryCode: string;
+}
+
+/**
+ * Phone number change verification data interface
+ */
+export interface PhoneChangeVerificationData {
+  otpId: string;
+  otp: string;
+  newPhoneNumber: string;
+  newCountryCode: string;
+}
+
+/**
  * User entity interface
  */
 export interface User {
@@ -254,6 +272,16 @@ export interface UseAuthReturn {
     userId: string,
     profileData: ProfileUpdateData
   ) => Promise<AuthResponse>;
+  requestPhoneNumberChange: (
+    newPhoneNumber: string,
+    newCountryCode: string
+  ) => Promise<AuthResponse>;
+  verifyPhoneNumberChange: (
+    otpId: string,
+    otp: string,
+    newPhoneNumber: string,
+    newCountryCode: string
+  ) => Promise<AuthResponse>;
   clearError: () => void;
   onHandleLoginmodal: (config: { isOpen: boolean }) => void;
   handleProfileNavigation: () => void;
@@ -306,7 +334,29 @@ export interface UseAuthReturn {
     { userId: string; profileData: ProfileUpdateData },
     unknown
   >;
-  logoutMutation: UseMutationResult<AuthResponse, Error, { userId?: string }, unknown>;
+  logoutMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    { userId?: string },
+    unknown
+  >;
+  requestPhoneChangeMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    { newPhoneNumber: string; newCountryCode: string },
+    unknown
+  >;
+  verifyPhoneChangeMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    {
+      otpId: string;
+      otp: string;
+      newPhoneNumber: string;
+      newCountryCode: string;
+    },
+    unknown
+  >;
 
   // Utilities
   validateEmail: (email: string) => boolean;

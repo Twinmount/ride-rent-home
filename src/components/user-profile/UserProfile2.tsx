@@ -1,3 +1,21 @@
+/**
+ * UserProfile2 Component
+ *
+ * This component integrates with the phone number change API endpoints:
+ * - /change-phone-number: Request phone number change and receive OTP
+ * - /verify-phone-change: Verify the OTP to complete phone number change
+ *
+ * Phone Change Flow:
+ * 1. User enters new phone number and clicks "Save & Send OTP"
+ * 2. Component calls requestPhoneNumberChange() from useAuth hook
+ * 3. OTP is sent to the new phone number, OTP ID is stored locally
+ * 4. User enters OTP and clicks "Verify OTP"
+ * 5. Component calls verifyPhoneNumberChange() with OTP ID and OTP
+ * 6. On success, user's phone number is updated and profile is refreshed
+ *
+ * Note: Email change functionality is prepared but requires backend implementation
+ */
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -75,6 +93,11 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     resendOTP,
     verifyOtpMutation,
     resendOtpMutation,
+    requestPhoneNumberChange,
+    verifyPhoneNumberChange,
+    requestPhoneChangeMutation,
+    verifyPhoneChangeMutation,
+    userAuthStep,
     auth,
     user,
   } = useAuthContext();
@@ -112,6 +135,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
   const [emailOtp, setEmailOtp] = useState("");
   const [otpError, setOtpError] = useState("");
   const [otpCountdown, setOtpCountdown] = useState(0);
+  const [mobileOtpId, setMobileOtpId] = useState(""); // Add state for mobile OTP ID
+  const [emailOtpId, setEmailOtpId] = useState(""); // Add state for email OTP ID
 
   const userId = authStorage.getUser()?.id.toString();
 
@@ -210,19 +235,29 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   const handleSaveMobile = async () => {
     try {
-      // Use custom handleUpdateProfile for phone number updates (API only)
-      await handleUpdateProfile({
-        phoneNumber: tempMobileNumber,
-        countryCode: tempCountryCode,
-      });
+      // Use the auth context's phone change method instead of handleUpdateProfile
+      const response = await requestPhoneNumberChange(
+        tempMobileNumber,
+        tempCountryCode
+      );
 
-      // Show OTP verification section
-      setShowMobileOtp(true);
-      setOtpCountdown(300); // 5 minutes
-      setOtpError("");
-      setMobileOtp("");
-    } catch (error) {
-      console.error("Failed to update mobile number:", error);
+      if (response.success && response.data?.otpId) {
+        // Store the OTP ID for verification
+        setMobileOtpId(response.data.otpId);
+
+        // Show OTP verification section
+        setShowMobileOtp(true);
+        setOtpCountdown(300); // 5 minutes
+        setOtpError("");
+        setMobileOtp("");
+      } else {
+        throw new Error(
+          response.message || "Failed to request phone number change"
+        );
+      }
+    } catch (error: any) {
+      console.error("Failed to request mobile number change:", error);
+      setOtpError(error.message || "Failed to request phone number change");
     }
   };
 
@@ -230,6 +265,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     setIsEditingMobile(false);
     setShowMobileOtp(false);
     setMobileOtp("");
+    setMobileOtpId("");
     setOtpError("");
     setOtpCountdown(0);
   };
@@ -268,33 +304,49 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
   const handleVerifyMobileOtp = async () => {
     try {
       setOtpError("");
-      // For mobile OTP, we'll use the general OTP verification
-      // Note: You may need to get the otpId from the mobile update response
-      await verifyOTP(userId!, "mobile-otp-id", mobileOtp);
 
-      // Update local state
-      setProfileData((draft) => {
-        if (draft) {
-          draft.countryCode = tempCountryCode;
-          draft.phoneNumber = tempMobileNumber;
-          draft.isPhoneVerified = true;
-        }
-      });
+      if (!mobileOtpId) {
+        throw new Error("OTP ID not found. Please try again.");
+      }
 
-      // Reset states
-      setIsEditingMobile(false);
-      setShowMobileOtp(false);
-      setMobileOtp("");
-      setOtpCountdown(0);
+      // Use the auth context's verifyPhoneNumberChange method
+      const response = await verifyPhoneNumberChange(
+        mobileOtpId,
+        mobileOtp,
+        tempMobileNumber,
+        tempCountryCode
+      );
 
-      // Show success toast
-      setShowSuccessToast(true);
-      setTimeout(() => {
-        setShowSuccessToast(false);
-      }, 4000);
+      if (response.success) {
+        // Update local state
+        setProfileData((draft) => {
+          if (draft) {
+            draft.countryCode = tempCountryCode;
+            draft.phoneNumber = tempMobileNumber;
+            draft.isPhoneVerified = true;
+          }
+        });
 
-      // Refetch user profile
-      await userProfileQuery.refetch();
+        // Reset states
+        setIsEditingMobile(false);
+        setShowMobileOtp(false);
+        setMobileOtp("");
+        setMobileOtpId("");
+        setOtpCountdown(0);
+
+        // Show success toast
+        setShowSuccessToast(true);
+        setTimeout(() => {
+          setShowSuccessToast(false);
+        }, 4000);
+
+        // Refetch user profile
+        await userProfileQuery.refetch();
+      } else {
+        throw new Error(
+          response.message || "Failed to verify phone number change"
+        );
+      }
     } catch (error: any) {
       setOtpError(error.message || "Invalid OTP. Please try again.");
     }
@@ -338,8 +390,20 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     try {
       setOtpError("");
       if (type === "mobile") {
-        await resendOTP(tempMobileNumber, tempCountryCode);
-        setMobileOtp("");
+        // For mobile phone number change, resend OTP for the new phone number
+        const response = await requestPhoneNumberChange(
+          tempMobileNumber,
+          tempCountryCode
+        );
+
+        if (response.success && response.data?.otpId) {
+          setMobileOtpId(response.data.otpId);
+          setMobileOtp("");
+        } else {
+          throw new Error(
+            response.message || "Failed to resend OTP for phone change"
+          );
+        }
       } else {
         // For email, you might need a different resend function
         await resendOTP(tempEmail, ""); // Adjust based on your API
@@ -817,12 +881,12 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                               <Button
                                 size="sm"
                                 onClick={handleSaveMobile}
-                                disabled={updateProfileMutation.isPending}
+                                disabled={requestPhoneChangeMutation.isPending}
                                 className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
                               >
                                 <Check className="mr-1 h-4 w-4" />
-                                {updateProfileMutation.isPending
-                                  ? "Saving..."
+                                {requestPhoneChangeMutation.isPending
+                                  ? "Sending OTP..."
                                   : "Save & Send OTP"}
                               </Button>
                               <Button
@@ -871,7 +935,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                     }
                                   }}
                                   className="h-12 w-12 text-center text-lg font-bold"
-                                  disabled={verifyOtpMutation.isPending}
+                                  disabled={verifyPhoneChangeMutation.isPending}
                                 />
                               ))}
                             </div>
@@ -892,10 +956,12 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                   variant="link"
                                   size="sm"
                                   onClick={() => handleResendOtp("mobile")}
-                                  disabled={resendOtpMutation.isPending}
+                                  disabled={
+                                    requestPhoneChangeMutation.isPending
+                                  }
                                   className="h-auto p-0 text-orange-600"
                                 >
-                                  {resendOtpMutation.isPending
+                                  {requestPhoneChangeMutation.isPending
                                     ? "Sending..."
                                     : "Resend OTP"}
                                 </Button>
@@ -908,11 +974,11 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 onClick={handleVerifyMobileOtp}
                                 disabled={
                                   mobileOtp.length !== 4 ||
-                                  verifyOtpMutation.isPending
+                                  verifyPhoneChangeMutation.isPending
                                 }
                                 className="cursor-pointer bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"
                               >
-                                {verifyOtpMutation.isPending
+                                {verifyPhoneChangeMutation.isPending
                                   ? "Verifying..."
                                   : "Verify OTP"}
                               </Button>

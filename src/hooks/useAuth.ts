@@ -14,6 +14,8 @@ import type {
   InternalAuthState,
   SetPasswordData,
   ProfileUpdateData,
+  PhoneChangeData,
+  PhoneChangeVerificationData,
 } from "@/types/auth.types";
 
 // Import constants
@@ -276,6 +278,95 @@ export const useAuth = () => {
     },
   });
 
+  const requestPhoneChangeMutation = useMutation({
+    mutationFn: ({
+      newPhoneNumber,
+      newCountryCode,
+    }: {
+      newPhoneNumber: string;
+      newCountryCode: string;
+    }) => authAPI.requestPhoneNumberChange(newPhoneNumber, newCountryCode),
+    onSuccess: (data) => {
+      setError(null);
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
+  const verifyPhoneChangeMutation = useMutation({
+    mutationFn: ({
+      otpId,
+      otp,
+      newPhoneNumber,
+      newCountryCode,
+    }: {
+      otpId: string;
+      otp: string;
+      newPhoneNumber: string;
+      newCountryCode: string;
+    }) =>
+      authAPI.verifyPhoneNumberChange(
+        otpId,
+        otp,
+        newPhoneNumber,
+        newCountryCode
+      ),
+    onSuccess: (data) => {
+      setError(null);
+
+      // Update user state with new phone number and verification status
+      updateState((draft) => {
+        if (draft.user && data?.data) {
+          if (data.data.phoneNumber) {
+            draft.user.phoneNumber = data.data.phoneNumber;
+          }
+          if (data.data.countryCode) {
+            draft.user.countryCode = data.data.countryCode;
+          }
+          if (data.data.isPhoneVerified !== undefined) {
+            draft.user.isPhoneVerified = data.data.isPhoneVerified;
+          }
+        }
+      });
+
+      // Update auth state as well
+      setAuth((draft) => {
+        if (draft.user && data?.data) {
+          if (data.data.phoneNumber) {
+            draft.user.phoneNumber = data.data.phoneNumber;
+          }
+          if (data.data.countryCode) {
+            draft.user.countryCode = data.data.countryCode;
+          }
+          if (data.data.isPhoneVerified !== undefined) {
+            draft.user.isPhoneVerified = data.data.isPhoneVerified;
+          }
+        }
+      });
+
+      // Update storage with the updated user object
+      if (state.user) {
+        const updatedUser = {
+          ...state.user,
+          ...(data?.data?.phoneNumber && {
+            phoneNumber: data.data.phoneNumber,
+          }),
+          ...(data?.data?.countryCode && {
+            countryCode: data.data.countryCode,
+          }),
+          ...(data?.data?.isPhoneVerified !== undefined && {
+            isPhoneVerified: data.data.isPhoneVerified,
+          }),
+        };
+        authStorage.setUser(updatedUser, true); // Save to localStorage
+      }
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
   // React Query for getUserProfile
   const useGetUserProfile = (userId: string, enabled: boolean = true) => {
     return useQuery({
@@ -487,6 +578,54 @@ export const useAuth = () => {
     }
   };
 
+  // Request phone number change function
+  const requestPhoneNumberChange = async (
+    newPhoneNumber: string,
+    newCountryCode: string
+  ): Promise<AuthResponse> => {
+    try {
+      return requestPhoneChangeMutation.mutateAsync({
+        newPhoneNumber,
+        newCountryCode,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to request phone number change",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
+  // Verify phone number change function
+  const verifyPhoneNumberChange = async (
+    otpId: string,
+    otp: string,
+    newPhoneNumber: string,
+    newCountryCode: string
+  ): Promise<AuthResponse> => {
+    try {
+      return verifyPhoneChangeMutation.mutateAsync({
+        otpId,
+        otp,
+        newPhoneNumber,
+        newCountryCode,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to verify phone number change",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
   // Check if user exists function
   const checkUserExists = async (
     phoneNumber: string,
@@ -553,7 +692,9 @@ export const useAuth = () => {
       setPasswordMutation.isPending ||
       resendOtpMutation.isPending ||
       updateUserNameAndAvatar.isPending ||
-      logoutMutation.isPending,
+      logoutMutation.isPending ||
+      requestPhoneChangeMutation.isPending ||
+      verifyPhoneChangeMutation.isPending,
 
     // Actions
     checkUserExists,
@@ -564,6 +705,8 @@ export const useAuth = () => {
     setPassword,
     resendOTP,
     updateProfile,
+    requestPhoneNumberChange,
+    verifyPhoneNumberChange,
     clearError,
     onHandleLoginmodal,
     handleProfileNavigation,
@@ -580,6 +723,8 @@ export const useAuth = () => {
     resendOtpMutation,
     updateUserNameAndAvatar,
     logoutMutation,
+    requestPhoneChangeMutation,
+    verifyPhoneChangeMutation,
 
     // Utilities
     validateEmail,

@@ -131,11 +131,15 @@ export const Navbar = () => {
 
   // Navigation handlers
   const handleEnquiriesNavigation = () => {
-    router.push("/user-profile/enquired-vehicles");
+    router.push(`/${country}/user-profile/enquired-vehicles`);
   };
 
   const handleFavoritesNavigation = () => {
-    router.push("/user-profile/saved-vehicles");
+    router.push(`/${country}/user-profile/saved-vehicles`);
+  };
+
+  const handleProfileNavigationWithCountry = () => {
+    router.push(`/${country}/profile-page`);
   };
 
   // Get user name from auth state
