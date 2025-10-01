@@ -106,13 +106,13 @@ const createApiClient = (baseURL: string): AxiosInstance => {
         delete config.headers["Content-Type"];
       }
 
-      console.log("Request config:", {
-        url: config.url,
-        method: config.method,
-        hasAuth: !!config.headers.Authorization,
-        contentType: config.headers["Content-Type"],
-        isFormData: config.data instanceof FormData,
-      });
+      // console.log("Request config:", {
+      //   url: config.url,
+      //   method: config.method,
+      //   hasAuth: !!config.headers.Authorization,
+      //   contentType: config.headers["Content-Type"],
+      //   isFormData: config.data instanceof FormData,
+      // });
 
       return config;
     },

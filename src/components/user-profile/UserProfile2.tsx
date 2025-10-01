@@ -615,8 +615,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   )}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6 sm:space-y-8">
-                <div className="flex flex-col items-center gap-3 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 p-3 sm:flex-row sm:items-center sm:gap-4 sm:p-4 lg:gap-6 lg:p-6">
+              <CardContent className="space-y-4 p-4 sm:space-y-6 sm:p-6 lg:space-y-8">
+                <div className="flex flex-col items-center gap-4 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 p-4 sm:flex-row sm:items-center sm:gap-4 sm:p-4 lg:gap-6 lg:p-6">
                   <AvatarUpload
                     currentAvatar={profileData?.avatar}
                     userName={profileData?.name || "User"}
@@ -652,8 +652,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   />
                   <div className="flex-1 text-center sm:text-left">
                     {!isEditingName ? (
-                      <div className="mb-1 flex flex-col items-center gap-2 sm:flex-row">
-                        <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">
+                      <div className="mb-2 flex flex-col items-center gap-2 sm:mb-1 sm:flex-row">
+                        <h3 className="text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl">
                           {trimName(profileData?.name || "") || "User"}
                           {userProfileQuery.isLoading && (
                             <span className="ml-2 text-sm text-gray-500">
@@ -672,13 +672,13 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                         </Button>
                       </div>
                     ) : (
-                      <div className="mb-1 space-y-2">
-                        <div className="flex gap-2">
+                      <div className="mb-2 space-y-3 sm:mb-1 sm:space-y-2">
+                        <div className="flex flex-col gap-2 sm:flex-row">
                           <Input
                             value={tempName}
                             onChange={(e) => setTempName(e.target.value)}
                             placeholder="Enter your name"
-                            className="flex-1 text-lg font-bold sm:text-xl"
+                            className="flex-1 text-base font-bold sm:text-lg lg:text-xl"
                           />
                         </div>
                         <div className="flex flex-col gap-2 sm:flex-row">
@@ -708,7 +708,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                         </div>
                       </div>
                     )}
-                    <div className="mb-3 flex flex-wrap items-center justify-center gap-2 sm:justify-start sm:gap-3">
+                    <div className="mb-2 flex flex-wrap items-center justify-center gap-2 sm:mb-3 sm:justify-start sm:gap-3">
                       {/* <Badge
                         className="text-xs text-white sm:text-sm"
                         style={{
@@ -745,7 +745,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                         Active
                       </Badge>
                     </div>
-                    <div className="flex items-center justify-center gap-4 text-xs text-gray-600 sm:justify-start sm:text-sm">
+                    <div className="flex items-center justify-center gap-2 text-xs text-gray-600 sm:justify-start sm:gap-4 sm:text-sm">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
                         {formatMemberSince(profileData?.joinedAt || "")}
@@ -755,16 +755,16 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                 </div>
 
                 {/* Contact Information */}
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-xs font-medium sm:text-sm">
-                      <Phone className="h-3 w-3 text-gray-500 sm:h-4 sm:w-4" />
+                <div className="space-y-4 sm:space-y-4">
+                  <div className="space-y-2 sm:space-y-2">
+                    <Label className="flex items-center gap-2 text-sm font-medium">
+                      <Phone className="h-4 w-4 text-gray-500" />
                       Mobile Number
                     </Label>
                     {!isEditingMobile ? (
-                      <div className="flex items-center justify-between rounded-lg border bg-gray-50 p-3">
+                      <div className="flex items-center justify-between rounded-lg border bg-gray-50 p-3 sm:p-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-900 sm:text-base">
+                          <span className="text-sm text-gray-900">
                             {`${profileData?.countryCode || ""} ${profileData?.phoneNumber || ""}`}
                           </span>
                           {profileData?.isPhoneVerified && (
@@ -785,10 +785,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                         </Button>
                       </div>
                     ) : (
-                      <div className="space-y-3 rounded-lg border bg-blue-50 p-3">
+                      <div className="space-y-3 rounded-lg border bg-blue-50 p-3 sm:p-4">
                         {!showMobileOtp ? (
                           <>
-                            <div className="flex flex-col gap-2 sm:flex-row">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:gap-2">
                               <Select
                                 value={tempCountryCode}
                                 onValueChange={setTempCountryCode}
@@ -813,7 +813,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 className="flex-1"
                               />
                             </div>
-                            <div className="flex flex-col gap-2 sm:flex-row">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:gap-2">
                               <Button
                                 size="sm"
                                 onClick={handleSaveMobile}
@@ -847,7 +847,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 {tempMobileNumber}
                               </p>
                             </div>
-                            <div className="flex justify-center gap-1 sm:gap-2">
+                            <div className="flex justify-center gap-2">
                               {Array.from({ length: 4 }, (_, index) => (
                                 <Input
                                   key={index}
@@ -870,7 +870,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                       nextInput?.focus();
                                     }
                                   }}
-                                  className="h-10 w-10 text-center text-base font-bold sm:h-12 sm:w-12 sm:text-lg"
+                                  className="h-12 w-12 text-center text-lg font-bold"
                                   disabled={verifyOtpMutation.isPending}
                                 />
                               ))}
@@ -902,7 +902,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                               )}
                             </div>
 
-                            <div className="flex flex-col gap-2 sm:flex-row">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:gap-2">
                               <Button
                                 size="sm"
                                 onClick={handleVerifyMobileOtp}
@@ -932,9 +932,9 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                     )}
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-xs font-medium sm:text-sm">
-                      <Mail className="h-3 w-3 text-gray-500 sm:h-4 sm:w-4" />
+                  <div className="space-y-2 sm:space-y-2">
+                    <Label className="flex items-center gap-2 text-sm font-medium">
+                      <Mail className="h-4 w-4 text-gray-500" />
                       Email Address
                     </Label>
                     {!isEditingEmail ? (
@@ -957,7 +957,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                             </div>
                           ) : (
                             <div className="flex items-center gap-2">
-                              <span className="text-sm text-gray-900 sm:text-base">
+                              <span className="text-sm text-gray-900">
                                 {userProfileQuery.isLoading
                                   ? "Loading..."
                                   : profileData.email}
@@ -996,10 +996,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                         </Button>
                       </div>
                     ) : (
-                      <div className="space-y-3 rounded-lg border bg-blue-50 p-3">
+                      <div className="space-y-3 rounded-lg border bg-blue-50 p-3 sm:p-4">
                         {!showEmailOtp ? (
                           <>
-                            <div className="space-y-2">
+                            <div className="space-y-3 sm:space-y-2">
                               <Input
                                 type="email"
                                 value={tempEmail}
@@ -1020,7 +1020,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 </p>
                               )}
                             </div>
-                            <div className="flex flex-col gap-2 sm:flex-row">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:gap-2">
                               <Button
                                 size="sm"
                                 onClick={handleSaveEmail}
@@ -1059,7 +1059,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 Enter the 4-digit code sent to {tempEmail}
                               </p>
                             </div>
-                            <div className="flex justify-center gap-1 sm:gap-2">
+                            <div className="flex justify-center gap-2">
                               {Array.from({ length: 4 }, (_, index) => (
                                 <Input
                                   key={index}
@@ -1082,7 +1082,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                       nextInput?.focus();
                                     }
                                   }}
-                                  className="h-10 w-10 text-center text-base font-bold sm:h-12 sm:w-12 sm:text-lg"
+                                  className="h-12 w-12 text-center text-lg font-bold"
                                   disabled={verifyOtpMutation.isPending}
                                 />
                               ))}
@@ -1114,7 +1114,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                               )}
                             </div>
 
-                            <div className="flex flex-col gap-2 sm:flex-row">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:gap-2">
                               <Button
                                 size="sm"
                                 onClick={handleVerifyEmailOtp}
@@ -1159,18 +1159,18 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
                 {/* Preferences */}
                 <div className="space-y-4 border-t pt-4">
-                  <h4 className="flex items-center gap-2 text-sm font-medium text-gray-900 sm:text-base lg:text-lg">
+                  <h4 className="flex items-center gap-2 text-base font-medium text-gray-900 lg:text-lg">
                     <Bell className="h-4 w-4 text-gray-500" />
                     Notification Preferences
                   </h4>
 
                   <div className="space-y-4">
-                    <div className="flex flex-col gap-3 rounded-lg bg-red-50 p-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex flex-col gap-3 rounded-lg bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-3">
                       <div className="flex-1">
-                        <Label className="text-sm font-medium text-gray-900 sm:text-base">
+                        <Label className="text-sm font-medium text-gray-900">
                           Push Notifications
                         </Label>
-                        <p className="mt-1 text-xs text-red-600 sm:text-sm">
+                        <p className="mt-1 text-xs text-red-600">
                           Alerts will not be shown when notifications are off
                         </p>
                       </div>
@@ -1181,12 +1181,12 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                       />
                     </div>
 
-                    <div className="flex flex-col gap-3 rounded-lg bg-orange-50 p-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex flex-col gap-3 rounded-lg bg-orange-50 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-3">
                       <div className="flex-1">
-                        <Label className="text-sm font-medium text-gray-900 sm:text-base">
+                        <Label className="text-sm font-medium text-gray-900">
                           Email Alerts
                         </Label>
-                        <p className="mt-1 text-xs text-orange-600 sm:text-sm">
+                        <p className="mt-1 text-xs text-orange-600">
                           Get up to our yearly offers only. No spam for
                           marketing or ads.
                         </p>
@@ -1403,7 +1403,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
             className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-md sm:bottom-6 sm:left-1/2 sm:right-auto sm:w-auto sm:-translate-x-1/2 sm:transform"
           >
             <div className="flex items-center gap-3 rounded-lg bg-green-600 px-4 py-3 text-white shadow-lg sm:px-6 sm:py-4">
-              <CheckCircle size={18} className="flex-shrink-0 text-white sm:h-5 sm:w-5" />
+              <CheckCircle
+                size={18}
+                className="flex-shrink-0 text-white sm:h-5 sm:w-5"
+              />
               <div className="flex min-w-0 flex-col">
                 <span className="text-xs font-semibold sm:text-sm">
                   Profile Updated Successfully!

@@ -58,7 +58,7 @@ export const OtpStep = ({
     try {
       const verifyResponse = await verifyOTP(
         userAuthStep.userId,
-        userAuthStep.otpId,
+        drawerState.otpId || userAuthStep.otpId,
         code
       );
 
