@@ -29,7 +29,7 @@ export default function LocationDialogBanner({
     if (country === "ae") {
       return "Ride.Rent provides vehicle rental solutions across all emirates of the UAE";
     } else if (country === "in") {
-      return "Ride.Rent offers vehicle rental services in over 35 cities in India";
+      return null; // No description for India
     }
     // Default fallback
     return "Ride.Rent offers vehicle rental services";
