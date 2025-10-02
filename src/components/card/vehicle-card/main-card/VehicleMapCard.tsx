@@ -4,6 +4,7 @@ import { generateVehicleDetailsUrl } from '@/helpers';
 import LinkWrapper from '../LinkWrapper';
 import Image from 'next/image';
 import MapCardRentalDetails from '../MapCardRentalDetails';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type VehicleMapCardProps = {
   vehicle: MapVehicleCardType;
@@ -20,10 +21,14 @@ const VehicleMapCard = ({ vehicle, country = 'ae' }: VehicleMapCardProps) => {
     country: country,
   });
 
+  const isMobile = useIsMobile(1024);
+  const openInNewTab = !isMobile;
+
   return (
     <LinkWrapper
       href={vehicleDetailsPageLink}
-      className="flex w-full max-w-80 items-center gap-2 rounded border bg-white p-1 shadow-md"
+      className={`flex w-full max-w-80 items-center gap-2 rounded border bg-white p-1 shadow-md cursor-pointer`}
+      newTab={openInNewTab}
     >
       <div className="relative h-16 w-24 overflow-hidden rounded">
         <Image
