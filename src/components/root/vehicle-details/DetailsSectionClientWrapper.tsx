@@ -35,7 +35,6 @@ const DetailsSectionClientWrapper = ({
   country,
 }: DetailsSectionClientWrapperProps) => {
   const { vehicleCode, vehicleId } = profileData;
-  console.log("profileData: ", profileData);
   const { auth } = useAppContext();
   const { user, authStorage, isAuthenticated } = auth;
 

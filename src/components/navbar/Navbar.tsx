@@ -127,6 +127,8 @@ export const Navbar = () => {
 
   const handleLogout = () => {
     logout(auth?.user?.id || "");
+    onHandleLoginmodal({ isOpen: true });
+    router.push("/");
   };
 
   // Navigation handlers

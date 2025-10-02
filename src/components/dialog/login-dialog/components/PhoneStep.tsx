@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { PhoneInput } from "react-international-phone";
-
 import "react-international-phone/style.css";
-import { Phone, Loader2, UserCircle } from "lucide-react";
+import { Loader2, UserCircle } from "lucide-react";
 import "../phone-input.css";
 import { useImmer } from "use-immer";
-import { getNumberAfterSpace, getNumberAfterSpaceStrict } from "@/utils/helper";
+import {  getNumberAfterSpaceStrict } from "@/utils/helper";
 import { LoginDrawerState } from "../LoginDrawer";
 import { useLocationDetection } from "@/hooks/useLocationDetection";
-import { LocationOverride } from "@/components/common/LocationOverride";
+import { useAuthContext } from "@/auth";
+
 
 export const PhoneStep = ({
   setStep,
@@ -22,7 +22,9 @@ export const PhoneStep = ({
   clearError,
   setDrawerState,
 }: any) => {
-  const { location, isLoading: isLocationLoading } = useLocationDetection();
+  const { auth } = useAuthContext();
+  const { location, isLoading: isLocationLoading } =
+    useLocationDetection(!auth.isLoggedIn);
 
   const [phoneNumber, setPhoneNumber] = useImmer({
     value: "",

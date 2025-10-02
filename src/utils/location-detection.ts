@@ -68,8 +68,6 @@ export async function detectUserCountry(): Promise<LocationInfo> {
 
   for (const service of services) {
     try {
-      console.log(`Trying ${service.name} for location detection...`);
-
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 

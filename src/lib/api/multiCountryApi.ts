@@ -39,8 +39,6 @@ export async function callMultipleCountryApis<T>(
     timeout = 10000,
     includeMergedResults = true,
   } = options;
-  console.log("endpoint: ", endpoint);
-  console.log("countries: ", countries);
 
   const results: T[] = [];
   const errors: Array<{ country: CountryCode; error: Error }> = [];
