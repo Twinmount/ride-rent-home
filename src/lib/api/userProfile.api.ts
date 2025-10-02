@@ -127,6 +127,8 @@ export const getUserRecentActivitiesAllCountries = async (
         }
       );
 
+    console.log("multiCountryResponse: ", multiCountryResponse);
+
     // Extract activities from all successful countries
     const allActivities: (UserRecentActivity & { _metadata?: any })[] = [];
 

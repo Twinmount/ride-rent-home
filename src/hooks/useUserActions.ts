@@ -16,6 +16,7 @@ import {
   addToSaved,
   submitVehicleEnquiry,
 } from "@/lib/api/userActions.api";
+import { trackCarView } from "@/lib/api/userProfile.api";
 import {
   UseUserActionsOptions,
   EnquiredVehiclesApiResponse,
@@ -64,6 +65,7 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
   const [isSaved, setIsSaved] = useImmer(false);
 
   const userId = user?.id || authStorage.getUser()?.id;
+  console.log("userId: ", userId);
 
   // State for extracted saved vehicles data
   const [savedVehiclesState, setSavedVehiclesState] = useImmer({
@@ -161,6 +163,11 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
           queryKey: ["userSavedVehicles", userId],
           exact: false,
         });
+        // Invalidate user action counts to update saved count
+        queryClient.invalidateQueries({
+          queryKey: ["userCarActionCounts", userId],
+          exact: false,
+        });
         onSaveSuccess?.(true);
         setIsLoading(false);
       },
@@ -185,6 +192,11 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
         queryClient.invalidateQueries({ queryKey: ["savedVehicles", userId] });
         queryClient.invalidateQueries({
           queryKey: ["userSavedVehicles", userId],
+          exact: false,
+        });
+        // Invalidate user action counts to update saved count
+        queryClient.invalidateQueries({
+          queryKey: ["userCarActionCounts", userId],
           exact: false,
         });
         onSaveSuccess?.(false);
@@ -426,10 +438,12 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       // Invalidate saved vehicles query
       queryClient.invalidateQueries({
         queryKey: ["userSavedVehicles", userId],
+        exact: false,
       });
       // Invalidate user action counts
       queryClient.invalidateQueries({
         queryKey: ["userCarActionCounts", userId],
+        exact: false,
       });
     },
   });
@@ -446,10 +460,12 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       // Invalidate saved vehicles query
       queryClient.invalidateQueries({
         queryKey: ["userSavedVehicles", userId],
+        exact: false,
       });
       // Invalidate user action counts
       queryClient.invalidateQueries({
         queryKey: ["userCarActionCounts", userId],
+        exact: false,
       });
     },
   });
@@ -470,15 +486,53 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       // Invalidate enquired vehicles query
       queryClient.invalidateQueries({
         queryKey: ["userEnquiredVehicles", userId],
+        exact: false,
       });
       // Invalidate user action counts
       queryClient.invalidateQueries({
         queryKey: ["userCarActionCounts", userId],
+        exact: false,
       });
     },
   });
 
-  // Mutation to add vehicle to saved list
+  // Mutation to track car view - this should be called when user views a vehicle
+  const trackCarViewMutation = useMutation({
+    mutationFn: ({
+      carId,
+      metadata = {},
+    }: {
+      carId: string;
+      metadata?: Record<string, any>;
+    }) => {
+      console.log("Tracking car view in useUserActions:", { carId, metadata });
+      return trackCarView(userId!, carId, metadata);
+    },
+    onSuccess: (data) => {
+      console.log("✅ Car view tracked successfully:", data);
+
+      // Invalidate viewed vehicles query
+      queryClient.invalidateQueries({
+        queryKey: ["userViewedVehicles", userId],
+        exact: false,
+      });
+
+      // Invalidate user action counts to update viewed count
+      queryClient.invalidateQueries({
+        queryKey: ["userCarActionCounts", userId],
+        exact: false,
+      });
+
+      // Invalidate recent activities to show the new view
+      queryClient.invalidateQueries({
+        queryKey: ["userRecentActivities", userId],
+        exact: false,
+      });
+    },
+    onError: (error) => {
+      console.error("❌ Failed to track car view:", error);
+    },
+  }); // Mutation to add vehicle to saved list
   const saveMutation = useMutation({
     mutationFn: () => addToSaved(userId!, vehicleId!),
     onMutate: async () => {},
@@ -487,6 +541,11 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       queryClient.invalidateQueries({ queryKey: ["savedVehicles", userId] });
       queryClient.invalidateQueries({
         queryKey: ["userSavedVehicles", userId],
+        exact: false,
+      });
+      // Invalidate user action counts to update saved count
+      queryClient.invalidateQueries({
+        queryKey: ["userCarActionCounts", userId],
         exact: false,
       });
       setIsSaved(true);
@@ -506,6 +565,11 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       });
       queryClient.invalidateQueries({
         queryKey: ["userSavedVehicles", userId],
+        exact: false,
+      });
+      // Invalidate user action counts to update saved count
+      queryClient.invalidateQueries({
+        queryKey: ["userCarActionCounts", userId],
         exact: false,
       });
     },
@@ -546,6 +610,14 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
     }
   ) => {
     return submitVehicleEnquiryMutation.mutateAsync({ vehicleId, enquiryData });
+  };
+
+  const handleTrackCarView = async (
+    carId: string,
+    metadata: Record<string, any> = {}
+  ) => {
+    console.log("carId: ", carId);
+    return trackCarViewMutation.mutate({ carId, metadata });
   };
 
   const extractViewedVehicles = (apiResponse: any) => {
@@ -889,12 +961,14 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
     removeFromSaved: handleRemoveFromSaved,
     addToSaved: handleAddToSaved,
     submitVehicleEnquiry: handleSubmitVehicleEnquiry,
+    trackCarView: handleTrackCarView,
     onHandleUserSavedCar,
 
     // Mutations
     removeFromSavedMutation,
     addToSavedMutation,
     submitVehicleEnquiryMutation,
+    trackCarViewMutation,
 
     // Loading state
     isLoading:

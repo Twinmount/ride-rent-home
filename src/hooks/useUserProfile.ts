@@ -31,10 +31,6 @@ export const useUserProfile = ({
   >({
     queryKey: ["userCarActionCounts", userId, useMultiCountry],
     queryFn: async () => {
-      console.log("=== Query Function Called ===");
-      console.log("useMultiCountry:", useMultiCountry);
-      console.log("userId:", userId);
-
       const result = useMultiCountry
         ? await getUserCarActionCountsAllCountries(userId)
         : await getUserCarActionCounts(userId);
@@ -43,7 +39,7 @@ export const useUserProfile = ({
       return result;
     },
     enabled: !!userId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0, // 5 minutes
     refetchOnWindowFocus: true,
   });
 

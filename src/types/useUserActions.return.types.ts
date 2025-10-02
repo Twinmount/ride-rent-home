@@ -60,6 +60,10 @@ export interface UseUserActionsReturn {
     vehicleId: string,
     enquiryData: VehicleEnquiryData
   ) => Promise<any>;
+  trackCarView: (
+    carId: string,
+    metadata?: Record<string, any>
+  ) => Promise<any>;
   onHandleUserSavedCar: () => void;
 
   // Mutations
@@ -74,6 +78,12 @@ export interface UseUserActionsReturn {
     any,
     Error,
     { vehicleId: string; enquiryData: VehicleEnquiryData },
+    unknown
+  >;
+  trackCarViewMutation: UseMutationResult<
+    any,
+    Error,
+    { carId: string; metadata?: Record<string, any> },
     unknown
   >;
 
