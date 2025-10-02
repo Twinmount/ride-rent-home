@@ -51,14 +51,14 @@ const ViewedVehicles = () => {
 
   // Use the viewed vehicles data directly
   const viewedVehicles = viewedVehiclesQuery.data
-    ? extractViewedVehicles(viewedVehiclesQuery.data)??[]
+    ? (extractViewedVehicles(viewedVehiclesQuery.data) ?? [])
     : [];
-
 
   const isLoading = viewedVehiclesQuery.isLoading;
 
   // Helper function to generate vehicle details URL
   const getVehicleDetailsUrl = (vehicle: any) => {
+    console.log("vehicle: ", vehicle.originalData.metadata.country);
     // Use available fields and current state/category from user's context
     const currentState = state || "dubai";
     const currentCategory = category || "cars";
@@ -67,11 +67,13 @@ const ViewedVehicles = () => {
 
     const navRoute = generateVehicleDetailsUrl({
       vehicleTitle: vehicle.name || vehicle.model || "vehicle",
-      state: currentState,
+      state: vehicle?.originalData?.stateDetails?.stateValue,
       vehicleCategory: currentCategory,
       vehicleCode,
-      country: currentCountry,
+      country: vehicle?.originalData?.metadata.country,
     });
+
+    console.log("navRoute: ", navRoute);
 
     return navRoute;
   };
@@ -117,6 +119,8 @@ const ViewedVehicles = () => {
           return 0; // Keep original order for recent
       }
     });
+
+  console.log("filteredVehicles: ", filteredVehicles);
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-8">
@@ -284,7 +288,7 @@ const ViewedVehicles = () => {
                     {vehicle.vendor || "Premium Car Rental"}
                     {vehicle.year && <span> • {vehicle.year}</span>}
                   </p>
-                  <div className="mb-3 flex items-center gap-2">
+                  {/* <div className="mb-3 flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-gray-400" />
                     <span className="text-sm text-gray-600">
                       {vehicle.location || "Dubai"}
@@ -293,7 +297,7 @@ const ViewedVehicles = () => {
                     <span className="text-sm text-gray-600">
                       {vehicle.viewedDate || "Recently"}
                     </span>
-                  </div>
+                  </div> */}
                   <div className="mb-4 flex flex-wrap gap-1">
                     {vehicle.features
                       ?.slice(0, 2)

@@ -154,6 +154,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     useMultiCountry: true, // Enable multi-country by default
   });
 
+  console.log("userRecentActivitiesQuery: ", userRecentActivitiesQuery.data);
+
   useEffect(() => {
     if (!userCarActionCountsQuery.isLoading) {
       const data = userCarActionCountsQuery.data;
@@ -1394,14 +1396,15 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   recentActivity.map((activity, index) => (
                     <div
                       key={`${activity.carId}-${index}`}
-                      className="flex cursor-pointer items-start gap-2 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-3 sm:p-3"
-                      onClick={() => {
-                        // Navigate to vehicle details page
-                        // You can customize this route based on your app structure
-                        if (activity.carId) {
-                          router.push(`/vehicle/${activity.carId}`);
-                        }
-                      }}
+                      className="flex items-start gap-2 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-3 sm:p-3"
+                      // onClick={() => {
+                      // cursor-pointer
+                      //   // Navigate to vehicle details page
+                      //   // You can customize this route based on your app structure
+                      //   if (activity.carId) {
+                      //     router.push(`/vehicle/${activity.carId}`);
+                      //   }
+                      // }}
                     >
                       {/* Vehicle Image */}
                       <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg sm:h-12 sm:w-12">
@@ -1450,7 +1453,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                     </div>
                   ))
                 )}
-                {!userRecentActivitiesQuery.isLoading &&
+                {/* {!userRecentActivitiesQuery.isLoading &&
                   !userRecentActivitiesQuery.error &&
                   recentActivity.length > 0 && (
                     <Button
@@ -1460,7 +1463,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                     >
                       View All Activity
                     </Button>
-                  )}
+                  )} */}
               </CardContent>
             </Card>
           </div>
