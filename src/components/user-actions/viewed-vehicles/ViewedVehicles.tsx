@@ -49,14 +49,11 @@ const ViewedVehicles = () => {
     enabled: !!userId, // Only enable when userId is available
   });
 
-  console.log("viewedVehiclesQuery: ", viewedVehiclesQuery.data);
-
   // Use the viewed vehicles data directly
   const viewedVehicles = viewedVehiclesQuery.data
-    ? extractViewedVehicles(viewedVehiclesQuery.data)
+    ? extractViewedVehicles(viewedVehiclesQuery.data)??[]
     : [];
 
-  console.log("extractedViewedVehicles: ", viewedVehicles);
 
   const isLoading = viewedVehiclesQuery.isLoading;
 
@@ -100,7 +97,7 @@ const ViewedVehicles = () => {
 
   // Filter and sort vehicles
   const filteredVehicles = viewedVehicles
-    .filter((vehicle: any) => {
+    ?.filter((vehicle: any) => {
       const matchesSearch =
         vehicle.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vehicle.vendor?.toLowerCase().includes(searchQuery.toLowerCase());

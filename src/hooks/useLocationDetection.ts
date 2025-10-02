@@ -23,13 +23,13 @@ export function useLocationDetection(): UseLocationDetectionReturn {
       setError(null);
 
       const detectedLocation = await getUserLocation();
-      console.log("detectedLocation: ", detectedLocation);
+      // console.log("detectedLocation: ", detectedLocation);
       setLocation(detectedLocation);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to detect location";
       setError(errorMessage);
-      console.error("Location detection failed:", err);
+      // console.error("Location detection failed:", err);
 
       // Set fallback location on error
       setLocation({

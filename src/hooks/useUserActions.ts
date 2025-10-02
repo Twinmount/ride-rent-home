@@ -65,7 +65,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
   const [isSaved, setIsSaved] = useImmer(false);
 
   const userId = user?.id || authStorage.getUser()?.id;
-  console.log("userId: ", userId);
 
   // State for extracted saved vehicles data
   const [savedVehiclesState, setSavedVehiclesState] = useImmer({
@@ -81,7 +80,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
     error: null as Error | null,
   });
 
-  console.log("enquiredVehiclesState: ", enquiredVehiclesState);
 
   // Individual vehicle save state hook
   const useSavedVehicle = ({
@@ -104,13 +102,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
     // Check if current vehicle is in saved list
     useEffect(() => {
       if (savedVehicles && vehicleId) {
-        if (process.env.NODE_ENV === "development") {
-          console.log("Checking if vehicle is saved:", {
-            vehicleId,
-            savedVehicles,
-          });
-        }
-
         // Handle different possible API response structures
         let dataArray: any[] = [];
 
@@ -264,13 +255,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
         draft.data = extractedData;
       });
 
-      // Log multi-country metadata if available
-      if ("multiCountryMetadata" in data && data.multiCountryMetadata) {
-        console.log(
-          "Multi-country saved vehicles metadata:",
-          data.multiCountryMetadata
-        );
-      }
     } catch (error) {
       setSavedVehiclesState((draft) => {
         draft.isLoading = false;
@@ -321,12 +305,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       });
 
       // Log multi-country metadata if available
-      if ("multiCountryMetadata" in data && data.multiCountryMetadata) {
-        console.log(
-          "Multi-country enquired vehicles metadata:",
-          data.multiCountryMetadata
-        );
-      }
     } catch (error) {
       setEnquiredVehiclesState((draft) => {
         draft.isLoading = false;
@@ -405,7 +383,7 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       page = 0,
       limit = 10,
       sortOrder = "DESC",
-      useMultiCountry = ENV.ENABLE_MULTI_COUNTRY_API ?? true,
+      useMultiCountry = true
     } = options;
 
     return useQuery({
@@ -509,7 +487,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       return trackCarView(userId!, carId, metadata);
     },
     onSuccess: (data) => {
-      console.log("✅ Car view tracked successfully:", data);
 
       // Invalidate viewed vehicles query
       queryClient.invalidateQueries({
@@ -616,25 +593,26 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
     carId: string,
     metadata: Record<string, any> = {}
   ) => {
-    console.log("carId: ", carId);
     return trackCarViewMutation.mutate({ carId, metadata });
   };
 
   const extractViewedVehicles = (apiResponse: any) => {
-    if (!apiResponse?.result?.data) {
+
+    if (!apiResponse?.result?.data || !Array.isArray(apiResponse.result.data)) {
       return [];
     }
 
     const viewedVehicles = apiResponse.result.data.map(
       (item: any, index: number) => {
-        const vehicle = item.vehicleDetails;
+        // The vehicle data structure has changed - vehicleDetails can be null or undefined
+        const vehicle = item.vehicleDetails || {};
         const viewInfo = item.viewInfo || {
           viewedAt: item.actionAt,
           metadata: item.metadata,
         };
 
         // Calculate time ago from viewedAt
-        const viewedDate = new Date(viewInfo.viewedAt);
+        const viewedDate = new Date(viewInfo.viewedAt || item.actionAt);
         const now = new Date();
         const diffInHours = Math.floor(
           (now.getTime() - viewedDate.getTime()) / (1000 * 60 * 60)
@@ -689,29 +667,34 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
           category = "sports";
         } else if (bodyType.includes("suv") || vehicleModel.includes("suv")) {
           category = "suv";
+        } else if (bodyType.includes("sedan")) {
+          category = "sedan";
         }
 
-        // Location will be handled later in the return statement
-
-        // Get primary image with signed URL
+        // Get primary image with signed URL - handle new images structure
         const primaryImage =
           vehicle.images?.[0]?.signedUrl ||
           vehicle.vehiclePhotos?.[0] ||
           "/default-car.png";
 
-        // Get vehicle location
-        const vehicleLocation = vehicle.location?.address || "Dubai";
+        // Get vehicle location - handle new location structure
+        const vehicleLocation = vehicle.location?.address || 
+                              item.vehicleSummary?.location?.address || 
+                              "Dubai";
+
+        // Get vehicle name/title with fallbacks
+        const vehicleName = vehicle.vehicleTitle || 
+                           vehicle.vehicleModel || 
+                           item.carId || 
+                           "Unknown Vehicle";
 
         return {
-          id: vehicle._id || item.carId || index + 1,
-          name:
-            vehicle.vehicleTitle || vehicle.vehicleModel || "Unknown Vehicle",
+          id: vehicle._id || item.carId || item._id || index + 1,
+          name: vehicleName,
           vendor: "Premium Car Rental", // This info isn't in the API response, so using a default
           price: price,
           rating: null, // This info isn't in the API response, so using a default
-          location: vehicleLocation.includes("Dubai")
-            ? "Dubai"
-            : vehicleLocation,
+          location: vehicleLocation.includes("Dubai") ? "Dubai" : vehicleLocation,
           image: primaryImage,
           viewedDate: timeAgo,
           viewCount: 1, // This specific count isn't in the API response
@@ -719,7 +702,7 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
           features: features.slice(0, 3), // Take first 3 features
 
           // Additional data from the new API structure
-          vehicleCode: vehicle.vehicleCode,
+          vehicleCode: vehicle.vehicleCode || item.carId,
           make: vehicle.brandId, // This would need to be resolved to brand name
           year: vehicle.registredYear,
 

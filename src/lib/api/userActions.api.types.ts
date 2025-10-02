@@ -40,13 +40,11 @@ export interface UserAction {
 export interface UserVehiclesResponse {
   status: string;
   result: {
-    vehicles: UserAction[];
-    pagination: {
+    data: UserAction[];
       page: number;
       limit: number;
       total: number;
       totalPages: number;
-    };
   };
   statusCode: number;
 }

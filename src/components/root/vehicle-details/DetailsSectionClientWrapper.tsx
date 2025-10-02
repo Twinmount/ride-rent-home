@@ -43,6 +43,9 @@ const DetailsSectionClientWrapper = ({
 
   const detailsSectionRef = useRef(null);
   const isInViewPort = useIntersectionObserver(detailsSectionRef);
+  
+  // Ref to track if the view has already been tracked to prevent double calls
+  const hasTrackedView = useRef(false);
 
   // Use useUserActions hook to get track view functionality
   const { trackCarView } = useUserActions();
@@ -55,11 +58,10 @@ const DetailsSectionClientWrapper = ({
 
   // Simple direct call to track view when component mounts
   useEffect(() => {
-    console.log("Attempting to track vehicle view:", {
-      userId,
-      vehicleCode,
-      isAuthenticated,
-    });
+    // Prevent double execution in React Strict Mode or component re-renders
+    if (hasTrackedView.current) {
+      return;
+    }
 
     if (userId && vehicleId && isAuthenticated) {
       trackCarView(vehicleId, {
@@ -67,13 +69,10 @@ const DetailsSectionClientWrapper = ({
         country: country,
         timestamp: new Date().toISOString(),
       });
-    } else {
-      console.log("Not tracking view - missing requirements:", {
-        hasUserId: !!userId,
-        hasVehicleCode: !!vehicleCode,
-        isAuthenticated,
-      });
-    }
+
+      // Mark as tracked to prevent future calls
+      hasTrackedView.current = true;
+    } 
   }, []); // Empty dependency array - only run once on mount
 
   return (

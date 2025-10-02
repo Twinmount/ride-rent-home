@@ -15,7 +15,6 @@ export const PasswordStep = ({
   login,
   clearError,
 }: any) => {
-  console.log("userAuthStep: ", userAuthStep);
 
   const [loginPassword, setLoginPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);

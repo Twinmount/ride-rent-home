@@ -71,7 +71,6 @@ export default async function VehicleDetails(props: ParamsProps) {
     }
   );
   const data: VehicleDetailsPageResponse = await response.json();
-
   // if the vehicle data is not found, return 404 not found
   if (
     data?.status === "NOT_SUCCESS" ||

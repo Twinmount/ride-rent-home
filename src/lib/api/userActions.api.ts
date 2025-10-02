@@ -253,13 +253,11 @@ export const getUserViewedVehiclesAllCountries = async (
     return {
       status: multiCountryResponse.success ? "success" : "partial_success",
       result: {
-        vehicles: sortedData as UserAction[],
-        pagination: {
+        data: sortedData as UserAction[],
           page,
           limit,
           total: sortedData.length,
           totalPages: Math.ceil(sortedData.length / limit),
-        },
       },
       statusCode: multiCountryResponse.success ? 200 : 207,
       multiCountryMetadata: multiCountryResponse.metadata,
