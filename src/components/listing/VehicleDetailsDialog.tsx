@@ -25,8 +25,8 @@ export function VehicleDetailsDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="h-fit max-h-[80%] w-fit max-w-md z-[9999]">
-        <DialogHeader className="sr-only">
-          <DialogTitle>
+        <DialogHeader className='m-3 mb-2'>
+          <DialogTitle className='font-normal pt-2'>
             {vehicles.length === 1
               ? 'Vehicle Details'
               : `${vehicles.length} Vehicles Available`}
