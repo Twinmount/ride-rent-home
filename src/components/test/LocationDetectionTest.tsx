@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function LocationDetectionTest() {
-  const { location, isLoading, error, refetch } = useLocationDetection();
+  const { location, isLoading, error, refetch } = useLocationDetection(true);
 
   const handleClearCache = () => {
     LocationCache.clear();
