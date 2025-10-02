@@ -169,16 +169,18 @@ const VehicleGridWithInfiniteLoading: React.FC<Props> = ({
       visibleVehicleIds.includes(vehicle.vehicleId)
     );
 
+    const seen = new Set();
+
     // Normalize each visible vehicle’s structure
     const data = activeVehicles
       .map((vehicle: any) => {
-        // Skip vehicles without valid location data
         if (
           vehicle.location === null ||
           vehicle.location.lat === null ||
           vehicle.location.lng === null
-        )
+        ) {
           return null;
+        }
 
         // Flatten rental details to a simple key/value map of enabled rents
         const rentalDetails = Object.fromEntries(
@@ -201,7 +203,7 @@ const VehicleGridWithInfiniteLoading: React.FC<Props> = ({
           location: vehicle.location,
         };
       })
-      .filter(Boolean); // Remove any nulls
+      .filter((v) => v !== null && !seen.has(v.vehicleId) && seen.add(v.vehicleId));
 
     // Send to global context for rendering on map
     setVehiclesListVisible(data);
@@ -240,9 +242,8 @@ const VehicleGridWithInfiniteLoading: React.FC<Props> = ({
           <>
             {/* List Layer (Always Mounted, visibility toggled) */}
             <div
-              className={`relative z-10 w-full transition-opacity duration-300 ${
-                showMap ? "pointer-events-none opacity-0" : "opacity-100"
-              }`}
+              className={`relative z-10 w-full transition-opacity duration-300 ${showMap ? "pointer-events-none opacity-0" : "opacity-100"
+                }`}
             >
               {Object.keys(vehicles).length === 0 ? (
                 <NoResultsFound />
@@ -286,11 +287,10 @@ const VehicleGridWithInfiniteLoading: React.FC<Props> = ({
 
             {/* Map Layer (Always Mounted) */}
             <div
-              className={`fixed inset-0 top-[4rem] transition-opacity duration-300 ${
-                showMap
-                  ? "z-40 opacity-100"
-                  : "pointer-events-none z-0 opacity-0"
-              }`}
+              className={`fixed inset-0 top-[4rem] transition-opacity duration-300 ${showMap
+                ? "z-40 opacity-100"
+                : "pointer-events-none z-0 opacity-0"
+                }`}
             >
               {mountMap && <MapClientWrapper />}
             </div>

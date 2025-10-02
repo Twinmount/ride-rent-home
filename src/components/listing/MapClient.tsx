@@ -1,37 +1,34 @@
 // @ts-nocheck
+'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Car, MapPin, X } from 'lucide-react';
-import { useFetchListingVehiclesGPS } from '@/hooks/useFetchListingVehiclesGPS';
 import { usePriceConverter } from '@/hooks/usePriceConverter';
 import { useParams, useSearchParams } from 'next/navigation';
 import { ENV } from '@/config/env';
 import { useStateAndCategory } from '@/hooks/useStateAndCategory';
 import { useImmer } from 'use-immer';
-import {
-  generateCompanyProfilePageLink,
-  generateVehicleDetailsUrl,
-} from '@/helpers';
-import Link from 'next/link';
 import { VehicleDetailsDialog } from './VehicleDetailsDialog';
 import {
   calculateDistance,
   adjustOverlappingPositions,
   calculateBounds,
   areLocationsClose,
-  minimalTheme,
 } from '@/helpers/map-helpers';
 import { useGlobalContext } from '@/context/GlobalContext';
 import { createMarkerIcon } from './map-icons/marker-icon';
 
 const MapClient = () => {
   const mapRef = useRef(null);
-  const [map, setMap] = useState(null);
+  const mapInstanceRef = useRef(null);
+  const markersRef = useRef([]);
+  const clusterGroupRef = useRef(null);
+  const circleRef = useRef(null);
+
   const [selectedVehicles, setSelectedVehicles] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [markerClusterer, setMarkerClusterer] = useState(null);
-  const [restrictionCircle, setRestrictionCircle] = useState(null);
+  const [leafletReady, setLeafletReady] = useState(false);
+
   const searchParams = useSearchParams();
   const { state, category } = useStateAndCategory();
   const [companiesList, setCompaniesList] = useImmer([]);
@@ -45,32 +42,24 @@ const MapClient = () => {
     ? params.country[0]
     : params.country || 'ae';
 
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!;
-
-  const coordinatesString = sessionStorage?.getItem('userLocation') ?? null;
+  const coordinatesString = typeof window !== 'undefined' ?
+    sessionStorage?.getItem('userLocation') ?? null : null;
 
   let parsedCoordinates = null;
-
   if (coordinatesString) {
     parsedCoordinates = JSON.parse(coordinatesString);
   }
 
-  const baseUrl =
-    country === 'in' ? ENV.NEXT_PUBLIC_API_URL_INDIA : ENV.NEXT_PUBLIC_API_URL;
-
-  const limit = 200;
-
+  const baseUrl = country === 'in' ? ENV.NEXT_PUBLIC_API_URL_INDIA : ENV.NEXT_PUBLIC_API_URL;
   const RADIUS_KM = 1000;
-
   const { convert } = usePriceConverter();
 
-  // Calculate center point from all vehicles using useMemo for optimization
+  // Calculate center point from all vehicles
   const calculatedCenter = useMemo(() => {
     if (!vehicleListVisible || vehicleListVisible.length === 0) {
       return { lat: 0.001, lng: 0.001 };
     }
 
-    // Calculate geometric center (centroid) of all vehicle locations
     const validVehicles = vehicleListVisible.filter(
       (vehicle) =>
         vehicle.location &&
@@ -84,14 +73,8 @@ const MapClient = () => {
       return { lat: 0.001, lng: 0.001 };
     }
 
-    const totalLat = validVehicles.reduce(
-      (sum, vehicle) => sum + vehicle.location.lat,
-      0
-    );
-    const totalLng = validVehicles.reduce(
-      (sum, vehicle) => sum + vehicle.location.lng,
-      0
-    );
+    const totalLat = validVehicles.reduce((sum, vehicle) => sum + vehicle.location.lat, 0);
+    const totalLng = validVehicles.reduce((sum, vehicle) => sum + vehicle.location.lng, 0);
 
     return {
       lat: totalLat / validVehicles.length,
@@ -99,423 +82,316 @@ const MapClient = () => {
     };
   }, [vehicleListVisible]);
 
-  // Update center when calculatedCenter changes
+  // Update center when calculated center changes
   useEffect(() => {
     if (calculatedCenter.lat !== 0.001 && calculatedCenter.lng !== 0.001) {
       setCenter(calculatedCenter);
     }
   }, [calculatedCenter, setCenter]);
 
-  // Load Google Maps API - Optimized to load only once
+  // Load Leaflet dynamically
   useEffect(() => {
-    if (!apiKey) {
-      setError('Google Maps API key is required');
-      setIsLoading(false);
-      return;
-    }
+    if (typeof window === 'undefined') return;
 
-    // Check if Google Maps is already loaded
-    if (window.google && window.google.maps) {
-      setIsLoading(false);
-      return;
-    }
-
-    const script = document.createElement('script');
-    // Minimal libraries to reduce API usage
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=geometry`;
-    script.async = true;
-    script.defer = true;
-
-    script.onload = () => {
-      // Load MarkerClusterer
-      const clustererScript = document.createElement('script');
-      clustererScript.src =
-        'https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js';
-      clustererScript.onload = () => {
-        setIsLoading(false);
-      };
-      clustererScript.onerror = () => {
-        setError('Failed to load MarkerClusterer library');
-        setIsLoading(false);
-      };
-      document.head.appendChild(clustererScript);
-    };
-
-    script.onerror = () => {
-      setError('Failed to load Google Maps API');
-      setIsLoading(false);
-    };
-
-    document.head.appendChild(script);
-
-    return () => {
-      // Cleanup scripts on unmount
-      const scripts = document.querySelectorAll(
-        'script[src*="maps.googleapis.com"], script[src*="markerclusterer"]'
-      );
-      scripts.forEach((script) => script.remove());
-    };
-  }, [apiKey]);
-
-  // Initialize map with optimizations
-  useEffect(() => {
-    let initializationAttempted = false;
-    let timeoutId;
-
-    const initMap = () => {
-      if (
-        !isLoading &&
-        !error &&
-        mapRef.current &&
-        !map &&
-        center.lat !== 0.001
-      ) {
-        initializationAttempted = true;
-
-        try {
-          // Calculate bounds for restriction
-          const bounds = calculateBounds(center.lat, center.lng, RADIUS_KM);
-
-          const mapInstance = new window.google.maps.Map(mapRef.current, {
-            center: center,
-            zoom: 12,
-            restriction: {
-              latLngBounds: {
-                north: bounds.north,
-                south: bounds.south,
-                east: bounds.east,
-                west: bounds.west,
-              },
-              strictBounds: true,
-            },
-            styles: minimalTheme,
-            minZoom: 8,
-            maxZoom: 18,
-            // Optimization settings to reduce API calls
-            gestureHandling: 'greedy', // Prevents accidental zooming
-            disableDoubleClickZoom: false,
-            scrollwheel: true,
-            disableDefaultUI: false, // Keep default UI for user convenience
-            mapTypeControl: false, // Disable satellite/terrain to save credits
-            streetViewControl: false, // Disable street view to save credits
-          });
-
-          // Create visual circle with optimized settings
-          const circle = new window.google.maps.Circle({
-            strokeColor: '#FF6B6B',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#FF6B6B',
-            fillOpacity: 0.1,
-            map: mapInstance,
-            center: center,
-            radius: RADIUS_KM * 1000,
-            clickable: false,
-          });
-
-          setRestrictionCircle(circle);
-
-          // Optimized event listeners - reduced frequency
-          let idleTimeout;
-          mapInstance.addListener('idle', () => {
-            clearTimeout(idleTimeout);
-            idleTimeout = setTimeout(() => {
-              if (!document.querySelector('.gm-style')) {
-                console.warn('Map container empty - triggering recovery');
-                google.maps.event.trigger(mapInstance, 'resize');
-                mapInstance.setCenter(center);
-              }
-            }, 100); // Debounce idle events
-          });
-
-          // Optimized boundary enforcement with debouncing
-          let centerChangeTimeout;
-          mapInstance.addListener('center_changed', () => {
-            clearTimeout(centerChangeTimeout);
-            centerChangeTimeout = setTimeout(() => {
-              const currentCenter = mapInstance.getCenter();
-              const distance = calculateDistance(
-                center.lat,
-                center.lng,
-                currentCenter.lat(),
-                currentCenter.lng()
-              );
-
-              if (distance > RADIUS_KM) {
-                const bearing = Math.atan2(
-                  currentCenter.lng() - center.lng,
-                  currentCenter.lat() - center.lat
-                );
-
-                const maxDistance = RADIUS_KM - 10;
-                const maxLat =
-                  center.lat + (maxDistance / 111.32) * Math.cos(bearing);
-                const maxLng =
-                  center.lng +
-                  (maxDistance /
-                    (111.32 * Math.cos((center.lat * Math.PI) / 180))) *
-                    Math.sin(bearing);
-
-                mapInstance.setCenter({ lat: maxLat, lng: maxLng });
-              }
-            }, 50); // Debounce center changes
-          });
-
-          setMap(mapInstance);
-        } catch (err) {
-          console.error('Map initialization failed:', err);
+    const loadLeaflet = async () => {
+      try {
+        // Load Leaflet CSS
+        if (!document.querySelector('link[href*="leaflet.css"]')) {
+          const leafletCSS = document.createElement('link');
+          leafletCSS.rel = 'stylesheet';
+          leafletCSS.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+          leafletCSS.crossOrigin = '';
+          document.head.appendChild(leafletCSS);
         }
+
+        // Load MarkerCluster CSS
+        if (!document.querySelector('link[href*="MarkerCluster.css"]')) {
+          const clusterCSS = document.createElement('link');
+          clusterCSS.rel = 'stylesheet';
+          clusterCSS.href = 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css';
+          document.head.appendChild(clusterCSS);
+
+          const clusterDefaultCSS = document.createElement('link');
+          clusterDefaultCSS.rel = 'stylesheet';
+          clusterDefaultCSS.href = 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css';
+          document.head.appendChild(clusterDefaultCSS);
+        }
+
+        // Load Leaflet JS
+        if (!window.L) {
+          await new Promise((resolve, reject) => {
+            const leafletScript = document.createElement('script');
+            leafletScript.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+            leafletScript.crossOrigin = '';
+            leafletScript.onload = resolve;
+            leafletScript.onerror = reject;
+            document.head.appendChild(leafletScript);
+          });
+        }
+
+        // Load MarkerCluster JS
+        if (!window.L.MarkerClusterGroup) {
+          await new Promise((resolve, reject) => {
+            const clusterScript = document.createElement('script');
+            clusterScript.src = 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js';
+            clusterScript.onload = resolve;
+            clusterScript.onerror = reject;
+            document.head.appendChild(clusterScript);
+          });
+        }
+
+        setLeafletReady(true);
+        setIsLoading(false);
+      } catch (err) {
+        setError('Failed to load Leaflet libraries');
+        setIsLoading(false);
       }
     };
 
-    initMap();
+    loadLeaflet();
+  }, []);
 
-    if (!initializationAttempted) {
-      timeoutId = setTimeout(() => {
-        console.log('Fallback initialization attempt');
-        initMap();
-      }, 500);
-    }
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (map) {
-        google.maps.event.clearInstanceListeners(map);
-      }
-      if (restrictionCircle) {
-        restrictionCircle.setMap(null);
-      }
-    };
-  }, [isLoading, error, map, center]);
-
-  // Update map center when center changes (smooth transition)
+  // Initialize map
   useEffect(() => {
-    if (map && center.lat !== 0.001 && center.lng !== 0.001) {
-      // Use panTo for smooth transition instead of setCenter
-      map.panTo(center);
+    if (!leafletReady || !mapRef.current || center.lat === 0.001 || mapInstanceRef.current) return;
 
-      // Update restriction circle center if it exists
-      if (restrictionCircle) {
-        restrictionCircle.setCenter(center);
+    try {
+      // Create map instance
+      const map = window.L.map(mapRef.current, {
+        center: [center.lat, center.lng],
+        zoom: 12,
+        minZoom: 8,
+        maxZoom: 18,
+        zoomControl: true,
+        attributionControl: true,
+      });
 
-        // Recalculate bounds for new center
-        const bounds = calculateBounds(center.lat, center.lng, RADIUS_KM);
-        map.setOptions({
-          restriction: {
-            latLngBounds: {
-              north: bounds.north,
-              south: bounds.south,
-              east: bounds.east,
-              west: bounds.west,
-            },
-            strictBounds: true,
-          },
-        });
-      }
+      // Add OpenStreetMap tiles
+      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18,
+      }).addTo(map);
+
+      // window.L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      //   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://www.carto.com/">CARTO</a>',
+      //   subdomains: 'abcd',
+      //   maxZoom: 20,
+      // }).addTo(map);
+
+      // Add restriction circle
+      const circle = window.L.circle([center.lat, center.lng], {
+        color: '#FF6B6B',
+        fillColor: '#FF6B6B',
+        fillOpacity: 0,
+        radius: RADIUS_KM * 1000,
+        interactive: false,
+      }).addTo(map);
+
+      circleRef.current = circle;
+
+      // Add movement restriction
+      let moveEndTimeout;
+      const handleMoveEnd = () => {
+        clearTimeout(moveEndTimeout);
+        moveEndTimeout = setTimeout(() => {
+          const currentCenter = map.getCenter();
+          const distance = calculateDistance(
+            center.lat,
+            center.lng,
+            currentCenter.lat,
+            currentCenter.lng
+          );
+
+          if (distance > RADIUS_KM) {
+            const bearing = Math.atan2(
+              currentCenter.lng - center.lng,
+              currentCenter.lat - center.lat
+            );
+
+            const maxDistance = RADIUS_KM - 10;
+            const maxLat = center.lat + (maxDistance / 111.32) * Math.cos(bearing);
+            const maxLng = center.lng + (maxDistance / (111.32 * Math.cos((center.lat * Math.PI) / 180))) * Math.sin(bearing);
+
+            map.setView([maxLat, maxLng]);
+          }
+        }, 100);
+      };
+
+      map.on('moveend', handleMoveEnd);
+      mapInstanceRef.current = map;
+
+    } catch (err) {
+      console.error('Map initialization failed:', err);
+      setError('Failed to initialize map');
     }
-  }, [map, center, restrictionCircle]);
+  }, [leafletReady, center]);
 
   // Helper function to get best available price and period
   const getBestPrice = (rentalDetails) => {
     if (rentalDetails.day) return { price: rentalDetails.day, period: 'day' };
-    if (rentalDetails.week)
-      return { price: rentalDetails.week, period: 'week' };
-    if (rentalDetails.month)
-      return { price: rentalDetails.month, period: 'month' };
-    if (rentalDetails.hour)
-      return { price: rentalDetails.hour, period: 'hour' };
+    if (rentalDetails.week) return { price: rentalDetails.week, period: 'week' };
+    if (rentalDetails.month) return { price: rentalDetails.month, period: 'month' };
+    if (rentalDetails.hour) return { price: rentalDetails.hour, period: 'hour' };
     return { price: '0', period: 'day' };
   };
 
-  // Enhanced marker creation with overlap prevention and hover effects
+  // *** MODIFIED ***: Create cluster icon to look like a vehicle marker with a count badge
+  const createClusterIcon = (cluster) => {
+    const count = cluster.getChildCount();
+    const iconUrl = createMarkerIcon({ category, dark: false });
+
+    const iconHtml = `
+      <div style="position: relative;">
+        <img src="${iconUrl}" style="width: 46px; height: 56px;" />
+        <div style="
+          position: absolute;
+          top: 0px;
+          right: 0px;
+          width: 20px;
+          height: 20px;
+          background-color: #F57F17;
+          color: white;
+          border-radius: 50%;
+          text-align: center;
+          line-height: 20px;
+          font-weight: bold;
+          font-size: 12px;
+          border: 2px solid white;
+        ">
+          ${count}
+        </div>
+      </div>
+    `;
+
+    return window.L.divIcon({
+      html: iconHtml,
+      className: 'custom-cluster-icon-with-badge',
+      iconSize: [46, 56],
+      iconAnchor: [23, 56],
+    });
+  };
+
+  // Update markers
   useEffect(() => {
-    if (
-      !map ||
-      !window.google ||
-      !vehicleListVisible ||
-      vehicleListVisible.length === 0
-    )
-      return;
+    if (!mapInstanceRef.current || !leafletReady || !vehicleListVisible || vehicleListVisible.length === 0) return;
 
     // Clear existing markers
-    if (markerClusterer) {
-      markerClusterer.clearMarkers();
+    if (clusterGroupRef.current) {
+      mapInstanceRef.current.removeLayer(clusterGroupRef.current);
     }
+    markersRef.current.forEach(marker => {
+      if (mapInstanceRef.current.hasLayer(marker)) {
+        mapInstanceRef.current.removeLayer(marker);
+      }
+    });
+    markersRef.current = [];
 
-    // Adjust positions for overlapping vehicles
+    // Adjust overlapping positions
     const adjustedVehicles = adjustOverlappingPositions(vehicleListVisible);
 
-    // Create markers for each vehicle with enhanced styling
-    const markers = adjustedVehicles.map((vehicle, index) => {
-      const { price, period } = getBestPrice(vehicle.rentalDetails);
-      const convertPrice = convert(Number(price));
+    // Create marker cluster group
+    const clusterGroup = window.L.markerClusterGroup({
+      iconCreateFunction: function (cluster) {
+        // Use the new function to create the cluster icon
+        return createClusterIcon(cluster);
+      },
+      maxClusterRadius: 50,
+      spiderfyOnMaxZoom: false,
+      showCoverageOnHover: false,
+      zoomToBoundsOnClick: false,
+    });
 
-      // Create enhanced marker with hover effects
-      const marker = new window.google.maps.Marker({
-        position: { lat: vehicle.location.lat, lng: vehicle.location.lng },
-        title: `${vehicle.vehicleModel} - ₹${price}/${period}${vehicle.isAdjusted ? ' (Position Adjusted)' : ''}`,
-        icon: {
-          // marker icon
-          url: createMarkerIcon({ category, dark: false }),
-          scaledSize: new window.google.maps.Size(46, 56), // Match the size from the mouseout event
-          anchor: new window.google.maps.Point(23, 28), // Match the anchor point from the mouseout event
-        },
-        zIndex: vehicle.isAdjusted ? 200 : 100,
-        optimized: true, // Optimized rendering
+    // Handle cluster clicks
+    clusterGroup.on('clusterclick', function (event) {
+      const cluster = event.layer;
+      const childMarkers = cluster.getAllChildMarkers();
+      const vehicles = childMarkers.map(marker => marker.vehicleData).filter(Boolean);
+
+      // *** MODIFIED ***: Add console log for all vehicles in the cluster
+      if (vehicles.length > 0) {
+        setSelectedVehicles(vehicles);
+      }
+    });
+
+    // Create individual markers
+    adjustedVehicles.forEach((vehicle, index) => {
+      const { price, period } = getBestPrice(vehicle.rentalDetails);
+
+      // Create custom icons
+      const iconHtml = `<img src="${createMarkerIcon({ category, dark: false })}" style="width: 46px; height: 56px;" />`;
+      const hoverIconHtml = `<img src="${createMarkerIcon({ category, dark: true })}" style="width: 46px; height: 56px;" />`;
+
+      const customIcon = window.L.divIcon({
+        html: iconHtml,
+        className: 'custom-vehicle-marker',
+        iconSize: [46, 56],
+        iconAnchor: [23, 28],
       });
 
-      // Enhanced click listener
-      marker.addListener('click', () => {
+      const hoverIcon = window.L.divIcon({
+        html: hoverIconHtml,
+        className: 'custom-vehicle-marker-hover',
+        iconSize: [46, 56],
+        iconAnchor: [23, 28],
+      });
+
+      // Create marker
+      const marker = window.L.marker([vehicle.location.lat, vehicle.location.lng], {
+        icon: customIcon,
+        title: `${vehicle.vehicleTitle} - ₹${price}/${period}${vehicle.isAdjusted ? ' (Position Adjusted)' : ''}`,
+      });
+
+      // Store vehicle data
+      marker.vehicleData = vehicle;
+
+      // Add event listeners
+      marker.on('click', () => {
         setSelectedVehicles([vehicle]);
       });
 
-      // Optimized hover effects with debouncing
+      // Hover effects
       let hoverTimeout;
-      marker.addListener('mouseover', () => {
+      marker.on('mouseover', () => {
         clearTimeout(hoverTimeout);
         hoverTimeout = setTimeout(() => {
-          marker.setZIndex(1000 + index);
-
-          const hoverIcon = {
-            // marker icon
-            url: createMarkerIcon({ category, dark: true }), // Use the same data URL as in the mouseout event
-            scaledSize: new window.google.maps.Size(46, 56), // Match the size from the mouseout event
-            anchor: new window.google.maps.Point(23, 28), // Match the anchor point from the mouseout event
-          };
-
           marker.setIcon(hoverIcon);
-        }, 100); // Debounce hover events
+        }, 100);
       });
 
-      marker.addListener('mouseout', () => {
+      marker.on('mouseout', () => {
         clearTimeout(hoverTimeout);
-        marker.setZIndex(vehicle.isAdjusted ? 200 : 100);
-
-        const dropletIcon = {
-          // marker icon
-          url: createMarkerIcon({ category, dark: false }), // Use the imported data URL
-          scaledSize: new window.google.maps.Size(46, 56), // Adjust size to fit your design
-          anchor: new window.google.maps.Point(23, 28), // Adjust the anchor to the center of the droplet
-        };
-
-        marker.setIcon(dropletIcon);
+        marker.setIcon(customIcon);
       });
 
-      marker.vehicleData = vehicle;
-      return marker;
+      clusterGroup.addLayer(marker);
+      markersRef.current.push(marker);
     });
 
-    // Create clusterer with optimized settings
-    if (window.markerClusterer && window.markerClusterer.MarkerClusterer) {
-      const clusterer = new window.markerClusterer.MarkerClusterer({
-        map,
-        markers,
-        renderer: {
-          render: ({ count, position, markers }) => {
-            const vehicles = markers
-              .map((marker) => marker.vehicleData)
-              .filter(Boolean);
-            const dayPrices = vehicles
-              .map((v) =>
-                v.rentalDetails.day ? parseInt(v.rentalDetails.day) : null
-              )
-              .filter((price) => price !== null);
+    mapInstanceRef.current.addLayer(clusterGroup);
+    clusterGroupRef.current = clusterGroup;
 
-            let minPrice, maxPrice, priceText;
+  }, [leafletReady, vehicleListVisible, category, convert]);
 
-            if (dayPrices.length > 0) {
-              minPrice = convert(Number(Math.min(...dayPrices)));
-              maxPrice = convert(Number(Math.max(...dayPrices)));
-              priceText = minPrice === maxPrice ? `${minPrice}` : `${minPrice}`;
-            } else {
-              const bestPrices = vehicles.map((v) => {
-                const { price } = getBestPrice(v.rentalDetails);
-                return parseInt(price);
-              });
-              minPrice = convert(Number(Math.min(...bestPrices)));
-              maxPrice = convert(Number(Math.max(...bestPrices)));
-              priceText = minPrice === maxPrice ? `${minPrice}` : `${minPrice}`;
-            }
+  // Update map center
+  useEffect(() => {
+    if (mapInstanceRef.current && center.lat !== 0.001 && center.lng !== 0.001) {
+      mapInstanceRef.current.panTo([center.lat, center.lng]);
 
-            let color,
-              size,
-              textColor = '#F57F17';
-
-            if (count >= 20) {
-              color = '#1C2122';
-              size = 80;
-            } else if (count >= 10) {
-              color = '#1C2122';
-              size = 80;
-            } else {
-              color = '#1C2122';
-              size = 80;
-            }
-
-            const fontSize = size > 65 ? 11 : size > 50 ? 10 : 9;
-
-            return new window.google.maps.Marker({
-              position,
-              icon: {
-                url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-                 <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-                   <defs>
-                     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                       <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.2" />
-                     </filter>
-                   </defs>
-                   <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 3}" fill="${color}" stroke="white" stroke-width="2" filter="url(#shadow)"/>
-                  
-                   <text x="50%" y="${size / 2 - 10}" font-family="Segoe UI, sans-serif" text-anchor="middle" fill="${textColor}">
-                     <tspan font-size="${fontSize + 2}" font-weight="700">${count}</tspan>
-                     <tspan font-size="${fontSize - 2}" font-weight="400">vehicles</tspan>
-                   </text>
-                  
-                   <text x="50%" y="${size / 2 + 4}" font-family="Segoe UI, sans-serif" font-size="${fontSize - 1}" font-weight="500" text-anchor="middle" fill="${textColor}">
-                     Starting From
-                   </text>
-                  
-                   <text x="50%" y="${size / 2 + 20}" font-family="Segoe UI, sans-serif" font-size="${fontSize}" font-weight="600" text-anchor="middle" fill="${textColor}">
-                     ${priceText}
-                   </text>
-                 </svg>
-               `)}`,
-                scaledSize: new window.google.maps.Size(size, size),
-                anchor: new window.google.maps.Point(size / 2, size / 2),
-              },
-              zIndex: 1000 + count,
-              optimized: true, // Optimization
-            });
-          },
-        },
-      });
-
-      clusterer.addListener('clusterclick', (event, cluster) => {
-        const clusterMarkers = cluster.markers;
-        const vehicles = clusterMarkers
-          .map((marker) => marker.vehicleData)
-          .filter(Boolean);
-        if (vehicles.length > 0) {
-          setSelectedVehicles(vehicles);
-        }
-        alert(
-          'You clicked on a cluster with ' + clusterMarkers.length + ' markers.'
-        );
-      });
-
-      setMarkerClusterer(clusterer);
-    } else {
-      alert;
-      markers.forEach((marker) => marker.setMap(map));
-    }
-
-    return () => {
-      if (markerClusterer) {
-        markerClusterer.clearMarkers();
+      if (circleRef.current) {
+        circleRef.current.setLatLng([center.lat, center.lng]);
       }
-      markers.forEach((marker) => marker.setMap(null));
+    }
+  }, [center]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
     };
-  }, [map, vehicleListVisible]);
+  }, []);
 
   useEffect(() => {
     if (selectedVehicles) {
@@ -534,13 +410,9 @@ const MapClient = () => {
       <div className="flex h-screen w-full items-center justify-center bg-gray-100">
         <div className="max-w-md rounded-lg bg-white p-8 text-center shadow-lg">
           <div className="mb-4 text-5xl text-red-500">⚠️</div>
-          <h2 className="mb-2 text-xl font-semibold text-gray-800">
-            Error Loading Map
-          </h2>
+          <h2 className="mb-2 text-xl font-semibold text-gray-800">Error Loading Map</h2>
           <p className="mb-4 text-gray-600">{error}</p>
-          <p className="text-sm text-gray-500">
-            Please check your API key and internet connection.
-          </p>
+          <p className="text-sm text-gray-500">Please check your internet connection and try again.</p>
         </div>
       </div>
     );
@@ -551,10 +423,9 @@ const MapClient = () => {
       <div className="flex h-screen w-full items-center justify-center bg-gray-100">
         <div className="text-center">
           <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500"></div>
-          <p className="font-medium text-gray-600">Loading Google Maps...</p>
+          <p className="font-medium text-gray-600">Loading Map...</p>
           <p className="mt-2 text-sm text-gray-500">
-            Calculating optimal center point for{' '}
-            {vehicleListVisible?.length || 0} vehicles
+            Calculating optimal center point for {vehicleListVisible?.length || 0} vehicles
           </p>
         </div>
       </div>
@@ -563,18 +434,32 @@ const MapClient = () => {
 
   return (
     <div className="relative h-full w-full">
-      {/* Google Maps Container */}
+      {/* <style jsx global>{`
+        .custom-vehicle-marker,
+        .custom-vehicle-marker-hover,
+        .custom-cluster-icon-with-badge,
+        .custom-cluster-icon {
+          background: none !important;
+          border: none !important;
+        }
+        .leaflet-container {
+          height: 100%;
+          width: 100%;
+          font-family: inherit;
+        }
+        .leaflet-popup-content-wrapper {
+          border-radius: 8px;
+        }
+      `}</style> */}
+
       <div ref={mapRef} className="h-full w-full" />
 
-      {/* Vehicle Details Popup */}
       {selectedVehicles && (
         <VehicleDetailsDialog
           open={open}
           setOpen={setOpen}
           country={country}
           vehicles={selectedVehicles}
-          state={state}
-          category={category}
           baseUrl={baseUrl}
           convert={convert}
         />
