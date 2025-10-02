@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { VehicleCardImageSkeleton } from '@/components/skelton/VehicleCardImageSkeleton';
-import Image from 'next/image';
-import { useState } from 'react';
-import { useImageCycling } from '@/hooks/useImageCycling';
+import { VehicleCardImageSkeleton } from "@/components/skelton/VehicleCardImageSkeleton";
+import SafeImage from "@/components/common/SafeImage";
+
+import { useState } from "react";
+import { useImageCycling } from "@/hooks/useImageCycling";
 import { Images } from "lucide-react";
 
 type VehicleThumbnailProps = {
@@ -13,8 +14,8 @@ type VehicleThumbnailProps = {
   height: number;
   layoutType: "grid" | "carousel";
   vehiclePhotos?: string[];
-  priority?: boolean; // ✅ ADD THIS
-  loading?: "lazy" | "eager"; // ✅ ADD THIS
+  priority?: boolean;
+  loading?: "lazy" | "eager";
 };
 
 const VehicleThumbnail = ({
@@ -24,8 +25,8 @@ const VehicleThumbnail = ({
   height,
   layoutType,
   vehiclePhotos = [],
-  priority = false, // ✅ ADD THIS
-  loading = "lazy", // ✅ ADD THIS
+  priority = false,
+  loading = "lazy",
 }: VehicleThumbnailProps) => {
   const [isImageLoading, setImageLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -86,7 +87,7 @@ const VehicleThumbnail = ({
 
   const containerClassName = `
     relative w-full overflow-hidden rounded 
-    ${layoutType === "carousel" ? "h-[8rem] lg:h-[8.3rem]" : "h-[6rem] lg:h-[7.5rem]"}
+    ${layoutType === "carousel" ? "h-[8rem] lg:h-[8.3rem]" : "h-[6.8rem] lg:h-[7.5rem]"}
     ${hasMultipleImages ? "cursor-pointer select-none" : ""}
   `;
 
@@ -100,7 +101,7 @@ const VehicleThumbnail = ({
     >
       {isImageLoading && <VehicleCardImageSkeleton />}
 
-      <Image
+      <SafeImage
         src={currentImageSrc}
         alt={alt}
         width={width}

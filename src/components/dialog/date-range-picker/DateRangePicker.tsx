@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 import {
   defaultStaticRanges,
   DateRange as RDateRange,
   DateRangePicker as RDateRangePicker,
-} from 'react-date-range';
+} from "react-date-range";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { useIsMobile } from '@/hooks/use-mobile';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CarDateRange {
   startDate: Date;
@@ -42,7 +42,7 @@ interface DateRangePickerProps {
 
 export const DateRangePicker = ({
   error,
-  title = '',
+  title = "",
   open,
   carRentDate,
   ConfirmBtnTxt,
@@ -55,7 +55,7 @@ export const DateRangePicker = ({
 
   const today = new Date();
   const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-  
+
   // Calculate end of current week (Sunday)
   const currentDay = today.getDay();
   const daysUntilSunday = 6 - currentDay;
@@ -64,11 +64,18 @@ export const DateRangePicker = ({
 
   const customStaticRanges = defaultStaticRanges
     .filter(
-      (range) => !['Last Month', 'Yesterday', 'Last Week', 'This Month', 'This Week'].includes(range.label || '')
+      (range) =>
+        ![
+          "Last Month",
+          "Yesterday",
+          "Last Week",
+          "This Month",
+          "This Week",
+        ].includes(range.label || "")
     )
     .concat([
       {
-        label: 'This Week',
+        label: "For this week",
         range: () => ({
           startDate: today,
           endDate: endOfWeek,
@@ -83,7 +90,7 @@ export const DateRangePicker = ({
         },
       },
       {
-        label: 'This Month',
+        label: "For this month",
         range: () => ({
           startDate: today,
           endDate: endOfMonth,
@@ -135,7 +142,7 @@ export const DateRangePicker = ({
                 onClick={handleConfirm}
                 className="border-orange-600 bg-orange-600 hover:border-orange-700 hover:bg-orange-700"
               >
-                {ConfirmBtnTxt || 'Confirm Booking'}
+                {ConfirmBtnTxt || "Confirm Booking"}
               </Button>
             </div>
           </div>
@@ -143,7 +150,7 @@ export const DateRangePicker = ({
       </Dialog>
       {(hasError || error) && (
         <p className="mt-1 text-sm text-red-500">
-          {error || 'Please select a valid date range'}
+          {error || "Please select a valid date range"}
         </p>
       )}
     </div>

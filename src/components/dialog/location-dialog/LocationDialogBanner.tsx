@@ -1,8 +1,9 @@
-'use client';
-import Image from 'next/image';
-import { SearchInput } from './SearchInput';
-import { SearchResults } from './SearchResults';
-import { StateType } from '@/types';
+"use client";
+import SafeImage from "@/components/common/SafeImage";
+
+import { SearchInput } from "./SearchInput";
+import { SearchResults } from "./SearchResults";
+import { StateType } from "@/types";
 
 type Props = {
   search: string;
@@ -25,20 +26,20 @@ export default function LocationDialogBanner({
 }: Props) {
   // Function to get the appropriate description based on country
   const getLocationDescription = () => {
-    if (country === 'ae') {
-      return 'Ride.Rent provides vehicle rental solutions across all emirates of the UAE';
-    } else if (country === 'in') {
-      return 'Ride.Rent offers vehicle rental services in over 35 cities in India';
+    if (country === "ae") {
+      return "Ride.Rent provides vehicle rental solutions across all emirates of the UAE";
+    } else if (country === "in") {
+      return null; // No description for India
     }
     // Default fallback
-    return 'Ride.Rent offers vehicle rental services';
+    return "Ride.Rent offers vehicle rental services";
   };
 
   return (
     <div className="relative h-48 w-full rounded-t-xl p-6 sm:p-8">
       {/* Background illustration */}
       <div className="absolute inset-0">
-        <Image
+        <SafeImage
           fill
           src="/assets/img/bg/location-dialog-bg.png" // Replace with actual banner image path
           alt="Location background"

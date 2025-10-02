@@ -71,7 +71,6 @@ export default async function VehicleDetails(props: ParamsProps) {
     }
   );
   const data: VehicleDetailsPageResponse = await response.json();
-
   // if the vehicle data is not found, return 404 not found
   if (
     data?.status === "NOT_SUCCESS" ||
@@ -139,7 +138,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   // const videos = vehicle?.vehicleVideos ?? [];
   const images = vehicle?.vehiclePhotos ?? [];
-  console.log("images: ", images);
+  // console.log("images: ", images);
 
   // // Add all videos first
   // for (const video of videos) {
@@ -289,7 +288,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         </Suspense>
 
         {/* Supplier Details */}
-        <SupplierDetails {...SupplierDetailsPropsData} />
+        {/* <SupplierDetails {...SupplierDetailsPropsData} /> */}
       </div>
     </ProtectedVehicleDetails>
   );

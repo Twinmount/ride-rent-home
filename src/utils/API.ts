@@ -1,20 +1,42 @@
-import { ENV } from '@/config/env';
+import { ENV } from "@/config/env";
 
 interface APIRequest {
   path: string;
   options?: RequestInit;
-  country: 'ae' | 'in' | string | undefined;
+  country?: "ae" | "in" | string;
+}
+
+// Helper function to detect country from current URL
+function detectCountryFromUrl(): "ae" | "in" {
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname;
+    const pathname = window.location.pathname;
+
+    // Check if URL starts with /in or domain contains 'india'
+    if (pathname.startsWith("/in") || hostname.includes("india")) {
+      return "in";
+    }
+    // Check if URL starts with /ae or domain contains 'uae'
+    if (pathname.startsWith("/ae") || hostname.includes("uae")) {
+      return "ae";
+    }
+  }
+
+  // Default to UAE
+  return "ae";
 }
 
 export async function API({
   path,
   options = {},
-  country = 'ae',
+  country,
 }: APIRequest): Promise<Response> {
-  const baseUrl = getBaseUrl(country as 'ae' | 'in');
+  // Auto-detect country if not provided
+  const detectedCountry = country || detectCountryFromUrl();
+  const baseUrl = getBaseUrl(detectedCountry as "ae" | "in");
 
   // Prepend the base URL if the path doesn't start with a slash
-  const url = path.startsWith('/') ? baseUrl + path : baseUrl + '/' + path;
+  const url = path.startsWith("/") ? baseUrl + path : baseUrl + "/" + path;
 
   const response = await fetch(`${url}`, options);
 
@@ -30,11 +52,11 @@ export async function API({
  * @param country
  * @returns
  */
-function getBaseUrl(country?: 'ae' | 'in'): string {
+function getBaseUrl(country?: "ae" | "in"): string {
   switch (country) {
-    case 'ae':
+    case "ae":
       return (ENV.API_URL as string) || (ENV.NEXT_PUBLIC_API_URL as string);
-    case 'in':
+    case "in":
       return (
         (ENV.API_URL_INDIA as string) ||
         (ENV.NEXT_PUBLIC_API_URL_INDIA as string)

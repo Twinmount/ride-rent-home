@@ -1,13 +1,14 @@
-import MotionSection from '@/components/general/framer-motion/MotionSection';
-import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
-import ViewAllButton from '@/components/common/ViewAllButton';
-import { BrandType, FetchTopBrandsResponse } from '@/types';
-import Link from 'next/link';
-import { convertToLabel } from '@/helpers';
-import Image from 'next/image';
-import { ENV } from '@/config/env';
-import { API } from '@/utils/API';
-import { SectionHeading } from '@/components/common/SectionHeading';
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
+import ViewAllButton from "@/components/common/ViewAllButton";
+import { BrandType, FetchTopBrandsResponse } from "@/types";
+import Link from "next/link";
+import { convertToLabel } from "@/helpers";
+import SafeImage from "@/components/common/SafeImage";
+
+import { ENV } from "@/config/env";
+import { API } from "@/utils/API";
+import { SectionHeading } from "@/components/common/SectionHeading";
 
 export const revalidate = 3600;
 
@@ -87,7 +88,7 @@ function BrandCard({
       aria-label={`View ${brand.brandName} ${category} rentals in ${convertToLabel(state)}`} // Add descriptive aria-label
     >
       <div className="relative m-auto flex h-[6rem] min-h-[6rem] w-full min-w-full items-center justify-center">
-        <Image
+        <SafeImage
           src={`${baseAssetsUrl}/icons/brands/${category}/${brand.brandValue}.png`}
           width={80}
           height={80}

@@ -36,6 +36,12 @@ import {
 import { useUserActions } from "@/hooks/useUserActions";
 import { generateVehicleDetailsUrl } from "@/helpers";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
+import type {
+  RawVehicleEnquiry,
+  EnquiredVehiclesApiResponse,
+  VehiclePhoto,
+  RentDetails,
+} from "@/types/userActions.types";
 
 // Add custom CSS for line clamping
 const lineClampStyles = `
@@ -58,78 +64,6 @@ if (typeof window !== "undefined") {
   const style = document.createElement("style");
   style.textContent = lineClampStyles;
   document.head.appendChild(style);
-}
-
-// Types for the API response
-interface VehiclePhoto {
-  originalPath: string;
-  signedUrl: string | null;
-}
-
-interface RentDetails {
-  day: {
-    enabled: boolean;
-    rentInAED: string;
-    mileageLimit: string;
-    unlimitedMileage: boolean;
-  };
-  week: {
-    enabled: boolean;
-    rentInAED: string;
-    mileageLimit: string;
-    unlimitedMileage: boolean;
-  };
-  month: {
-    enabled: boolean;
-    rentInAED: string;
-    mileageLimit: string;
-    unlimitedMileage: boolean;
-  };
-  hour: {
-    enabled: boolean;
-    rentInAED: string;
-    mileageLimit: string;
-    unlimitedMileage: boolean;
-    minBookingHours: string;
-  };
-}
-
-interface VehicleDetails {
-  carId: string;
-  vehicleCode: string;
-  make: string;
-  model: string;
-  year: string;
-  registrationNumber: string;
-  photos: VehiclePhoto[];
-}
-
-interface EnquiryDetails {
-  enquiryId: string;
-  status: string;
-  message: string;
-  enquiredAt: string;
-}
-
-interface EnquiredVehicle {
-  _id: string;
-  vehicleDetails: VehicleDetails;
-  enquiryId: string;
-  enquiryStatus: string;
-  enquiryMessage: string;
-  enquiredAt: string;
-  rentDetails: RentDetails;
-}
-
-interface APIResponse {
-  status: string;
-  result: {
-    data: EnquiredVehicle[];
-    page: number;
-    limit: number;
-    total: number;
-  };
-  statusCode: number;
 }
 
 export default function EnquiredVehiclesPage() {
@@ -165,7 +99,7 @@ export default function EnquiredVehiclesPage() {
   });
 
   // Extract vehicles from API response
-  const enquiredVehicles = apiResponse?.result?.data || [];
+  const enquiredVehicles: RawVehicleEnquiry[] = apiResponse?.result?.data || [];
 
   useEffect(() => {
     if (apiResponse?.result) {
@@ -177,7 +111,7 @@ export default function EnquiredVehiclesPage() {
   // Real-time update for NEW enquiries status
   useEffect(() => {
     const hasNewEnquiries = enquiredVehicles.some(
-      (vehicle: EnquiredVehicle) => vehicle.enquiryStatus === "NEW"
+      (vehicle: RawVehicleEnquiry) => vehicle.enquiryStatus === "NEW"
     );
 
     if (!hasNewEnquiries) return;
@@ -236,25 +170,17 @@ export default function EnquiredVehiclesPage() {
     const diffMinutes = (now.getTime() - enquiryDate.getTime()) / (1000 * 60);
     const diffHours = diffMinutes / 60;
 
-    // Handle NEW status with 30-minute timeout - ONLY for NEW status
-    // if (enquiryStatus === "NEW") {
-    //   if (diffMinutes > 30) {
-    //     return "cancelled"; // Auto-cancel after 30 minutes ONLY for NEW enquiries
-    //   }
-    //   return "pending"; // Show as pending for NEW status within 30 minutes
-    // }
-
-    // Handle other explicit statuses - these are not affected by time
+    // Handle explicit statuses - these are not affected by time
     if (enquiryStatus === "NEW") return "pending";
+    if (enquiryStatus === "CONTACTED") return "contacted";
+    if (enquiryStatus === "AGENTVIEW") return "agentview";
+    if (enquiryStatus === "EXPIRED") return "expired";
     if (enquiryStatus === "CANCELLED") return "cancelled";
+    if (enquiryStatus === "DECLINED") return "declined";
     if (enquiryStatus === "RESPONDED") return "responded";
     if (enquiryStatus === "BOOKED") return "booked";
     if (enquiryStatus === "PENDING") return "pending";
 
-    // // Fallback logic based on time (for backwards compatibility when no explicit status)
-    // if (diffHours < 24) return "pending";
-    // if (diffHours < 72) return "responded";
-    // if (diffHours > 168) return "booked"; // After 1 week, consider it might be booked
     return "pending"; // Default status
   };
 
@@ -277,11 +203,11 @@ export default function EnquiredVehiclesPage() {
   };
 
   // Helper function to generate vehicle details URL
-  const getVehicleDetailsUrl = (vehicle: EnquiredVehicle) => {
+  const getVehicleDetailsUrl = (vehicle: RawVehicleEnquiry) => {
     // Use available fields and current state/category from user's context
     const currentState = state || "dubai";
     const currentCategory = category || "cars";
-    const vehicleCode = vehicle.vehicleDetails.vehicleCode;
+    const vehicleCode = vehicle?.vehicleDetails?.vehicleCode; // Use carId as vehicleCode since vehicleCode is not available in RawVehicleEnquiry
     const currentCountry = country || "ae";
 
     const navRoute = generateVehicleDetailsUrl({
@@ -299,12 +225,20 @@ export default function EnquiredVehiclesPage() {
     switch (status) {
       case "pending":
         return " text-yellow-400 border-yellow-300";
-      case "responded":
+      case "contacted":
         return " text-blue-400 border-blue-300";
-      case "booked":
+      case "agentview":
+        return " text-purple-400 border-purple-300";
+      case "expired":
+        return " text-gray-400 border-gray-300";
+      case "responded":
         return " text-green-400 border-green-300";
+      case "booked":
+        return " text-emerald-400 border-emerald-300";
       case "cancelled":
         return " text-red-400 border-red-300";
+      case "declined":
+        return " text-orange-400 border-orange-300";
       default:
         return " text-gray-400 border-gray-300";
     }
@@ -314,11 +248,19 @@ export default function EnquiredVehiclesPage() {
     switch (status) {
       case "pending":
         return <Clock className="h-3 w-3" />;
+      case "contacted":
+        return <Phone className="h-3 w-3" />;
+      case "agentview":
+        return <MessageSquare className="h-3 w-3" />;
+      case "expired":
+        return <Clock className="h-3 w-3" />;
       case "responded":
         return <Mail className="h-3 w-3" />;
       case "booked":
         return <Calendar className="h-3 w-3" />;
       case "cancelled":
+        return <X className="h-3 w-3" />;
+      case "declined":
         return <X className="h-3 w-3" />;
       default:
         return <MessageSquare className="h-3 w-3" />;
@@ -344,7 +286,7 @@ export default function EnquiredVehiclesPage() {
   };
 
   const filteredVehicles = enquiredVehicles
-    .filter((vehicle: EnquiredVehicle) => {
+    .filter((vehicle: RawVehicleEnquiry) => {
       const vehicleName = vehicle.vehicleDetails.model;
       const vehicleRegNumber = vehicle.vehicleDetails.registrationNumber;
       const vehicleCode = vehicle.vehicleDetails.carId; // Using carId as vehicleCode
@@ -357,7 +299,7 @@ export default function EnquiredVehiclesPage() {
       const matchesFilter = filterBy === "all" || status === filterBy;
       return matchesSearch && matchesFilter;
     })
-    .sort((a: EnquiredVehicle, b: EnquiredVehicle) => {
+    .sort((a: RawVehicleEnquiry, b: RawVehicleEnquiry) => {
       switch (sortBy) {
         case "recent":
           return (
@@ -441,7 +383,7 @@ export default function EnquiredVehiclesPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-4">
-            <Link href="/profile">
+            <Link href="/user-profile">
               <Button variant="ghost" size="sm" className="cursor-pointer">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Profile
@@ -498,9 +440,13 @@ export default function EnquiredVehiclesPage() {
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="contacted">Contacted</SelectItem>
+                <SelectItem value="agentview">Agent View</SelectItem>
+                <SelectItem value="expired">Expired</SelectItem>
                 <SelectItem value="responded">Responded</SelectItem>
                 <SelectItem value="booked">Booked</SelectItem>
                 <SelectItem value="cancelled">Cancelled</SelectItem>
+                <SelectItem value="declined">Declined</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -508,7 +454,7 @@ export default function EnquiredVehiclesPage() {
 
         {/* Enquiries List - Card Grid Layout */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-          {filteredVehicles.map((vehicle: EnquiredVehicle) => {
+          {filteredVehicles.map((vehicle: RawVehicleEnquiry) => {
             const status = getStatus(vehicle.enquiredAt, vehicle.enquiryStatus);
             const price = getRentalPrice(vehicle.rentDetails);
             const period = getRentalPeriod(vehicle.rentDetails);
@@ -522,9 +468,15 @@ export default function EnquiredVehiclesPage() {
                 className={`group overflow-hidden border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
                   vehicle.enquiryStatus === "NEW" && status === "pending"
                     ? "border-yellow-300 ring-yellow-200 shadow-lg ring-2 ring-opacity-50"
-                    : status === "cancelled"
+                    : status === "cancelled" || status === "declined"
                       ? "border-red-200 bg-red-50/30"
-                      : "border-gray-200"
+                      : status === "expired"
+                        ? "border-gray-200 bg-gray-50/30"
+                        : status === "contacted"
+                          ? "border-blue-200 bg-blue-50/30"
+                          : status === "agentview"
+                            ? "border-purple-200 bg-purple-50/30"
+                            : "border-gray-200"
                 }`}
               >
                 <div className="relative">
@@ -628,14 +580,14 @@ export default function EnquiredVehiclesPage() {
 
                   {/* Enquiry Details */}
                   <div className="mb-3 rounded-lg bg-gray-50 p-2 sm:mb-4 sm:p-3">
-                    <div className="mb-2 flex items-center justify-between">
+                    {/* <div className="mb-2 flex items-center justify-between">
                       <span className="text-xs font-medium text-gray-700">
                         Enquiry ID
                       </span>
                       <span className="text-xs text-gray-500">
                         {vehicle.enquiryId.split("-")[0]}...
                       </span>
-                    </div>
+                    </div> */}
                     {/* Show timer for NEW enquiries */}
                     {/* {vehicle.enquiryStatus === "NEW" &&
                       status === "pending" && (
@@ -682,34 +634,39 @@ export default function EnquiredVehiclesPage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
-                    {status === "cancelled" ? (
+                    {status === "cancelled" ||
+                    status === "declined" ||
+                    status === "expired" ? (
                       <Button
                         size="sm"
                         disabled
-                        className="h-8 w-full cursor-not-allowed bg-red-100 text-xs text-red-800"
+                        className={`h-8 w-full cursor-not-allowed text-xs ${
+                          status === "expired"
+                            ? "bg-gray-100 text-gray-800"
+                            : status === "declined"
+                              ? "bg-orange-100 text-orange-800"
+                              : "bg-red-100 text-red-800"
+                        }`}
                       >
-                        <X className="mr-1 h-3 w-3" />
-                        Enquiry Cancelled
+                        {status === "expired" ? (
+                          <>
+                            <Clock className="mr-1 h-3 w-3" />
+                            Enquiry Expired
+                          </>
+                        ) : status === "declined" ? (
+                          <>
+                            <X className="mr-1 h-3 w-3" />
+                            Enquiry Declined
+                          </>
+                        ) : (
+                          <>
+                            <X className="mr-1 h-3 w-3" />
+                            Enquiry Cancelled
+                          </>
+                        )}
                       </Button>
                     ) : (
                       <>
-                        {/* <Button
-                          size="sm"
-                          className="h-8 flex-1 bg-orange-500 text-xs text-white hover:bg-orange-600"
-                        >
-                          <MessageSquare className="mr-1 h-3 w-3" />
-                          <span className="hidden sm:inline">Contact</span>
-                          <span className="sm:hidden">Call</span>
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-8 flex-1 text-xs"
-                        >
-                          <Phone className="mr-1 h-3 w-3" />
-                          <span className="hidden sm:inline">Call</span>
-                          <span className="sm:hidden">📞</span>
-                        </Button> */}
                         <Link
                           href={getVehicleDetailsUrl(vehicle)}
                           className="w-full flex-1"
@@ -730,12 +687,31 @@ export default function EnquiredVehiclesPage() {
                   </div>
 
                   {/* Additional Action Buttons for Status */}
-                  {(status === "responded" || status === "booked") && (
+                  {(status === "contacted" ||
+                    status === "responded" ||
+                    status === "booked" ||
+                    status === "agentview") && (
                     <div className="mt-2">
-                      {status === "responded" && (
+                      {status === "contacted" && (
                         <Button
                           size="sm"
                           className="h-8 w-full bg-blue-500 text-xs text-white hover:bg-blue-600"
+                        >
+                          Agent Contacted You
+                        </Button>
+                      )}
+                      {status === "agentview" && (
+                        <Button
+                          size="sm"
+                          className="h-8 w-full bg-purple-500 text-xs text-white hover:bg-purple-600"
+                        >
+                          Agent Viewed Enquiry
+                        </Button>
+                      )}
+                      {status === "responded" && (
+                        <Button
+                          size="sm"
+                          className="h-8 w-full bg-green-500 text-xs text-white hover:bg-green-600"
                         >
                           View Response
                         </Button>
@@ -743,7 +719,7 @@ export default function EnquiredVehiclesPage() {
                       {status === "booked" && (
                         <Button
                           size="sm"
-                          className="h-8 w-full bg-green-500 text-xs text-white hover:bg-green-600"
+                          className="h-8 w-full bg-emerald-500 text-xs text-white hover:bg-emerald-600"
                         >
                           Booking Details
                         </Button>

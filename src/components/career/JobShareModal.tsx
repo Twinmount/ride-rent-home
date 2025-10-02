@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Image from "next/image";
+import SafeImage from "@/components/common/SafeImage";
 
 export function JobShareModal() {
   const [open, setOpen] = useState(false);
@@ -48,7 +48,7 @@ export function JobShareModal() {
               rel="noopener noreferrer"
               className="flex h-[50px] w-[50px] items-center justify-center rounded-[50%] border"
             >
-              <Image
+              <SafeImage
                 src="/assets/icons/careers/social/twitter.svg"
                 alt="twitter"
                 width={30}
@@ -64,7 +64,7 @@ export function JobShareModal() {
               rel="noopener noreferrer"
               className="flex h-[50px] w-[50px] items-center justify-center rounded-[50%] border"
             >
-              <Image
+              <SafeImage
                 src="/assets/icons/careers/social/facebook.svg"
                 alt="facebook"
                 width={30}
@@ -76,13 +76,13 @@ export function JobShareModal() {
             {/* LinkedIn */}
             <a
               href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                jobUrl,
+                jobUrl
               )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-[50px] w-[50px] items-center justify-center rounded-[50%] border"
             >
-              <Image
+              <SafeImage
                 src="/assets/icons/careers/social/linkedin.svg"
                 alt="linkedin"
                 width={30}
@@ -98,7 +98,7 @@ export function JobShareModal() {
               rel="noopener noreferrer"
               className="flex h-[50px] w-[50px] items-center justify-center rounded-[50%] border"
             >
-              <Image
+              <SafeImage
                 src="/assets/icons/careers/social/whatsapp.svg"
                 alt="whatsapp"
                 width={30}

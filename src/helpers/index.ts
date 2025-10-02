@@ -102,7 +102,7 @@ export const formatKeyForIcon = (key: string) => {
 
 // Helper function to format phone numbers
 export const formatPhoneNumber = (countryCode: string, phoneNumber: string) => {
-  const formattedCountryCode = countryCode.startsWith('+')
+  const formattedCountryCode = countryCode.startsWith("+")
     ? countryCode
     : `+${countryCode}`;
 
@@ -644,8 +644,71 @@ export function restoreVehicleCodeFormat(lowerCaseCode: string): string {
 export function getVehicleCardStyle(layoutType: "carousel" | "grid"): string {
   const styles = {
     carousel: `w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem]`,
-    grid: `w-full max-w-[18rem] min-w-[12rem] justify-self-center`,
+    grid: `min-w-[12rem] w-full max-w-[18rem] justify-self-center`,
   };
 
   return styles[layoutType] || "";
+}
+
+export const trimName = (name: string, maxLength: number = 20): string => {
+  if (name.length <= maxLength) {
+    return name;
+  }
+  return name.substring(0, maxLength) + "...";
+};
+
+interface AvatarProps {
+  displayName: string;
+  fallbackInitials: string;
+}
+
+export function getAvatarProps(
+  fullName: string | null | undefined
+): AvatarProps {
+  // Handle invalid input
+  if (!fullName?.trim()) {
+    return { displayName: "", fallbackInitials: "?" };
+  }
+
+  const parts = fullName.trim().split(/\s+/);
+
+  // Single name - use first two letters
+  if (parts.length === 1) {
+    const name = parts[0];
+    const fallbackInitials =
+      name.length >= 2
+        ? name.substring(0, 2).toUpperCase()
+        : name.charAt(0).toUpperCase();
+
+    return {
+      displayName: name,
+      fallbackInitials: fallbackInitials,
+    };
+  }
+
+  // Two names - use first letter of each name
+  if (parts.length === 2) {
+    const initials = parts.map((part) => part.charAt(0).toUpperCase()).join("");
+
+    return {
+      displayName: fullName.trim(),
+      fallbackInitials: initials,
+    };
+  }
+
+  // Three or more names - use first and last name initials only
+  const first = parts[0];
+  const last = parts[parts.length - 1];
+  const initials = first.charAt(0).toUpperCase() + last.charAt(0).toUpperCase();
+
+  // For display name: "First M. Last"
+  const middle = parts.slice(1, -1);
+  const middleInitials = middle
+    .map((name) => name.charAt(0).toUpperCase() + ".")
+    .join(" ");
+
+  return {
+    displayName: `${first} ${middleInitials} ${last}`,
+    fallbackInitials: initials,
+  };
 }

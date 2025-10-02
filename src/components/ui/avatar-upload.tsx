@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import React, { useRef, useState } from 'react';
-import { Camera, Upload, X, User, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useAvatarUpload } from '@/hooks/useAvatarUpload';
+import React, { useRef, useState } from "react";
+import { Camera, Upload, X, User, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAvatarUpload } from "@/hooks/useAvatarUpload";
 
 interface AvatarUploadProps {
   currentAvatar?: string | null;
   userName?: string;
   userId?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: "sm" | "md" | "lg" | "xl";
   className?: string;
   onUploadSuccess?: (avatarUrl: string) => void;
   onUploadError?: (error: string) => void;
@@ -18,29 +18,29 @@ interface AvatarUploadProps {
 
 interface NotificationState {
   message: string;
-  type: 'success' | 'error' | null;
+  type: "success" | "error" | null;
 }
 
 const sizeClasses = {
-  sm: 'h-16 w-16',
-  md: 'h-24 w-24',
-  lg: 'h-32 w-32',
-  xl: 'h-40 w-40',
+  sm: "h-16 w-16",
+  md: "h-24 w-24",
+  lg: "h-32 w-32",
+  xl: "h-40 w-40",
 };
 
 const iconSizes = {
-  sm: 'h-4 w-4',
-  md: 'h-5 w-5',
-  lg: 'h-6 w-6',
-  xl: 'h-7 w-7',
+  sm: "h-4 w-4",
+  md: "h-5 w-5",
+  lg: "h-6 w-6",
+  xl: "h-7 w-7",
 };
 
 export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   currentAvatar,
-  userName = 'User',
+  userName = "User",
   userId,
-  size = 'lg',
-  className = '',
+  size = "lg",
+  className = "",
   onUploadSuccess,
   onUploadError,
 }) => {
@@ -48,23 +48,23 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [notification, setNotification] = useState<NotificationState>({
-    message: '',
+    message: "",
     type: null,
   });
 
   const { uploadAvatar, isUploading, error, clearError } = useAvatarUpload({
     userId,
     onSuccess: (avatarUrl) => {
-      showNotification('Avatar updated successfully!', 'success');
+      showNotification("Avatar updated successfully!", "success");
       setPreviewUrl(null);
       setSelectedFile(null);
       if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+        fileInputRef.current.value = "";
       }
       onUploadSuccess?.(avatarUrl);
     },
     onError: (errorMessage) => {
-      showNotification(errorMessage, 'error');
+      showNotification(errorMessage, "error");
       onUploadError?.(errorMessage);
     },
   });
@@ -73,14 +73,14 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   React.useEffect(() => {
     if (notification.type) {
       const timer = setTimeout(() => {
-        setNotification({ message: '', type: null });
+        setNotification({ message: "", type: null });
       }, 3000);
       return () => clearTimeout(timer);
     }
     return undefined;
   }, [notification]);
 
-  const showNotification = (message: string, type: 'success' | 'error') => {
+  const showNotification = (message: string, type: "success" | "error") => {
     setNotification({ message, type });
   };
 
@@ -100,7 +100,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      showNotification('Please select a file', 'error');
+      showNotification("Please select a file", "error");
       return;
     }
 
@@ -108,7 +108,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       await uploadAvatar(selectedFile);
     } catch (error) {
       // Error handling is done in the hook
-      console.error('Avatar upload failed:', error);
+      console.error("Avatar upload failed:", error);
     }
   };
 
@@ -116,7 +116,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
     setPreviewUrl(null);
     setSelectedFile(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
@@ -133,9 +133,9 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       {notification.type && (
         <div
           className={`w-full max-w-sm rounded-lg p-3 text-sm font-medium ${
-            notification.type === 'success'
-              ? 'border border-green-200 bg-green-50 text-green-700'
-              : 'border border-red-200 bg-red-50 text-red-700'
+            notification.type === "success"
+              ? "border border-green-200 bg-green-50 text-green-700"
+              : "border border-red-200 bg-red-50 text-red-700"
           }`}
         >
           {notification.message}
@@ -192,7 +192,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
           disabled={isUploading}
         >
           <Upload className="h-4 w-4" />
-          Choose Photo
+          {displayAvatar ? "Change Photo​" : "Choose Photo"}
         </Button>
       ) : (
         <div className="flex items-center gap-2">
@@ -207,7 +207,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
             ) : (
               <Upload className="h-4 w-4" />
             )}
-            {isUploading ? 'Uploading...' : 'Upload'}
+            {isUploading ? "Uploading..." : "Upload"}
           </Button>
           <Button
             onClick={handleCancel}
