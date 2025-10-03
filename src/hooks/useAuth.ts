@@ -367,6 +367,71 @@ export const useAuth = () => {
     },
   });
 
+  const requestEmailChangeMutation = useMutation({
+    mutationFn: ({ newEmail }: { newEmail: string }) =>
+      authAPI.requestEmailChange(newEmail),
+    onSuccess: (data) => {
+      setError(null);
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
+  const verifyEmailChangeMutation = useMutation({
+    mutationFn: ({
+      otpId,
+      otp,
+      newEmail,
+    }: {
+      otpId: string;
+      otp: string;
+      newEmail: string;
+    }) => authAPI.verifyEmailChange(otpId, otp, newEmail),
+    onSuccess: (data) => {
+      setError(null);
+
+      // Update user state with new email and verification status
+      updateState((draft) => {
+        if (draft.user && data?.data) {
+          if (data.data.email) {
+            draft.user.email = data.data.email;
+          }
+          if (data.data.isEmailVerified !== undefined) {
+            draft.user.isEmailVerified = data.data.isEmailVerified;
+          }
+        }
+      });
+
+      // Update auth state as well
+      setAuth((draft) => {
+        if (draft.user && data?.data) {
+          if (data.data.email) {
+            draft.user.email = data.data.email;
+          }
+          if (data.data.isEmailVerified !== undefined) {
+            draft.user.isEmailVerified = data.data.isEmailVerified;
+          }
+        }
+      });
+
+      // Update storage with the updated user object
+      if (state.user) {
+        const updatedUser = {
+          ...state.user,
+          ...(data?.data?.email && { email: data.data.email }),
+          ...(data?.data?.isEmailVerified !== undefined && {
+            isEmailVerified: data.data.isEmailVerified,
+          }),
+        };
+        authStorage.setUser(updatedUser, true); // Save to localStorage
+      }
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
   // React Query for getUserProfile
   const useGetUserProfile = (userId: string, enabled: boolean = true) => {
     return useQuery({
@@ -626,6 +691,46 @@ export const useAuth = () => {
     }
   };
 
+  // Request email change function
+  const requestEmailChange = async (newEmail: string): Promise<AuthResponse> => {
+    try {
+      return requestEmailChangeMutation.mutateAsync({ newEmail });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to request email address change",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
+  // Verify email change function
+  const verifyEmailChange = async (
+    otpId: string,
+    otp: string,
+    newEmail: string
+  ): Promise<AuthResponse> => {
+    try {
+      return verifyEmailChangeMutation.mutateAsync({
+        otpId,
+        otp,
+        newEmail,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to verify email address change",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
   // Check if user exists function
   const checkUserExists = async (
     phoneNumber: string,
@@ -694,7 +799,9 @@ export const useAuth = () => {
       updateUserNameAndAvatar.isPending ||
       logoutMutation.isPending ||
       requestPhoneChangeMutation.isPending ||
-      verifyPhoneChangeMutation.isPending,
+      verifyPhoneChangeMutation.isPending ||
+      requestEmailChangeMutation.isPending ||
+      verifyEmailChangeMutation.isPending,
 
     // Actions
     checkUserExists,
@@ -707,6 +814,8 @@ export const useAuth = () => {
     updateProfile,
     requestPhoneNumberChange,
     verifyPhoneNumberChange,
+    requestEmailChange,
+    verifyEmailChange,
     clearError,
     onHandleLoginmodal,
     handleProfileNavigation,
@@ -725,6 +834,8 @@ export const useAuth = () => {
     logoutMutation,
     requestPhoneChangeMutation,
     verifyPhoneChangeMutation,
+    requestEmailChangeMutation,
+    verifyEmailChangeMutation,
 
     // Utilities
     validateEmail,
