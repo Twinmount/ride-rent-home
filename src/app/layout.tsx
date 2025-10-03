@@ -32,9 +32,64 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const schema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Ride Rent",
+      "url": "https://www.ride.rent",
+      "logo": "https://ride.rent/assets/logo/Logo_Black.svg",
+      "sameAs": []
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://www.ride.rent/",
+      // "potentialAction": {
+      //   "@type": "SearchAction",
+      //   "target": "https://www.ride.rent/search?q={search_term_string}",
+      //   "query-input": "required name=search_term_string"
+      // }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "UAE",
+          "item": "https://www.ride.rent/ae"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "India",
+          "item": "https://www.ride.rent/in"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "About Us",
+          "item": "https://www.ride.rent/about-us"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Partner with Us!",
+          "item": "https://agent.ride.rent/ae/register"
+        }
+      ]
+    }
+  ]
+
   return (
     <html lang="en" className={`${poppins.variable} ${firaSans.variable} `}>
       <head className="notranslate">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
         {/* tracking scripts */}
         <TrackingScripts />
       </head>
