@@ -66,8 +66,10 @@ export const useUserProfile = ({
     refetchOnWindowFocus: true, // Refetch when user returns to the tab
     refetchInterval: 3 * 60 * 1000, // Refetch every 3 minutes (3 * 60 * 1000 ms)
     refetchIntervalInBackground: false, // Don't refetch when tab is not active
-    staleTime: 2 * 60 * 1000, // Consider data stale after 2 minutes
+    staleTime: 0,
   });
+
+  console.log("userRecentActivitiesQuery: ", userRecentActivitiesQuery?.data);
 
   // Mutation to track car view
   const trackCarViewMutation = useMutation({

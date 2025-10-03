@@ -129,59 +129,36 @@ export const getUserRecentActivitiesAllCountries = async (
 
     console.log("multiCountryResponse: ", multiCountryResponse);
 
-    // Extract activities from all successful countries
-    const allActivities: (UserRecentActivity & { _metadata?: any })[] = [];
+    // Extract activities - handle both merged and response-wrapped data
+    const allActivities: UserRecentActivity[] = [];
 
-    multiCountryResponse.data.forEach((countryData: any, index: number) => {
-      console.log(`Processing country data ${index}:`, countryData);
+    if (Array.isArray(multiCountryResponse.data)) {
+      multiCountryResponse.data.forEach((item: any) => {
+        // If item has result property, it's a response object
+        if (item?.result && Array.isArray(item.result)) {
+          allActivities.push(...item.result);
+        }
+        // If item has activity properties, it's already an activity
+        else if (item?._id && item?.activityType) {
+          allActivities.push(item);
+        }
+      });
+    }
 
-      if (countryData?.result && Array.isArray(countryData.result)) {
-        console.log("Found activities in result:", countryData.result);
-        const activities = countryData.result.map(
-          (activity: UserRecentActivity) => ({
-            ...activity,
-            _metadata: {
-              country: countryData._metadata?.country,
-              countryName: countryData._metadata?.countryName,
-              responseTime: countryData._metadata?.responseTime,
-            },
-          })
-        );
-        allActivities.push(...activities);
-      } else if (Array.isArray(countryData)) {
-        // Direct array response
-        console.log("Found direct activities array:", countryData);
-        const activities = countryData.map((activity: any) => ({
-          ...activity,
-          _metadata: {
-            country: activity._metadata?.country,
-            countryName: activity._metadata?.countryName,
-            responseTime: activity._metadata?.responseTime,
-          },
-        }));
-        allActivities.push(...activities);
-      } else {
-        console.log("No valid activities found in this country data");
-      }
-    });
+    console.log("Extracted activities: ", allActivities);
 
-    console.log("All activities before sorting:", allActivities);
-
-    // Sort activities by activityDate (most recent first)
-    const sortedActivities = allActivities.sort((a, b) => {
+    // Sort by activityDate (most recent first)
+    allActivities.sort((a, b) => {
       const aTime = new Date(a.activityDate || 0).getTime();
       const bTime = new Date(b.activityDate || 0).getTime();
       return bTime - aTime;
     });
 
-    console.log("Sorted activities:", sortedActivities);
+    // Add metadata to the result
+    (allActivities as any).multiCountryMetadata = multiCountryResponse.metadata;
 
-    // Add metadata to the array
-    (sortedActivities as any).multiCountryMetadata =
-      multiCountryResponse.metadata;
-
-    console.log("Returning activities with metadata:", sortedActivities);
-    return sortedActivities as UserRecentActivity[] & {
+    console.log("Returning result with metadata:", allActivities);
+    return allActivities as UserRecentActivity[] & {
       multiCountryMetadata?: any;
     };
   } catch (error) {
