@@ -88,8 +88,8 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
                     }
                   >
                     <VehicleCard
-                      vehicle={vehicle}
                       index={animationIndex}
+                      vehicle={vehicle}
                       country={country}
                       layoutType="grid"
                       openInNewTab={openInNewTab}

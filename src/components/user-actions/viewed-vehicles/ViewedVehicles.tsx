@@ -38,7 +38,7 @@ const ViewedVehicles = () => {
     useUserActions();
 
   // Get current state and category context
-  const { state, category, country } = useStateAndCategory();
+  const { category } = useStateAndCategory();
 
   // Get viewed vehicles data - only call when this component is mounted
   const viewedVehiclesQuery = useUserViewedVehicles({
@@ -49,32 +49,28 @@ const ViewedVehicles = () => {
     enabled: !!userId, // Only enable when userId is available
   });
 
-  console.log("viewedVehiclesQuery: ", viewedVehiclesQuery.data);
-
   // Use the viewed vehicles data directly
   const viewedVehicles = viewedVehiclesQuery.data
-    ? extractViewedVehicles(viewedVehiclesQuery.data)
+    ? (extractViewedVehicles(viewedVehiclesQuery.data) ?? [])
     : [];
-
-  console.log("extractedViewedVehicles: ", viewedVehicles);
 
   const isLoading = viewedVehiclesQuery.isLoading;
 
   // Helper function to generate vehicle details URL
   const getVehicleDetailsUrl = (vehicle: any) => {
-    // Use available fields and current state/category from user's context
-    const currentState = state || "dubai";
+    console.log("vehicle: ", vehicle);
     const currentCategory = category || "cars";
     const vehicleCode = vehicle.vehicleCode || vehicle.id;
-    const currentCountry = country || "ae";
 
     const navRoute = generateVehicleDetailsUrl({
       vehicleTitle: vehicle.name || vehicle.model || "vehicle",
-      state: currentState,
+      state: vehicle?.originalData?.stateDetails?.stateValue,
       vehicleCategory: currentCategory,
       vehicleCode,
-      country: currentCountry,
+      country: vehicle?.originalData?._metadata.countryCode,
     });
+
+    console.log("navRoute: ", navRoute);
 
     return navRoute;
   };
@@ -100,7 +96,7 @@ const ViewedVehicles = () => {
 
   // Filter and sort vehicles
   const filteredVehicles = viewedVehicles
-    .filter((vehicle: any) => {
+    ?.filter((vehicle: any) => {
       const matchesSearch =
         vehicle.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vehicle.vendor?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -121,13 +117,15 @@ const ViewedVehicles = () => {
       }
     });
 
+  console.log("filteredVehicles: ", filteredVehicles);
+
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-8">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-4">
-            <Link href="/profile">
+            <Link href="/user-profile">
               <Button variant="ghost" size="sm" className="cursor-pointer">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Profile
@@ -139,9 +137,7 @@ const ViewedVehicles = () => {
               <h1 className="mb-2 text-3xl font-bold text-gray-900">
                 Recently Viewed
               </h1>
-              <p className="text-gray-600">
-                Vehicles you&apos;ve recently browsed
-              </p>
+              <p className="text-gray-600">Revisit What You Viewed Before​</p>
             </div>
             <div className="flex items-center gap-2">
               <Eye className="h-6 w-6 text-purple-500" />
@@ -158,7 +154,7 @@ const ViewedVehicles = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
             <Input
-              placeholder="Search viewed vehicles..."
+              placeholder="Search viewed experiences​."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -289,7 +285,7 @@ const ViewedVehicles = () => {
                     {vehicle.vendor || "Premium Car Rental"}
                     {vehicle.year && <span> • {vehicle.year}</span>}
                   </p>
-                  <div className="mb-3 flex items-center gap-2">
+                  {/* <div className="mb-3 flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-gray-400" />
                     <span className="text-sm text-gray-600">
                       {vehicle.location || "Dubai"}
@@ -298,7 +294,7 @@ const ViewedVehicles = () => {
                     <span className="text-sm text-gray-600">
                       {vehicle.viewedDate || "Recently"}
                     </span>
-                  </div>
+                  </div> */}
                   <div className="mb-4 flex flex-wrap gap-1">
                     {vehicle.features
                       ?.slice(0, 2)

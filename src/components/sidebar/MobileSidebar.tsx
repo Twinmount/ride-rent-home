@@ -34,8 +34,12 @@ export default function MobileSidebar() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button className="w-fit border-none outline-none" size="icon">
-          <AlignRight className="h-6 w-6" />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 border-none p-0 outline-none hover:bg-gray-100"
+        >
+          <AlignRight className="h-5 w-5 text-gray-700" />
           <span className="sr-only">Toggle navigation</span>
         </Button>
       </SheetTrigger>

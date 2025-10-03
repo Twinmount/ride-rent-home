@@ -51,6 +51,7 @@
     "nextjs-toploader": "^3.8.16",
     "query-string": "^9.1.0",
     "react": "19.0.0",
+    "react-country-flag": "^3.1.0",
     "react-date-range": "^2.0.1",
     "react-dom": "19.0.0",
     "react-error-boundary": "^6.0.0",
@@ -67,7 +68,8 @@
     "slick-carousel": "^1.8.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "use-immer": "^0.11.0"
+    "use-immer": "^0.11.0",
+    "world-countries": "^5.1.0"
   },
   "devDependencies": {
     "@types/node": "^20",

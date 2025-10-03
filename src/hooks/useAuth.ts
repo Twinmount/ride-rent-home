@@ -14,6 +14,8 @@ import type {
   InternalAuthState,
   SetPasswordData,
   ProfileUpdateData,
+  PhoneChangeData,
+  PhoneChangeVerificationData,
 } from "@/types/auth.types";
 
 // Import constants
@@ -134,12 +136,10 @@ export const useAuth = () => {
         });
         // setLoginOpen(false);
         setError(null);
-        console.log("Login successful:", data);
       }
     },
     onError: (error: Error) => {
       setError({ message: error.message });
-      console.error("Login failed:", error);
     },
   });
 
@@ -184,7 +184,6 @@ export const useAuth = () => {
       }
       setLoginOpen(false);
       setError(null);
-      console.log("Password set successfully:", data);
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -195,7 +194,6 @@ export const useAuth = () => {
     mutationFn: authAPI.resendOtp,
     onSuccess: (data) => {
       setError(null);
-      console.log("OTP resent successfully:", data);
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -212,7 +210,6 @@ export const useAuth = () => {
     }) => authAPI.updateProfile(userId, profileData),
     onSuccess: (data) => {
       setError(null);
-      console.log("Profile updated successfully:", data);
 
       // Update user state with new name and avatar, preserving existing fields
       updateState((draft) => {
@@ -278,6 +275,160 @@ export const useAuth = () => {
         draft.token = null;
         draft.refreshToken = null;
       });
+    },
+  });
+
+  const requestPhoneChangeMutation = useMutation({
+    mutationFn: ({
+      newPhoneNumber,
+      newCountryCode,
+    }: {
+      newPhoneNumber: string;
+      newCountryCode: string;
+    }) => authAPI.requestPhoneNumberChange(newPhoneNumber, newCountryCode),
+    onSuccess: (data) => {
+      setError(null);
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
+  const verifyPhoneChangeMutation = useMutation({
+    mutationFn: ({
+      otpId,
+      otp,
+      newPhoneNumber,
+      newCountryCode,
+    }: {
+      otpId: string;
+      otp: string;
+      newPhoneNumber: string;
+      newCountryCode: string;
+    }) =>
+      authAPI.verifyPhoneNumberChange(
+        otpId,
+        otp,
+        newPhoneNumber,
+        newCountryCode
+      ),
+    onSuccess: (data) => {
+      setError(null);
+
+      // Update user state with new phone number and verification status
+      updateState((draft) => {
+        if (draft.user && data?.data) {
+          if (data.data.phoneNumber) {
+            draft.user.phoneNumber = data.data.phoneNumber;
+          }
+          if (data.data.countryCode) {
+            draft.user.countryCode = data.data.countryCode;
+          }
+          if (data.data.isPhoneVerified !== undefined) {
+            draft.user.isPhoneVerified = data.data.isPhoneVerified;
+          }
+        }
+      });
+
+      // Update auth state as well
+      setAuth((draft) => {
+        if (draft.user && data?.data) {
+          if (data.data.phoneNumber) {
+            draft.user.phoneNumber = data.data.phoneNumber;
+          }
+          if (data.data.countryCode) {
+            draft.user.countryCode = data.data.countryCode;
+          }
+          if (data.data.isPhoneVerified !== undefined) {
+            draft.user.isPhoneVerified = data.data.isPhoneVerified;
+          }
+        }
+      });
+
+      // Update storage with the updated user object
+      if (state.user) {
+        const updatedUser = {
+          ...state.user,
+          ...(data?.data?.phoneNumber && {
+            phoneNumber: data.data.phoneNumber,
+          }),
+          ...(data?.data?.countryCode && {
+            countryCode: data.data.countryCode,
+          }),
+          ...(data?.data?.isPhoneVerified !== undefined && {
+            isPhoneVerified: data.data.isPhoneVerified,
+          }),
+        };
+        authStorage.setUser(updatedUser, true); // Save to localStorage
+      }
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
+  const requestEmailChangeMutation = useMutation({
+    mutationFn: ({ newEmail }: { newEmail: string }) =>
+      authAPI.requestEmailChange(newEmail),
+    onSuccess: (data) => {
+      setError(null);
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
+  const verifyEmailChangeMutation = useMutation({
+    mutationFn: ({
+      otpId,
+      otp,
+      newEmail,
+    }: {
+      otpId: string;
+      otp: string;
+      newEmail: string;
+    }) => authAPI.verifyEmailChange(otpId, otp, newEmail),
+    onSuccess: (data) => {
+      setError(null);
+
+      // Update user state with new email and verification status
+      updateState((draft) => {
+        if (draft.user && data?.data) {
+          if (data.data.email) {
+            draft.user.email = data.data.email;
+          }
+          if (data.data.isEmailVerified !== undefined) {
+            draft.user.isEmailVerified = data.data.isEmailVerified;
+          }
+        }
+      });
+
+      // Update auth state as well
+      setAuth((draft) => {
+        if (draft.user && data?.data) {
+          if (data.data.email) {
+            draft.user.email = data.data.email;
+          }
+          if (data.data.isEmailVerified !== undefined) {
+            draft.user.isEmailVerified = data.data.isEmailVerified;
+          }
+        }
+      });
+
+      // Update storage with the updated user object
+      if (state.user) {
+        const updatedUser = {
+          ...state.user,
+          ...(data?.data?.email && { email: data.data.email }),
+          ...(data?.data?.isEmailVerified !== undefined && {
+            isEmailVerified: data.data.isEmailVerified,
+          }),
+        };
+        authStorage.setUser(updatedUser, true); // Save to localStorage
+      }
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
     },
   });
 
@@ -351,8 +502,6 @@ export const useAuth = () => {
 
   const login = async (loginData: LoginData): Promise<AuthResponse> => {
     try {
-      console.log("login function called");
-
       // Validate input
       // if (!validatePhoneNumber(loginData.phoneNumber)) {
       //   throw new Error(ERROR_MESSAGES.INVALID_PHONE);
@@ -494,6 +643,94 @@ export const useAuth = () => {
     }
   };
 
+  // Request phone number change function
+  const requestPhoneNumberChange = async (
+    newPhoneNumber: string,
+    newCountryCode: string
+  ): Promise<AuthResponse> => {
+    try {
+      return requestPhoneChangeMutation.mutateAsync({
+        newPhoneNumber,
+        newCountryCode,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to request phone number change",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
+  // Verify phone number change function
+  const verifyPhoneNumberChange = async (
+    otpId: string,
+    otp: string,
+    newPhoneNumber: string,
+    newCountryCode: string
+  ): Promise<AuthResponse> => {
+    try {
+      return verifyPhoneChangeMutation.mutateAsync({
+        otpId,
+        otp,
+        newPhoneNumber,
+        newCountryCode,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to verify phone number change",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
+  // Request email change function
+  const requestEmailChange = async (newEmail: string): Promise<AuthResponse> => {
+    try {
+      return requestEmailChangeMutation.mutateAsync({ newEmail });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to request email address change",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
+  // Verify email change function
+  const verifyEmailChange = async (
+    otpId: string,
+    otp: string,
+    newEmail: string
+  ): Promise<AuthResponse> => {
+    try {
+      return verifyEmailChangeMutation.mutateAsync({
+        otpId,
+        otp,
+        newEmail,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to verify email address change",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
   // Check if user exists function
   const checkUserExists = async (
     phoneNumber: string,
@@ -560,7 +797,11 @@ export const useAuth = () => {
       setPasswordMutation.isPending ||
       resendOtpMutation.isPending ||
       updateUserNameAndAvatar.isPending ||
-      logoutMutation.isPending,
+      logoutMutation.isPending ||
+      requestPhoneChangeMutation.isPending ||
+      verifyPhoneChangeMutation.isPending ||
+      requestEmailChangeMutation.isPending ||
+      verifyEmailChangeMutation.isPending,
 
     // Actions
     checkUserExists,
@@ -571,6 +812,10 @@ export const useAuth = () => {
     setPassword,
     resendOTP,
     updateProfile,
+    requestPhoneNumberChange,
+    verifyPhoneNumberChange,
+    requestEmailChange,
+    verifyEmailChange,
     clearError,
     onHandleLoginmodal,
     handleProfileNavigation,
@@ -587,6 +832,10 @@ export const useAuth = () => {
     resendOtpMutation,
     updateUserNameAndAvatar,
     logoutMutation,
+    requestPhoneChangeMutation,
+    verifyPhoneChangeMutation,
+    requestEmailChangeMutation,
+    verifyEmailChangeMutation,
 
     // Utilities
     validateEmail,

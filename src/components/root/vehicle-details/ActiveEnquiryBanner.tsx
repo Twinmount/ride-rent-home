@@ -71,7 +71,7 @@ const ActiveEnquiryBanner = ({
         <div className="flex-1">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">
-              You have an active enquiry for {vehicleName}
+              You have an active booking enquiry.
             </h3>
             <span className="rounded-full bg-white bg-opacity-60 px-2 py-1 text-xs font-medium">
               {enquiry?.status || "NEW"}
@@ -88,8 +88,10 @@ const ActiveEnquiryBanner = ({
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4" />
                 <span>
-                  Rental Period:{" "}
-                  {new Date(enquiry.rentalStartDate).toLocaleDateString()} -{" "}
+                  {`  Booking Period : `}
+                  {new Date(
+                    enquiry.rentalStartDate
+                  ).toLocaleDateString()} -{" "}
                   {new Date(enquiry.rentalEndDate).toLocaleDateString()}
                 </span>
               </div>
@@ -112,7 +114,7 @@ const ActiveEnquiryBanner = ({
             </Link>
             <span className="text-sm text-opacity-60">•</span>
             <span className="text-sm">
-              The agent will respond to your enquiry soon
+              The supplier will respond to your enquiry soon
             </span>
           </div>
         </div>

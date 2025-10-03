@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { motion, Variants } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, Variants, AnimatePresence } from "framer-motion";
 import { MdOutlineClose, MdOutlineVerifiedUser } from "react-icons/md";
 import SafeImage from "@/components/common/SafeImage";
 
@@ -16,7 +16,32 @@ const BestPriceGuarantee = ({
     if (isDisabled) return;
     setIsModalOpen(true);
   };
-  const closeModal = () => setIsModalOpen(false);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Handle escape key press to close modal
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener("keydown", handleEscape);
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [isModalOpen]);
 
   // Animation variants for the shield icon (coming from left)
   const shieldVariants: Variants = {
@@ -70,6 +95,20 @@ const BestPriceGuarantee = ({
     },
   };
 
+  // Handle backdrop click
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      closeModal();
+    }
+  };
+
+  // Handle close button click with explicit event handling
+  const handleCloseClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    closeModal();
+  };
+
   return (
     <>
       {/* Animated Best Price Guarantee Text */}
@@ -115,80 +154,83 @@ const BestPriceGuarantee = ({
         </button>
       </motion.div>
 
-      {/* Modal Popup */}
-      {isModalOpen && !isDisabled && (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={closeModal}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
-          aria-describedby="modal-description"
-        >
+      {/* Modal Popup with AnimatePresence for proper exit animations */}
+      <AnimatePresence>
+        {isModalOpen && !isDisabled && (
           <motion.div
-            className="relative w-full max-w-lg rounded-2xl bg-white p-6"
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ type: "spring", duration: 0.5 }}
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={handleBackdropClick}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
           >
-            {/* Close Button */}
-            <button
-              onClick={closeModal}
-              className="absolute right-4 top-4 rounded text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow focus:ring-opacity-50"
-              aria-label="Close modal"
-            >
-              <MdOutlineClose className="h-5 w-5" />
-            </button>
-
-            {/* Animated Shield Icon */}
             <motion.div
-              className="mb-4 flex justify-center"
-              variants={shieldGlowVariants}
-              initial="initial"
-              animate="animate"
+              className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl"
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-center">
-                <SafeImage
-                  src="/assets/img/detailsPage/shield.webp"
-                  alt="Security shield representing our lowest price guarantee"
-                  width={250}
-                  height={250}
-                  priority
-                />
+              {/* Close Button */}
+              <button
+                onClick={handleCloseClick}
+                className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow focus:ring-opacity-50"
+                aria-label="Close modal"
+                type="button"
+              >
+                <MdOutlineClose className="h-5 w-5" />
+              </button>
+
+              {/* Animated Shield Icon */}
+              <motion.div
+                className="mb-4 flex justify-center"
+                variants={shieldGlowVariants}
+                initial="initial"
+                animate="animate"
+              >
+                <div className="flex items-center justify-center">
+                  <SafeImage
+                    src="/assets/img/detailsPage/shield.webp"
+                    alt="Security shield representing our lowest price guarantee"
+                    width={250}
+                    height={250}
+                    priority
+                  />
+                </div>
+              </motion.div>
+
+              {/* Title */}
+              <h2
+                id="modal-title"
+                className="mb-4 text-center text-xl font-semibold text-black"
+              >
+                Lowest Price Guarantee!
+              </h2>
+
+              {/* Description */}
+              <div
+                id="modal-description"
+                className="space-y-4 text-center text-text-secondary"
+              >
+                <p className="text-sm md:text-lg">
+                  Helping you get the lowest prices every time.
+                </p>
+
+                <p className="text-[0.45rem] text-text-tertiary">
+                  We use advanced machine learning and AI driven insights to
+                  track local rates, compare prices, and apply smart pricing
+                  strategies so you always get the best deals.​
+                </p>
               </div>
             </motion.div>
-
-            {/* Title */}
-            <h2
-              id="modal-title"
-              className="mb-4 text-center text-xl font-semibold text-black"
-            >
-              Lowest Price Guarantee!
-            </h2>
-
-            {/* Description */}
-            <div
-              id="modal-description"
-              className="space-y-4 text-center text-text-secondary"
-            >
-              <p className="text-sm md:text-lg">
-                Helping you get the lowest prices every time.
-              </p>
-
-              <p className="text-[0.45rem] text-text-tertiary">
-                We use advanced machine learning and AI driven insights to track
-                local rates, compare prices, and apply smart pricing strategies
-                so you always get the best deals.​
-              </p>
-            </div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
     </>
   );
 };

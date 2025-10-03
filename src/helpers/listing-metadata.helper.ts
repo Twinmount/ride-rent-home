@@ -77,19 +77,19 @@ export function generateFallbackMetadata(
     // [country]/[state]/listing/[category]/city/[city]
     case LISTING_PAGE_TYPES.CITY:
       return {
-        metaTitle: `${formattedCategory} Rentals in ${formattedState} | Rent a ${formattedCategory} by  ${formattedCityName} - Ride.Rent`,
-        metaDescription: `Explore ${formattedCategory} rental in ${formattedState} with Ride.Rent. Find cheap ${formattedCategory} rental, SUV hire, luxury ${formattedCategory}s, and self drive options with flexible daily, weekly, and monthly plans.`,
-        h1: `${formattedCategory} Rentals in ${formattedState} | Rent by ${formattedCityName}`,
-        h2: `Affordable ${formattedCategory} rentals with hourly, daily, weekly and monthly packages`,
+        metaTitle: `Cheap ${formattedCategory} Rentals in ${formattedState} | Rent a ${formattedCategory} in  ${formattedCityName}`,
+        metaDescription: `Explore ${formattedCategory} rental in ${formattedCityName} with Ride.Rent. Find cheap ${formattedCategory} rental with flexible daily, weekly, and monthly plans.`,
+        h1: `Rent a ${formattedCategory} in ${formattedCityName} - Fast Delivery, Affordable Rates, and Reliable Service`,
+        h2: `Explore ${formattedCategory} rentals in ${formattedCityName} with flexible hourly, daily, weekly, and monthly packages designed for every budget`,
       };
 
     //
     default:
       return {
         metaTitle: `Rent a ${formattedCategory} in ${locationString} | Ride.Rent - ${formattedCountry}`,
-        metaDescription: `Rent vehicles in ${locationString} including cars, sports cars, yachts, and boats. Get the best deals with free delivery, no deposit, and flexible booking with Ride.Rent in ${formattedCountry}`,
+        metaDescription: `Rent vehicles in ${locationString} including cars, sports cars, yachts, and boats. Get the best deals with free delivery, no deposit, and flexible booking at Ride.Rent - ${formattedCountry}`,
         h1: `Rent a ${formattedCategory} in ${locationString} | Ride.Rent - ${formattedCountry}`,
-        h2: `Premium vehicles with free delivery, no deposit, and flexible booking`,
+        h2: `Premium vehicles in ${locationString} with free delivery, no deposit, and flexible booking at Ride.Rent - ${formattedCountry}`,
       };
   }
 }

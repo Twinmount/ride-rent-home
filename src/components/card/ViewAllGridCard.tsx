@@ -36,7 +36,7 @@ const ViewAllGridCard = ({
 
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, 800);
+    }, 100);
 
     return () => clearTimeout(timer);
   }, [disableInternalAnimation]);

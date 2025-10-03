@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect } from "react";
 import MobileProfileCard from "@/components/root/vehicle-details/profile-card/mobile-profile-card/MobileProfileCard";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 import { sendPortfolioVisit } from "@/lib/api/general-api";
 import { ProfileCardDataType } from "@/types/vehicle-details-types";
-import { useUserProfile } from "@/hooks/useUserProfile";
-import { useAuthContext } from "@/auth";
+import { useQuery } from "@tanstack/react-query";
+import { useUserActions } from "@/hooks/useUserActions";
+import { useAppContext } from "@/context/useAppContext";
 
 type DetailsSectionClientWrapperProps = {
   children: React.ReactNode;
@@ -34,40 +35,44 @@ const DetailsSectionClientWrapper = ({
   country,
 }: DetailsSectionClientWrapperProps) => {
   const { vehicleCode, vehicleId } = profileData;
-  const { authStorage } = useAuthContext();
-  const userId = authStorage.getUser()?.id.toString();
+  const { auth } = useAppContext();
+  const { user, authStorage, isAuthenticated } = auth;
+
+  const userId = user?.id || authStorage.getUser()?.id;
 
   const detailsSectionRef = useRef(null);
   const isInViewPort = useIntersectionObserver(detailsSectionRef);
-
-  // Ref to track if the API has already been called to prevent double calls
+  
+  // Ref to track if the view has already been tracked to prevent double calls
   const hasTrackedView = useRef(false);
 
-  const { trackCarViewMutation } = useUserProfile({
-    userId: userId || "",
+  // Use useUserActions hook to get track view functionality
+  const { trackCarView } = useUserActions();
+
+  useQuery({
+    queryKey: ["portfolioVisit", vehicleCode],
+    queryFn: () => sendPortfolioVisit(vehicleCode, country),
+    staleTime: 0,
   });
 
-  // Memoized function to track car view to prevent recreation on every render
-  const trackCarView = useCallback(() => {
-    if (userId && vehicleId && !hasTrackedView.current) {
-      hasTrackedView.current = true;
-      trackCarViewMutation.mutate({
-        carId: vehicleId,
-        metadata: {
-          timestamp: new Date().toISOString(),
-          page: "vehicle-details",
-          vehicleCode: vehicleCode,
-          country: country,
-          action: "page-load",
-        },
-      });
-    }
-  }, [userId, vehicleId, vehicleCode, country, trackCarViewMutation]);
-
-  // Track car view when component mounts (page loads) - only once
+  // Simple direct call to track view when component mounts
   useEffect(() => {
-    trackCarView();
-  }, [trackCarView]);
+    // Prevent double execution in React Strict Mode or component re-renders
+    if (hasTrackedView.current) {
+      return;
+    }
+
+    if (userId && vehicleId && isAuthenticated) {
+      trackCarView(vehicleId, {
+        source: "vehicle-details-page",
+        country: country,
+        timestamp: new Date().toISOString(),
+      });
+
+      // Mark as tracked to prevent future calls
+      hasTrackedView.current = true;
+    } 
+  }, []); // Empty dependency array - only run once on mount
 
   return (
     <section ref={detailsSectionRef}>

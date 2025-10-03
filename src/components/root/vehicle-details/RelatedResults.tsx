@@ -6,7 +6,6 @@ import { convertToLabel } from "@/helpers";
 import { fetchSectionData, getBestOfferParams } from "@/helpers/fetchSections";
 import { getSectionConfig } from "@/helpers/newSections";
 import { cn } from "@/lib/utils";
-import { VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { API } from "@/utils/API";
 

@@ -3,13 +3,14 @@ import SafeImage from "@/components/common/SafeImage";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import MotionDiv from "../general/framer-motion/MotionDiv";
 
 export default function RideRentFooterLogo() {
   const params = useParams();
   const country = typeof params.country === "string" ? params.country : "in";
   const state = typeof params.state === "string" ? params.state : "karnataka";
   const category =
-    typeof params.category === "string" ? params.category : "car-rental";
+    typeof params.category === "string" ? params.category : "cars";
 
   return (
     <div className="notranslate">

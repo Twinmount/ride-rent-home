@@ -87,9 +87,6 @@ export const RegisterStep = ({
   return (
     <div className="space-y-6 duration-300 animate-in slide-in-from-right-4">
       <div className="space-y-2 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
-          <User className="h-8 w-8 text-orange-600" />
-        </div>
         <h3 className="text-xl font-semibold">Complete Your Profile</h3>
         <p className="text-balance text-muted-foreground">
           Set up your account to start booking with Ride.Rent
@@ -100,7 +97,10 @@ export const RegisterStep = ({
         {/* Profile Image Upload */}
         <div className="flex flex-col items-center space-y-3">
           <div className="relative">
-            <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
+            <div
+              className="flex h-20 w-20 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-orange-100 to-orange-200"
+              onClick={() => fileInputRef.current?.click()}
+            >
               {profileImage ? (
                 <img
                   src={profileImage || "/placeholder.svg"}
@@ -120,7 +120,9 @@ export const RegisterStep = ({
               <Camera className="h-4 w-4 text-orange-600" />
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">Optional</p>
+          <p className="text-xs text-muted-foreground">
+            {`Profile picture (optional)`}
+          </p>
           <input
             ref={fileInputRef}
             type="file"

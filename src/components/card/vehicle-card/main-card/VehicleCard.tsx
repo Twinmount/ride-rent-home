@@ -9,7 +9,7 @@ import RentNowDialogTrigger from "../RentNowDialogTrigger";
 import { VehicleBadgesGroup } from "../vehicle-badge/VehicleBadgesGroup";
 import CardTitle from "../CardTitle";
 import { useAuthContext } from "@/auth";
-import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
+import { cn } from "@/lib/utils";
 
 type VehicleCardProps = {
   vehicle: NewVehicleCardType;
@@ -28,7 +28,6 @@ const VehicleCard = ({
 }: VehicleCardProps) => {
   const { auth, onHandleLoginmodal } = useAuthContext();
 
-  // dynamic link to navigate to vehicle details page
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
     vehicleTitle: vehicle.vehicleTitle,
     state: vehicle.state,
@@ -37,7 +36,6 @@ const VehicleCard = ({
     country: country,
   });
 
-  // Handle click for protected navigation
   const handleCardClick = (e: React.MouseEvent): void => {
     if (!auth.isLoggedIn) {
       e.preventDefault();
@@ -49,19 +47,18 @@ const VehicleCard = ({
   const classes = getVehicleCardStyle(layoutType);
 
   return (
-    <MotionStaggeredDiv
-      index={index}
-      className={`flex w-full max-w-full flex-col gap-3 rounded border border-border-default bg-white p-2 ${classes}`}
+    <div
+      className={cn(
+        `flex w-full flex-col gap-3 rounded border border-border-default bg-white p-2`,
+        classes
+      )}
     >
-      {/* card top */}
       <LinkWrapper
         href={vehicleDetailsPageLink}
         className={`h-full w-full space-y-3 ${!auth.isLoggedIn ? "cursor-pointer" : ""}`}
         newTab={openInNewTab}
-        // onClick={handleCardClick}
       >
         <div className="relative">
-          {/* thumbnail with hover image cycling */}
           <VehicleThumbnail
             src={vehicle.thumbnail}
             alt={`${vehicle.vehicleTitle} rental car available for booking`}
@@ -69,11 +66,10 @@ const VehicleCard = ({
             height={200}
             layoutType={layoutType}
             vehiclePhotos={vehicle.vehiclePhotos}
-            priority={index < 2} // Only first 2 images get priority
-            loading={index < 2 ? "eager" : "lazy"} // Lazy load after 2nd image
+            priority={index < 2}
+            loading={index < 2 ? "eager" : "lazy"}
           />
 
-          {/* badge group */}
           <VehicleBadgesGroup
             hasZeroDeposit={!vehicle.securityDeposit?.enabled}
             hasFancyNumber={vehicle.isFancyNumber}
@@ -88,7 +84,6 @@ const VehicleCard = ({
         />
       </LinkWrapper>
 
-      {/* card bottom */}
       <div className="flex-between">
         <LinkWrapper
           href={auth.isLoggedIn ? vehicleDetailsPageLink : "#"}
@@ -108,7 +103,7 @@ const VehicleCard = ({
           layoutType={layoutType}
         />
       </div>
-    </MotionStaggeredDiv>
+    </div>
   );
 };
 

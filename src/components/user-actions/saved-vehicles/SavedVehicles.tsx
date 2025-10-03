@@ -68,14 +68,11 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
     limit: 20,
   });
 
-  console.log("savedVehiclesApiResponse: ", savedVehiclesApiResponse);
-
   // Extract the saved vehicles data using the extraction function
   const savedVehicles = React.useMemo(() => {
     const extracted = savedVehiclesApiResponse
       ? extractSavedVehicles(savedVehiclesApiResponse)
       : [];
-    console.log("extractedSavedVehicles: ", extracted);
     return extracted;
   }, [savedVehiclesApiResponse, extractSavedVehicles]);
 
@@ -106,18 +103,15 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
 
   // Helper function to generate vehicle details URL
   const getVehicleDetailsUrl = (vehicle: any) => {
-    // Use available fields and current state/category from user's context
-    const currentState = state || "dubai";
     const currentCategory = category || "cars";
     const vehicleCode = vehicle.vehicleCode || vehicle.id;
-    const currentCountry = country || "ae";
 
     const navRoute = generateVehicleDetailsUrl({
       vehicleTitle: vehicle.name || vehicle.model || "vehicle",
-      state: currentState,
+      state: vehicle?.originalData?.stateDetails?.stateValue,
       vehicleCategory: currentCategory,
       vehicleCode,
-      country: currentCountry,
+      country: vehicle?.originalData?._metadata?.countryCode,
     });
 
     return navRoute;
@@ -162,7 +156,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-4">
-            <Link href="/profile">
+            <Link href="/user-profile">
               <Button variant="ghost" size="sm" className="cursor-pointer">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Profile
@@ -175,7 +169,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
                 Saved Vehicles
               </h1>
               <p className="text-gray-600">
-                Vehicles you&apos;ve saved for later
+                Find your Favorites Saved for Later​
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -193,7 +187,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
             <Input
-              placeholder="Search saved vehicles..."
+              placeholder="Search your favorites..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -291,7 +285,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
                       )}
                     </div>
                   </Link>
-                  {/* <div className="absolute right-3 top-3">
+                  <div className="absolute right-3 top-3">
                     <Button
                       size="sm"
                       variant="secondary"
@@ -301,7 +295,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
                     >
                       <Trash2 className="h-4 w-4 text-red-500 hover:text-red-700" />
                     </Button>
-                  </div> */}
+                  </div>
                   <div className="absolute left-3 top-3">
                     <Badge className="bg-red-500 text-white">
                       <Heart className="mr-1 h-3 w-3" />

@@ -101,10 +101,10 @@ export function BookingConfirmationModal({
                   <X className="h-4 w-4" />
                 </Button> */}
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              {/* <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Car className="h-4 w-4 text-orange-500" aria-hidden="true" />
                 <span>Ride.Rent - Premium Car Rental</span>
-              </div>
+              </div> */}
             </DialogHeader>
 
             <div className="space-y-6">
@@ -177,7 +177,7 @@ export function BookingConfirmationModal({
 
               {/* Customer Details */}
               <div className="space-y-4">
-                <h4 className="font-semibold">Customer Details</h4>
+                <h4 className="font-semibold">Your Details</h4>
                 <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
                   <div className="flex items-center gap-3">
                     <User
@@ -198,9 +198,9 @@ export function BookingConfirmationModal({
                   {bookingData.customer?.email ? (
                     <div className="flex items-center gap-3">
                       <Mail
-                      className="h-4 w-4 text-orange-500"
-                      aria-hidden="true"
-                    />
+                        className="h-4 w-4 text-orange-500"
+                        aria-hidden="true"
+                      />
                       <span>{bookingData.customer?.email}</span>
                     </div>
                   ) : (

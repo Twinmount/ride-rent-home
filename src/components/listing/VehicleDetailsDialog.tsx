@@ -7,8 +7,6 @@ import {
   DialogTitle,
 } from '@/components/ui/map-dialog';
 import { MapVehicleCardType } from '@/types/vehicle-types';
-import Link from 'next/link';
-import { generateVehicleDetailsUrl } from '@/helpers';
 import VehicleMapCard from '../card/vehicle-card/main-card/VehicleMapCard';
 import { Fragment } from 'react';
 
@@ -17,44 +15,29 @@ export function VehicleDetailsDialog({
   vehicles,
   setOpen,
   country,
-  state,
-  category,
 }: {
   open: boolean;
   vehicles: MapVehicleCardType[];
   setOpen: (open: boolean) => void;
   country: string;
-  state: string;
-  category: string;
 }) {
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="h-fit max-h-[80%] w-fit max-w-md">
-        <DialogHeader className="sr-only">
-          <DialogTitle>
+      <DialogContent className="h-fit max-h-[80%] w-fit max-w-md z-[9999]">
+        <DialogHeader className='m-3 mb-2'>
+          <DialogTitle className='font-normal pt-2'>
             {vehicles.length === 1
               ? 'Vehicle Details'
               : `${vehicles.length} Vehicles Available`}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div>
           {vehicles.map((vehicle) => {
-            const vehicleDetailsPageLink = generateVehicleDetailsUrl({
-              vehicleTitle: vehicle.model,
-              state: state,
-              vehicleCategory: category,
-              vehicleCode: vehicle.vehicleCode,
-              country: country,
-            });
             return (
               <Fragment key={vehicle.vehicleCode}>
-                <Link
-                  target="_blank"
-                  href={`https://dev.ride.rent${vehicleDetailsPageLink}`}
-                >
-                  <VehicleMapCard vehicle={vehicle} country={country} />
-                </Link>
+                <VehicleMapCard vehicle={vehicle} country={country} />
               </Fragment>
             );
           })}

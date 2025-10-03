@@ -1,4 +1,4 @@
-import MotionDiv from '@/components/general/framer-motion/MotionDiv';
+import MotionDiv from "@/components/general/framer-motion/MotionDiv";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,65 +6,67 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Home, User, Settings, Heart, Eye, MessageSquare } from 'lucide-react';
-import Link from 'next/link';
+} from "@/components/ui/breadcrumb";
+import { Home, User, Settings, Heart, Eye, MessageSquare } from "lucide-react";
+import Link from "next/link";
 
 type ProfileSection =
-  | 'dashboard'
-  | 'settings'
-  | 'favorites'
-  | 'activity'
-  | 'enquiries'
-  | 'saved-vehicles'
-  | 'viewed-vehicles'
-  | 'enquired-vehicles';
+  | "dashboard"
+  | "settings"
+  | "favorites"
+  | "activity"
+  | "enquiries"
+  | "saved-vehicles"
+  | "viewed-vehicles"
+  | "enquired-vehicles";
 
 type ProfileBreadcrumbProps = {
   userName?: string;
   currentSection?: ProfileSection;
   className?: string;
+  hasShowUsername?: boolean;
 };
 
 const sectionConfig = {
-  dashboard: { label: 'Dashboard', icon: User, path: '/user-profile' },
+  dashboard: { label: "Dashboard", icon: User, path: "/user-profile" },
   settings: {
-    label: 'Settings',
+    label: "Settings",
     icon: Settings,
-    path: '/user-profile/settings',
+    path: "/user-profile/settings",
   },
   favorites: {
-    label: 'Favorites',
+    label: "Favorites",
     icon: Heart,
-    path: '/user-profile/favorites',
+    path: "/user-profile/favorites",
   },
-  activity: { label: 'Activity', icon: Eye, path: '/user-profile/activity' },
+  activity: { label: "Activity", icon: Eye, path: "/user-profile/activity" },
   enquiries: {
-    label: 'Enquiries',
+    label: "Enquiries",
     icon: MessageSquare,
-    path: '/user-profile/enquiries',
+    path: "/user-profile/enquiries",
   },
-  'saved-vehicles': {
-    label: 'Saved Vehicles',
+  "saved-vehicles": {
+    label: "Saved Vehicles",
     icon: Heart,
-    path: '/user-profile/saved-vehicles',
+    path: "/user-profile/saved-vehicles",
   },
-  'viewed-vehicles': {
-    label: 'Recently Viewed',
+  "viewed-vehicles": {
+    label: "Recently Viewed",
     icon: Eye,
-    path: '/user-profile/viewed-vehicles',
+    path: "/user-profile/viewed-vehicles",
   },
-  'enquired-vehicles': {
-    label: 'Enquired Vehicles',
+  "enquired-vehicles": {
+    label: "Enquired Vehicles",
     icon: MessageSquare,
-    path: '/user-profile/enquired-vehicles',
+    path: "/user-profile/enquired-vehicles",
   },
 };
 
 export function ProfileBreadcrumb({
-  userName = 'User',
-  currentSection = 'dashboard',
-  className = '',
+  userName = "User",
+  currentSection = "dashboard",
+  className = "",
+  hasShowUsername = false,
 }: ProfileBreadcrumbProps) {
   const currentConfig = sectionConfig[currentSection];
   const CurrentIcon = currentConfig.icon;
@@ -99,10 +101,10 @@ export function ProfileBreadcrumb({
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator />
+          {/* <BreadcrumbSeparator /> */}
 
           {/* Current Section */}
-          {currentSection !== 'dashboard' ? (
+          {currentSection !== "dashboard" ? (
             <>
               <BreadcrumbItem>
                 <BreadcrumbPage className="flex cursor-default items-center gap-1 font-medium text-orange-600">
@@ -112,24 +114,16 @@ export function ProfileBreadcrumb({
                   </span>
                 </BreadcrumbPage>
               </BreadcrumbItem>
-              <BreadcrumbSeparator />
-
-              {/* User Name */}
-              <BreadcrumbItem>
-                <BreadcrumbPage className="flex max-w-[100px] cursor-default items-center gap-1 truncate font-medium text-gray-600 sm:max-w-none">
-                  {userName}
-                </BreadcrumbPage>
-              </BreadcrumbItem>
             </>
-          ) : (
-            /* Dashboard - show user name directly */
+          ) : /* Dashboard - show user name directly */
+          hasShowUsername ? (
             <BreadcrumbItem>
               <BreadcrumbPage className="flex max-w-[120px] cursor-default items-center gap-1 truncate font-medium text-orange-600 sm:max-w-none">
                 <CurrentIcon className="h-4 w-4" />
                 {userName}
               </BreadcrumbPage>
             </BreadcrumbItem>
-          )}
+          ) : null}
         </BreadcrumbList>
       </Breadcrumb>
     </MotionDiv>

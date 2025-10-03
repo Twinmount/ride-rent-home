@@ -1,4 +1,11 @@
 import { mainApiClient } from "./axios.config";
+import {
+  getUserSavedVehiclesMultiCountry,
+  getUserEnquiredVehiclesMultiCountry,
+  getUserViewedVehiclesMultiCountry,
+  mergeAndSortVehicleResults,
+  MultiCountryApiResponse,
+} from "./multiCountryApi";
 import type {
   UserVehiclesResponse,
   UserVehiclesRequest,
@@ -54,6 +61,77 @@ export const getUserEnquiredVehicles = async (
   return response.data;
 };
 
+// Multi-country version of enquired vehicles
+export const getUserEnquiredVehiclesAllCountries = async (
+  userId: string,
+  page: number = 0,
+  limit: number = 10,
+  sortOrder: "ASC" | "DESC" = "DESC"
+): Promise<{
+  status: string;
+  result: {
+    data: UserAction[];
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+  statusCode: number;
+  multiCountryMetadata?: any;
+}> => {
+  try {
+    // Call both India and UAE APIs simultaneously
+    const multiCountryResponse = await getUserEnquiredVehiclesMultiCountry(
+      userId,
+      page,
+      limit,
+      sortOrder,
+      {
+        countries: ["INDIA", "UAE"],
+        mergeResults: true,
+      }
+    );
+
+    // Sort merged results by enquiredAt/actionAt
+    const sortedData = mergeAndSortVehicleResults(
+      multiCountryResponse.data,
+      "enquiredAt",
+      sortOrder
+    );
+
+    // Return in the same format as single-country API
+    return {
+      status: multiCountryResponse.success ? "success" : "partial_success",
+      result: {
+        data: sortedData as UserAction[],
+        page,
+        limit,
+        total: sortedData.length,
+        totalPages: Math.ceil(sortedData.length / limit),
+      },
+      statusCode: multiCountryResponse.success ? 200 : 207, // 207 for partial success
+      multiCountryMetadata: multiCountryResponse.metadata,
+    };
+  } catch (error) {
+    console.error("Multi-country enquired vehicles fetch failed:", error);
+    // Fallback to single-country API and transform to match expected format
+    const fallbackResponse = await getUserEnquiredVehicles(
+      userId,
+      page,
+      limit,
+      sortOrder
+    );
+    return {
+      ...fallbackResponse,
+      result: {
+        ...fallbackResponse.result,
+        data: fallbackResponse.result.data as UserAction[],
+        totalPages: Math.ceil(fallbackResponse.result.total / limit),
+      },
+    };
+  }
+};
+
 // Specific function for saved vehicles
 export const getUserSavedVehicles = async (
   userId: string,
@@ -84,6 +162,70 @@ export const getUserSavedVehicles = async (
   return response.data;
 };
 
+// Multi-country version of saved vehicles
+export const getUserSavedVehiclesAllCountries = async (
+  userId: string,
+  page: number = 0,
+  limit: number = 10
+): Promise<{
+  status: string;
+  result: {
+    data: UserAction[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+  statusCode: number;
+  multiCountryMetadata?: any;
+}> => {
+  try {
+    // Call both India and UAE APIs simultaneously
+    const multiCountryResponse = await getUserSavedVehiclesMultiCountry(
+      userId,
+      page,
+      limit,
+      {
+        countries: ["INDIA", "UAE"],
+        mergeResults: true,
+      }
+    );
+
+    // Sort merged results by savedAt/actionAt
+    const sortedData = mergeAndSortVehicleResults(
+      multiCountryResponse.data,
+      "savedAt",
+      "DESC"
+    );
+
+    // Return in the same format as single-country API
+    return {
+      status: multiCountryResponse.success ? "success" : "partial_success",
+      result: {
+        data: sortedData as UserAction[],
+        total: sortedData.length,
+        page,
+        limit,
+        totalPages: Math.ceil(sortedData.length / limit),
+      },
+      statusCode: multiCountryResponse.success ? 200 : 207, // 207 for partial success
+      multiCountryMetadata: multiCountryResponse.metadata,
+    };
+  } catch (error) {
+    console.error("Multi-country saved vehicles fetch failed:", error);
+    // Fallback to single-country API and transform to match expected format
+    const fallbackResponse = await getUserSavedVehicles(userId, page, limit);
+    return {
+      ...fallbackResponse,
+      result: {
+        ...fallbackResponse.result,
+        data: fallbackResponse.result.data as UserAction[],
+        totalPages: Math.ceil(fallbackResponse.result.total / limit),
+      },
+    };
+  }
+};
+
 // Specific function for viewed vehicles
 export const getUserViewedVehicles = async (
   userId: string,
@@ -103,6 +245,53 @@ export const getUserViewedVehicles = async (
   );
 
   return response.data;
+};
+
+// Multi-country version of viewed vehicles
+export const getUserViewedVehiclesAllCountries = async (
+  userId: string,
+  page: number = 0,
+  limit: number = 10,
+  sortOrder: "ASC" | "DESC" = "DESC"
+): Promise<UserVehiclesResponse & { multiCountryMetadata?: any }> => {
+  try {
+    // Call both India and UAE APIs simultaneously
+    const multiCountryResponse = await getUserViewedVehiclesMultiCountry(
+      userId,
+      page,
+      limit,
+      sortOrder,
+      {
+        countries: ["INDIA", "UAE"],
+        mergeResults: true,
+      }
+    );
+
+    // Sort merged results by viewedAt/actionAt
+    const sortedData = mergeAndSortVehicleResults(
+      multiCountryResponse.data,
+      "viewedAt",
+      sortOrder
+    );
+
+    // Return in the same format as single-country API
+    return {
+      status: multiCountryResponse.success ? "success" : "partial_success",
+      result: {
+        data: sortedData as UserAction[],
+        page,
+        limit,
+        total: sortedData.length,
+        totalPages: Math.ceil(sortedData.length / limit),
+      },
+      statusCode: multiCountryResponse.success ? 200 : 207,
+      multiCountryMetadata: multiCountryResponse.metadata,
+    } as UserVehiclesResponse & { multiCountryMetadata?: any };
+  } catch (error) {
+    console.error("Multi-country viewed vehicles fetch failed:", error);
+    // Fallback to single-country API
+    return getUserViewedVehicles(userId, page, limit, sortOrder);
+  }
 };
 
 // Function to remove a vehicle from user's saved list

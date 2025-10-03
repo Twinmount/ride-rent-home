@@ -6,58 +6,55 @@ const CarSection: React.FC = () => {
     <section className="relative top-[0.125rem] h-[7.5rem] w-full overflow-hidden bg-gradient-to-b from-gray-50/20 to-white p-2 md:h-[14.25rem] lg:top-[0.5rem] lg:m-6">
       <div className="relative flex h-full w-full items-end justify-center px-[0.25rem]">
         <div className="relative flex h-full w-full max-w-[20rem] items-end justify-center md:max-w-[42.5rem]">
-          {/* Left car - BMW */}
+          {/* All cars lazy load - below fold content */}
           <div className="relative mr-[-1.25rem] flex h-full flex-shrink-0 items-end md:mr-[-3.75rem]">
             <div className="relative mb-[0.125rem] h-[2.875rem] w-[5.875rem] md:mb-[0.1875rem] md:h-[8.8125rem] md:w-[16.5625rem]">
               <SafeImage
                 src="/assets/cars/bmw.webp"
-                alt="BMW"
+                alt="BMW luxury car rental"
                 width={265}
                 height={141}
                 className="h-full w-full object-contain object-bottom"
-                loading="eager"
+                loading="lazy"
                 sizes="(max-width: 768px) 94px, 265px"
-                quality={85}
+                quality={80}
               />
             </div>
           </div>
 
-          {/* Center car - Range Rover */}
           <div className="relative z-10 flex h-full flex-shrink-0 items-end">
             <div className="relative h-[5rem] w-[5.875rem] md:h-[14.25rem] md:w-[16.75rem]">
               <SafeImage
                 src="/assets/cars/rangerover.webp"
-                alt="Range Rover"
+                alt="Range Rover premium SUV rental"
                 width={268}
                 height={228}
                 className="h-full w-full object-contain object-bottom"
-                priority={true}
+                loading="lazy"
                 sizes="(max-width: 768px) 94px, 268px"
-                quality={90}
+                quality={85}
               />
             </div>
           </div>
 
-          {/* Right car - Mercedes */}
           <div className="relative ml-[-1.4375rem] flex h-full flex-shrink-0 items-end md:ml-[-5.625rem]">
             <div className="relative mb-[0.0625rem] h-[2.875rem] w-[5.875rem] md:mb-[0.1875rem] md:h-[8.8125rem] md:w-[19.125rem]">
               <SafeImage
                 src="/assets/cars/mercedes.webp"
-                alt="Mercedes"
+                alt="Mercedes luxury sedan rental"
                 width={306}
                 height={141}
                 className="h-full w-full object-contain object-bottom"
-                loading="eager"
+                loading="lazy"
                 sizes="(max-width: 768px) 94px, 306px"
-                quality={85}
+                quality={80}
               />
             </div>
           </div>
         </div>
 
-        {/* Bottom gradient overlay */}
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-[4rem]">
-          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-white/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-white/40 to-transparent" />
         </div>
       </div>
     </section>

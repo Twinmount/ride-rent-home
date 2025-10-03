@@ -249,7 +249,7 @@ export const useCarRent = (
   };
 
   const handleBookingConfirm = (
-    message: string = "I am interested in this car. Is it still available?"
+    message: string = "I am interested in this car. Is it still available? To Can you confirm the availability for this booking?’"
   ) => {
     const endDate = carRentDate[0].endDate;
     const startDate = carRentDate[0].startDate;

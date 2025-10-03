@@ -496,5 +496,9 @@ body {
   flex-shrink: 0 !important;
 }
 
+.leaflet-control-attribution a[href*="leafletjs.com"] {
+  display: none !important;
+}
+
 
 

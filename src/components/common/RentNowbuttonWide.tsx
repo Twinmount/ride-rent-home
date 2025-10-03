@@ -101,12 +101,15 @@ const RentNowButtonWide = ({
 
   const { auth, onHandleLoginmodal } = useAuthContext();
 
-  // Define size classes based on variant
+  // Define size classes based on variant with mobile responsiveness
   const sizeClasses =
-    variant === "compact" ? "py-2 px-6 text-sm" : "py-3 px-6 text-lg";
+    variant === "compact"
+      ? "py-2 px-4 sm:px-6 text-sm min-h-[40px] sm:min-h-[44px]"
+      : "py-3 px-4 sm:px-6 text-base sm:text-lg min-h-[48px] sm:min-h-[52px]";
 
-  // Define width classes based on variant
-  const widthClasses = variant === "compact" ? "w-auto" : "w-full";
+  // Define width classes based on variant with mobile responsiveness
+  const widthClasses =
+    variant === "compact" ? "w-auto min-w-[120px] sm:min-w-[140px]" : "w-full";
 
   // Define margin classes based on variant
   const marginClasses = variant === "compact" ? "mb-2" : "mt-4";
@@ -153,8 +156,8 @@ const RentNowButtonWide = ({
   const hasActiveEnquiry = activeEnquiryData?.hasActiveEnquiry;
   const buttonText = hasActiveEnquiry ? "Enquiry Pending" : "Rent Now";
   const buttonClassName = hasActiveEnquiry
-    ? `${widthClasses} ${marginClasses} ${sizeClasses} relative transform overflow-hidden rounded-[0.34rem] bg-gradient-to-r from-blue-400 to-blue-500 font-medium text-white shadow-md transition-transform duration-200 ease-in-out cursor-pointer hover:from-blue-500 hover:to-blue-600 active:scale-[0.98] ${className}`
-    : `${widthClasses} ${marginClasses} ${sizeClasses} relative transform overflow-hidden rounded-[0.34rem] bg-gradient-to-r from-orange to-yellow font-medium text-text-primary shadow-md transition-transform duration-200 ease-in-out before:absolute before:inset-0 before:bg-gradient-to-r before:from-yellow before:to-orange before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:shadow-lg hover:before:opacity-100 active:scale-[0.98] active:from-[#df7204] active:to-orange disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 ${className}`;
+    ? `${widthClasses} ${marginClasses} ${sizeClasses} relative transform overflow-hidden rounded-[0.34rem] bg-gradient-to-r from-blue-400 to-blue-500 font-medium text-white shadow-md transition-transform duration-200 ease-in-out cursor-pointer hover:from-blue-500 hover:to-blue-600 active:scale-[0.98] touch-manipulation select-none ${className}`
+    : `${widthClasses} ${marginClasses} ${sizeClasses} relative transform overflow-hidden rounded-[0.34rem] bg-gradient-to-r from-orange to-yellow font-medium text-text-primary shadow-md transition-transform duration-200 ease-in-out before:absolute before:inset-0 before:bg-gradient-to-r before:from-yellow before:to-orange before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:shadow-lg hover:before:opacity-100 active:scale-[0.98] active:from-[#df7204] active:to-orange disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 touch-manipulation select-none ${className}`;
 
   return (
     <>
@@ -163,7 +166,7 @@ const RentNowButtonWide = ({
         disabled={disabled || isCheckingActiveEnquiry}
         className={buttonClassName}
       >
-        <span className="relative z-10">
+        <span className="relative z-10 flex items-center justify-center whitespace-nowrap">
           {isCheckingActiveEnquiry ? "Checking..." : buttonText}
         </span>
       </button>
