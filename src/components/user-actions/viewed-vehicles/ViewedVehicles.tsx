@@ -38,7 +38,7 @@ const ViewedVehicles = () => {
     useUserActions();
 
   // Get current state and category context
-  const { state, category, country } = useStateAndCategory();
+  const { category } = useStateAndCategory();
 
   // Get viewed vehicles data - only call when this component is mounted
   const viewedVehiclesQuery = useUserViewedVehicles({
@@ -58,19 +58,16 @@ const ViewedVehicles = () => {
 
   // Helper function to generate vehicle details URL
   const getVehicleDetailsUrl = (vehicle: any) => {
-    console.log("vehicle: ", vehicle.originalData.metadata.country);
-    // Use available fields and current state/category from user's context
-    const currentState = state || "dubai";
+    console.log("vehicle: ", vehicle);
     const currentCategory = category || "cars";
     const vehicleCode = vehicle.vehicleCode || vehicle.id;
-    const currentCountry = country || "ae";
 
     const navRoute = generateVehicleDetailsUrl({
       vehicleTitle: vehicle.name || vehicle.model || "vehicle",
       state: vehicle?.originalData?.stateDetails?.stateValue,
       vehicleCategory: currentCategory,
       vehicleCode,
-      country: vehicle?.originalData?.metadata.country,
+      country: vehicle?.originalData?._metadata.countryCode,
     });
 
     console.log("navRoute: ", navRoute);

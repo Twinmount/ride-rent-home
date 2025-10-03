@@ -68,14 +68,11 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
     limit: 20,
   });
 
-  console.log("savedVehiclesApiResponse: ", savedVehiclesApiResponse);
-
   // Extract the saved vehicles data using the extraction function
   const savedVehicles = React.useMemo(() => {
     const extracted = savedVehiclesApiResponse
       ? extractSavedVehicles(savedVehiclesApiResponse)
       : [];
-    console.log("extractedSavedVehicles: ", extracted);
     return extracted;
   }, [savedVehiclesApiResponse, extractSavedVehicles]);
 
@@ -106,18 +103,15 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
 
   // Helper function to generate vehicle details URL
   const getVehicleDetailsUrl = (vehicle: any) => {
-    // Use available fields and current state/category from user's context
-    const currentState = state || "dubai";
     const currentCategory = category || "cars";
     const vehicleCode = vehicle.vehicleCode || vehicle.id;
-    const currentCountry = country || "ae";
 
     const navRoute = generateVehicleDetailsUrl({
       vehicleTitle: vehicle.name || vehicle.model || "vehicle",
-      state: currentState,
+      state: vehicle?.originalData?.stateDetails?.stateValue,
       vehicleCategory: currentCategory,
       vehicleCode,
-      country: currentCountry,
+      country: vehicle?.originalData?._metadata?.countryCode,
     });
 
     return navRoute;

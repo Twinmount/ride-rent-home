@@ -97,6 +97,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     verifyPhoneNumberChange,
     requestPhoneChangeMutation,
     verifyPhoneChangeMutation,
+    requestEmailChange,
+    verifyEmailChange,
+    requestEmailChangeMutation,
+    verifyEmailChangeMutation,
     userAuthStep,
     auth,
     user,
@@ -153,25 +157,6 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     userId: userId!,
     useMultiCountry: true, // Enable multi-country by default
   });
-
-  console.log("userRecentActivitiesQuery: ", userRecentActivitiesQuery.data);
-
-  useEffect(() => {
-    if (!userCarActionCountsQuery.isLoading) {
-      const data = userCarActionCountsQuery.data;
-
-      // Log multi-country metadata for debugging
-      if (
-        multiCountryConfig.isEnabled &&
-        multiCountryConfig.metadata.carActionCounts
-      ) {
-        console.log(
-          "Multi-country car action counts metadata:",
-          multiCountryConfig.metadata.carActionCounts
-        );
-      }
-    }
-  }, [userCarActionCountsQuery.data, multiCountryConfig]);
 
   useEffect(() => {
     if (userProfileQuery.data?.success && userProfileQuery.data.data) {
@@ -292,18 +277,26 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   const handleSaveEmail = async () => {
     try {
-      // Use custom handleUpdateProfile for email updates (API only)
-      await handleUpdateProfile({
-        email: tempEmail,
-      });
+      // Use the auth context's email change method instead of handleUpdateProfile
+      const response = await requestEmailChange(tempEmail);
 
-      // Show OTP verification section
-      setShowEmailOtp(true);
-      setOtpCountdown(300); // 5 minutes
-      setOtpError("");
-      setEmailOtp("");
-    } catch (error) {
-      console.error("Failed to update email:", error);
+      if (response.success && response.data?.otpId) {
+        // Store the OTP ID for verification
+        setEmailOtpId(response.data.otpId);
+
+        // Show OTP verification section
+        setShowEmailOtp(true);
+        setOtpCountdown(300); // 5 minutes
+        setOtpError("");
+        setEmailOtp("");
+      } else {
+        throw new Error(
+          response.message || "Failed to request email address change"
+        );
+      }
+    } catch (error: any) {
+      console.error("Failed to request email address change:", error);
+      setOtpError(error.message || "Failed to request email address change");
     }
   };
 
@@ -370,32 +363,43 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
   const handleVerifyEmailOtp = async () => {
     try {
       setOtpError("");
-      // For email OTP, we'll use the general OTP verification
-      // Note: You may need to get the otpId from the email update response
-      await verifyOTP(userId!, "email-otp-id", emailOtp);
 
-      // Update local state
-      setProfileData((draft) => {
-        if (draft) {
-          draft.email = tempEmail;
-          draft.isEmailVerified = true;
-        }
-      });
+      if (!emailOtpId) {
+        throw new Error("OTP ID not found. Please try again.");
+      }
 
-      // Reset states
-      setIsEditingEmail(false);
-      setShowEmailOtp(false);
-      setEmailOtp("");
-      setOtpCountdown(0);
+      // Use the auth context's verifyEmailChange method
+      const response = await verifyEmailChange(emailOtpId, emailOtp, tempEmail);
 
-      // Show success toast
-      setShowSuccessToast(true);
-      setTimeout(() => {
-        setShowSuccessToast(false);
-      }, 4000);
+      if (response.success) {
+        // Update local state
+        setProfileData((draft) => {
+          if (draft) {
+            draft.email = tempEmail;
+            draft.isEmailVerified = true;
+          }
+        });
 
-      // Refetch user profile
-      await userProfileQuery.refetch();
+        // Reset states
+        setIsEditingEmail(false);
+        setShowEmailOtp(false);
+        setEmailOtp("");
+        setEmailOtpId("");
+        setOtpCountdown(0);
+
+        // Show success toast
+        setShowSuccessToast(true);
+        setTimeout(() => {
+          setShowSuccessToast(false);
+        }, 4000);
+
+        // Refetch user profile
+        await userProfileQuery.refetch();
+      } else {
+        throw new Error(
+          response.message || "Failed to verify email address change"
+        );
+      }
     } catch (error: any) {
       setOtpError(error.message || "Invalid OTP. Please try again.");
     }
@@ -420,9 +424,17 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
           );
         }
       } else {
-        // For email, you might need a different resend function
-        await resendOTP(tempEmail, ""); // Adjust based on your API
-        setEmailOtp("");
+        // For email change, resend OTP for the new email address
+        const response = await requestEmailChange(tempEmail);
+
+        if (response.success && response.data?.otpId) {
+          setEmailOtpId(response.data.otpId);
+          setEmailOtp("");
+        } else {
+          throw new Error(
+            response.message || "Failed to resend OTP for email change"
+          );
+        }
       }
       setOtpCountdown(300); // Reset countdown
     } catch (error: any) {

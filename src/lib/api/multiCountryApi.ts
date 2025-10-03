@@ -87,6 +87,7 @@ export async function callMultipleCountryApis<T>(
           ...item,
           _metadata: {
             country,
+            countryCode: COUNTRIES_CONFIG[country].code,
             countryName: COUNTRIES_CONFIG[country].name,
             responseTime,
           },

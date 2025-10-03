@@ -70,7 +70,6 @@ export const getUserCarActionCountsAllCountries = async (
 
     return result;
   } catch (error) {
-    console.error("Multi-country car action counts fetch failed:", error);
     // Fallback to single-country API
     return getUserCarActionCounts(userId);
   }
@@ -99,7 +98,6 @@ export const updateUserProfile = async (
     email: profileData.email,
     phoneNumber: profileData.phoneNumber,
   });
-  console.log("User profile updated: ", response.data);
 };
 
 export const getUserRecentActivities = async (
@@ -127,8 +125,6 @@ export const getUserRecentActivitiesAllCountries = async (
         }
       );
 
-    console.log("multiCountryResponse: ", multiCountryResponse);
-
     // Extract activities - handle both merged and response-wrapped data
     const allActivities: UserRecentActivity[] = [];
 
@@ -145,8 +141,6 @@ export const getUserRecentActivitiesAllCountries = async (
       });
     }
 
-    console.log("Extracted activities: ", allActivities);
-
     // Sort by activityDate (most recent first)
     allActivities.sort((a, b) => {
       const aTime = new Date(a.activityDate || 0).getTime();
@@ -157,12 +151,10 @@ export const getUserRecentActivitiesAllCountries = async (
     // Add metadata to the result
     (allActivities as any).multiCountryMetadata = multiCountryResponse.metadata;
 
-    console.log("Returning result with metadata:", allActivities);
     return allActivities as UserRecentActivity[] & {
       multiCountryMetadata?: any;
     };
   } catch (error) {
-    console.error("Multi-country recent activities fetch failed:", error);
     // Fallback to single-country API
     return getUserRecentActivities(userId);
   }
