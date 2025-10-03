@@ -23,7 +23,6 @@ export const useUserProfile = ({
   useMultiCountry?: boolean;
 }) => {
   const queryClient = useQueryClient();
-  console.log("useMultiCountry: ", useMultiCountry);
 
   // Call useQuery directly inside the main hook with multi-country support
   const userCarActionCountsQuery = useQuery<
@@ -34,8 +33,6 @@ export const useUserProfile = ({
       const result = useMultiCountry
         ? await getUserCarActionCountsAllCountries(userId)
         : await getUserCarActionCounts(userId);
-
-      console.log("Query function result:", result);
       return result;
     },
     enabled: !!userId,
@@ -43,23 +40,15 @@ export const useUserProfile = ({
     refetchOnWindowFocus: true,
   });
 
-  console.log("userCarActionCountsQuery: ", userCarActionCountsQuery.data);
-
   // Query for user recent activities with multi-country support
   const userRecentActivitiesQuery = useQuery<
     UserRecentActivity[] & { multiCountryMetadata?: any }
   >({
     queryKey: ["userRecentActivities", userId, useMultiCountry],
     queryFn: async () => {
-      console.log("=== Recent Activities Query Function Called ===");
-      console.log("useMultiCountry:", useMultiCountry);
-      console.log("userId:", userId);
-
       const result = useMultiCountry
         ? await getUserRecentActivitiesAllCountries(userId)
         : await getUserRecentActivities(userId);
-
-      console.log("Recent activities query function result:", result);
       return result;
     },
     enabled: !!userId,
@@ -68,8 +57,6 @@ export const useUserProfile = ({
     refetchIntervalInBackground: false, // Don't refetch when tab is not active
     staleTime: 0,
   });
-
-  console.log("userRecentActivitiesQuery: ", userRecentActivitiesQuery?.data);
 
   // Mutation to track car view
   const trackCarViewMutation = useMutation({

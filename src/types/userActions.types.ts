@@ -55,6 +55,8 @@ export interface RawVehicleEnquiry {
     photos: VehiclePhoto[];
     vehicleCode: string;
   };
+  stateDetails: any;
+  _metadata: any;
   enquiryId: string;
   enquiryStatus: string;
   enquiryMessage: string;

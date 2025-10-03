@@ -84,7 +84,7 @@ export default function EnquiredVehiclesPage() {
   } = useUserActions();
 
   // Get current state and category from the hook
-  const { country, state, category } = useStateAndCategory();
+  const { category } = useStateAndCategory();
 
   // Query enquired vehicles using React Query
   const {
@@ -204,18 +204,15 @@ export default function EnquiredVehiclesPage() {
 
   // Helper function to generate vehicle details URL
   const getVehicleDetailsUrl = (vehicle: RawVehicleEnquiry) => {
-    // Use available fields and current state/category from user's context
-    const currentState = state || "dubai";
     const currentCategory = category || "cars";
     const vehicleCode = vehicle?.vehicleDetails?.vehicleCode; // Use carId as vehicleCode since vehicleCode is not available in RawVehicleEnquiry
-    const currentCountry = country || "ae";
 
     const navRoute = generateVehicleDetailsUrl({
       vehicleTitle: vehicle.vehicleDetails.model,
-      state: currentState,
+      state: vehicle?.stateDetails?.stateValue,
       vehicleCategory: currentCategory,
       vehicleCode,
-      country: currentCountry,
+      country: vehicle?._metadata?.countryCode,
     });
 
     return navRoute;

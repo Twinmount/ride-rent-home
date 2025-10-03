@@ -88,6 +88,22 @@ export interface PhoneChangeVerificationData {
 }
 
 /**
+ * Email address change request data interface
+ */
+export interface EmailChangeData {
+  newEmail: string;
+}
+
+/**
+ * Email address change verification data interface
+ */
+export interface EmailChangeVerificationData {
+  otpId: string;
+  otp: string;
+  newEmail: string;
+}
+
+/**
  * User entity interface
  */
 export interface User {
@@ -282,6 +298,12 @@ export interface UseAuthReturn {
     newPhoneNumber: string,
     newCountryCode: string
   ) => Promise<AuthResponse>;
+  requestEmailChange: (newEmail: string) => Promise<AuthResponse>;
+  verifyEmailChange: (
+    otpId: string,
+    otp: string,
+    newEmail: string
+  ) => Promise<AuthResponse>;
   clearError: () => void;
   onHandleLoginmodal: (config: { isOpen: boolean }) => void;
   handleProfileNavigation: () => void;
@@ -354,6 +376,22 @@ export interface UseAuthReturn {
       otp: string;
       newPhoneNumber: string;
       newCountryCode: string;
+    },
+    unknown
+  >;
+  requestEmailChangeMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    { newEmail: string },
+    unknown
+  >;
+  verifyEmailChangeMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    {
+      otpId: string;
+      otp: string;
+      newEmail: string;
     },
     unknown
   >;

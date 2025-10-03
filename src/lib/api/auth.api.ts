@@ -9,6 +9,8 @@ import type {
   ProfileUpdateData,
   PhoneChangeData,
   PhoneChangeVerificationData,
+  EmailChangeData,
+  EmailChangeVerificationData,
 } from "@/types/auth.types";
 
 import { createAuthenticatedRequest, authApiClient } from "./axios.config";
@@ -30,6 +32,8 @@ const AUTH_ENDPOINTS = {
   LOGOUT: "/logout",
   CHANGE_PHONE_NUMBER: "/change-phone-number",
   VERIFY_PHONE_CHANGE: "/verify-phone-change",
+  CHANGE_EMAIL: "/change-email",
+  VERIFY_EMAIL_CHANGE: "/verify-email-change",
 } as const;
 
 // Auth API service class
@@ -368,6 +372,48 @@ export class AuthAPI {
   }
 
   /**
+   * Request email address change
+   */
+  static async requestEmailChange(newEmail: string): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.CHANGE_EMAIL,
+        { newEmail }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to request email address change"
+      );
+    }
+  }
+
+  /**
+   * Verify email address change with OTP
+   */
+  static async verifyEmailChange(
+    otpId: string,
+    otp: string,
+    newEmail: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.VERIFY_EMAIL_CHANGE,
+        { otpId, otp, newEmail }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to verify email address change"
+      );
+    }
+  }
+
+  /**
    * Check if user exists by phone number and country code
    */
   static async checkUserExists(
@@ -408,6 +454,8 @@ export const authAPI = {
   checkUserExists: AuthAPI.checkUserExists,
   requestPhoneNumberChange: AuthAPI.requestPhoneNumberChange,
   verifyPhoneNumberChange: AuthAPI.verifyPhoneNumberChange,
+  requestEmailChange: AuthAPI.requestEmailChange,
+  verifyEmailChange: AuthAPI.verifyEmailChange,
 };
 
 // Export default

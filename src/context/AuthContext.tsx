@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import type { UseAuthReturn } from '@/types/auth.types';
+import React, { createContext, useContext, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import type { UseAuthReturn } from "@/types/auth.types";
 
 const AuthContext = createContext<UseAuthReturn | null>(null);
 
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const authHook = useAuth();
+  const authHook = useAuth() as UseAuthReturn;
 
   useEffect(() => {
     //add session validation logic here if needed
@@ -17,7 +17,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const token = authHook.auth.token;
     if (token) {
       // Optionally validate token with server
-      console.log('Auth session restored from storage');
+      console.log("Auth session restored from storage");
     }
   }, []);
 
@@ -31,7 +31,7 @@ export const useAuthContext = (): UseAuthReturn => {
 
   if (!context) {
     throw new Error(
-      'useAuthContext must be used within an AuthContextProvider'
+      "useAuthContext must be used within an AuthContextProvider"
     );
   }
 

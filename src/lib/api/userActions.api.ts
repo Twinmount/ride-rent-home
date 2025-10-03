@@ -70,10 +70,11 @@ export const getUserEnquiredVehiclesAllCountries = async (
 ): Promise<{
   status: string;
   result: {
-    data: any[];
+    data: UserAction[];
     page: number;
     limit: number;
     total: number;
+    totalPages: number;
   };
   statusCode: number;
   multiCountryMetadata?: any;
@@ -102,18 +103,32 @@ export const getUserEnquiredVehiclesAllCountries = async (
     return {
       status: multiCountryResponse.success ? "success" : "partial_success",
       result: {
-        data: sortedData,
+        data: sortedData as UserAction[],
         page,
         limit,
         total: sortedData.length,
+        totalPages: Math.ceil(sortedData.length / limit),
       },
       statusCode: multiCountryResponse.success ? 200 : 207, // 207 for partial success
       multiCountryMetadata: multiCountryResponse.metadata,
     };
   } catch (error) {
     console.error("Multi-country enquired vehicles fetch failed:", error);
-    // Fallback to single-country API
-    return getUserEnquiredVehicles(userId, page, limit, sortOrder);
+    // Fallback to single-country API and transform to match expected format
+    const fallbackResponse = await getUserEnquiredVehicles(
+      userId,
+      page,
+      limit,
+      sortOrder
+    );
+    return {
+      ...fallbackResponse,
+      result: {
+        ...fallbackResponse.result,
+        data: fallbackResponse.result.data as UserAction[],
+        totalPages: Math.ceil(fallbackResponse.result.total / limit),
+      },
+    };
   }
 };
 
@@ -155,10 +170,11 @@ export const getUserSavedVehiclesAllCountries = async (
 ): Promise<{
   status: string;
   result: {
-    data: any[];
+    data: UserAction[];
     total: number;
     page: number;
     limit: number;
+    totalPages: number;
   };
   statusCode: number;
   multiCountryMetadata?: any;
@@ -186,18 +202,27 @@ export const getUserSavedVehiclesAllCountries = async (
     return {
       status: multiCountryResponse.success ? "success" : "partial_success",
       result: {
-        data: sortedData,
+        data: sortedData as UserAction[],
         total: sortedData.length,
         page,
         limit,
+        totalPages: Math.ceil(sortedData.length / limit),
       },
       statusCode: multiCountryResponse.success ? 200 : 207, // 207 for partial success
       multiCountryMetadata: multiCountryResponse.metadata,
     };
   } catch (error) {
     console.error("Multi-country saved vehicles fetch failed:", error);
-    // Fallback to single-country API
-    return getUserSavedVehicles(userId, page, limit);
+    // Fallback to single-country API and transform to match expected format
+    const fallbackResponse = await getUserSavedVehicles(userId, page, limit);
+    return {
+      ...fallbackResponse,
+      result: {
+        ...fallbackResponse.result,
+        data: fallbackResponse.result.data as UserAction[],
+        totalPages: Math.ceil(fallbackResponse.result.total / limit),
+      },
+    };
   }
 };
 
@@ -254,10 +279,10 @@ export const getUserViewedVehiclesAllCountries = async (
       status: multiCountryResponse.success ? "success" : "partial_success",
       result: {
         data: sortedData as UserAction[],
-          page,
-          limit,
-          total: sortedData.length,
-          totalPages: Math.ceil(sortedData.length / limit),
+        page,
+        limit,
+        total: sortedData.length,
+        totalPages: Math.ceil(sortedData.length / limit),
       },
       statusCode: multiCountryResponse.success ? 200 : 207,
       multiCountryMetadata: multiCountryResponse.metadata,
