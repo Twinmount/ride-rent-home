@@ -141,7 +141,7 @@ export const Navbar = () => {
   };
 
   // Get user name from auth state
-  const userName = user ? `${user.name}` : "User";
+  const userName = user ? `${user.name||""}` : "User";
 
   return (
     <>

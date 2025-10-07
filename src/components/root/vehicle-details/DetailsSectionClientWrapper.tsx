@@ -13,6 +13,7 @@ type DetailsSectionClientWrapperProps = {
   children: React.ReactNode;
   profileData: ProfileCardDataType;
   country: string;
+  vehicle?: any;
 };
 
 /**
@@ -33,6 +34,7 @@ const DetailsSectionClientWrapper = ({
   children,
   profileData,
   country,
+  vehicle,
 }: DetailsSectionClientWrapperProps) => {
   const { vehicleCode, vehicleId } = profileData;
   const { auth } = useAppContext();
@@ -42,7 +44,7 @@ const DetailsSectionClientWrapper = ({
 
   const detailsSectionRef = useRef(null);
   const isInViewPort = useIntersectionObserver(detailsSectionRef);
-  
+
   // Ref to track if the view has already been tracked to prevent double calls
   const hasTrackedView = useRef(false);
 
@@ -71,7 +73,7 @@ const DetailsSectionClientWrapper = ({
 
       // Mark as tracked to prevent future calls
       hasTrackedView.current = true;
-    } 
+    }
   }, []); // Empty dependency array - only run once on mount
 
   return (
@@ -80,7 +82,11 @@ const DetailsSectionClientWrapper = ({
 
       {/* Conditionally render MobileProfileCard based on the visibility of DetailsSectionClientWrapper*/}
       {isInViewPort && (
-        <MobileProfileCard profileData={profileData} country={country} />
+        <MobileProfileCard
+          profileData={profileData}
+          country={country}
+          vehicle={vehicle}
+        />
       )}
     </section>
   );
