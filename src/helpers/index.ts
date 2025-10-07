@@ -708,7 +708,7 @@ export function getAvatarProps(
     .join(" ");
 
   return {
-    displayName: `${first} ${middleInitials} ${last}`,
+    displayName: `${first || ""} ${middleInitials || ""} ${last || ""}`,
     fallbackInitials: initials,
   };
 }

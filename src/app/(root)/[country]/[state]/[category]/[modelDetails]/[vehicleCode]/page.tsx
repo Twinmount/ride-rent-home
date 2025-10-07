@@ -226,6 +226,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
         {/* Wrapper to handle client side logic regarding mobile profile card */}
         <DetailsSectionClientWrapper
+          vehicle={vehicle}
           country={country}
           profileData={ProfileCardData}
         >

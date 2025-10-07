@@ -4,13 +4,13 @@ import RentNowButtonWide from "@/components/common/RentNowbuttonWide";
 type MobileProfileCardProps = {
   profileData: ProfileCardDataType;
   country: string;
-  vehicle: any; // Add this prop
+  vehicle?: any;
 };
 
 const MobileProfileCard = ({
   profileData,
   country,
-  vehicle, // Add this parameter
+  vehicle,
 }: MobileProfileCardProps) => {
   const {
     company,
@@ -24,10 +24,9 @@ const MobileProfileCard = ({
       <div className="fixed bottom-2 z-20 w-[96%] pr-4 lg:hidden">
         <div>
           <RentNowButtonWide
+            vehicleId={profileData.vehicleId}
+            agentId={profileData.agentId}
             vehicle={vehicle}
-            vehicleId={vehicleId}
-            agentId={agentId}
-            country={country}
             contactDetails={company.contactDetails}
             vehicleName={model}
             state={state}
