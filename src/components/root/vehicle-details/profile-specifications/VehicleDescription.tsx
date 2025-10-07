@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 type VehicleDescriptionProps = {
   description?: string;
@@ -7,19 +7,39 @@ type VehicleDescriptionProps = {
 
 const VehicleDescription = ({ description }: VehicleDescriptionProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const textRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (textRef.current) {
+        const isTruncated =
+          textRef.current.scrollHeight > textRef.current.clientHeight;
+        setShowButton(isTruncated);
+      }
+    };
+
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, [description]);
 
   if (!description) return null;
 
   return (
     <div className="m-2 text-sm text-text-secondary lg:text-base">
-      <p className={isExpanded ? "" : "line-clamp-3"}>{description}</p>
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="mt-1 font-semibold text-orange hover:text-yellow"
-        type="button"
-      >
-        {isExpanded ? "Show less" : "Show more"}
-      </button>
+      <p ref={textRef} className={isExpanded ? "" : "line-clamp-3"}>
+        {description}
+      </p>
+      {showButton && (
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="mt-1 font-semibold text-orange hover:text-yellow"
+          type="button"
+        >
+          {isExpanded ? "Show less" : "Show more"}
+        </button>
+      )}
     </div>
   );
 };
