@@ -15,11 +15,12 @@ const MobileProfileCard = ({
   const {
     company,
     vehicleData: { state, model },
+    vehicleId, // Destructure these
+    agentId, // from profileData
   } = profileData;
 
   return (
     <>
-      {/* Mobile Profile Card - Simple Layout */}
       <div className="fixed bottom-2 z-20 w-[96%] pr-4 lg:hidden">
         <div>
           <RentNowButtonWide

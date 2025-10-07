@@ -13,7 +13,7 @@ type DetailsSectionClientWrapperProps = {
   children: React.ReactNode;
   profileData: ProfileCardDataType;
   country: string;
-  vehicle?: any;
+  vehicle?: any; // Add this prop if needed
 };
 
 /**
