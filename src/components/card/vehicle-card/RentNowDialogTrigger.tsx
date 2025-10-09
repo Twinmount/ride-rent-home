@@ -9,7 +9,7 @@ import { useVehicleCardContext } from "@/context/VehicleCardContext";
 type RentNowDialogTriggerProps = {
   vehicle: NewVehicleCardType;
   layoutType: "grid" | "carousel";
-  country: string; 
+  country: string;
 };
 
 export default function RentNowDialogTrigger({
@@ -42,13 +42,13 @@ export default function RentNowDialogTrigger({
   const className =
     layoutType === "carousel"
       ? "h-[1.5rem] w-[4.5rem] lg:h-[2rem] lg:w-[5.5rem] text-[0.6rem] lg:text-xs px-6"
-      : "w-[4.6rem] h-[1.75rem] text-xs px-4";
+      : "w-[4.6rem] h-[1.75rem] text-xs px-6";
 
   return (
     <button
       onClick={handleClick}
       className={`flex-center whitespace-nowrap rounded bg-theme-gradient py-1 text-text-primary ${className}`}
-      aria-label={`View details for ${vehicle.vehicleTitle}`} // ADD THIS LINE ONLY
+      aria-label={`View details for ${vehicle.vehicleTitle}`}
     >
       View Details
     </button>
