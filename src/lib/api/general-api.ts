@@ -45,11 +45,6 @@ export const FetchVehicleByFilters = async ({
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);
 
-  const BASE_URL =
-    country === "in"
-      ? process.env.NEXT_PUBLIC_API_URL_INDIA
-      : process.env.NEXT_PUBLIC_API_URL;
-
   // Utility function to safely parse parameter values
   const getParamValue = (key: string, defaultValue: string = ""): string => {
     const value = params.get(key);
@@ -63,13 +58,16 @@ export const FetchVehicleByFilters = async ({
 
   // Build the payload for the POST request
   const payload: Record<string, any> = {
-    page: pageParam.toString(), // Use the pageParam directly
-    limit, // Ensure it's a string
+    page: pageParam.toString(),
+    limit,
     sortOrder: "DESC",
     category: category || "cars",
     state: getParamValue("state", state),
     coordinates,
   };
+
+  // boolean to control loading logic
+  payload.needNearbyResult = getParamValue("showNearby") === "true";
 
   // Extract price and selectedPeriod from URL params
   const priceParam = getParamValue("price"); // Example: "45-250"
@@ -115,13 +113,17 @@ export const FetchVehicleByFilters = async ({
     }
   });
 
-  // Send the POST request to the API
-  const response = await fetch(`${BASE_URL}/vehicle/filter`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await API({
+    path: "/vehicle/filter",
+    options: {
+      method: "POST",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     },
-    body: JSON.stringify(payload),
+    country,
   });
 
   if (!response.ok) {
