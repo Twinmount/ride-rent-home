@@ -10,7 +10,6 @@ import CompanySpecifications from "../../profile-specifications/CompanySpecifica
 import RentNowbuttonWide from "@/components/common/RentNowbuttonWide";
 import ShareLikeComponent from "../../profile-specifications/ShareLikeComponent";
 import VehicleDescription from "../../profile-specifications/VehicleDescription";
-import { useUserActions } from "@/hooks/useUserActions";
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -20,7 +19,6 @@ type ProfileCardProps = {
 
 const ProfileCard = memo(
   ({ profileData, country, vehicle }: ProfileCardProps) => {
-    const { onHandleUserSavedCar } = useUserActions();
     const { isCompanyValid, rentalDetails, securityDeposit } = useProfileData(
       profileData,
       country
@@ -29,16 +27,13 @@ const ProfileCard = memo(
     const {
       company,
       seriesDescription,
-      vehicleData: { state, model },
+      vehicleData: { state, model, category, brandName },
       vehicleId,
     } = profileData;
 
     // Enhanced availability check
     const isVehicleAvailable = () => {
-      // Check if company is valid
       if (!isCompanyValid) return false;
-
-      // Check if rental details exist and at least one rental period is enabled
       if (!rentalDetails) return false;
 
       const hasAvailableRentalPeriod = [
@@ -49,11 +44,6 @@ const ProfileCard = memo(
       ].some((enabled) => enabled === true);
 
       if (!hasAvailableRentalPeriod) return false;
-
-      // You can add more checks here based on your business logic:
-      // - Check if vehicle is marked as available in your data
-      // - Check if it's not currently rented
-      // - Check maintenance status, etc.
 
       return true;
     };
@@ -72,16 +62,17 @@ const ProfileCard = memo(
         <VehicleStats state={state} />
         <VehicleDescription description={seriesDescription} />
 
-        {/* Rental Details with conditional styling */}
-        <div
-          className={vehicleAvailable ? "" : "pointer-events-none opacity-60"}
-        >
-          <RentalDetailsTab
-            rentalDetails={rentalDetails}
-            securityDeposit={securityDeposit}
-            isDisabled={!vehicleAvailable}
-          />
-        </div>
+        {/* Rental Details - now handles both available and unavailable states */}
+        <RentalDetailsTab
+          rentalDetails={rentalDetails}
+          securityDeposit={securityDeposit}
+          isDisabled={!vehicleAvailable}
+          brandValue={brandName}
+          category={category}
+          country={country}
+          state={state}
+          formattedCategory={category}
+        />
 
         <CompanySpecifications specs={company.companySpecs} />
 
