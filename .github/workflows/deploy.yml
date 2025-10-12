@@ -6,7 +6,7 @@ on:
       - development
 
 jobs:
-  deploy-uae-backend:
+  deploy-Nextjs-Frontend:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,5 +36,5 @@ jobs:
             docker compose build --no-cache ride-rent-home
             docker compose up -d ride-rent-home
 
-            echo "✅ Nextjs Home deployed
+            echo "✅ Nextjs Home deployed successfully."
           EOF
