@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  nextjs-app-qa:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    ports:
+      - '4004:3000'
+    command: npm run start
+    restart: unless-stopped
