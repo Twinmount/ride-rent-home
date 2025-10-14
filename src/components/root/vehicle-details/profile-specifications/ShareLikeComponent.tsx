@@ -39,19 +39,6 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
         }
       }
     },
-    onSaveError: (error: Error) => {
-      // Handle authentication errors
-      if (vehicleId) {
-        console.error("Error saving/unsaving vehicle:", error);
-
-        if (error.message.includes("login") || !isAuthenticated) {
-          setShowLoginModal(true);
-        } else {
-          // Other errors
-          alert("Something went wrong. Please try again.");
-        }
-      }
-    },
   });
 
   // Use hook state if vehicleId is available and user is authenticated, otherwise use local state
@@ -94,13 +81,6 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
 
   const handleLike = () => {
     if (vehicleId) {
-      // Check if user is authenticated first
-      if (!isAuthenticated) {
-        setShowLoginModal(true);
-        return;
-      }
-
-      // Use the hook's toggle function
       savedVehicleHook.toggleSaved();
     } else {
       // Fall back to local state management

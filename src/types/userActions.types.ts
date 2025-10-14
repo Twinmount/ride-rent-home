@@ -186,7 +186,6 @@ export interface SaveVehicleOptions {
 export interface UseSavedVehicleOptions {
   vehicleId: string;
   onSaveSuccess?: (isSaved: boolean) => void;
-  onSaveError?: (error: Error) => void;
 }
 
 // Individual Saved Vehicle Hook Return Type
