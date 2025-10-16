@@ -227,26 +227,24 @@ export const FetchVehicleByFiltersGPS = async (
 // send portfolio count post
 export const sendPortfolioVisit = async (
   vehicleId: string,
-  country: string
+  country: string,
+  isAuthenticated: boolean
 ) => {
+  const url = isAuthenticated ? "/portfolio" : "/portfolio/public";
   try {
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-    // Send a POST request to the API with the vehicleId in the request body
-    const response = await fetch(
-      `${BASE_URL}/portfolio`, // Assuming '/portfolio' is the correct endpoint
-      {
+    const response = await API({
+      path: url,
+      options: {
         method: "POST",
+        cache: "no-cache",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ vehicleId }), // Wrapping vehicleId in an object
-      }
-    );
+        body: JSON.stringify({ vehicleId }),
+      },
+      country,
+    });
 
-    // Check if the response was successful
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(
@@ -256,10 +254,9 @@ export const sendPortfolioVisit = async (
       );
     }
 
-    // Optionally handle the success response, such as logging or triggering any side effect
-    const responseData = await response.json();
+    const data = await response.json();
 
-    return responseData; // Return the response data if needed
+    return data;
   } catch (error) {
     console.error("Error sending portfolio visit:", error);
     throw error;

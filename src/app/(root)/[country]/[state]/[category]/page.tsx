@@ -46,6 +46,7 @@ export default async function Home(props: PageProps) {
 
   // Generate JSON-LD
   const jsonLdData = getHomePageJsonLd(state, category, country);
+
   return (
     <>
       {/* Inject JSON-LD into the <head> */}

@@ -53,8 +53,8 @@ const DetailsSectionClientWrapper = ({
 
   useQuery({
     queryKey: ["portfolioVisit", vehicleCode],
-    queryFn: () => sendPortfolioVisit(vehicleCode, country),
-    staleTime: 0,
+    queryFn: () => sendPortfolioVisit(vehicleCode, country, isAuthenticated),
+    staleTime: 1 * 60 * 1000,
   });
 
   // Simple direct call to track view when component mounts
@@ -74,7 +74,7 @@ const DetailsSectionClientWrapper = ({
       // Mark as tracked to prevent future calls
       hasTrackedView.current = true;
     }
-  }, []); // Empty dependency array - only run once on mount
+  }, []);
 
   return (
     <section ref={detailsSectionRef}>
