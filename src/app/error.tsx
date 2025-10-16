@@ -70,7 +70,7 @@ export default function Error({
           </h1>
 
           <p className="mb-8 text-lg text-slate-500">
-            We're having trouble loading this page. Give it another try.
+            <p>We&apos;re sorry for the inconvenience</p>
           </p>
 
           {/* Action Buttons */}

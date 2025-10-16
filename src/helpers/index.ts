@@ -404,7 +404,7 @@ export function generateVehicleTitleSlug(vehicleTitle: string): string {
 type VehicleUrlHelperArg = {
   country: string;
   state: string;
-  category: string;
+  vehicleCategory: string;
   vehicleTitle: string;
   vehicleCode: string;
 };
@@ -412,12 +412,13 @@ type VehicleUrlHelperArg = {
 export const generateVehicleDetailsUrl = (
   vehicle: VehicleUrlHelperArg
 ): string => {
-  const { country, state, category, vehicleTitle, vehicleCode } = vehicle;
+  const { country, state, vehicleCategory, vehicleTitle, vehicleCode } =
+    vehicle;
   const formattedVehicleCode = vehicleCode.toLowerCase();
 
   const vehicleTitleSlug = generateVehicleTitleSlug(vehicleTitle);
 
-  return `/${country}/${state}/${category}/${vehicleTitleSlug}-for-rent/${formattedVehicleCode}`;
+  return `/${country}/${state}/${vehicleCategory}/${vehicleTitleSlug}-for-rent/${formattedVehicleCode}`;
 };
 
 /**

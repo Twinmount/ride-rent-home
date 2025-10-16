@@ -98,7 +98,7 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
             {cards.map((feature) => (
               <FeaturesCard
                 key={feature.key}
-                icon={feature.icon}
+                iconNumber={feature.iconNumber}
                 title={feature.title}
                 description={feature.description}
               />

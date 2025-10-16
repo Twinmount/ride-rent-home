@@ -67,7 +67,22 @@ const UAE_CONTENT: IState = {
 };
 
 // Content for India
-const INDIA_CONTENT: IState = {};
+const INDIA_CONTENT: IState = {
+  [STATES.BANGALORE]: {
+    [CATEGORIES.CARS]: {
+      title: "Rent a Car in Bangalore at Best Prices",
+      subtitle:
+        "Choose from a wide range of cars in Bangalore including compact hatchbacks, premium sedans, SUVs, and luxury cars like BMW, Audi, and Mercedes. Enjoy affordable rates, flexible plans, and instant booking with Ride.Rent",
+    },
+  },
+  [STATES.CHENNAI]: {
+    [CATEGORIES.CARS]: {
+      title: "Rent a Car in Chennai at the Best Prices",
+      subtitle:
+        "Finding the right car in Chennai is now simple with Ride.Rent. From compact hatchbacks for short errands to premium sedans and powerful SUVs for long drives, we have something for every traveler",
+    },
+  },
+};
 
 // final object which contains all countries and states specific content regarding heading
 export const homepageHeadingContent: IHeading = {

@@ -52,7 +52,7 @@ export default async function FAQ({ state, country, limit }: FAQStateProps) {
         ))}
       </Accordion>
 
-      <ViewAllButton link={`/${country}/faq/${state}`} />
+      {limit && <ViewAllButton link={`/${country}/faq/${state}`} />}
     </section>
   );
 }

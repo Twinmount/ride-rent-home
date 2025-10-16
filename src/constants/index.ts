@@ -81,14 +81,16 @@ export const COUNTRIES = {
 };
 
 export const STATES = {
-  DUBAI: 'dubai',
-  UMM_AL_QUWAIN: 'umm-al-quwain',
-  AL_AIN: 'al-ain',
-  AJMAN: 'ajman',
-  ABU_DHABI: 'abu-dhabi',
-  RAS_AL_KHAIMAH: 'ras-al-khaimah',
-  SHARJAH: 'sharjah',
-  FUJAIRAH: 'fujairah',
+  DUBAI: "dubai",
+  UMM_AL_QUWAIN: "umm-al-quwain",
+  AL_AIN: "al-ain",
+  AJMAN: "ajman",
+  ABU_DHABI: "abu-dhabi",
+  RAS_AL_KHAIMAH: "ras-al-khaimah",
+  SHARJAH: "sharjah",
+  FUJAIRAH: "fujairah",
+  BANGALORE: "bangalore",
+  CHENNAI: "chennai",
 };
 
 export const CATEGORIES = {

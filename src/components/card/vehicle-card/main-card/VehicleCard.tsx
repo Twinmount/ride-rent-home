@@ -31,7 +31,7 @@ const VehicleCard = ({
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
     country: country,
     state: vehicle.state,
-    category: vehicle.vehicleCategory,
+    vehicleCategory: vehicle.vehicleCategory,
     vehicleTitle: vehicle.vehicleTitle,
     vehicleCode: vehicle.vehicleCode,
   });
