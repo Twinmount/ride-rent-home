@@ -71,10 +71,26 @@ const UAE_CONTENT: IStateDocument = {
 };
 
 // Content for India
-const INDIA_CONTENT: IStateDocument = {};
-
+const INDIA_CONTENT: IStateDocument = {
+  [STATES.BANGALORE]: {
+    title: "Ride.Rent - The Smarter Way to Travel in Bangalore",
+    description: [
+      "Ride.Rent brings convenience, flexibility, and affordability together in one platform. Whether you are planning a city tour, attending business meetings, or exploring nearby destinations, our cars are available whenever you need them. With verified suppliers, reliable service, and affordable pricing, Ride.Rent has become the preferred choice for travelers across Bangalore.",
+      "Book your car today and enjoy a smooth, stress-free travel experience across the Garden City and beyond.",
+    ],
+  },
+  [STATES.CHENNAI]: {
+    title: "Ride.Rent - The Smarter Way to Rent a Car in Chennai",
+    description: [
+      "Ride.Rent combines comfort, flexibility, and affordability in one simple platform. You can rent a car for daily use, weekend outings, or long drives outside Chennai with ease. With trusted suppliers, transparent pricing, and round-the-clock support, Ride.Rent has become the preferred choice for thousands of users in Chennai.",
+      "Book your car today and discover how effortless travel can be when everything you need is just a click away.",
+    ],
+  },
+};
 // final object which contains all countries and states specific content regarding documents
 export const homepageDocumentsContent: IDocument = {
   [COUNTRIES.AE]: UAE_CONTENT,
   [COUNTRIES.IN]: INDIA_CONTENT,
 } as const;
+
+

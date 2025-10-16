@@ -110,7 +110,7 @@ const VehicleThumbnail = ({
         className={`h-full w-full rounded object-cover transition-all duration-500 ease-in-out ${
           isActive && hasMultipleImages ? "scale-[1.02]" : "scale-100"
         } `}
-        quality={70}
+        quality={90}
         priority={priority}
         loading={loading}
         sizes={
