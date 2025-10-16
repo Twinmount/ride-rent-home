@@ -29,11 +29,11 @@ const VehicleCard = ({
   const { auth, onHandleLoginmodal } = useAuthContext();
 
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
-    vehicleTitle: vehicle.vehicleTitle,
-    state: vehicle.state,
-    vehicleCategory: vehicle.vehicleCategory,
-    vehicleCode: vehicle.vehicleCode,
     country: country,
+    state: vehicle.state,
+    category: vehicle.vehicleCategory,
+    vehicleTitle: vehicle.vehicleTitle,
+    vehicleCode: vehicle.vehicleCode,
   });
 
   const handleCardClick = (e: React.MouseEvent): void => {

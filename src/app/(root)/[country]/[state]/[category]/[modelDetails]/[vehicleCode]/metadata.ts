@@ -6,7 +6,7 @@ import {
 import {
   convertToLabel,
   generateCompanyProfilePageLink,
-  generateModelDetailsUrl,
+  generateVehicleTitleSlug,
   generateVehicleDetailsUrl,
   restoreVehicleCodeFormat,
   singularizeValue,
@@ -68,7 +68,7 @@ export async function generateVehicleMetadata(
   const metaTitle = vehicle?.vehicleMetaTitle || title;
   const metaDescription = vehicle?.vehicleMetaDescription || description;
 
-  const vehicleTitle = generateModelDetailsUrl(vehicle.vehicleTitle);
+  const vehicleTitle = generateVehicleTitleSlug(vehicle.vehicleTitle);
 
   // dynamic link to  vehicle details page
   const canonicalUrl = `https://ride.rent/${country}/${state}/${category}/${vehicleTitle}/${vehicleCode}`;
