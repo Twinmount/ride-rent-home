@@ -1,10 +1,8 @@
-"use client";
-
 import VehicleTypesCarousel from "./vehicle-types-carousel/VehicleTypesCarousel";
 import VehicleCategories from "./VehicleCategories";
 import PriceFilterDialog from "../../dialog/price-filter-dialog/PriceFilterDialog";
 
-export default function VehicleCategoryAndFilter() {
+export default function CategoryTypesAndFilter() {
   return (
     <div
       className="no-global-padding sticky z-30 mb-4 flex items-center justify-between bg-background py-2"

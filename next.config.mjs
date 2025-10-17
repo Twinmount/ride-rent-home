@@ -23,11 +23,11 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      {
-        source: "/",
-        destination: "/ae/dubai",
-        permanent: true,
-      },
+      // {
+      //   source: "/",
+      //   destination: "/ae/dubai",
+      //   permanent: true,
+      // },
       {
         source: "/ae/faq",
         destination: "/ae/faq/dubai",
@@ -38,12 +38,12 @@ const nextConfig = {
         destination: "/ae/profile/:path*",
         permanent: true,
       },
-      {
-        source:
-          "/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)/:path*",
-        destination: "/ae/:state/:path*",
-        permanent: true,
-      },
+      // {
+      //   source:
+      //     "/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)/:path*",
+      //   destination: "/ae/:state/:path*",
+      //   permanent: true,
+      // },
     ];
   },
 };
