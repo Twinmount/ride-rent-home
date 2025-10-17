@@ -382,10 +382,7 @@ export const getAgentFormattedPhoneNumber = (
   return formatPhoneNumber(countryCode, phone);
 };
 
-export function generateModelDetailsUrl(vehicleTitle?: string): string {
-  // Fallback value for vehicleTitle
-  const fallbackVehicleTitle = "vehicle";
-
+export function generateVehicleTitleSlug(vehicleTitle: string): string {
   const cleanText = (text: string): string => {
     return text
       .toLowerCase() // Convert to lowercase
@@ -394,25 +391,34 @@ export function generateModelDetailsUrl(vehicleTitle?: string): string {
       .replace(/^-+|-+$/g, ""); // Remove any leading or trailing hyphens
   };
 
-  // Use vehicleTitle if it exists, otherwise use fallbackVehicleTitle
-  const title = cleanText(vehicleTitle || fallbackVehicleTitle);
+  const vehicleTitleSlug = cleanText(vehicleTitle);
 
-  return title; // Return the cleaned version of the title
+  return vehicleTitleSlug;
 }
 
 /**
  * Generates a URL redirecting to the vehicle details page
  * @returns {string} URL redirecting to the vehicle details page
  */
-export const generateVehicleDetailsUrl = (vehicle: {
-  vehicleTitle?: string;
+
+type VehicleUrlHelperArg = {
+  country: string;
   state: string;
   vehicleCategory: string;
+  vehicleTitle: string;
   vehicleCode: string;
-  country: string;
-}): string => {
-  const modelDetails = generateModelDetailsUrl(vehicle.vehicleTitle);
-  return `/${vehicle.country}/${vehicle.state}/${vehicle.vehicleCategory}/${modelDetails}-for-rent/${vehicle.vehicleCode.toLowerCase()}`;
+};
+
+export const generateVehicleDetailsUrl = (
+  vehicle: VehicleUrlHelperArg
+): string => {
+  const { country, state, vehicleCategory, vehicleTitle, vehicleCode } =
+    vehicle;
+  const formattedVehicleCode = vehicleCode.toLowerCase();
+
+  const vehicleTitleSlug = generateVehicleTitleSlug(vehicleTitle);
+
+  return `/${country}/${state}/${vehicleCategory}/${vehicleTitleSlug}-for-rent/${formattedVehicleCode}`;
 };
 
 /**
@@ -644,7 +650,7 @@ export function restoreVehicleCodeFormat(lowerCaseCode: string): string {
 export function getVehicleCardStyle(layoutType: "carousel" | "grid"): string {
   const styles = {
     carousel: `w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem]`,
-    grid: `min-w-[12rem] w-full max-w-[18rem] justify-self-center`,
+    grid: `min-w-[12rem] max-w-[21rem] w-full md:max-w-[18rem] justify-self-center`,
   };
 
   return styles[layoutType] || "";

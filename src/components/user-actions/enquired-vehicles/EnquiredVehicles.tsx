@@ -561,10 +561,10 @@ export default function EnquiredVehiclesPage() {
 
                   {/* Vehicle Info */}
                   <div className="mb-3 flex items-center justify-between text-xs text-gray-500 sm:mb-4">
-                    <div className="flex items-center gap-1">
+                    {/* <div className="flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
                       <span>UAE</span>
-                    </div>
+                    </div> */}
                     {/* <div className="flex items-center gap-1">
                       <Star className="text-yellow-400 h-3 w-3 fill-current" />
                       <span>4.8</span>

@@ -1,20 +1,19 @@
-'use client';
+"use client";
 
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from '@/components/ui/accordion';
-import useFilters from '@/hooks/useFilters';
-import { RiListSettingsFill } from 'react-icons/ri';
-import FilterAccordionContent from '../accordion/FilterAccordionContent';
-
-import { CategoryAccordion } from './CategoryAccordion';
-import { VehicleTypeAccordion } from './VehicleTypesAccordion';
-import { BrandsAccordion } from './BrandsAccordion';
-import { filterConfigs } from './filter-config';
-import ListingPriceFilter from './ListingPriceFilter';
+} from "@/components/ui/accordion";
+import useFilters from "@/hooks/useFilters";
+import FilterAccordionContent from "../accordion/FilterAccordionContent";
+import { CategoryAccordion } from "./CategoryAccordion";
+import { VehicleTypeAccordion } from "./VehicleTypesAccordion";
+import { BrandsAccordion } from "./BrandsAccordion";
+import { filterConfigs } from "./filter-config";
+import ListingPriceFilter from "./ListingPriceFilter";
+import { Switch } from "@/components/ui/switch";
 
 type ListingFilterProps = {
   setOpen: (open: boolean) => void;
@@ -29,6 +28,10 @@ export default function ListingFilter({ setOpen }: ListingFilterProps) {
     applyFilters,
   } = useFilters();
 
+  const handleShowNearbyToggle = (enabled: boolean) => {
+    handleFilterChange("showNearby", enabled ? "true" : "false");
+  };
+
   return (
     <div className={`flex h-full max-h-full w-full flex-col`}>
       <div className="absolute bottom-16 left-4 right-0 top-20 overflow-y-scroll pr-1">
@@ -37,6 +40,18 @@ export default function ListingFilter({ setOpen }: ListingFilterProps) {
           selectedFilters={selectedFilters}
           handlePeriodPriceChange={handlePeriodPriceChange}
         />
+
+        <div className="mb-4 flex items-center gap-3 border-y py-5">
+          <Switch
+            id="show-nearby-switch"
+            checked={selectedFilters.showNearby === "true"}
+            className="data-[state=checked]:bg-accent-brand"
+            onCheckedChange={handleShowNearbyToggle}
+          />
+          <label htmlFor="show-nearby-switch" className="text-sm">
+            Show nearby results
+          </label>
+        </div>
 
         {/* Accordion for filters */}
         <Accordion type="single" collapsible>

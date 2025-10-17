@@ -54,7 +54,7 @@ const Documents = ({ country, state, category }: StateCategoryProps) => {
             </div>
           </div>
 
-          <DocumentsRequired category={formattedCategory} />
+          <DocumentsRequired country={country} category={formattedCategory} />
         </div>
       </div>
     </MotionSection>

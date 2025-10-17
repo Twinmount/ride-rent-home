@@ -80,12 +80,10 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
     error: null as Error | null,
   });
 
-
   // Individual vehicle save state hook
   const useSavedVehicle = ({
     vehicleId,
     onSaveSuccess,
-    onSaveError,
   }: UseSavedVehicleOptions): UseSavedVehicleReturn => {
     const [isSaved, setIsSaved] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -166,7 +164,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
         // Revert optimistic update
         setIsSaved(false);
         setIsLoading(false);
-        onSaveError?.(error);
       },
     });
 
@@ -197,14 +194,12 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
         // Revert optimistic update
         setIsSaved(true);
         setIsLoading(false);
-        onSaveError?.(error);
       },
     });
 
     const toggleSaved = () => {
       if (!isAuthenticated || !userId) {
-        // Handle unauthenticated user
-        onSaveError?.(new Error("Please login to save vehicles"));
+        onHandleLoginmodal({ isOpen: true });
         return;
       }
 
@@ -254,7 +249,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
         draft.error = null;
         draft.data = extractedData;
       });
-
     } catch (error) {
       setSavedVehiclesState((draft) => {
         draft.isLoading = false;
@@ -383,7 +377,7 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       page = 0,
       limit = 10,
       sortOrder = "DESC",
-      useMultiCountry = true
+      useMultiCountry = true,
     } = options;
 
     return useQuery({
@@ -487,7 +481,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       return trackCarView(userId!, carId, metadata);
     },
     onSuccess: (data) => {
-
       // Invalidate viewed vehicles query
       queryClient.invalidateQueries({
         queryKey: ["userViewedVehicles", userId],
@@ -597,7 +590,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
   };
 
   const extractViewedVehicles = (apiResponse: any) => {
-
     if (!apiResponse?.result?.data || !Array.isArray(apiResponse.result.data)) {
       return [];
     }
@@ -678,15 +670,17 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
           "/default-car.png";
 
         // Get vehicle location - handle new location structure
-        const vehicleLocation = vehicle.location?.address || 
-                              item.vehicleSummary?.location?.address || 
-                              "Dubai";
+        const vehicleLocation =
+          vehicle.location?.address ||
+          item.vehicleSummary?.location?.address ||
+          "Dubai";
 
         // Get vehicle name/title with fallbacks
-        const vehicleName = vehicle.vehicleTitle || 
-                           vehicle.vehicleModel || 
-                           item.carId || 
-                           "Unknown Vehicle";
+        const vehicleName =
+          vehicle.vehicleTitle ||
+          vehicle.vehicleModel ||
+          item.carId ||
+          "Unknown Vehicle";
 
         return {
           id: vehicle._id || item.carId || item._id || index + 1,
@@ -694,7 +688,9 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
           vendor: "Premium Car Rental", // This info isn't in the API response, so using a default
           price: price,
           rating: null, // This info isn't in the API response, so using a default
-          location: vehicleLocation.includes("Dubai") ? "Dubai" : vehicleLocation,
+          location: vehicleLocation.includes("Dubai")
+            ? "Dubai"
+            : vehicleLocation,
           image: primaryImage,
           viewedDate: timeAgo,
           viewCount: 1, // This specific count isn't in the API response

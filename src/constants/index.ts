@@ -80,26 +80,43 @@ export const COUNTRIES = {
   IN: 'in',
 };
 
-export const STATES = {
-  DUBAI: 'dubai',
-  UMM_AL_QUWAIN: 'umm-al-quwain',
-  AL_AIN: 'al-ain',
-  AJMAN: 'ajman',
-  ABU_DHABI: 'abu-dhabi',
-  RAS_AL_KHAIMAH: 'ras-al-khaimah',
-  SHARJAH: 'sharjah',
-  FUJAIRAH: 'fujairah',
-};
+export const UAE_STATES = {
+  DUBAI: "dubai",
+  ABU_DHABI: "abu-dhabi",
+  SHARJAH: "sharjah",
+  AJMAN: "ajman",
+  UMM_AL_QUWAIN: "umm-al-quwain",
+  RAS_AL_KHAIMAH: "ras-al-khaimah",
+  FUJAIRAH: "fujairah",
+  AL_AIN: "al-ain",
+} as const;
+
+// India States
+export const INDIA_STATES = {
+  BANGALORE: "bangalore",
+  CHENNAI: "chennai",
+  DELHI: "delhi",
+  GURGAON: "gurgaon",
+  KOCHI: "kochi",
+  KOLKATA: "kolkata",
+  MUMBAI: "mumbai",
+  NOIDA: "noida",
+  PUNE: "pune",
+  RAJASTHAN: "rajasthan",
+  TELANGANA: "telangana",
+  AHMEDABAD: "ahmedabad",
+  PORT_BLAIR: "port-blair",
+} as const;
 
 export const CATEGORIES = {
-  CARS: 'cars',
-  SPORTS_CARS: 'sports-cars',
-  MOTORCYCLES: 'motorcycles',
-  BICYCLES: 'bicycles',
-  BUSES: 'buses',
-  LEISURE_BOATS: 'leisure-boats',
-  YACHTS: 'yachts',
-  VANS: 'vans',
-  BUGGIES: 'buggies',
-  CHARTERS: 'charters',
+  CARS: "cars",
+  SPORTS_CARS: "sports-cars",
+  MOTORCYCLES: "motorcycles",
+  BICYCLES: "bicycles",
+  BUSES: "buses",
+  LEISURE_BOATS: "leisure-boats",
+  YACHTS: "yachts",
+  VANS: "vans",
+  BUGGIES: "buggies",
+  CHARTERS: "charters",
 };

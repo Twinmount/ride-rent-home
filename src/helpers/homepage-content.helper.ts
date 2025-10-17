@@ -58,30 +58,29 @@ export function getHomePageFeatures({
   const formattedState = convertToLabel(state);
   const formattedCategory = singularizeValue(convertToLabel(category));
 
-  // fallback
   return {
     heading: `Enjoy ease and peace of mind when renting a ${formattedCategory.toLowerCase()} in ${formattedState}`,
     description: [
-      `Discover the best of ${formattedState} with our affordable and reliable ${formattedCategory.toLowerCase()} rental service.`,
-      `Our commitment to reliability means your vehicle will be ready and waiting, wherever and whenever you need it.`,
+      `${formattedState} is a destination of convenience and mobility, and having the right vehicle ensures you can experience it all with ease. With Ride.Rent, you can access everything from affordable ${formattedCategory.toLowerCase()} rentals for everyday use to premium options for special occasions. Whether you need a quick rental for short stays or flexible monthly packages designed for residents and business travelers, Ride.Rent delivers clear pricing without hidden fees.`,
+      `Discover the best of ${formattedState} with our affordable and reliable ${formattedCategory.toLowerCase()} rental service. Our platform connects you with trusted providers, ensuring you always get verified service at fair rates. From daily rentals to long-term solutions, we make sure both residents and visitors always find affordable and reliable mobility choices.`,
     ],
     cards: [
       {
         key: 1,
-        icon: IoIosSpeedometer,
-        title: 'Easy & Fast Booking',
+        iconNumber: 1 as const,
+        title: "Easy & Fast Booking",
         description: `From premium models to economy vehicles to rent in ${state}, find the perfect car at competitive rates. Secure your rental with just a few clicks and make the most of your ${state} trip. RIDE.RENT is the smart choice for 'Rent a Car in ${state}' services.`,
       },
       {
         key: 2,
-        icon: FaCrown,
-        title: 'Many Pickup Locations',
+        iconNumber: 2 as const,
+        title: "Many Pickup Locations",
         description: `From premium models to economy vehicles to rent in ${state}, find the perfect car at competitive rates. Secure your rental with just a few clicks and make the most of your ${state} trip. RIDE.RENT is the smart choice for 'Rent a Car in ${state}' services.`,
       },
       {
         key: 3,
-        icon: Bus,
-        title: 'Ensured Delivery Promise',
+        iconNumber: 3 as const,
+        title: "Ensured Delivery Promise",
         description: `Our commitment to punctuality means your chosen vehicle from our extensive 'Rent a Car in ${state}' collection is delivered when and where you need it. Seamless booking, transparent rates, and steadfast service, that's the RIDE.RENT promise.`,
       },
     ],

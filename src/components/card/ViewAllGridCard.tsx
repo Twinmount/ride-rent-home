@@ -36,10 +36,12 @@ const ViewAllGridCard = ({
 
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, 100);
+    }, 50);
 
     return () => clearTimeout(timer);
   }, [disableInternalAnimation]);
+
+  const isLargeNumber = totalCount >= 1000;
 
   return (
     <div className="flex items-center">
@@ -72,25 +74,33 @@ const ViewAllGridCard = ({
             </div>
           ))}
 
-          {/* Center badge */}
+          {/* Center badge - Modern, clean design with balanced spacing */}
           <div
-            className={`absolute left-1/2 top-1/2 z-20 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-r from-yellow to-orange-500 text-sm font-bold text-white shadow-lg transition-all duration-500 group-hover:scale-110 ${
+            className={`absolute left-1/2 top-1/2 z-20 flex ${
+              isLargeNumber ? "h-14 px-3" : "h-14 w-14"
+            } -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-0.5 rounded-full bg-gradient-to-r from-yellow to-orange-500 text-white shadow-lg transition-all duration-500 group-hover:scale-110 ${
               isVisible ? "scale-100 opacity-100" : "scale-0 opacity-0"
             }`}
           >
-            <Plus className="mr-1 h-4 w-4" />
-            {totalCount}
+            <Plus className="-ml-0.5 h-3.5 w-3.5 flex-shrink-0 stroke-[2.5]" />
+            <span className="text-xs font-semibold tracking-tight">
+              {totalCount}
+            </span>
           </div>
 
-          {/* Perfect circular ripples */}
+          {/* Perfect circular ripples - Adjusted sizes */}
           <div
-            className={`pointer-events-none absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-yellow/50 ${
+            className={`pointer-events-none absolute left-1/2 top-1/2 ${
+              isLargeNumber ? "h-16 w-20" : "h-14 w-14"
+            } -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-yellow/50 ${
               isVisible ? "animate-perfect-ripple" : "opacity-0"
             }`}
           />
 
           <div
-            className={`pointer-events-none absolute left-1/2 top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full border border-orange/30 ${
+            className={`pointer-events-none absolute left-1/2 top-1/2 ${
+              isLargeNumber ? "h-20 w-24" : "h-18 w-18"
+            } -translate-x-1/2 -translate-y-1/2 rounded-full border border-orange/30 ${
               isVisible ? "animate-perfect-ripple-delayed" : "opacity-0"
             }`}
           />

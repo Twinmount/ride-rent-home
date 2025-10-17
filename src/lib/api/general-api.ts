@@ -45,11 +45,6 @@ export const FetchVehicleByFilters = async ({
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);
 
-  const BASE_URL =
-    country === "in"
-      ? process.env.NEXT_PUBLIC_API_URL_INDIA
-      : process.env.NEXT_PUBLIC_API_URL;
-
   // Utility function to safely parse parameter values
   const getParamValue = (key: string, defaultValue: string = ""): string => {
     const value = params.get(key);
@@ -63,13 +58,16 @@ export const FetchVehicleByFilters = async ({
 
   // Build the payload for the POST request
   const payload: Record<string, any> = {
-    page: pageParam.toString(), // Use the pageParam directly
-    limit, // Ensure it's a string
+    page: pageParam.toString(),
+    limit,
     sortOrder: "DESC",
     category: category || "cars",
     state: getParamValue("state", state),
     coordinates,
   };
+
+  // boolean to control loading logic
+  payload.needNearbyResult = getParamValue("showNearby") === "true";
 
   // Extract price and selectedPeriod from URL params
   const priceParam = getParamValue("price"); // Example: "45-250"
@@ -115,13 +113,17 @@ export const FetchVehicleByFilters = async ({
     }
   });
 
-  // Send the POST request to the API
-  const response = await fetch(`${BASE_URL}/vehicle/filter`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await API({
+    path: "/vehicle/filter",
+    options: {
+      method: "POST",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     },
-    body: JSON.stringify(payload),
+    country,
   });
 
   if (!response.ok) {
@@ -225,26 +227,24 @@ export const FetchVehicleByFiltersGPS = async (
 // send portfolio count post
 export const sendPortfolioVisit = async (
   vehicleId: string,
-  country: string
+  country: string,
+  isAuthenticated: boolean
 ) => {
+  const url = isAuthenticated ? "/portfolio" : "/portfolio/public";
   try {
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-    // Send a POST request to the API with the vehicleId in the request body
-    const response = await fetch(
-      `${BASE_URL}/portfolio`, // Assuming '/portfolio' is the correct endpoint
-      {
+    const response = await API({
+      path: url,
+      options: {
         method: "POST",
+        cache: "no-cache",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ vehicleId }), // Wrapping vehicleId in an object
-      }
-    );
+        body: JSON.stringify({ vehicleId }),
+      },
+      country,
+    });
 
-    // Check if the response was successful
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(
@@ -254,10 +254,9 @@ export const sendPortfolioVisit = async (
       );
     }
 
-    // Optionally handle the success response, such as logging or triggering any side effect
-    const responseData = await response.json();
+    const data = await response.json();
 
-    return responseData; // Return the response data if needed
+    return data;
   } catch (error) {
     console.error("Error sending portfolio visit:", error);
     throw error;
