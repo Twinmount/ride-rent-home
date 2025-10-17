@@ -67,11 +67,11 @@ export const Navbar = () => {
   // Initialize with SSR-safe default values to prevent hydration mismatch
   const [state, setState] = useState<string>(() => {
     if (typeof window === "undefined") {
-      return params?.state || (country === "in" ? "bangalore" : "dubai");
+      return params?.state || (country === "in" ? "bengaluru" : "dubai");
     }
     const storedState = localStorage.getItem("state");
     return (
-      params?.state || storedState || (country === "in" ? "bangalore" : "dubai")
+      params?.state || storedState || (country === "in" ? "bengaluru" : "dubai")
     );
   });
 
@@ -96,7 +96,7 @@ export const Navbar = () => {
     const paramState = params?.state;
     const paramCategory = params?.category;
 
-    const finalState = paramState || (country === "in" ? "bangalore" : "dubai");
+    const finalState = paramState || (country === "in" ? "bengaluru" : "dubai");
     const finalCategory = extractCategory(paramCategory || "cars");
 
     setState(finalState);
@@ -118,7 +118,7 @@ export const Navbar = () => {
             JSON.stringify({ latitude, longitude })
           );
         },
-        () => {}
+        () => { }
       );
     }
   }, []);
@@ -141,7 +141,7 @@ export const Navbar = () => {
   };
 
   // Get user name from auth state
-  const userName = user ? `${user.name||""}` : "User";
+  const userName = user ? `${user.name || ""}` : "User";
 
   return (
     <>

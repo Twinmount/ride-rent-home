@@ -12,7 +12,7 @@ export const useStateAndCategory = () => {
   }>();
 
   // Fallback defaults for state and category
-  
+
   const country = params.country || "ae";
   const [state, setState] = useState<string>("");
   const [category, setCategory] = useState<string>("");
@@ -37,7 +37,7 @@ export const useStateAndCategory = () => {
     const finalState =
       paramState ||
       storedState ||
-      (country === "in" ? "bangalore" : "dubai");
+      (country === "in" ? "bengaluru" : "dubai");
 
     const finalCategory =
       paramCategory ||
