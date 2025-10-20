@@ -10,6 +10,7 @@ import CompanySpecifications from "../../profile-specifications/CompanySpecifica
 import RentNowbuttonWide from "@/components/common/RentNowbuttonWide";
 import ShareLikeComponent from "../../profile-specifications/ShareLikeComponent";
 import VehicleDescription from "../../profile-specifications/VehicleDescription";
+import Link from "next/link";
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -50,6 +51,13 @@ const ProfileCard = memo(
 
     const vehicleAvailable = isVehicleAvailable();
 
+    // Check if listing policy link should be shown
+    const shouldShowListingPolicy = () => {
+      return country === "in" && (category === "cars" || category === "bike");
+    };
+
+    const showListingPolicy = shouldShowListingPolicy();
+
     return (
       <MotionDiv className="profile-card h-auto">
         <div className="align-center flex justify-between">
@@ -76,7 +84,7 @@ const ProfileCard = memo(
 
         <CompanySpecifications specs={company.companySpecs} />
 
-        {/* Rent Now button or Unavailable message */}
+        {/* Rent Now button or Unavailable message - Desktop only */}
         <div className="hidden py-2 lg:block">
           {vehicleAvailable ? (
             <RentNowbuttonWide
@@ -96,6 +104,18 @@ const ProfileCard = memo(
             </div>
           )}
         </div>
+
+        {/* Vehicle Listing Policy Link - shown on both mobile and desktop */}
+        {showListingPolicy && (
+          <div className="mt-2 flex justify-end px-2 pt-2">
+            <Link
+              href={`/${country}/vehicle-listing-policy`}
+              className="text-[.6rem] font-medium text-gray-500 hover:text-gray-700"
+            >
+              Vehicle Listing Policy*
+            </Link>
+          </div>
+        )}
       </MotionDiv>
     );
   }
