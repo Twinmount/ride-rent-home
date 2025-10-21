@@ -33,6 +33,7 @@ import {
 } from "../ui/dropdown-menu";
 import { LoginDrawer } from "../dialog/login-dialog/LoginDrawer";
 import { authStorage } from "@/lib/auth";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 // dynamic import for sidebar - Fix the loading state
 const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
@@ -46,6 +47,8 @@ const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
 });
 
 export const Navbar = () => {
+  const [mounted, setMounted] = useState(false);
+
   const router = useRouter();
   const {
     user,
@@ -56,56 +59,11 @@ export const Navbar = () => {
     handleProfileNavigation,
   } = useAuthContext();
 
-  const params = useParams<{
-    state: string;
-    category: string;
-    country: string;
-  }>();
-
-  const country = (params?.country as string) || "ae";
-
-  // Initialize with SSR-safe default values to prevent hydration mismatch
-  const [state, setState] = useState<string>(() => {
-    if (typeof window === "undefined") {
-      return params?.state || (country === "in" ? "bengaluru" : "dubai");
-    }
-    const storedState = localStorage.getItem("state");
-    return (
-      params?.state || storedState || (country === "in" ? "bengaluru" : "dubai")
-    );
-  });
-
-  const [category, setCategory] = useState<string>(() => {
-    if (typeof window === "undefined") {
-      return extractCategory(params?.category || "cars");
-    }
-    const storedCategory = localStorage.getItem("category");
-    return extractCategory(params?.category || storedCategory || "cars");
-  });
-
-  const [mounted, setMounted] = useState(false);
-
-  // Handle client-side mounting
   useLayoutEffect(() => {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!mounted) return;
-
-    const paramState = params?.state;
-    const paramCategory = params?.category;
-
-    const finalState = paramState || (country === "in" ? "bengaluru" : "dubai");
-    const finalCategory = extractCategory(paramCategory || "cars");
-
-    setState(finalState);
-    setCategory(finalCategory);
-
-    // Update localStorage
-    if (paramState) localStorage.setItem("state", paramState);
-    if (paramCategory) localStorage.setItem("category", paramCategory);
-  }, [params, country, mounted]);
+  const { country, state, category } = useStateAndCategory();
 
   // Background geolocation
   useEffect(() => {
@@ -118,7 +76,7 @@ export const Navbar = () => {
             JSON.stringify({ latitude, longitude })
           );
         },
-        () => { }
+        () => {}
       );
     }
   }, []);
@@ -163,7 +121,13 @@ export const Navbar = () => {
             {/* Right Section: All Navigation Items */}
             <div className="flex items-center space-x-1">
               {/* Search */}
-              <SearchDialog state={state} category={category} />
+              {shouldRenderDropdowns && (
+                <SearchDialog
+                  country={country}
+                  state={state}
+                  category={category}
+                />
+              )}
 
               {/* Language Selector - Hide text on small screens */}
               <LanguageSelector
@@ -175,7 +139,7 @@ export const Navbar = () => {
               />
 
               {/* Location Dialog - Conditional */}
-              {!shouldRenderDropdowns && <LocationDialog />}
+              {shouldRenderDropdowns && <LocationDialog />}
 
               {/* Register Button - Hidden on mobile and small tablets */}
               <div className="hidden lg:block">
