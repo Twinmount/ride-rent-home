@@ -44,9 +44,10 @@ export default async function DirectoryCategories({
         {categories.map((cat, index) => (
           <VehicleCategoryCard
             key={cat.value}
-            cat={cat}
-            state={state}
             index={index}
+            country={country}
+            state={state}
+            cat={cat}
           />
         ))}
       </div>
@@ -59,13 +60,15 @@ export default async function DirectoryCategories({
  *  A list item containing a link that navigates to the  category directory page
  */
 function VehicleCategoryCard({
-  cat,
-  state,
   index,
+  country,
+  state,
+  cat,
 }: {
-  cat: DirectoryCategory;
-  state: string;
   index: number;
+  country: string;
+  state: string;
+  cat: DirectoryCategory;
 }) {
   const baseAssetsUrl = ENV.ASSETS_URL;
 
@@ -76,7 +79,7 @@ function VehicleCategoryCard({
       className={`flex aspect-square h-[6rem] w-[7rem] cursor-pointer flex-col justify-center gap-[0.2rem]`}
     >
       <Link
-        href={`/${state}/vehicle-rentals/${cat.value}-for-rent`}
+        href={`/${country}/${state}/vehicle-rentals/${cat.value}-for-rent`}
         className="flex h-full w-full flex-col items-center justify-between rounded-[0.6rem] border border-gray-200 bg-white transition-all hover:scale-[1.02] hover:shadow-md"
       >
         <div
