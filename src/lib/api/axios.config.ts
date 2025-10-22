@@ -111,6 +111,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
 // Function to create axios instance with interceptors
 const createApiClient = (baseURL: string): AxiosInstance => {
+  console.log("called createApiClient with baseURL: ", baseURL);
   const client = axios.create({
     baseURL,
     timeout: 30000, // Increased timeout for file uploads
@@ -135,11 +136,37 @@ const createApiClient = (baseURL: string): AxiosInstance => {
       return config;
     },
     (error: AxiosError) => {
+      if (error.response?.status === 401) {
+        console.log("error.response?.status: ", error.response?.status);
+      }
       console.error("Request interceptor error:", error);
       return Promise.reject(error);
     }
   );
-
+  client.interceptors.response.use(
+    (response: AxiosResponse) => {
+      return response;
+    },
+    (error: AxiosError) => {
+      if (error.response) {
+        if (error.response.status === 401) {
+          authStorage.clear();
+          console.log(
+            "createApiClient: >>> 401 Unauthorized error DETECTED! <<<"
+          );
+        }
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("auth:logout", {
+              detail: { reason: "unauthorized" },
+            })
+          );
+        }
+      }
+      // CRITICAL: Re-throw the error so it can be caught by the calling code (`try...catch` blocks)
+      return Promise.reject(error);
+    }
+  );
   return client;
 };
 
@@ -223,6 +250,7 @@ const createDynamicMainApiClient = (): AxiosInstance => {
       const originalRequest = error.config as InternalAxiosRequestConfig & {
         _retry?: boolean;
       };
+      console.log("error.response?.status: ", error.response?.status);
 
       // Check if error is 401 and we haven't already tried to refresh
       if (error.response?.status === 401 && !originalRequest._retry) {
