@@ -25,7 +25,7 @@ export default function MobileSidebar() {
     category: string;
   }>();
 
-  const stateValue = state ? state : country === "in" ? "bangalore" : "dubai";
+  const stateValue = state ? state : country === "in" ? "bengaluru" : "dubai";
 
   const handleClose = () => {
     setIsOpen(false);

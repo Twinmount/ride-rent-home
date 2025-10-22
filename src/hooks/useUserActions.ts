@@ -35,28 +35,6 @@ import {
 } from "@/types/userActions.types";
 import { UseUserActionsReturn } from "@/types/useUserActions.return.types";
 
-/**
- * Main user actions hook - returns all functions and state in a single object
- *
- * Usage Example:
- * ```tsx
- * const {
- *   useUserSavedVehicles,
- *   extractSavedVehicles,
- *   fetchSavedVehicles,
- *   savedVehicles
- * } = useUserActions();
- *
- * // Using the query hook
- * const { data: savedVehiclesData } = useUserSavedVehicles({ page: 0, limit: 10 });
- * const extractedSavedVehicles = extractSavedVehicles(savedVehiclesData);
- *
- * // Using manual fetch
- * useEffect(() => {
- *   fetchSavedVehicles({ page: 0, limit: 10 });
- * }, []);
- * ```
- */
 export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
   const queryClient = useQueryClient();
   const { auth } = useAppContext();

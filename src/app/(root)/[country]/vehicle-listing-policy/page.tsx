@@ -107,7 +107,7 @@ export default function ListingPolicy() {
   return (
     <section className="bg-gray-50 pb-12">
       {/* Hero Section with Logo */}
-      <div className="px-4 py-10 text-center sm:px-6 sm:py-16 md:px-8">
+      <div className="px-4 py-4 text-center sm:px-6 md:px-8">
         <div className="mx-auto mb-5 flex justify-center sm:mb-6">
           <Image
             src="/assets/logo/riderent-mobile-logo.webp"
@@ -118,7 +118,7 @@ export default function ListingPolicy() {
           />
         </div>
         <h1 className="mb-5 text-xl font-semibold uppercase tracking-wide text-text-primary sm:mb-6 sm:text-3xl md:text-4xl">
-          VEHICLE LISTING POLICY — INDIA
+          VEHICLE LISTING POLICY / INDIA
         </h1>
         <p className="mb-6 text-sm leading-relaxed text-text-secondary sm:mb-8 sm:text-base md:text-ellipsis
         
@@ -138,7 +138,7 @@ export default function ListingPolicy() {
       </div>
 
       {/* Separator line */}
-      <div className="mx-auto my-8 h-[1px] w-full bg-gray-300 sm:my-10 md:my-12"></div>
+      <div className="mx-auto my-2 h-[1px] w-full bg-gray-300 sm:my-10 md:my-6"></div>
 
       <MotionDiv className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section 1: Vehicles Eligible for Listing */}
@@ -337,7 +337,7 @@ export default function ListingPolicy() {
         </div>
 
         {/* Section 6: Our Commitment */}
-        <div className="mb-16 sm:mb-20 md:mb-24">
+        <div >
           <h2 className="mb-5 text-center text-xl font-semibold text-text-primary sm:mb-6 sm:text-2xl">
             6. Our Commitment
           </h2>
@@ -354,30 +354,8 @@ export default function ListingPolicy() {
           </p>
         </div>
 
-        {/* Separator line before footer */}
-        <div className="my-8 h-[1px] w-full bg-gray-300 sm:my-10 md:my-12"></div>
 
-        {/* Footer with Logo */}
-        <div className="pb-10 text-center sm:pb-12">
-          <div className="mx-auto mb-5 flex justify-center sm:mb-6">
-            <Image
-              src="/assets/logo/riderent-mobile-logo.webp"
-              alt="Ride.Rent Logo"
-              width={50}
-              height={50}
-              className="h-[50px] w-auto sm:h-[60px]"
-            />
-          </div>
-          <p className="mb-3 text-xs text-text-tertiary sm:mb-3 sm:text-sm">
-            © Ride.Rent India
-          </p>
-          <a
-            href="mailto:listing_reports@ride.rent"
-            className="text-xs text-text-tertiary hover:text-orange-600 sm:text-sm"
-          >
-            listing_reports@ride.rent
-          </a>
-        </div>
+        
       </MotionDiv>
     </section>
   );
