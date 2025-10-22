@@ -1,4 +1,6 @@
 import SafeImage from "@/components/common/SafeImage";
+import { buildHomeLink, resolveRouteInfo } from "@/helpers/route-parser.helper";
+import { usePathname } from "next/navigation";
 
 interface RideRentNavbarLogoProps {
   country: string;
@@ -11,9 +13,17 @@ export default function RideRentNavbarLogo({
   state,
   category,
 }: RideRentNavbarLogoProps) {
+  const pathname = usePathname();
+
+  // Resolve route information by merging props with current pathname
+  const routeInfo = resolveRouteInfo(country, state, category, pathname);
+
+  // Build the appropriate home link
+  const homeLink = buildHomeLink(routeInfo);
+
   return (
     <a
-      href={`/${country}/${state}/${category}`}
+      href={homeLink}
       className="notranslate block p-0 text-right text-xs font-normal text-gray-500"
     >
       <div className="w-20 sm:w-24 md:w-28 lg:w-32 xl:w-40">
@@ -29,4 +39,3 @@ export default function RideRentNavbarLogo({
     </a>
   );
 }
-  

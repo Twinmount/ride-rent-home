@@ -14,7 +14,7 @@ import {
 } from "./landing-metadata";
 import BrandsCarouselSkeleton from "@/components/skelton/BrandsCarouselSkeleton";
 import NewlyArrived from "@/components/root/landing/NewlyArrived";
-import VehicleCategoryAndFilter from "@/components/root/landing/VehicleCategoryAndFilter";
+import CategoryTypesAndFilter from "@/components/root/landing/CategoryTypesAndFilter";
 import HeroSection from "@/components/root/landing/HeroSection";
 import VehicleCardCarouselSkeleton from "@/components/skelton/VehicleCardCarouselSkeleton";
 import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
@@ -46,6 +46,7 @@ export default async function Home(props: PageProps) {
 
   // Generate JSON-LD
   const jsonLdData = getHomePageJsonLd(state, category, country);
+
   return (
     <>
       {/* Inject JSON-LD into the <head> */}
@@ -57,7 +58,7 @@ export default async function Home(props: PageProps) {
 
       <HeroSection country={country} state={state} category={category} />
 
-      <VehicleCategoryAndFilter />
+      <CategoryTypesAndFilter />
 
       <Suspense
         fallback={<VehicleCardCarouselSkeleton layoutType="carousel" />}
@@ -102,7 +103,7 @@ export default async function Home(props: PageProps) {
 
       <Suspense fallback={<SectionLoading />}>
         <FAQ
-          state={state || (country === "in" ? "bangalore" : "dubai")}
+          state={state || (country === "in" ? "bengaluru" : "dubai")}
           limit={8}
           country={country}
         />

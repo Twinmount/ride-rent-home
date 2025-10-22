@@ -10,3 +10,13 @@ export const COUNTRY_CONFIGS = {
 } as const;
 
 export type CountryCode = keyof typeof COUNTRY_CONFIGS;
+
+// array of countries [ae, in]
+export const COUNTRIES = Object.values(COUNTRY_CONFIGS).map(
+  (config) => config.country
+) as CountryCode[];
+
+export function isValidCountryCode(code: string | null): code is CountryCode {
+  if (!code) return false;
+  return COUNTRIES.includes(code as CountryCode);
+}

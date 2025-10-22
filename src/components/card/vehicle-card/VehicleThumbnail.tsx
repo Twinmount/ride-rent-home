@@ -87,7 +87,7 @@ const VehicleThumbnail = ({
 
   const containerClassName = `
     relative w-full overflow-hidden rounded 
-    ${layoutType === "carousel" ? "h-[8rem] lg:h-[8.3rem]" : "h-[7.8rem] md:h-[6.8rem] lg:h-[7.5rem]"}
+    ${layoutType === "carousel" ? "h-[8rem] lg:h-[8.3rem]" : "h-[10.2rem] md:h-[6.8rem] lg:h-[7.5rem]"}
     ${hasMultipleImages ? "cursor-pointer select-none" : ""}
   `;
 
@@ -110,7 +110,7 @@ const VehicleThumbnail = ({
         className={`h-full w-full rounded object-cover transition-all duration-500 ease-in-out ${
           isActive && hasMultipleImages ? "scale-[1.02]" : "scale-100"
         } `}
-        quality={70}
+        quality={90}
         priority={priority}
         loading={loading}
         sizes={

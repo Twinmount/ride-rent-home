@@ -23,11 +23,11 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      {
-        source: "/",
-        destination: "/ae/dubai",
-        permanent: true,
-      },
+      // {
+      //   source: "/",
+      //   destination: "/ae/dubai",
+      //   permanent: true,
+      // },
       {
         source: "/ae/faq",
         destination: "/ae/faq/dubai",
