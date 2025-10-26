@@ -1,3 +1,5 @@
+import { toast, Bounce, ToastPosition } from "react-toastify";
+
 export const getNumberAfterSpace = (
   input: string
 ): { phoneNumber: string; countryCode: string } => {
@@ -39,4 +41,38 @@ export const getNumberAfterSpaceStrict = (
     phoneNumber: trimmedInput,
     countryCode: "",
   };
+};
+
+export const tostHandler = (
+  message: string,
+  type: "success" | "error" | "warning" | "info"
+) => {
+  const tostSettings = {
+    position: "top-right" as ToastPosition,
+    autoClose: 2000,
+    hideProgressBar: true,
+    closeOnClick: false,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    transition: Bounce,
+  };
+  switch (type) {
+    case "success":
+      toast.success(message, tostSettings);
+      break;
+    case "error":
+      toast.error(message, tostSettings);
+      break;
+    case "warning":
+      toast.warn(message, tostSettings);
+      break;
+    case "info":
+      toast.info(message, tostSettings);
+      break;
+    default:
+      toast(message, tostSettings);
+      break;
+  }
 };

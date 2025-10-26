@@ -1,30 +1,31 @@
-import './globals.scss';
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
-import { ReactQueryProvider } from '@/app/ReactQueryProvider';
-import type { Metadata } from 'next';
-import { Fira_Sans, Poppins } from 'next/font/google';
-import TrackingScripts from './TrackingScripts';
-import BodyScripts from './BodyScripts';
-import { NetworkWrapper } from './(root)/NetworkWrapper';
-import { GlobalContextProvider } from '@/context/GlobalContext';
-import NextTopLoader from 'nextjs-toploader';
-import CookiePopup from '@/components/dialog/CookiePopup';
-import { getDefaultMetadata } from '@/helpers/metadata-helper';
+import "./globals.scss";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { ReactQueryProvider } from "@/app/ReactQueryProvider";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import type { Metadata } from "next";
+import { Fira_Sans, Poppins } from "next/font/google";
+import TrackingScripts from "./TrackingScripts";
+import BodyScripts from "./BodyScripts";
+import { NetworkWrapper } from "./(root)/NetworkWrapper";
+import { GlobalContextProvider } from "@/context/GlobalContext";
+import NextTopLoader from "nextjs-toploader";
+import CookiePopup from "@/components/dialog/CookiePopup";
+import { getDefaultMetadata } from "@/helpers/metadata-helper";
 
 export const metadata: Metadata = getDefaultMetadata({});
 
 const firaSans = Fira_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
-  style: ['normal', 'italic'],
-  variable: '--font-fira-sans',
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  variable: "--font-fira-sans",
 });
 
 const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
-  variable: '--font-poppins',
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
 });
 
 export default function RootLayout({
@@ -36,15 +37,15 @@ export default function RootLayout({
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "Ride Rent",
-      "url": "https://www.ride.rent",
-      "logo": "https://ride.rent/assets/logo/Logo_Black.svg",
-      "sameAs": []
+      name: "Ride Rent",
+      url: "https://www.ride.rent",
+      logo: "https://ride.rent/assets/logo/Logo_Black.svg",
+      sameAs: [],
     },
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "url": "https://www.ride.rent/",
+      url: "https://www.ride.rent/",
       // "potentialAction": {
       //   "@type": "SearchAction",
       //   "target": "https://www.ride.rent/search?q={search_term_string}",
@@ -54,34 +55,34 @@ export default function RootLayout({
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
-      "itemListElement": [
+      itemListElement: [
         {
           "@type": "ListItem",
-          "position": 1,
-          "name": "UAE",
-          "item": "https://www.ride.rent/ae"
+          position: 1,
+          name: "UAE",
+          item: "https://www.ride.rent/ae",
         },
         {
           "@type": "ListItem",
-          "position": 2,
-          "name": "India",
-          "item": "https://www.ride.rent/in"
+          position: 2,
+          name: "India",
+          item: "https://www.ride.rent/in",
         },
         {
           "@type": "ListItem",
-          "position": 3,
-          "name": "About Us",
-          "item": "https://www.ride.rent/about-us"
+          position: 3,
+          name: "About Us",
+          item: "https://www.ride.rent/about-us",
         },
         {
           "@type": "ListItem",
-          "position": 4,
-          "name": "Partner with Us!",
-          "item": "https://agent.ride.rent/ae/register"
-        }
-      ]
-    }
-  ]
+          position: 4,
+          name: "Partner with Us!",
+          item: "https://agent.ride.rent/ae/register",
+        },
+      ],
+    },
+  ];
 
   return (
     <html lang="en" className={`${poppins.variable} ${firaSans.variable} `}>
@@ -114,6 +115,19 @@ export default function RootLayout({
           {/* global context provider */}
           <ReactQueryProvider>
             <GlobalContextProvider>{children}</GlobalContextProvider>
+            <ToastContainer
+              position="top-right"
+              autoClose={2000}
+              hideProgressBar
+              newestOnTop={false}
+              closeOnClick={false}
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="colored"
+              transition={Bounce}
+            />
           </ReactQueryProvider>
         </NetworkWrapper>
         <CookiePopup />
