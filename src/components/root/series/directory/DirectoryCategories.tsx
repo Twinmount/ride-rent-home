@@ -1,10 +1,9 @@
 import MotionStaggeredDiv from "@/components/general/framer-motion/MotionStaggeredDiv";
-import { ENV } from "@/config/env";
 import { convertToLabel, sortCategories } from "@/helpers";
 import { DirectoryCategory, FetchCategoriesForDirectory } from "@/types";
 import { API } from "@/utils/API";
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import SafeImage from "@/components/common/SafeImage";
-
 import Link from "next/link";
 
 export default async function DirectoryCategories({
@@ -70,7 +69,7 @@ function VehicleCategoryCard({
   state: string;
   cat: DirectoryCategory;
 }) {
-  const baseAssetsUrl = ENV.ASSETS_URL;
+  const baseAssetsUrl = getAssetsUrl(country);
 
   return (
     <MotionStaggeredDiv
