@@ -8,7 +8,7 @@ export async function generateDirectoryPageMetadata({
   state: string;
   country: string;
 }): Promise<Metadata> {
-  const canonicalUrl = `https://ride.rent/${country}/${state}/directory`;
+  const canonicalUrl = `https://ride.rent/${country}/${state}/vehicle-rentals`;
   const ogImage = "/assets/icons/ride-rent.png";
 
   // meta-title
