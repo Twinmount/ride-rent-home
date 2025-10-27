@@ -8,18 +8,29 @@ const CookiePopup = () => {
 
   useEffect(() => {
     // Check if user has already given consent
-    const cookieConsent = localStorage.getItem('cookieConsent');
+    const cookieConsent = localStorage.getItem("cookieConsent");
 
     if (!cookieConsent) {
       // First time visitor - show popup
       setShowPopup(true);
+
+      // Auto-hide after 3 seconds
+      const timer = setTimeout(() => {
+        handleOkClick();
+      }, 3000);
+
+      // Cleanup timer if component unmounts or user clicks OK before 3 seconds
+      return () => clearTimeout(timer);
     }
+
+    // Return undefined explicitly for the else case
+    return undefined;
   }, []);
 
   const handleOkClick = () => {
     // Store consent in localStorage
-    localStorage.setItem('cookieConsent', 'accepted');
-    localStorage.setItem('cookieConsentDate', new Date().toISOString());
+    localStorage.setItem("cookieConsent", "accepted");
+    localStorage.setItem("cookieConsentDate", new Date().toISOString());
 
     setShowPopup(false);
   };
@@ -39,7 +50,7 @@ const CookiePopup = () => {
             <div className="flex-1 sm:mr-4">
               <p className="text-sm">
                 We use cookies to ensure you get the best experience on our
-                website.{' '}
+                website.{" "}
                 <Link
                   href="/privacy-policy"
                   className="text-blue-400 underline hover:text-blue-300"
@@ -55,10 +66,8 @@ const CookiePopup = () => {
               OK
             </button>
           </div>
-        </div>{' '}
-        {/* This closes the inner bg-text-primary div */}
-      </div>{' '}
-      {/* This closes the outer fixed bottom-0 div */}
+        </div>
+      </div>
     </>
   );
 };

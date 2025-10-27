@@ -13,6 +13,7 @@ import {
 import { ListingPageMetaResponse } from "@/types";
 import { API } from "@/utils/API";
 import { getCountryName } from "@/utils/url";
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import { Metadata } from "next";
 
 type ListingMetadataParams = {
@@ -206,7 +207,7 @@ export async function generateListingMetadata({
   const metaDescription =
     data?.result?.metaDescription || fallbackMeta.metaDescription;
 
-  const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const ogImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   const shortTitle =
     metaTitle.length > 60 ? `${metaTitle.substring(0, 57)}...` : metaTitle;
@@ -288,7 +289,8 @@ export async function generateListingHeadings({
   const formattedState = convertToLabel(state);
   const formattedCategory = singularizeValue(convertToLabel(category));
   const formattedVehicleType = vehicleType ? convertToLabel(vehicleType) : "";
-  const formattedBrand = brand ? convertToLabel(brand) : "";
+  const brandLabel = brand ? convertToLabel(brand) : "";
+  const formattedBrand = brandLabel ? brandLabel.toUpperCase() : "";
   const formattedCityName = city ? convertToLabel(city) : "";
 
   // metadata type for priority and fallback
@@ -311,8 +313,18 @@ export async function generateListingHeadings({
     metadataType
   );
 
-  const h1 = data?.result?.h1 || fallbackMeta.h1;
-  const h2 = data?.result?.h2 || fallbackMeta.h2;
+  let h1 = data?.result?.h1 || fallbackMeta.h1;
+  let h2 = data?.result?.h2 || fallbackMeta.h2;
+
+  if (brand && brandLabel) {
+    const brandLabelLowerCase = brandLabel.toLowerCase();
+    const brandUpperCase = brandLabel.toUpperCase();
+
+    // Replace all occurrences of the brand name (case-insensitive) with uppercase
+    const regex = new RegExp(brandLabel, "gi");
+    h1 = h1.replace(regex, brandUpperCase);
+    h2 = h2.replace(regex, brandUpperCase);
+  }
 
   return { h1, h2 };
 }
@@ -408,7 +420,7 @@ export function getListingPageJsonLd({
     item: getAbsoluteUrl(crumb.path),
   }));
 
-  const siteImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const siteImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   // City-aware page name and description
   const locationString = city

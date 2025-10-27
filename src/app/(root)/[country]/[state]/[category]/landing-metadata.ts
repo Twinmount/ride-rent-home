@@ -2,6 +2,7 @@ import { ENV } from '@/config/env';
 import { convertToLabel } from '@/helpers';
 import { getAbsoluteUrl, getDefaultMetadata } from '@/helpers/metadata-helper';
 import { API } from '@/utils/API';
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import { Metadata } from 'next';
 
 type MetaDataResponse = {
@@ -37,7 +38,7 @@ export async function generateHomePageMetadata(
   state: string,
   category: string,
   country: string,
-  vehicleType: string | undefined | null = undefined,
+  vehicleType: string | undefined | null = undefined
 ): Promise<Metadata> {
   const data = await fetchHomepageMetadata(state, category, country);
 
@@ -50,7 +51,7 @@ export async function generateHomePageMetadata(
   }
 
   // open graph image
-  const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const ogImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   const metaTitle = data.result.metaTitle;
   const metaDescription = data.result.metaDescription;
@@ -173,8 +174,6 @@ function getCountryLabel(country: string): string {
   return countryLabels[country] || country.toUpperCase();
 }
 
-
-
 /**
  * Generates JSON-LD structured data for the homepage dynamically.
  *
@@ -189,7 +188,7 @@ export function getHomePageJsonLd(
 ) {
   const homepageUrl = getAbsoluteUrl(`/${country}/${state}/${category}`);
 
-  const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const rootImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   return {
     '@context': 'https://schema.org',

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { fetchCategories } from '@/lib/api/general-api';
 import { useQuery } from '@tanstack/react-query';
 import { sortCategories } from '@/helpers';
-import { ENV } from '@/config/env';
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import { useStateAndCategory } from './useStateAndCategory';
 import { notFound, usePathname } from 'next/navigation';
 import { CategoryType } from '@/types';
@@ -110,7 +110,7 @@ export function useFetchVehicleCategories({
     }
   }
 
-  const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = getAssetsUrl(country);
 
   const isCategoriesLoading = isFetching || isLoading;
 

@@ -1,6 +1,5 @@
 import SafeImage from "@/components/common/SafeImage";
-
-import { ENV } from "@/config/env";
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 
 type BrandImageProps = {
   category: string;
@@ -8,6 +7,7 @@ type BrandImageProps = {
   className: string;
   priority?: boolean;
   sizes?: string;
+  country?: string;
 };
 
 const BrandImage = ({
@@ -16,10 +16,10 @@ const BrandImage = ({
   className,
   priority = false,
   sizes = "72px",
+  country,
 }: BrandImageProps) => {
-  const baseAssetsUrl = ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = getAssetsUrl(country);
   const imageSrc = `${baseAssetsUrl}/icons/brands/${category}/${brandValue}.png`;
-
   return (
     <SafeImage
       src={imageSrc}

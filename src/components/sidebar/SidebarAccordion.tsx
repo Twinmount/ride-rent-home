@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchQuickLinksByValue } from "@/lib/api/general-api";
 import { LinkType, BrandType, FetchTopBrandsResponse } from "@/types";
 import { API } from "@/utils/API";
-import { ENV } from "@/config/env";
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import SafeImage from "@/components/common/SafeImage";
 
 interface CollapsibleSectionProps {
@@ -58,6 +58,8 @@ export function SidebarAccordion({
   const params = useParams<{ country: string }>();
   const country = (params?.country as string) || "ae";
   const { state, category } = useStateAndCategory();
+
+  const baseAssetsUrl = getAssetsUrl(country);
 
   const [openSections, setOpenSections] = useState({
     categories: false,
@@ -191,7 +193,7 @@ export function SidebarAccordion({
                     <div className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-orange"></div>
                     <div className="relative h-4 w-4 flex-shrink-0">
                       <SafeImage
-                        src={`${ENV.ASSETS_URL}/icons/brands/${category}/${brand.brandValue}.png`}
+                        src={`${baseAssetsUrl}/icons/brands/${category}/${brand.brandValue}.png`}
                         width={16}
                         height={16}
                         alt={brand.brandName}
