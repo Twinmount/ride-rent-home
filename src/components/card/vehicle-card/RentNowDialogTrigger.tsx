@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { NewVehicleCardType } from "@/types/vehicle-types";
 import { generateVehicleDetailsUrl } from "@/helpers";
 import { useAuthContext } from "@/auth";
-import { useVehicleCardContext } from "@/context/VehicleCardContext";
 
 type RentNowDialogTriggerProps = {
   vehicle: NewVehicleCardType;
@@ -41,8 +40,8 @@ export default function RentNowDialogTrigger({
 
   const className =
     layoutType === "carousel"
-      ? "h-[1.5rem] w-[4.5rem] lg:h-[2rem] lg:w-[5.5rem] text-[0.6rem] lg:text-xs px-6"
-      : "w-[4.6rem] h-[1.75rem] text-xs px-6";
+      ? "h-[1.5rem] w-[4.5rem] lg:h-[2rem] lg:w-[5.5rem] text-[0.6rem] lg:text-xs px-8"
+      : "sm:w-[4.8rem] w-[5.6rem] h-[1.75rem] text-xs px-8";
 
   return (
     <button
@@ -50,7 +49,7 @@ export default function RentNowDialogTrigger({
       className={`flex-center whitespace-nowrap rounded bg-theme-gradient py-1 text-text-primary ${className}`}
       aria-label={`View details for ${vehicle.vehicleTitle}`}
     >
-      View Details
+      View More
     </button>
   );
 }
