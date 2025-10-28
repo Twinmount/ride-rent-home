@@ -1,5 +1,6 @@
 import { ENV } from '@/config/env';
 import { convertToLabel } from '.';
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import type { Metadata } from 'next';
 
 export function getDefaultMetadata({
@@ -10,7 +11,7 @@ export function getDefaultMetadata({
   canonicalUrl?: string;
 }): Metadata {
   // open graph image
-  const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const ogImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
   const pageUrl = !!canonicalUrl ? canonicalUrl : 'https://ride.rent';
 
   const metaTitle = `Ride.Rent${country ? ` - ${country}` : ''} | For Hassle-Free Vehicle Rental Experience`;

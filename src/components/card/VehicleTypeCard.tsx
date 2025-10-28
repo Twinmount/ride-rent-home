@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import SafeImage from "@/components/common/SafeImage";
 import { VehicleTypeType } from "@/types";
-import { ENV } from "@/config/env";
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 
 export function VehicleTypeCard({
   type,
@@ -18,7 +18,7 @@ export function VehicleTypeCard({
   handleTypeClick: (typeValue: string) => void;
   currentType?: string | null;
 }) {
-  const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = getAssetsUrl(); // Auto-detects country from URL
   const isSelected = currentType === type.value;
 
   const [isPending, startTransition] = useTransition();

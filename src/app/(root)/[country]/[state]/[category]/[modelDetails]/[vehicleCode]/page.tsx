@@ -19,7 +19,6 @@ import SectionLoading from "@/components/skelton/section-loading/SectionLoading"
 import JsonLd from "@/components/common/JsonLd";
 import ImagesGrid from "@/components/root/vehicle-details/ImagesGrid";
 import { generateVehicleTitleSlug } from "@/helpers";
-import SupplierDetails from "@/components/root/vehicle-details/SupplierDetails";
 import VehicleHeading from "@/components/root/vehicle-details/VehicleHeading";
 import ProfileCard from "@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard";
 import ProtectedVehicleDetails from "@/components/common/ProtectedVehicleDetails";
@@ -181,6 +180,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     category,
     brandValue,
     state,
+    country,
     vehicleTitleH1,
     vehicleSubTitle,
     model: vehicle.modelName,

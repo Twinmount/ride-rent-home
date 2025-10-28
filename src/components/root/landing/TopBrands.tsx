@@ -5,8 +5,7 @@ import { BrandType, FetchTopBrandsResponse } from "@/types";
 import Link from "next/link";
 import { convertToLabel } from "@/helpers";
 import SafeImage from "@/components/common/SafeImage";
-
-import { ENV } from "@/config/env";
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import { API } from "@/utils/API";
 import { SectionHeading } from "@/components/common/SectionHeading";
 
@@ -78,7 +77,7 @@ function BrandCard({
   state: string;
   country: string;
 }) {
-  const baseAssetsUrl = ENV.ASSETS_URL;
+  const baseAssetsUrl = getAssetsUrl(country);
 
   return (
     <Link

@@ -9,6 +9,7 @@ import { useImmer } from "use-immer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { sendRentalEnquiry, checkActiveEnquiry } from "@/lib/api/general-api";
 import { useAuthContext } from "@/auth";
+import { tostHandler } from "@/utils/helper";
 
 export const useCarRent = (
   onDateChange?: (range: { startDate: Date; endDate: Date }) => void,
@@ -227,6 +228,7 @@ export const useCarRent = (
       handleBookingComplete();
     },
     onError: (error) => {
+      tostHandler("something went wrong", "error");
       console.error("Failed to send rental enquiry:", error);
     },
   });
@@ -268,7 +270,9 @@ export const useCarRent = (
       mutationData.email = email;
     }
 
-    rentalEnquiryMutation.mutate(mutationData);
+    if (userProfile?.data?.name && userProfile?.data?.phoneNumber) {
+      rentalEnquiryMutation.mutate(mutationData);
+    }
   };
 
   const handleConfirm = () => {
