@@ -71,7 +71,7 @@ export async function generateVehicleMetadata(
   const vehicleTitle = generateVehicleTitleSlug(vehicle.vehicleTitle);
 
   // dynamic link to  vehicle details page
-  const canonicalUrl = `https://ride.rent/${country}/${state}/${category}/${vehicleTitle}/${vehicleCode}`;
+  const canonicalUrl = `https://ride.rent/${country}/${state}/${category}/${vehicleTitle}-for-rent/${vehicleCode}`;
   const ogImage = vehicle.vehiclePhoto;
 
   return {
