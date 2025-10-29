@@ -97,6 +97,16 @@ async function fetchListingMetadataWithPriority(params: ListingMetadataParams) {
         category,
         brand,
       });
+
+      if (data?.result && state) {
+        const formattedState = convertToLabel(state);
+        const stateAppendix = ` in ${formattedState}`;
+
+        data.result.metaTitle = (data.result.metaTitle || "") + stateAppendix;
+        data.result.metaDescription =
+          (data.result.metaDescription || "") + stateAppendix;
+        data.result.h1 = (data.result.h1 || "") + stateAppendix;
+      }
     }
 
     return data;
@@ -104,11 +114,24 @@ async function fetchListingMetadataWithPriority(params: ListingMetadataParams) {
 
   // PRIORITY 3: Brand-only (global - no state)
   if (brand) {
-    return await fetchListingMetadata({
+    const data = await fetchListingMetadata({
       country,
       category,
       brand,
     });
+
+    // Modify brand data to include state
+    if (data?.result && state) {
+      const formattedState = convertToLabel(state);
+      const stateAppendix = ` in ${formattedState}`;
+
+      data.result.metaTitle = (data.result.metaTitle || "") + stateAppendix;
+      data.result.metaDescription =
+        (data.result.metaDescription || "") + stateAppendix;
+      data.result.h1 = (data.result.h1 || "") + stateAppendix;
+    }
+
+    return data;
   }
 
   // PRIORITY 4: VehicleType-only
