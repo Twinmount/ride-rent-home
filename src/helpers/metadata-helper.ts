@@ -80,7 +80,7 @@ export function getAbsoluteUrl(relativePath: string): string {
     ? relativePath
     : `/${relativePath}`;
 
-  return `${baseUrl}${remainingUrl}`;
+  return `${baseUrl}${remainingUrl}`;   
 }
 
 /**
