@@ -58,6 +58,9 @@ const ProfileCard = memo(
 
     const showListingPolicy = shouldShowListingPolicy();
 
+    // Extract vehicle series from vehicle object
+    const vehicleSeries = vehicle?.vehicleSeries?.vehicleSeries || "";
+
     return (
       <MotionDiv className="profile-card h-auto">
         <div className="align-center flex justify-between">
@@ -80,6 +83,8 @@ const ProfileCard = memo(
           country={country}
           state={state}
           formattedCategory={category}
+          vehicleSeries={vehicleSeries} // Fixed: use vehicle.vehicleSeries.vehicleSeries
+          vehicleId={vehicleId}
         />
 
         <CompanySpecifications specs={company.companySpecs} />

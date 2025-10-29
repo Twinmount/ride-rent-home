@@ -2,6 +2,7 @@ import { ENV } from '@/config/env';
 import { convertToLabel } from '@/helpers';
 import { getAbsoluteUrl, getDefaultMetadata } from '@/helpers/metadata-helper';
 import { API } from '@/utils/API';
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import { Metadata } from 'next';
 
 
@@ -51,7 +52,7 @@ export async function generateHomePageMetadata(
   }
 
   // open graph image
-  const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const ogImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   const metaTitle = data.result.metaTitle;
   const metaDescription = data.result.metaDescription;
@@ -107,6 +108,19 @@ export async function generateHomePageMetadata(
   };
 }
 
+function getCountryLabel(country: string): string {
+  const countryLabels: Record<string, string> = {
+    ae: "UAE",
+    in: "India",
+    sa: "Saudi Arabia",
+    us: "United States",
+    uk: "United Kingdom",
+    // Add more countries as needed
+  };
+
+  return countryLabels[country] || country.toUpperCase();
+}
+
 /**
  * Generates JSON-LD structured data for the homepage dynamically.
  *
@@ -121,7 +135,7 @@ export function getHomePageJsonLd(
 ) {
   const homepageUrl = getAbsoluteUrl(`/${country}/${state}/${category}`);
 
-  const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const rootImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   return {
     "@context": "https://schema.org",

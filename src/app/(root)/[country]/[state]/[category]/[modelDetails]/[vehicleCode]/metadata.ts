@@ -15,6 +15,7 @@ import { ENV } from "@/config/env";
 import { getAbsoluteUrl } from "@/helpers/metadata-helper";
 import { notFound } from "next/navigation";
 import { API } from "@/utils/API";
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 
 async function fetchVehicleMetaData(
   vehicleCode: string,
@@ -126,7 +127,7 @@ export function getVehicleJsonLd(
   vehicleCode: string,
   country: string
 ) {
-  const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const rootImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   // Generate URLs using the helper
   const vehicleDetailsPageLink = getAbsoluteUrl(

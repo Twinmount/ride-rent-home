@@ -144,6 +144,7 @@ export type ProfileCardDataType = {
   rentalDetails: RentalDetails;
   vehicleId: string;
   vehicleCode: string;
+  vehicleSeries?: string;
   isLease: boolean;
   vehicleData: {
     brandName: string;

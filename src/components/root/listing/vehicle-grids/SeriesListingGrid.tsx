@@ -30,7 +30,6 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
   category,
 }) => {
   const searchParams = useSearchParams();
-  // const category = "cars";
 
   // State variables
   const [seriesValue, setSeriesValue] = useState(series);
@@ -238,7 +237,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
                   return (
                     <div key={currentSeriesKey} className="mb-12">
                       {isRelatedSeries && (
-                        <div className="mb-8">
+                        <div className="mb-8 px-3 lg:px-5">
                           <div className="flex items-center gap-4">
                             <h3 className="text-lg font-medium text-gray-800">
                               More{" "}
@@ -260,18 +259,17 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
                         </div>
                       )}
 
-                      <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:px-5 xl:grid-cols-5 2xl:grid-cols-6">
                         {vehicleList.map((vehicle: any, index) => {
                           const animationIndex = index % 8;
                           return (
-                            <div key={vehicle.vehicleId} className="w-full">
-                              <VehicleCard
-                                vehicle={vehicle}
-                                index={index}
-                                country={country}
-                                layoutType="grid"
-                              />
-                            </div>
+                            <VehicleCard
+                              key={vehicle.vehicleId}
+                              vehicle={vehicle}
+                              index={index}
+                              country={country}
+                              layoutType="grid"
+                            />
                           );
                         })}
                       </div>
