@@ -108,6 +108,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     rentalDetails: vehicle?.rentalDetails,
     vehicleId: vehicle.vehicleId,
     vehicleCode: vehicle.vehicleCode,
+    vehicleSeries: vehicle.vehicleSeries?.vehicleSeries,
     isLease: vehicle.isAvailableForLease,
     vehicleData: {
       brandName: vehicle.brand.value,

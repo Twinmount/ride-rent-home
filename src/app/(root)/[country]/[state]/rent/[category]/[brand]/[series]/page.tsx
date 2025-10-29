@@ -57,7 +57,7 @@ export default async function VehicleSeriesPage(props: PageProps) {
         id={`json-ld-series-${brand}-${series}`}
         jsonLdData={jsonLdData}
       />
-      <div className="wrapper flex h-auto min-h-screen flex-col bg-background pb-8 pt-4">
+      <div className="flex h-auto min-h-screen flex-col bg-background pb-8 pt-4">
         <VehicleSeriesInfo
           series={series}
           state={state}
