@@ -115,6 +115,7 @@ const ProfileCard = memo(
           <div className="mt-2 flex justify-end px-2 pt-2">
             <Link
               href={`/${country}/vehicle-listing-policy`}
+              target="_blank"
               className="text-[.6rem] font-medium text-gray-500 hover:text-gray-700"
             >
               Vehicle Listing Policy*
