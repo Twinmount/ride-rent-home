@@ -1,5 +1,6 @@
 import BrandImage from '@/components/common/BrandImage';
-import Link from 'next/link';
+import { COUNTRY_CONFIGS } from "@/helpers/country-config";
+import Link from "next/link";
 
 type Props = {
   brandListingPageHref: string;
@@ -10,6 +11,7 @@ type Props = {
   heading: string;
   model: string;
   state: string;
+  country: string;
 };
 
 const VehicleHeading = ({
@@ -21,6 +23,7 @@ const VehicleHeading = ({
   model,
   heading,
   state,
+  country,
 }: Props) => {
   return (
     <div className="mb-4 flex items-center gap-2 lg:gap-4">
@@ -33,6 +36,7 @@ const VehicleHeading = ({
           <BrandImage
             category={category}
             brandValue={brandValue}
+            country={country}
             className="object-contain"
             priority={true}
             sizes="(max-width: 768px) 48px, (max-width: 1024px) 64px, 72px"

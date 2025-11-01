@@ -15,7 +15,13 @@ import { useCallback } from "react";
 import { formUrlQuery, removeKeysFromQuery } from "@/helpers";
 import { VehicleTypeCard } from "../../../card/VehicleTypeCard";
 
-const PRIORITY_TYPES = ["suvs", "sedan", "luxury", "monthly-rentals"];
+const PRIORITY_TYPES = [
+  "self-drive",
+  "suvs",
+  "sedan",
+  "luxury",
+  "monthly-rentals",
+];
 
 export default function VehicleTypesCarousel() {
   const { state, category, country } = useStateAndCategory();

@@ -86,11 +86,10 @@ const VehicleThumbnail = ({
   }
 
   const containerClassName = `
-    relative w-full overflow-hidden rounded 
-    ${layoutType === "carousel" ? "h-[8rem] lg:h-[8.3rem]" : "h-[10.2rem] md:h-[6.8rem] lg:h-[7.5rem]"}
-    ${hasMultipleImages ? "cursor-pointer select-none" : ""}
-  `;
-
+  relative w-full overflow-hidden rounded 
+  ${layoutType === "carousel" ? "h-[8rem] lg:h-[8.3rem]" : "h-[16rem] sm:h-[10.2rem] md:h-[6.8rem] lg:h-[7.5rem]"}
+  ${hasMultipleImages ? "cursor-pointer select-none" : ""}
+`;
   return (
     <div
       className={containerClassName}

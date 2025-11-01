@@ -1,5 +1,6 @@
 import { CheckCircle } from "lucide-react";
 import SafeImage from "@/components/common/SafeImage";
+import { usePriceConverter } from "@/hooks/usePriceConverter";
 
 type SecurityDepositInfoProps = {
   securityDeposit: {
@@ -13,11 +14,12 @@ const SecurityDepositInfo = ({
   securityDeposit,
   isDisabled = false,
 }: SecurityDepositInfoProps) => {
+  const { convert } = usePriceConverter();
+
   return (
     <div
-      className={`mx-4 flex items-center justify-center text-sm ${
-        isDisabled ? "text-gray-400" : "text-text-secondary"
-      }`}
+      className={`mx-4 flex items-center justify-center text-sm ${isDisabled ? "text-gray-400" : "text-text-secondary"
+        }`}
     >
       {securityDeposit?.enabled ? (
         <div className="relative h-5 w-5 flex-shrink-0">
@@ -35,12 +37,11 @@ const SecurityDepositInfo = ({
         />
       )}
       <span
-        className={`ml-1 whitespace-nowrap text-sm font-normal capitalize ${
-          isDisabled ? "text-gray-400" : ""
-        }`}
+        className={`ml-1 whitespace-nowrap text-sm font-normal capitalize ${isDisabled ? "text-gray-400" : ""
+          }`}
       >
         {securityDeposit?.enabled
-          ? `${securityDeposit?.amountInAED} AED deposit applies`
+          ? `${convert(Number(securityDeposit?.amountInAED))} deposit applies`
           : "No security deposit"}
       </span>
     </div>

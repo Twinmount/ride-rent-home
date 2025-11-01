@@ -5,7 +5,12 @@ export const ENV = {
   API_URL_INDIA: process.env.API_URL_INDIA,
   NEXT_PUBLIC_API_URL_INDIA: process.env.NEXT_PUBLIC_API_URL_INDIA,
   ASSETS_URL: process.env.ASSETS_URL || process.env.NEXT_PUBLIC_ASSETS_URL,
+
   NEXT_PUBLIC_ASSETS_URL: process.env.NEXT_PUBLIC_ASSETS_URL,
+  ASSETS_URL_INDIA:
+    process.env.ASSETS_URL_INDIA || process.env.NEXT_PUBLIC_ASSETS_URL_INDIA,
+  NEXT_PUBLIC_ASSETS_URL_INDIA: process.env.NEXT_PUBLIC_ASSETS_URL_INDIA,
+
   SITE_URL: process.env.SITE_URL,
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   // Multi-country API configuration
