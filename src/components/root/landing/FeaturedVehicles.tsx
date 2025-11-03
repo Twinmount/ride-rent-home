@@ -47,7 +47,9 @@ const FeaturedVehicles = async ({
   }
 
   const mainVehicles = vehicles.slice(0, 5);
-  const gridThumbnails = vehicles.slice(5, 9).map((v) => v.thumbnail);
+  const gridThumbnails = vehicles
+    .slice(5, 9)
+    .map((v) => v.thumbnail || v.fallbackThumbnail || "");
   const totalVehicles = data?.result?.total || 0;
 
   let viewAllLink = `/${country}/${state}/listing/${category}`;

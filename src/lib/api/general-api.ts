@@ -631,16 +631,6 @@ export const fetchRelatedSeriesList = async (
   country: string,
   series: string
 ): Promise<{ result: { relatedSeries: string[] } }> => {
-  // Determine base URL based on country
-  const BASE_URL =
-    country === "in"
-      ? process.env.NEXT_PUBLIC_API_URL_INDIA
-      : process.env.NEXT_PUBLIC_API_URL;
-
-  if (!BASE_URL) {
-    throw new Error("Base URL is not defined in environment variables");
-  }
-
   // Construct query parameters
   const queryParams = new URLSearchParams({
     page: "1",
@@ -651,14 +641,16 @@ export const fetchRelatedSeriesList = async (
     brand: brand,
   });
 
-  const fullUrl = `${BASE_URL}/vehicle-series/list/all?${queryParams}`;
-
   try {
-    const response = await fetch(fullUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await API({
+      path: `/vehicle-series/list/all?${queryParams}`,
+      options: {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
+      country,
     });
 
     if (!response.ok) {

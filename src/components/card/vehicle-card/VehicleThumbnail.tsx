@@ -73,18 +73,6 @@ const VehicleThumbnail = ({
     handleTouchEnd();
   };
 
-  if (!src) {
-    return (
-      <img
-        src={defaultImage}
-        alt={alt}
-        width={width}
-        height={height}
-        className="h-full w-full rounded object-cover"
-      />
-    );
-  }
-
   const containerClassName = `
     relative w-full overflow-hidden rounded 
     ${layoutType === "carousel" ? "h-[8rem] lg:h-[8.3rem]" : "h-[10.2rem] md:h-[6.8rem] lg:h-[7.5rem]"}
@@ -118,6 +106,7 @@ const VehicleThumbnail = ({
             ? "(max-width: 1024px) 8rem, 8.3rem"
             : "(max-width: 1024px) 6rem, 7.5rem"
         }
+        onError={() => setImageLoading(false)}
       />
 
       {/* Cycling Loading Indicator - Top Right */}

@@ -2,8 +2,8 @@ export type CompanyType = {
   companyId: string;
   companyName: string;
   regNumber: string;
-  approvalStatus: 'APPROVED' | 'PENDING' | 'REJECTED';
-  plan: 'BASIC' | 'PREMIUM' | 'ENTERPRISE';
+  approvalStatus: "APPROVED" | "PENDING" | "REJECTED";
+  plan: "BASIC" | "PREMIUM" | "ENTERPRISE";
   rejectionReason: string;
   agentId: string;
   companyLogo: string;
@@ -98,7 +98,7 @@ export type SpecificationType = {
 export type SingleVehicleType = {
   vehicleId: string;
   tempId: string;
-  disabledBy: 'admin' | 'seller';
+  disabledBy: "admin" | "seller";
   vehicleRegistrationNumber: string;
   company: CompanyType;
   brand: BrandType;
@@ -116,7 +116,7 @@ export type SingleVehicleType = {
   vehiclePhotos: string[];
   commercialLicenses: string;
   commercialLicenseExpiryDate: string;
-  approvalStatus: 'APPROVED' | 'PENDING' | 'REJECTED' | 'UNDER_REVIEW';
+  approvalStatus: "APPROVED" | "PENDING" | "REJECTED" | "UNDER_REVIEW";
   rejectionReason: string;
   isLease: boolean;
   isModified: boolean;
@@ -238,9 +238,10 @@ export type MapVehicleCardType = {
 
 export type NewVehicleCardType = {
   vehicleId: string;
-  companyLogo?: string
+  companyLogo?: string;
   vehicleCode: string;
-  thumbnail: string;
+  thumbnail: string | null;
+  fallbackThumbnail: string | null;
   vehiclePhotos: string[];
   model: string;
   vehicleTitle: string;

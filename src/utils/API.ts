@@ -33,10 +33,14 @@ export async function API({
 }: APIRequest): Promise<Response> {
   // Auto-detect country if not provided
   const detectedCountry = country || detectCountryFromUrl();
-  const baseUrl = getBaseUrl(detectedCountry as "ae" | "in");
+  const BASE_URL = getBaseUrl(detectedCountry as "ae" | "in");
+
+  if (!BASE_URL) {
+    throw new Error("API URL is not defined in environment variables");
+  }
 
   // Prepend the base URL if the path doesn't start with a slash
-  const url = path.startsWith("/") ? baseUrl + path : baseUrl + "/" + path;
+  const url = path.startsWith("/") ? BASE_URL + path : BASE_URL + "/" + path;
 
   const response = await fetch(`${url}`, options);
 

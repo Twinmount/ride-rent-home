@@ -60,7 +60,7 @@ const VehicleCard = ({
       >
         <div className="relative">
           <VehicleThumbnail
-            src={vehicle.thumbnail}
+            src={vehicle.thumbnail || vehicle.fallbackThumbnail}
             alt={`${vehicle.vehicleTitle} rental car available for booking`}
             width={250}
             height={200}
