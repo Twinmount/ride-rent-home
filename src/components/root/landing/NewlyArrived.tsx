@@ -19,7 +19,7 @@ export default async function NewlyArrived({
     state: state,
     sortOrder: "DESC",
     category: category,
-    filter: VehicleHomeFilter.POPULAR_MODELS,
+    filter: VehicleHomeFilter.LATEST_MODELS,
   });
 
   const response = await API({

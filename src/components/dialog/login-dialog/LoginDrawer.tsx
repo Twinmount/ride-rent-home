@@ -1,12 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { X, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import SafeImage from "@/components/common/SafeImage";
-
 import { useAuth } from "@/hooks/useAuth";
 
 // Step Components
@@ -17,6 +13,7 @@ import { RegisterStep } from "./components/RegisterStep";
 import { SuccessStep } from "./components/SuccessStep";
 import { useImmer } from "use-immer";
 import { useAuthContext } from "@/auth";
+import { AdBanner } from "./LoginDrawerHeader";
 
 export type AuthStep = "phone" | "password" | "otp" | "register" | "success";
 export type StatusType = "idle" | "loading" | "success" | "error";
@@ -158,34 +155,8 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
         aria-labelledby="drawer-title"
       >
         <div className="flex h-full flex-col">
-          <div
-            className="p-6 text-white"
-            style={{
-              background:
-                "linear-gradient(255.26deg, #f9a825 29.45%, #f57f17 88.69%)",
-            }}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <SafeImage
-                  src="/assets/logo/Logo_Black.svg"
-                  alt="Ride.Rent Logo"
-                  width={70}
-                  height={48}
-                  className="w-[135px] brightness-0 invert"
-                />
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleClose}
-                className="text-white/80 hover:bg-white/10 hover:text-white"
-                aria-label="Close login drawer"
-              >
-                <X className="h-5 w-5" aria-hidden="true" />
-              </Button>
-            </div>
+          <div className="add-banner-wrapper relative">
+            <AdBanner handleClose={handleClose} />
           </div>
 
           {/* Status Bar */}

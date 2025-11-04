@@ -1,4 +1,4 @@
-import { isValidCountryCode } from "@/helpers/country-config";
+import { isValidCountryCode } from "@/config/country-config";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 

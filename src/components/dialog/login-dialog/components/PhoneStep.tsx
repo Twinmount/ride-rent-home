@@ -5,11 +5,10 @@ import "react-international-phone/style.css";
 import { Loader2, UserCircle } from "lucide-react";
 import "../phone-input.css";
 import { useImmer } from "use-immer";
-import {  getNumberAfterSpaceStrict } from "@/utils/helper";
+import { getNumberAfterSpaceStrict } from "@/utils/helper";
 import { LoginDrawerState } from "../LoginDrawer";
 import { useLocationDetection } from "@/hooks/useLocationDetection";
 import { useAuthContext } from "@/auth";
-
 
 export const PhoneStep = ({
   setStep,
@@ -23,8 +22,11 @@ export const PhoneStep = ({
   setDrawerState,
 }: any) => {
   const { auth } = useAuthContext();
-  const { location, isLoading: isLocationLoading } =
-    useLocationDetection(!auth.isLoggedIn);
+  const { location, isLoading: isLocationLoading } = useLocationDetection(
+    !auth.isLoggedIn
+  );
+
+  // console.log("location: ", location);
 
   const [phoneNumber, setPhoneNumber] = useImmer({
     value: "",
@@ -33,6 +35,7 @@ export const PhoneStep = ({
   });
 
   const [detectedCountry, setDetectedCountry] = useState<string>("");
+  // console.log("detectedCountry: ", detectedCountry);
   const [userSelectedCountry, setUserSelectedCountry] = useState<string | null>(
     null
   );
@@ -57,20 +60,6 @@ export const PhoneStep = ({
     }
   }, [location, userSelectedCountry, isLocationLoading]);
 
-  // Update phone number country code when detected country changes
-  useEffect(() => {
-    if (detectedCountry) {
-      const countryCodeMap: Record<string, string> = {
-        ae: "+971",
-        in: "+91",
-      };
-
-      setPhoneNumber((draft) => {
-        draft.countryCode = countryCodeMap[detectedCountry] || "+971";
-      });
-    }
-  }, [detectedCountry, setPhoneNumber]);
-
   // Handle skip location detection
   const handleSkipDetection = () => {
     setUserSelectedCountry("ae"); // Default to UAE
@@ -78,14 +67,12 @@ export const PhoneStep = ({
   };
 
   const onChangeCountryCode = (value: any, country: any) => {
-    const firstSpaceIndex = country.inputValue.indexOf(" ");
-    // const countryCode = country.inputValue.substring(0, firstSpaceIndex);
-
     const phoneDetails = getNumberAfterSpaceStrict(country.inputValue);
 
     setPhoneNumber((draft) => {
       draft.value = value;
       draft.number = phoneDetails.phoneNumber;
+      draft.countryCode = `+${country.country.dialCode}`;
     });
   };
 

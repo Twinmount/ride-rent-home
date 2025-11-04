@@ -60,14 +60,16 @@ const VehicleCard = ({
       >
         <div className="relative">
           <VehicleThumbnail
-            src={vehicle.thumbnail}
+            src={vehicle.thumbnail || vehicle.fallbackThumbnail}
             alt={`${vehicle.vehicleTitle} rental car available for booking`}
-            width={250}
-            height={200}
+            width={!!vehicle.thumbnail ? 500 : 250}
+            height={!!vehicle.thumbnail ? 400 : 200}
             layoutType={layoutType}
             vehiclePhotos={vehicle.vehiclePhotos}
-            priority={index < 2}
-            loading={index < 2 ? "eager" : "lazy"}
+            priority={index < 6}
+            loading={index < 6 ? "eager" : "lazy"}
+            quality={!!vehicle.thumbnail ? 100 : 90}
+            isOptimizedThumbnail={!!vehicle.thumbnail}
           />
 
           <VehicleBadgesGroup

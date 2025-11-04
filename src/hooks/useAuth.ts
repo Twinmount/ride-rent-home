@@ -56,8 +56,6 @@ export const useAuth = () => {
     refreshToken: authStorage.getRefreshToken(),
   });
 
-  console.log("auth: ", auth);
-
   const [isLoginOpen, setLoginOpen] = useImmer(false);
 
   const [userAuthStep, setUserAuthStep] = useImmer({
@@ -69,8 +67,6 @@ export const useAuth = () => {
 
   useEffect(() => {
     const handleLogoutEvent = (event: CustomEvent) => {
-      console.log("Logout event received:", event.detail);
-
       // Clear auth storage (if not already cleared)
       authStorage.clear();
 

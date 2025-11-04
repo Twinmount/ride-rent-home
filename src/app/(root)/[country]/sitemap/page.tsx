@@ -1,4 +1,4 @@
-import { COUNTRY_CONFIGS, CountryCode } from "@/helpers/country-config";
+import { COUNTRY_CONFIGS, CountryCode } from "@/config/country-config";
 import { PageSitemapService } from "@/services/PageSitemapService";
 import { MetadataRoute } from "next";
 import { notFound } from "next/navigation";
