@@ -33,7 +33,7 @@ const VehicleMapCard = ({ vehicle, country = "ae" }: VehicleMapCardProps) => {
     >
       <div className="relative h-16 w-24 overflow-hidden rounded">
         <SafeImage
-          src={vehicle.thumbnail || ""}
+          src={vehicle.thumbnail || vehicle.fallbackThumbnail}
           alt={vehicle.vehicleTitle}
           fill
           className={`h-full w-full rounded object-cover`}
