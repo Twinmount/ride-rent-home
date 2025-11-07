@@ -101,12 +101,12 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
           </div>
 
           {/* Location */}
-          <p className="text-center text-sm font-extralight sm:text-left">
+          {/* <p className="text-center text-sm font-extralight sm:text-left">
             {companyAddress || "Address Not Available"}
-          </p>
+          </p> */}
 
           <div className="flex-center -ml-1 gap-x-3 text-center text-sm sm:text-left sm:text-base">
-            {companyName && (
+            {/* {companyName && (
               <a
                 href={`https://www.google.com/maps/search/${encodeURIComponent(
                   companyName
@@ -122,7 +122,7 @@ export default function AgentProfile({ companyDetails }: AgentProfileProps) {
                 />
                 Locate in map
               </a>
-            )}
+            )} */}
 
             {/* Share portfolio button */}
             <SharePortfolio />

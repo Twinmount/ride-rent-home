@@ -36,7 +36,6 @@ export default async function AgentVehicleGrid({
     country,
   });
 
-  // Parse the JSON response
   const data: FetchVehicleCardsResponseV2 = await response.json();
 
   const totalPages = data?.result?.totalNumberOfPages || 1;
@@ -45,15 +44,17 @@ export default async function AgentVehicleGrid({
   return (
     <div>
       {vehicles.length > 0 ? (
-        <div className="mx-auto !grid w-fit max-w-fit grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
           {vehicles.map((vehicle, index) => (
-            <VehicleCard
-              key={vehicle.vehicleId}
-              index={index}
-              vehicle={vehicle}
-              country={country}
-              layoutType="grid"
-            />
+            <div key={vehicle.vehicleId} className="w-full">
+              <VehicleCard
+                key={vehicle.vehicleId}
+                index={index}
+                vehicle={vehicle}
+                country={country}
+                layoutType="grid"
+              />
+            </div>
           ))}
         </div>
       ) : (

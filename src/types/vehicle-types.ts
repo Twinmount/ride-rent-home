@@ -214,6 +214,7 @@ export type MapVehicleCardType = {
   vehicleId: string;
   vehicleCode: string;
   thumbnail: string;
+  fallbackThumbnail: string;
   model: string;
   brandName: string;
   countryCode: string | null;
