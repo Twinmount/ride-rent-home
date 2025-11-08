@@ -45,9 +45,11 @@
     "embla-carousel-autoplay": "^8.5.2",
     "embla-carousel-react": "^8.5.2",
     "framer-motion": "^12.5.0",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.483.0",
     "mini-svg-data-uri": "^1.4.4",
     "next": "15.2.4",
+    "next-auth": "^4.24.13",
     "nextjs-toploader": "^3.8.16",
     "query-string": "^9.1.0",
     "react": "19.0.0",
@@ -73,6 +75,7 @@
     "world-countries": "^5.1.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "19.0.12",
     "@types/react-date-range": "^1.4.10",
