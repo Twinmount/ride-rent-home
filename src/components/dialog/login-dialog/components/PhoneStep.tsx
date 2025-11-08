@@ -116,7 +116,6 @@ export const PhoneStep = ({
   const onChangeCountryCode = useCallback((value: any, country: any) => {
     const phoneDetails = getNumberAfterSpaceStrict(country.inputValue);
     const newAllowCount = getDotCount(country.country.format);
-    console.log("newAllowCount: ", newAllowCount);
     const newCountryCode = `+${country.country.dialCode}`;
 
     // Update display value immediately (urgent update)
@@ -156,22 +155,6 @@ export const PhoneStep = ({
     },
     [allowNumberCount]
   );
-  // const onHandlePhoneNumberChange = useCallback(
-  //   (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const value = e.target.value;
-
-  //     // Validate and limit length
-  //     if (allowNumberCount > 0 && value.length > allowNumberCount) {
-  //       return; // Don't update if exceeds limit
-  //     }
-
-  //     // Mark state update as non-urgent (allows typing to feel instant)
-  //     startTransition(() => {
-  //       setPhoneNumber(value);
-  //     });
-  //   },
-  //   [allowNumberCount]
-  // );
 
   const handlePhoneSubmit = async () => {
     setStatus("loading");
