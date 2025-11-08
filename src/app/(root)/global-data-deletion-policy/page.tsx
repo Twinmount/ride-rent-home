@@ -172,7 +172,7 @@ const policyData: PolicySection[] = [
   },
   {
     id: 12,
-    title: "Children&apos;s Data",
+    title: "Children's Data",
     content:
       "Ride.Rent does not knowingly collect personal data from individuals under the age of 18. If such data is inadvertently collected, it will be deleted immediately upon verification.",
   },
@@ -194,22 +194,17 @@ const policyData: PolicySection[] = [
     content:
       "Compliance with this policy is monitored through internal audits, external reviews, and vendor assessments. The Ride.Rent Data Protection Office ensures all team members are trained annually in data privacy and security practices.",
   },
+
   {
     id: 16,
-    title: "Policy Updates and Version Control",
-    content:
-      "This policy is reviewed annually or when there are significant regulatory changes. The latest version, along with version history and effective dates, is published at ride.rent/data-deletion-policy.",
-    highlight: "ride.rent/data-deletion-policy",
-  },
-  {
-    id: 17,
     title: "Contact and Supervisory Authority",
     content: "contact",
     info: [
-      { label: "Email", value: "privacy@ride.rent", isEmail: true },
+      { label: "Email", value: "data-compliance@ride.rent", isEmail: true },
       {
         label: "Address",
-        value: "Ride.Rent FZ-LLC, UAE Headquarters – Data Protection Office",
+        value:
+          "Ride.Rent/ Data Protection Officer, Shams Business Center, Sharjah Media City Free Zone, Al Messaned, Sharjah, UAE. License Number: 2434340.",
       },
       {
         label: "Supervisory Authorities",
@@ -467,7 +462,7 @@ export default function GlobalDataDeletionPolicy() {
               contact our Data Protection Officer
             </p>
             <a
-              href="mailto:privacy@ride.rent"
+              href="mailto:data-compliance@ride.rent"
               className="inline-flex items-center gap-2 rounded-xl bg-[#F4A51C] px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-orange-500 hover:shadow-lg lg:text-base"
             >
               <svg
