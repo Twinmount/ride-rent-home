@@ -76,3 +76,18 @@ export const tostHandler = (
       break;
   }
 };
+
+export const getDotCount = (str: String): number => {
+  if (typeof str !== "string") {
+    console.error("Invalid input: Please provide a string.");
+    return 0;
+  }
+
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === ".") {
+      count++;
+    }
+  }
+  return count;
+};
