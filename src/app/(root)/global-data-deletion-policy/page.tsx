@@ -206,11 +206,6 @@ const policyData: PolicySection[] = [
         value:
           "Ride.Rent/ Data Protection Officer, Shams Business Center, Sharjah Media City Free Zone, Al Messaned, Sharjah, UAE. License Number: 2434340.",
       },
-      {
-        label: "Supervisory Authorities",
-        value:
-          "EU GDPR Data Protection Authorities, UAE PDPL Office, India Data Protection Board.",
-      },
     ],
   },
 ];
