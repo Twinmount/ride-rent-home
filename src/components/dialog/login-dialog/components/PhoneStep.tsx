@@ -116,6 +116,7 @@ export const PhoneStep = ({
   const onChangeCountryCode = useCallback((value: any, country: any) => {
     const phoneDetails = getNumberAfterSpaceStrict(country.inputValue);
     const newAllowCount = getDotCount(country.country.format);
+    console.log("newAllowCount: ", newAllowCount);
     const newCountryCode = `+${country.country.dialCode}`;
 
     // Update display value immediately (urgent update)
@@ -138,20 +139,39 @@ export const PhoneStep = ({
   // Handle phone number input with transition
   const onHandlePhoneNumberChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
+      let value = e.target.value;
+      // Only allow numeric characters
+      value = value.replace(/[^0-9]/g, "");
 
-      // Validate and limit length
-      if (allowNumberCount > 0 && value.length > allowNumberCount) {
-        return; // Don't update if exceeds limit
-      }
+      // value = value.slice(0, allowNumberCount);
+      value = allowNumberCount > 0 ? value.slice(0, allowNumberCount) : value;
+
+      // Update the input field immediately to show trimmed value
+      e.target.value = value;
 
       // Mark state update as non-urgent (allows typing to feel instant)
-      startTransition(() => {
-        setPhoneNumber(value);
-      });
+      // startTransition(() => {
+      setPhoneNumber(value);
+      // });
     },
     [allowNumberCount]
   );
+  // const onHandlePhoneNumberChange = useCallback(
+  //   (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     const value = e.target.value;
+
+  //     // Validate and limit length
+  //     if (allowNumberCount > 0 && value.length > allowNumberCount) {
+  //       return; // Don't update if exceeds limit
+  //     }
+
+  //     // Mark state update as non-urgent (allows typing to feel instant)
+  //     startTransition(() => {
+  //       setPhoneNumber(value);
+  //     });
+  //   },
+  //   [allowNumberCount]
+  // );
 
   const handlePhoneSubmit = async () => {
     setStatus("loading");
