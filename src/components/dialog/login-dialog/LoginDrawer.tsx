@@ -22,6 +22,7 @@ export type AuthStep =
   | "otp"
   | "register"
   | "forgot-password"
+  | "new-password"
   | "success";
 export type StatusType = "idle" | "loading" | "success" | "error";
 
@@ -218,11 +219,13 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
             )}
             {step === "forgot-password" && (
               <ForgotPasswordStep
+                currentStep={step}
                 setStep={setStep}
                 setStatus={setStatus}
                 setStatusMessage={setStatusMessage}
                 drawerState={drawerState}
                 isCurrentlyLoading={isCurrentlyLoading}
+                mutationSatate={forgotPasswordMutation}
                 sendPasswordResetCodeViaWhatsApp={forgotPassword}
                 clearError={clearError}
               />

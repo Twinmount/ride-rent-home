@@ -87,8 +87,9 @@ export const PhoneStep = ({
   const [allowNumberCount, setAllowNumberCount] = useState(0);
 
   // Location state
-  const [detectedCountry, setDetectedCountry] =
-    useState<string>(detectedCountryLocal);
+  const [detectedCountry, setDetectedCountry] = useState<string>(
+    detectedCountryLocal ? detectedCountryLocal : ""
+  );
 
   const [userSelectedCountry, setUserSelectedCountry] = useState<string | null>(
     null

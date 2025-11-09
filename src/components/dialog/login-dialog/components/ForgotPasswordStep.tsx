@@ -2,7 +2,7 @@ import React, { useState, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "react-international-phone";
-import { Smartphone, Loader2 } from "lucide-react"; // Changed icon to Smartphone
+import { Smartphone, Loader2, Eye, EyeOff } from "lucide-react"; // Changed icon to Smartphone
 
 const MemoizedPhoneInput = memo(
   ({
@@ -47,16 +47,26 @@ const MemoizedPhoneInput = memo(
 );
 
 export const ForgotPasswordStep = ({
+  currentStep,
   setStep,
   setStatus,
   setStatusMessage,
   drawerState,
   isCurrentlyLoading,
-  sendPasswordResetCodeViaWhatsApp, // New prop for sending code
+  sendPasswordResetCodeViaWhatsApp,
+  mutationSatate, // New prop for sending code
   clearError,
 }: any) => {
   const [phoneNumber, setPhoneNumber] = useState(drawerState.phoneNumber || ""); // Pre-fill if phone number is available
   const [codeSent, setCodeSent] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  console.log("mutationSatate: ", mutationSatate);
+  console.log("currentStep: ", currentStep);
 
   const handleSendResetCode = async () => {
     if (!phoneNumber.trim()) return;
@@ -71,9 +81,10 @@ export const ForgotPasswordStep = ({
         countryCode: drawerState.countryCode, // Assuming countryCode is part of drawerState
       });
 
-      if (resetResponse.success) {
-        setCodeSent(true);
-        setStatus("success");
+      console.log("resetResponse: ", resetResponse);
+
+      if (mutationSatate.isSuccess) {
+        setStep("new-password");
         setStatusMessage("Password reset code sent!");
         // Optionally, you might want to automatically advance to a 'VerifyResetCodeStep' here
         // setStep("verifyResetCode");
@@ -98,7 +109,7 @@ export const ForgotPasswordStep = ({
       </div>
 
       <div className="space-y-4">
-        {!codeSent ? (
+        {currentStep === "forgot-password" ? (
           <>
             <div className="space-y-2">
               <label htmlFor="phoneNumber" className="text-sm font-medium">
@@ -131,10 +142,10 @@ export const ForgotPasswordStep = ({
 
             <Button
               onClick={handleSendResetCode}
-              disabled={!phoneNumber.trim() || isCurrentlyLoading}
+              disabled={mutationSatate.isLoading || !phoneNumber.trim()}
               className="w-full bg-gradient-to-r from-orange-500 to-orange-600 py-6 text-lg text-white hover:from-orange-600 hover:to-orange-700"
             >
-              {isCurrentlyLoading ? (
+              {mutationSatate.isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Sending Code...
@@ -145,13 +156,71 @@ export const ForgotPasswordStep = ({
             </Button>
           </>
         ) : (
-          <div className="rounded-md border border-green-200 bg-green-50 p-4 text-center text-green-700">
-            <p className="font-medium">
-              A password reset code has been sent to{" "}
-              <span className="font-semibold">{phoneNumber}</span> on WhatsApp.
-              Please check your messages.
-            </p>
-          </div>
+          currentStep === "new-password" && (
+            <div>
+              <div className="space-y-2">
+                <label htmlFor="newPassword" className="text-sm font-medium">
+                  Create Password *
+                </label>
+                <div className="relative">
+                  <Input
+                    id="newPassword"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Create a secure password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    disabled={isCurrentlyLoading}
+                    className="pr-10 focus:border-orange-500 focus:ring-orange-500"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="text-sm font-medium"
+                >
+                  Confirm Password *
+                </label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={isCurrentlyLoading}
+                    className="pr-10 focus:border-orange-500 focus:ring-orange-500"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )
         )}
 
         <div className="text-center">
