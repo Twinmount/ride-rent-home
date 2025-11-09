@@ -1,7 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "react-international-phone";
 import { Smartphone, Loader2 } from "lucide-react"; // Changed icon to Smartphone
+
+const MemoizedPhoneInput = memo(
+  ({
+    defaultCountry,
+    value,
+    onChange,
+  }: {
+    defaultCountry: string;
+    value: string;
+    onChange?: (value: any, country: any) => void;
+  }) => {
+    return (
+      <PhoneInput
+        disabled
+        defaultCountry={defaultCountry}
+        value={value}
+        onChange={onChange}
+        className="flex items-center justify-center"
+        inputClassName="hidden"
+        countrySelectorStyleProps={{
+          className:
+            "bg-transparent !text-xs !p-0 !bg-transparent !shadow-none",
+          style: {
+            padding: 0,
+            backgroundColor: "transparent",
+            background: "transparent",
+            boxShadow: "none",
+          },
+          buttonClassName:
+            "!border-none outline-none !h-full !w-full !rounded-none bg-transparent !p-0 !bg-transparent !shadow-none",
+        }}
+      />
+    );
+  },
+  (prevProps, nextProps) => {
+    // Only re-render if country or value actually changed
+    return (
+      prevProps.defaultCountry === nextProps.defaultCountry &&
+      prevProps.value === nextProps.value
+    );
+  }
+);
 
 export const ForgotPasswordStep = ({
   setStep,
@@ -61,16 +104,29 @@ export const ForgotPasswordStep = ({
               <label htmlFor="phoneNumber" className="text-sm font-medium">
                 Phone Number
               </label>
-              <Input
-                id="phoneNumber"
-                type="tel" // Use type="tel" for phone numbers
-                placeholder="Enter your phone number"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="text-lg focus:border-purple-500 focus:ring-purple-500"
-                disabled={isCurrentlyLoading}
-                onKeyDown={(e) => e.key === "Enter" && handleSendResetCode()}
-              />
+              <div className="relative z-10 flex gap-2">
+                <div className="flex h-10 w-20 flex-shrink-0 items-center justify-center rounded-lg border-2 bg-transparent backdrop-blur-sm transition-all">
+                  <MemoizedPhoneInput
+                    defaultCountry={drawerState.countryCode}
+                    value={drawerState.countryCode}
+                  />
+
+                  <span className="mx-0.5 text-xs font-semibold">
+                    {drawerState.countryCode}
+                  </span>
+                </div>
+                <input
+                  type="tel"
+                  id="phone"
+                  disabled
+                  placeholder="enter phone number"
+                  value={phoneNumber}
+                  // onChange={onHandlePhoneNumberChange}
+                  className="h-10 w-full flex-1 rounded-lg border-2 bg-transparent px-3 text-sm outline-none backdrop-blur-sm transition-all placeholder:text-black/40"
+                  autoComplete="tel"
+                  inputMode="numeric"
+                />
+              </div>
             </div>
 
             <Button
