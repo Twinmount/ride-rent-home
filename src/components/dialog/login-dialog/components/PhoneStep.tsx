@@ -69,8 +69,12 @@ export const PhoneStep = ({
   setDrawerState,
 }: any) => {
   const { auth } = useAuthContext();
+  const detectedCountryLocal = sessionStorage.getItem(
+    "detectedCountry"
+  ) as string;
+
   const { location, isLoading: isLocationLoading } = useLocationDetection(
-    !auth.isLoggedIn
+    !auth.isLoggedIn && !detectedCountryLocal
   );
 
   // useTransition for non-urgent state updates
@@ -83,10 +87,13 @@ export const PhoneStep = ({
   const [allowNumberCount, setAllowNumberCount] = useState(0);
 
   // Location state
-  const [detectedCountry, setDetectedCountry] = useState<string>("");
+  const [detectedCountry, setDetectedCountry] =
+    useState<string>(detectedCountryLocal);
+
   const [userSelectedCountry, setUserSelectedCountry] = useState<string | null>(
     null
   );
+
   const [showSkipOption, setShowSkipOption] = useState<boolean>(false);
 
   useEffect(() => {
@@ -104,6 +111,7 @@ export const PhoneStep = ({
   useEffect(() => {
     if (location && !isLocationLoading && !userSelectedCountry) {
       setDetectedCountry(location.country);
+      sessionStorage.setItem("detectedCountry", location.country);
     }
   }, [location, userSelectedCountry, isLocationLoading]);
 
@@ -296,7 +304,7 @@ export const PhoneStep = ({
               <div className="flex h-10 w-20 flex-shrink-0 items-center justify-center rounded-lg border-2 bg-transparent backdrop-blur-sm transition-all">
                 {detectedCountry && (
                   <MemoizedPhoneInput
-                    defaultCountry={detectedCountry}
+                    defaultCountry={detectedCountry ? detectedCountry : "ae"}
                     value={phoneValue}
                     onChange={onChangeCountryCode}
                   />
