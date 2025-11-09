@@ -14,8 +14,15 @@ import { SuccessStep } from "./components/SuccessStep";
 import { useImmer } from "use-immer";
 import { useAuthContext } from "@/auth";
 import { AdBanner } from "./LoginDrawerHeader";
+import { ForgotPasswordStep } from "./components/ForgotPasswordStep";
 
-export type AuthStep = "phone" | "password" | "otp" | "register" | "success";
+export type AuthStep =
+  | "phone"
+  | "password"
+  | "otp"
+  | "register"
+  | "forgot-password"
+  | "success";
 export type StatusType = "idle" | "loading" | "success" | "error";
 
 export interface LoginDrawerState {
@@ -204,6 +211,17 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
                 drawerState={drawerState}
                 isCurrentlyLoading={isCurrentlyLoading}
                 login={login}
+                clearError={clearError}
+              />
+            )}
+            {step === "forgot-password" && (
+              <ForgotPasswordStep
+                setStep={setStep}
+                setStatus={setStatus}
+                setStatusMessage={setStatusMessage}
+                drawerState={drawerState}
+                isCurrentlyLoading={isCurrentlyLoading}
+                sendPasswordResetCodeViaWhatsApp={() => {}}
                 clearError={clearError}
               />
             )}
