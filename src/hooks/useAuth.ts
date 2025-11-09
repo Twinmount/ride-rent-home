@@ -16,6 +16,7 @@ import type {
   ProfileUpdateData,
   PhoneChangeData,
   PhoneChangeVerificationData,
+  ForgotPasswordData,
 } from "@/types/auth.types";
 
 // Import constants
@@ -234,6 +235,17 @@ export const useAuth = () => {
   const resendOtpMutation = useMutation({
     mutationFn: authAPI.resendOtp,
     onSuccess: (data) => {
+      setError(null);
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: authAPI.forgotPassword,
+    onSuccess: (data) => {
+      console.log("data: ", data);
       setError(null);
     },
     onError: (error: Error) => {
@@ -681,6 +693,22 @@ export const useAuth = () => {
     }
   };
 
+  // forgot password
+  const forgotPassword = async (
+    passwordData: ForgotPasswordData
+  ): Promise<AuthResponse> => {
+    try {
+      return forgotPasswordMutation.mutateAsync(passwordData);
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error ? error.message : "Failed to set password",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
   // Resend OTP function
   const resendOTP = useCallback(
     async (phoneNumber: string, countryCode: string): Promise<AuthResponse> => {
@@ -890,6 +918,7 @@ export const useAuth = () => {
     logout,
     verifyOTP,
     setPassword,
+    forgotPassword,
     resendOTP,
     updateProfile,
     requestPhoneNumberChange,
@@ -909,6 +938,7 @@ export const useAuth = () => {
     loginMutation,
     verifyOtpMutation,
     setPasswordMutation,
+    forgotPasswordMutation,
     resendOtpMutation,
     updateUserNameAndAvatar,
     logoutMutation,

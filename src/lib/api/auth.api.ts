@@ -7,6 +7,7 @@ import type {
   SetPasswordData,
   ResendOtpData,
   ProfileUpdateData,
+  ForgotPasswordData,
   PhoneChangeData,
   PhoneChangeVerificationData,
   EmailChangeData,
@@ -283,13 +284,12 @@ export class AuthAPI {
    * Forgot password
    */
   static async forgotPassword(
-    phoneNumber: string,
-    countryCode: string
+    forgotPasswordData: ForgotPasswordData
   ): Promise<AuthResponse> {
     try {
       const response = await createAuthenticatedRequest.auth.post(
         AUTH_ENDPOINTS.FORGOT_PASSWORD,
-        { phoneNumber, countryCode }
+        forgotPasswordData
       );
       return response.data;
     } catch (error: any) {

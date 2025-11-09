@@ -37,9 +37,7 @@ export const ForgotPasswordStep = ({
       }
     } catch (error: any) {
       setStatus("error");
-      setStatusMessage(
-        error?.message || "Failed to send reset code. Please try again."
-      );
+      setStatusMessage("Failed to send reset code. Please try again.");
     }
   };
 

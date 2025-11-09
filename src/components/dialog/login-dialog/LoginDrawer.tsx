@@ -53,6 +53,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     login,
     verifyOTP,
     setPassword,
+    forgotPassword,
     resendOTP,
     updateProfile,
     checkUserExists,
@@ -62,6 +63,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     userAuthStep,
     logoutMutation,
     loginMutation,
+    forgotPasswordMutation,
   } = useAuthContext();
 
   useEffect(() => {
@@ -221,7 +223,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
                 setStatusMessage={setStatusMessage}
                 drawerState={drawerState}
                 isCurrentlyLoading={isCurrentlyLoading}
-                sendPasswordResetCodeViaWhatsApp={() => {}}
+                sendPasswordResetCodeViaWhatsApp={forgotPassword}
                 clearError={clearError}
               />
             )}

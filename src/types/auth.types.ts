@@ -78,6 +78,14 @@ export interface PhoneChangeData {
 }
 
 /**
+ * forgot password request data interface
+ */
+export interface ForgotPasswordData {
+  phoneNumber: string;
+  countryCode: string;
+}
+
+/**
  * Phone number change verification data interface
  */
 export interface PhoneChangeVerificationData {
@@ -280,6 +288,9 @@ export interface UseAuthReturn {
     otp: string
   ) => Promise<AuthResponse>;
   setPassword: (passwordData: SetPasswordData) => Promise<AuthResponse>;
+  forgotPassword: (
+    forgotPasswordData: ForgotPasswordData
+  ) => Promise<AuthResponse>;
   resendOTP: (
     phoneNumber: string,
     countryCode: string
@@ -342,6 +353,12 @@ export interface UseAuthReturn {
     AuthResponse,
     Error,
     SetPasswordData,
+    unknown
+  >;
+  forgotPasswordMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    ForgotPasswordData,
     unknown
   >;
   resendOtpMutation: UseMutationResult<
