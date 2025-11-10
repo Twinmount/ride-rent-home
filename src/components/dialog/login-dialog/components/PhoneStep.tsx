@@ -16,18 +16,20 @@ import { useLocationDetection } from "@/hooks/useLocationDetection";
 import { useAuthContext } from "@/auth";
 
 // Memoized PhoneInput to prevent unnecessary re-renders
-const MemoizedPhoneInput = memo(
-  ({
+const InternalMemoizedPhoneInput = memo(
+  function InternalMemoizedPhoneInputComponent({
+    // <--- Give it a name here
     defaultCountry,
     value,
     onChange,
   }: {
     defaultCountry: string;
     value: string;
-    onChange: (value: any, country: any) => void;
-  }) => {
+    onChange?: (value: any, country: any) => void;
+  }) {
     return (
       <PhoneInput
+        disabled
         defaultCountry={defaultCountry}
         value={value}
         onChange={onChange}
@@ -56,6 +58,9 @@ const MemoizedPhoneInput = memo(
     );
   }
 );
+
+// Then use it:
+const MemoizedPhoneInput = InternalMemoizedPhoneInput;
 
 export const PhoneStep = ({
   setStep,

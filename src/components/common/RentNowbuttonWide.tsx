@@ -129,8 +129,6 @@ const RentNowButtonWide = ({
       })
     : null;
 
-  console.log("whatsappUrl: ", whatsappUrl);
-
   const handleClick = () => {
     if (!auth.isLoggedIn) {
       onHandleLoginmodal({ isOpen: true });

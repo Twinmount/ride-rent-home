@@ -63,7 +63,7 @@ export const ForgotPasswordStep = ({
   userAuthStep,
 }: ForgotPasswordStepProps) => {
   const [otp, setOtp] = useState(["", "", "", ""]);
-  const [phoneNumber, setPhoneNumber] = useState(drawerState.phoneNumber || ""); // Pre-fill if phone number is available
+  const [phoneNumber, setPhoneNumber] = useState(drawerState.phoneNumber || "");
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [ishowOtpSection, setIshowOtpSection] = useState(false);
@@ -71,10 +71,20 @@ export const ForgotPasswordStep = ({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resendTimer, setResendTimer] = useState(30);
+  console.log("resendTimer: ", resendTimer);
   console.log("isCurrentlyLoading: ", isCurrentlyLoading);
   console.log("userAuthStep: ", userAuthStep);
 
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const otpTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (otpTimeoutRef.current) {
+        clearTimeout(otpTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (mutationSatate?.isSuccess) {
@@ -86,8 +96,11 @@ export const ForgotPasswordStep = ({
 
   useEffect(() => {
     if (ishowOtpSection && resendTimer > 0) {
-      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
-      return () => clearTimeout(timer);
+      otpTimeoutRef.current = setTimeout(
+        () => setResendTimer(resendTimer - 1),
+        1000
+      );
+      return () => clearTimeout(otpTimeoutRef.current!);
     }
     return undefined;
   }, [ishowOtpSection, resendTimer]); // Also added resendTimer to dependencies
@@ -103,7 +116,8 @@ export const ForgotPasswordStep = ({
     try {
       const verifyResponse = await verifyOTP({
         otp: code,
-        otpId: drawerState.otpId,
+        userId: userAuthStep.userId,
+        otpId: userAuthStep.otpId,
         otpType: OtpType.PASSWORD_CHANGE,
         countryCode: drawerState.countryCode,
         phoneNumber: drawerState.phoneNumber,
@@ -113,6 +127,12 @@ export const ForgotPasswordStep = ({
       //   code
 
       if (verifyResponse.success) {
+        if (otpTimeoutRef.current) {
+          clearTimeout(otpTimeoutRef.current);
+          otpTimeoutRef.current = null;
+        }
+
+        setIshowPasswordSection(true);
         setDrawerState((prev: any) => ({
           ...prev,
           tempToken: verifyResponse.tempToken,
@@ -154,14 +174,15 @@ export const ForgotPasswordStep = ({
     if (value && index < 3) {
       otpRefs.current[index + 1]?.focus();
     }
-    if (newOtp.every((digit) => digit !== "") && newOtp.join("").length === 4) {
-      setTimeout(() => handleVerifyOTP(newOtp.join("")), 100);
-    }
-  };
 
-  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      otpRefs.current[index - 1]?.focus();
+    // ✅ Clear any existing timeout before setting a new one
+    // if (otpTimeoutRef.current) clearTimeout(otpTimeoutRef.current);
+
+    if (newOtp.every((digit) => digit !== "") && newOtp.join("").length === 4) {
+      otpTimeoutRef.current = setTimeout(() => {
+        handleVerifyOTP(newOtp.join(""));
+        otpTimeoutRef.current = null; // cleanup after run
+      }, 100);
     }
   };
 
@@ -169,16 +190,24 @@ export const ForgotPasswordStep = ({
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").trim();
 
-    // Check if pasted data is exactly 4 digits
     if (/^\d{4}$/.test(pastedData)) {
       const newOtp = pastedData.split("");
       setOtp(newOtp);
-
-      // Focus the last input
       otpRefs.current[3]?.focus();
 
-      // Trigger verification after a short delay
-      setTimeout(() => handleVerifyOTP(pastedData), 100);
+      // ✅ Clear existing timeout before setting new one
+      // if (otpTimeoutRef.current) clearTimeout(otpTimeoutRef.current);
+
+      otpTimeoutRef.current = setTimeout(() => {
+        handleVerifyOTP(pastedData);
+        otpTimeoutRef.current = null;
+      }, 100);
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
     }
   };
 
@@ -220,7 +249,7 @@ export const ForgotPasswordStep = ({
           <div>
             <h3 className="text-xl font-semibold">Forgot Your Password?</h3>
             <p className="text-balance text-muted-foreground">
-              No worries, we'll send a reset code to your WhatsApp.
+              No worries, we&apos;ll send a reset code to your WhatsApp.
             </p>
           </div>
         ) : (
@@ -391,7 +420,6 @@ export const ForgotPasswordStep = ({
                     <Button
                       variant="ghost"
                       onClick={handleResend}
-                      disabled={isCurrentlyLoading}
                       className="text-orange-600 hover:bg-orange-50 hover:text-orange-700"
                     >
                       Resend OTP

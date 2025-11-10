@@ -89,8 +89,6 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
   const [statusMessage, setStatusMessage] = useState("");
   const [userExists, setUserExists] = useState<boolean>(false);
 
-  console.log("step: ", step);
-
   // All other states
   const [drawerState, setDrawerState] = useImmer<LoginDrawerState>({
     phoneNumber: "",

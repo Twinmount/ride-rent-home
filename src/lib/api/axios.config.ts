@@ -30,7 +30,7 @@ function detectCountryFromUrl(): "ae" | "in" {
 // Function to get dynamic assets URL based on country
 function getAssetsUrl(country?: "ae" | "in" | string): string {
   const detectedCountry = country || detectCountryFromUrl();
-  
+
   switch (detectedCountry) {
     case "in":
       return (
@@ -41,9 +41,7 @@ function getAssetsUrl(country?: "ae" | "in" | string): string {
     case "ae":
     default:
       return (
-        ENV.ASSETS_URL ||
-        ENV.NEXT_PUBLIC_ASSETS_URL ||
-        "http://localhost:5000"
+        ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL || "http://localhost:5000"
       );
   }
 }
@@ -157,7 +155,6 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
 // Function to create axios instance with interceptors
 const createApiClient = (baseURL: string): AxiosInstance => {
-  console.log("called createApiClient with baseURL: ", baseURL);
   const client = axios.create({
     baseURL,
     timeout: 30000, // Increased timeout for file uploads

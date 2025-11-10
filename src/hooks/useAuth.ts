@@ -60,7 +60,6 @@ export const useAuth = () => {
   });
 
   const [isLoginOpen, setLoginOpen] = useImmer(false);
-  console.log("isLoginOpen: ", isLoginOpen);
 
   const [userAuthStep, setUserAuthStep] = useImmer({
     userId: "",
@@ -239,6 +238,10 @@ export const useAuth = () => {
     mutationFn: authAPI.resendOtp,
     onSuccess: (data) => {
       setError(null);
+      setUserAuthStep((draft) => {
+        draft.userId = data.data?.userId || "";
+        draft.otpId = data.data?.otpId || "";
+      });
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -248,7 +251,10 @@ export const useAuth = () => {
   const forgotPasswordMutation = useMutation({
     mutationFn: authAPI.forgotPassword,
     onSuccess: (data) => {
-      console.log("data: ", data);
+      setUserAuthStep((draft) => {
+        draft.userId = data.data?.userId || "";
+        draft.otpId = data.data?.otpId || "";
+      });
       setError(null);
     },
     onError: (error: Error) => {
