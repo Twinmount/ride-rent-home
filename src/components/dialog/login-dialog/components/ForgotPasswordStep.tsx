@@ -1,8 +1,10 @@
-import React, { useState, memo } from "react";
+import React, { useState, memo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "react-international-phone";
 import { Smartphone, Loader2, Eye, EyeOff } from "lucide-react"; // Changed icon to Smartphone
+import { ForgotPasswordStepProps } from "./component-type";
+import { OtpType } from "@/types/auth.types";
 
 const MemoizedPhoneInput = memo(
   ({
@@ -47,26 +49,83 @@ const MemoizedPhoneInput = memo(
 );
 
 export const ForgotPasswordStep = ({
-  currentStep,
+  resendOTP,
   setStep,
   setStatus,
   setStatusMessage,
   drawerState,
   isCurrentlyLoading,
   sendPasswordResetCodeViaWhatsApp,
-  mutationSatate, // New prop for sending code
+  mutationSatate,
   clearError,
-}: any) => {
+  setDrawerState,
+  verifyOTP,
+  userAuthStep,
+}: ForgotPasswordStepProps) => {
+  const [otp, setOtp] = useState(["", "", "", ""]);
   const [phoneNumber, setPhoneNumber] = useState(drawerState.phoneNumber || ""); // Pre-fill if phone number is available
-  const [codeSent, setCodeSent] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [ishowOtpSection, setIshowOtpSection] = useState(false);
+  const [ishowPasswordSection, setIshowPasswordSection] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [resendTimer, setResendTimer] = useState(30);
+  console.log("isCurrentlyLoading: ", isCurrentlyLoading);
+  console.log("userAuthStep: ", userAuthStep);
 
-  console.log("mutationSatate: ", mutationSatate);
-  console.log("currentStep: ", currentStep);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  useEffect(() => {
+    if (mutationSatate?.isSuccess) {
+      mutationSatate.reset();
+      setIshowOtpSection(true);
+      setStatusMessage("Password reset code sent!");
+    }
+  }, [mutationSatate]);
+
+  useEffect(() => {
+    if (ishowOtpSection && resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [ishowOtpSection, resendTimer]); // Also added resendTimer to dependencies
+
+  const handleVerifyOTP = async (otpCode?: string) => {
+    const code = otpCode || otp.join("");
+    if (code.length !== 4) return;
+
+    setStatus("loading");
+    setStatusMessage("Verifying OTP...");
+    clearError();
+
+    try {
+      const verifyResponse = await verifyOTP({
+        otp: code,
+        otpId: drawerState.otpId,
+        otpType: OtpType.PASSWORD_CHANGE,
+        countryCode: drawerState.countryCode,
+        phoneNumber: drawerState.phoneNumber,
+      });
+      //  userAuthStep.userId,
+      //   drawerState.otpId || userAuthStep.otpId,
+      //   code
+
+      if (verifyResponse.success) {
+        setDrawerState((prev: any) => ({
+          ...prev,
+          tempToken: verifyResponse.tempToken,
+        }));
+        setStatusMessage("Phone verified! Complete your profile to continue.");
+      }
+    } catch (error: any) {
+      setStatus("error");
+      setStatusMessage(error?.message || "Invalid OTP. Please try again.");
+      setOtp(["", "", "", ""]);
+      otpRefs.current[0]?.focus();
+    }
+  };
 
   const handleSendResetCode = async () => {
     if (!phoneNumber.trim()) return;
@@ -76,22 +135,77 @@ export const ForgotPasswordStep = ({
 
     try {
       // Replace with your actual API call to send password reset code via WhatsApp
-      const resetResponse = await sendPasswordResetCodeViaWhatsApp({
+      await sendPasswordResetCodeViaWhatsApp({
         phoneNumber,
-        countryCode: drawerState.countryCode, // Assuming countryCode is part of drawerState
+        countryCode: drawerState.countryCode,
       });
-
-      console.log("resetResponse: ", resetResponse);
-
-      if (mutationSatate.isSuccess) {
-        setStep("new-password");
-        setStatusMessage("Password reset code sent!");
-        // Optionally, you might want to automatically advance to a 'VerifyResetCodeStep' here
-        // setStep("verifyResetCode");
-      }
     } catch (error: any) {
       setStatus("error");
       setStatusMessage("Failed to send reset code. Please try again.");
+    }
+  };
+
+  const handleOtpChange = (index: number, value: string) => {
+    if (value.length > 1) return;
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    if (value && index < 3) {
+      otpRefs.current[index + 1]?.focus();
+    }
+    if (newOtp.every((digit) => digit !== "") && newOtp.join("").length === 4) {
+      setTimeout(() => handleVerifyOTP(newOtp.join("")), 100);
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").trim();
+
+    // Check if pasted data is exactly 4 digits
+    if (/^\d{4}$/.test(pastedData)) {
+      const newOtp = pastedData.split("");
+      setOtp(newOtp);
+
+      // Focus the last input
+      otpRefs.current[3]?.focus();
+
+      // Trigger verification after a short delay
+      setTimeout(() => handleVerifyOTP(pastedData), 100);
+    }
+  };
+
+  const handleResend = async () => {
+    setStatus("loading");
+    setStatusMessage("Resending OTP...");
+    clearError();
+
+    try {
+      const resendResponse = await resendOTP(
+        drawerState.phoneNumber,
+        drawerState.countryCode
+      );
+      if (resendResponse.success && resendResponse.data) {
+        setDrawerState((prev: any) => ({
+          ...prev,
+          otpId: resendResponse.data.otpId,
+        }));
+        setStatus("success");
+        setStatusMessage("OTP resent successfully!");
+        setResendTimer(30);
+        setOtp(["", "", "", ""]);
+        otpRefs.current[0]?.focus();
+      }
+    } catch (error: any) {
+      setStatus("error");
+      setStatusMessage(error?.message || "Failed to resend OTP.");
     }
   };
 
@@ -102,14 +216,27 @@ export const ForgotPasswordStep = ({
           <Smartphone className="h-8 w-8 text-orange-600" />{" "}
           {/* Updated icon */}
         </div>
-        <h3 className="text-xl font-semibold">Forgot Your Password?</h3>
-        <p className="text-balance text-muted-foreground">
-          No worries, we'll send a reset code to your WhatsApp.
-        </p>
+        {!ishowPasswordSection && !ishowOtpSection ? (
+          <div>
+            <h3 className="text-xl font-semibold">Forgot Your Password?</h3>
+            <p className="text-balance text-muted-foreground">
+              No worries, we'll send a reset code to your WhatsApp.
+            </p>
+          </div>
+        ) : (
+          ishowOtpSection && (
+            <p className="text-balance text-muted-foreground">
+              Enter the 4-digit code sent to{" "}
+              <span className="font-medium text-foreground">
+                {`${drawerState.countryCode} ${drawerState.phoneNumber}`}
+              </span>
+            </p>
+          )
+        )}
       </div>
-
+      {/* mobile number & send code */}
       <div className="space-y-4">
-        {currentStep === "forgot-password" ? (
+        {!ishowPasswordSection && !ishowOtpSection ? (
           <>
             <div className="space-y-2">
               <label htmlFor="phoneNumber" className="text-sm font-medium">
@@ -155,68 +282,121 @@ export const ForgotPasswordStep = ({
               )}
             </Button>
           </>
-        ) : (
-          currentStep === "new-password" && (
-            <div>
-              <div className="space-y-2">
-                <label htmlFor="newPassword" className="text-sm font-medium">
-                  Create Password *
-                </label>
-                <div className="relative">
-                  <Input
-                    id="newPassword"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Create a secure password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    disabled={isCurrentlyLoading}
-                    className="pr-10 focus:border-orange-500 focus:ring-orange-500"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-muted-foreground" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label
-                  htmlFor="confirmPassword"
-                  className="text-sm font-medium"
+        ) : ishowPasswordSection ? (
+          // new password section
+          <div>
+            <div className="space-y-2">
+              <label htmlFor="newPassword" className="text-sm font-medium">
+                Create Password *
+              </label>
+              <div className="relative">
+                <Input
+                  id="newPassword"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Create a secure password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  disabled={isCurrentlyLoading}
+                  className="pr-10 focus:border-orange-500 focus:ring-orange-500"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
                 >
-                  Confirm Password *
-                </label>
-                <div className="relative">
-                  <Input
-                    id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    disabled={isCurrentlyLoading}
-                    className="pr-10 focus:border-orange-500 focus:ring-orange-500"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-muted-foreground" />
-                    )}
-                  </Button>
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="confirmPassword" className="text-sm font-medium">
+                Confirm Password *
+              </label>
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={isCurrentlyLoading}
+                  className="pr-10 focus:border-orange-500 focus:ring-orange-500"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </Button>
+              </div>
+            </div>
+            <Button
+              onClick={handleSendResetCode}
+              disabled={mutationSatate.isLoading || !phoneNumber.trim()}
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 py-6 text-lg text-white hover:from-orange-600 hover:to-orange-700"
+            >
+              {mutationSatate.isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Sending Code...
+                </>
+              ) : (
+                "Send Reset Code"
+              )}
+            </Button>
+          </div>
+        ) : (
+          ishowOtpSection && (
+            // otp section for verifying code
+            <div>
+              <div className="space-y-4">
+                <div className="flex justify-center gap-3">
+                  {otp.map((digit, index) => (
+                    <Input
+                      key={index}
+                      ref={(el) => {
+                        otpRefs.current[index] = el;
+                      }}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onPaste={handleOtpPaste}
+                      onChange={(e) => handleOtpChange(index, e.target.value)}
+                      onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                      className="h-14 w-14 border-2 text-center text-2xl font-bold focus:border-orange-500 focus:ring-orange-500"
+                    />
+                  ))}
+                </div>
+
+                <div className="text-center">
+                  {resendTimer > 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      Resend code in {resendTimer}s
+                    </p>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      onClick={handleResend}
+                      disabled={isCurrentlyLoading}
+                      className="text-orange-600 hover:bg-orange-50 hover:text-orange-700"
+                    >
+                      Resend OTP
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

@@ -3,9 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/useAuth";
-
-// Step Components
 import { PhoneStep } from "./components/PhoneStep";
 import { PasswordStep } from "./components/PasswordStep";
 import { OtpStep } from "./components/OtpStep";
@@ -91,6 +88,8 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
   const [status, setStatus] = useState<StatusType>("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [userExists, setUserExists] = useState<boolean>(false);
+
+  console.log("step: ", step);
 
   // All other states
   const [drawerState, setDrawerState] = useImmer<LoginDrawerState>({
@@ -219,6 +218,18 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
             )}
             {step === "forgot-password" && (
               <ForgotPasswordStep
+                // verifyOTP={verifyOTP}
+                // currentStep={step}
+                // setStep={setStep}
+                // setStatus={setStatus}
+                // setStatusMessage={setStatusMessage}
+                // drawerState={drawerState}
+                // isCurrentlyLoading={isCurrentlyLoading}
+                // mutationSatate={forgotPasswordMutation}
+                // sendPasswordResetCodeViaWhatsApp={forgotPassword}
+                // clearError={clearError}
+                userAuthStep={userAuthStep}
+                verifyOTP={verifyOTP}
                 currentStep={step}
                 setStep={setStep}
                 setStatus={setStatus}
@@ -228,6 +239,8 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
                 mutationSatate={forgotPasswordMutation}
                 sendPasswordResetCodeViaWhatsApp={forgotPassword}
                 clearError={clearError}
+                resendOTP={resendOTP}
+                setDrawerState={setDrawerState}
               />
             )}
             {step === "otp" && (

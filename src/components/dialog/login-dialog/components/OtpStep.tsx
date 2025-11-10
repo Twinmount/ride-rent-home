@@ -56,11 +56,16 @@ export const OtpStep = ({
     clearError();
 
     try {
-      const verifyResponse = await verifyOTP(
-        userAuthStep.userId,
-        drawerState.otpId || userAuthStep.otpId,
-        code
-      );
+      const verifyResponse = await verifyOTP({
+        otp: code,
+        userId: userAuthStep.userId,
+        otpId: drawerState.otpId || userAuthStep.otpId,
+      });
+      // const verifyResponse = await verifyOTP(
+      //   userAuthStep.userId,
+      //   drawerState.otpId || userAuthStep.otpId,
+      //   code
+      // );
 
       if (verifyResponse.success) {
         setDrawerState((prev: any) => ({

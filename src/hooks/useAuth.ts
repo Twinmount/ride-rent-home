@@ -17,6 +17,8 @@ import type {
   PhoneChangeData,
   PhoneChangeVerificationData,
   ForgotPasswordData,
+  OtpType,
+  OtpVerificationData,
 } from "@/types/auth.types";
 
 // Import constants
@@ -58,6 +60,7 @@ export const useAuth = () => {
   });
 
   const [isLoginOpen, setLoginOpen] = useImmer(false);
+  console.log("isLoginOpen: ", isLoginOpen);
 
   const [userAuthStep, setUserAuthStep] = useImmer({
     userId: "",
@@ -89,10 +92,10 @@ export const useAuth = () => {
       queryClient.clear();
 
       // Close login modal if open
-      setLoginOpen(false);
+      // setLoginOpen(false);
 
       // Optionally redirect to home or login page
-      // router.push('/');
+      // router.push("/");
     };
 
     // Add event listener
@@ -308,7 +311,7 @@ export const useAuth = () => {
 
   const logoutMutation = useMutation({
     mutationFn: ({ userId }: { userId?: string }) => authAPI.logout(userId),
-    onSuccess: () => {
+    onSuccess: (data) => {
       setAuthenticated(null);
       setAuth((draft) => {
         draft.isLoggedIn = false;
@@ -648,16 +651,10 @@ export const useAuth = () => {
 
   // Verify OTP function
   const verifyOTP = async (
-    userId: string,
-    otpId: string,
-    otp: string
+    otpVerificationData: OtpVerificationData
   ): Promise<AuthResponse> => {
     try {
-      return verifyOtpMutation.mutateAsync({
-        userId,
-        otpId,
-        otp,
-      });
+      return verifyOtpMutation.mutateAsync(otpVerificationData);
     } catch (error) {
       const authError: AuthError = {
         message:
@@ -711,11 +708,16 @@ export const useAuth = () => {
 
   // Resend OTP function
   const resendOTP = useCallback(
-    async (phoneNumber: string, countryCode: string): Promise<AuthResponse> => {
+    async (
+      phoneNumber: string,
+      countryCode: string,
+      otpType?: OtpType
+    ): Promise<AuthResponse> => {
       try {
         return resendOtpMutation.mutateAsync({
           phoneNumber,
           countryCode,
+          otpType: otpType,
         });
       } catch (error) {
         const authError: AuthError = {
