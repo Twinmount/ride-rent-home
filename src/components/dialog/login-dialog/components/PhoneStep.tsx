@@ -1,3 +1,5 @@
+"use client";
+
 import React, {
   useState,
   useEffect,
@@ -74,9 +76,7 @@ export const PhoneStep = ({
   setDrawerState,
 }: any) => {
   const { auth } = useAuthContext();
-  const detectedCountryLocal = sessionStorage.getItem(
-    "detectedCountry"
-  ) as string;
+  let detectedCountryLocal;
 
   const { location, isLoading: isLocationLoading } = useLocationDetection(
     !auth.isLoggedIn && !detectedCountryLocal
@@ -101,6 +101,12 @@ export const PhoneStep = ({
   );
 
   const [showSkipOption, setShowSkipOption] = useState<boolean>(false);
+
+  useEffect(() => {
+    detectedCountryLocal = sessionStorage.getItem("detectedCountry");
+    console.log("country: ", detectedCountryLocal);
+    if (detectedCountryLocal) setDetectedCountry(detectedCountryLocal);
+  }, []);
 
   useEffect(() => {
     if (isLocationLoading) {
