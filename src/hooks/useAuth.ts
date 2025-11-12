@@ -107,7 +107,7 @@ export const useAuth = () => {
         handleLogoutEvent as EventListener
       );
     };
-  }, [updateState, setAuth, queryClient, setLoginOpen]);
+  }, []);
 
   // React Query Mutations
   const checkUserExistsMutation = useMutation({
@@ -632,7 +632,7 @@ export const useAuth = () => {
     queryClient.clear();
 
     // Close login modal
-    setLoginOpen(false);
+    // setLoginOpen(false);
 
     // Reset user auth step
     setUserAuthStep((draft) => {
@@ -641,7 +641,7 @@ export const useAuth = () => {
       draft.name = "";
       draft.otpExpiresIn = 5;
     });
-  }, [updateState, setAuth, queryClient, setLoginOpen, setUserAuthStep]);
+  }, [updateState, setAuth, queryClient, setUserAuthStep]);
 
   // Logout function
   const logout = async (id?: string): Promise<void> => {
@@ -842,7 +842,7 @@ export const useAuth = () => {
             ? error.message
             : "Failed to verify email address change",
       };
-      setError(authError);
+      // setError(authError);
       throw authError;
     }
   };

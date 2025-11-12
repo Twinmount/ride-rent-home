@@ -24,6 +24,16 @@ export interface ResendOTPResponse {
 }
 
 export interface ForgotPasswordStepProps {
+  setPasswordMutation: any;
+  setPassword: ({
+    tempToken,
+    password,
+    confirmPassword,
+  }: {
+    tempToken: string;
+    password: string;
+    confirmPassword: string;
+  }) => Promise<AuthResponse>;
   verifyOTP: ({
     userId,
     otpId,

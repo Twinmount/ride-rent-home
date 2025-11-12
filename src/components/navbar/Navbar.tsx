@@ -55,6 +55,7 @@ export const Navbar = () => {
     auth,
     logout,
     isLoginOpen,
+    useGetUserProfile,
     onHandleLoginmodal,
     handleProfileNavigation,
   } = useAuthContext();
@@ -62,6 +63,8 @@ export const Navbar = () => {
   useLayoutEffect(() => {
     setMounted(true);
   }, []);
+
+  console.log("isLoginOpen:Navbar ", isLoginOpen);
 
   const { country, state, category } = useStateAndCategory();
 
@@ -98,8 +101,19 @@ export const Navbar = () => {
     router.push("/user-profile/saved-vehicles");
   };
 
+  const userId = authStorage.getUser()?.id.toString();
+
+  // Get user profile data
+  const userProfileQuery = useGetUserProfile(userId!, !!userId);
+
   // Get user name from auth state
-  const userName = user ? `${user.name || ""}` : "User";
+  const userName = userProfileQuery.data?.data?.name
+    ? `${userProfileQuery.data?.data?.name || ""}`
+    : "User";
+
+  const useAvatar = userProfileQuery.data?.data?.avatar
+    ? `${userProfileQuery.data?.data?.avatar || ""}`
+    : "?";
 
   return (
     <>
@@ -151,7 +165,7 @@ export const Navbar = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Avatar className="h-8 w-8 flex-shrink-0 cursor-pointer ring-2 ring-orange-200 transition-all hover:ring-orange-300">
-                      <AvatarImage src={user?.avatar} alt={userName} />
+                      <AvatarImage src={useAvatar} alt={userName} />
                       <AvatarFallback className="bg-orange-100 text-xs font-semibold text-orange-600">
                         {getAvatarProps(userName).fallbackInitials}
                       </AvatarFallback>

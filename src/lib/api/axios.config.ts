@@ -197,13 +197,13 @@ const createApiClient = (baseURL: string): AxiosInstance => {
           console.log(
             "createApiClient: >>> 401 Unauthorized error DETECTED! <<<"
           );
-        }
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(
-            new CustomEvent("auth:logout", {
-              detail: { reason: "unauthorized" },
-            })
-          );
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(
+              new CustomEvent("auth:logout", {
+                detail: { reason: "unauthorized" },
+              })
+            );
+          }
         }
       }
       // CRITICAL: Re-throw the error so it can be caught by the calling code (`try...catch` blocks)

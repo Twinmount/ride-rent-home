@@ -55,6 +55,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     resendOTP,
     updateProfile,
     checkUserExists,
+    setPasswordMutation,
     isLoading: authLoading,
     error: authError,
     clearError,
@@ -226,6 +227,8 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
                 // mutationSatate={forgotPasswordMutation}
                 // sendPasswordResetCodeViaWhatsApp={forgotPassword}
                 // clearError={clearError}
+                setPasswordMutation={setPasswordMutation}
+                setPassword={setPassword}
                 userAuthStep={userAuthStep}
                 verifyOTP={verifyOTP}
                 currentStep={step}

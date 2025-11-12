@@ -63,6 +63,7 @@ import { ProfileBreadcrumb } from "@/components/user-profile";
 import { ProtectedRoute } from "@/components/common";
 import { trimName } from "@/helpers";
 import { getVehicleImageUrl } from "@/utils/imageUrl";
+import { AccountManagementSection } from "./AccountManagementSection";
 
 interface UserProfileProps {
   className?: string;
@@ -1249,7 +1250,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   />
                 </div> */}
                 </div>
-
+                {/* account managment */}
+                <AccountManagementSection />
                 {/* Preferences */}
                 <div className="space-y-4 border-t pt-4">
                   <h4 className="flex items-center gap-2 text-base font-medium text-gray-900 lg:text-lg">

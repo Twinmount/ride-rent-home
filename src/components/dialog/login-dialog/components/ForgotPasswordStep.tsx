@@ -61,6 +61,8 @@ export const ForgotPasswordStep = ({
   setDrawerState,
   verifyOTP,
   userAuthStep,
+  setPassword,
+  setPasswordMutation,
 }: ForgotPasswordStepProps) => {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [phoneNumber, setPhoneNumber] = useState(drawerState.phoneNumber || "");
@@ -71,9 +73,6 @@ export const ForgotPasswordStep = ({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resendTimer, setResendTimer] = useState(30);
-  console.log("resendTimer: ", resendTimer);
-  console.log("isCurrentlyLoading: ", isCurrentlyLoading);
-  console.log("userAuthStep: ", userAuthStep);
 
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const otpTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -105,6 +104,21 @@ export const ForgotPasswordStep = ({
     return undefined;
   }, [ishowOtpSection, resendTimer]); // Also added resendTimer to dependencies
 
+  const onConfirmResetPassword = async () => {
+    try {
+      const passwordResponse = await setPassword({
+        tempToken: drawerState.tempToken,
+        password: newPassword,
+        confirmPassword: confirmPassword,
+      });
+    } catch (error: any) {
+      setStatus("error");
+      setStatusMessage(
+        error?.message || "Failed to create account. Please try again."
+      );
+    }
+  };
+
   const handleVerifyOTP = async (otpCode?: string) => {
     const code = otpCode || otp.join("");
     if (code.length !== 4) return;
@@ -122,9 +136,6 @@ export const ForgotPasswordStep = ({
         countryCode: drawerState.countryCode,
         phoneNumber: drawerState.phoneNumber,
       });
-      //  userAuthStep.userId,
-      //   drawerState.otpId || userAuthStep.otpId,
-      //   code
 
       if (verifyResponse.success) {
         if (otpTimeoutRef.current) {
@@ -179,10 +190,13 @@ export const ForgotPasswordStep = ({
     // if (otpTimeoutRef.current) clearTimeout(otpTimeoutRef.current);
 
     if (newOtp.every((digit) => digit !== "") && newOtp.join("").length === 4) {
-      otpTimeoutRef.current = setTimeout(() => {
+      setTimeout(() => {
         handleVerifyOTP(newOtp.join(""));
-        otpTimeoutRef.current = null; // cleanup after run
       }, 100);
+      // otpTimeoutRef.current = setTimeout(() => {
+      //   handleVerifyOTP(newOtp.join(""));
+      //   otpTimeoutRef.current = null; // cleanup after run
+      // }, 100);
     }
   };
 
@@ -325,7 +339,7 @@ export const ForgotPasswordStep = ({
                   placeholder="Create a secure password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  disabled={isCurrentlyLoading}
+                  disabled={setPasswordMutation?.isLoading}
                   className="pr-10 focus:border-orange-500 focus:ring-orange-500"
                 />
                 <Button
@@ -343,7 +357,7 @@ export const ForgotPasswordStep = ({
                 </Button>
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="my-4 space-y-2">
               <label htmlFor="confirmPassword" className="text-sm font-medium">
                 Confirm Password *
               </label>
@@ -354,7 +368,7 @@ export const ForgotPasswordStep = ({
                   placeholder="Confirm your password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  disabled={isCurrentlyLoading}
+                  disabled={setPasswordMutation?.isLoading}
                   className="pr-10 focus:border-orange-500 focus:ring-orange-500"
                 />
                 <Button
@@ -373,17 +387,17 @@ export const ForgotPasswordStep = ({
               </div>
             </div>
             <Button
-              onClick={handleSendResetCode}
-              disabled={mutationSatate.isLoading || !phoneNumber.trim()}
+              onClick={onConfirmResetPassword}
+              disabled={setPasswordMutation?.isLoading || !phoneNumber.trim()}
               className="w-full bg-gradient-to-r from-orange-500 to-orange-600 py-6 text-lg text-white hover:from-orange-600 hover:to-orange-700"
             >
-              {mutationSatate.isLoading ? (
+              {setPasswordMutation?.isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Sending Code...
+                  password Resetting...
                 </>
               ) : (
-                "Send Reset Code"
+                "Reset Password"
               )}
             </Button>
           </div>
