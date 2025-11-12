@@ -34,6 +34,12 @@ export interface SignupData {
   agreeToTerms: boolean;
 }
 
+export interface DeleteUserData {
+  userId: string;
+  phoneNumber?: string;
+  countryCode?: string;
+}
+
 /**
  * Phone signup request data interface (for phone-only signup)
  */
@@ -291,6 +297,7 @@ export interface UseAuthReturn {
   userAuthStep: UserAuthStep;
 
   // Actions
+  deleteUser: (userData: DeleteUserData) => Promise<AuthResponse>;
   login: (loginData: LoginData) => Promise<AuthResponse>;
   signup: (signupData: PhoneSignupData) => Promise<AuthResponse>;
   logout: (id: string) => Promise<void>;
@@ -355,6 +362,12 @@ export interface UseAuthReturn {
     unknown
   >;
   loginMutation: UseMutationResult<AuthResponse, Error, LoginData, unknown>;
+  deleteUserMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    DeleteUserData,
+    unknown
+  >;
   verifyOtpMutation: UseMutationResult<
     AuthResponse,
     Error,

@@ -86,6 +86,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
 
   // Common State
   const [step, setStep] = useState<AuthStep>("phone");
+  console.log("step: LoginDrawer", step);
   const [status, setStatus] = useState<StatusType>("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [userExists, setUserExists] = useState<boolean>(false);
@@ -97,6 +98,14 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     password: "",
     otp: "",
   });
+
+  useEffect(() => {
+    if (!isOpen) {
+      resetState();
+      onClose();
+      setDrawerState(initialDrawerState);
+    }
+  }, [isOpen]);
 
   const resetState = () => {
     setStep("phone");
@@ -217,16 +226,6 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
             )}
             {step === "forgot-password" && (
               <ForgotPasswordStep
-                // verifyOTP={verifyOTP}
-                // currentStep={step}
-                // setStep={setStep}
-                // setStatus={setStatus}
-                // setStatusMessage={setStatusMessage}
-                // drawerState={drawerState}
-                // isCurrentlyLoading={isCurrentlyLoading}
-                // mutationSatate={forgotPasswordMutation}
-                // sendPasswordResetCodeViaWhatsApp={forgotPassword}
-                // clearError={clearError}
                 setPasswordMutation={setPasswordMutation}
                 setPassword={setPassword}
                 userAuthStep={userAuthStep}

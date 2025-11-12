@@ -5,6 +5,7 @@ import { PhoneInput } from "react-international-phone";
 import { Smartphone, Loader2, Eye, EyeOff } from "lucide-react"; // Changed icon to Smartphone
 import { ForgotPasswordStepProps } from "./component-type";
 import { OtpType } from "@/types/auth.types";
+import { maskPhoneNumber } from "@/utils/helper";
 
 const MemoizedPhoneInput = memo(
   ({
@@ -106,7 +107,7 @@ export const ForgotPasswordStep = ({
 
   const onConfirmResetPassword = async () => {
     try {
-      const passwordResponse = await setPassword({
+      await setPassword({
         tempToken: drawerState.tempToken,
         password: newPassword,
         confirmPassword: confirmPassword,
@@ -148,7 +149,7 @@ export const ForgotPasswordStep = ({
           ...prev,
           tempToken: verifyResponse.tempToken,
         }));
-        setStatusMessage("Phone verified! Complete your profile to continue.");
+        setStatusMessage("Phone verified! set your new password");
       }
     } catch (error: any) {
       setStatus("error");
@@ -267,11 +268,12 @@ export const ForgotPasswordStep = ({
             </p>
           </div>
         ) : (
-          ishowOtpSection && (
+          ishowOtpSection &&
+          !ishowPasswordSection && (
             <p className="text-balance text-muted-foreground">
               Enter the 4-digit code sent to{" "}
               <span className="font-medium text-foreground">
-                {`${drawerState.countryCode} ${drawerState.phoneNumber}`}
+                {`${drawerState.countryCode} ${maskPhoneNumber(drawerState.phoneNumber)}`}
               </span>
             </p>
           )

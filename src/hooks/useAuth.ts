@@ -19,6 +19,7 @@ import type {
   ForgotPasswordData,
   OtpType,
   OtpVerificationData,
+  DeleteUserData,
 } from "@/types/auth.types";
 
 // Import constants
@@ -330,6 +331,36 @@ export const useAuth = () => {
     onError: (error) => {
       console.warn("Logout request failed:", error);
       // Continue with logout even if server request fails
+      setAuthenticated(null);
+      setAuth((draft) => {
+        draft.isLoggedIn = false;
+        draft.user = null;
+        draft.token = null;
+        draft.refreshToken = null;
+      });
+    },
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: async (deleteUserData: DeleteUserData) =>
+      authAPI.deleteUser(deleteUserData),
+    onSuccess: (data) => {
+      console.log("data: ", data);
+      // Clear authentication & cached data (like logout)
+      setAuthenticated(null);
+      setAuth((draft) => {
+        draft.isLoggedIn = false;
+        draft.user = null;
+        draft.token = null;
+        draft.refreshToken = null;
+      });
+
+      queryClient.clear(); // Clear cached data
+    },
+    onError: (error) => {
+      console.error("User deletion failed:", error);
+
+      // Optionally handle cleanup even if delete fails
       setAuthenticated(null);
       setAuth((draft) => {
         draft.isLoggedIn = false;
@@ -655,6 +686,20 @@ export const useAuth = () => {
     }
   };
 
+  const deleteUser = async (
+    deleteUserData: DeleteUserData
+  ): Promise<AuthResponse> => {
+    try {
+      return await deleteUserMutation.mutateAsync(deleteUserData);
+    } catch (error) {
+      const authError: AuthError = {
+        message: "User deletion failed",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
   // Verify OTP function
   const verifyOTP = async (
     otpVerificationData: OtpVerificationData
@@ -928,6 +973,7 @@ export const useAuth = () => {
     setPassword,
     forgotPassword,
     resendOTP,
+    deleteUser,
     updateProfile,
     requestPhoneNumberChange,
     verifyPhoneNumberChange,
@@ -950,6 +996,7 @@ export const useAuth = () => {
     resendOtpMutation,
     updateUserNameAndAvatar,
     logoutMutation,
+    deleteUserMutation,
     requestPhoneChangeMutation,
     verifyPhoneChangeMutation,
     requestEmailChangeMutation,

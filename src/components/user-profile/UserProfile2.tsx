@@ -85,26 +85,20 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   // Get auth context
   const {
-    authStorage,
+    deleteUser,
+    updateProfile,
     formatMemberSince,
     useGetUserProfile,
-    updateUserNameAndAvatar,
-    updateProfile,
-    verifyOTP,
-    resendOTP,
-    verifyOtpMutation,
-    resendOtpMutation,
-    requestPhoneNumberChange,
-    verifyPhoneNumberChange,
-    requestPhoneChangeMutation,
-    verifyPhoneChangeMutation,
     requestEmailChange,
     verifyEmailChange,
-    requestEmailChangeMutation,
-    verifyEmailChangeMutation,
-    userAuthStep,
-    auth,
-    user,
+    requestPhoneNumberChange,
+    verifyPhoneNumberChange,
+    authStorage,
+    deleteUserMutation,
+    verifyOtpMutation,
+    resendOtpMutation,
+    requestPhoneChangeMutation,
+    verifyPhoneChangeMutation,
   } = useAuthContext();
 
   // Profile data state
@@ -1237,21 +1231,12 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                       </div>
                     )}
                   </div>
-
-                  {/* <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-sm font-medium">
-                    <Globe className="h-4 w-4 text-gray-500" />
-                    Languages I Speak
-                  </Label>
-                  <Input
-                    value={languages}
-                    onChange={(e) => setLanguages(e.target.value)}
-                    placeholder="Enter languages you speak"
-                  />
-                </div> */}
                 </div>
                 {/* account managment */}
-                <AccountManagementSection />
+                <AccountManagementSection
+                  onConfirmDeleteUser={() => deleteUser({ userId: userId! })}
+                  isDeletingAccount={deleteUserMutation.isPending}
+                />
                 {/* Preferences */}
                 <div className="space-y-4 border-t pt-4">
                   <h4 className="flex items-center gap-2 text-base font-medium text-gray-900 lg:text-lg">

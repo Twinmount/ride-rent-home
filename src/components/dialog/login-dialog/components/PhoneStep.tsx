@@ -31,7 +31,6 @@ const InternalMemoizedPhoneInput = memo(
   }) {
     return (
       <PhoneInput
-        disabled
         defaultCountry={defaultCountry}
         value={value}
         onChange={onChange}
@@ -202,6 +201,10 @@ export const PhoneStep = ({
             userData.isTempVerified === "TRUE" &&
             userData?.isProfileNavigationRequired
           ) {
+            setDrawerState((prev: any) => ({
+              ...prev,
+              tempToken: userExistsResponse.data.tempToken,
+            }));
             setUserExists(true);
             setStep("register");
             setStatus("success");

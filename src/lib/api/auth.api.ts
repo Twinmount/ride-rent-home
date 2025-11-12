@@ -12,6 +12,7 @@ import type {
   PhoneChangeVerificationData,
   EmailChangeData,
   EmailChangeVerificationData,
+  DeleteUserData,
 } from "@/types/auth.types";
 
 import { createAuthenticatedRequest, authApiClient } from "./axios.config";
@@ -21,6 +22,7 @@ const AUTH_ENDPOINTS = {
   CHECK_USER_EXISTS: "/check-user-exists",
   SIGNUP: "/signup",
   LOGIN: "/login",
+  DELETE_USER: "/delete-user",
   VERIFY_OTP: "/verify-otp",
   SET_PASSWORD: "/set-password",
   RESEND_OTP: "/resend-otp",
@@ -47,6 +49,23 @@ export class AuthAPI {
       const response = await createAuthenticatedRequest.auth.post(
         AUTH_ENDPOINTS.SIGNUP,
         signupData
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || error.message || "Signup failed"
+      );
+    }
+  }
+
+  /**
+   * Delete User with phone number or userId
+   */
+  static async deleteUser(userData: DeleteUserData): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.delete(
+        AUTH_ENDPOINTS.DELETE_USER,
+        { data: userData }
       );
       return response.data;
     } catch (error: any) {
@@ -441,6 +460,7 @@ export const authAPI = {
   signup: AuthAPI.signup,
   login: AuthAPI.login,
   verifyOtp: AuthAPI.verifyOtp,
+  deleteUser: AuthAPI.deleteUser,
   setPassword: AuthAPI.setPassword,
   resendOtp: AuthAPI.resendOtp,
   getProfile: AuthAPI.getProfile,

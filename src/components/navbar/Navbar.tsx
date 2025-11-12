@@ -109,7 +109,7 @@ export const Navbar = () => {
   // Get user name from auth state
   const userName = userProfileQuery.data?.data?.name
     ? `${userProfileQuery.data?.data?.name || ""}`
-    : "User";
+    : "";
 
   const useAvatar = userProfileQuery.data?.data?.avatar
     ? `${userProfileQuery.data?.data?.avatar || ""}`

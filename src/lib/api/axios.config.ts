@@ -3,6 +3,7 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
   AxiosInstance,
+  AxiosRequestConfig,
 } from "axios";
 import { authStorage } from "@/lib/auth/authStorage";
 import { ENV } from "@/config/env";
@@ -197,13 +198,13 @@ const createApiClient = (baseURL: string): AxiosInstance => {
           console.log(
             "createApiClient: >>> 401 Unauthorized error DETECTED! <<<"
           );
-          if (typeof window !== "undefined") {
-            window.dispatchEvent(
-              new CustomEvent("auth:logout", {
-                detail: { reason: "unauthorized" },
-              })
-            );
-          }
+          // if (typeof window !== "undefined") {
+          //   window.dispatchEvent(
+          //     new CustomEvent("auth:logout", {
+          //       detail: { reason: "unauthorized" },
+          //     })
+          //   );
+          // }
         }
       }
       // CRITICAL: Re-throw the error so it can be caught by the calling code (`try...catch` blocks)
@@ -451,7 +452,7 @@ export const createAuthenticatedRequest = {
 
     delete: <T = any>(
       url: string,
-      config?: InternalAxiosRequestConfig
+      config?: AxiosRequestConfig
     ): Promise<AxiosResponse<T>> => authApiClient.delete(url, config),
   },
 

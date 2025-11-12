@@ -15,19 +15,10 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AlertCircle, Trash2 } from "lucide-react";
 
-export const AccountManagementSection = () => {
-  const [isDeletingAccount, setIsDeletingAccount] = React.useState(false);
-
-  const handleDeleteAccount = () => {
-    // Replace with your actual account deletion logic (e.g., API call)
-    setIsDeletingAccount(true);
-    console.log("Account deletion process started...");
-    setTimeout(() => {
-      console.log("Account deleted successfully!");
-      setIsDeletingAccount(false);
-    }, 2000); // Simulate API call
-  };
-
+export const AccountManagementSection = ({
+  onConfirmDeleteUser,
+  isDeletingAccount,
+}: any) => {
   return (
     <div className="space-y-4 px-4 sm:px-0">
       <div className="space-y-1">
@@ -59,6 +50,7 @@ export const AccountManagementSection = () => {
                 <Button
                   id="delete-account-button"
                   variant="destructive"
+                  // onClick={onConfirmDeleteUser}
                   disabled={isDeletingAccount}
                   className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-md text-sm font-medium transition-all duration-300 ease-out hover:scale-[1.02] sm:w-auto"
                 >
@@ -104,7 +96,10 @@ export const AccountManagementSection = () => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteAccount}>
+                  <AlertDialogAction
+                    disabled={isDeletingAccount}
+                    onClick={onConfirmDeleteUser}
+                  >
                     Continue
                   </AlertDialogAction>
                 </AlertDialogFooter>
