@@ -13,7 +13,7 @@ const CountryPage = async (props: PageProps) => {
     return notFound();
   }
 
-  const state = country === "ae" ? "dubai" : "bengaluru";
+  const state = country === "ae" ? "dubai" : "bangalore";
 
   redirect(`/${country}/${state}`);
 

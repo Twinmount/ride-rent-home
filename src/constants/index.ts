@@ -93,7 +93,7 @@ export const UAE_STATES = {
 
 // India States
 export const INDIA_STATES = {
-  BANGALORE: "bengaluru",
+  BANGALORE: "bangalore",
   CHENNAI: "chennai",
   DELHI: "delhi",
   GURGAON: "gurgaon",

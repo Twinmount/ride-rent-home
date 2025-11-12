@@ -27,7 +27,7 @@ export const COUNTRY_ONLY_PAGES = [
 export const ROUTE_FALLBACKS = {
   state: {
     ae: "dubai",
-    in: "bengaluru",
+    in: "bangalore",
   },
   category: "cars",
 } as const;
