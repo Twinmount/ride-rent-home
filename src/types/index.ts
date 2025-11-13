@@ -495,3 +495,12 @@ export type BlogData = {
   createdAt?: string;
   updatedAt?: string;
 };
+
+export interface ServerTimeResponse {
+  result: {
+    serverTime: string;
+    timestamp: number;
+  };
+  status: string;
+  statusCode: number;
+}

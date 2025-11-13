@@ -108,7 +108,7 @@ const ProfileCard = memo(
                 vehicleId={vehicleId}
                 agentId={profileData.agentId}
                 contactDetails={company.contactDetails}
-                className={cn("!my-auto", priceOffer ? "w-[30%]" : "w-full")}
+                className={cn("!my-auto", priceOffer ? "!w-[30%]" : "w-full")}
               />
             </div>
           ) : (

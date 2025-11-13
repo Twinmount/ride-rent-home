@@ -2,12 +2,16 @@ import { PriceOfferType } from "@/types/vehicle-types";
 
 /**
  * Check if a price offer is currently active (not expired)
+ * @param priceOffer - The price offer object to check
+ * @param now - Current time (defaults to new Date() for backward compatibility)
+ * @returns true if offer is active, false otherwise
  */
 export function isPriceOfferActive(
-  priceOffer?: PriceOfferType | null
+  priceOffer?: PriceOfferType | null,
+  now: Date = new Date()
 ): boolean {
   if (!priceOffer?.expiryTime) return false;
-  return new Date(priceOffer.expiryTime) > new Date();
+  return new Date(priceOffer.expiryTime) > now;
 }
 
 /**
@@ -21,9 +25,14 @@ export function isPriceOfferActive(
  * - User visits 4:15pm → Shows "01:44:59" (second cycle, 15 min into it)
  * - User visits 6:45pm → Shows "01:14:59" (third cycle, 45 min into it)
  *
+ * @param priceOffer - The price offer object
+ * @param now - Current time (defaults to new Date() for backward compatibility)
  * @returns Object with formatted time and raw seconds, or null if expired/no offer
  */
-export function getOfferCountdown(priceOffer?: PriceOfferType | null): {
+export function getOfferCountdown(
+  priceOffer?: PriceOfferType | null,
+  now: Date = new Date()
+): {
   formatted: string; // "01:45:32" format
   hours: number;
   minutes: number;
@@ -31,11 +40,10 @@ export function getOfferCountdown(priceOffer?: PriceOfferType | null): {
   totalSeconds: number;
 } | null {
   // Check if offer exists and is active
-  if (!isPriceOfferActive(priceOffer) || !priceOffer) {
+  if (!isPriceOfferActive(priceOffer, now) || !priceOffer) {
     return null;
   }
 
-  const now = new Date();
   const start = new Date(priceOffer.startTime);
   const expiry = new Date(priceOffer.expiryTime);
 

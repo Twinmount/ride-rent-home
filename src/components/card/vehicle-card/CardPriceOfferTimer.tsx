@@ -1,49 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { NewVehicleCardType } from "@/types/vehicle-types";
-import {
-  isPriceOfferActive,
-  getOfferCountdown,
-} from "@/helpers/price-offer.helper";
+import { usePriceOfferCountdown } from "@/hooks/usePriceOfferCountdown";
 
-type PriceOfferTimerProps = {
+type CardPriceOfferTimerProps = {
   vehicle: NewVehicleCardType;
   layoutType: "grid" | "carousel";
 };
 
-export default function PriceOfferTimer({
+export default function CardPriceOfferTimer({
   vehicle,
   layoutType,
-}: PriceOfferTimerProps) {
-  const [countdown, setCountdown] = useState<string | null>(null);
+}: CardPriceOfferTimerProps) {
+  const { countdown, isActive } = usePriceOfferCountdown(vehicle.priceOffer);
 
-  useEffect(() => {
-    // Check if offer is active
-    if (!isPriceOfferActive(vehicle.priceOffer)) {
-      setCountdown(null);
-      return;
-    }
-
-    // Function to update countdown
-    const updateCountdown = () => {
-      const result = getOfferCountdown(vehicle.priceOffer);
-      if (result) {
-        setCountdown(result.formatted);
-      } else {
-        setCountdown(null);
-      }
-    };
-
-    // Initial update
-    updateCountdown();
-
-    // Update every second
-    const interval = setInterval(updateCountdown, 1000);
-
-    // Cleanup
-    return () => clearInterval(interval);
-  }, [vehicle.priceOffer]);
+  // Don't render if offer is not active
+  if (!isActive || !countdown) return null;
 
   const className =
     layoutType === "carousel"
@@ -60,7 +32,7 @@ export default function PriceOfferTimer({
         {durationHours} Hour Price Lock
       </span>
       <span className="font-bold tabular-nums leading-tight">
-        {countdown ? countdown : "00:00:00"}
+        {countdown.formatted}
       </span>
     </div>
   );

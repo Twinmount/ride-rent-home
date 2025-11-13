@@ -1,10 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+
 import { PriceOfferType } from "@/types/vehicle-types";
-import {
-  isPriceOfferActive,
-  getOfferCountdown,
-} from "@/helpers/price-offer.helper";
+import { usePriceOfferCountdown } from "@/hooks/usePriceOfferCountdown";
 
 type PriceOfferDetailsProps = {
   priceOffer?: PriceOfferType | null;
@@ -15,29 +12,10 @@ export default function PriceOfferDetails({
   priceOffer,
   isMobile,
 }: PriceOfferDetailsProps) {
-  const [countdown, setCountdown] = useState<string | null>(null);
+  const { countdown, isActive } = usePriceOfferCountdown(priceOffer);
 
-  useEffect(() => {
-    if (!isPriceOfferActive(priceOffer)) {
-      setCountdown(null);
-      return;
-    }
-
-    const updateCountdown = () => {
-      const result = getOfferCountdown(priceOffer);
-      if (result) {
-        setCountdown(result.formatted);
-      } else {
-        setCountdown(null);
-      }
-    };
-
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
-    return () => clearInterval(interval);
-  }, [priceOffer]);
-
-  if (!countdown) return null;
+  // Don't render if no active offer
+  if (!isActive || !countdown) return null;
 
   const durationHours = priceOffer?.cycleDurationHours || 0;
 
@@ -45,7 +23,7 @@ export default function PriceOfferDetails({
 
   const flexLayoutClasses = isMobile
     ? "flex flex-col md:flex-row items-center md:items-center justify-between px-4 py-[0.4rem] "
-    : "flex flex-col items-start justify-between px-4 py-[0.4rem] xl:flex-row xl:items-center";
+    : "flex flex-col items-start justify-between px-4 py-[0.3rem] xl:flex-row xl:items-center";
 
   return (
     <div
@@ -70,7 +48,7 @@ export default function PriceOfferDetails({
             Ends In:
           </span>
           <span className="text-2xl font-black tabular-nums text-orange-500">
-            {countdown}
+            {countdown.formatted}
           </span>
         </div>
       </div>

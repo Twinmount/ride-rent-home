@@ -6,7 +6,7 @@ import LinkWrapper from "../LinkWrapper";
 import { VehicleBadgesGroup } from "../vehicle-badge/VehicleBadgesGroup";
 import CardTitle from "../CardTitle";
 import { cn } from "@/lib/utils";
-import PriceOfferTimer from "../PriceOfferTimer";
+import CardPriceOfferTimer from "../CardPriceOfferTimer";
 import { isPriceOfferActive } from "@/helpers/price-offer.helper";
 import VehicleCardButton from "../VehicleCardButton";
 import VehicleFeatureBadges from "../VehicleFeatureBadges";
@@ -96,7 +96,7 @@ const VehicleCard = ({
         </div>
 
         {hasActiveOffer ? (
-          <PriceOfferTimer vehicle={vehicle} layoutType={layoutType} />
+          <CardPriceOfferTimer vehicle={vehicle} layoutType={layoutType} />
         ) : (
           <VehicleCardButton layoutType={layoutType}>
             View More

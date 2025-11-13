@@ -12,6 +12,7 @@ import {
   FetchSearchResultsResponse,
   FetchStatesResponse,
   FetchTypesResponse,
+  ServerTimeResponse,
 } from "@/types";
 import { API } from "@/utils/API";
 import { mainApiClient } from "./axios.config";
@@ -816,3 +817,22 @@ export const getVehicleWithEnquiryStatus = async ({
     throw error;
   }
 };
+
+export async function fetchServerTime(
+  country: string
+): Promise<ServerTimeResponse> {
+  const response = await API({
+    path: "/time/now",
+    options: {
+      method: "GET",
+      cache: "no-store",
+    },
+    country,
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch server time");
+  }
+
+  return response.json();
+}

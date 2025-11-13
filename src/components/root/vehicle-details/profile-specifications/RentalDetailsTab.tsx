@@ -229,7 +229,7 @@ const RentalDetailsTab = ({
                     >
                       <div className="relative h-16 w-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-50">
                         <SafeImage
-                          src={vehicle.thumbnail}
+                          src={vehicle.thumbnail || vehicle.fallbackThumbnail}
                           alt={vehicle.vehicleTitle || "Vehicle"}
                           fill
                           className="object-cover transition-transform duration-200 group-hover:scale-105"
