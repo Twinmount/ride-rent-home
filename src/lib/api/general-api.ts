@@ -1,4 +1,4 @@
-import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
+import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { handleError } from "../utils";
 import {
   FetcFAQResponse,
@@ -41,7 +41,7 @@ export const FetchVehicleByFilters = async ({
   vehicleType,
   brand,
   city,
-}: FetchVehicleByFiltersParams): Promise<FetchVehicleCardsResponse> => {
+}: FetchVehicleByFiltersParams): Promise<FetchVehicleCardsResponseV2> => {
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);
 
@@ -130,9 +130,9 @@ export const FetchVehicleByFilters = async ({
     throw new Error("Failed to fetch vehicles");
   }
 
-  const data: FetchVehicleCardsResponse = await response.json();
+  const data: FetchVehicleCardsResponseV2 = await response.json();
 
-  return data; // Adheres to FetchVehicleCardsResponse type
+  return data; // Adheres to FetchVehicleCardsResponseV2 type
 };
 
 export const FetchVehicleByFiltersGPS = async (
@@ -221,7 +221,7 @@ export const FetchVehicleByFiltersGPS = async (
 
   const data = await response.json();
 
-  return data; // Adheres to FetchVehicleCardsResponse type
+  return data; // Adheres to FetchVehicleCardsResponseV2 type
 };
 
 // send portfolio count post

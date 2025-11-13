@@ -10,6 +10,7 @@ import MileageInfo from "./MileageInfo";
 import SafeImage from "@/components/common/SafeImage";
 import Link from "next/link";
 import { generateVehicleDetailsUrl } from "@/helpers";
+import PayOnPickup from "./PayOnPickup";
 
 type RentalDetailsTabProps = {
   rentalDetails: RentalDetails;
@@ -355,7 +356,9 @@ const RentalDetailsTab = ({
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between pt-3 md:flex-row lg:pt-2">
+        <div className="flex flex-col items-center justify-between pt-3 md:flex-row md:flex-wrap lg:pt-2">
+          <PayOnPickup hasPayOnPickup={true} />
+
           <SecurityDepositInfo
             securityDeposit={securityDeposit}
             isDisabled={isDisabled}

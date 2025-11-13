@@ -11,6 +11,8 @@ import RentNowbuttonWide from "@/components/common/RentNowbuttonWide";
 import ShareLikeComponent from "../../profile-specifications/ShareLikeComponent";
 import VehicleDescription from "../../profile-specifications/VehicleDescription";
 import Link from "next/link";
+import PriceOfferDetails from "../PriceOfferDetails";
+import { cn } from "@/lib/utils";
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -30,6 +32,7 @@ const ProfileCard = memo(
       seriesDescription,
       vehicleData: { state, model, category, brandName },
       vehicleId,
+      priceOffer,
     } = profileData;
 
     // Enhanced availability check
@@ -83,24 +86,31 @@ const ProfileCard = memo(
           country={country}
           state={state}
           formattedCategory={category}
-          vehicleSeries={vehicleSeries} // Fixed: use vehicle.vehicleSeries.vehicleSeries
+          vehicleSeries={vehicleSeries}
           vehicleId={vehicleId}
         />
 
         <CompanySpecifications specs={company.companySpecs} />
 
+        <PriceOfferDetails priceOffer={priceOffer} isMobile={true} />
+
         {/* Rent Now button or Unavailable message - Desktop only */}
-        <div className="hidden py-2 lg:block">
+        <div className="mt-2 hidden py-2 lg:block">
           {vehicleAvailable ? (
-            <RentNowbuttonWide
-              vehicle={vehicle}
-              state={state}
-              country={country}
-              vehicleName={model}
-              vehicleId={vehicleId}
-              agentId={profileData.agentId}
-              contactDetails={company.contactDetails}
-            />
+            <div className="flex-center gap-4">
+              <PriceOfferDetails priceOffer={priceOffer} isMobile={false} />
+
+              <RentNowbuttonWide
+                vehicle={vehicle}
+                state={state}
+                country={country}
+                vehicleName={model}
+                vehicleId={vehicleId}
+                agentId={profileData.agentId}
+                contactDetails={company.contactDetails}
+                className={cn("!my-auto", priceOffer ? "w-[30%]" : "w-full")}
+              />
+            </div>
           ) : (
             <div className="w-full rounded-lg border border-red-200 bg-red-50 p-4 text-center">
               <p className="font-medium text-red-600">

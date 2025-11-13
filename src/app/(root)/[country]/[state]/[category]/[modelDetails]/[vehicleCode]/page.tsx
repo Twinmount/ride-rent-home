@@ -120,6 +120,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     vehicleTitle: vehicle.vehicleTitle,
     vehicleTitleH1: vehicle.vehicleTitle,
     seriesDescription: vehicle.vehicleSeries?.vehicleSeriesInfoDescription,
+    priceOffer: vehicle.priceOffer || null,
   };
 
   // Generate JSON-LD
@@ -168,13 +169,6 @@ export default async function VehicleDetails(props: ParamsProps) {
   }
   const vehicleTitleH1 = vehicle.vehicleTitleH1;
   const vehicleSubTitle = vehicle.subTitle || vehicle.vehicleTitle;
-
-  const SupplierDetailsPropsData = {
-    companyName: vehicle?.company?.companyName,
-    companyId: vehicle?.company?.companyId,
-    country,
-    companyProfile: vehicle?.company?.companyProfile,
-  };
 
   const VehicleHeadingPropsData = {
     brandListingPageHref,

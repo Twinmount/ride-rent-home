@@ -1,3 +1,5 @@
+import { PriceOfferType } from "./vehicle-types";
+
 export type Brand = {
   label: string;
   value: string;
@@ -116,6 +118,7 @@ export type VehicleDetailsPageType = {
     vehicleSeriesLabel: string;
     vehicleSeriesInfoDescription: string;
   };
+  priceOffer?: PriceOfferType | null;
 };
 
 export type VehicleDetailsPageResponse = {
@@ -159,4 +162,5 @@ export type ProfileCardDataType = {
   vehicleTitle: string;
   vehicleTitleH1: string;
   seriesDescription?: string;
+  priceOffer?: PriceOfferType | null;
 };

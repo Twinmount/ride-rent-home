@@ -184,31 +184,6 @@ type VehicleSpecs = {
 };
 
 // Type representing a vehicle card data structure
-export type VehicleCardType = {
-  vehicleId: string;
-  vehicleCode: string;
-  thumbnail: string;
-  model: string;
-  brandName: string;
-  countryCode: string | null;
-  phoneNumber: string | null;
-  email: string | null;
-  rentalDetails: CardRentalDetails;
-  vehicleSpecs: VehicleSpecs;
-  companyLogo: string | null;
-  state: string;
-  vehicleCategory: string;
-  whatsappPhone: string | null;
-  whatsappCountryCode: string | null;
-  isDisabled: boolean;
-  isCryptoAccepted: boolean;
-  isSpotDeliverySupported: boolean;
-  vehicleTitle: string;
-  securityDeposit: {
-    enabled: boolean;
-    amountInAED?: string;
-  };
-};
 
 export type MapVehicleCardType = {
   vehicleId: string;
@@ -237,6 +212,13 @@ export type MapVehicleCardType = {
   };
 };
 
+export type PriceOfferType = {
+  startTime: string;
+  durationHours: number;
+  cycleDurationHours: number;
+  expiryTime: string;
+};
+
 export type NewVehicleCardType = {
   vehicleId: string;
   companyLogo?: string;
@@ -261,20 +243,10 @@ export type NewVehicleCardType = {
     coordinates: [number, number];
     address: string;
   };
+  priceOffer?: PriceOfferType | null;
 };
 
 // API response type for FetchVehicleByFilters api function
-export interface FetchVehicleCardsResponse {
-  status: string;
-  result: {
-    list: VehicleCardType[]; // Array of vehicle cards
-    page: string; // Page number is a string, not a number
-    limit: string; // Limit is a string, not a number
-    total: number; // Total number of vehicle cards available
-    totalNumberOfPages: number; // Total number of pages
-  };
-  statusCode: number;
-}
 
 export interface FetchVehicleCardsResponseV2 {
   status: string;
