@@ -10,6 +10,7 @@ import MileageInfo from "./MileageInfo";
 import SafeImage from "@/components/common/SafeImage";
 import Link from "next/link";
 import { generateVehicleDetailsUrl } from "@/helpers";
+import PayOnPickup from "./PayOnPickup";
 
 type RentalDetailsTabProps = {
   rentalDetails: RentalDetails;
@@ -228,7 +229,7 @@ const RentalDetailsTab = ({
                     >
                       <div className="relative h-16 w-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-50">
                         <SafeImage
-                          src={vehicle.thumbnail}
+                          src={vehicle.thumbnail || vehicle.fallbackThumbnail}
                           alt={vehicle.vehicleTitle || "Vehicle"}
                           fill
                           className="object-cover transition-transform duration-200 group-hover:scale-105"
@@ -355,7 +356,9 @@ const RentalDetailsTab = ({
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between pt-3 md:flex-row lg:pt-2">
+        <div className="flex flex-col items-center justify-between pt-3 md:flex-row md:flex-wrap lg:pt-2">
+          <PayOnPickup hasPayOnPickup={true} />
+
           <SecurityDepositInfo
             securityDeposit={securityDeposit}
             isDisabled={isDisabled}
