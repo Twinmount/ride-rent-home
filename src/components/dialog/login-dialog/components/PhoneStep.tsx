@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { Loader2, UserCircle } from "lucide-react";
+
 import "../phone-input.css";
 import { getDotCount, getNumberAfterSpaceStrict } from "@/utils/helper";
 import { LoginDrawerState } from "../LoginDrawer";
@@ -164,10 +165,8 @@ export const PhoneStep = ({
       // value = value.slice(0, allowNumberCount);
       value = allowNumberCount > 0 ? value.slice(0, allowNumberCount) : value;
 
-      // Update the input field immediately to show trimmed value
       e.target.value = value;
 
-      // Mark state update as non-urgent (allows typing to feel instant)
       // startTransition(() => {
       setPhoneNumber(value);
       // });
@@ -365,6 +364,72 @@ export const PhoneStep = ({
           ) : (
             "Continue"
           )}
+        </Button>
+        {/* <div className="flex items-center">
+          <img src="" alt="" />
+          <Button>google </Button>
+        </div> */}
+      </div>
+      {/* <div
+        className="borde mt-10 flex items-center justify-center gap-1"
+        style={{ marginTop: "40px" }}
+      >
+        <Button
+          onClick={() => {}}
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white p-0 transition-colors hover:bg-slate-50"
+          aria-label="Sign in with Google"
+        >
+          <img
+            src="/assets/icons/social-login/google-icon.png"
+            alt="Google icon"
+          />
+        </Button>
+        <Button
+          onClick={() => {}}
+          className="bg-whitet ransition-colors p-o flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 p-0 hover:bg-slate-50"
+          aria-label="Sign in with Facebook"
+          style={{ padding: "1px" }}
+        >
+          <img
+            src="/assets/icons/social-login/facebook-icon.png"
+            alt="Facebook icon"
+          />
+        </Button>
+      </div> */}
+      <div
+        className="mt-10 flex items-center justify-center gap-3"
+        style={{ marginTop: "40px" }}
+      >
+        <Button
+          onClick={() => {}}
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md"
+          aria-label="Sign in with Google"
+        >
+          <img
+            src="/assets/icons/social-login/google-icon.png"
+            alt="Google icon"
+          />
+        </Button>
+        <Button
+          onClick={() => {}}
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-transparent p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md"
+          aria-label="Sign in with Google"
+        >
+          <img
+            src="/assets/icons/social-login/apple-icon.png"
+            alt="Apple icon"
+          />
+        </Button>
+
+        <Button
+          onClick={() => {}}
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md"
+          aria-label="Sign in with Facebook"
+        >
+          <img
+            src="/assets/icons/social-login/facebook-icon.png"
+            alt="Facebook icon"
+          />
         </Button>
       </div>
     </div>

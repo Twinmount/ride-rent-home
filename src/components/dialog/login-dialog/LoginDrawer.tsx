@@ -86,7 +86,6 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
 
   // Common State
   const [step, setStep] = useState<AuthStep>("phone");
-  console.log("step: LoginDrawer", step);
   const [status, setStatus] = useState<StatusType>("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [userExists, setUserExists] = useState<boolean>(false);
