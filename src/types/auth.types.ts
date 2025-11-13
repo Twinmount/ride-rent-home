@@ -1,6 +1,14 @@
 // Authentication related type definitions and interfaces
 import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 
+export enum OtpType {
+  EMAIL = "EMAIL",
+  SMS = "SMS",
+  PHONE_CHANGE = "PHONE_CHANGE",
+  EMAIL_CHANGE = "EMAIL_CHANGE",
+  PASSWORD_CHANGE = "PASSWORD_CHANGE",
+}
+
 /**
  * Login request data interface
  */
@@ -26,6 +34,12 @@ export interface SignupData {
   agreeToTerms: boolean;
 }
 
+export interface DeleteUserData {
+  userId: string;
+  phoneNumber?: string;
+  countryCode?: string;
+}
+
 /**
  * Phone signup request data interface (for phone-only signup)
  */
@@ -39,9 +53,12 @@ export interface PhoneSignupData {
  * OTP verification request data interface
  */
 export interface OtpVerificationData {
-  userId: string;
   otp: string;
   otpId: string;
+  userId?: string;
+  otpType?: OtpType;
+  phoneNumber?: string;
+  countryCode?: string;
 }
 
 /**
@@ -59,6 +76,7 @@ export interface SetPasswordData {
 export interface ResendOtpData {
   phoneNumber: string;
   countryCode: string;
+  otpType?: OtpType;
 }
 
 /**
@@ -75,6 +93,14 @@ export interface ProfileUpdateData {
 export interface PhoneChangeData {
   newPhoneNumber: string;
   newCountryCode: string;
+}
+
+/**
+ * forgot password request data interface
+ */
+export interface ForgotPasswordData {
+  phoneNumber: string;
+  countryCode: string;
 }
 
 /**
@@ -271,15 +297,19 @@ export interface UseAuthReturn {
   userAuthStep: UserAuthStep;
 
   // Actions
+  deleteUser: (userData: DeleteUserData) => Promise<AuthResponse>;
   login: (loginData: LoginData) => Promise<AuthResponse>;
   signup: (signupData: PhoneSignupData) => Promise<AuthResponse>;
   logout: (id: string) => Promise<void>;
-  verifyOTP: (
-    userId: string,
-    otpId: string,
-    otp: string
-  ) => Promise<AuthResponse>;
+  verifyOTP: ({
+    userId,
+    otpId,
+    otp,
+  }: OtpVerificationData) => Promise<AuthResponse>;
   setPassword: (passwordData: SetPasswordData) => Promise<AuthResponse>;
+  forgotPassword: (
+    forgotPasswordData: ForgotPasswordData
+  ) => Promise<AuthResponse>;
   resendOTP: (
     phoneNumber: string,
     countryCode: string
@@ -332,6 +362,12 @@ export interface UseAuthReturn {
     unknown
   >;
   loginMutation: UseMutationResult<AuthResponse, Error, LoginData, unknown>;
+  deleteUserMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    DeleteUserData,
+    unknown
+  >;
   verifyOtpMutation: UseMutationResult<
     AuthResponse,
     Error,
@@ -342,6 +378,12 @@ export interface UseAuthReturn {
     AuthResponse,
     Error,
     SetPasswordData,
+    unknown
+  >;
+  forgotPasswordMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    ForgotPasswordData,
     unknown
   >;
   resendOtpMutation: UseMutationResult<

@@ -63,7 +63,7 @@ export const useStateAndCategory = () => {
     if (shouldUse) {
       // Use params directly, with defaults
       const finalState =
-        paramState || (country === "in" ? "bengaluru" : "dubai");
+        paramState || (country === "in" ? "bangalore" : "dubai");
       const finalCategory = paramCategory || "cars";
 
       setState(finalState);

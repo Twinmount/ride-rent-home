@@ -716,6 +716,7 @@ export const sendRentalEnquiry = async ({
   rentalEndDate,
   name,
   phone,
+  countryCode,
   email,
   country = "ae",
 }: {
@@ -727,6 +728,7 @@ export const sendRentalEnquiry = async ({
   rentalEndDate: string;
   name: string;
   phone: string;
+  countryCode: string;
   email?: string;
   country?: string;
 }) => {
@@ -741,6 +743,7 @@ export const sendRentalEnquiry = async ({
       rentalEndDate,
       name,
       phone,
+      countryCode,
       email,
     });
 

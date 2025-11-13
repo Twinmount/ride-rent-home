@@ -65,6 +65,7 @@ export const RegisterStep = ({
         password: newPassword,
         confirmPassword: confirmPassword,
       });
+
       if (passwordResponse.success && passwordResponse.data?.userId) {
         if (fullName || profileImageFile) {
           const profileData: any = {};
@@ -72,6 +73,7 @@ export const RegisterStep = ({
           if (profileImageFile) profileData.avatar = profileImageFile; // Use the File object, not base64 string
           await updateProfile(passwordResponse.data.userId, profileData);
         }
+
         setStep("success");
         setStatus("success");
         setStatusMessage("Account created successfully!");

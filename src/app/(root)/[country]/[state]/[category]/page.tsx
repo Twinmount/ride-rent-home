@@ -103,7 +103,7 @@ export default async function Home(props: PageProps) {
 
       <Suspense fallback={<SectionLoading />}>
         <FAQ
-          state={state || (country === "in" ? "bengaluru" : "dubai")}
+          state={state || (country === "in" ? "bangalore" : "dubai")}
           limit={8}
           country={country}
         />

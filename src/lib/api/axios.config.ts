@@ -3,6 +3,7 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
   AxiosInstance,
+  AxiosRequestConfig,
 } from "axios";
 import { authStorage } from "@/lib/auth/authStorage";
 import { ENV } from "@/config/env";
@@ -30,7 +31,7 @@ function detectCountryFromUrl(): "ae" | "in" {
 // Function to get dynamic assets URL based on country
 function getAssetsUrl(country?: "ae" | "in" | string): string {
   const detectedCountry = country || detectCountryFromUrl();
-  
+
   switch (detectedCountry) {
     case "in":
       return (
@@ -41,9 +42,7 @@ function getAssetsUrl(country?: "ae" | "in" | string): string {
     case "ae":
     default:
       return (
-        ENV.ASSETS_URL ||
-        ENV.NEXT_PUBLIC_ASSETS_URL ||
-        "http://localhost:5000"
+        ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL || "http://localhost:5000"
       );
   }
 }
@@ -157,7 +156,6 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
 // Function to create axios instance with interceptors
 const createApiClient = (baseURL: string): AxiosInstance => {
-  console.log("called createApiClient with baseURL: ", baseURL);
   const client = axios.create({
     baseURL,
     timeout: 30000, // Increased timeout for file uploads
@@ -200,13 +198,13 @@ const createApiClient = (baseURL: string): AxiosInstance => {
           console.log(
             "createApiClient: >>> 401 Unauthorized error DETECTED! <<<"
           );
-        }
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(
-            new CustomEvent("auth:logout", {
-              detail: { reason: "unauthorized" },
-            })
-          );
+          // if (typeof window !== "undefined") {
+          //   window.dispatchEvent(
+          //     new CustomEvent("auth:logout", {
+          //       detail: { reason: "unauthorized" },
+          //     })
+          //   );
+          // }
         }
       }
       // CRITICAL: Re-throw the error so it can be caught by the calling code (`try...catch` blocks)
@@ -454,7 +452,7 @@ export const createAuthenticatedRequest = {
 
     delete: <T = any>(
       url: string,
-      config?: InternalAxiosRequestConfig
+      config?: AxiosRequestConfig
     ): Promise<AxiosResponse<T>> => authApiClient.delete(url, config),
   },
 

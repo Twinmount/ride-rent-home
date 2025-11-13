@@ -76,3 +76,25 @@ export const tostHandler = (
       break;
   }
 };
+
+export const getDotCount = (str: String): number => {
+  if (typeof str !== "string") {
+    console.error("Invalid input: Please provide a string.");
+    return 0;
+  }
+
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === ".") {
+      count++;
+    }
+  }
+  return count;
+};
+
+export const maskPhoneNumber = (phoneNumber?: string) => {
+  if (!phoneNumber) return "";
+  const visibleDigits = phoneNumber.slice(-4); // last 4 digits
+  const maskedSection = "•".repeat(Math.max(phoneNumber.length - 4, 0));
+  return `${maskedSection}${visibleDigits}`;
+};

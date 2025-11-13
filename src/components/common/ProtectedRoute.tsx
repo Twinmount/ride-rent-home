@@ -20,41 +20,25 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const router = useRouter();
   const {
-    auth,
-    isAuthenticated,
     user,
+    isAuthenticated,
     isLoading: authLoading,
     onHandleLoginmodal,
-    authStorage,
   } = useAuthContext();
 
   // console.log('auth: ', auth);
-
-  const usersd = authStorage.getUser();
 
   const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
 
   // Authentication protection
   useEffect(() => {
-    // Only perform auth checks after initial loading is complete
     if (!authLoading) {
       setHasInitiallyLoaded(true);
 
       if (!isAuthenticated) {
         console.log("User not authenticated, redirecting...");
-        onHandleLoginmodal({ isOpen: true });
+        // onHandleLoginmodal({ isOpen: true });
         router.push(fallbackPath);
-        return;
-      }
-
-      // Additional verification check if required
-      if (
-        requireVerification &&
-        user &&
-        (!user.isPhoneVerified || !user.isEmailVerified)
-      ) {
-        console.log("User not verified, redirecting...");
-        router.push("/verify-account");
         return;
       }
     }
@@ -68,22 +52,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     requireVerification,
     onHandleLoginmodal,
   ]);
-
-  // Only show loading spinner on initial load, not on subsequent refetches
-  if (authLoading && !hasInitiallyLoaded) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div
-            className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-orange-500 border-t-transparent"
-            role="status"
-            aria-label="Loading"
-          ></div>
-          <p className="mt-4 text-gray-600">Authenticating...</p>
-        </div>
-      </div>
-    );
-  }
 
   // Render protected content
   return <>{children}</>;
