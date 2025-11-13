@@ -396,9 +396,15 @@ export const PhoneStep = ({
           />
         </Button>
       </div> */}
+      <div className="relative mb-6 flex items-center justify-center">
+        <div className="h-px w-full bg-slate-300"></div>
+        <span className="absolute rounded-sm bg-white px-3 text-sm text-slate-500">
+          or
+        </span>
+      </div>
       <div
         className="mt-10 flex items-center justify-center gap-3"
-        style={{ marginTop: "40px" }}
+        style={{ marginTop: "30px" }}
       >
         <Button
           onClick={() => {}}
@@ -420,7 +426,6 @@ export const PhoneStep = ({
             alt="Apple icon"
           />
         </Button>
-
         <Button
           onClick={() => {}}
           className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md"
