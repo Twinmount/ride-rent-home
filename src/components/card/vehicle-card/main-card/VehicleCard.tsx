@@ -92,6 +92,7 @@ const VehicleCard = ({
           <RentalDetails
             rentalDetails={vehicle.rentalDetails}
             layoutType={layoutType}
+            hasActiveOffer={hasActiveOffer}
           />
         </div>
 
