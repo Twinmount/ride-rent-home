@@ -8,6 +8,7 @@ import {
   getFormattedPhoneNumber,
 } from "@/helpers";
 import { ProfileCardDataType } from "@/types/vehicle-details-types";
+import { add } from "lodash";
 
 /**
  * Given a ProfileCardDataType, this hook will create a new object with the
@@ -39,6 +40,7 @@ const useProfileData = (profileData: ProfileCardDataType, country: string) => {
     vehicleData,
     securityDeposit,
     vehicleTitle,
+    additionalVehicleTypes,
   } = profileData;
 
   const contactDetails = company?.contactDetails;
@@ -47,7 +49,7 @@ const useProfileData = (profileData: ProfileCardDataType, country: string) => {
   const formattedPhoneNumber = useMemo(() => {
     return getFormattedPhoneNumber(
       contactDetails?.countryCode,
-      contactDetails?.phone,
+      contactDetails?.phone
     );
   }, [contactDetails?.countryCode, contactDetails?.phone]);
 
@@ -89,6 +91,7 @@ const useProfileData = (profileData: ProfileCardDataType, country: string) => {
   return {
     formattedPhoneNumber,
     vehicleDetailsPageLink,
+    additionalVehicleTypes,
     whatsappUrl,
     companyProfilePageLink,
     isCompanyValid,

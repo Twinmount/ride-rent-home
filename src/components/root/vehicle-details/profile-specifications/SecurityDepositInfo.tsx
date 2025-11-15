@@ -18,8 +18,9 @@ const SecurityDepositInfo = ({
 
   return (
     <div
-      className={`mx-4 flex items-center justify-center text-sm ${isDisabled ? "text-gray-400" : "text-text-secondary"
-        }`}
+      className={`mx-4 flex items-center justify-center text-xs ${
+        isDisabled ? "text-gray-400" : "text-text-secondary"
+      }`}
     >
       {securityDeposit?.enabled ? (
         <div className="relative h-5 w-5 flex-shrink-0">
@@ -37,8 +38,9 @@ const SecurityDepositInfo = ({
         />
       )}
       <span
-        className={`ml-1 whitespace-nowrap text-sm font-normal capitalize ${isDisabled ? "text-gray-400" : ""
-          }`}
+        className={`ml-1 whitespace-nowrap text-xs font-normal capitalize ${
+          isDisabled ? "text-gray-400" : ""
+        }`}
       >
         {securityDeposit?.enabled
           ? `${convert(Number(securityDeposit?.amountInAED))} deposit applies`

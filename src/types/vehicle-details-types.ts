@@ -65,6 +65,7 @@ export type CompanySpecs = {
   isSpotDeliverySupported: boolean;
   isCreditOrDebitCardsSupported: boolean;
   isTabbySupported: boolean;
+  isCashAccepted: boolean;
 };
 
 export type Company = {
@@ -142,6 +143,7 @@ export type VehicleMetaDataResponse = {
 };
 
 export type ProfileCardDataType = {
+  additionalVehicleTypes?: AdditionalVehicleTypes[];
   company: Company;
   agentId?: string;
   rentalDetails: RentalDetails;

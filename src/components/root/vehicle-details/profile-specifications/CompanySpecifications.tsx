@@ -8,26 +8,32 @@ type CompanySpecificationsProps = {
 const CompanySpecifications = ({ specs }: CompanySpecificationsProps) => {
   const specifications = [
     {
-      key: 'crypto',
-      label: 'Crypto Accepted',
+      key: "crypto",
+      label: "Crypto Accepted",
       isActive: specs.isCryptoAccepted,
     },
+
     {
-      key: 'delivery',
-      label: specs.isSpotDeliverySupported
-        ? 'Free Spot Delivery'
-        : 'Collect At Point',
-      isActive: true, // Always show delivery option
-    },
-    {
-      key: 'cards',
-      label: 'Accepts all cards',
+      key: "cards",
+      label: "Accepts all cards",
       isActive: specs.isCreditOrDebitCardsSupported,
     },
     {
-      key: 'tabby',
-      label: 'Tabby Supported',
+      key: "tabby",
+      label: "Tabby Supported",
       isActive: specs.isTabbySupported,
+    },
+    {
+      key: "delivery",
+      label: specs.isSpotDeliverySupported
+        ? "Free Spot Delivery"
+        : "Collect At Point",
+      isActive: true,
+    },
+    {
+      key: "cash",
+      label: "Cash Accepted",
+      isActive: specs.isCashAccepted,
     },
   ];
 
@@ -38,11 +44,11 @@ const CompanySpecifications = ({ specs }: CompanySpecificationsProps) => {
   // console.log('Active Specifications:', activeSpecs);
 
   return (
-    <div className="border-b-2 border-[E2E2E2] px-4 py-6 text-xs font-light text-text-secondary">
+    <div className="border-b-2 border-[E2E2E2] px-3 py-4 text-xs font-light text-text-secondary">
       {/* Desktop view - horizontal layout */}
       <div className="hidden items-center justify-between sm:flex">
         {activeSpecs.map((spec) => (
-          <div key={spec.key} className="flex items-center gap-2">
+          <div key={spec.key} className="flex items-center gap-1">
             <div className="flex h-4 w-4 items-center justify-center rounded-full text-green-500">
               <CircleCheck />
             </div>
