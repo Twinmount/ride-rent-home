@@ -22,10 +22,12 @@ type ProfileCardProps = {
 
 const ProfileCard = memo(
   ({ profileData, country, vehicle }: ProfileCardProps) => {
-    const { isCompanyValid, rentalDetails, securityDeposit } = useProfileData(
-      profileData,
-      country
-    );
+    const {
+      isCompanyValid,
+      rentalDetails,
+      securityDeposit,
+      additionalVehicleTypes,
+    } = useProfileData(profileData, country);
 
     const {
       company,
@@ -67,7 +69,7 @@ const ProfileCard = memo(
     return (
       <MotionDiv className="profile-card h-auto">
         <div className="align-center flex justify-between">
-          <div className="p-2 text-lg font-normal text-text-primary md:text-2xl">
+          <div className="text-lg font-normal text-text-primary md:text-xl lg:text-[1.3rem]">
             {model}
           </div>
           <ShareLikeComponent vehicleId={vehicleId} />
@@ -79,6 +81,7 @@ const ProfileCard = memo(
         {/* Rental Details - now handles both available and unavailable states */}
         <RentalDetailsTab
           rentalDetails={rentalDetails}
+          additionalVehicleTypes={additionalVehicleTypes}
           securityDeposit={securityDeposit}
           isDisabled={!vehicleAvailable}
           brandValue={brandName}
