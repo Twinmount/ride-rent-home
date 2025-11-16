@@ -190,6 +190,7 @@ export const useCarRent = (
       endDate,
       name,
       phone,
+      countryCode,
       email,
     }: {
       message: string;
@@ -197,6 +198,7 @@ export const useCarRent = (
       endDate: Date;
       name: string;
       phone: string;
+      countryCode: string;
       email?: string;
     }) => {
       const user = authStorage.getUser();
@@ -217,6 +219,7 @@ export const useCarRent = (
         rentalEndDate: endDate.toISOString(),
         name,
         phone,
+        countryCode,
         email,
       });
     },
@@ -257,12 +260,14 @@ export const useCarRent = (
     const startDate = carRentDate[0].startDate;
     const email = userProfile?.data?.email;
 
+    console.log("userProfile: ", userProfile);
     const mutationData: any = {
       message,
       startDate,
       endDate,
       name: userProfile?.data?.name || "",
       phone: userProfile?.data?.phoneNumber || "",
+      countryCode: userProfile?.data?.countryCode || "",
     };
 
     // Only include email if it has a value

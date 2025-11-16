@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -6,9 +6,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog';
-import { useVehicleCardContext } from '@/context/VehicleCardContext';
-import { FC } from 'react';
+} from "@/components/ui/dialog";
+import { useVehicleCardContext } from "@/context/VehicleCardContext";
+import { FC } from "react";
 
 /**
  * A minimal dialog that shows the selected vehicle’s image and title.
@@ -39,7 +39,11 @@ const BookingDialog: FC = () => {
             {/* Vehicle Image */}
             <div className="h-16 w-24 flex-shrink-0 overflow-hidden rounded-lg border">
               <img
-                src={selectedVehicle.thumbnail}
+                src={
+                  selectedVehicle.thumbnail ||
+                  selectedVehicle.fallbackThumbnail ||
+                  ""
+                }
                 alt={selectedVehicle.vehicleTitle}
                 className="h-full w-full object-cover"
               />

@@ -19,7 +19,6 @@ import SectionLoading from "@/components/skelton/section-loading/SectionLoading"
 import JsonLd from "@/components/common/JsonLd";
 import ImagesGrid from "@/components/root/vehicle-details/ImagesGrid";
 import { generateVehicleTitleSlug } from "@/helpers";
-import SupplierDetails from "@/components/root/vehicle-details/SupplierDetails";
 import VehicleHeading from "@/components/root/vehicle-details/VehicleHeading";
 import ProfileCard from "@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard";
 import ProtectedVehicleDetails from "@/components/common/ProtectedVehicleDetails";
@@ -101,14 +100,17 @@ export default async function VehicleDetails(props: ParamsProps) {
   }
 
   const vehicle = data.result;
+  // console.log("vehicle details data: ", data.result);
 
   // generating prop data for profile card and mobile profile card
   const ProfileCardData: ProfileCardDataType = {
     company: vehicle?.company,
     agentId: vehicle?.userId,
     rentalDetails: vehicle?.rentalDetails,
+    additionalVehicleTypes: vehicle?.additionalVehicleTypes,
     vehicleId: vehicle.vehicleId,
     vehicleCode: vehicle.vehicleCode,
+    vehicleSeries: vehicle.vehicleSeries?.vehicleSeries,
     isLease: vehicle.isAvailableForLease,
     vehicleData: {
       brandName: vehicle.brand.value,
@@ -120,6 +122,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     vehicleTitle: vehicle.vehicleTitle,
     vehicleTitleH1: vehicle.vehicleTitle,
     seriesDescription: vehicle.vehicleSeries?.vehicleSeriesInfoDescription,
+    priceOffer: vehicle.priceOffer || null,
   };
 
   // Generate JSON-LD
@@ -169,18 +172,12 @@ export default async function VehicleDetails(props: ParamsProps) {
   const vehicleTitleH1 = vehicle.vehicleTitleH1;
   const vehicleSubTitle = vehicle.subTitle || vehicle.vehicleTitle;
 
-  const SupplierDetailsPropsData = {
-    companyName: vehicle?.company?.companyName,
-    companyId: vehicle?.company?.companyId,
-    country,
-    companyProfile: vehicle?.company?.companyProfile,
-  };
-
   const VehicleHeadingPropsData = {
     brandListingPageHref,
     category,
     brandValue,
     state,
+    country,
     vehicleTitleH1,
     vehicleSubTitle,
     model: vehicle.modelName,

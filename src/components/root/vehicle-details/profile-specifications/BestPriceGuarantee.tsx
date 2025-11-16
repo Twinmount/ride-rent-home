@@ -50,7 +50,7 @@ const BestPriceGuarantee = ({
   return (
     <>
       <motion.div
-        className="flex justify-center pb-2"
+        className="flex justify-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, x: isDisabled ? 0 : [0, -2, 2, -2, 2, 0] }}
         transition={{
@@ -161,9 +161,9 @@ const BestPriceGuarantee = ({
                           Price Match Promise
                         </h3>
                         <p className="text-[0.6rem] leading-snug text-gray-600 sm:text-xs sm:leading-relaxed md:text-sm">
-                          Find a lower price elsewhere? We&apos;ll match it
-                          instantly and give you an additional discount. No
-                          questions asked.
+                          Our Best Price AI system continuously monitors market
+                          trends and automatically updates rates to ensure you
+                          always get the best value.
                         </p>
                         <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[0.55rem] font-semibold text-orange shadow-sm sm:mt-3 sm:gap-2 sm:px-3 sm:py-1.5 sm:text-[0.65rem] md:mt-4 md:text-xs">
                           <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-orange sm:h-2 sm:w-2" />

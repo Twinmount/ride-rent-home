@@ -1,6 +1,6 @@
 "use server";
 
-import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
+import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { API } from "@/utils/API";
 
 type Props = {
@@ -36,7 +36,7 @@ export const fetchVehicleSeriesData = async ({
     country,
   });
 
-  const data: FetchVehicleCardsResponse = await response.json();
+  const data: FetchVehicleCardsResponseV2 = await response.json();
 
   return {
     result: {

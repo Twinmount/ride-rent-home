@@ -200,11 +200,11 @@ export const SignupSection = ({
     if (signupData && otpCode.length === 4) {
       try {
         clearError();
-        const response = await verifyOTP(
-          signupData.userId,
-          signupData.otpId,
-          otpCode
-        );
+        const response = await verifyOTP({
+          otp: otpCode,
+          otpId: signupData.otpId,
+          userId: signupData.userId,
+        });
 
         if (response.success) {
           console.log("response: ", response);

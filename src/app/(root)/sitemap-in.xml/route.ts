@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { RouteXmlSitemapService } from "@/services/RouteXmlSitemapService";
 import { generateSitemapXML, escapeXml } from "@/helpers/xml-generator";
-import { COUNTRY_CONFIGS } from "@/helpers/country-config";
+import { COUNTRY_CONFIGS } from "@/config/country-config";
 
 /**
  * Main GET handler for IN sitemap generation

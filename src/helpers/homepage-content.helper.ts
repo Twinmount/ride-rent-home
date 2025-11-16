@@ -1,11 +1,9 @@
 import { homepageHeadingContent } from '@/data/homepage-content/home-heading.data';
 import { convertToLabel, singularizeValue } from '.';
 import { homepageFeaturesContent } from '@/data/homepage-content/home-features.data';
-import { IoIosSpeedometer } from 'react-icons/io';
-import { FaCrown } from 'react-icons/fa6';
-import { IoShieldCheckmark } from 'react-icons/io5';
-import { Bus } from 'lucide-react';
+
 import { homepageDocumentsContent } from '@/data/homepage-content/home-documents.data';
+import { sub } from "date-fns";
 
 type LocationCategoryParams = {
   country: string;
@@ -32,12 +30,15 @@ export function getHomePageHeading({
 
   const formattedState = convertToLabel(state);
   const formattedCategory = singularizeValue(convertToLabel(category));
+  const subtitle =
+    country === "in"
+      ? "Choose from a wide range of vehicles that match your needs, with easy and fast booking."
+      : "Explore 1000+ options & pick your favorite, from the Toyota Yaris to the Ferrari 296 GTB.";
 
   // return fallback title and subtitle for rest of the states/categories
   return {
     title: `Rent a ${formattedCategory} in ${formattedState}`,
-    subtitle:
-      'Explore 1000+ options & pick your favorite, from the Toyota Yaris to the Ferrari 296 GTB.',
+    subtitle,
   };
 }
 

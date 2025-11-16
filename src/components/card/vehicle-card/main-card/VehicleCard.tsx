@@ -1,15 +1,15 @@
-"use client";
-
 import { NewVehicleCardType } from "@/types/vehicle-types";
 import { generateVehicleDetailsUrl, getVehicleCardStyle } from "@/helpers";
 import VehicleThumbnail from "../VehicleThumbnail";
 import RentalDetails from "../RentalDetails";
 import LinkWrapper from "../LinkWrapper";
-import RentNowDialogTrigger from "../RentNowDialogTrigger";
 import { VehicleBadgesGroup } from "../vehicle-badge/VehicleBadgesGroup";
 import CardTitle from "../CardTitle";
-import { useAuthContext } from "@/auth";
 import { cn } from "@/lib/utils";
+import CardPriceOfferTimer from "../CardPriceOfferTimer";
+import { isPriceOfferActive } from "@/helpers/price-offer.helper";
+import VehicleCardButton from "../VehicleCardButton";
+import VehicleFeatureBadges from "../VehicleFeatureBadges";
 
 type VehicleCardProps = {
   vehicle: NewVehicleCardType;
@@ -26,8 +26,6 @@ const VehicleCard = ({
   layoutType,
   openInNewTab = false,
 }: VehicleCardProps) => {
-  const { auth, onHandleLoginmodal } = useAuthContext();
-
   const vehicleDetailsPageLink = generateVehicleDetailsUrl({
     country: country,
     state: vehicle.state,
@@ -36,15 +34,9 @@ const VehicleCard = ({
     vehicleCode: vehicle.vehicleCode,
   });
 
-  const handleCardClick = (e: React.MouseEvent): void => {
-    if (!auth.isLoggedIn) {
-      e.preventDefault();
-      e.stopPropagation();
-      onHandleLoginmodal({ isOpen: true });
-    }
-  };
-
   const classes = getVehicleCardStyle(layoutType);
+
+  const hasActiveOffer = isPriceOfferActive(vehicle.priceOffer);
 
   return (
     <div
@@ -55,19 +47,21 @@ const VehicleCard = ({
     >
       <LinkWrapper
         href={vehicleDetailsPageLink}
-        className={`h-full w-full space-y-3 ${!auth.isLoggedIn ? "cursor-pointer" : ""}`}
+        className={`h-full w-full space-y-3`}
         newTab={openInNewTab}
       >
         <div className="relative">
           <VehicleThumbnail
-            src={vehicle.thumbnail}
+            src={vehicle.thumbnail || vehicle.fallbackThumbnail}
             alt={`${vehicle.vehicleTitle} rental car available for booking`}
-            width={250}
-            height={200}
+            width={!!vehicle.thumbnail ? 500 : 250}
+            height={!!vehicle.thumbnail ? 400 : 200}
             layoutType={layoutType}
             vehiclePhotos={vehicle.vehiclePhotos}
-            priority={index < 2}
-            loading={index < 2 ? "eager" : "lazy"}
+            priority={index < 6}
+            loading={index < 6 ? "eager" : "lazy"}
+            quality={!!vehicle.thumbnail ? 100 : 90}
+            isOptimizedThumbnail={!!vehicle.thumbnail}
           />
 
           <VehicleBadgesGroup
@@ -82,27 +76,34 @@ const VehicleCard = ({
           rating={vehicle.rating}
           layoutType={layoutType}
         />
+
+        <VehicleFeatureBadges
+          hasPayOnPickup={true}
+          hasNoDeposit={vehicle.securityDeposit?.enabled}
+        />
       </LinkWrapper>
 
-      <div className="flex-between">
-        <LinkWrapper
-          href={auth.isLoggedIn ? vehicleDetailsPageLink : "#"}
-          className={`flex h-full w-full items-center ${!auth.isLoggedIn ? "cursor-pointer" : ""}`}
-          newTab={openInNewTab}
-          onClick={handleCardClick}
-        >
+      <LinkWrapper
+        href={vehicleDetailsPageLink}
+        className="flex-between"
+        newTab={openInNewTab}
+      >
+        <div className={`flex h-full w-full items-center`}>
           <RentalDetails
             rentalDetails={vehicle.rentalDetails}
             layoutType={layoutType}
+            hasActiveOffer={hasActiveOffer}
           />
-        </LinkWrapper>
+        </div>
 
-        <RentNowDialogTrigger
-          country={country}
-          vehicle={vehicle}
-          layoutType={layoutType}
-        />
-      </div>
+        {hasActiveOffer ? (
+          <CardPriceOfferTimer vehicle={vehicle} layoutType={layoutType} />
+        ) : (
+          <VehicleCardButton layoutType={layoutType}>
+            View More
+          </VehicleCardButton>
+        )}
+      </LinkWrapper>
     </div>
   );
 };

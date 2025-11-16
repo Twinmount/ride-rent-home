@@ -8,7 +8,7 @@ import {
   UNIVERSAL_PAGES,
   UniversalPage,
 } from "@/constants/route.constants";
-import { isValidCountryCode } from "@/helpers/country-config";
+import { isValidCountryCode } from "@/config/country-config";
 
 export const VALID_CATEGORIES = Object.keys(CATEGORIES);
 

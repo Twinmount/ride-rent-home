@@ -3,8 +3,11 @@ import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrappe
 import ViewAllLinkButton from "@/components/common/ViewAllLinkButton";
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import { convertToLabel } from "@/helpers";
-import { fetchSectionData, getBestOfferParams } from "@/helpers/fetchSections";
-import { getSectionConfig } from "@/helpers/newSections";
+import {
+  fetchSectionData,
+  getBestOfferParams,
+  getSectionConfig,
+} from "@/helpers/vehicle-details-section.helper";
 import { cn } from "@/lib/utils";
 import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { API } from "@/utils/API";
@@ -32,7 +35,7 @@ export default async function RelatedResults({
   let selectedSection = sections[Math.floor(Math.random() * sections.length)];
   let vehicleData: any[] = [];
   let fallbackAttempted = false;
-  let sectionData: any = {}; // Store section-specific data for URL generation
+  let sectionData: any = {};
 
   // Try selected section, fallback to others if no results
   while (vehicleData.length === 0 && !fallbackAttempted) {

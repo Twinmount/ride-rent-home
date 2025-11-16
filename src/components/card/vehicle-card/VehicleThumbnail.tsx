@@ -15,7 +15,9 @@ type VehicleThumbnailProps = {
   layoutType: "grid" | "carousel";
   vehiclePhotos?: string[];
   priority?: boolean;
+  quality?: number;
   loading?: "lazy" | "eager";
+  isOptimizedThumbnail?: boolean;
 };
 
 const VehicleThumbnail = ({
@@ -27,6 +29,8 @@ const VehicleThumbnail = ({
   vehiclePhotos = [],
   priority = false,
   loading = "lazy",
+  quality = 90,
+  isOptimizedThumbnail,
 }: VehicleThumbnailProps) => {
   const [isImageLoading, setImageLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -73,24 +77,21 @@ const VehicleThumbnail = ({
     handleTouchEnd();
   };
 
-  if (!src) {
-    return (
-      <img
-        src={defaultImage}
-        alt={alt}
-        width={width}
-        height={height}
-        className="h-full w-full rounded object-cover"
-      />
-    );
-  }
-
   const containerClassName = `
-    relative w-full overflow-hidden rounded 
-    ${layoutType === "carousel" ? "h-[8rem] lg:h-[8.3rem]" : "h-[10.2rem] md:h-[6.8rem] lg:h-[7.5rem]"}
-    ${hasMultipleImages ? "cursor-pointer select-none" : ""}
-  `;
+  relative w-full overflow-hidden rounded 
+  ${layoutType === "carousel" ? "h-[8rem] lg:h-[8.3rem]" : "h-[16rem] sm:h-[10.2rem] md:h-[6.8rem] lg:h-[7.5rem]"}
+  ${hasMultipleImages ? "cursor-pointer select-none" : ""}
+`;
 
+  const imageSizes = isOptimizedThumbnail
+    ? // For optimized thumbnails: Use exact size (no responsive variants needed)
+      layoutType === "carousel"
+      ? "15rem"
+      : "15rem"
+    : // For fallback images: Use responsive sizes
+      layoutType === "carousel"
+      ? "8.3rem"
+      : "8.3rem";
   return (
     <div
       className={containerClassName}
@@ -110,14 +111,11 @@ const VehicleThumbnail = ({
         className={`h-full w-full rounded object-cover transition-all duration-500 ease-in-out ${
           isActive && hasMultipleImages ? "scale-[1.02]" : "scale-100"
         } `}
-        quality={90}
+        quality={quality}
         priority={priority}
         loading={loading}
-        sizes={
-          layoutType === "carousel"
-            ? "(max-width: 1024px) 8rem, 8.3rem"
-            : "(max-width: 1024px) 6rem, 7.5rem"
-        }
+        sizes={imageSizes}
+        onError={() => setImageLoading(false)}
       />
 
       {/* Cycling Loading Indicator - Top Right */}

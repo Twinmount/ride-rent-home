@@ -1,11 +1,11 @@
-import { MapVehicleCardType, VehicleCardType } from "@/types/vehicle-types";
+import { MapVehicleCardType } from "@/types/vehicle-types";
 import { generateVehicleDetailsUrl } from "@/helpers";
 
 import LinkWrapper from "../LinkWrapper";
 import SafeImage from "@/components/common/SafeImage";
 
 import MapCardRentalDetails from "../MapCardRentalDetails";
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type VehicleMapCardProps = {
   vehicle: MapVehicleCardType;
@@ -28,12 +28,12 @@ const VehicleMapCard = ({ vehicle, country = "ae" }: VehicleMapCardProps) => {
   return (
     <LinkWrapper
       href={vehicleDetailsPageLink}
-      className={`flex w-full max-w-80 items-center gap-2 rounded border bg-white p-1 shadow-md cursor-pointer`}
+      className={`flex w-full max-w-80 cursor-pointer items-center gap-2 rounded border bg-white p-1 shadow-md`}
       newTab={openInNewTab}
     >
       <div className="relative h-16 w-24 overflow-hidden rounded">
         <SafeImage
-          src={vehicle.thumbnail}
+          src={vehicle.thumbnail || vehicle.fallbackThumbnail}
           alt={vehicle.vehicleTitle}
           fill
           className={`h-full w-full rounded object-cover`}

@@ -11,6 +11,8 @@ import RentNowbuttonWide from "@/components/common/RentNowbuttonWide";
 import ShareLikeComponent from "../../profile-specifications/ShareLikeComponent";
 import VehicleDescription from "../../profile-specifications/VehicleDescription";
 import Link from "next/link";
+import PriceOfferDetails from "../PriceOfferDetails";
+import { cn } from "@/lib/utils";
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -20,16 +22,19 @@ type ProfileCardProps = {
 
 const ProfileCard = memo(
   ({ profileData, country, vehicle }: ProfileCardProps) => {
-    const { isCompanyValid, rentalDetails, securityDeposit } = useProfileData(
-      profileData,
-      country
-    );
+    const {
+      isCompanyValid,
+      rentalDetails,
+      securityDeposit,
+      additionalVehicleTypes,
+    } = useProfileData(profileData, country);
 
     const {
       company,
       seriesDescription,
       vehicleData: { state, model, category, brandName },
       vehicleId,
+      priceOffer,
     } = profileData;
 
     // Enhanced availability check
@@ -58,10 +63,13 @@ const ProfileCard = memo(
 
     const showListingPolicy = shouldShowListingPolicy();
 
+    // Extract vehicle series from vehicle object
+    const vehicleSeries = vehicle?.vehicleSeries?.vehicleSeries || "";
+
     return (
       <MotionDiv className="profile-card h-auto">
         <div className="align-center flex justify-between">
-          <div className="p-2 text-lg font-normal text-text-primary md:text-2xl">
+          <div className="text-lg font-normal text-text-primary md:text-xl lg:text-[1.3rem]">
             {model}
           </div>
           <ShareLikeComponent vehicleId={vehicleId} />
@@ -73,6 +81,7 @@ const ProfileCard = memo(
         {/* Rental Details - now handles both available and unavailable states */}
         <RentalDetailsTab
           rentalDetails={rentalDetails}
+          additionalVehicleTypes={additionalVehicleTypes}
           securityDeposit={securityDeposit}
           isDisabled={!vehicleAvailable}
           brandValue={brandName}
@@ -80,22 +89,31 @@ const ProfileCard = memo(
           country={country}
           state={state}
           formattedCategory={category}
+          vehicleSeries={vehicleSeries}
+          vehicleId={vehicleId}
         />
 
         <CompanySpecifications specs={company.companySpecs} />
 
+        <PriceOfferDetails priceOffer={priceOffer} isMobile={true} />
+
         {/* Rent Now button or Unavailable message - Desktop only */}
-        <div className="hidden py-2 lg:block">
+        <div className="mt-2 hidden py-2 lg:block">
           {vehicleAvailable ? (
-            <RentNowbuttonWide
-              vehicle={vehicle}
-              state={state}
-              country={country}
-              vehicleName={model}
-              vehicleId={vehicleId}
-              agentId={profileData.agentId}
-              contactDetails={company.contactDetails}
-            />
+            <div className="flex-center gap-4">
+              <PriceOfferDetails priceOffer={priceOffer} isMobile={false} />
+
+              <RentNowbuttonWide
+                vehicle={vehicle}
+                state={state}
+                country={country}
+                vehicleName={model}
+                vehicleId={vehicleId}
+                agentId={profileData.agentId}
+                contactDetails={company.contactDetails}
+                className={cn("!my-auto", priceOffer ? "!w-[30%]" : "w-full")}
+              />
+            </div>
           ) : (
             <div className="w-full rounded-lg border border-red-200 bg-red-50 p-4 text-center">
               <p className="font-medium text-red-600">
@@ -110,6 +128,7 @@ const ProfileCard = memo(
           <div className="mt-2 flex justify-end px-2 pt-2">
             <Link
               href={`/${country}/vehicle-listing-policy`}
+              target="_blank"
               className="text-[.6rem] font-medium text-gray-500 hover:text-gray-700"
             >
               Vehicle Listing Policy*

@@ -2,6 +2,7 @@ import { ENV } from '@/config/env';
 import { convertToValue } from '@/helpers';
 import { getDefaultMetadata, getAbsoluteUrl } from '@/helpers/metadata-helper';
 import { CompanyMetadataResponse } from '@/types';
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import { Metadata } from 'next';
 
 async function fetchCompanyDetails(
@@ -129,7 +130,7 @@ export function getCompanyJsonLd(
     `${country}/profile/${companyNameValue}/${companyId}`
   );
 
-  const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const rootImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   const address = companyAddress || 'UAE'; // Default to "UAE" if address is missing
 

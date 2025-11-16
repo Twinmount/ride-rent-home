@@ -15,6 +15,7 @@ import { ENV } from "@/config/env";
 import { getAbsoluteUrl } from "@/helpers/metadata-helper";
 import { notFound } from "next/navigation";
 import { API } from "@/utils/API";
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 
 async function fetchVehicleMetaData(
   vehicleCode: string,
@@ -71,7 +72,7 @@ export async function generateVehicleMetadata(
   const vehicleTitle = generateVehicleTitleSlug(vehicle.vehicleTitle);
 
   // dynamic link to  vehicle details page
-  const canonicalUrl = `https://ride.rent/${country}/${state}/${category}/${vehicleTitle}/${vehicleCode}`;
+  const canonicalUrl = `https://ride.rent/${country}/${state}/${category}/${vehicleTitle}-for-rent/${vehicleCode}`;
   const ogImage = vehicle.vehiclePhoto;
 
   return {
@@ -126,7 +127,7 @@ export function getVehicleJsonLd(
   vehicleCode: string,
   country: string
 ) {
-  const rootImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const rootImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   // Generate URLs using the helper
   const vehicleDetailsPageLink = getAbsoluteUrl(

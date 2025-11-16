@@ -1,15 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { X, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import SafeImage from "@/components/common/SafeImage";
-
-import { useAuth } from "@/hooks/useAuth";
-
-// Step Components
 import { PhoneStep } from "./components/PhoneStep";
 import { PasswordStep } from "./components/PasswordStep";
 import { OtpStep } from "./components/OtpStep";
@@ -17,8 +10,17 @@ import { RegisterStep } from "./components/RegisterStep";
 import { SuccessStep } from "./components/SuccessStep";
 import { useImmer } from "use-immer";
 import { useAuthContext } from "@/auth";
+import { AdBanner } from "./LoginDrawerHeader";
+import { ForgotPasswordStep } from "./components/ForgotPasswordStep";
 
-export type AuthStep = "phone" | "password" | "otp" | "register" | "success";
+export type AuthStep =
+  | "phone"
+  | "password"
+  | "otp"
+  | "register"
+  | "forgot-password"
+  | "new-password"
+  | "success";
 export type StatusType = "idle" | "loading" | "success" | "error";
 
 export interface LoginDrawerState {
@@ -49,15 +51,18 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     login,
     verifyOTP,
     setPassword,
+    forgotPassword,
     resendOTP,
     updateProfile,
     checkUserExists,
+    setPasswordMutation,
     isLoading: authLoading,
     error: authError,
     clearError,
     userAuthStep,
     logoutMutation,
     loginMutation,
+    forgotPasswordMutation,
   } = useAuthContext();
 
   useEffect(() => {
@@ -81,6 +86,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
 
   // Common State
   const [step, setStep] = useState<AuthStep>("phone");
+  console.log("step: LoginDrawer", step);
   const [status, setStatus] = useState<StatusType>("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [userExists, setUserExists] = useState<boolean>(false);
@@ -92,6 +98,14 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     password: "",
     otp: "",
   });
+
+  useEffect(() => {
+    if (!isOpen) {
+      resetState();
+      onClose();
+      setDrawerState(initialDrawerState);
+    }
+  }, [isOpen]);
 
   const resetState = () => {
     setStep("phone");
@@ -158,34 +172,8 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
         aria-labelledby="drawer-title"
       >
         <div className="flex h-full flex-col">
-          <div
-            className="p-6 text-white"
-            style={{
-              background:
-                "linear-gradient(255.26deg, #f9a825 29.45%, #f57f17 88.69%)",
-            }}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <SafeImage
-                  src="/assets/logo/Logo_Black.svg"
-                  alt="Ride.Rent Logo"
-                  width={70}
-                  height={48}
-                  className="w-[135px] brightness-0 invert"
-                />
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleClose}
-                className="text-white/80 hover:bg-white/10 hover:text-white"
-                aria-label="Close login drawer"
-              >
-                <X className="h-5 w-5" aria-hidden="true" />
-              </Button>
-            </div>
+          <div className="add-banner-wrapper relative">
+            <AdBanner handleClose={handleClose} />
           </div>
 
           {/* Status Bar */}
@@ -234,6 +222,25 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
                 isCurrentlyLoading={isCurrentlyLoading}
                 login={login}
                 clearError={clearError}
+              />
+            )}
+            {step === "forgot-password" && (
+              <ForgotPasswordStep
+                setPasswordMutation={setPasswordMutation}
+                setPassword={setPassword}
+                userAuthStep={userAuthStep}
+                verifyOTP={verifyOTP}
+                currentStep={step}
+                setStep={setStep}
+                setStatus={setStatus}
+                setStatusMessage={setStatusMessage}
+                drawerState={drawerState}
+                isCurrentlyLoading={isCurrentlyLoading}
+                mutationSatate={forgotPasswordMutation}
+                sendPasswordResetCodeViaWhatsApp={forgotPassword}
+                clearError={clearError}
+                resendOTP={resendOTP}
+                setDrawerState={setDrawerState}
               />
             )}
             {step === "otp" && (

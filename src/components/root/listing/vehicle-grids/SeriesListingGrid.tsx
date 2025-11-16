@@ -60,7 +60,6 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
   category,
 }) => {
   const searchParams = useSearchParams();
-  // const category = "cars";
 
   // State variables
   const [seriesValue, setSeriesValue] = useState(series);

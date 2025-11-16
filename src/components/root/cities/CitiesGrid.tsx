@@ -1,6 +1,6 @@
 import { CityType } from "@/types";
 import Link from "next/link";
-import { convertToLabel } from "@/helpers";
+import { convertToLabel, capitalizeWords } from "@/helpers";
 import { MapPin, ArrowRight, Building2 } from "lucide-react";
 
 type PropType = {
@@ -55,7 +55,7 @@ export default function CitiesGrid({
 
               {/* City name */}
               <h3 className="truncate text-sm font-normal text-gray-800 transition-colors group-hover:text-gray-900">
-                {city.cityName}
+                {capitalizeWords(city.cityName)} {/* ← CHANGE THIS LINE */}
               </h3>
             </div>
           </Link>
@@ -64,4 +64,3 @@ export default function CitiesGrid({
     </div>
   );
 }
-

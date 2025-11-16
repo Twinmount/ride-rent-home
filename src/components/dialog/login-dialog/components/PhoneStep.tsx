@@ -1,15 +1,67 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useTransition,
+  memo,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { Loader2, UserCircle } from "lucide-react";
 import "../phone-input.css";
-import { useImmer } from "use-immer";
-import {  getNumberAfterSpaceStrict } from "@/utils/helper";
+import { getDotCount, getNumberAfterSpaceStrict } from "@/utils/helper";
 import { LoginDrawerState } from "../LoginDrawer";
 import { useLocationDetection } from "@/hooks/useLocationDetection";
 import { useAuthContext } from "@/auth";
 
+// Memoized PhoneInput to prevent unnecessary re-renders
+const InternalMemoizedPhoneInput = memo(
+  function InternalMemoizedPhoneInputComponent({
+    // <--- Give it a name here
+    defaultCountry,
+    value,
+    onChange,
+  }: {
+    defaultCountry: string;
+    value: string;
+    onChange?: (value: any, country: any) => void;
+  }) {
+    return (
+      <PhoneInput
+        defaultCountry={defaultCountry}
+        value={value}
+        onChange={onChange}
+        className="flex items-center justify-center"
+        inputClassName="hidden"
+        countrySelectorStyleProps={{
+          className:
+            "bg-transparent !text-xs !p-0 !bg-transparent !shadow-none",
+          style: {
+            padding: 0,
+            backgroundColor: "transparent",
+            background: "transparent",
+            boxShadow: "none",
+          },
+          buttonClassName:
+            "!border-none outline-none !h-full !w-full !rounded-none bg-transparent !p-0 !bg-transparent !shadow-none",
+        }}
+      />
+    );
+  },
+  (prevProps, nextProps) => {
+    // Only re-render if country or value actually changed
+    return (
+      prevProps.defaultCountry === nextProps.defaultCountry &&
+      prevProps.value === nextProps.value
+    );
+  }
+);
+
+// Then use it:
+const MemoizedPhoneInput = InternalMemoizedPhoneInput;
 
 export const PhoneStep = ({
   setStep,
@@ -23,20 +75,37 @@ export const PhoneStep = ({
   setDrawerState,
 }: any) => {
   const { auth } = useAuthContext();
-  const { location, isLoading: isLocationLoading } =
-    useLocationDetection(!auth.isLoggedIn);
+  let detectedCountryLocal;
 
-  const [phoneNumber, setPhoneNumber] = useImmer({
-    value: "",
-    number: "",
-    countryCode: "",
-  });
+  const { location, isLoading: isLocationLoading } = useLocationDetection(
+    !auth.isLoggedIn && !detectedCountryLocal
+  );
 
-  const [detectedCountry, setDetectedCountry] = useState<string>("");
+  // useTransition for non-urgent state updates
+  const [isPending, startTransition] = useTransition();
+
+  // Phone state
+  const [phoneValue, setPhoneValue] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("");
+  const [allowNumberCount, setAllowNumberCount] = useState(0);
+
+  // Location state
+  const [detectedCountry, setDetectedCountry] = useState<string>(
+    detectedCountryLocal ? detectedCountryLocal : ""
+  );
+
   const [userSelectedCountry, setUserSelectedCountry] = useState<string | null>(
     null
   );
+
   const [showSkipOption, setShowSkipOption] = useState<boolean>(false);
+
+  useEffect(() => {
+    detectedCountryLocal = sessionStorage.getItem("detectedCountry");
+    console.log("country: ", detectedCountryLocal);
+    if (detectedCountryLocal) setDetectedCountry(detectedCountryLocal);
+  }, []);
 
   useEffect(() => {
     if (isLocationLoading) {
@@ -50,44 +119,61 @@ export const PhoneStep = ({
     }
   }, [isLocationLoading]);
 
-  // Update detected country when location is available
   useEffect(() => {
     if (location && !isLocationLoading && !userSelectedCountry) {
       setDetectedCountry(location.country);
+      sessionStorage.setItem("detectedCountry", location.country);
     }
   }, [location, userSelectedCountry, isLocationLoading]);
 
-  // Update phone number country code when detected country changes
-  useEffect(() => {
-    if (detectedCountry) {
-      const countryCodeMap: Record<string, string> = {
-        ae: "+971",
-        in: "+91",
-      };
-
-      setPhoneNumber((draft) => {
-        draft.countryCode = countryCodeMap[detectedCountry] || "+971";
-      });
-    }
-  }, [detectedCountry, setPhoneNumber]);
-
-  // Handle skip location detection
   const handleSkipDetection = () => {
-    setUserSelectedCountry("ae"); // Default to UAE
+    setUserSelectedCountry("ae");
     setDetectedCountry("ae");
   };
 
-  const onChangeCountryCode = (value: any, country: any) => {
-    const firstSpaceIndex = country.inputValue.indexOf(" ");
-    // const countryCode = country.inputValue.substring(0, firstSpaceIndex);
-
+  // Handle country code change with transition
+  const onChangeCountryCode = useCallback((value: any, country: any) => {
     const phoneDetails = getNumberAfterSpaceStrict(country.inputValue);
+    const newAllowCount = getDotCount(country.country.format);
+    const newCountryCode = `+${country.country.dialCode}`;
 
-    setPhoneNumber((draft) => {
-      draft.value = value;
-      draft.number = phoneDetails.phoneNumber;
+    // Update display value immediately (urgent update)
+    setPhoneValue(value);
+
+    // Mark these updates as non-urgent
+    startTransition(() => {
+      setCountryCode(newCountryCode);
+      setAllowNumberCount(newAllowCount);
+
+      if (
+        newAllowCount === 0 ||
+        phoneDetails.phoneNumber.length <= newAllowCount
+      ) {
+        setPhoneNumber(phoneDetails.phoneNumber);
+      }
     });
-  };
+  }, []);
+
+  // Handle phone number input with transition
+  const onHandlePhoneNumberChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value;
+      // Only allow numeric characters
+      value = value.replace(/[^0-9]/g, "");
+
+      // value = value.slice(0, allowNumberCount);
+      value = allowNumberCount > 0 ? value.slice(0, allowNumberCount) : value;
+
+      // Update the input field immediately to show trimmed value
+      e.target.value = value;
+
+      // Mark state update as non-urgent (allows typing to feel instant)
+      // startTransition(() => {
+      setPhoneNumber(value);
+      // });
+    },
+    [allowNumberCount]
+  );
 
   const handlePhoneSubmit = async () => {
     setStatus("loading");
@@ -95,31 +181,30 @@ export const PhoneStep = ({
     clearError();
 
     try {
-      // Clean phone number by removing dashes and special characters
-      const cleanedPhoneNumber = phoneNumber.number.replace(/[-\s()]/g, "");
+      const cleanedPhoneNumber = phoneNumber.replace(/[-\s()]/g, "");
 
       setDrawerState((draft: LoginDrawerState) => {
         draft.phoneNumber = cleanedPhoneNumber;
-        draft.countryCode = phoneNumber.countryCode;
+        draft.countryCode = countryCode;
       });
 
-      // First check if user exists
       const userExistsResponse = await checkUserExists(
         cleanedPhoneNumber,
-        phoneNumber.countryCode
+        countryCode
       );
 
       if (userExistsResponse.success && userExistsResponse.data) {
         const userData = userExistsResponse.data;
 
         if (userData.userExists) {
-          // Handle different types of existing users
           if (
             userData.isTempVerified === "TRUE" &&
             userData?.isProfileNavigationRequired
           ) {
-            // User has temporary verification - show remaining time
-            const remainingMinutes = userData.tempVerificationValidFor || 0;
+            setDrawerState((prev: any) => ({
+              ...prev,
+              tempToken: userExistsResponse.data.tempToken,
+            }));
             setUserExists(true);
             setStep("register");
             setStatus("success");
@@ -127,13 +212,11 @@ export const PhoneStep = ({
               "Welcome back! Please complete your registration."
             );
           } else if (userData.isPhoneVerified) {
-            // Fully verified user - normal login flow
             setUserExists(true);
             setStep("password");
             setStatus("success");
             setStatusMessage("Welcome back! Please enter your password.");
           } else {
-            // User exists but not verified - treat as new user
             setStatus("loading");
             setStatusMessage(
               "Account found but not verified. Sending verification code..."
@@ -141,7 +224,7 @@ export const PhoneStep = ({
 
             const signupResponse = await signup({
               phoneNumber: cleanedPhoneNumber,
-              countryCode: phoneNumber.countryCode,
+              countryCode: countryCode,
               countryId: "",
             });
 
@@ -153,7 +236,6 @@ export const PhoneStep = ({
             }
           }
         } else {
-          // User doesn't exist or was cleaned up
           if (userData.expiredTempUser) {
             setStatus("loading");
             setStatusMessage(
@@ -166,7 +248,7 @@ export const PhoneStep = ({
 
           const signupResponse = await signup({
             phoneNumber: cleanedPhoneNumber,
-            countryCode: phoneNumber.countryCode,
+            countryCode: countryCode,
             countryId: "",
           });
 
@@ -181,7 +263,6 @@ export const PhoneStep = ({
           }
         }
       } else {
-        // API call failed
         setStatus("error");
         setStatusMessage("Unable to verify phone number. Please try again.");
       }
@@ -202,7 +283,7 @@ export const PhoneStep = ({
         </div>
         <h3 className="text-xl font-semibold">Welcome to Ride.Rent!</h3>
         <p className="text-balance text-muted-foreground">
-          {"Enter your WhatsApp number to sign in or create a new account."}
+          Enter your WhatsApp number to sign in or create a new account.
         </p>
       </div>
       <div className="space-y-4">
@@ -211,9 +292,12 @@ export const PhoneStep = ({
             <label htmlFor="phone" className="text-sm font-medium">
               Phone Number
             </label>
+            {/* Show pending indicator if state updates are delayed */}
+            {isPending && (
+              <span className="text-xs text-muted-foreground">Updating...</span>
+            )}
           </div>
 
-          {/* Location status and override */}
           {isLocationLoading && showSkipOption && (
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">
@@ -230,46 +314,31 @@ export const PhoneStep = ({
             </div>
           )}
 
-          {/* {!isLocationLoading && (
-            <LocationOverride
-              detectedLocation={location}
-              selectedCountry={userSelectedCountry || detectedCountry}
-              selectedCountryName={
-                (userSelectedCountry || detectedCountry) === 'ae' 
-                  ? 'UAE' 
-                  : (userSelectedCountry || detectedCountry) === 'in'
-                  ? 'India'
-                  : undefined
-              }
-              className="mb-2"
-            />
-          )} */}
-
           <div onKeyDown={(e) => e.key === "Enter" && handlePhoneSubmit()}>
-            {detectedCountry && (
-              <PhoneInput
-                defaultCountry={detectedCountry}
-                value={phoneNumber.value}
-                onChange={onChangeCountryCode}
-                disabled={isCurrentlyLoading || isLocationLoading}
-                // hideDropdown={true}
-                style={{ height: "48px" }}
-                inputStyle={{
-                  width: "100%",
-                  height: "48px",
-                  fontSize: "18px",
-                  border: "1px solid hsl(var(--border))",
-                  borderRadius: "0 6px 6px 0",
-                  backgroundColor: "hsl(var(--background))",
-                  color: "hsl(var(--foreground))",
-                }}
-                inputProps={{
-                  id: "phone",
-                  "aria-label": "Phone number",
-                  "aria-describedby": "phone-help",
-                }}
+            <div className="relative z-10 flex gap-2">
+              <div className="flex h-10 w-20 flex-shrink-0 items-center justify-center rounded-lg border-2 bg-transparent backdrop-blur-sm transition-all">
+                {detectedCountry && (
+                  <MemoizedPhoneInput
+                    defaultCountry={detectedCountry ? detectedCountry : "ae"}
+                    value={phoneValue}
+                    onChange={onChangeCountryCode}
+                  />
+                )}
+                <span className="mx-0.5 text-xs font-semibold">
+                  {countryCode}
+                </span>
+              </div>
+              <input
+                type="tel"
+                id="phone"
+                placeholder="enter phone number"
+                value={phoneNumber}
+                onChange={onHandlePhoneNumberChange}
+                className="h-10 w-full flex-1 rounded-lg border-2 bg-transparent px-3 text-sm outline-none backdrop-blur-sm transition-all placeholder:text-black/40"
+                autoComplete="tel"
+                inputMode="numeric"
               />
-            )}
+            </div>
           </div>
           <p id="phone-help" className="sr-only">
             Enter your phone number to sign in or create an account
@@ -277,17 +346,8 @@ export const PhoneStep = ({
         </div>
         <Button
           onClick={handlePhoneSubmit}
-          disabled={
-            !phoneNumber.number || isCurrentlyLoading || isLocationLoading
-          }
+          disabled={!phoneNumber || isCurrentlyLoading || isLocationLoading}
           className="w-full bg-gradient-to-r from-orange-500 to-orange-600 py-6 text-lg text-white hover:from-orange-600 hover:to-orange-700"
-          aria-label={
-            isCurrentlyLoading
-              ? "Checking phone number, please wait"
-              : !phoneNumber.number
-                ? "Continue - Please enter phone number first"
-                : "Continue with phone verification"
-          }
         >
           {isCurrentlyLoading ? (
             <>
