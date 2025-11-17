@@ -26,7 +26,7 @@ export default async function BlogFaq({ blogId, country }: Props) {
 
   const data: FetchBlogFAQResponse = await response.json();
 
-  const faqData = data.result.faqs || [];
+  const faqData = (data.result && data.result.faqs) || [];
 
   if (faqData.length === 0) {
     return null;
