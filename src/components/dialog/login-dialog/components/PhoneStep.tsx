@@ -17,6 +17,7 @@ import { getDotCount, getNumberAfterSpaceStrict } from "@/utils/helper";
 import { LoginDrawerState } from "../LoginDrawer";
 import { useLocationDetection } from "@/hooks/useLocationDetection";
 import { useAuthContext } from "@/auth";
+import { useOAuth } from "@/hooks/useOAuth";
 
 // Memoized PhoneInput to prevent unnecessary re-renders
 const InternalMemoizedPhoneInput = memo(
@@ -76,6 +77,7 @@ export const PhoneStep = ({
   setDrawerState,
 }: any) => {
   const { auth } = useAuthContext();
+  const { signInWithProvider, isLoading: isOAuthLoading } = useOAuth();
   let detectedCountryLocal;
 
   const { location, isLoading: isLocationLoading } = useLocationDetection(
@@ -407,8 +409,9 @@ export const PhoneStep = ({
         style={{ marginTop: "30px" }}
       >
         <Button
-          onClick={() => {}}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md"
+          onClick={() => signInWithProvider("google")}
+          disabled={isOAuthLoading || isCurrentlyLoading}
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
           aria-label="Sign in with Google"
         >
           <img
@@ -417,9 +420,10 @@ export const PhoneStep = ({
           />
         </Button>
         <Button
-          onClick={() => {}}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-transparent p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md"
-          aria-label="Sign in with Google"
+          onClick={() => signInWithProvider("apple")}
+          disabled={isOAuthLoading || isCurrentlyLoading}
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-transparent p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="Sign in with Apple"
         >
           <img
             src="/assets/icons/social-login/apple-icon.png"
@@ -427,8 +431,9 @@ export const PhoneStep = ({
           />
         </Button>
         <Button
-          onClick={() => {}}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md"
+          onClick={() => signInWithProvider("facebook")}
+          disabled={isOAuthLoading || isCurrentlyLoading}
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
           aria-label="Sign in with Facebook"
         >
           <img

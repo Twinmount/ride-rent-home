@@ -12,6 +12,7 @@ import { GlobalContextProvider } from "@/context/GlobalContext";
 import NextTopLoader from "nextjs-toploader";
 import CookiePopup from "@/components/dialog/CookiePopup";
 import { getDefaultMetadata } from "@/helpers/metadata-helper";
+import { SessionProvider } from "@/components/providers/SessionProvider";
 
 export const metadata: Metadata = getDefaultMetadata({});
 
@@ -112,9 +113,11 @@ export default function RootLayout({
         <BodyScripts />
         {/* react query provider */}
         <NetworkWrapper>
-          {/* global context provider */}
-          <ReactQueryProvider>
-            <GlobalContextProvider>{children}</GlobalContextProvider>
+          {/* NextAuth Session Provider */}
+          <SessionProvider>
+            {/* global context provider */}
+            <ReactQueryProvider>
+              <GlobalContextProvider>{children}</GlobalContextProvider>
             <ToastContainer
               position="top-right"
               autoClose={2000}
@@ -128,7 +131,8 @@ export default function RootLayout({
               theme="colored"
               transition={Bounce}
             />
-          </ReactQueryProvider>
+            </ReactQueryProvider>
+          </SessionProvider>
         </NetworkWrapper>
         <CookiePopup />
       </body>
