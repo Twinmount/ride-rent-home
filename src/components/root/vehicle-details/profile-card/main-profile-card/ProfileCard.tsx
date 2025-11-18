@@ -63,8 +63,9 @@ const ProfileCard = memo(
 
     const showListingPolicy = shouldShowListingPolicy();
 
-    // Extract vehicle series from vehicle object
+    // Extract vehicle series and isVehicleModified from vehicle object
     const vehicleSeries = vehicle?.vehicleSeries?.vehicleSeries || "";
+    const isVehicleModified = vehicle?.isVehicleModified || false;
 
     return (
       <MotionDiv className="profile-card h-auto">
@@ -123,18 +124,27 @@ const ProfileCard = memo(
           )}
         </div>
 
-        {/* Vehicle Listing Policy Link - shown on both mobile and desktop */}
-        {showListingPolicy && (
-          <div className="mt-2 flex justify-end px-2 pt-2">
+        {/* Vehicle Modification and Listing Policy Section */}
+        <div className="flex items-center justify-between px-2 text-[.7rem]">
+          {/* Left side - Vehicle Modified Badge */}
+          {isVehicleModified && (
+            <div className="mt-2 flex items-center gap-1.5 rounded-md border border-amber-500 bg-amber-50 px-2 py-1 text-orange lg:mt-0">
+              <span className="text-sm">🔧</span>
+              <span className="text-xs font-semibold">Modified Vehicle</span>
+            </div>
+          )}
+
+          {/* Right side - Vehicle Listing Policy Link */}
+          {showListingPolicy && (
             <Link
               href={`/${country}/vehicle-listing-policy`}
               target="_blank"
-              className="text-[.6rem] font-medium text-gray-500 hover:text-gray-700"
+              className="ml-auto font-medium text-gray-500 hover:text-gray-700"
             >
               Vehicle Listing Policy*
             </Link>
-          </div>
-        )}
+          )}
+        </div>
       </MotionDiv>
     );
   }
@@ -142,3 +152,4 @@ const ProfileCard = memo(
 
 ProfileCard.displayName = "ProfileCard";
 export default ProfileCard;
+
