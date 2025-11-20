@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build:dev": "next build",
-    "build:prod": "NODE_ENV=production next build",
-    "build:prod-windows": "SET NODE_ENV=production && next build",
+  "build:dev": "copy /Y .env.development .env.local && next build",
+    "build:prod": "copy /Y .env.prod .env.local && next build",
+    "build:prod-windows": "copy /Y .env.prod .env.local && next build",
     "start:dev": "npm run build:dev && next start",
     "start:prod": "npm run build:prod && next start",
     "start": "next start"
