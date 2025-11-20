@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-  "build:dev": "copy /Y .env.development .env.local && next build",
-    "build:prod": "copy /Y .env.prod .env.local && next build",
+    "prebuild:dev": "node ./copy-env.js",
+    "build:dev": "npm run prebuild:dev && next build",
+    "prebuild:prod": "node ./copy-env-prod.js",
+    "build:prod": "npm run prebuild:prod && next build",
     "build:prod-windows": "copy /Y .env.prod .env.local && next build",
     "start:dev": "npm run build:dev && next start",
     "start:prod": "npm run build:prod && next start",
