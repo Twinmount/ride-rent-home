@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { API } from "@/utils/API";
-import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
+import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    
+
     const page = searchParams.get("page") || "1";
     const state = searchParams.get("state") || "";
     const vehicleSeries = searchParams.get("vehicleSeries") || "";
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     const params = new URLSearchParams({
       page,
-      limit: "8",
+      limit: "10",
       state,
       vehicleSeries,
       category,
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       country,
     });
 
-    const data: FetchVehicleCardsResponse = await response.json();
+    const data: FetchVehicleCardsResponseV2 = await response.json();
 
     return NextResponse.json({
       result: {

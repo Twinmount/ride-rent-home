@@ -10,6 +10,7 @@ import MileageInfo from "./MileageInfo";
 import SafeImage from "@/components/common/SafeImage";
 import Link from "next/link";
 import { generateVehicleDetailsUrl } from "@/helpers";
+import PayOnPickup from "./PayOnPickup";
 
 type RentalDetailsTabProps = {
   rentalDetails: RentalDetails;
@@ -25,6 +26,7 @@ type RentalDetailsTabProps = {
   formattedCategory?: string;
   vehicleSeries?: string;
   vehicleId?: string;
+  additionalVehicleTypes?: any[];
 };
 
 const RentalDetailsTab = ({
@@ -38,8 +40,8 @@ const RentalDetailsTab = ({
   formattedCategory = "",
   vehicleSeries = "",
   vehicleId = "",
+  additionalVehicleTypes = [],
 }: RentalDetailsTabProps) => {
-  // Memoize enabledRentalPeriods to prevent re-creation on every render
   const enabledRentalPeriods = useMemo(
     () =>
       [
@@ -53,12 +55,51 @@ const RentalDetailsTab = ({
 
   const { convert } = usePriceConverter();
 
-  // Use lazy initialization for selectedPeriod
   const [selectedPeriod, setSelectedPeriod] = useState(
     () => enabledRentalPeriods[0]
   );
   const [similarVehicles, setSimilarVehicles] = useState<any[]>([]);
   const [isLoadingVehicles, setIsLoadingVehicles] = useState(false);
+
+  // Collapsible state for more rental options
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
+
+  // Filtering vehicle types for badges and more rental options
+  const allTypeNames = additionalVehicleTypes.map((t) => t.name);
+  const hasSelfDrive = allTypeNames.includes("SELF DRIVE");
+  const hasCarWithDriver = allTypeNames.includes("CAR WITH DRIVER");
+
+  // Types shown above as badge (only if exactly one present)
+  const shownBadgeTypeNames: string[] = [];
+  if (hasSelfDrive && !hasCarWithDriver) shownBadgeTypeNames.push("SELF DRIVE");
+  if (!hasSelfDrive && hasCarWithDriver)
+    shownBadgeTypeNames.push("CAR WITH DRIVER");
+
+  // If both present, none shown in badge, all shown below
+  const showAllInOptions = hasSelfDrive && hasCarWithDriver;
+
+  // Filtered for "More Rental Options"
+  let optionsTypeNames: string[] = [];
+  if (showAllInOptions) {
+    optionsTypeNames = allTypeNames;
+  } else {
+    optionsTypeNames = allTypeNames.filter(
+      (name) => !shownBadgeTypeNames.includes(name)
+    );
+  }
+
+  const showMoreRentalOptions = optionsTypeNames.length > 0;
+
+  const filteredOptionTypes = additionalVehicleTypes.filter((t) =>
+    optionsTypeNames.includes(t.name)
+  );
+
+  // Only show badge if exactly one type is present (not both)
+  const shouldShowBadge = useMemo(() => {
+    return (
+      (hasSelfDrive && !hasCarWithDriver) || (!hasSelfDrive && hasCarWithDriver)
+    );
+  }, [hasSelfDrive, hasCarWithDriver]);
 
   // Update selectedPeriod if enabledRentalPeriods changes
   useEffect(() => {
@@ -89,8 +130,7 @@ const RentalDetailsTab = ({
         if (response.ok) {
           const data = await response.json();
           const vehicles = data?.result?.list || [];
-
-          // Filter out current vehicle and take only 2
+          console.log("Fetched similar vehicles:", vehicles);
           const filtered = vehicles
             .filter((v: any) => v.vehicleId !== vehicleId)
             .slice(0, 2);
@@ -136,9 +176,16 @@ const RentalDetailsTab = ({
       : `${baseUrl}?filter=popular-models`;
   };
 
+  const formatVehicleTypeName = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
+
   if (isDisabled) {
     return (
-      <div className="mx-auto mt-2 w-full overflow-hidden rounded-xl border border-gray-200 bg-white p-4 shadow-sm xl:mt-3">
+      <div className="mx-auto w-full overflow-hidden rounded-xl border border-gray-200 bg-white p-4 shadow-sm xl:mt-3">
         <div className="flex flex-col items-center space-y-2.5 text-center">
           {/* Unavailable badge - Mobile only */}
           <div className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 ring-1 ring-red-100 lg:hidden">
@@ -191,25 +238,6 @@ const RentalDetailsTab = ({
             </div>
           ) : similarVehicles.length > 0 ? (
             <div className="w-full space-y-2">
-              <div className="flex items-center justify-center gap-1.5">
-                <svg
-                  className="h-3.5 w-3.5 text-orange"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
-                <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  Available Now
-                </span>
-              </div>
-
               <div className="grid gap-2 sm:grid-cols-2">
                 {similarVehicles.map((vehicle: any) => {
                   const detailPageLink = generateVehicleDetailsUrl({
@@ -228,7 +256,7 @@ const RentalDetailsTab = ({
                     >
                       <div className="relative h-16 w-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-50">
                         <SafeImage
-                          src={vehicle.thumbnail}
+                          src={vehicle.thumbnail || vehicle.fallbackThumbnail}
                           alt={vehicle.vehicleTitle || "Vehicle"}
                           fill
                           className="object-cover transition-transform duration-200 group-hover:scale-105"
@@ -302,23 +330,23 @@ const RentalDetailsTab = ({
   }
 
   return (
-    <div className="mx-auto mt-2 w-full rounded-xl border bg-white p-2 shadow xl:mt-3 xl:p-4">
-      <div className="flex gap-1 lg:pb-2">
-        <div className="relative h-5 w-6 flex-shrink-0">
+    <div className="mx-auto mt-2 w-full rounded-xl border bg-white p-2 shadow xl:py-2">
+      <div className="flex gap-1 lg:pb-0">
+        <div className="relative h-5 w-5 flex-shrink-0">
           <SafeImage
             src="/assets/icons/detail-page/Tag.svg"
             alt="rental details"
             fill
             className="object-contain"
-            sizes="24px"
+            sizes="20px"
           />
         </div>
-        <p className="mb-2 text-lg font-medium md:text-xl">Rental Details</p>
+        <p className="mb-1 text-base font-medium md:text-lg">Rental Details</p>
       </div>
 
-      <div className="mb-2 rounded-xl border-b border-[#D9DEE0] bg-[#f4f4f4] p-2 xl:mb-4 xl:p-4">
+      <div className="mb-2 rounded-xl border-b border-[#D9DEE0] bg-[#f4f4f4] p-2 lg:mb-1">
         <div className="border-b-2 border-[#D9DEE0]">
-          <div className="flex flex-col p-1 md:items-center md:justify-between lg:flex-row lg:p-2">
+          <div className="flex flex-col p-1 md:items-center md:justify-between lg:flex-row">
             <div className="order-2 mx-auto flex w-fit items-center justify-between gap-1 md:mx-0 lg:order-1 xl:gap-2 xl:pb-2">
               {enabledRentalPeriods.map((rental) => (
                 <button
@@ -350,16 +378,111 @@ const RentalDetailsTab = ({
             </div>
           </div>
 
-          <div className="flex justify-center py-2 pr-1 lg:justify-end lg:pt-1">
+          <div className="flex flex-col items-center justify-between gap-2 py-2 pr-1 lg:mb-2 lg:flex-row lg:gap-4 lg:py-1">
+            {/* Vehicle Type Badge */}
+            {shouldShowBadge && (
+              <div
+                className="inline-flex select-none items-center rounded-full bg-orange/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-orange shadow-sm"
+                style={{
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  background: "rgba(255,120,0,0.09)",
+                  boxShadow: "0 1px 4px rgba(80,80,80,0.05)",
+                }}
+              >
+                {hasSelfDrive ? (
+                  "Self Drive Rental"
+                ) : (
+                  <span className="flex items-center gap-1">
+                    <span>Captain Included</span>
+                    <span className="text-xs font-normal text-orange/60">
+                      (Price Inclusive)
+                    </span>
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* Best Price Guarantee */}
             <BestPriceGuarantee isDisabled={isDisabled} />
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between pt-3 md:flex-row lg:pt-2">
+        {/* More Rental Options - Collapsible with minimal header style */}
+        {showMoreRentalOptions && (
+          <div className="m-2">
+            <button
+              type="button"
+              className="group flex w-full items-center justify-center gap-1 px-0 focus:outline-none"
+              onClick={() => setShowMoreOptions((s) => !s)}
+              aria-expanded={showMoreOptions}
+              style={{ background: "transparent", border: "none" }}
+            >
+              <span className="text-sm font-normal tracking-wide text-gray-700 transition-colors duration-150 group-hover:text-orange">
+                More Rental Options
+              </span>
+              <svg
+                className={`ml-2 h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-orange ${showMoreOptions ? "rotate-180" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2.2}
+                viewBox="0 0 24 24"
+                style={{ transition: "color 0.18s, transform 0.24s" }}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            {showMoreOptions && (
+              <div className="mt-3 flex flex-wrap justify-center gap-3 px-1 pb-2">
+                {filteredOptionTypes.map((type, idx) => (
+                  <div
+                    key={type.name + idx}
+                    className="flex h-12 w-52 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 shadow-sm transition hover:border-orange/40 sm:h-auto sm:w-auto"
+                    style={{ boxShadow: "0 1px 4px rgba(80,80,80,0.07)" }}
+                  >
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-orange/10">
+                      <svg
+                        className="h-4 w-4 text-orange"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          cx="12"
+                          cy="12"
+                          r="9"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        />
+                        <path
+                          d="M9 12l2 2 4-4"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                    <span className="text-sm font-normal text-gray-800">
+                      {formatVehicleTypeName(type.name)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="flex flex-col items-center justify-between pt-3 md:flex-row md:flex-wrap lg:pt-1">
           <SecurityDepositInfo
             securityDeposit={securityDeposit}
             isDisabled={isDisabled}
           />
+          <PayOnPickup hasPayOnPickup={true} />
           <MileageInfo
             unlimitedMileage={selectedPeriod.details.unlimitedMileage}
             mileageLimit={selectedPeriod.details.mileageLimit}

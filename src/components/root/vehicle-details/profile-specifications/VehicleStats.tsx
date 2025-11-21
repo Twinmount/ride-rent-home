@@ -12,7 +12,7 @@ const VehicleStats = ({ state }: VehicleStatsProps) => {
     .join(' ');
 
   return (
-    <div className="flex items-center p-1 text-sm font-light text-text-secondary">
+    <div className="flex items-center p-1 text-sm font-light text-text-secondary lg:p-1">
       <p className="mr-1">
         <CiLocationOn />
       </p>

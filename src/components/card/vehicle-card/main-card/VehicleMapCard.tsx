@@ -1,4 +1,4 @@
-import { MapVehicleCardType, VehicleCardType } from "@/types/vehicle-types";
+import { MapVehicleCardType } from "@/types/vehicle-types";
 import { generateVehicleDetailsUrl } from "@/helpers";
 
 import LinkWrapper from "../LinkWrapper";

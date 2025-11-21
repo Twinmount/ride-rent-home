@@ -17,7 +17,7 @@ const MileageInfo = ({
   return (
     <>
       <div
-        className={`m-4 flex items-center gap-x-2 text-sm ${
+        className={`m-4 flex items-center gap-x-2 text-xs lg:m-2 ${
           isDisabled ? "text-gray-400" : "text-text-secondary"
         }`}
       >

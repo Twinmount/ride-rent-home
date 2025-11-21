@@ -50,7 +50,7 @@ const BestPriceGuarantee = ({
   return (
     <>
       <motion.div
-        className="flex justify-center pb-2"
+        className="flex justify-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, x: isDisabled ? 0 : [0, -2, 2, -2, 2, 0] }}
         transition={{

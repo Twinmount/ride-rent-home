@@ -1,4 +1,4 @@
-import { FetchVehicleCardsResponse } from "@/types/vehicle-types";
+import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { handleError } from "../utils";
 import {
   FetcFAQResponse,
@@ -12,6 +12,7 @@ import {
   FetchSearchResultsResponse,
   FetchStatesResponse,
   FetchTypesResponse,
+  ServerTimeResponse,
 } from "@/types";
 import { API } from "@/utils/API";
 import { mainApiClient } from "./axios.config";
@@ -41,7 +42,7 @@ export const FetchVehicleByFilters = async ({
   vehicleType,
   brand,
   city,
-}: FetchVehicleByFiltersParams): Promise<FetchVehicleCardsResponse> => {
+}: FetchVehicleByFiltersParams): Promise<FetchVehicleCardsResponseV2> => {
   // Parse the query string to get filter values
   const params = new URLSearchParams(query);
 
@@ -130,9 +131,9 @@ export const FetchVehicleByFilters = async ({
     throw new Error("Failed to fetch vehicles");
   }
 
-  const data: FetchVehicleCardsResponse = await response.json();
+  const data: FetchVehicleCardsResponseV2 = await response.json();
 
-  return data; // Adheres to FetchVehicleCardsResponse type
+  return data; // Adheres to FetchVehicleCardsResponseV2 type
 };
 
 export const FetchVehicleByFiltersGPS = async (
@@ -221,7 +222,7 @@ export const FetchVehicleByFiltersGPS = async (
 
   const data = await response.json();
 
-  return data; // Adheres to FetchVehicleCardsResponse type
+  return data; // Adheres to FetchVehicleCardsResponseV2 type
 };
 
 // send portfolio count post
@@ -819,3 +820,22 @@ export const getVehicleWithEnquiryStatus = async ({
     throw error;
   }
 };
+
+export async function fetchServerTime(
+  country: string
+): Promise<ServerTimeResponse> {
+  const response = await API({
+    path: "/time/now",
+    options: {
+      method: "GET",
+      cache: "no-store",
+    },
+    country,
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch server time");
+  }
+
+  return response.json();
+}
