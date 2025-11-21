@@ -393,9 +393,9 @@ const RentalDetailsTab = ({
                 {hasSelfDrive ? (
                   "Self Drive Rental"
                 ) : (
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center gap-1">
                     <span>Captain Included</span>
-                    <span className="ml-1 text-xs font-normal text-orange/60">
+                    <span className="text-xs font-normal text-orange/60">
                       (Price Inclusive)
                     </span>
                   </span>
@@ -441,7 +441,7 @@ const RentalDetailsTab = ({
                 {filteredOptionTypes.map((type, idx) => (
                   <div
                     key={type.name + idx}
-                    className="flex min-w-[120px] items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 shadow-sm transition hover:border-orange/40"
+                    className="flex h-12 w-52 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 shadow-sm transition hover:border-orange/40 sm:h-auto sm:w-auto"
                     style={{ boxShadow: "0 1px 4px rgba(80,80,80,0.07)" }}
                   >
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-orange/10">
