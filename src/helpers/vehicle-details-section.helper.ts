@@ -1,3 +1,4 @@
+import { Slug } from "@/constants/apiEndpoints";
 import { API } from "@/utils/API";
 
 interface BestOfferParams {
@@ -106,7 +107,7 @@ export async function fetchSectionData(
   }
 
   return await API({
-    path: `/vehicle/similar-cars?${baseParams.toString()}`,
+    path: `${Slug.GET_SIMILAR_VEHICLES}?${baseParams.toString()}`,
     options: {
       method: "GET",
       cache: "no-cache",

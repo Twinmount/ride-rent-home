@@ -7,6 +7,7 @@ import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { API } from "@/utils/API";
 import { cn } from "@/lib/utils";
+import { Slug } from "@/constants/apiEndpoints";
 
 export default async function NewlyArrived({
   state,
@@ -23,7 +24,7 @@ export default async function NewlyArrived({
   });
 
   const response = await API({
-    path: `/vehicle/home-page/list/v2?${params.toString()}`,
+    path: `${Slug.GET_HOMEPAGE_LIST}?${params.toString()}`,
     options: {
       method: "GET",
       cache: "no-cache",

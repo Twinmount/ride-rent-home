@@ -3,6 +3,8 @@ import { ENV } from "@/config/env";
 import { FetchVehicleSeriesInfo } from "@/types";
 import { Info } from "lucide-react";
 import InfoDescription from "./InfoDescriptionClient";
+import { API } from "@/utils/API";
+import { Slug } from "@/constants/apiEndpoints";
 
 type PropsType = {
   series: string;
@@ -17,14 +19,17 @@ export default async function VehicleSeriesInfo({
   brand,
   country,
 }: PropsType) {
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-  const url = `${baseUrl}/vehicle-series/info?vehicleSeries=${encodeURIComponent(
+  const url = `${Slug.GET_VEHICLE_SERIES_INFO}?vehicleSeries=${encodeURIComponent(
     series
   )}&state=${encodeURIComponent(state)}&brand=${encodeURIComponent(brand)}`;
 
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "no-cache",
+  const response = await API({
+    path: url,
+    options: {
+      method: "GET",
+      cache: "no-cache",
+    },
+    country,
   });
 
   // Defensive check so we log useful info if HTML comes back

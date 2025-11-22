@@ -1,4 +1,5 @@
 import PromotionCard from "@/components/card/vehicle-card/PromotionCard";
+import { Slug } from "@/constants/apiEndpoints";
 import { convertToLabel } from "@/helpers";
 import { FetchRidePromotionsResponse } from "@/types";
 import { API } from "@/utils/API";
@@ -15,7 +16,7 @@ export default async function PromotionDeals({
   country,
 }: PromotionDealsProps) {
   const response = await API({
-    path: `/ride-promotions/public?stateValue=${state}`,
+    path: `${Slug.GET_HOMEPAGE_PROMOTIONS}?stateValue=${state}`,
     options: {
       method: "GET",
       cache: "no-cache",

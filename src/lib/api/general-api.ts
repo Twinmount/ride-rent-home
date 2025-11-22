@@ -16,6 +16,7 @@ import {
 } from "@/types";
 import { API } from "@/utils/API";
 import { mainApiClient } from "./axios.config";
+import { Slug } from "@/constants/apiEndpoints";
 
 interface FetchVehicleByFiltersParams {
   query: string;
@@ -115,7 +116,7 @@ export const FetchVehicleByFilters = async ({
   });
 
   const response = await API({
-    path: "/vehicle/filter",
+    path: Slug.GET_LISTING_VEHICLES,
     options: {
       method: "POST",
       cache: "no-cache",
@@ -301,15 +302,15 @@ export const fetchVehicleTypesByValue = async (
   country: string
 ): Promise<FetchTypesResponse | undefined> => {
   try {
-    // generating api URL
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-    const apiUrl = `${BASE_URL}/vehicle-type/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}&hasVehicle=true&state=${vehicleState}`;
+    const apiUrl = `${Slug.GET_VEHICLE_TYPES_LIST}?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategoryValue}&hasVehicle=true&state=${vehicleState}`;
 
-    const response = await fetch(apiUrl, {
-      cache: "no-cache",
+    const response = await API({
+      path: apiUrl,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country,
     });
 
     // Check if the response is OK
@@ -404,7 +405,7 @@ export const fetchStates = async ({
 }): Promise<FetchStatesResponse | undefined> => {
   try {
     const res = await API({
-      path: `/states/list?hasVehicle=true&countryId=${countryId}`,
+      path: `${Slug.GET_STATES_LIST}?hasVehicle=true&countryId=${countryId}`,
       options: {
         method: "GET",
         cache: "no-cache",
@@ -431,7 +432,7 @@ export const fetchCategories = async (
 ): Promise<FetchCategoriesResponse | undefined> => {
   try {
     const response = await API({
-      path: `/vehicle-category/list?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`,
+      path: `${Slug.GET_VEHICLE_CATEGORIES_LIST}?limit=15&page=1&hasVehicle=true&state=${state}&sortOrder=ASC`,
       options: {
         method: "GET",
         cache: "no-cache",
@@ -457,15 +458,15 @@ export const fetchQuickLinksByValue = async (
   country: string
 ): Promise<FetchLinksResponse | undefined> => {
   try {
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-    const apiUrl = `${BASE_URL}/links/list?page=1&limit=20&sortOrder=ASC&stateValue=${stateValue}`;
+    const apiUrl = `${Slug.GET_QUICK_LINKS}?page=1&limit=20&sortOrder=ASC&stateValue=${stateValue}`;
 
-    const response = await fetch(apiUrl, {
-      method: "GET",
-      cache: "no-store",
+    const response = await API({
+      path: apiUrl,
+      options: {
+        method: "GET",
+        cache: "no-store",
+      },
+      country,
     });
 
     // Check if the response is OK
@@ -493,14 +494,14 @@ export const fetchVehicleBrandsByValue = async (
 ): Promise<FetchBrandsResponse | undefined> => {
   try {
     // generating api URL
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-    const apiUrl = `${BASE_URL}/vehicle-brand/list?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategory}&search=${searchTerm}`;
+    const apiUrl = `${Slug.GET_VEHICLE_BRANDS_LIST}?page=1&limit=20&sortOrder=ASC&categoryValue=${vehicleCategory}&search=${searchTerm}`;
 
-    const response = await fetch(apiUrl, {
-      method: "GET",
+    const response = await API({
+      path: apiUrl,
+      options: {
+        method: "GET",
+      },
+      country,
     });
 
     // Check if the response is OK
@@ -523,16 +524,12 @@ export const fetchRelatedStateList = async (
   country: string
 ): Promise<FetchRelatedStateResponse | undefined> => {
   try {
-    // generating api URL
-    const BASE_URL =
-      country === "in"
-        ? process.env.NEXT_PUBLIC_API_URL_INDIA
-        : process.env.NEXT_PUBLIC_API_URL;
-
-    const apiUrl = `${BASE_URL}/states/related-state?stateValue=${state}`;
-
-    const response = await fetch(apiUrl, {
-      method: "GET",
+    const response = await API({
+      path: `/states/related-state?stateValue=${state}`,
+      options: {
+        method: "GET",
+      },
+      country,
     });
 
     // Check if the response is OK
@@ -644,7 +641,7 @@ export const fetchRelatedSeriesList = async (
 
   try {
     const response = await API({
-      path: `/vehicle-series/list/all?${queryParams}`,
+      path: `${Slug.GET_VEHICLE_SERIES_LIST_ALL}?${queryParams}`,
       options: {
         method: "GET",
         headers: {
