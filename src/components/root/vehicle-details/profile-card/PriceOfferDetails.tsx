@@ -23,13 +23,13 @@ export default function PriceOfferDetails({
 
   const flexLayoutClasses = isMobile
     ? "flex flex-col md:flex-row items-center md:items-center justify-between px-4 py-[0.4rem] "
-    : "flex flex-col items-start justify-between px-4 py-[0.3rem] xl:flex-row xl:items-center";
+    : "flex flex-col items-start justify-between px-4 py-[0.23rem] xl:flex-row xl:items-center";
 
   return (
     <div
       className={`w-full animate-shimmer overflow-hidden rounded-lg border border-slate-700 bg-[linear-gradient(110deg,#0f172a,45%,#334155,55%,#0f172a)] bg-[length:200%_100%] shadow-lg max-md:text-center ${visibilityClasses}`}
     >
-      <div className={`px-4 py-[0.4rem] ${flexLayoutClasses}`}>
+      <div className={`px-4 ${flexLayoutClasses}`}>
         {/* Left Section - Text */}
         <div className="flex items-center gap-3">
           <div className="flex flex-col">
