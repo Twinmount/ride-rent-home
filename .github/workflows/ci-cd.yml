@@ -29,7 +29,6 @@ jobs:
                 with:
                     workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
                     project_id: ${{ secrets.GCP_SHRD_PROJECT }}
-                    service_account: ${{ secrets.GCP_SA_GIT }}
 
             -   name: Set up Cloud SDK
                 uses: google-github-actions/setup-gcloud@v2
@@ -78,8 +77,7 @@ jobs:
                 with:
                     workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
                     project_id: ${{ secrets.GCP_SHRD_PROJECT }}
-                    service_account: ${{ secrets.GCP_SA_GIT }}
-
+                    
             -   name: Set up Cloud SDK
                 uses: google-github-actions/setup-gcloud@v2
 
