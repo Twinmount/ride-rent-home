@@ -7,7 +7,7 @@ export type PageProps = {
 const StatePage = async (props: PageProps) => {
   const { country, state } = await props.params;
 
-  const vehicleType = country === "ae" ? "cars" : "buses";
+  const vehicleType = country === "ae" ? "cars" : "cars";
 
   redirect(`/${country}/${state}/${vehicleType}`);
 

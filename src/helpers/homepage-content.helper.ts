@@ -1,11 +1,9 @@
 import { homepageHeadingContent } from '@/data/homepage-content/home-heading.data';
 import { convertToLabel, singularizeValue } from '.';
 import { homepageFeaturesContent } from '@/data/homepage-content/home-features.data';
-import { IoIosSpeedometer } from 'react-icons/io';
-import { FaCrown } from 'react-icons/fa6';
-import { IoShieldCheckmark } from 'react-icons/io5';
-import { Bus } from 'lucide-react';
+
 import { homepageDocumentsContent } from '@/data/homepage-content/home-documents.data';
+import { sub } from "date-fns";
 
 type LocationCategoryParams = {
   country: string;
@@ -32,12 +30,15 @@ export function getHomePageHeading({
 
   const formattedState = convertToLabel(state);
   const formattedCategory = singularizeValue(convertToLabel(category));
+  const subtitle =
+    country === "in"
+      ? "Choose from a wide range of vehicles that match your needs, with easy and fast booking."
+      : "Explore 1000+ options & pick your favorite, from the Toyota Yaris to the Ferrari 296 GTB.";
 
   // return fallback title and subtitle for rest of the states/categories
   return {
     title: `Rent a ${formattedCategory} in ${formattedState}`,
-    subtitle:
-      'Explore 1000+ options & pick your favorite, from the Toyota Yaris to the Ferrari 296 GTB.',
+    subtitle,
   };
 }
 
@@ -58,30 +59,29 @@ export function getHomePageFeatures({
   const formattedState = convertToLabel(state);
   const formattedCategory = singularizeValue(convertToLabel(category));
 
-  // fallback
   return {
     heading: `Enjoy ease and peace of mind when renting a ${formattedCategory.toLowerCase()} in ${formattedState}`,
     description: [
-      `Discover the best of ${formattedState} with our affordable and reliable ${formattedCategory.toLowerCase()} rental service.`,
-      `Our commitment to reliability means your vehicle will be ready and waiting, wherever and whenever you need it.`,
+      `${formattedState} is a destination of convenience and mobility, and having the right vehicle ensures you can experience it all with ease. With Ride.Rent, you can access everything from affordable ${formattedCategory.toLowerCase()} rentals for everyday use to premium options for special occasions. Whether you need a quick rental for short stays or flexible monthly packages designed for residents and business travelers, Ride.Rent delivers clear pricing without hidden fees.`,
+      `Discover the best of ${formattedState} with our affordable and reliable ${formattedCategory.toLowerCase()} rental service. Our platform connects you with trusted providers, ensuring you always get verified service at fair rates. From daily rentals to long-term solutions, we make sure both residents and visitors always find affordable and reliable mobility choices.`,
     ],
     cards: [
       {
         key: 1,
-        icon: IoIosSpeedometer,
-        title: 'Easy & Fast Booking',
+        iconNumber: 1 as const,
+        title: "Easy & Fast Booking",
         description: `From premium models to economy vehicles to rent in ${state}, find the perfect car at competitive rates. Secure your rental with just a few clicks and make the most of your ${state} trip. RIDE.RENT is the smart choice for 'Rent a Car in ${state}' services.`,
       },
       {
         key: 2,
-        icon: FaCrown,
-        title: 'Many Pickup Locations',
+        iconNumber: 2 as const,
+        title: "Many Pickup Locations",
         description: `From premium models to economy vehicles to rent in ${state}, find the perfect car at competitive rates. Secure your rental with just a few clicks and make the most of your ${state} trip. RIDE.RENT is the smart choice for 'Rent a Car in ${state}' services.`,
       },
       {
         key: 3,
-        icon: Bus,
-        title: 'Ensured Delivery Promise',
+        iconNumber: 3 as const,
+        title: "Ensured Delivery Promise",
         description: `Our commitment to punctuality means your chosen vehicle from our extensive 'Rent a Car in ${state}' collection is delivered when and where you need it. Seamless booking, transparent rates, and steadfast service, that's the RIDE.RENT promise.`,
       },
     ],

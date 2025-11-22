@@ -14,17 +14,16 @@ import DynamicFAQ from "@/components/common/FAQ/DynamicFAQ";
 import { generateVehicleMetadata, getVehicleJsonLd } from "./metadata";
 import VehicleDetailsPageBreadCrump from "@/components/root/vehicle-details/VehicleDetailsPageBreadCrump";
 import { restoreVehicleCodeFormat } from "@/helpers";
-import { ENV } from "@/config/env";
 import { Suspense } from "react";
 import SectionLoading from "@/components/skelton/section-loading/SectionLoading";
 import JsonLd from "@/components/common/JsonLd";
 import ImagesGrid from "@/components/root/vehicle-details/ImagesGrid";
-import { generateModelDetailsUrl } from "@/helpers";
-import SupplierDetails from "@/components/root/vehicle-details/SupplierDetails";
+import { generateVehicleTitleSlug } from "@/helpers";
 import VehicleHeading from "@/components/root/vehicle-details/VehicleHeading";
 import ProfileCard from "@/components/root/vehicle-details/profile-card/main-profile-card/ProfileCard";
 import ProtectedVehicleDetails from "@/components/common/ProtectedVehicleDetails";
 import ActiveEnquiryBanner from "@/components/root/vehicle-details/ActiveEnquiryBanner";
+import { API } from "@/utils/API";
 
 type ParamsProps = {
   params: Promise<{
@@ -37,6 +36,11 @@ type ParamsProps = {
   searchParams: Promise<{
     ref?: string;
   }>;
+};
+
+type MediaItem = {
+  source: string;
+  type: "video" | "image";
 };
 
 // dynamic meta data generate
@@ -54,22 +58,21 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   const { country, state, category, vehicleCode, modelDetails } = params;
   const { ref } = searchParams;
-  console.log("ref: ", ref);
-
-  const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
 
-  const formattedModelDetails = modelDetails.replace(/-for-rent$/, "");
+  const currentUrlVehicleTitle = modelDetails.replace(/-for-rent$/, "");
 
   // Fetch the vehicle data from the API
-  const response = await fetch(
-    `${baseUrl}/vehicle/details?vehicleCode=${formattedVehicleCode}`,
-    {
+  const response = await API({
+    path: `/vehicle/details?vehicleCode=${formattedVehicleCode}`,
+    options: {
       method: "GET",
       cache: "no-cache",
-    }
-  );
+    },
+    country,
+  });
+
   const data: VehicleDetailsPageResponse = await response.json();
   // if the vehicle data is not found, return 404 not found
   if (
@@ -80,33 +83,34 @@ export default async function VehicleDetails(props: ParamsProps) {
     return notFound();
   }
 
-  // If the modelDetails in the URL (slug) doesn't match actual vehicle title, redirect to canonical URL
-
-  const normalizedActualTitle = generateModelDetailsUrl(
-    data.result.vehicleTitle
-  );
-
-  if (formattedModelDetails !== normalizedActualTitle) {
-    redirect(
-      `/${country}/${state}/${category}/${normalizedActualTitle}-for-rent/${vehicleCode}`
-    );
-  }
-
   // if the state in the url doesn't match the state in the data , return 404 not found
   if (state !== data.result.state.value) {
     return notFound();
   }
 
+  // If the vehicleTitle in the URL (slug) doesn't match actual expected vehicle title, redirect to the correct URL
+  const normalizedActualTitle = generateVehicleTitleSlug(
+    data.result.vehicleTitle
+  );
+
+  if (currentUrlVehicleTitle !== normalizedActualTitle) {
+    redirect(
+      `/${country}/${state}/${category}/${normalizedActualTitle}-for-rent/${vehicleCode}`
+    );
+  }
+
   const vehicle = data.result;
-  // console.log("vehicle:[page] ", vehicle);
+  // console.log("vehicle details data: ", data.result);
 
   // generating prop data for profile card and mobile profile card
   const ProfileCardData: ProfileCardDataType = {
     company: vehicle?.company,
     agentId: vehicle?.userId,
     rentalDetails: vehicle?.rentalDetails,
+    additionalVehicleTypes: vehicle?.additionalVehicleTypes,
     vehicleId: vehicle.vehicleId,
     vehicleCode: vehicle.vehicleCode,
+    vehicleSeries: vehicle.vehicleSeries?.vehicleSeries,
     isLease: vehicle.isAvailableForLease,
     vehicleData: {
       brandName: vehicle.brand.value,
@@ -118,6 +122,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     vehicleTitle: vehicle.vehicleTitle,
     vehicleTitleH1: vehicle.vehicleTitle,
     seriesDescription: vehicle.vehicleSeries?.vehicleSeriesInfoDescription,
+    priceOffer: vehicle.priceOffer || null,
   };
 
   // Generate JSON-LD
@@ -128,11 +133,6 @@ export default async function VehicleDetails(props: ParamsProps) {
     vehicleCode,
     country
   );
-
-  type MediaItem = {
-    source: string;
-    type: "video" | "image";
-  };
 
   const mediaSourceList: MediaItem[] = [];
 
@@ -172,18 +172,12 @@ export default async function VehicleDetails(props: ParamsProps) {
   const vehicleTitleH1 = vehicle.vehicleTitleH1;
   const vehicleSubTitle = vehicle.subTitle || vehicle.vehicleTitle;
 
-  const SupplierDetailsPropsData = {
-    companyName: vehicle?.company?.companyName,
-    companyId: vehicle?.company?.companyId,
-    country,
-    companyProfile: vehicle?.company?.companyProfile,
-  };
-
   const VehicleHeadingPropsData = {
     brandListingPageHref,
     category,
     brandValue,
     state,
+    country,
     vehicleTitleH1,
     vehicleSubTitle,
     model: vehicle.modelName,
@@ -224,8 +218,9 @@ export default async function VehicleDetails(props: ParamsProps) {
           country={country}
         />
 
-        {/* Wrapper to handle client side logic regarding mobile profile card */}
+        {/* Wrapper to handle client side logic regarding mobile profile card and view count*/}
         <DetailsSectionClientWrapper
+          vehicle={vehicle}
           country={country}
           profileData={ProfileCardData}
         >

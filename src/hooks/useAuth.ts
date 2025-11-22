@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useImmer } from "use-immer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
@@ -16,6 +16,10 @@ import type {
   ProfileUpdateData,
   PhoneChangeData,
   PhoneChangeVerificationData,
+  ForgotPasswordData,
+  OtpType,
+  OtpVerificationData,
+  DeleteUserData,
 } from "@/types/auth.types";
 
 // Import constants
@@ -64,6 +68,47 @@ export const useAuth = () => {
     name: "",
     otpExpiresIn: 5,
   });
+
+  useEffect(() => {
+    const handleLogoutEvent = (event: CustomEvent) => {
+      // Clear auth storage (if not already cleared)
+      authStorage.clear();
+
+      // Update all auth states
+      updateState((draft) => {
+        draft.isAuthenticated = false;
+        draft.user = null;
+        draft.error = null;
+      });
+
+      setAuth((draft) => {
+        draft.isLoggedIn = false;
+        draft.user = null;
+        draft.token = null;
+        draft.refreshToken = null;
+      });
+
+      // Clear React Query cache
+      queryClient.clear();
+
+      // Close login modal if open
+      // setLoginOpen(false);
+
+      // Optionally redirect to home or login page
+      // router.push("/");
+    };
+
+    // Add event listener
+    window.addEventListener("auth:logout", handleLogoutEvent as EventListener);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener(
+        "auth:logout",
+        handleLogoutEvent as EventListener
+      );
+    };
+  }, []);
 
   // React Query Mutations
   const checkUserExistsMutation = useMutation({
@@ -194,6 +239,24 @@ export const useAuth = () => {
     mutationFn: authAPI.resendOtp,
     onSuccess: (data) => {
       setError(null);
+      setUserAuthStep((draft) => {
+        draft.userId = data.data?.userId || "";
+        draft.otpId = data.data?.otpId || "";
+      });
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: authAPI.forgotPassword,
+    onSuccess: (data) => {
+      setUserAuthStep((draft) => {
+        draft.userId = data.data?.userId || "";
+        draft.otpId = data.data?.otpId || "";
+      });
+      setError(null);
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -255,7 +318,7 @@ export const useAuth = () => {
 
   const logoutMutation = useMutation({
     mutationFn: ({ userId }: { userId?: string }) => authAPI.logout(userId),
-    onSuccess: () => {
+    onSuccess: (data) => {
       setAuthenticated(null);
       setAuth((draft) => {
         draft.isLoggedIn = false;
@@ -268,6 +331,36 @@ export const useAuth = () => {
     onError: (error) => {
       console.warn("Logout request failed:", error);
       // Continue with logout even if server request fails
+      setAuthenticated(null);
+      setAuth((draft) => {
+        draft.isLoggedIn = false;
+        draft.user = null;
+        draft.token = null;
+        draft.refreshToken = null;
+      });
+    },
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: async (deleteUserData: DeleteUserData) =>
+      authAPI.deleteUser(deleteUserData),
+    onSuccess: (data) => {
+      console.log("data: ", data);
+      // Clear authentication & cached data (like logout)
+      setAuthenticated(null);
+      setAuth((draft) => {
+        draft.isLoggedIn = false;
+        draft.user = null;
+        draft.token = null;
+        draft.refreshToken = null;
+      });
+
+      queryClient.clear(); // Clear cached data
+    },
+    onError: (error) => {
+      console.error("User deletion failed:", error);
+
+      // Optionally handle cleanup even if delete fails
       setAuthenticated(null);
       setAuth((draft) => {
         draft.isLoggedIn = false;
@@ -547,27 +640,72 @@ export const useAuth = () => {
     }
   };
 
+  const clearAuthData = useCallback(() => {
+    // Clear auth storage
+    authStorage.clear();
+
+    // Update all auth states
+    updateState((draft) => {
+      draft.isAuthenticated = false;
+      draft.user = null;
+      draft.error = null;
+      draft.isLoading = false;
+    });
+
+    setAuth((draft) => {
+      draft.isLoggedIn = false;
+      draft.user = null;
+      draft.token = null;
+      draft.refreshToken = null;
+    });
+
+    // Clear React Query cache
+    queryClient.clear();
+
+    // Close login modal
+    // setLoginOpen(false);
+
+    // Reset user auth step
+    setUserAuthStep((draft) => {
+      draft.userId = "";
+      draft.otpId = "";
+      draft.name = "";
+      draft.otpExpiresIn = 5;
+    });
+  }, [updateState, setAuth, queryClient, setUserAuthStep]);
+
   // Logout function
   const logout = async (id?: string): Promise<void> => {
     try {
       await logoutMutation.mutateAsync({ userId: id });
+      authStorage.clear();
     } catch (error) {
       console.warn("Logout request failed:", error);
+    } finally {
+      clearAuthData();
+    }
+  };
+
+  const deleteUser = async (
+    deleteUserData: DeleteUserData
+  ): Promise<AuthResponse> => {
+    try {
+      return await deleteUserMutation.mutateAsync(deleteUserData);
+    } catch (error) {
+      const authError: AuthError = {
+        message: "User deletion failed",
+      };
+      setError(authError);
+      throw authError;
     }
   };
 
   // Verify OTP function
   const verifyOTP = async (
-    userId: string,
-    otpId: string,
-    otp: string
+    otpVerificationData: OtpVerificationData
   ): Promise<AuthResponse> => {
     try {
-      return verifyOtpMutation.mutateAsync({
-        userId,
-        otpId,
-        otp,
-      });
+      return verifyOtpMutation.mutateAsync(otpVerificationData);
     } catch (error) {
       const authError: AuthError = {
         message:
@@ -603,13 +741,34 @@ export const useAuth = () => {
     }
   };
 
+  // forgot password
+  const forgotPassword = async (
+    passwordData: ForgotPasswordData
+  ): Promise<AuthResponse> => {
+    try {
+      return forgotPasswordMutation.mutateAsync(passwordData);
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error ? error.message : "Failed to set password",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
   // Resend OTP function
   const resendOTP = useCallback(
-    async (phoneNumber: string, countryCode: string): Promise<AuthResponse> => {
+    async (
+      phoneNumber: string,
+      countryCode: string,
+      otpType?: OtpType
+    ): Promise<AuthResponse> => {
       try {
         return resendOtpMutation.mutateAsync({
           phoneNumber,
           countryCode,
+          otpType: otpType,
         });
       } catch (error) {
         const authError: AuthError = {
@@ -692,7 +851,9 @@ export const useAuth = () => {
   };
 
   // Request email change function
-  const requestEmailChange = async (newEmail: string): Promise<AuthResponse> => {
+  const requestEmailChange = async (
+    newEmail: string
+  ): Promise<AuthResponse> => {
     try {
       return requestEmailChangeMutation.mutateAsync({ newEmail });
     } catch (error) {
@@ -726,7 +887,7 @@ export const useAuth = () => {
             ? error.message
             : "Failed to verify email address change",
       };
-      setError(authError);
+      // setError(authError);
       throw authError;
     }
   };
@@ -810,7 +971,9 @@ export const useAuth = () => {
     logout,
     verifyOTP,
     setPassword,
+    forgotPassword,
     resendOTP,
+    deleteUser,
     updateProfile,
     requestPhoneNumberChange,
     verifyPhoneNumberChange,
@@ -829,15 +992,18 @@ export const useAuth = () => {
     loginMutation,
     verifyOtpMutation,
     setPasswordMutation,
+    forgotPasswordMutation,
     resendOtpMutation,
     updateUserNameAndAvatar,
     logoutMutation,
+    deleteUserMutation,
     requestPhoneChangeMutation,
     verifyPhoneChangeMutation,
     requestEmailChangeMutation,
     verifyEmailChangeMutation,
 
     // Utilities
+    clearAuthData,
     validateEmail,
     validatePhoneNumber,
     validatePassword,

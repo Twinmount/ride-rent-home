@@ -14,30 +14,30 @@ export default async function BlogsGrid({
 
   const blogs = data.blogs;
 
+  if (blogs.length === 0) {
+    return (
+      <div className="flex-center h-72 text-lg font-thin">
+        No Blogs Found&nbsp;{" "}
+        {selectedTag !== "all" && (
+          <span>
+            under tag &nbsp;
+            <span className="rounded-lg bg-slate-300 px-2 capitalize italic text-slate-800">
+              {selectedTag}
+            </span>
+          </span>
+        )}
+        &nbsp;:/
+      </div>
+    );
+  }
+
   return (
     <div>
-      {blogs.length > 0 ? (
-        <>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {blogs}
-          </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {blogs}
+      </div>
 
-          <LoadMoreBlogs selectedTag={selectedTag} country={country} />
-        </>
-      ) : (
-        <div className="flex-center h-72 text-lg font-thin">
-          No Blogs Found{" "}
-          {selectedTag !== "all" && (
-            <span>
-              under tag &nbsp;
-              <span className="rounded-lg bg-slate-200 px-1 capitalize italic text-slate-800">
-                {selectedTag}
-              </span>
-            </span>
-          )}
-          &nbsp;:/
-        </div>
-      )}
+      <LoadMoreBlogs selectedTag={selectedTag} country={country} />
     </div>
   );
 }

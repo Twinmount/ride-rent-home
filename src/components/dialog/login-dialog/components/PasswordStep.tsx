@@ -15,7 +15,6 @@ export const PasswordStep = ({
   login,
   clearError,
 }: any) => {
-
   const [loginPassword, setLoginPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -122,6 +121,19 @@ export const PasswordStep = ({
             className="text-orange-600 hover:bg-orange-50 hover:text-orange-700"
           >
             Use Different Phone Number
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setStep("forgot-password");
+              setLoginPassword("");
+              setStatus("idle");
+              setStatusMessage("");
+              setUserExists(null);
+            }}
+            className="text-orange-600 hover:bg-orange-50 hover:text-orange-700"
+          >
+            forgot password?
           </Button>
         </div>
       </div>

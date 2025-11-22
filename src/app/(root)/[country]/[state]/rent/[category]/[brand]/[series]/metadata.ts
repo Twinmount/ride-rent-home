@@ -2,6 +2,7 @@ import { ENV } from '@/config/env';
 import { convertToLabel } from '@/helpers';
 import { getDefaultMetadata, getAbsoluteUrl } from '@/helpers/metadata-helper';
 import { FetchVehicleSeriesInfo } from '@/types';
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import { Metadata } from 'next';
 
 type FetchVehicleSeriesInfoType = {
@@ -72,7 +73,7 @@ export async function generateSeriesListingPageMetadata({
     vehicleSeriesPageSubheading,
   } = data.result;
 
-  const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const ogImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   const shortTitle =
     vehicleSeriesPageHeading.length > 60
@@ -88,7 +89,7 @@ export async function generateSeriesListingPageMetadata({
     title: vehicleSeriesMetaTitle,
     description: vehicleSeriesMetaDescription,
     keywords: [
-      'ride rent',
+      "ride rent",
       `${series} rental near me`,
       `${series} rent in ${state}`,
       `${series} vehicle rental`,
@@ -99,7 +100,7 @@ export async function generateSeriesListingPageMetadata({
       title: shortTitle,
       description: shortDescription,
       url: canonicalUrl,
-      type: 'website',
+      type: "website",
       images: [
         {
           url: ogImage,
@@ -110,7 +111,7 @@ export async function generateSeriesListingPageMetadata({
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: shortTitle,
       description: shortDescription,
       images: [ogImage],
@@ -123,9 +124,9 @@ export async function generateSeriesListingPageMetadata({
         index: true,
         follow: true,
         noimageindex: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
       },
     },
     alternates: {
@@ -152,44 +153,44 @@ export function getSeriesListingPageJsonLd(
   const seriesListingUrl = getAbsoluteUrl(
     `/${country}/${state}/rent/${category}/${brand}/${series}` // Include category in URL
   );
-  const siteImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const siteImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   return {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
     name: `Explore ${convertToLabel(series)} ${convertToLabel(category)} Rentals in ${convertToLabel(state)} | Ride Rent`,
     description: `Find the best ${convertToLabel(series)} (${convertToLabel(brand)}) ${convertToLabel(category)} rentals in ${convertToLabel(state)}. Compare prices, book easily, and enjoy the ride.`,
     url: seriesListingUrl,
     image: siteImage,
     breadcrumb: {
-      '@type': 'BreadcrumbList',
+      "@type": "BreadcrumbList",
       itemListElement: [
         {
-          '@type': 'ListItem',
+          "@type": "ListItem",
           position: 1,
-          name: 'Home',
-          item: getAbsoluteUrl('/'),
+          name: "Home",
+          item: getAbsoluteUrl("/"),
         },
         {
-          '@type': 'ListItem',
+          "@type": "ListItem",
           position: 2,
           name: convertToLabel(country),
           item: getAbsoluteUrl(`/${country}`),
         },
         {
-          '@type': 'ListItem',
+          "@type": "ListItem",
           position: 3,
           name: convertToLabel(state),
           item: getAbsoluteUrl(`/${country}/${state}`),
         },
         {
-          '@type': 'ListItem',
+          "@type": "ListItem",
           position: 4,
           name: convertToLabel(category),
           item: getAbsoluteUrl(`/${country}/${state}/rent/${category}`),
         },
         {
-          '@type': 'ListItem',
+          "@type": "ListItem",
           position: 5,
           name: convertToLabel(brand),
           item: getAbsoluteUrl(
@@ -197,7 +198,7 @@ export function getSeriesListingPageJsonLd(
           ),
         },
         {
-          '@type': 'ListItem',
+          "@type": "ListItem",
           position: 6,
           name: convertToLabel(series),
           item: seriesListingUrl,
@@ -205,110 +206,12 @@ export function getSeriesListingPageJsonLd(
       ],
     },
     publisher: {
-      '@type': 'Organization',
-      name: 'Ride Rent',
-      url: getAbsoluteUrl('/'),
+      "@type": "Organization",
+      name: "Ride Rent",
+      url: getAbsoluteUrl("/"),
       logo: siteImage,
     },
   };
 }
 
-export function generateBlogMetaData(country: string): Metadata {
-  const countryName = country === 'ae' ? 'UAE' : 'India';
-  return {
-    title: 'Ride.Rent Blog | Travel Tips & Vehicle Rental Guides',
-    description:
-      'Get quick tips, reviews, and deals on vehicle rentals. Explore expert guides from the Ride.Rent zero-commission marketplace.',
-    manifest: '/manifest.webmanifest',
 
-    robots: {
-      index: true,
-      follow: true,
-      nocache: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        noimageindex: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
-
-    alternates: {
-      canonical: getAbsoluteUrl(`/${country}/blog`),
-    },
-  };
-}
-
-export function getBlogPageJsonLd(country: string) {
-  const blogUrl = getAbsoluteUrl(`/${country}/blog`);
-  const homeUrl = getAbsoluteUrl(`/${country}`);
-
-  const rootImage = getAbsoluteUrl('/assets/logo/blog-logo-white.png');
-
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Blog',
-    name: 'Ride.Rent Blog',
-    description:
-      'Get quick tips, reviews, and deals on vehicle rentals. Explore expert guides from the Ride.Rent zero-commission marketplace.',
-    url: blogUrl,
-    inLanguage: 'en',
-    about: {
-      '@type': 'Thing',
-      name: 'Vehicle Rental and Travel',
-      description:
-        'Tips, guides, and insights about vehicle rentals and travel',
-    },
-    keywords: [
-      'vehicle rental',
-      'travel tips',
-      'car rental',
-      'travel guides',
-      'transportation',
-    ],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      bestRating: '5',
-      ratingCount: '520',
-      itemReviewed: {
-        '@type': 'Service',
-        name: 'Ride.Rent Blog',
-      },
-    },
-    image: rootImage,
-    breadcrumb: {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          name: 'Home',
-          item: homeUrl,
-        },
-        {
-          '@type': 'ListItem',
-          position: 2,
-          name: 'Blog',
-          item: blogUrl,
-        },
-      ],
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Ride.Rent',
-      url: getAbsoluteUrl('/'),
-      logo: {
-        '@type': 'ImageObject',
-        url: rootImage,
-      },
-    },
-    mainEntity: {
-      '@type': 'ItemList',
-      name: 'Blog Posts',
-      description: 'Collection of travel tips and vehicle rental guides',
-    },
-  };
-}

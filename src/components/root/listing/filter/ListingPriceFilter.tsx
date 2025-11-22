@@ -53,7 +53,7 @@ export default function ListingPriceFilter({
   };
 
   return (
-    <div className="border-b pb-6">
+    <div className="pb-6">
       <div className="flex flex-1 items-center justify-between py-4 font-medium text-text-secondary transition-all">
         Price Filter
       </div>

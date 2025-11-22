@@ -1,3 +1,5 @@
+import { PriceOfferType } from "./vehicle-types";
+
 export type Brand = {
   label: string;
   value: string;
@@ -63,6 +65,7 @@ export type CompanySpecs = {
   isSpotDeliverySupported: boolean;
   isCreditOrDebitCardsSupported: boolean;
   isTabbySupported: boolean;
+  isCashAccepted: boolean;
 };
 
 export type Company = {
@@ -116,6 +119,7 @@ export type VehicleDetailsPageType = {
     vehicleSeriesLabel: string;
     vehicleSeriesInfoDescription: string;
   };
+  priceOffer?: PriceOfferType | null;
 };
 
 export type VehicleDetailsPageResponse = {
@@ -139,11 +143,13 @@ export type VehicleMetaDataResponse = {
 };
 
 export type ProfileCardDataType = {
+  additionalVehicleTypes?: AdditionalVehicleTypes[];
   company: Company;
   agentId?: string;
   rentalDetails: RentalDetails;
   vehicleId: string;
   vehicleCode: string;
+  vehicleSeries?: string;
   isLease: boolean;
   vehicleData: {
     brandName: string;
@@ -158,4 +164,5 @@ export type ProfileCardDataType = {
   vehicleTitle: string;
   vehicleTitleH1: string;
   seriesDescription?: string;
+  priceOffer?: PriceOfferType | null;
 };

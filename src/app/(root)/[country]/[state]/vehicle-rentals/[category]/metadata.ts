@@ -10,7 +10,7 @@ export async function generateCategoryDirectoryPageMetadata({
   category: string;
   country: string;
 }): Promise<Metadata> {
-  const canonicalUrl = `https://ride.rent/${country}/${state}/directory/${category}`;
+  const canonicalUrl = `https://ride.rent/${country}/${state}/vehicle-rentals/${category}-for-rent`;
   const ogImage = "/assets/icons/ride-rent.png";
 
   const title = `Rent ${convertToLabel(category)} in ${convertToLabel(state)} with Ride.Rent | Free Directory`;

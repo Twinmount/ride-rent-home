@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { CategoryType } from "@/types";
 import { ENV } from "@/config/env";
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import SafeImage from "@/components/common/SafeImage";
 
 type PropsType = {
@@ -20,7 +21,7 @@ export default function VehicleCategoryCard({
   selectedState,
   selectedCountry,
 }: PropsType) {
-  const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
+  const baseAssetsUrl = getAssetsUrl(selectedCountry);
   const router = useRouter();
 
   const handleClick = () => {

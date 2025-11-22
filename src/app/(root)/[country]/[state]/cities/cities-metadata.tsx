@@ -1,6 +1,7 @@
 import { ENV } from "@/config/env";
 import { convertToLabel, singularizeValue } from "@/helpers";
 import { getCountryName } from "@/utils/url";
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import { Metadata } from "next";
 
 export async function generateCitiesPageMetadata({
@@ -15,7 +16,7 @@ export async function generateCitiesPageMetadata({
   const canonicalUrl = `https://ride.rent/${country}/${state}/cities`;
 
   // open graph image
-  const ogImage = `${ENV.ASSETS_URL}/root/ride-rent-social.jpeg`;
+  const ogImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
 
   const formattedCountry = getCountryName(country);
   const formattedState = convertToLabel(state);

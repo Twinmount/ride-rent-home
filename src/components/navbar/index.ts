@@ -10,5 +10,8 @@ export const noStatesDropdownRoutes = [
   "/in/sitemap",
   "/ae/sitemap",
   "/blog",
-  "/user-profile"
+  "/user-profile",
+  "/global-data-deletion-policy",
+  "/in/vehicle-listing-policy",
+  "/ae/vehicle-listing-policy",
 ];

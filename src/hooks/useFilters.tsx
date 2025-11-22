@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter, useParams } from 'next/navigation';
-import qs from 'query-string';
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter, useParams } from "next/navigation";
+import qs from "query-string";
 import {
   getDefaultFilters,
   parseFiltersFromUrl,
-} from '@/helpers/filter-helper';
+} from "@/helpers/filter-helper";
 
 export interface FiltersType {
   modelYear: string;
@@ -18,6 +18,7 @@ export interface FiltersType {
   paymentMethod: string[];
   price: string;
   period: string;
+  showNearby: string;
 }
 
 /**
@@ -40,32 +41,34 @@ export interface FiltersType {
 const useFilters = () => {
   // Local state for filter changes
   const [selectedFilters, setSelectedFilters] = useState<FiltersType>({
-    modelYear: '',
-    category: '',
-    vehicleType: '',
-    brand: '',
-    seats: '',
+    modelYear: "",
+    category: "",
+    vehicleType: "",
+    brand: "",
+    seats: "",
     transmission: [],
     fuelType: [],
     color: [],
     paymentMethod: [],
-    price: '',
-    period: '',
+    price: "",
+    period: "",
+    showNearby: "",
   });
 
   // Applied filters reflecting the URL parameters
   const [appliedFilters, setAppliedFilters] = useState<FiltersType>({
-    modelYear: '',
-    category: '',
-    vehicleType: '',
-    brand: '',
-    seats: '',
+    modelYear: "",
+    category: "",
+    vehicleType: "",
+    brand: "",
+    seats: "",
     transmission: [],
     fuelType: [],
     color: [],
     paymentMethod: [],
-    price: '',
-    period: '',
+    price: "",
+    period: "",
+    showNearby: "",
   });
 
   const searchParams = useSearchParams();
@@ -86,8 +89,8 @@ const useFilters = () => {
     const mergedFilters = {
       ...filtersFromParams,
       category: category,
-      vehicleType: vehicleType || '',
-      brand: brand || '',
+      vehicleType: vehicleType || "",
+      brand: brand || "",
     };
 
     setSelectedFilters(mergedFilters);
@@ -109,36 +112,36 @@ const useFilters = () => {
     const updatedFilters = { ...selectedFilters };
 
     // Reset dependent filters when category changes
-    if (filterName === 'category') {
-      updatedFilters.vehicleType = '';
-      updatedFilters.brand = '';
+    if (filterName === "category") {
+      updatedFilters.vehicleType = "";
+      updatedFilters.brand = "";
     }
 
     // If period is cleared, clear the price as well
-    if (filterName === 'period' && value === '') {
-      updatedFilters.price = ''; // Remove price when period is cleared
+    if (filterName === "period" && value === "") {
+      updatedFilters.price = ""; // Remove price when period is cleared
     }
 
     //  If price is cleared, clear the period as well
-    if (filterName === 'price' && value === '') {
-      updatedFilters.period = '';
+    if (filterName === "price" && value === "") {
+      updatedFilters.period = "";
     }
     // Handle single-selection fields
     if (
-      filterName === 'modelYear' ||
-      filterName === 'category' ||
-      filterName === 'seats' ||
-      filterName === 'vehicleType' ||
-      filterName === 'brand' ||
-      filterName === 'price' ||
-      filterName === 'period'
+      filterName === "modelYear" ||
+      filterName === "category" ||
+      filterName === "seats" ||
+      filterName === "vehicleType" ||
+      filterName === "brand" ||
+      filterName === "price" ||
+      filterName === "period"
     ) {
       // Allow unchecking for brand/vehicleType
       if (
-        (filterName === 'vehicleType' || filterName === 'brand') &&
+        (filterName === "vehicleType" || filterName === "brand") &&
         updatedFilters[filterName] === value
       ) {
-        updatedFilters[filterName] = '';
+        updatedFilters[filterName] = "";
       } else {
         updatedFilters[filterName] = value;
       }
@@ -152,6 +155,10 @@ const useFilters = () => {
       } else {
         updatedFilters[filterName] = [...filterArray, value] as any;
       }
+    }
+
+    if (filterName === "showNearby") {
+      updatedFilters.showNearby = value === "true" ? "true" : "";
     }
 
     setSelectedFilters(updatedFilters);
@@ -208,12 +215,12 @@ const useFilters = () => {
         typedQueryFilters.price = price;
       }
     } else {
-      typedQueryFilters.price = '';
+      typedQueryFilters.price = "";
     }
 
     // Create the query string from the filters
     const queryString = qs.stringify(typedQueryFilters, {
-      arrayFormat: 'comma',
+      arrayFormat: "comma",
       skipNull: true,
       skipEmptyString: true,
     });
@@ -239,7 +246,7 @@ const useFilters = () => {
           return total + 1;
         }
 
-        if (typeof value === 'string' && value.trim() !== '') {
+        if (typeof value === "string" && value.trim() !== "") {
           return total + 1;
         }
 
@@ -261,7 +268,7 @@ const useFilters = () => {
     setSelectedFilters(defaultFilters);
     setAppliedFilters(defaultFilters);
 
-    const path = `/${country}/${state}/listing/${category || 'cars'}`;
+    const path = `/${country}/${state}/listing/${category || "cars"}`;
     router.push(path, { scroll: false });
   };
 

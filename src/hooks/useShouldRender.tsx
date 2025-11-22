@@ -13,5 +13,5 @@ export const useShouldRender = (excludedPaths: string[]) => {
   // Check if the current pathname matches any of the excludePaths
   const shouldRender = excludedPaths.some((path) => pathname.startsWith(path));
 
-  return shouldRender;
+  return !shouldRender;
 };

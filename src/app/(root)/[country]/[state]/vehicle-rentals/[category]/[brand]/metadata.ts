@@ -12,7 +12,7 @@ export async function generateSeriesListPageMetadata({
   brand: string;
   country: string;
 }): Promise<Metadata> {
-  const canonicalUrl = `https://ride.rent/${country}/${state}/directory/${category}/${brand}/list`;
+  const canonicalUrl = `https://ride.rent/${country}/${state}/vehicle-rentals/${category}-for-rent/${brand}`;
   const ogImage = "/assets/icons/ride-rent.png";
 
   // meta-title

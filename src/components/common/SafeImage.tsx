@@ -15,15 +15,7 @@ export default function SafeImage({
     !src || src === "#" || (typeof src === "string" && src.trim() === "");
 
   if (invalidSrc) {
-    return (
-      <img
-        src={fallbackSrc}
-        alt={alt}
-        width={(props as any).width}
-        height={(props as any).height}
-        style={{ objectFit: "cover", ...(props as any).style }}
-      />
-    );
+    return <img src={fallbackSrc} alt={alt} {...props} />;
   }
 
   return <Image src={src} alt={alt} {...props} />;

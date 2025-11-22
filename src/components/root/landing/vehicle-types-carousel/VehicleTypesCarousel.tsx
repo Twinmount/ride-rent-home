@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Carousel,
@@ -15,7 +15,13 @@ import { useCallback } from "react";
 import { formUrlQuery, removeKeysFromQuery } from "@/helpers";
 import { VehicleTypeCard } from "../../../card/VehicleTypeCard";
 
-const PRIORITY_TYPES = ["suvs", "sedan", "luxury", "monthly-rentals"];
+const PRIORITY_TYPES = [
+  "self-drive",
+  "suvs",
+  "sedan",
+  "luxury",
+  "monthly-rentals",
+];
 
 export default function VehicleTypesCarousel() {
   const { state, category, country } = useStateAndCategory();
@@ -26,7 +32,7 @@ export default function VehicleTypesCarousel() {
     queryKey: ["vehicleTypes", category, state],
     queryFn: () => fetchVehicleTypesByValue(category, state, country),
     enabled: !!category && !!country,
-    staleTime: 60 * 60 * 1000,
+    staleTime: Infinity,
     gcTime: 2 * 60 * 60 * 1000,
   });
 
@@ -96,7 +102,7 @@ export const VehicleTypesCarouselWrapper = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div className="layout-stable h-fit w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[58%] md:ml-6 md:mr-8 md:max-w-[42%] lg:max-w-[57%] xl:max-w-[60%] 2xl:max-w-[60%]">
+    <div className="layout-stable w-fit max-w-[67%] rounded-xl py-0 sm:max-w-[58%] md:ml-6 md:mr-8 md:max-w-[42%] lg:max-w-[57%] xl:max-w-[60%] 2xl:max-w-[60%]">
       {children}
     </div>
   );

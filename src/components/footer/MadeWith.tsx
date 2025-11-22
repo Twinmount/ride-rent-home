@@ -12,7 +12,7 @@ const MadeWith = () => {
 
   return (
     <div className="pt-4 text-sm text-white lg:mt-2">
-      Crafted with ❤️ from {validCountry === "in" ? "Namma Bengaluru" : "Dubai"}
+      Crafted with ❤️ from {validCountry === "in" ? "Namma bangalore" : "Dubai"}
     </div>
   );
 };

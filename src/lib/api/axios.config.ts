@@ -3,9 +3,49 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
   AxiosInstance,
+  AxiosRequestConfig,
 } from "axios";
 import { authStorage } from "@/lib/auth/authStorage";
 import { ENV } from "@/config/env";
+
+// Helper function to detect country from current URL
+function detectCountryFromUrl(): "ae" | "in" {
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname;
+    const pathname = window.location.pathname;
+
+    // Check if URL starts with /in or domain contains 'india'
+    if (pathname.startsWith("/in") || hostname.includes("india")) {
+      return "in";
+    }
+    // Check if URL starts with /ae or domain contains 'uae'
+    if (pathname.startsWith("/ae") || hostname.includes("uae")) {
+      return "ae";
+    }
+  }
+
+  // Default to UAE
+  return "ae";
+}
+
+// Function to get dynamic assets URL based on country
+function getAssetsUrl(country?: "ae" | "in" | string): string {
+  const detectedCountry = country || detectCountryFromUrl();
+
+  switch (detectedCountry) {
+    case "in":
+      return (
+        ENV.ASSETS_URL_INDIA ||
+        ENV.NEXT_PUBLIC_ASSETS_URL_INDIA ||
+        "http://localhost:5000"
+      );
+    case "ae":
+    default:
+      return (
+        ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL || "http://localhost:5000"
+      );
+  }
+}
 
 // Define API base URLs
 const API_ENDPOINTS = {
@@ -23,8 +63,10 @@ const API_ENDPOINTS = {
     ENV.API_URL ||
     ENV.NEXT_PUBLIC_API_URL ||
     "http://localhost:3001/v1/riderent",
-  ASSETS:
-    ENV.ASSETS_URL || ENV.NEXT_PUBLIC_ASSETS_URL || "http://localhost:5000",
+  // ASSETS is now dynamic - use getAssetsUrl() function instead
+  get ASSETS() {
+    return getAssetsUrl();
+  },
 } as const;
 
 // Define countries configuration for future extensibility
@@ -33,17 +75,20 @@ export const COUNTRIES_CONFIG = {
     code: "in",
     name: "India",
     baseUrl: API_ENDPOINTS.INDIA,
+    assetsUrl: getAssetsUrl("in"),
   },
   UAE: {
     code: "ae",
     name: "United Arab Emirates",
     baseUrl: API_ENDPOINTS.UAE,
+    assetsUrl: getAssetsUrl("ae"),
   },
   // Future countries can be added here
   // SAUDI: {
-  //   code: 'SA',
+  //   code: 'sa',
   //   name: 'Saudi Arabia',
   //   baseUrl: 'your-saudi-api-url',
+  //   assetsUrl: 'your-saudi-assets-url',
   // },
 } as const;
 
@@ -135,33 +180,39 @@ const createApiClient = (baseURL: string): AxiosInstance => {
       return config;
     },
     (error: AxiosError) => {
+      if (error.response?.status === 401) {
+        console.log("error.response?.status: ", error.response?.status);
+      }
       console.error("Request interceptor error:", error);
       return Promise.reject(error);
     }
   );
-
+  client.interceptors.response.use(
+    (response: AxiosResponse) => {
+      return response;
+    },
+    (error: AxiosError) => {
+      if (error.response) {
+        if (error.response.status === 401) {
+          authStorage.clear();
+          console.log(
+            "createApiClient: >>> 401 Unauthorized error DETECTED! <<<"
+          );
+          // if (typeof window !== "undefined") {
+          //   window.dispatchEvent(
+          //     new CustomEvent("auth:logout", {
+          //       detail: { reason: "unauthorized" },
+          //     })
+          //   );
+          // }
+        }
+      }
+      // CRITICAL: Re-throw the error so it can be caught by the calling code (`try...catch` blocks)
+      return Promise.reject(error);
+    }
+  );
   return client;
 };
-
-// Helper function to detect country from current URL
-function detectCountryFromUrl(): "ae" | "in" {
-  if (typeof window !== "undefined") {
-    const hostname = window.location.hostname;
-    const pathname = window.location.pathname;
-
-    // Check if URL starts with /in or domain contains 'india'
-    if (pathname.startsWith("/in") || hostname.includes("india")) {
-      return "in";
-    }
-    // Check if URL starts with /ae or domain contains 'uae'
-    if (pathname.startsWith("/ae") || hostname.includes("uae")) {
-      return "ae";
-    }
-  }
-
-  // Default to UAE
-  return "ae";
-}
 
 // Function to create dynamic main API client that switches URL based on country
 const createDynamicMainApiClient = (): AxiosInstance => {
@@ -223,6 +274,7 @@ const createDynamicMainApiClient = (): AxiosInstance => {
       const originalRequest = error.config as InternalAxiosRequestConfig & {
         _retry?: boolean;
       };
+      console.log("error.response?.status: ", error.response?.status);
 
       // Check if error is 401 and we haven't already tried to refresh
       if (error.response?.status === 401 && !originalRequest._retry) {
@@ -279,12 +331,36 @@ const createDynamicMainApiClient = (): AxiosInstance => {
   return client;
 };
 
+// Create dynamic assets API client that switches based on country
+const createDynamicAssetsApiClient = (): AxiosInstance => {
+  const client = axios.create({
+    timeout: 30000,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  client.interceptors.request.use(
+    (config: InternalAxiosRequestConfig) => {
+      // Dynamically set baseURL based on country detection
+      config.baseURL = getAssetsUrl();
+      return config;
+    },
+    (error: AxiosError) => {
+      console.error("Assets request interceptor error:", error);
+      return Promise.reject(error);
+    }
+  );
+
+  return client;
+};
+
 // Create multiple API clients for different services
 export const authApiClient = createApiClient(API_ENDPOINTS.AUTH);
 export const mainApiClient = createDynamicMainApiClient(); // Dynamic client that switches based on URL
 export const indiaApiClient = createApiClient(API_ENDPOINTS.INDIA);
 export const uaeApiClient = createApiClient(API_ENDPOINTS.UAE);
-export const assetsApiClient = createApiClient(API_ENDPOINTS.ASSETS);
+export const assetsApiClient = createDynamicAssetsApiClient(); // Dynamic assets client
 
 // Create country-specific API clients
 export const countryApiClients = {
@@ -299,6 +375,9 @@ export default mainApiClient;
 
 // Export API endpoints for reference
 export { API_ENDPOINTS };
+
+// Export the getAssetsUrl helper function
+export { getAssetsUrl };
 
 // Helper function to get appropriate API client based on URL
 export const getApiClientByUrl = () => {
@@ -373,7 +452,7 @@ export const createAuthenticatedRequest = {
 
     delete: <T = any>(
       url: string,
-      config?: InternalAxiosRequestConfig
+      config?: AxiosRequestConfig
     ): Promise<AxiosResponse<T>> => authApiClient.delete(url, config),
   },
 
@@ -427,7 +506,7 @@ export const createAuthenticatedRequest = {
     ): Promise<AxiosResponse<T>> => indiaApiClient.delete(url, config),
   },
 
-  // Assets API requests (usually no auth needed, but available)
+  // Assets API requests (dynamic based on country)
   assets: {
     get: <T = any>(
       url: string,

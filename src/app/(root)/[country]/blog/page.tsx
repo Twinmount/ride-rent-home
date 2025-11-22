@@ -3,26 +3,25 @@ import CategoryTags from '@/components/blog/CategoryTags';
 import BlogsGrid from '@/components/blog/BlogsGrid';
 import BlogCardSkeleton from '@/components/skelton/BlogCardSkeleton';
 import { CategoryType } from '@/types/blog';
-import { PageProps } from '@/types';
+import { PageProps } from "@/types";
+import JsonLd from "@/components/common/JsonLd";
 import {
-  generateBlogMetaData,
-  getBlogPageJsonLd,
-} from '../[state]/rent/[category]/[brand]/[series]/metadata';
-import JsonLd from '@/components/common/JsonLd';
+  generateBlogListingMetadata,
+  getBlogListingPageJsonLd,
+} from "./metadata";
 
 export async function generateMetadata(props: PageProps) {
   const { country } = await props.params;
-
-  return generateBlogMetaData(country);
+  return generateBlogListingMetadata(country);
 }
 
 export default async function BlogPage(props: PageProps) {
   const searchParams = await props.searchParams;
   const { country } = await props.params;
-  const selectedTag = searchParams.tag || 'all';
+  const selectedTag = searchParams.tag || "all";
 
   // Generate JSON-LD data
-  const jsonLdData = getBlogPageJsonLd(country);
+  const jsonLdData = getBlogListingPageJsonLd(country);
 
   return (
     <>

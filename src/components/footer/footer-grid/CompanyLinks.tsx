@@ -13,7 +13,7 @@ export const CompanyLinks = () => {
 
   const getCompanyLink = (item: any) => {
     if (item.title === 'FAQ') {
-      return `/${defaultCountry}/faq/${state ? state : defaultCountry === 'in' ? 'bangalore' : 'dubai'}`;
+      return `/${defaultCountry}/faq/${state ? state : defaultCountry === "in" ? "bangalore" : "dubai"}`;
     }
     if (item.title === 'Our Blogs') {
       return `/${defaultCountry}/blog`;

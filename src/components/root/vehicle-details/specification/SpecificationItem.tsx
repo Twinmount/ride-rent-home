@@ -6,7 +6,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { formatKeyForIcon } from '@/helpers';
-import { ENV } from '@/config/env';
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import { ISpecificationItem } from './Specification';
 
 /**
@@ -17,8 +17,8 @@ export const SpecificationItem: FC<{
   spec: ISpecificationItem;
   vehicleCategory?: string;
 }> = ({ name, spec, vehicleCategory }) => {
-  // Base URL for fetching icons
-  const baseAssetsUrl = ENV.NEXT_PUBLIC_ASSETS_URL;
+  // Base URL for fetching icons (auto-detects country from URL)
+  const baseAssetsUrl = getAssetsUrl();
 
   const iconSrc = `${baseAssetsUrl}/icons/vehicle-specifications/${vehicleCategory}/${formatKeyForIcon(
     name

@@ -1,7 +1,7 @@
 import { FetchBrandsWithSeriesResponse, SeriesUnderBrandType } from "@/types";
 import { Suspense } from "react";
 import Pagination from "@/components/common/Pagination";
-import { ENV } from "@/config/env";
+import { getAssetsUrl } from "@/utils/getCountryAssets";
 import Link from "next/link";
 import SeriesListLink from "./SeriesListLink";
 import { ArrowRight } from "lucide-react";
@@ -52,7 +52,7 @@ export default async function VehicleSeriesGrid({
       </div>
     );
 
-  const baseAssetsUrl = ENV.ASSETS_URL;
+  const baseAssetsUrl = getAssetsUrl(country);
 
   return (
     <div className="flex h-auto flex-col justify-between pb-10">

@@ -34,7 +34,7 @@ import {
   getVehicleImageUrl,
 } from "@/utils/imageUrl";
 import { useUserActions } from "@/hooks/useUserActions";
-import { generateVehicleDetailsUrl } from "@/helpers";
+import { generateVehicleDetailsUrl, getRentalPeriodDetails } from "@/helpers";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 import type {
   RawVehicleEnquiry,
@@ -42,6 +42,7 @@ import type {
   VehiclePhoto,
   RentDetails,
 } from "@/types/userActions.types";
+import { usePriceConverter } from "@/hooks/usePriceConverter";
 
 // Add custom CSS for line clamping
 const lineClampStyles = `
@@ -76,17 +77,11 @@ export default function EnquiredVehiclesPage() {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Use the useUserActions hook
-  const {
-    useUserEnquiredVehicles,
-    enquiredVehicles: enquiredVehiclesState,
-    fetchEnquiredVehicles,
-    userId,
-  } = useUserActions();
+  const { useUserEnquiredVehicles } = useUserActions();
 
   // Get current state and category from the hook
   const { category } = useStateAndCategory();
-
-  // Query enquired vehicles using React Query
+  // const { convert } = usePriceConverter();
   const {
     data: apiResponse,
     isLoading: loading,
@@ -457,7 +452,6 @@ export default function EnquiredVehiclesPage() {
             const period = getRentalPeriod(vehicle.rentDetails);
             const vehicleImage = getVehicleImage(vehicle.vehicleDetails.photos);
             const enquiredDate = formatDate(vehicle.enquiredAt);
-            console.log("vehicle.enquiredAt: ", vehicle.enquiredAt);
 
             return (
               <Card
@@ -561,10 +555,10 @@ export default function EnquiredVehiclesPage() {
 
                   {/* Vehicle Info */}
                   <div className="mb-3 flex items-center justify-between text-xs text-gray-500 sm:mb-4">
-                    <div className="flex items-center gap-1">
+                    {/* <div className="flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
                       <span>UAE</span>
-                    </div>
+                    </div> */}
                     {/* <div className="flex items-center gap-1">
                       <Star className="text-yellow-400 h-3 w-3 fill-current" />
                       <span>4.8</span>
