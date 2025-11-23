@@ -6,6 +6,7 @@ import ViewAllGridCard from "@/components/card/ViewAllGridCard";
 import { convertToLabel } from "@/helpers";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { Slug } from "@/constants/apiEndpoints";
 
 type FeaturedVehiclesProps = StateCategoryProps & {
   vehicleType: string | undefined;
@@ -31,7 +32,7 @@ const FeaturedVehicles = async ({
   }
 
   const response = await API({
-    path: `/vehicle/home-page/list/v2?${params.toString()}`,
+    path: `${Slug.GET_HOMEPAGE_LIST}?${params.toString()}`,
     options: {
       method: "GET",
       cache: "no-cache",

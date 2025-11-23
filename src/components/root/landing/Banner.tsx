@@ -1,6 +1,7 @@
-import { headers } from 'next/headers';
-import { ENV } from '@/config/env';
-import BannerSlider from './BannerSlider';
+import { headers } from "next/headers";
+import BannerSlider from "./BannerSlider";
+import { API } from "@/utils/API";
+import { Slug } from "@/constants/apiEndpoints";
 
 export type ImageSrc = {
   link?: string;
@@ -13,11 +14,15 @@ async function getBannerImages(
   country: string
 ): Promise<ImageSrc[]> {
   try {
-    const baseUrl = country === "in" ? ENV.API_URL_INDIA : ENV.API_URL;
-    const res = await fetch(
-      `${baseUrl}/homepage-banners/list?state=${state}&isMobile=${isMobile}`,
-      { method: "GET", cache: "no-cache" }
-    );
+    const url = `${Slug.GET_HOMEPAGE_BANNER}?state=${state}&isMobile=${isMobile}`;
+    const res = await API({
+      path: url,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country: country,
+    });
 
     if (!res.ok) throw new Error("Failed to fetch banners");
     const data = await res.json();
@@ -27,7 +32,7 @@ async function getBannerImages(
     }
     return [];
   } catch (error) {
-    console.error('Error fetching banner images:', error);
+    console.error("Error fetching banner images:", error);
     return [];
   }
 }
