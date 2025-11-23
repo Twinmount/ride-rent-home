@@ -79,7 +79,7 @@ const VehicleCard = ({
 
         <VehicleFeatureBadges
           hasPayOnPickup={true}
-          hasNoDeposit={vehicle.securityDeposit?.enabled}
+          hasNoDeposit={!vehicle.securityDeposit.enabled}
         />
       </LinkWrapper>
 

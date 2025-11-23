@@ -24,6 +24,7 @@ import ProfileCard from "@/components/root/vehicle-details/profile-card/main-pro
 import ProtectedVehicleDetails from "@/components/common/ProtectedVehicleDetails";
 import ActiveEnquiryBanner from "@/components/root/vehicle-details/ActiveEnquiryBanner";
 import { API } from "@/utils/API";
+import { Slug } from "@/constants/apiEndpoints";
 
 type ParamsProps = {
   params: Promise<{
@@ -65,7 +66,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   // Fetch the vehicle data from the API
   const response = await API({
-    path: `/vehicle/details?vehicleCode=${formattedVehicleCode}`,
+    path: `${Slug.GET_VEHICLE_DETAILS}?vehicleCode=${formattedVehicleCode}`,
     options: {
       method: "GET",
       cache: "no-cache",

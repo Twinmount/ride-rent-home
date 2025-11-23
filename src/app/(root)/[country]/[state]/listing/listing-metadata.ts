@@ -15,6 +15,7 @@ import { API } from "@/utils/API";
 import { getCountryName } from "@/utils/url";
 import { getAssetsUrl } from "@/utils/getCountryAssets";
 import { Metadata } from "next";
+import { Slug } from "@/constants/apiEndpoints";
 
 type ListingMetadataParams = {
   country: string;
@@ -50,7 +51,7 @@ export async function fetchListingMetadata({
 
   try {
     const response = await API({
-      path: `/metadata/listing?${queryParams.toString()}`,
+      path: `${Slug.GET_LISTING_PAGE_METADATA}?${queryParams.toString()}`,
       options: {
         method: "GET",
         cache: "no-cache",

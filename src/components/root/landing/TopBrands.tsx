@@ -8,6 +8,7 @@ import SafeImage from "@/components/common/SafeImage";
 import { getAssetsUrl } from "@/utils/getCountryAssets";
 import { API } from "@/utils/API";
 import { SectionHeading } from "@/components/common/SectionHeading";
+import { Slug } from "@/constants/apiEndpoints";
 
 export const revalidate = 3600;
 
@@ -22,7 +23,7 @@ export default async function TopBrands({
 }) {
   // Fetch brand data from your API endpoint
   const response = await API({
-    path: `/vehicle-brand/top-brands?categoryValue=${category}&hasVehicle=true`,
+    path: `${Slug.GET_TOP_BRANDS}?categoryValue=${category}&hasVehicle=true`,
     options: {},
     country: country,
   });

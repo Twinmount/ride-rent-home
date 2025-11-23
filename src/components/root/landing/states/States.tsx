@@ -5,6 +5,7 @@ import StateCard from "./StateCard";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { API } from "@/utils/API";
 import ViewAllButton from "@/components/common/ViewAllButton";
+import { Slug } from "@/constants/apiEndpoints";
 
 export default async function States({
   category,
@@ -16,7 +17,7 @@ export default async function States({
   country: string;
 }) {
   const response = await API({
-    path: `/states/list?hasVehicle=true`,
+    path: `${Slug.GET_STATES_LIST}?hasVehicle=true`,
     options: {
       cache: "no-cache",
     },

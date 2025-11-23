@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { API } from "@/utils/API";
 import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
+import { Slug } from "@/constants/apiEndpoints";
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
     });
 
     const response = await API({
-      path: `/vehicle/vehicle-series/list?${params.toString()}`,
+      path: `${Slug.GET_VEHICLE_SERIES_VEHICLE_LIST}?${params.toString()}`,
       options: {
         method: "GET",
         cache: "no-cache",

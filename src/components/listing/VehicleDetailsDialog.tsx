@@ -21,7 +21,7 @@ export function VehicleDetailsDialog({
   setOpen: (open: boolean) => void;
   country: string;
 }) {
-  console.log("vehicles: ", vehicles);
+  // console.log("vehicles: ", vehicles);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="z-[9999] h-fit max-h-[80%] w-fit max-w-md">
