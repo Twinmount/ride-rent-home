@@ -130,7 +130,7 @@ const RentalDetailsTab = ({
         if (response.ok) {
           const data = await response.json();
           const vehicles = data?.result?.list || [];
-          console.log("Fetched similar vehicles:", vehicles);
+          // console.log("Fetched similar vehicles:", vehicles);
           const filtered = vehicles
             .filter((v: any) => v.vehicleId !== vehicleId)
             .slice(0, 2);
