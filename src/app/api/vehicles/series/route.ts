@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
     const params = new URLSearchParams({
       page,
-      limit: "8",
+      limit: "10",
       state,
       vehicleSeries,
       category,

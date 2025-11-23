@@ -18,8 +18,8 @@ export const SectionHeading = ({
   return (
     <div
       className={cn(
-        'my-8 flex w-full flex-col gap-y-3',
-        align === 'center' ? 'text-center' : 'text-left',
+        "my-8 flex w-full flex-col gap-y-3",
+        align === "center" ? "text-center" : "text-left",
         className
       )}
     >
@@ -29,7 +29,9 @@ export const SectionHeading = ({
         <h2 className="heading-primary">{title}</h2>
       )}
 
-      {subtitle && <p className="heading-secondary">{subtitle}</p>}
+      {subtitle && (
+        <p className="heading-secondary mx-auto lg:max-w-6xl">{subtitle}</p>
+      )}
     </div>
   );
 };

@@ -35,6 +35,7 @@ export const useFetchListingVehicles = ({
         vehicleType,
         brand,
         city,
+        limit,
         searchParams,
         coordinates,
       ],
@@ -50,7 +51,7 @@ export const useFetchListingVehicles = ({
           brand,
           city,
           pageParam,
-          limit: "8",
+          limit,
         });
       },
       initialPageParam: 1,

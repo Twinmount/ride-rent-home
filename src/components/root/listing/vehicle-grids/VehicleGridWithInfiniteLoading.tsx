@@ -60,7 +60,7 @@ const VehicleGridWithInfiniteLoading: React.FC<Props> = ({
     vehicleType,
     brand,
     city,
-    limit: "8",
+    limit: "9",
     searchParams: searchParams.toString(),
     coordinates: stateValue === state ? parsedCoordinates : null,
   });
@@ -108,7 +108,7 @@ const VehicleGridWithInfiniteLoading: React.FC<Props> = ({
     if (
       !hasNextPage &&
       !isFetching &&
-      (inView || totalVehicles < 8) &&
+      (inView || totalVehicles < 9) &&
       relatedStateList.length > 0
     ) {
       setRelatedStateList((prevList: any) => {
