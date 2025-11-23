@@ -220,6 +220,7 @@ export type PriceOfferType = {
 };
 
 export type NewVehicleCardType = {
+  payOnPickup: boolean;
   vehicleId: string;
   companyLogo?: string;
   vehicleCode: string;
