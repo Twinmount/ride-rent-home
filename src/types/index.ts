@@ -251,18 +251,6 @@ export interface CompanyType {
   contactDetails: Object; //object containing whatsapp, phone number, email
 }
 
-// individual vehicle card type
-export interface VehicleCardType {
-  brand: BrandType; //populate brands
-  thumbnail: string; //thumbnail image
-  companyProfile: string; //company profile image
-  vehicleModel: string;
-  vehicleSpecs: Object; //that 6 specs per category based on the excel sheet
-  state: string; //state name
-  price: RentalDetailsType; //that rental details object from level 1 form
-  contact: Object; // object containing mobile,whatsapp(both from level 1 form) and email(from company details form)
-}
-
 // link type
 export interface LinkType {
   linkId: string;
@@ -507,3 +495,12 @@ export type BlogData = {
   createdAt?: string;
   updatedAt?: string;
 };
+
+export interface ServerTimeResponse {
+  result: {
+    serverTime: string;
+    timestamp: number;
+  };
+  status: string;
+  statusCode: number;
+}

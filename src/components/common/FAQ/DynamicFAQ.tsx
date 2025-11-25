@@ -1,15 +1,16 @@
-import React from 'react';
-import MotionSection from '@/components/general/framer-motion/MotionSection';
+import React from "react";
+import MotionSection from "@/components/general/framer-motion/MotionSection";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import Image from 'next/image';
+} from "@/components/ui/accordion";
+import Image from "next/image";
 
-import { VehicleDetailsPageType } from '@/types/vehicle-details-types';
-import { ENV } from '@/config/env';
+import { VehicleDetailsPageType } from "@/types/vehicle-details-types";
+import { ENV } from "@/config/env";
+import { API } from "@/utils/API";
 
 type DynamicFAQProps = {
   vehicle: VehicleDetailsPageType;
@@ -25,26 +26,25 @@ export default async function DynamicFAQ({
   vehicle,
   country,
 }: DynamicFAQProps) {
-  const baseUrl = country === 'in' ? ENV.API_URL_INDIA : ENV.API_URL;
-
   let faqData: FAQItem[] = [];
 
   try {
-    const response = await fetch(
-      `${baseUrl}/vehicle-faq/${vehicle.vehicleCode}`,
-      {
-        method: 'GET',
-        cache: 'no-cache',
-      }
-    );
+    const response = await API({
+      path: `/vehicle-faq/${vehicle.vehicleCode}`,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country,
+    });
 
     const result = await response.json();
 
-    if (result.status === 'SUCCESS' && Array.isArray(result.result)) {
+    if (result.status === "SUCCESS" && Array.isArray(result.result)) {
       faqData = result.result;
     }
   } catch (error) {
-    console.error('Failed to fetch FAQ data:', error);
+    console.error("Failed to fetch FAQ data:", error);
   }
 
   if (faqData.length === 0) {

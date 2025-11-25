@@ -649,8 +649,7 @@ export function restoreVehicleCodeFormat(lowerCaseCode: string): string {
  */
 export function getVehicleCardStyle(layoutType: "carousel" | "grid"): string {
   const styles = {
-    carousel: `w-[14.64rem] min-w-[14.4rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem]`,
-    // grid: `min-w-[12rem] max-w-[21rem] w-full md:max-w-[18rem] justify-self-center`,
+    carousel: `w-[14.8rem] min-w-[14.8rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem]`,
     grid: `min-w-[12rem] max-w-full w-full md:max-w-[18rem] justify-self-center`,
   };
 

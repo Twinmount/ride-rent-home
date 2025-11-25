@@ -1,10 +1,10 @@
-import { ENV } from '@/config/env';
-import { convertToLabel } from '@/helpers';
-import { getAbsoluteUrl, getDefaultMetadata } from '@/helpers/metadata-helper';
-import { API } from '@/utils/API';
+import { ENV } from "@/config/env";
+import { Slug } from "@/constants/apiEndpoints";
+import { convertToLabel } from "@/helpers";
+import { getAbsoluteUrl, getDefaultMetadata } from "@/helpers/metadata-helper";
+import { API } from "@/utils/API";
 import { getAssetsUrl } from "@/utils/getCountryAssets";
-import { Metadata } from 'next';
-
+import { Metadata } from "next";
 
 type MetaDataResponse = {
   result: {
@@ -20,7 +20,7 @@ async function fetchHomepageMetadata(
 ): Promise<MetaDataResponse | null> {
   try {
     const response = await API({
-      path: `/metadata/homepage?state=${state}&category=${category}`,
+      path: `${Slug.GET_HOMEPAGE_METADATA}?state=${state}&category=${category}`,
       options: {
         method: "GET",
         cache: "no-cache",

@@ -1,9 +1,11 @@
-import { ENV } from '@/config/env';
-import { convertToLabel } from '@/helpers';
-import { getDefaultMetadata, getAbsoluteUrl } from '@/helpers/metadata-helper';
-import { FetchVehicleSeriesInfo } from '@/types';
+import { ENV } from "@/config/env";
+import { Slug } from "@/constants/apiEndpoints";
+import { convertToLabel } from "@/helpers";
+import { getDefaultMetadata, getAbsoluteUrl } from "@/helpers/metadata-helper";
+import { FetchVehicleSeriesInfo } from "@/types";
+import { API } from "@/utils/API";
 import { getAssetsUrl } from "@/utils/getCountryAssets";
-import { Metadata } from 'next';
+import { Metadata } from "next";
 
 type FetchVehicleSeriesInfoType = {
   state: string;
@@ -19,13 +21,16 @@ async function fetchVehicleSeriesMetadata({
   country,
 }: FetchVehicleSeriesInfoType): Promise<FetchVehicleSeriesInfo | null> {
   try {
-    const baseUrl =
-      country === 'in'
-        ? ENV.API_URL_INDIA || ENV.NEXT_PUBLIC_API_URL_INDIA
-        : ENV.API_URL || ENV.NEXT_PUBLIC_API_URL;
+    const url = `${Slug.GET_VEHICLE_SERIES_INFO}?vehicleSeries=${series}&state=${state}&brand=${brand}`;
 
-    const url = `${baseUrl}/vehicle-series/info?vehicleSeries=${series}&state=${state}&brand=${brand}`;
-    const response = await fetch(url, { method: 'GET', cache: 'no-cache' });
+    const response = await API({
+      path: url,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country,
+    });
 
     if (!response.ok) {
       console.error(
@@ -36,7 +41,7 @@ async function fetchVehicleSeriesMetadata({
 
     return await response.json();
   } catch (error) {
-    console.error('Error fetching vehicle series metadata:', error);
+    console.error("Error fetching vehicle series metadata:", error);
     return null;
   }
 }
@@ -213,5 +218,3 @@ export function getSeriesListingPageJsonLd(
     },
   };
 }
-
-

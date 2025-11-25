@@ -24,6 +24,7 @@ import ProfileCard from "@/components/root/vehicle-details/profile-card/main-pro
 import ProtectedVehicleDetails from "@/components/common/ProtectedVehicleDetails";
 import ActiveEnquiryBanner from "@/components/root/vehicle-details/ActiveEnquiryBanner";
 import { API } from "@/utils/API";
+import { Slug } from "@/constants/apiEndpoints";
 
 type ParamsProps = {
   params: Promise<{
@@ -65,7 +66,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   // Fetch the vehicle data from the API
   const response = await API({
-    path: `/vehicle/details?vehicleCode=${formattedVehicleCode}`,
+    path: `${Slug.GET_VEHICLE_DETAILS}?vehicleCode=${formattedVehicleCode}`,
     options: {
       method: "GET",
       cache: "no-cache",
@@ -100,12 +101,14 @@ export default async function VehicleDetails(props: ParamsProps) {
   }
 
   const vehicle = data.result;
+  // console.log("vehicle details data: ", data.result);
 
   // generating prop data for profile card and mobile profile card
   const ProfileCardData: ProfileCardDataType = {
     company: vehicle?.company,
     agentId: vehicle?.userId,
     rentalDetails: vehicle?.rentalDetails,
+    additionalVehicleTypes: vehicle?.additionalVehicleTypes,
     vehicleId: vehicle.vehicleId,
     vehicleCode: vehicle.vehicleCode,
     vehicleSeries: vehicle.vehicleSeries?.vehicleSeries,
@@ -120,6 +123,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     vehicleTitle: vehicle.vehicleTitle,
     vehicleTitleH1: vehicle.vehicleTitle,
     seriesDescription: vehicle.vehicleSeries?.vehicleSeriesInfoDescription,
+    priceOffer: vehicle.priceOffer || null,
   };
 
   // Generate JSON-LD
@@ -168,13 +172,6 @@ export default async function VehicleDetails(props: ParamsProps) {
   }
   const vehicleTitleH1 = vehicle.vehicleTitleH1;
   const vehicleSubTitle = vehicle.subTitle || vehicle.vehicleTitle;
-
-  const SupplierDetailsPropsData = {
-    companyName: vehicle?.company?.companyName,
-    companyId: vehicle?.company?.companyId,
-    country,
-    companyProfile: vehicle?.company?.companyProfile,
-  };
 
   const VehicleHeadingPropsData = {
     brandListingPageHref,

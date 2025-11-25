@@ -16,6 +16,7 @@ import { getAbsoluteUrl } from "@/helpers/metadata-helper";
 import { notFound } from "next/navigation";
 import { API } from "@/utils/API";
 import { getAssetsUrl } from "@/utils/getCountryAssets";
+import { Slug } from "@/constants/apiEndpoints";
 
 async function fetchVehicleMetaData(
   vehicleCode: string,
@@ -25,7 +26,7 @@ async function fetchVehicleMetaData(
 
   try {
     const response = await API({
-      path: `/metadata/vehicle?vehicle=${formattedVehicleCode}`,
+      path: `${Slug.GET_VEHICLE_METADATA}?vehicle=${formattedVehicleCode}`,
       options: {
         method: "GET",
         cache: "no-cache",

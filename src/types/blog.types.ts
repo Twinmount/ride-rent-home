@@ -44,13 +44,26 @@ export interface FetchBlogsResponse {
   statusCode: number;
 }
 
+export type FAQItemType = {
+  question: string;
+  answer: string;
+};
+
+export interface FetchBlogFAQResponse {
+  result: {
+    blogId: string;
+    faqs: FAQItemType[];
+  };
+  status: string;
+  statusCode: number;
+}
+
 //  GET specific blog API response
 export interface FetchSpecificBlogResponse {
   result: BlogType;
   status: string;
   statusCode: number;
 }
-
 
 export interface FetchSpecificBlogResponse {
   result: BlogType;

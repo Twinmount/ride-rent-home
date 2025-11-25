@@ -1,6 +1,5 @@
-// page.tsx
-import HeadingBanner from "@/components/common/heading-banner/HeadingBanner";
 import MotionDiv from "@/components/general/framer-motion/MotionDiv";
+import { MotionH1 } from "@/components/general/framer-motion/MotionElm";
 
 export async function generateMetadata() {
   const canonicalUrl = `https://ride.rent/global-data-deletion-policy`;
@@ -212,12 +211,26 @@ const policyData: PolicySection[] = [
 
 export default function GlobalDataDeletionPolicy() {
   return (
-    <section className="pb-12">
-      <HeadingBanner heading="Global Data Deletion & Retention Policy" />
+    <section className="pb-8 sm:pb-12">
+      {/* Integrated Page Header - Removed animation props from MotionDiv */}
+      <MotionDiv className="mx-auto mb-6 mt-4 max-w-5xl px-4 sm:mb-8 sm:mt-6 sm:px-6 lg:mb-12 lg:mt-8">
+        <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 p-6 shadow-lg sm:rounded-2xl sm:p-8 lg:p-12">
+          <MotionH1
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-3 text-center text-xl font-bold leading-tight text-white sm:mb-4 sm:text-2xl lg:text-4xl"
+          >
+            Global Data Deletion & Retention Policy
+          </MotionH1>
+          <div className="mx-auto h-1 w-20 rounded-full bg-gradient-to-r from-[#F4A51C] to-orange-500 sm:w-24 lg:w-32"></div>
+        </div>
+      </MotionDiv>
 
-      <MotionDiv className="mx-auto mb-12 mt-8 max-w-5xl px-4 sm:px-6 lg:mb-20 lg:mt-16">
-        <div className="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 via-orange-50 to-blue-50 p-6 lg:p-8">
-          <p className="text-center text-base leading-relaxed text-gray-700 sm:text-lg lg:text-xl">
+      {/* Hero Banner */}
+      <MotionDiv className="mx-auto mb-8 max-w-5xl px-4 sm:mb-12 sm:px-6 lg:mb-20">
+        <div className="rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 via-orange-50 to-blue-50 p-5 sm:rounded-2xl sm:p-6 lg:p-8">
+          <p className="text-center text-sm leading-relaxed text-gray-700 sm:text-base lg:text-xl">
             This global policy outlines how Ride.Rent manages, retains,
             transfers, and deletes personal data in line with international
             privacy standards including{" "}
@@ -229,214 +242,232 @@ export default function GlobalDataDeletionPolicy() {
         </div>
       </MotionDiv>
 
-      <MotionDiv className="mx-auto max-w-5xl space-y-6 px-4 sm:px-6 lg:space-y-8">
+      {/* Policy Sections - Reduced badge sizes */}
+      <MotionDiv className="mx-auto max-w-5xl space-y-4 px-4 sm:space-y-6 sm:px-6 lg:space-y-8">
         {policyData.map((section) => (
           <div
             key={section.id}
-            className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:border-[#F4A51C] hover:shadow-md lg:p-6"
+            className="group overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-[#F4A51C] hover:shadow-md sm:rounded-xl"
           >
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#F4A51C] to-orange-500 text-lg font-bold text-white shadow-sm">
-                {section.id}
+            {/* Compact Header with Smaller Badge */}
+            <div className="flex items-start gap-0 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+              {/* Left Badge Strip - Reduced sizes */}
+              <div className="flex w-10 shrink-0 items-center justify-center bg-gradient-to-br from-[#F4A51C] to-orange-500 py-3 sm:w-11 sm:py-4 lg:w-12 lg:py-4">
+                <span className="text-base font-bold text-white sm:text-lg lg:text-xl">
+                  {section.id}
+                </span>
               </div>
-              <div className="min-w-0 flex-1">
-                <h2 className="mb-3 text-lg font-bold text-gray-900 transition-colors group-hover:text-[#F4A51C] lg:text-xl">
+              {/* Title */}
+              <div className="flex flex-1 items-center px-3 py-3 sm:px-4 sm:py-4 lg:px-5 lg:py-4">
+                <h2 className="text-base font-bold leading-tight text-gray-900 transition-colors group-hover:text-[#F4A51C] sm:text-lg lg:text-xl">
                   {section.title}
                 </h2>
-                <div className="text-sm text-gray-700 lg:text-base">
-                  {/* Simple text content */}
-                  {typeof section.content === "string" &&
-                    section.content !== "compliance" &&
-                    section.content !== "controller" &&
-                    section.content !== "contact" &&
-                    section.content !== "list" &&
-                    section.content !== "numbered" &&
-                    section.content !== "steps" &&
-                    section.content !== "warning" &&
-                    section.content !== "checks" && (
-                      <p>
-                        {section.highlight ? (
-                          <>
-                            {section.content.split(section.highlight)[0]}
-                            <strong className="text-[#F4A51C]">
-                              {section.highlight}
-                            </strong>
-                            {section.content.split(section.highlight)[1]}
-                          </>
-                        ) : (
-                          section.content
-                        )}
-                      </p>
-                    )}
-
-                  {/* Compliance cards */}
-                  {section.content === "compliance" && (
-                    <>
-                      <p className="mb-4">
-                        Ride.Rent operates in compliance with international
-                        privacy laws such as:
-                      </p>
-                      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        {(section.items as ComplianceItem[])?.map((item, i) => (
-                          <div
-                            key={i}
-                            className="rounded-lg border border-gray-200 bg-white p-3 transition-all hover:border-[#F4A51C] hover:shadow-sm"
-                          >
-                            <h4 className="mb-1 text-sm font-bold text-gray-900 lg:text-base">
-                              {item.title}
-                            </h4>
-                            <p className="text-xs text-gray-600 lg:text-sm">
-                              {item.desc}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                      <p className="rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm font-semibold">
-                        We ensure all personal data processing is fair, lawful,
-                        and transparent across jurisdictions.
-                      </p>
-                    </>
-                  )}
-
-                  {/* Info box (controller/contact) */}
-                  {(section.content === "controller" ||
-                    section.content === "contact") && (
-                    <div
-                      className={`rounded-xl ${section.content === "controller" ? "bg-gradient-to-r from-gray-50 to-blue-50" : "bg-gradient-to-r from-blue-50 to-gray-50"} border p-4 ${section.content === "controller" ? "border-gray-200" : "border-blue-200"} space-y-2`}
-                    >
-                      {section.info?.map((item, i) => (
-                        <p key={i}>
-                          {item.label && (
-                            <strong className="text-gray-900">
-                              {item.label}:
-                            </strong>
-                          )}{" "}
-                          {item.isEmail ? (
-                            <a
-                              href={`mailto:${item.value}`}
-                              className="font-semibold text-[#F4A51C] hover:underline"
-                            >
-                              {item.value}
-                            </a>
-                          ) : (
-                            item.value
-                          )}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Simple list with checkmarks */}
-                  {section.content === "list" && (
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      {(section.items as string[])?.map((item, i) => (
-                        <div
-                          key={i}
-                          className="flex items-start gap-2 rounded-lg border border-gray-200 p-2 transition-all hover:border-[#F4A51C]"
-                        >
-                          <span className="mt-0.5 text-[#F4A51C]">✓</span>
-                          <span>{item}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Numbered list */}
-                  {section.content === "numbered" && (
-                    <>
-                      {section.intro && <p className="mb-3">{section.intro}</p>}
-                      <div className="space-y-2">
-                        {(section.items as string[])?.map((item, i) => (
-                          <div
-                            key={i}
-                            className="flex items-start gap-2 rounded-lg p-2 transition-all hover:bg-blue-50"
-                          >
-                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white">
-                              {i + 1}
-                            </span>
-                            <span>{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-
-                  {/* Steps with green badges */}
-                  {section.content === "steps" && (
-                    <div className="space-y-2">
-                      {(section.items as string[])?.map((item, i) => (
-                        <div
-                          key={i}
-                          className="flex items-start gap-2 rounded-lg border border-gray-200 bg-white p-3 transition-all hover:border-[#F4A51C]"
-                        >
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-100 text-xs font-bold text-green-700">
-                            {i + 1}
-                          </span>
-                          <span className="pt-0.5">{item}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Warning items */}
-                  {section.content === "warning" && (
-                    <>
-                      {section.intro && <p className="mb-3">{section.intro}</p>}
-                      <div className="space-y-2">
-                        {(section.items as string[])?.map((item, i) => (
-                          <div
-                            key={i}
-                            className="flex items-start gap-2 rounded-lg border border-orange-200 bg-orange-50 p-2"
-                          >
-                            <span className="mt-0.5 font-bold text-orange-500">
-                              !
-                            </span>
-                            <span>{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-
-                  {/* Check items */}
-                  {section.content === "checks" && (
-                    <>
-                      {section.intro && <p className="mb-3">{section.intro}</p>}
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        {(section.items as string[])?.map((item, i) => (
-                          <div
-                            key={i}
-                            className="flex items-start gap-2 rounded-lg border border-green-200 bg-green-50 p-2"
-                          >
-                            <svg
-                              className="mt-0.5 h-4 w-4 shrink-0 text-green-600"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            <span>{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
               </div>
+            </div>
+
+            {/* Content Area */}
+            <div className="p-4 text-sm text-gray-700 sm:p-5 lg:p-6 lg:text-base">
+              {/* Simple text content */}
+              {typeof section.content === "string" &&
+                section.content !== "compliance" &&
+                section.content !== "controller" &&
+                section.content !== "contact" &&
+                section.content !== "list" &&
+                section.content !== "numbered" &&
+                section.content !== "steps" &&
+                section.content !== "warning" &&
+                section.content !== "checks" && (
+                  <p className="leading-relaxed">
+                    {section.highlight ? (
+                      <>
+                        {section.content.split(section.highlight)[0]}
+                        <strong className="text-[#F4A51C]">
+                          {section.highlight}
+                        </strong>
+                        {section.content.split(section.highlight)[1]}
+                      </>
+                    ) : (
+                      section.content
+                    )}
+                  </p>
+                )}
+
+              {/* Compliance cards */}
+              {section.content === "compliance" && (
+                <>
+                  <p className="mb-3 leading-relaxed sm:mb-4">
+                    Ride.Rent operates in compliance with international privacy
+                    laws such as:
+                  </p>
+                  <div className="mb-3 space-y-2 sm:mb-4 sm:grid sm:grid-cols-2 sm:gap-3 sm:space-y-0">
+                    {(section.items as ComplianceItem[])?.map((item, i) => (
+                      <div
+                        key={i}
+                        className="rounded-lg border border-gray-200 bg-white p-3 transition-all hover:border-[#F4A51C] hover:shadow-sm"
+                      >
+                        <h4 className="mb-1 text-sm font-bold text-gray-900 sm:text-base">
+                          {item.title}
+                        </h4>
+                        <p className="text-xs leading-relaxed text-gray-600 sm:text-sm">
+                          {item.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs font-semibold leading-relaxed sm:text-sm">
+                    We ensure all personal data processing is fair, lawful, and
+                    transparent across jurisdictions.
+                  </p>
+                </>
+              )}
+
+              {/* Info box */}
+              {(section.content === "controller" ||
+                section.content === "contact") && (
+                <div
+                  className={`space-y-2 rounded-lg border p-3 sm:space-y-2.5 sm:rounded-xl sm:p-4 ${
+                    section.content === "controller"
+                      ? "border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50"
+                      : "border-blue-200 bg-gradient-to-r from-blue-50 to-gray-50"
+                  }`}
+                >
+                  {section.info?.map((item, i) => (
+                    <p key={i} className="leading-relaxed">
+                      {item.label && (
+                        <strong className="text-gray-900">{item.label}:</strong>
+                      )}{" "}
+                      {item.isEmail ? (
+                        <a
+                          href={`mailto:${item.value}`}
+                          className="break-all font-semibold text-[#F4A51C] hover:underline"
+                        >
+                          {item.value}
+                        </a>
+                      ) : (
+                        item.value
+                      )}
+                    </p>
+                  ))}
+                </div>
+              )}
+
+              {/* Simple list */}
+              {section.content === "list" && (
+                <div className="space-y-2 sm:grid sm:grid-cols-2 sm:gap-2 sm:space-y-0">
+                  {(section.items as string[])?.map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-2 rounded-lg border border-gray-200 bg-gray-50 p-2.5 transition-all hover:border-[#F4A51C] sm:p-2"
+                    >
+                      <span className="mt-0.5 text-base text-[#F4A51C] sm:text-sm">
+                        ✓
+                      </span>
+                      <span className="leading-relaxed">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Numbered list */}
+              {section.content === "numbered" && (
+                <>
+                  {section.intro && (
+                    <p className="mb-3 leading-relaxed">{section.intro}</p>
+                  )}
+                  <div className="space-y-2">
+                    {(section.items as string[])?.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-start gap-2.5 rounded-lg bg-blue-50 p-3 transition-all hover:bg-blue-100"
+                      >
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white">
+                          {i + 1}
+                        </span>
+                        <span className="leading-relaxed">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* Steps */}
+              {section.content === "steps" && (
+                <div className="space-y-2">
+                  {(section.items as string[])?.map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-2.5 rounded-lg border border-green-200 bg-green-50 p-3 transition-all hover:border-green-300"
+                    >
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500 text-xs font-bold text-white">
+                        {i + 1}
+                      </span>
+                      <span className="leading-relaxed">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Warning items */}
+              {section.content === "warning" && (
+                <>
+                  {section.intro && (
+                    <p className="mb-3 leading-relaxed">{section.intro}</p>
+                  )}
+                  <div className="space-y-2">
+                    {(section.items as string[])?.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-start gap-2.5 rounded-lg border border-orange-200 bg-orange-50 p-2.5"
+                      >
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-500 text-xs font-bold text-white">
+                          !
+                        </span>
+                        <span className="leading-relaxed">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* Check items */}
+              {section.content === "checks" && (
+                <>
+                  {section.intro && (
+                    <p className="mb-3 leading-relaxed">{section.intro}</p>
+                  )}
+                  <div className="space-y-2 sm:grid sm:grid-cols-2 sm:gap-2 sm:space-y-0">
+                    {(section.items as string[])?.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-start gap-2.5 rounded-lg border border-green-200 bg-green-50 p-2.5"
+                      >
+                        <svg
+                          className="mt-0.5 h-4 w-4 shrink-0 text-green-600"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span className="leading-relaxed">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         ))}
 
         {/* Contact Footer */}
-        <div className="mt-12 rounded-2xl bg-gradient-to-br from-gray-900 to-blue-900 p-6 text-white lg:mt-16 lg:p-8">
+        <div className="mt-8 rounded-xl bg-gradient-to-br from-gray-900 to-blue-900 p-5 text-white sm:mt-12 sm:rounded-2xl sm:p-6 lg:mt-16 lg:p-8">
           <div className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F4A51C] to-orange-500">
+            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#F4A51C] to-orange-500 sm:mb-4 sm:h-16 sm:w-16 sm:rounded-2xl">
               <svg
-                className="h-8 w-8 text-white"
+                className="h-7 w-7 text-white sm:h-8 sm:w-8"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -449,19 +480,19 @@ export default function GlobalDataDeletionPolicy() {
                 />
               </svg>
             </div>
-            <h3 className="mb-3 text-xl font-bold lg:text-2xl">
+            <h3 className="mb-2 text-lg font-bold sm:mb-3 sm:text-xl lg:text-2xl">
               Need Assistance?
             </h3>
-            <p className="mx-auto mb-6 max-w-2xl text-base text-gray-300 lg:text-lg">
+            <p className="mx-auto mb-5 max-w-2xl px-2 text-sm leading-relaxed text-gray-300 sm:mb-6 sm:text-base lg:text-lg">
               If you have questions or requests regarding this policy, please
               contact our Data Protection Officer
             </p>
             <a
               href="mailto:data-compliance@ride.rent"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#F4A51C] px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-orange-500 hover:shadow-lg lg:text-base"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#F4A51C] px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-orange-500 hover:shadow-lg sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
             >
               <svg
-                className="h-5 w-5"
+                className="h-4 w-4 sm:h-5 sm:w-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

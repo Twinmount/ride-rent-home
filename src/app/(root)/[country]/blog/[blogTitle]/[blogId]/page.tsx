@@ -1,20 +1,21 @@
-import BlogCover from '@/components/blog/BlogCover';
-import { BlogBreadcrumb } from '@/components/blog/BlogBreadcrumb';
-import BlogMainContent from '@/components/blog/BlogMainContent';
-import RecentlyPublished from '@/components/blog/RecentlyPublished';
-import BlogsList from '@/components/blog/BlogsList';
-import { FetchSpecificBlogResponse } from '@/types/blog.types';
-import { notFound } from 'next/navigation';
-import { Metadata } from 'next';
-import BlogCardSkeleton from '@/components/skelton/BlogCardSkeleton';
-import { Suspense } from 'react';
-import CarouselWrapper from '@/components/common/carousel-wrapper/CarouselWrapper';
-import BlogsListSkeleton from '@/components/skelton/BlogsListSkeleton';
-import BottomBanner from '@/components/blog/BottomBanner';
-import BottomBannerSkeleton from '@/components/skelton/BottomBannerSkeleton';
+import BlogCover from "@/components/blog/BlogCover";
+import { BlogBreadcrumb } from "@/components/blog/BlogBreadcrumb";
+import BlogMainContent from "@/components/blog/BlogMainContent";
+import RecentlyPublished from "@/components/blog/RecentlyPublished";
+import BlogsList from "@/components/blog/BlogsList";
+import { FetchSpecificBlogResponse } from "@/types/blog.types";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+import BlogCardSkeleton from "@/components/skelton/BlogCardSkeleton";
+import { Suspense } from "react";
+import CarouselWrapper from "@/components/common/carousel-wrapper/CarouselWrapper";
+import BlogsListSkeleton from "@/components/skelton/BlogsListSkeleton";
+import BottomBanner from "@/components/blog/BottomBanner";
+import BottomBannerSkeleton from "@/components/skelton/BottomBannerSkeleton";
 import { generateBlogMetadata, getBlogDetailPageJsonLd } from "./metadata";
 import { API } from "@/utils/API";
 import JsonLd from "@/components/common/JsonLd";
+import BlogFaq from "@/components/blog/BlogFaq";
 
 type PageProps = {
   params: Promise<{ country: string; blogId: string }>;
@@ -108,6 +109,16 @@ export default async function BlogDetails(props: PageProps) {
         {/* Bottom Promotion Banner */}
         <Suspense fallback={<BottomBannerSkeleton />}>
           <BottomBanner country={country} />
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <div className="flex-center h-12 animate-pulse rounded">
+              faq loading...
+            </div>
+          }
+        >
+          <BlogFaq blogId={blogId} country={country} />
         </Suspense>
 
         {/* latest blogs */}

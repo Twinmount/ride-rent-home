@@ -14,6 +14,7 @@ import { LinkType, BrandType, FetchTopBrandsResponse } from "@/types";
 import { API } from "@/utils/API";
 import { getAssetsUrl } from "@/utils/getCountryAssets";
 import SafeImage from "@/components/common/SafeImage";
+import { Slug } from "@/constants/apiEndpoints";
 
 interface CollapsibleSectionProps {
   title: string;
@@ -87,7 +88,7 @@ export function SidebarAccordion({
     queryKey: ["top-brands", category, state, country],
     queryFn: async () => {
       const response = await API({
-        path: `/vehicle-brand/top-brands?categoryValue=${category}&hasVehicle=true`,
+        path: `${Slug.GET_TOP_BRANDS}?categoryValue=${category}&hasVehicle=true`,
         options: {},
         country,
       });
