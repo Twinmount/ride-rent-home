@@ -45,6 +45,8 @@ export function useOAuth(): UseOAuthReturn {
           ...options,
         });
 
+        console.log("result", result);
+
         // If redirect is false, result will be returned
         if (result?.error) {
           throw new Error(result.error);

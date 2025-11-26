@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { Loader2, UserCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 import "../phone-input.css";
 import { getDotCount, getNumberAfterSpaceStrict } from "@/utils/helper";
@@ -78,6 +79,11 @@ export const PhoneStep = ({
 }: any) => {
   const { auth } = useAuthContext();
   const { signInWithProvider, isLoading: isOAuthLoading } = useOAuth();
+  const searchParams = useSearchParams();
+  
+  // Get showSocial query parameter
+  const showSocial = searchParams.get("showSocial") === "true";
+  
   let detectedCountryLocal;
 
   const { location, isLoading: isLocationLoading } = useLocationDetection(
@@ -86,6 +92,7 @@ export const PhoneStep = ({
 
   // useTransition for non-urgent state updates
   const [isPending, startTransition] = useTransition();
+
 
   // Phone state
   const [phoneValue, setPhoneValue] = useState("");
@@ -367,81 +374,52 @@ export const PhoneStep = ({
             "Continue"
           )}
         </Button>
-        {/* <div className="flex items-center">
-          <img src="" alt="" />
-          <Button>google </Button>
-        </div> */}
       </div>
-      {/* <div
-        className="borde mt-10 flex items-center justify-center gap-1"
-        style={{ marginTop: "40px" }}
-      >
-        <Button
-          onClick={() => {}}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white p-0 transition-colors hover:bg-slate-50"
-          aria-label="Sign in with Google"
-        >
-          <img
-            src="/assets/icons/social-login/google-icon.png"
-            alt="Google icon"
-          />
-        </Button>
-        <Button
-          onClick={() => {}}
-          className="bg-whitet ransition-colors p-o flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 p-0 hover:bg-slate-50"
-          aria-label="Sign in with Facebook"
-          style={{ padding: "1px" }}
-        >
-          <img
-            src="/assets/icons/social-login/facebook-icon.png"
-            alt="Facebook icon"
-          />
-        </Button>
-      </div> */}
-      <div className="relative mb-6 flex items-center justify-center">
-        <div className="h-px w-full bg-slate-300"></div>
-        <span className="absolute rounded-sm bg-white px-3 text-sm text-slate-500">
-          or
-        </span>
-      </div>
-      <div
-        className="mt-10 flex items-center justify-center gap-3"
-        style={{ marginTop: "30px" }}
-      >
-        <Button
-          onClick={() => signInWithProvider("google")}
-          disabled={isOAuthLoading || isCurrentlyLoading}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label="Sign in with Google"
-        >
-          <img
-            src="/assets/icons/social-login/google-icon.png"
-            alt="Google icon"
-          />
-        </Button>
-        <Button
-          onClick={() => signInWithProvider("apple")}
-          disabled={isOAuthLoading || isCurrentlyLoading}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-transparent p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label="Sign in with Apple"
-        >
-          <img
-            src="/assets/icons/social-login/apple-icon.png"
-            alt="Apple icon"
-          />
-        </Button>
-        <Button
-          onClick={() => signInWithProvider("facebook")}
-          disabled={isOAuthLoading || isCurrentlyLoading}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white p-0 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label="Sign in with Facebook"
-        >
-          <img
-            src="/assets/icons/social-login/facebook-icon.png"
-            alt="Facebook icon"
-          />
-        </Button>
-      </div>
+      {showSocial && (
+        <>
+          <div className="relative mb-6 flex items-center justify-center">
+            <div className="h-px w-full bg-slate-300"></div>
+            <span className="absolute rounded-sm bg-white px-3 text-sm text-slate-500">
+              or
+            </span>
+          </div>
+          <div
+            className="mt-10 flex flex-col items-center justify-center gap-3"
+            style={{ marginTop: "30px" }}
+          >
+            <Button
+              onClick={() => signInWithProvider("google")}
+              disabled={isOAuthLoading || isCurrentlyLoading}
+              className="flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label="Continue with Google"
+            >
+              <img
+                src="/assets/icons/social-login/google-icon.png"
+                alt="Google icon"
+                className="h-5 w-5"
+              />
+              <span className="text-sm font-medium text-slate-700">
+                Continue with Google
+              </span>
+            </Button>
+            <Button
+              onClick={() => signInWithProvider("facebook")}
+              disabled={isOAuthLoading || isCurrentlyLoading}
+              className="flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label="Continue with Facebook"
+            >
+              <img
+                src="/assets/icons/social-login/facebook-icon.png"
+                alt="Facebook icon"
+                className="h-5 w-5"
+              />
+              <span className="text-sm font-medium text-slate-700">
+                Continue with Facebook
+              </span>
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
