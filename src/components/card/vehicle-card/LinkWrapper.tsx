@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
-
-import { useGlobalContext } from '@/context/GlobalContext';
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 interface LinkWrapperProps {
   href: string;
@@ -22,56 +21,51 @@ const LinkWrapper = ({
   onClick,
 }: LinkWrapperProps) => {
   const { setIsPageLoading } = useGlobalContext();
-
-  const currentPath = usePathname(); // Get the current route
+  const currentPath = usePathname();
+  const previousPathRef = useRef(currentPath);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // Call the custom onClick handler first
     if (onClick) {
       onClick(e);
-      // If the custom handler prevented default, don't proceed
       if (e.defaultPrevented) {
         return;
       }
     }
 
-    // Skip global loading if opening in a new tab
     if (newTab) {
       return;
     }
 
-    // If it's a modified click (Ctrl, Cmd, Shift, Alt, Middle-click), do nothing
-    if (
-      e.metaKey || // Cmd on Mac
-      e.ctrlKey || // Ctrl on Windows/Linux
-      e.shiftKey ||
-      e.altKey ||
-      e.button === 1 // Middle-click
-    ) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) {
       return;
     }
 
-    setIsPageLoading(true);
+    // Only set loading if navigating to different page
+    if (currentPath !== href) {
+      setIsPageLoading(true);
+    }
   };
 
   useEffect(() => {
-    if (newTab) return;
-
-    // Reset loading state ONLY if the new route starts with the href
-    if (currentPath.startsWith(href)) {
+    if (previousPathRef.current !== currentPath) {
       setIsPageLoading(false);
+      previousPathRef.current = currentPath;
     }
 
+    const safetyTimer = setTimeout(() => {
+      setIsPageLoading(false);
+    }, 2500);
+
     return () => {
-      setIsPageLoading(false); // Ensure it resets when unmounting
+      clearTimeout(safetyTimer);
     };
-  }, [currentPath, href]); // Runs when the route changes
+  }, [currentPath, setIsPageLoading]);
 
   return (
     <Link
       href={href}
-      target={newTab ? '_blank' : undefined}
-      rel={newTab ? 'noopener noreferrer' : undefined}
+      target={newTab ? "_blank" : undefined}
+      rel={newTab ? "noopener noreferrer" : undefined}
       onClick={handleClick}
       className={className}
     >
