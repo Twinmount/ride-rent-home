@@ -1,6 +1,7 @@
 "use client";
 
 import React, {
+  Suspense,
   useState,
   useEffect,
   useCallback,
@@ -12,7 +13,6 @@ import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { Loader2, UserCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-
 import "../phone-input.css";
 import { getDotCount, getNumberAfterSpaceStrict } from "@/utils/helper";
 import { LoginDrawerState } from "../LoginDrawer";
@@ -81,7 +81,7 @@ export const PhoneStep = ({
   const { signInWithProvider, isLoading: isOAuthLoading } = useOAuth();
   const searchParams = useSearchParams();
   
-  // Get showSocial query parameter
+  // Get showSocial query parametera
   const showSocial = searchParams.get("showSocial") === "true";
   
   let detectedCountryLocal;
