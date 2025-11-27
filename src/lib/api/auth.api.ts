@@ -20,6 +20,7 @@ import { createAuthenticatedRequest, authApiClient } from "./axios.config";
 // API endpoints configuration (relative paths since base URL is handled by axios config)
 const AUTH_ENDPOINTS = {
   CHECK_USER_EXISTS: "/check-user-exists",
+  CHECK_USER_EXISTS_BY_EMAIL: "/check-user-exists-by-email",
   SIGNUP: "/signup",
   LOGIN: "/login",
   DELETE_USER: "/delete-user",
@@ -453,6 +454,27 @@ export class AuthAPI {
       );
     }
   }
+
+  /**
+   * Check if user exists by email address (useful for OAuth)
+   */
+  static async checkUserExistsByEmail(
+    email: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.CHECK_USER_EXISTS_BY_EMAIL,
+        { email }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to check user existence by email"
+      );
+    }
+  }
 }
 
 // Export individual functions for easier usage
@@ -472,6 +494,7 @@ export const authAPI = {
   forgotPassword: AuthAPI.forgotPassword,
   resetPassword: AuthAPI.resetPassword,
   checkUserExists: AuthAPI.checkUserExists,
+  checkUserExistsByEmail: AuthAPI.checkUserExistsByEmail,
   requestPhoneNumberChange: AuthAPI.requestPhoneNumberChange,
   verifyPhoneNumberChange: AuthAPI.verifyPhoneNumberChange,
   requestEmailChange: AuthAPI.requestEmailChange,

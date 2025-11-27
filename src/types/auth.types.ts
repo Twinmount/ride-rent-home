@@ -166,6 +166,11 @@ export interface AuthResponse {
     avatar?: string;
     isEmailVerified?: boolean;
     isPhoneVerified?: boolean;
+    userExists?: boolean;
+    isProfileNavigationRequired?: boolean;
+    isTempVerified?: string;
+    hasValidTempToken?: boolean;
+    expiredTempUser?: boolean;
   };
   accessToken?: string;
   refreshToken?: string;

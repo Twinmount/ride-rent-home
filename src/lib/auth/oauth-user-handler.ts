@@ -24,17 +24,19 @@ interface OAuthUserResult {
 
 /**
  * Check if user exists by email (for OAuth)
- * Note: This is a placeholder - you'll need to create an API endpoint
- * that checks users by email instead of phone number
  */
 async function checkOAuthUserExists(email: string): Promise<boolean> {
   try {
-    // TODO: Create an API endpoint to check user by email
-    // For now, this is a placeholder
-    // You can use your existing API or create a new endpoint
-    // Example: const response = await authAPI.checkUserByEmail(email);
+    if (!email) {
+      return false;
+    }
 
-    // Placeholder - replace with actual API call
+    const response = await authAPI.checkUserExistsByEmail(email);
+    
+    if (response.success && response.data?.userExists === true) {
+      return true;
+    }
+
     return false;
   } catch (error) {
     console.error("Error checking OAuth user existence:", error);
@@ -49,7 +51,6 @@ export async function handleOAuthUser(
   userData: OAuthUserData
 ): Promise<OAuthUserResult> {
   try {
-    // Check if user exists by email
     const userExists = await checkOAuthUserExists(userData.email);
 
     if (userExists) {
