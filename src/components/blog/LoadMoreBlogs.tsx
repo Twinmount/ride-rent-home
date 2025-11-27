@@ -1,7 +1,8 @@
 "use client";
 
-import { fetchBlogsData } from "@/app/(root)/[country]/blog/actions";
-import { JSX, useEffect, useState } from "react";
+import { fetchBlogsDataRaw } from "@/app/(root)/[country]/blog/actions";
+import BlogCard from "@/components/card/blog/BlogCard";
+import { useEffect, useState, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 
 type LoadMoreBlogsProps = {
@@ -13,44 +14,103 @@ export default function LoadMoreBlogs({
   selectedTag,
   country,
 }: LoadMoreBlogsProps) {
-  const { ref, inView } = useInView();
-  const [data, setData] = useState<JSX.Element[]>([]);
+  const { ref, inView } = useInView({ threshold: 0 });
+
+  const [blogs, setBlogs] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(2);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const pageRef = useRef(2);
+  const loadingRef = useRef(false);
+
+  // console.log("🎬 RENDER:", {
+  //   inView,
+  //   hasMore,
+  //   isLoading,
+  //   loadingRef: loadingRef.current,
+  //   page: pageRef.current,
+  //   blogsCount: blogs.length,
+  // });
 
   useEffect(() => {
-    if (inView && hasMore) {
-      fetchBlogsData({ page, selectedTag, country }).then((response) => {
-        if (!response.hasMore) {
-          setHasMore(false);
-        } else {
-          setData((prev) => [...prev, ...response.blogs]);
-          setPage((prevPage) => prevPage + 1);
-        }
-      });
+    // console.log("🔄 EFFECT TRIGGERED:", {
+    //   inView,
+    //   hasMore,
+    //   loadingRef: loadingRef.current,
+    // });
+
+    if (loadingRef.current || !hasMore || !inView) {
+      console.log("❌ SKIPPING - Guard failed");
+      return;
     }
-  }, [inView, page, hasMore]);
 
-  // Reset when selected tag changes
+    const loadMore = async () => {
+      // console.log(`🚀 STARTING FETCH for page ${pageRef.current}`);
+      loadingRef.current = true;
+      setIsLoading(true);
+
+      try {
+        // console.log("📞 CALLING API route...");
+        const response = await fetch("/api/blogs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            page: pageRef.current,
+            selectedTag,
+            country,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data && data.blogs && data.blogs.length > 0) {
+          setBlogs((prev) => [...prev, ...data.blogs]);
+          setHasMore(data.hasMore);
+          pageRef.current += 1;
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        setHasMore(false);
+      } finally {
+        loadingRef.current = false;
+        setIsLoading(false);
+      }
+    };
+
+    loadMore();
+  }, [inView, hasMore, selectedTag, country]);
+
   useEffect(() => {
-    setData([]); // Clear old blogs
-    setPage(2); // Reset to page 2
-    setHasMore(true); // Enable infinite loading again
+    // console.log("🔄 TAG CHANGED - RESETTING");
+    setBlogs([]);
+    pageRef.current = 2;
+    setHasMore(true);
+    setIsLoading(false);
+    loadingRef.current = false;
   }, [selectedTag]);
+
+  // console.log("🎨 RENDERING UI with", blogs.length, "blogs");
 
   return (
     <>
-      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {data}
-      </div>
+      {blogs.length > 0 && (
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {blogs.map((blog) => (
+            <BlogCard key={blog.blogId} blog={blog} country={country} />
+          ))}
+        </div>
+      )}
 
       <div>
         {hasMore ? (
           <div ref={ref} className="flex-center h-12">
-            Loading more...
+            {isLoading ? "Loading more..." : "Load more"}
           </div>
         ) : (
-          <div className="flex-center h-12">You&apos;ve reached the end!</div>
+          blogs.length > 0 && (
+            <div className="flex-center h-12">You&apos;ve reached the end!</div>
+          )
         )}
       </div>
     </>
