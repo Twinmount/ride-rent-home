@@ -55,21 +55,45 @@ export async function handleOAuthUser(
 
     if (userExists) {
       // User exists - link OAuth account to existing user
-      // TODO: Implement account linking logic
-      // This might involve updating the user's account with OAuth provider info
+      try {
+        const linkResponse = await authAPI.linkOAuthAccount(
+          userData.email,
+          userData.provider,
+          userData.providerAccountId,
+          userData.accessToken
+        );
 
-      if (process.env.NODE_ENV === "development") {
-        console.log("✅ OAuth user exists, linking account:", {
-          email: userData.email,
-          provider: userData.provider,
-        });
+        if (linkResponse.success) {
+          if (process.env.NODE_ENV === "development") {
+            console.log("✅ OAuth account linked successfully:", {
+              email: userData.email,
+              provider: userData.provider,
+              userId: linkResponse.data?.userId,
+            });
+          }
+
+          return {
+            success: true,
+            isNewUser: false,
+            userId: linkResponse.data?.userId,
+            message: linkResponse.message || "OAuth account linked to existing user",
+          };
+        } else {
+          console.error("Failed to link OAuth account:", linkResponse.message);
+          return {
+            success: false,
+            isNewUser: false,
+            message: linkResponse.message || "Failed to link OAuth account",
+          };
+        }
+      } catch (error: any) {
+        console.error("Error linking OAuth account:", error);
+        return {
+          success: false,
+          isNewUser: false,
+          message: error?.message || "Failed to link OAuth account",
+        };
       }
-
-      return {
-        success: true,
-        isNewUser: false,
-        message: "OAuth account linked to existing user",
-      };
     } else {
       // New user - create account
       // Note: OAuth signup might be different from phone signup

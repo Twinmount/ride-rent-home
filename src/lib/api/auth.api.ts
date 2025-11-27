@@ -21,6 +21,7 @@ import { createAuthenticatedRequest, authApiClient } from "./axios.config";
 const AUTH_ENDPOINTS = {
   CHECK_USER_EXISTS: "/check-user-exists",
   CHECK_USER_EXISTS_BY_EMAIL: "/check-user-exists-by-email",
+  LINK_OAUTH_ACCOUNT: "/link-oauth-account",
   SIGNUP: "/signup",
   LOGIN: "/login",
   DELETE_USER: "/delete-user",
@@ -475,6 +476,30 @@ export class AuthAPI {
       );
     }
   }
+
+  /**
+   * Link OAuth account to existing user
+   */
+  static async linkOAuthAccount(
+    email: string,
+    provider: string,
+    providerAccountId: string,
+    accessToken?: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.LINK_OAUTH_ACCOUNT,
+        { email, provider, providerAccountId, accessToken }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to link OAuth account"
+      );
+    }
+  }
 }
 
 // Export individual functions for easier usage
@@ -495,6 +520,7 @@ export const authAPI = {
   resetPassword: AuthAPI.resetPassword,
   checkUserExists: AuthAPI.checkUserExists,
   checkUserExistsByEmail: AuthAPI.checkUserExistsByEmail,
+  linkOAuthAccount: AuthAPI.linkOAuthAccount,
   requestPhoneNumberChange: AuthAPI.requestPhoneNumberChange,
   verifyPhoneNumberChange: AuthAPI.verifyPhoneNumberChange,
   requestEmailChange: AuthAPI.requestEmailChange,

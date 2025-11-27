@@ -171,6 +171,12 @@ export interface AuthResponse {
     isTempVerified?: string;
     hasValidTempToken?: boolean;
     expiredTempUser?: boolean;
+    oauthProviders?: Array<{
+      provider: string;
+      providerAccountId: string;
+      accessToken?: string;
+      createdAt?: Date;
+    }>;
   };
   accessToken?: string;
   refreshToken?: string;
