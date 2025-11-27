@@ -22,6 +22,7 @@ const AUTH_ENDPOINTS = {
   CHECK_USER_EXISTS: "/check-user-exists",
   CHECK_USER_EXISTS_BY_EMAIL: "/check-user-exists-by-email",
   LINK_OAUTH_ACCOUNT: "/link-oauth-account",
+  SIGNUP_OAUTH: "/signup-oauth",
   SIGNUP: "/signup",
   LOGIN: "/login",
   DELETE_USER: "/delete-user",
@@ -500,6 +501,32 @@ export class AuthAPI {
       );
     }
   }
+
+  /**
+   * Signup new user with OAuth provider
+   */
+  static async signupOAuth(
+    email: string,
+    provider: string,
+    providerAccountId: string,
+    name?: string,
+    avatar?: string,
+    accessToken?: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.SIGNUP_OAUTH,
+        { email, provider, providerAccountId, name, avatar, accessToken }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to signup with OAuth"
+      );
+    }
+  }
 }
 
 // Export individual functions for easier usage
@@ -521,6 +548,7 @@ export const authAPI = {
   checkUserExists: AuthAPI.checkUserExists,
   checkUserExistsByEmail: AuthAPI.checkUserExistsByEmail,
   linkOAuthAccount: AuthAPI.linkOAuthAccount,
+  signupOAuth: AuthAPI.signupOAuth,
   requestPhoneNumberChange: AuthAPI.requestPhoneNumberChange,
   verifyPhoneNumberChange: AuthAPI.verifyPhoneNumberChange,
   requestEmailChange: AuthAPI.requestEmailChange,

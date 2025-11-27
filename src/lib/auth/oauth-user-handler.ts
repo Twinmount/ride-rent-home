@@ -95,33 +95,56 @@ export async function handleOAuthUser(
         };
       }
     } else {
-      // New user - create account
-      // Note: OAuth signup might be different from phone signup
-      // You may need to create a separate endpoint for OAuth signup
+      // New user - create account with OAuth
+      try {
+        if (process.env.NODE_ENV === "development") {
+          console.log("🆕 Creating new OAuth user:", {
+            email: userData.email,
+            name: userData.name,
+            provider: userData.provider,
+          });
+        }
 
-      if (process.env.NODE_ENV === "development") {
-        console.log("🆕 Creating new OAuth user:", {
-          email: userData.email,
-          name: userData.name,
-          provider: userData.provider,
-        });
+        const signupResponse = await authAPI.signupOAuth(
+          userData.email,
+          userData.provider,
+          userData.providerAccountId,
+          userData.name || undefined,
+          userData.image || undefined,
+          userData.accessToken
+        );
+
+        if (signupResponse.success) {
+          if (process.env.NODE_ENV === "development") {
+            console.log("✅ OAuth user created successfully:", {
+              email: userData.email,
+              provider: userData.provider,
+              userId: signupResponse.data?.userId,
+            });
+          }
+
+          return {
+            success: true,
+            isNewUser: true,
+            userId: signupResponse.data?.userId,
+            message: signupResponse.message || "OAuth user created successfully",
+          };
+        } else {
+          console.error("Failed to create OAuth user:", signupResponse.message);
+          return {
+            success: false,
+            isNewUser: true,
+            message: signupResponse.message || "Failed to create OAuth user",
+          };
+        }
+      } catch (error: any) {
+        console.error("Error creating OAuth user:", error);
+        return {
+          success: false,
+          isNewUser: true,
+          message: error?.message || "Failed to create OAuth user",
+        };
       }
-
-      // TODO: Create OAuth user via API
-      // Example:
-      // const response = await authAPI.signupOAuth({
-      //   email: userData.email,
-      //   name: userData.name,
-      //   provider: userData.provider,
-      //   providerAccountId: userData.providerAccountId,
-      // });
-
-      return {
-        success: true,
-        isNewUser: true,
-        message: "New OAuth user created",
-        // userId: response.data?.userId,
-      };
     }
   } catch (error: any) {
     console.error("Error handling OAuth user:", error);
