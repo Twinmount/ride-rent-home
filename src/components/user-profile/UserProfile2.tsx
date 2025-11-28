@@ -64,6 +64,7 @@ import { ProtectedRoute } from "@/components/common";
 import { trimName } from "@/helpers";
 import { getVehicleImageUrl } from "@/utils/imageUrl";
 import { AccountManagementSection } from "./AccountManagementSection";
+import { PasswordResetSection } from "./PasswordResetSection";
 
 interface UserProfileProps {
   className?: string;
@@ -539,7 +540,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
   return (
     <>
       <div
-        className={`mx-auto max-w-7xl space-y-4 px-4 py-6 sm:space-y-6 sm:px-6 lg:space-y-8 lg:px-8 ${className || ""}`}
+        className={`mx-auto max-w-7xl space-y-3 px-3 py-4 sm:space-y-4 sm:px-4 sm:py-6 md:space-y-6 md:px-6 lg:space-y-8 lg:px-8 lg:py-8 ${className || ""}`}
       >
         {/* Profile Breadcrumb */}
         <ProfileBreadcrumb
@@ -565,32 +566,25 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
         )}
 
         <div
-          className="relative overflow-hidden rounded-xl p-4 text-white sm:rounded-2xl sm:p-6 lg:p-8"
+          className="relative overflow-hidden rounded-lg p-3 text-white sm:rounded-xl sm:p-4 md:rounded-2xl md:p-6 lg:p-8"
           style={{
             background:
               "linear-gradient(255.26deg, #f9a825 29.45%, #f57f17 88.69%)",
           }}
         >
           <div className="absolute inset-0 bg-black/10"></div>
-          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex-1">
-              <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl lg:text-4xl">
+          <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="mb-1 text-xl font-bold leading-tight sm:mb-2 sm:text-2xl md:text-3xl lg:text-4xl">
                 {`Hello ${trimName(profileData?.name || "", 15) || "User"}`}
               </h1>
-              <p className="text-sm text-orange-100 sm:text-base lg:text-lg">
+              <p className="text-xs text-orange-100/90 sm:text-sm md:text-base lg:text-lg">
                 Manage your account and track your activity
               </p>
             </div>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-              {/* <Badge
-                variant="secondary"
-                className="w-fit border-white/30 bg-white/20 text-white backdrop-blur-sm"
-              >
-                <Settings className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                Premium Member
-              </Badge> */}
+            <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-4">
               <div className="text-left sm:text-right">
-                <p className="text-xs text-orange-100 sm:text-sm">
+                <p className="text-[10px] text-orange-100/90 sm:text-xs md:text-sm">
                   {profileData?.joinedAt
                     ? formatMemberSince(profileData.joinedAt)
                     : "Member since January 2024"}
@@ -600,7 +594,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
           </div>
         </div>
 
-        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:mb-8 lg:grid-cols-3">
+        <div className="mb-4 grid grid-cols-1 gap-3 sm:mb-6 sm:grid-cols-2 sm:gap-4 md:gap-6 lg:mb-8 lg:grid-cols-3">
           {userCarActionCountsQuery.isLoading ? (
             // Loading skeleton
             Array.from({ length: 3 }).map((_, index) => (
@@ -656,25 +650,25 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-5 transition-opacity group-hover:opacity-10`}
                 ></div>
-                <CardContent className="relative p-3 sm:p-4 lg:p-6">
+                <CardContent className="relative p-3 sm:p-4 md:p-5 lg:p-6">
                   <div className="mb-2 flex items-start justify-between sm:mb-3 lg:mb-4">
                     <div
-                      className={`rounded-xl p-2 sm:p-2 lg:p-3 ${stat.bgColor}`}
+                      className={`rounded-lg p-1.5 sm:rounded-xl sm:p-2 lg:p-3 ${stat.bgColor}`}
                     >
                       <stat.icon
-                        className={`h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 ${stat.textColor}`}
+                        className={`h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 lg:h-6 lg:w-6 ${stat.textColor}`}
                       />
                     </div>
                   </div>
-                  <div className="space-y-1 sm:space-y-1 lg:space-y-2">
-                    <h3 className="text-xl font-bold text-gray-900 sm:text-2xl lg:text-3xl">
+                  <div className="space-y-0.5 sm:space-y-1 lg:space-y-2">
+                    <h3 className="text-lg font-bold text-gray-900 sm:text-xl md:text-2xl lg:text-3xl">
                       {stat.value.toLocaleString()}
                     </h3>
-                    <p className="text-sm font-medium text-gray-700 sm:text-sm lg:text-base">
+                    <p className="text-xs font-medium text-gray-700 sm:text-sm md:text-sm lg:text-base">
                       {stat.label}
                     </p>
                     {stat.description && (
-                      <p className="text-xs text-gray-500 sm:text-xs lg:text-sm">
+                      <p className="text-[10px] text-gray-500 sm:text-xs lg:text-sm">
                         {stat.description}
                       </p>
                     )}
@@ -685,24 +679,24 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3 lg:gap-8">
-          <div className="space-y-4 sm:space-y-6 lg:col-span-2">
+        <div className="grid grid-cols-1 gap-3 sm:gap-4 md:gap-6 lg:grid-cols-3 lg:gap-8">
+          <div className="space-y-3 sm:space-y-4 md:space-y-6 lg:col-span-2">
             <Card className="border-0 shadow-lg">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-3 text-lg sm:text-xl lg:text-2xl">
-                  <div className="rounded-lg bg-orange-100 p-2">
-                    <Settings className="h-4 w-4 text-orange-600 sm:h-5 sm:w-5" />
+              <CardHeader className="pb-3 px-3 pt-3 sm:pb-4 sm:px-4 sm:pt-4 md:px-6 md:pt-6">
+                <CardTitle className="flex flex-wrap items-center gap-2 text-base sm:gap-3 sm:text-lg md:text-xl lg:text-2xl">
+                  <div className="rounded-md bg-orange-100 p-1.5 sm:rounded-lg sm:p-2">
+                    <Settings className="h-3.5 w-3.5 text-orange-600 sm:h-4 sm:w-4 md:h-5 md:w-5" />
                   </div>
-                  Profile Information
+                  <span className="flex-1 min-w-0">Profile Information</span>
                   {userProfileQuery.isLoading && (
-                    <span className="text-xs text-gray-500 sm:text-sm">
+                    <span className="text-[10px] text-gray-500 sm:text-xs md:text-sm">
                       (Loading...)
                     </span>
                   )}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 p-4 sm:space-y-6 sm:p-6 lg:space-y-8">
-                <div className="flex flex-col items-center gap-4 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 p-4 sm:flex-row sm:items-center sm:gap-4 sm:p-4 lg:gap-6 lg:p-6">
+              <CardContent className="space-y-3 p-3 sm:space-y-4 sm:p-4 md:space-y-6 md:p-6 lg:space-y-8">
+                <div className="flex flex-col items-center gap-3 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 p-3 sm:flex-row sm:items-center sm:gap-4 sm:rounded-xl sm:p-4 md:gap-5 md:p-5 lg:gap-6 lg:p-6">
                   <AvatarUpload
                     currentAvatar={profileData?.avatar}
                     userName={profileData?.name || "User"}
@@ -736,13 +730,13 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                       console.error("Avatar upload failed:", error);
                     }}
                   />
-                  <div className="flex-1 text-center sm:text-left">
+                  <div className="flex-1 w-full text-center sm:text-left">
                     {!isEditingName ? (
-                      <div className="mb-2 flex flex-col items-center gap-2 sm:mb-1 sm:flex-row">
-                        <h3 className="text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl">
+                      <div className="mb-2 flex flex-col items-center gap-2 sm:mb-1 sm:flex-row sm:items-start">
+                        <h3 className="text-base font-bold text-gray-900 break-words sm:text-lg md:text-xl lg:text-2xl">
                           {trimName(profileData?.name || "") || "User"}
                           {userProfileQuery.isLoading && (
-                            <span className="ml-2 text-sm text-gray-500">
+                            <span className="ml-1.5 text-xs text-gray-500 sm:ml-2 sm:text-sm">
                               (Loading...)
                             </span>
                           )}
@@ -751,20 +745,20 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                           variant="ghost"
                           size="sm"
                           onClick={handleEditName}
-                          className="cursor-pointer text-orange-600 hover:bg-orange-50 hover:text-orange-700"
+                          className="h-8 w-8 shrink-0 cursor-pointer p-0 text-orange-600 hover:bg-orange-50 hover:text-orange-700 sm:h-auto sm:w-auto sm:px-2"
                           disabled={userProfileQuery.isLoading}
                         >
-                          <Edit2 className="h-4 w-4" />
+                          <Edit2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         </Button>
                       </div>
                     ) : (
-                      <div className="mb-2 space-y-3 sm:mb-1 sm:space-y-2">
+                      <div className="mb-2 w-full space-y-2.5 sm:mb-1 sm:space-y-2">
                         <div className="flex flex-col gap-2 sm:flex-row">
                           <Input
                             value={tempName}
                             onChange={(e) => setTempName(e.target.value)}
                             placeholder="Enter your name"
-                            className="flex-1 text-base font-bold sm:text-lg lg:text-xl"
+                            className="flex-1 text-sm font-bold sm:text-base md:text-lg lg:text-xl"
                           />
                         </div>
                         <div className="flex flex-col gap-2 sm:flex-row">
@@ -775,9 +769,9 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                               !tempName.trim() ||
                               updateProfileMutation.isPending
                             }
-                            className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
+                            className="h-9 cursor-pointer bg-orange-500 text-xs text-white hover:bg-orange-600 disabled:opacity-50 sm:h-auto sm:text-sm"
                           >
-                            <Check className="mr-1 h-4 w-4" />
+                            <Check className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             {updateProfileMutation.isPending
                               ? "Saving..."
                               : "Save"}
@@ -786,15 +780,15 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                             size="sm"
                             variant="outline"
                             onClick={handleCancelName}
-                            className="cursor-pointer bg-transparent"
+                            className="h-9 cursor-pointer bg-transparent text-xs sm:h-auto sm:text-sm"
                           >
-                            <X className="mr-1 h-4 w-4" />
+                            <X className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             Cancel
                           </Button>
                         </div>
                       </div>
                     )}
-                    <div className="mb-2 flex flex-wrap items-center justify-center gap-2 sm:mb-3 sm:justify-start sm:gap-3">
+                    <div className="mb-2 flex flex-wrap items-center justify-center gap-1.5 sm:mb-3 sm:justify-start sm:gap-2 md:gap-3">
                       {/* <Badge
                         className="text-xs text-white sm:text-sm"
                         style={{
@@ -808,32 +802,34 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                       {profileData?.isPhoneVerified && (
                         <Badge
                           variant="outline"
-                          className="border-green-200 text-xs text-green-600 sm:text-sm"
+                          className="border-green-200 text-[10px] text-green-600 sm:text-xs md:text-sm"
                         >
-                          <Phone className="mr-1 h-3 w-3" />
-                          Phone Verified
+                          <Phone className="mr-0.5 h-2.5 w-2.5 sm:mr-1 sm:h-3 sm:w-3" />
+                          <span className="hidden sm:inline">Phone Verified</span>
+                          <span className="sm:hidden">Phone</span>
                         </Badge>
                       )}
                       {profileData?.isEmailVerified && (
                         <Badge
                           variant="outline"
-                          className="border-blue-200 text-xs text-blue-600 sm:text-sm"
+                          className="border-blue-200 text-[10px] text-blue-600 sm:text-xs md:text-sm"
                         >
-                          <Mail className="mr-1 h-3 w-3" />
-                          Email Verified
+                          <Mail className="mr-0.5 h-2.5 w-2.5 sm:mr-1 sm:h-3 sm:w-3" />
+                          <span className="hidden sm:inline">Email Verified</span>
+                          <span className="sm:hidden">Email</span>
                         </Badge>
                       )}
                       <Badge
                         variant="outline"
-                        className="border-green-200 text-xs text-green-600 sm:text-sm"
+                        className="border-green-200 text-[10px] text-green-600 sm:text-xs md:text-sm"
                       >
-                        <Activity className="mr-1 h-3 w-3" />
+                        <Activity className="mr-0.5 h-2.5 w-2.5 sm:mr-1 sm:h-3 sm:w-3" />
                         Active
                       </Badge>
                     </div>
-                    <div className="flex items-center justify-center gap-2 text-xs text-gray-600 sm:justify-start sm:gap-4 sm:text-sm">
+                    <div className="flex items-center justify-center gap-1.5 text-[10px] text-gray-600 sm:justify-start sm:gap-2 sm:text-xs md:gap-4 md:text-sm">
                       <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <Calendar className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
                         {formatMemberSince(profileData?.joinedAt || "")}
                       </span>
                     </div>
@@ -841,21 +837,21 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                 </div>
 
                 {/* Contact Information */}
-                <div className="space-y-4 sm:space-y-4">
-                  <div className="space-y-2 sm:space-y-2">
-                    <Label className="flex items-center gap-2 text-sm font-medium">
-                      <Phone className="h-4 w-4 text-gray-500" />
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-1.5 text-xs font-medium sm:gap-2 sm:text-sm">
+                      <Phone className="h-3.5 w-3.5 text-gray-500 sm:h-4 sm:w-4" />
                       Mobile Number
                     </Label>
                     {!isEditingMobile ? (
-                      <div className="flex items-center justify-between rounded-lg border bg-gray-50 p-3 sm:p-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-900">
+                      <div className="flex flex-col gap-2 rounded-lg border bg-gray-50 p-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-3">
+                        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5 sm:gap-2">
+                          <span className="break-all text-xs text-gray-900 sm:text-sm">
                             {`${profileData?.countryCode || ""} ${profileData?.phoneNumber || ""}`}
                           </span>
                           {profileData?.isPhoneVerified && (
-                            <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                              <CheckCircle className="mr-1 h-3 w-3" />
+                            <Badge className="shrink-0 bg-green-100 text-[10px] text-green-800 hover:bg-green-100 sm:text-xs">
+                              <CheckCircle className="mr-0.5 h-2.5 w-2.5 sm:mr-1 sm:h-3 sm:w-3" />
                               Verified
                             </Badge>
                           )}
@@ -864,22 +860,22 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                           variant="ghost"
                           size="sm"
                           onClick={handleEditMobile}
-                          className="cursor-pointer text-orange-600 hover:bg-orange-50 hover:text-orange-700"
+                          className="h-8 w-full cursor-pointer text-xs text-orange-600 hover:bg-orange-50 hover:text-orange-700 sm:h-auto sm:w-auto sm:text-sm"
                         >
-                          <Edit2 className="mr-1 h-4 w-4" />
+                          <Edit2 className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           Change
                         </Button>
                       </div>
                     ) : (
-                      <div className="space-y-3 rounded-lg border bg-blue-50 p-3 sm:p-4">
+                      <div className="space-y-3 rounded-lg border bg-blue-50 p-2.5 sm:p-3 md:p-4">
                         {!showMobileOtp ? (
                           <>
-                            <div className="flex flex-col gap-3 sm:flex-row sm:gap-2">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
                               <Select
                                 value={tempCountryCode}
                                 onValueChange={setTempCountryCode}
                               >
-                                <SelectTrigger className="w-full cursor-pointer sm:w-32">
+                                <SelectTrigger className="h-9 w-full cursor-pointer text-xs sm:h-10 sm:w-32 sm:text-sm">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -896,44 +892,46 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                   setTempMobileNumber(e.target.value)
                                 }
                                 placeholder="Enter mobile number"
-                                className="flex-1"
+                                className="h-9 flex-1 text-xs sm:h-10 sm:text-sm"
                               />
                             </div>
-                            <div className="flex flex-col gap-3 sm:flex-row sm:gap-2">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
                               <Button
                                 size="sm"
                                 onClick={handleSaveMobile}
                                 disabled={requestPhoneChangeMutation.isPending}
-                                className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
+                                className="h-9 w-full cursor-pointer bg-orange-500 text-xs text-white hover:bg-orange-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:text-sm"
                               >
-                                <Check className="mr-1 h-4 w-4" />
+                                <Check className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 {requestPhoneChangeMutation.isPending
-                                  ? "Sending OTP..."
+                                  ? "Sending..."
                                   : "Save & Send OTP"}
                               </Button>
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={handleCancelMobile}
-                                className="cursor-pointer bg-transparent"
+                                className="h-9 w-full cursor-pointer bg-transparent text-xs sm:h-auto sm:w-auto sm:text-sm"
                               >
-                                <X className="mr-1 h-4 w-4" />
+                                <X className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 Cancel
                               </Button>
                             </div>
                           </>
                         ) : (
                           <>
-                            <div className="space-y-2 text-center">
-                              <h4 className="font-medium text-gray-900">
+                            <div className="space-y-1.5 text-center sm:space-y-2">
+                              <h4 className="text-sm font-medium text-gray-900 sm:text-base">
                                 Verify Mobile Number
                               </h4>
-                              <p className="text-sm text-gray-600">
-                                Enter the 4-digit code sent to {tempCountryCode}{" "}
-                                {tempMobileNumber}
+                              <p className="text-xs text-gray-600 sm:text-sm">
+                                Enter the 4-digit code sent to{" "}
+                                <span className="break-all font-medium">
+                                  {tempCountryCode} {tempMobileNumber}
+                                </span>
                               </p>
                             </div>
-                            <div className="flex justify-center gap-2">
+                            <div className="flex justify-center gap-1.5 sm:gap-2">
                               {Array.from({ length: 4 }, (_, index) => (
                                 <Input
                                   key={index}
@@ -956,19 +954,19 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                       nextInput?.focus();
                                     }
                                   }}
-                                  className="h-12 w-12 text-center text-lg font-bold"
+                                  className="h-11 w-11 text-center text-base font-bold sm:h-12 sm:w-12 sm:text-lg md:h-14 md:w-14"
                                   disabled={verifyPhoneChangeMutation.isPending}
                                 />
                               ))}
                             </div>
 
                             {otpError && (
-                              <div className="text-center text-sm text-red-600">
+                              <div className="text-center text-xs text-red-600 sm:text-sm">
                                 {otpError}
                               </div>
                             )}
 
-                            <div className="text-center text-sm text-gray-600">
+                            <div className="text-center text-xs text-gray-600 sm:text-sm">
                               {otpCountdown > 0 ? (
                                 <span>
                                   Resend OTP in {formatTime(otpCountdown)}
@@ -981,7 +979,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                   disabled={
                                     requestPhoneChangeMutation.isPending
                                   }
-                                  className="h-auto p-0 text-orange-600"
+                                  className="h-auto p-0 text-xs text-orange-600 sm:text-sm"
                                 >
                                   {requestPhoneChangeMutation.isPending
                                     ? "Sending..."
@@ -990,7 +988,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                               )}
                             </div>
 
-                            <div className="flex flex-col gap-3 sm:flex-row sm:gap-2">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
                               <Button
                                 size="sm"
                                 onClick={handleVerifyMobileOtp}
@@ -998,7 +996,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                   mobileOtp.length !== 4 ||
                                   verifyPhoneChangeMutation.isPending
                                 }
-                                className="cursor-pointer bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"
+                                className="h-9 w-full cursor-pointer bg-green-500 text-xs text-white hover:bg-green-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:text-sm"
                               >
                                 {verifyPhoneChangeMutation.isPending
                                   ? "Verifying..."
@@ -1008,9 +1006,9 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 size="sm"
                                 variant="outline"
                                 onClick={handleCancelMobile}
-                                className="cursor-pointer bg-transparent"
+                                className="h-9 w-full cursor-pointer bg-transparent text-xs sm:h-auto sm:w-auto sm:text-sm"
                               >
-                                <X className="mr-1 h-4 w-4" />
+                                <X className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 Cancel
                               </Button>
                             </div>
@@ -1020,39 +1018,39 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                     )}
                   </div>
 
-                  <div className="space-y-2 sm:space-y-2">
-                    <Label className="flex items-center gap-2 text-sm font-medium">
-                      <Mail className="h-4 w-4 text-gray-500" />
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-1.5 text-xs font-medium sm:gap-2 sm:text-sm">
+                      <Mail className="h-3.5 w-3.5 text-gray-500 sm:h-4 sm:w-4" />
                       Email Address
                     </Label>
                     {!isEditingEmail ? (
                       <div
-                        className={`flex items-center justify-between rounded-lg border p-3 ${
+                        className={`flex flex-col gap-2 rounded-lg border p-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-3 ${
                           !profileData?.email
                             ? "border-orange-200 bg-orange-50"
                             : "bg-gray-50"
                         }`}
                       >
-                        <div className="flex-1">
+                        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5 sm:gap-2">
                           {!profileData?.email ? (
-                            <div className="flex items-center gap-2">
-                              <div className="rounded-full bg-orange-100 p-1">
-                                <Mail className="h-3 w-3 text-orange-600" />
+                            <div className="flex items-center gap-1.5 sm:gap-2">
+                              <div className="rounded-full bg-orange-100 p-0.5 sm:p-1">
+                                <Mail className="h-2.5 w-2.5 text-orange-600 sm:h-3 sm:w-3" />
                               </div>
-                              <span className="text-sm font-medium text-orange-700 sm:text-base">
+                              <span className="text-xs font-medium text-orange-700 sm:text-sm md:text-base">
                                 Add your email address
                               </span>
                             </div>
                           ) : (
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm text-gray-900">
+                            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5 sm:gap-2">
+                              <span className="break-all text-xs text-gray-900 sm:text-sm">
                                 {userProfileQuery.isLoading
                                   ? "Loading..."
                                   : profileData.email}
                               </span>
                               {profileData?.isEmailVerified && (
-                                <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                                  <CheckCircle className="mr-1 h-3 w-3" />
+                                <Badge className="shrink-0 bg-green-100 text-[10px] text-green-800 hover:bg-green-100 sm:text-xs">
+                                  <CheckCircle className="mr-0.5 h-2.5 w-2.5 sm:mr-1 sm:h-3 sm:w-3" />
                                   Verified
                                 </Badge>
                               )}
@@ -1063,7 +1061,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                           variant="ghost"
                           size="sm"
                           onClick={handleEditEmail}
-                          className={`cursor-pointer ${
+                          className={`h-8 w-full cursor-pointer text-xs sm:h-auto sm:w-auto sm:text-sm ${
                             !profileData?.email
                               ? "text-orange-600 hover:bg-orange-100 hover:text-orange-700"
                               : "text-orange-600 hover:bg-orange-50 hover:text-orange-700"
@@ -1072,22 +1070,22 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                         >
                           {!profileData?.email ? (
                             <>
-                              <Mail className="mr-1 h-4 w-4" />
+                              <Mail className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                               Add Email
                             </>
                           ) : (
                             <>
-                              <Edit2 className="mr-1 h-4 w-4" />
+                              <Edit2 className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                               Change
                             </>
                           )}
                         </Button>
                       </div>
                     ) : (
-                      <div className="space-y-3 rounded-lg border bg-blue-50 p-3 sm:p-4">
+                      <div className="space-y-3 rounded-lg border bg-blue-50 p-2.5 sm:p-3 md:p-4">
                         {!showEmailOtp ? (
                           <>
-                            <div className="space-y-3 sm:space-y-2">
+                            <div className="space-y-2 sm:space-y-2">
                               <Input
                                 type="email"
                                 value={tempEmail}
@@ -1097,10 +1095,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                     ? "Enter your email address"
                                     : "Update email address"
                                 }
-                                className="w-full"
+                                className="h-9 w-full text-xs sm:h-10 sm:text-sm"
                               />
                               {!profileData?.email && (
-                                <p className="text-xs text-blue-600 sm:text-sm">
+                                <p className="text-[10px] leading-relaxed text-blue-600 sm:text-xs md:text-sm">
                                   Adding an email will help you receive
                                   important notifications and recover your
                                   account. Add your email to get important
@@ -1108,7 +1106,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 </p>
                               )}
                             </div>
-                            <div className="flex flex-col gap-3 sm:flex-row sm:gap-2">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
                               <Button
                                 size="sm"
                                 onClick={handleSaveEmail}
@@ -1117,9 +1115,9 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                   !tempEmail.includes("@") ||
                                   updateProfileMutation.isPending
                                 }
-                                className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="h-9 w-full cursor-pointer bg-orange-500 text-xs text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50 sm:h-auto sm:w-auto sm:text-sm"
                               >
-                                <Check className="mr-1 h-4 w-4" />
+                                <Check className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 {updateProfileMutation.isPending
                                   ? "Saving..."
                                   : !profileData?.email
@@ -1130,24 +1128,27 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 size="sm"
                                 variant="outline"
                                 onClick={handleCancelEmail}
-                                className="cursor-pointer bg-transparent"
+                                className="h-9 w-full cursor-pointer bg-transparent text-xs sm:h-auto sm:w-auto sm:text-sm"
                               >
-                                <X className="mr-1 h-4 w-4" />
+                                <X className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 Cancel
                               </Button>
                             </div>
                           </>
                         ) : (
                           <>
-                            <div className="space-y-2 text-center">
-                              <h4 className="font-medium text-gray-900">
+                            <div className="space-y-1.5 text-center sm:space-y-2">
+                              <h4 className="text-sm font-medium text-gray-900 sm:text-base">
                                 Verify Email Address
                               </h4>
-                              <p className="text-sm text-gray-600">
-                                Enter the 4-digit code sent to {tempEmail}
+                              <p className="text-xs text-gray-600 sm:text-sm">
+                                Enter the 4-digit code sent to{" "}
+                                <span className="break-all font-medium">
+                                  {tempEmail}
+                                </span>
                               </p>
                             </div>
-                            <div className="flex justify-center gap-2">
+                            <div className="flex justify-center gap-1.5 sm:gap-2">
                               {Array.from({ length: 4 }, (_, index) => (
                                 <Input
                                   key={index}
@@ -1170,19 +1171,19 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                       nextInput?.focus();
                                     }
                                   }}
-                                  className="h-12 w-12 text-center text-lg font-bold"
+                                  className="h-11 w-11 text-center text-base font-bold sm:h-12 sm:w-12 sm:text-lg md:h-14 md:w-14"
                                   disabled={verifyOtpMutation.isPending}
                                 />
                               ))}
                             </div>
 
                             {otpError && (
-                              <div className="text-center text-sm text-red-600">
+                              <div className="text-center text-xs text-red-600 sm:text-sm">
                                 {otpError}
                               </div>
                             )}
 
-                            <div className="text-center text-sm text-gray-600">
+                            <div className="text-center text-xs text-gray-600 sm:text-sm">
                               {otpCountdown > 0 ? (
                                 <span>
                                   Resend OTP in {formatTime(otpCountdown)}
@@ -1193,7 +1194,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                   size="sm"
                                   onClick={() => handleResendOtp("email")}
                                   disabled={resendOtpMutation.isPending}
-                                  className="h-auto p-0 text-orange-600"
+                                  className="h-auto p-0 text-xs text-orange-600 sm:text-sm"
                                 >
                                   {resendOtpMutation.isPending
                                     ? "Sending..."
@@ -1202,7 +1203,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                               )}
                             </div>
 
-                            <div className="flex flex-col gap-3 sm:flex-row sm:gap-2">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
                               <Button
                                 size="sm"
                                 onClick={handleVerifyEmailOtp}
@@ -1210,7 +1211,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                   emailOtp.length !== 4 ||
                                   verifyOtpMutation.isPending
                                 }
-                                className="cursor-pointer bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"
+                                className="h-9 w-full cursor-pointer bg-green-500 text-xs text-white hover:bg-green-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:text-sm"
                               >
                                 {verifyOtpMutation.isPending
                                   ? "Verifying..."
@@ -1220,9 +1221,9 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 size="sm"
                                 variant="outline"
                                 onClick={handleCancelEmail}
-                                className="cursor-pointer bg-transparent"
+                                className="h-9 w-full cursor-pointer bg-transparent text-xs sm:h-auto sm:w-auto sm:text-sm"
                               >
-                                <X className="mr-1 h-4 w-4" />
+                                <X className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 Cancel
                               </Button>
                             </div>
@@ -1237,36 +1238,41 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   onConfirmDeleteUser={() => deleteUser({ userId: userId! })}
                   isDeletingAccount={deleteUserMutation.isPending}
                 />
+                {/* Password Reset */}
+                <PasswordResetSection
+                  phoneNumber={profileData?.phoneNumber}
+                  countryCode={profileData?.countryCode}
+                />
                 {/* Preferences */}
-                <div className="space-y-4 border-t pt-4">
-                  <h4 className="flex items-center gap-2 text-base font-medium text-gray-900 lg:text-lg">
-                    <Bell className="h-4 w-4 text-gray-500" />
+                <div className="space-y-3 border-t pt-3 sm:space-y-4 sm:pt-4">
+                  <h4 className="flex items-center gap-1.5 text-sm font-medium text-gray-900 sm:gap-2 sm:text-base lg:text-lg">
+                    <Bell className="h-3.5 w-3.5 text-gray-500 sm:h-4 sm:w-4" />
                     Notification Preferences
                   </h4>
 
-                  <div className="space-y-4">
-                    <div className="flex flex-col gap-3 rounded-lg bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-3">
-                      <div className="flex-1">
-                        <Label className="text-sm font-medium text-gray-900">
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="flex flex-col gap-2.5 rounded-lg bg-red-50 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-3">
+                      <div className="flex-1 min-w-0">
+                        <Label className="text-xs font-medium text-gray-900 sm:text-sm">
                           Push Notifications
                         </Label>
-                        <p className="mt-1 text-xs text-red-600">
+                        <p className="mt-1 text-[10px] leading-relaxed text-red-600 sm:text-xs">
                           Alerts will not be shown when notifications are off
                         </p>
                       </div>
                       <Switch
                         checked={notifications}
                         onCheckedChange={setNotifications}
-                        className="cursor-pointer self-start data-[state=checked]:bg-orange-500 sm:self-center"
+                        className="cursor-pointer shrink-0 self-start data-[state=checked]:bg-orange-500 sm:self-center"
                       />
                     </div>
 
-                    <div className="flex flex-col gap-3 rounded-lg bg-orange-50 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-3">
-                      <div className="flex-1">
-                        <Label className="text-sm font-medium text-gray-900">
+                    <div className="flex flex-col gap-2.5 rounded-lg bg-orange-50 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-3">
+                      <div className="flex-1 min-w-0">
+                        <Label className="text-xs font-medium text-gray-900 sm:text-sm">
                           Email Alerts
                         </Label>
-                        <p className="mt-1 text-xs text-orange-600">
+                        <p className="mt-1 text-[10px] leading-relaxed text-orange-600 sm:text-xs">
                           Get up to our yearly offers only. No spam for
                           marketing or ads.
                         </p>
@@ -1274,7 +1280,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                       <Switch
                         checked={emailAlerts}
                         onCheckedChange={setEmailAlerts}
-                        className="cursor-pointer self-start data-[state=checked]:bg-orange-500 sm:self-center"
+                        className="cursor-pointer shrink-0 self-start data-[state=checked]:bg-orange-500 sm:self-center"
                       />
                     </div>
                   </div>
@@ -1283,7 +1289,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                 <Button
                   onClick={handleSaveAllChanges}
                   disabled={updateProfileMutation.isPending}
-                  className="w-full cursor-pointer rounded-xl py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl disabled:opacity-50 sm:py-4 sm:text-base"
+                  className="w-full cursor-pointer rounded-lg py-2.5 text-xs font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl disabled:opacity-50 sm:rounded-xl sm:py-3 sm:text-sm md:py-4 md:text-base"
                   style={{
                     background:
                       "linear-gradient(255.26deg, #f9a825 29.45%, #f57f17 88.69%)",
@@ -1310,46 +1316,21 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
             </Card>
           </div>
 
-          <div className="space-y-4 sm:space-y-6">
-            {/* Achievements Card */}
-            {/* <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Award className="text-yellow-600 h-5 w-5" />
-                Achievements
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {achievements.map((achievement, index) => (
-                <div
-                  key={index}
-                  className="flex cursor-pointer items-center gap-3 rounded-lg bg-gray-50 p-3 transition-colors hover:bg-gray-100"
-                >
-                  <div className={`rounded-lg p-2 ${achievement.color}`}>
-                    <achievement.icon className="h-4 w-4" />
-                  </div>
-                  <span className="font-medium text-gray-900">
-                    {achievement.name}
-                  </span>
-                </div>
-              ))}
-            </CardContent>
-          </Card> */}
-
+          <div className="space-y-3 sm:space-y-4 md:space-y-6">
             {/* Recent Activity Card */}
             <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base sm:text-lg lg:text-xl">
-                  <Activity className="h-4 w-4 text-blue-600 sm:h-5 sm:w-5" />
-                  Recent Activity
+              <CardHeader className="px-3 pb-3 pt-3 sm:px-4 sm:pb-4 sm:pt-4 md:px-6 md:pt-6">
+                <CardTitle className="flex flex-wrap items-center gap-1.5 text-sm sm:gap-2 sm:text-base md:text-lg lg:text-xl">
+                  <Activity className="h-3.5 w-3.5 text-blue-600 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+                  <span className="flex-1 min-w-0">Recent Activity</span>
                   {userRecentActivitiesQuery.isLoading && (
-                    <span className="text-xs text-gray-500 sm:text-sm">
+                    <span className="text-[10px] text-gray-500 sm:text-xs md:text-sm">
                       (Loading...)
                     </span>
                   )}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 px-3 pb-3 sm:space-y-4 sm:px-4 sm:pb-4 md:px-6 md:pb-6">
                 {userRecentActivitiesQuery.isLoading ? (
                   // Loading skeleton
                   Array.from({ length: 3 }).map((_, index) => (
@@ -1395,18 +1376,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   recentActivity.map((activity, index) => (
                     <div
                       key={`${activity.carId}-${index}`}
-                      className="flex items-start gap-2 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-3 sm:p-3"
-                      // onClick={() => {
-                      // cursor-pointer
-                      //   // Navigate to vehicle details page
-                      //   // You can customize this route based on your app structure
-                      //   if (activity.carId) {
-                      //     router.push(`/vehicle/${activity.carId}`);
-                      //   }
-                      // }}
+                      className="flex items-start gap-2 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-2.5 sm:p-2.5 md:gap-3 md:p-3"
                     >
                       {/* Vehicle Image */}
-                      <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg sm:h-12 sm:w-12">
+                      <div className="relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-md sm:h-10 sm:w-10 md:h-12 md:w-12 md:rounded-lg">
                         <img
                           src={getVehicleImageUrl(activity.vehicleImageUrl)}
                           alt={activity.vehicleName || "Vehicle"}
@@ -1428,23 +1401,23 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                           }`}
                         >
                           {activity.type === "view" ? (
-                            <Eye className="h-2 w-2 text-purple-600 sm:h-2.5 sm:w-2.5" />
+                            <Eye className="h-1.5 w-1.5 text-purple-600 sm:h-2 sm:w-2 md:h-2.5 md:w-2.5" />
                           ) : activity.type === "save" ? (
-                            <Heart className="h-2 w-2 text-red-600 sm:h-2.5 sm:w-2.5" />
+                            <Heart className="h-1.5 w-1.5 text-red-600 sm:h-2 sm:w-2 md:h-2.5 md:w-2.5" />
                           ) : (
-                            <MessageSquare className="h-2 w-2 text-blue-600 sm:h-2.5 sm:w-2.5" />
+                            <MessageSquare className="h-1.5 w-1.5 text-blue-600 sm:h-2 sm:w-2 md:h-2.5 md:w-2.5" />
                           )}
                         </div>
                       </div>
 
                       {/* Activity Details */}
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-xs font-medium text-gray-900 sm:text-sm">
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <p className="line-clamp-2 text-[10px] font-medium text-gray-900 sm:text-xs md:text-sm">
                           {activity.action}
                         </p>
-                        <p className="text-xs text-gray-500">{activity.time}</p>
+                        <p className="text-[10px] text-gray-500 sm:text-xs">{activity.time}</p>
                         {activity.vehicleName && (
-                          <p className="mt-0.5 truncate text-xs font-medium text-orange-600">
+                          <p className="mt-0.5 line-clamp-1 text-[10px] font-medium text-orange-600 sm:text-xs">
                             {activity.vehicleName}
                           </p>
                         )}
@@ -1481,18 +1454,18 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
               stiffness: 300,
               damping: 30,
             }}
-            className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-md sm:bottom-6 sm:left-1/2 sm:right-auto sm:w-auto sm:-translate-x-1/2 sm:transform"
+            className="fixed bottom-3 left-3 right-3 z-50 mx-auto max-w-md sm:bottom-4 sm:left-4 sm:right-4 md:bottom-6 md:left-1/2 md:right-auto md:w-auto md:-translate-x-1/2 md:transform"
           >
-            <div className="flex items-center gap-3 rounded-lg bg-green-600 px-4 py-3 text-white shadow-lg sm:px-6 sm:py-4">
+            <div className="flex items-center gap-2 rounded-lg bg-green-600 px-3 py-2.5 text-white shadow-lg sm:gap-3 sm:px-4 sm:py-3 md:px-6 md:py-4">
               <CheckCircle
-                size={18}
-                className="flex-shrink-0 text-white sm:h-5 sm:w-5"
+                size={16}
+                className="flex-shrink-0 text-white sm:h-4 sm:w-4 md:h-5 md:w-5"
               />
-              <div className="flex min-w-0 flex-col">
-                <span className="text-xs font-semibold sm:text-sm">
+              <div className="flex min-w-0 flex-1 flex-col">
+                <span className="text-[10px] font-semibold sm:text-xs md:text-sm">
                   Profile Updated Successfully!
                 </span>
-                <span className="text-xs opacity-90">
+                <span className="text-[10px] opacity-90 sm:text-xs">
                   Your changes have been saved
                 </span>
               </div>
