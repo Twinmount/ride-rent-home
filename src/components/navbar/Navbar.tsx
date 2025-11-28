@@ -64,9 +64,6 @@ export const Navbar = () => {
     setMounted(true);
   }, []);
 
-  console.log("auth: ", auth);
-
-  console.log("isLoginOpen:Navbar ", isLoginOpen);
 
   const { country, state, category } = useStateAndCategory();
 

@@ -9,6 +9,15 @@ export enum OtpType {
   PASSWORD_CHANGE = "PASSWORD_CHANGE",
 }
 
+export type AuthStep =
+  | "phone"
+  | "password"
+  | "otp"
+  | "register"
+  | "forgot-password"
+  | "new-password"
+  | "success";
+
 /**
  * Login request data interface
  */
@@ -298,6 +307,7 @@ export interface AuthAPIInterface {
  */
 export interface UseAuthReturn {
   // State
+  step: AuthStep;
   auth: InternalAuthState;
   user: User | null;
   isAuthenticated: boolean;
@@ -308,6 +318,7 @@ export interface UseAuthReturn {
   userAuthStep: UserAuthStep;
 
   // Actions
+  setStep: React.Dispatch<React.SetStateAction<AuthStep>>;
   deleteUser: (userData: DeleteUserData) => Promise<AuthResponse>;
   login: (loginData: LoginData) => Promise<AuthResponse>;
   signup: (signupData: PhoneSignupData) => Promise<AuthResponse>;

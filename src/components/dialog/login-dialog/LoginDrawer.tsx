@@ -47,6 +47,8 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
   onClose,
 }) => {
   const {
+    step,
+    setStep,
     signup,
     login,
     verifyOTP,
@@ -63,10 +65,11 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     logoutMutation,
     loginMutation,
     forgotPasswordMutation,
+    deleteUserMutation
   } = useAuthContext();
 
   useEffect(() => {
-    if (logoutMutation.isSuccess) {
+    if (logoutMutation.isSuccess||deleteUserMutation.isSuccess) {
       setStep("phone");
       setStatus("idle");
       setStatusMessage("");
@@ -74,7 +77,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
       setDrawerState(initialDrawerState);
       clearError();
     }
-  }, [logoutMutation.isSuccess]);
+  }, [logoutMutation.isSuccess,deleteUserMutation.isSuccess]);
 
   useEffect(() => {
     if (loginMutation.isSuccess) {
@@ -85,7 +88,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
   }, [loginMutation.isSuccess]);
 
   // Common State
-  const [step, setStep] = useState<AuthStep>("phone");
+  // const [step, setStep] = useState<AuthStep>("phone");
   const [status, setStatus] = useState<StatusType>("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [userExists, setUserExists] = useState<boolean>(false);

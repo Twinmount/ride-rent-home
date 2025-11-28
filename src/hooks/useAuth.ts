@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useImmer } from "use-immer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
@@ -20,6 +20,7 @@ import type {
   OtpType,
   OtpVerificationData,
   DeleteUserData,
+  AuthStep,
 } from "@/types/auth.types";
 
 // Import constants
@@ -61,6 +62,8 @@ export const useAuth = () => {
   });
 
   const [isLoginOpen, setLoginOpen] = useImmer(false);
+  const [step, setStep] = useState<AuthStep>("phone");
+
 
   const [userAuthStep, setUserAuthStep] = useImmer({
     userId: "",
@@ -345,8 +348,7 @@ export const useAuth = () => {
     mutationFn: async (deleteUserData: DeleteUserData) =>
       authAPI.deleteUser(deleteUserData),
     onSuccess: (data) => {
-      console.log("data: ", data);
-      // Clear authentication & cached data (like logout)
+      setStep("phone");
       setAuthenticated(null);
       setAuth((draft) => {
         draft.isLoggedIn = false;
@@ -944,6 +946,7 @@ export const useAuth = () => {
     // State
     auth,
     ...state,
+    step,
     isLoginOpen,
     authStorage,
     userAuthStep,
@@ -965,6 +968,7 @@ export const useAuth = () => {
       verifyEmailChangeMutation.isPending,
 
     // Actions
+    setStep,
     checkUserExists,
     login,
     signup,
