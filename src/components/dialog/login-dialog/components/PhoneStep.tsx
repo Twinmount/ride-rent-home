@@ -81,8 +81,18 @@ export const PhoneStep = ({
   const { signInWithProvider, isLoading: isOAuthLoading } = useOAuth();
   const searchParams = useSearchParams();
   
-  // Get showSocial query parametera
-  const showSocial = searchParams.get("showSocial") === "true";
+  // Get showSocial query parameter - safely handle SSR
+  const [showSocial, setShowSocial] = useState(false);
+  
+  
+  useEffect(() => {
+    // Only check searchParams on client side
+    if (typeof window !== "undefined") {
+      const showSocialParam = searchParams.get("showSocial") === "true";
+      setShowSocial(showSocialParam);
+    }
+  }, [searchParams]);
+  
   
   let detectedCountryLocal;
 
