@@ -1,6 +1,7 @@
 "use client";
 
 import React, {
+  Suspense,
   useState,
   useEffect,
   useCallback,
@@ -11,11 +12,13 @@ import { Button } from "@/components/ui/button";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { Loader2, UserCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import "../phone-input.css";
 import { getDotCount, getNumberAfterSpaceStrict } from "@/utils/helper";
 import { LoginDrawerState } from "../LoginDrawer";
 import { useLocationDetection } from "@/hooks/useLocationDetection";
 import { useAuthContext } from "@/auth";
+import { useOAuth } from "@/hooks/useOAuth";
 
 // Memoized PhoneInput to prevent unnecessary re-renders
 const InternalMemoizedPhoneInput = memo(
@@ -75,6 +78,12 @@ export const PhoneStep = ({
   setDrawerState,
 }: any) => {
   const { auth } = useAuthContext();
+  const { signInWithProvider, isLoading: isOAuthLoading } = useOAuth();
+  const searchParams = useSearchParams();
+  
+  // Get showSocial query parametera
+  const showSocial = searchParams.get("showSocial") === "true";
+  
   let detectedCountryLocal;
 
   const { location, isLoading: isLocationLoading } = useLocationDetection(
@@ -83,6 +92,7 @@ export const PhoneStep = ({
 
   // useTransition for non-urgent state updates
   const [isPending, startTransition] = useTransition();
+
 
   // Phone state
   const [phoneValue, setPhoneValue] = useState("");
@@ -164,10 +174,8 @@ export const PhoneStep = ({
       // value = value.slice(0, allowNumberCount);
       value = allowNumberCount > 0 ? value.slice(0, allowNumberCount) : value;
 
-      // Update the input field immediately to show trimmed value
       e.target.value = value;
 
-      // Mark state update as non-urgent (allows typing to feel instant)
       // startTransition(() => {
       setPhoneNumber(value);
       // });
@@ -367,6 +375,51 @@ export const PhoneStep = ({
           )}
         </Button>
       </div>
+      {showSocial && (
+        <>
+          <div className="relative mb-6 flex items-center justify-center">
+            <div className="h-px w-full bg-slate-300"></div>
+            <span className="absolute rounded-sm bg-white px-3 text-sm text-slate-500">
+              or
+            </span>
+          </div>
+          <div
+            className="mt-10 flex flex-col items-center justify-center gap-3"
+            style={{ marginTop: "30px" }}
+          >
+            <Button
+              onClick={() => signInWithProvider("google")}
+              disabled={isOAuthLoading || isCurrentlyLoading}
+              className="flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label="Continue with Google"
+            >
+              <img
+                src="/assets/icons/social-login/google-icon.png"
+                alt="Google icon"
+                className="h-5 w-5"
+              />
+              <span className="text-sm font-medium text-slate-700">
+                Continue with Google
+              </span>
+            </Button>
+            <Button
+              onClick={() => signInWithProvider("facebook")}
+              disabled={isOAuthLoading || isCurrentlyLoading}
+              className="flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label="Continue with Facebook"
+            >
+              <img
+                src="/assets/icons/social-login/facebook-icon.png"
+                alt="Facebook icon"
+                className="h-5 w-5"
+              />
+              <span className="text-sm font-medium text-slate-700">
+                Continue with Facebook
+              </span>
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

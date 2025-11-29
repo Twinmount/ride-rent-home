@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import { X, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PhoneStep } from "./components/PhoneStep";
@@ -86,7 +86,6 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
 
   // Common State
   const [step, setStep] = useState<AuthStep>("phone");
-  console.log("step: LoginDrawer", step);
   const [status, setStatus] = useState<StatusType>("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [userExists, setUserExists] = useState<boolean>(false);
@@ -198,17 +197,23 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
           {/* Content */}
           <div className="flex-1 space-y-6 overflow-y-auto p-6">
             {step === "phone" && (
-              <PhoneStep
-                setStep={setStep}
-                setStatus={setStatus}
-                setStatusMessage={setStatusMessage}
-                setUserExists={setUserExists}
-                isCurrentlyLoading={isCurrentlyLoading}
-                signup={signup}
-                checkUserExists={checkUserExists}
-                clearError={clearError}
-                setDrawerState={setDrawerState}
-              />
+              <Suspense fallback={
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
+                </div>
+              }>
+                <PhoneStep
+                  setStep={setStep}
+                  setStatus={setStatus}
+                  setStatusMessage={setStatusMessage}
+                  setUserExists={setUserExists}
+                  isCurrentlyLoading={isCurrentlyLoading}
+                  signup={signup}
+                  checkUserExists={checkUserExists}
+                  clearError={clearError}
+                  setDrawerState={setDrawerState}
+                />
+              </Suspense>
             )}
             {step === "password" && (
               <PasswordStep
