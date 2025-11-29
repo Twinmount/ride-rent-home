@@ -1,10 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -16,19 +14,16 @@ import {
   Heart,
   Search,
   Filter,
-  Star,
-  MapPin,
-  Clock,
   ArrowLeft,
   Loader2,
-  Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { useUserActions } from "@/hooks/useUserActions";
 import { useAppContext } from "@/context/useAppContext";
 import { generateVehicleDetailsUrl } from "@/helpers";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
-// import type { SavedVehicle } from "@/lib/api/userActions.api.types"; // No longer needed
+import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
+import { NewVehicleCardType } from "@/types/vehicle-types";
 
 interface SavedVehiclesProps {
   className?: string;
@@ -46,6 +41,10 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
 
   // Get current state and category context
   const { state, category, country } = useStateAndCategory();
+
+  // Use current country and state, with fallbacks
+  const profileCountry = country || "in";
+  const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
 
   // Use the useUserActions hook
   const {
@@ -100,6 +99,30 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
           return 0; // Keep original order for recent
       }
     });
+
+  // Helper function to transform saved vehicle data to VehicleCard format
+  const transformToVehicleCardData = (vehicle: any): NewVehicleCardType => {
+    return {
+      vehicleTitle: vehicle.name || "Unknown Vehicle",
+      vehicleCode: vehicle.vehicleCode || vehicle.id,
+      state: vehicle?.originalData?.stateDetails?.stateValue || "",
+      vehicleCategory: category || "cars",
+      thumbnail: vehicle.image || "/default-car.png",
+      vehiclePhotos: vehicle.image ? [vehicle.image] : [],
+      rating: vehicle.rating || 0,
+      rentalDetails: {
+        day: {
+          enabled: true,
+          rentInAED: vehicle.price?.toString() || "0",
+          mileageLimit: "250",
+        },
+      },
+      securityDeposit: {
+        enabled: false,
+      },
+      isFancyNumber: false,
+    } as NewVehicleCardType;
+  };
 
   // Helper function to generate vehicle details URL
   const getVehicleDetailsUrl = (vehicle: any) => {
@@ -156,7 +179,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-4">
-            <Link href="/user-profile">
+            <Link href={`/${profileCountry}/${profileState}/user-profile`}>
               <Button variant="ghost" size="sm" className="cursor-pointer">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Profile
@@ -259,110 +282,33 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
 
         {/* Vehicles Grid */}
         {!isLoading && !error && (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredVehicles.map((vehicle: any) => (
-              <Card
-                key={vehicle.id}
-                className="overflow-hidden transition-shadow hover:shadow-lg"
-              >
-                <div className="relative">
-                  <Link href={getVehicleDetailsUrl(vehicle)}>
-                    <div className="cursor-pointer">
-                      {vehicle.image ? (
-                        <img
-                          src={vehicle.image}
-                          alt={vehicle.name || "Vehicle"}
-                          className="h-48 w-full object-cover transition-transform duration-300 hover:scale-105"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = "/default-car.png";
-                          }}
-                        />
-                      ) : (
-                        <div className="flex h-48 w-full items-center justify-center bg-gray-200">
-                          <span className="text-gray-500">No Image</span>
-                        </div>
-                      )}
-                    </div>
-                  </Link>
-                  <div className="absolute right-3 top-3">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => handleRemoveFromSaved(vehicle.id)}
-                      disabled={removeFromSavedMutation.isPending}
-                      className="h-8 w-8 cursor-pointer bg-white/90 p-0 hover:bg-red-50"
-                    >
-                      <Trash2 className="h-4 w-4 text-red-500 hover:text-red-700" />
-                    </Button>
-                  </div>
-                  <div className="absolute left-3 top-3">
-                    <Badge className="bg-red-500 text-white">
-                      <Heart className="mr-1 h-3 w-3" />
-                      Saved
-                    </Badge>
-                  </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {filteredVehicles.map((vehicle: any, index: number) => (
+              <div key={vehicle.id} className="relative">
+                <VehicleCard
+                  vehicle={transformToVehicleCardData(vehicle)}
+                  index={index}
+                  country={vehicle?.originalData?._metadata?.countryCode || profileCountry}
+                  layoutType="grid"
+                  openInNewTab={false}
+                />
+                {/* Heart Icon - Absolute positioned on right */}
+                <div className="absolute right-3 top-3 z-10">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleRemoveFromSaved(vehicle.id);
+                    }}
+                    disabled={removeFromSavedMutation.isPending}
+                    className="h-8 w-8 cursor-pointer rounded-full bg-white/90 p-0 shadow-lg hover:bg-red-50 transition-colors"
+                  >
+                    <Heart className="h-4 w-4 fill-red-500 text-red-500 hover:fill-red-600 hover:text-red-600" />
+                  </Button>
                 </div>
-                <CardContent className="p-4">
-                  <div className="mb-2 flex items-start justify-between">
-                    <Link href={getVehicleDetailsUrl(vehicle)}>
-                      <h3 className="cursor-pointer text-sm font-semibold text-gray-900 transition-colors hover:text-orange-600">
-                        {vehicle.name || "Unknown Vehicle"}
-                      </h3>
-                    </Link>
-                    {vehicle.vehicleCode && (
-                      <Badge variant="outline" className="text-xs">
-                        {vehicle.vehicleCode}
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="mb-3 text-sm text-gray-600">
-                    {vehicle.vendor || vehicle.make || "Premium Car Rental"}
-                    {vehicle.year && <span> • {vehicle.year}</span>}
-                  </p>
-                  <div className="mb-3 flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">
-                      {vehicle.location || "Dubai"}
-                    </span>
-                    <Clock className="ml-2 h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">
-                      {vehicle.savedDate || "Recently"}
-                    </span>
-                  </div>
-                  <div className="mb-4 flex flex-wrap gap-1">
-                    {vehicle.features
-                      ?.slice(0, 2)
-                      .map((feature: any, index: number) => (
-                        <Badge
-                          key={index}
-                          variant="outline"
-                          className="text-xs"
-                        >
-                          {feature}
-                        </Badge>
-                      ))}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-lg font-bold text-orange-600">
-                        AED {vehicle.price || 0}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        /{vehicle.priceUnit || "day"}
-                      </span>
-                    </div>
-                    <Link href={getVehicleDetailsUrl(vehicle)}>
-                      <Button
-                        size="sm"
-                        className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600"
-                      >
-                        View Details
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
+              </div>
             ))}
           </div>
         )}
@@ -378,7 +324,7 @@ const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
                 ? "Try adjusting your search or filters"
                 : "Start browsing to save your favorite vehicles"}
             </p>
-            <Link href="/">
+            <Link href={`/${profileCountry}/${profileState}/${category || "cars"}`}>
               <Button className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600">
                 Browse Vehicles
               </Button>

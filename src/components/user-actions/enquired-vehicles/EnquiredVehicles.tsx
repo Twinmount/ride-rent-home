@@ -80,7 +80,11 @@ export default function EnquiredVehiclesPage() {
   const { useUserEnquiredVehicles } = useUserActions();
 
   // Get current state and category from the hook
-  const { category } = useStateAndCategory();
+  const { category, country, state } = useStateAndCategory();
+
+  // Use current country and state, with fallbacks
+  const profileCountry = country || "in";
+  const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
   // const { convert } = usePriceConverter();
   const {
     data: apiResponse,
@@ -375,7 +379,7 @@ export default function EnquiredVehiclesPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-4">
-            <Link href="/user-profile">
+            <Link href={`/${profileCountry}/${profileState}/user-profile`}>
               <Button variant="ghost" size="sm" className="cursor-pointer">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Profile

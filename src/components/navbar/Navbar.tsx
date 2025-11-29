@@ -57,7 +57,6 @@ export const Navbar = () => {
     isLoginOpen,
     useGetUserProfile,
     onHandleLoginmodal,
-    handleProfileNavigation,
   } = useAuthContext();
 
   useLayoutEffect(() => {
@@ -92,12 +91,25 @@ export const Navbar = () => {
   };
 
   // Navigation handlers
+  const handleProfileNavigation = () => {
+    // Use current country and state, with fallbacks
+    const profileCountry = country || "in";
+    const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
+    router.push(`/${profileCountry}/${profileState}/user-profile`);
+  };
+
   const handleEnquiriesNavigation = () => {
-    router.push("/user-profile/enquired-vehicles");
+    // Use current country and state, with fallbacks
+    const profileCountry = country || "in";
+    const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
+    router.push(`/${profileCountry}/${profileState}/user-profile/enquired-vehicles`);
   };
 
   const handleFavoritesNavigation = () => {
-    router.push("/user-profile/saved-vehicles");
+    // Use current country and state, with fallbacks
+    const profileCountry = country || "in";
+    const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
+    router.push(`/${profileCountry}/${profileState}/user-profile/saved-vehicles`);
   };
 
   const userId = authStorage.getUser()?.id.toString();

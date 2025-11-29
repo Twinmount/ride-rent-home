@@ -2,11 +2,11 @@ import { UserProfile2 } from '@/components/user-profile/UserProfile2';
 import { notFound } from 'next/navigation';
 
 export type PageProps = {
-  params: Promise<{ country: string }>;
+  params: Promise<{ country: string; state: string }>;
 };
 
 export default async function CountryProfilePage(props: PageProps) {
-  const { country } = await props.params;
+  const { country, state } = await props.params;
   const countries = ["ae", "in"];
 
   if (!countries.includes(country)) {

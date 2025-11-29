@@ -28,7 +28,11 @@ const ViewedVehicles = () => {
     useUserActions();
 
   // Get current state and category context
-  const { category } = useStateAndCategory();
+  const { category, country, state } = useStateAndCategory();
+
+  // Use current country and state, with fallbacks
+  const profileCountry = country || "in";
+  const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
 
   // Get viewed vehicles data - only call when this component is mounted
   const viewedVehiclesQuery = useUserViewedVehicles({
@@ -136,7 +140,7 @@ const ViewedVehicles = () => {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-4">
-            <Link href="/user-profile">
+            <Link href={`/${profileCountry}/${profileState}/user-profile`}>
               <Button variant="ghost" size="sm" className="cursor-pointer">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Profile
@@ -264,7 +268,7 @@ const ViewedVehicles = () => {
                   ? "Try adjusting your search or filters"
                   : "Start browsing to see your viewing history"}
               </p>
-              <Link href="/">
+              <Link href={`/${profileCountry}/${profileState}/${category || "cars"}`}>
                 <Button className="cursor-pointer bg-orange-500 text-white hover:bg-orange-600">
                   Browse Vehicles
                 </Button>

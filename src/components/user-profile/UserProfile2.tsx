@@ -65,6 +65,7 @@ import { trimName } from "@/helpers";
 import { getVehicleImageUrl } from "@/utils/imageUrl";
 import { AccountManagementSection } from "./AccountManagementSection";
 import { PasswordResetSection } from "./PasswordResetSection";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 interface UserProfileProps {
   className?: string;
@@ -80,6 +81,7 @@ export const UserProfile2 = ({ className }: UserProfileProps) => {
 
 const UserProfileContent = ({ className }: UserProfileProps) => {
   const router = useRouter();
+  const { country, state } = useStateAndCategory();
   const [languages, setLanguages] = useState("English, Arabic");
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
@@ -470,6 +472,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     }
   };
 
+  // Use current country and state, with fallbacks
+  const profileCountry = country || "in";
+  const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
+
   const stats = [
     {
       label: "All Enquiries",
@@ -482,7 +488,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
       textColor: "text-blue-700",
       description: "",
       action: "enquired",
-      navigationPath: "/user-profile/enquired-vehicles",
+      navigationPath: `/${profileCountry}/${profileState}/user-profile/enquired-vehicles`,
     },
     {
       label: "My Favorites",
@@ -495,7 +501,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
       textColor: "text-red-700",
       description: "",
       action: "saved",
-      navigationPath: "/user-profile/saved-vehicles",
+      navigationPath: `/${profileCountry}/${profileState}/user-profile/saved-vehicles`,
     },
     {
       label: "Previously Viewed​",
@@ -508,7 +514,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
       textColor: "text-purple-700",
       description: "",
       action: "viewed",
-      navigationPath: "/user-profile/viewed-vehicles",
+      navigationPath: `/${profileCountry}/${profileState}/user-profile/viewed-vehicles`,
     },
   ];
 
@@ -546,6 +552,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
         <ProfileBreadcrumb
           userName={trimName(profileData?.name || "", 5)}
           className="mt-1 sm:mt-2"
+          country={profileCountry}
+          state={profileState}
         />
 
         {/* Profile loading error */}

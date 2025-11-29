@@ -8,13 +8,19 @@ export const metadata: Metadata = {
     'View your browsing history and recently viewed vehicles on RideRent',
 };
 
-export default function ViewedVehiclesPage() {
+export default function ViewedVehiclesPage({
+  params,
+}: {
+  params: { country: string; state: string };
+}) {
   return (
     <div className="mx-auto max-w-7xl space-y-8 p-6">
       <ProfileBreadcrumb
         userName="User"
         currentSection="viewed-vehicles"
         className="mt-2"
+        country={params.country}
+        state={params.state}
       />
       <ViewedVehicles />
     </div>

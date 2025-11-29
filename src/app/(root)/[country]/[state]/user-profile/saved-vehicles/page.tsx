@@ -7,13 +7,19 @@ export const metadata: Metadata = {
   description: 'View and manage your saved vehicles on RideRent',
 };
 
-export default function SavedVehiclesPage() {
+export default function SavedVehiclesPage({
+  params,
+}: {
+  params: { country: string; state: string };
+}) {
   return (
     <div className="mx-auto max-w-7xl space-y-8 p-6">
       <ProfileBreadcrumb
         userName="User"
         currentSection="saved-vehicles"
         className="mt-2"
+        country={params.country}
+        state={params.state}
       />
       <SavedVehicles />
     </div>
