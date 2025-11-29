@@ -398,7 +398,7 @@ export const PhoneStep = ({
             style={{ marginTop: "30px" }}
           >
             <Button
-              onClick={() => signInWithProvider("google")}
+              onClick={() => signInWithProvider("google", { usePopup: true })}
               disabled={isOAuthLoading || isCurrentlyLoading}
               className="flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
               aria-label="Continue with Google"
@@ -413,7 +413,7 @@ export const PhoneStep = ({
               </span>
             </Button>
             <Button
-              onClick={() => signInWithProvider("facebook")}
+              onClick={() => signInWithProvider("facebook", { usePopup: true })}
               disabled={isOAuthLoading || isCurrentlyLoading}
               className="flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
               aria-label="Continue with Facebook"
