@@ -7,19 +7,21 @@ export const metadata: Metadata = {
   description: 'View and manage your vehicle enquiries on RideRent',
 };
 
-export default function EnquiredVehiclesPage({
+export default async function EnquiredVehiclesPage({
   params,
 }: {
-  params: { country: string; state: string };
+  params: Promise<{ country: string; state: string }>;
 }) {
+  const { country, state } = await params;
+
   return (
     <div className="mx-auto max-w-7xl space-y-8 p-6">
       <ProfileBreadcrumb
         userName="User"
         currentSection="enquired-vehicles"
         className="mt-2"
-        country={params.country}
-        state={params.state}
+        country={country}
+        state={state}
       />
       <EnquiredVehicles />
     </div>

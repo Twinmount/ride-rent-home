@@ -7,19 +7,20 @@ export const metadata: Metadata = {
   description: 'View and manage your saved vehicles on RideRent',
 };
 
-export default function SavedVehiclesPage({
+export default async function SavedVehiclesPage({
   params,
 }: {
-  params: { country: string; state: string };
+  params: Promise<{ country: string; state: string }>;
 }) {
+  const { country, state } = await params;
   return (
     <div className="mx-auto max-w-7xl space-y-8 p-6">
       <ProfileBreadcrumb
         userName="User"
         currentSection="saved-vehicles"
         className="mt-2"
-        country={params.country}
-        state={params.state}
+        country={country}
+        state={state}
       />
       <SavedVehicles />
     </div>
