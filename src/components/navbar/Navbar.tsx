@@ -2,6 +2,7 @@
 
 import SafeImage from "@/components/common/SafeImage";
 import dynamic from "next/dynamic";
+import { useSession} from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
@@ -59,6 +60,10 @@ export const Navbar = () => {
     onHandleLoginmodal,
   } = useAuthContext();
 
+  const {data:sessionData,status:sessionStatus}=useSession();
+  console.log("sessionData: [Navbar]", sessionData);
+  console.log("sessionStatus: [Navbar]", sessionStatus);
+
   useLayoutEffect(() => {
     setMounted(true);
   }, []);
@@ -112,7 +117,7 @@ export const Navbar = () => {
     router.push(`/${profileCountry}/${profileState}/user-profile/saved-vehicles`);
   };
 
-  const userId = authStorage.getUser()?.id.toString();
+  const userId = sessionData?.user?.id;
 
   // Get user profile data
   const userProfileQuery = useGetUserProfile(userId!, !!userId);
@@ -125,6 +130,8 @@ export const Navbar = () => {
   const useAvatar = userProfileQuery.data?.data?.avatar
     ? `${userProfileQuery.data?.data?.avatar || ""}`
     : "?";
+
+    console.log("useAvatar",useAvatar)
 
   return (
     <>

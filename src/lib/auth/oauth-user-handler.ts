@@ -25,21 +25,44 @@ interface OAuthUserResult {
 /**
  * Check if user exists by email (for OAuth)
  */
-async function checkOAuthUserExists(email: string): Promise<boolean> {
+ export async function checkOAuthUserExists(email: string): Promise<any> {
   try {
     if (!email) {
       return false;
     }
 
     const response = await authAPI.checkUserExistsByEmail(email);
+    console.log("response[checkOAuthUserExists]", response);
     
     if (response.success && response.data?.userExists === true) {
-      return true;
+      return response;
     }
 
-    return false;
+    return {success: false, message: "User not found"};
   } catch (error) {
     console.error("Error checking OAuth user existence:", error);
+    return false;
+  }
+}
+
+export async function checkOAuthUserPhoneStatus(userId: string): Promise<any> {
+  try {
+    const response = await authAPI.checkOAuthUserPhoneStatus(userId);
+    console.log("response[checkOAuthUserPhoneStatus]", response);
+    return response;
+  } catch (error) {
+    console.error("Error checking OAuth user phone status:", error);
+    return false;
+  }
+}
+
+export async function checkUserPhoneStatus(userId: string): Promise<any> {
+  try {
+    const response = await authAPI.checkOAuthUserPhoneStatus(userId);
+    console.log("response[checkOAuthUserPhoneStatus]", response);
+    return response;
+  } catch (error) {
+    console.error("Error checking OAuth user phone status:", error);
     return false;
   }
 }
@@ -53,7 +76,7 @@ export async function handleOAuthUser(
   try {
     const userExists = await checkOAuthUserExists(userData.email);
 
-    if (userExists) {
+    if (userExists.success) {
       // User exists - link OAuth account to existing user
       try {
         const linkResponse = await authAPI.linkOAuthAccount(

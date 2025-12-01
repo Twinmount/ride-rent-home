@@ -7,6 +7,7 @@ import axios, {
 } from "axios";
 import { authStorage } from "@/lib/auth/authStorage";
 import { ENV } from "@/config/env";
+import { getSession } from "next-auth/react"; 
 
 // Helper function to detect country from current URL
 function detectCountryFromUrl(): "ae" | "in" {
@@ -94,67 +95,6 @@ export const COUNTRIES_CONFIG = {
 
 export type CountryCode = keyof typeof COUNTRIES_CONFIG;
 
-// Flag to prevent multiple refresh attempts
-let isRefreshing = false;
-let refreshSubscribers: Array<(token: string) => void> = [];
-
-// Function to add subscribers waiting for token refresh
-const subscribeTokenRefresh = (cb: (token: string) => void) => {
-  refreshSubscribers.push(cb);
-};
-
-// Function to notify all subscribers when token is refreshed
-const onTokenRefreshed = (token: string) => {
-  refreshSubscribers.forEach((cb) => cb(token));
-  refreshSubscribers = [];
-};
-
-// Function to refresh access token
-const refreshAccessToken = async (): Promise<string | null> => {
-  try {
-    const user = authStorage.getUser();
-    if (!user?.id) {
-      throw new Error("No user found");
-    }
-
-    // Use a fresh axios instance for refresh to avoid circular dependency
-    const refreshClient = axios.create({
-      baseURL: API_ENDPOINTS.AUTH,
-      timeout: 10000,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const response = await refreshClient.post("/refresh-access-token", {
-      userId: user.id,
-    });
-
-    if (response.data.success && response.data.accessToken) {
-      const newToken = response.data.accessToken;
-
-      // Update token in storage (use localStorage if refreshToken exists, otherwise sessionStorage)
-      const refreshToken = authStorage.getRefreshToken();
-      const rememberMe = !!refreshToken;
-      authStorage.setToken(newToken, rememberMe);
-
-      return newToken;
-    }
-
-    throw new Error("Failed to refresh token");
-  } catch (error) {
-    console.error("Token refresh failed:", error);
-    // Clear auth storage and redirect to login
-    authStorage.clear();
-    // Optionally redirect to login page
-    if (typeof window !== "undefined") {
-      // window.location.href = "/";
-    }
-    return null;
-  }
-};
-
-// Function to create axios instance with interceptors
 const createApiClient = (baseURL: string): AxiosInstance => {
   const client = axios.create({
     baseURL,
@@ -166,9 +106,17 @@ const createApiClient = (baseURL: string): AxiosInstance => {
 
   // Request interceptor to add authorization header and handle dynamic URL switching
   client.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
-      const token = authStorage.getToken();
-      if (token && config.headers) {
+    async (config: InternalAxiosRequestConfig) => {
+
+      const session = await getSession();
+      let token = session?.accessToken;
+    
+      // 2. Fallback to storage (Optional, during migration phase)
+      if (!token) {
+        token = authStorage.getToken() ?? undefined;
+      }
+    
+      if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
 
@@ -195,19 +143,9 @@ const createApiClient = (baseURL: string): AxiosInstance => {
       if (error.response) {
         if (error.response.status === 401) {
           authStorage.clear();
-          console.log(
-            "createApiClient: >>> 401 Unauthorized error DETECTED! <<<"
-          );
-          // if (typeof window !== "undefined") {
-          //   window.dispatchEvent(
-          //     new CustomEvent("auth:logout", {
-          //       detail: { reason: "unauthorized" },
-          //     })
-          //   );
-          // }
+        
         }
       }
-      // CRITICAL: Re-throw the error so it can be caught by the calling code (`try...catch` blocks)
       return Promise.reject(error);
     }
   );
@@ -264,66 +202,6 @@ const createDynamicMainApiClient = (): AxiosInstance => {
       return response;
     },
     async (error: AxiosError) => {
-      console.error("Response error:", {
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        url: error.config?.url,
-        method: error.config?.method,
-        data: error.response?.data,
-      });
-      const originalRequest = error.config as InternalAxiosRequestConfig & {
-        _retry?: boolean;
-      };
-      console.log("error.response?.status: ", error.response?.status);
-
-      // Check if error is 401 and we haven't already tried to refresh
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        if (isRefreshing) {
-          // If refresh is already in progress, wait for it to complete
-          return new Promise((resolve) => {
-            subscribeTokenRefresh((token: string) => {
-              if (originalRequest.headers) {
-                originalRequest.headers.Authorization = `Bearer ${token}`;
-              }
-              resolve(client(originalRequest));
-            });
-          });
-        }
-
-        originalRequest._retry = true;
-        isRefreshing = true;
-
-        try {
-          const newToken = await refreshAccessToken();
-
-          if (newToken) {
-            isRefreshing = false;
-            onTokenRefreshed(newToken);
-
-            // Retry original request with new token
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            }
-            return client(originalRequest);
-          }
-        } catch (refreshError) {
-          console.log("refreshError: ", refreshError);
-          isRefreshing = false;
-          // Clear waiting subscribers
-          refreshSubscribers = [];
-
-          // Clear auth storage
-          // authStorage.clear();
-
-          // // Optionally redirect to login
-          // if (typeof window !== 'undefined') {
-          //   window.location.href = '/';
-          // }
-
-          return Promise.reject(refreshError);
-        }
-      }
-
       return Promise.reject(error);
     }
   );

@@ -21,6 +21,7 @@ import { createAuthenticatedRequest, authApiClient } from "./axios.config";
 const AUTH_ENDPOINTS = {
   CHECK_USER_EXISTS: "/check-user-exists",
   CHECK_USER_EXISTS_BY_EMAIL: "/check-user-exists-by-email",
+  CHECK_OAUTH_USER_PHONE_STATUS: "/check-oauth-user-phone",
   LINK_OAUTH_ACCOUNT: "/link-oauth-account",
   SIGNUP_OAUTH: "/signup-oauth",
   SIGNUP: "/signup",
@@ -527,7 +528,29 @@ export class AuthAPI {
       );
     }
   }
+
+  /**
+   * Check OAuth user phone number status
+   */
+  static async checkOAuthUserPhoneStatus(
+    userId: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.CHECK_OAUTH_USER_PHONE_STATUS,
+        { providerAccountId:userId }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to check OAuth user phone status"
+      );
+    }
+  }
 }
+
 
 // Export individual functions for easier usage
 export const authAPI = {
@@ -549,6 +572,7 @@ export const authAPI = {
   checkUserExistsByEmail: AuthAPI.checkUserExistsByEmail,
   linkOAuthAccount: AuthAPI.linkOAuthAccount,
   signupOAuth: AuthAPI.signupOAuth,
+  checkOAuthUserPhoneStatus: AuthAPI.checkOAuthUserPhoneStatus,
   requestPhoneNumberChange: AuthAPI.requestPhoneNumberChange,
   verifyPhoneNumberChange: AuthAPI.verifyPhoneNumberChange,
   requestEmailChange: AuthAPI.requestEmailChange,

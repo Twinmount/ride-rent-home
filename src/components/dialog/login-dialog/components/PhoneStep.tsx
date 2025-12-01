@@ -78,7 +78,8 @@ export const PhoneStep = ({
   setDrawerState,
 }: any) => {
   const { auth } = useAuthContext();
-  const { signInWithProvider, isLoading: isOAuthLoading } = useOAuth();
+  const { signInWithProvider, isLoading: isOAuthLoading,session: oauthSession } = useOAuth();
+  console.log("oauthSession", oauthSession);
   const searchParams = useSearchParams();
   
   // Get showSocial query parameter - safely handle SSR

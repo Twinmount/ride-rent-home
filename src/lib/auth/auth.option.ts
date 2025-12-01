@@ -2,8 +2,14 @@ import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import AppleProvider from "next-auth/providers/apple";
 import type { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { logExpectedRedirectUris, validateRedirectUriConfig } from "@/utils/debug-oauth";
-import { handleOAuthUser, storeOAuthUserData } from "./oauth-user-handler";
+import { handleOAuthUser,checkOAuthUserPhoneStatus,checkUserPhoneStatus } from "./oauth-user-handler";
+import { authAPI } from "../api";
+
+// Temporary cache to store tokens between authorize() and JWT callback
+// Key: userId, Value: { accessToken, refreshToken }
+const credentialsTokenCache = new Map<string, { accessToken?: string; refreshToken?: string }>();
 
 const requiredEnvVars = {
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
@@ -37,6 +43,55 @@ if (process.env.NODE_ENV === "development") {
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    CredentialsProvider({
+      id: "credentials",
+      name: "PhoneLogin",
+      credentials: {
+        phoneNumber: { label: "Phone", type: "text" },
+        countryCode: { label: "Code", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        try {
+          if (!credentials?.phoneNumber || !credentials?.countryCode || !credentials?.password) {
+            return null;
+          }
+
+          // 1. Call your existing Backend API
+          const response = await authAPI.login({
+            phoneNumber: credentials.phoneNumber,
+            countryCode: credentials.countryCode,
+            password: credentials.password,
+          });
+          console.log("response:[CredentialsProvider] ", response);
+
+          if (response.success && response.data?.userId) {
+            
+            return {
+              id: response.data.userId,
+              name: response.data.name,
+              email: response.data.email,
+              image: response.data.avatar,
+              accessToken: response.accessToken,   
+              refreshToken: response.refreshToken,
+              phoneNumber: response.data.phoneNumber,
+              countryCode: response.data.countryCode,
+              isPhoneVerified: response.data.isPhoneVerified,
+              isEmailVerified: response.data.isEmailVerified,
+              isTempVerified: response.data.isTempVerified || false,
+            };
+          }
+          return null;
+        } catch (error) {
+          throw new Error(error instanceof Error ? error.message : "Login failed");
+        }
+      },
+    }),
+
+
+
+
+    
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
@@ -111,10 +166,14 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, trigger, session, account, user, profile }) {
       if (account) {
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
         token.provider = account.provider;
-        token.providerAccountId = account.providerAccountId;
+        
+        // For OAuth providers, get tokens from account
+        if (account.provider !== "credentials") {
+          token.accessToken = account.access_token;
+          token.refreshToken = account.refresh_token;
+          token.providerAccountId = account.providerAccountId;
+        }
 
         if (user) {
           token.id = user.id;
@@ -127,19 +186,64 @@ export const authOptions: NextAuthOptions = {
           token.profile = profile;
         }
 
-        if (user?.email && account) {
+        // For credentials provider, use user data from authorize callback
+        if (account.provider === "credentials" && user?.id) {
           try {
-            await storeOAuthUserData(
-              {
-                email: user.email,
-                name: user.name ?? undefined,
-                image: user.image ?? undefined,
-                provider: account.provider,
-                providerAccountId: account.providerAccountId,
-                accessToken: account.access_token,
-              },
-              user.id
-            );
+            token.accessToken = (user as any).accessToken;
+            token.refreshToken = (user as any).refreshToken;
+            token.isPhoneVerified = (user as any).isPhoneVerified ?? false;
+            token.isEmailVerified = (user as any).isEmailVerified ?? false;
+            token.isTempVerified = (user as any).isTempVerified ?? false;
+            
+            if ((user as any).phoneNumber) {
+              token.phoneNumber = (user as any).phoneNumber;
+            }
+            if ((user as any).countryCode) {
+              token.countryCode = (user as any).countryCode;
+            }
+            if (user.image) {
+              token.image = user.image;
+            }
+            if (user.name) {
+              token.name = user.name;
+            }
+            if (user.email) {
+              token.email = user.email;
+            }
+          } catch (error) {
+            console.error("Error setting credentials user data:", error);
+          }
+        }
+
+        if (user?.email && account && account.provider !== "credentials") {
+          try {
+            const dbUser=await checkOAuthUserPhoneStatus(user.id);
+            console.log("dbUser[checkOAuthUserPhoneStatus]", dbUser);
+
+
+            if (dbUser.success && dbUser.data) {
+              // Add verification status
+              token.isPhoneVerified = dbUser.data.isPhoneVerified;
+              token.isEmailVerified = dbUser.data.isEmailVerified;
+              token.isTempVerified = dbUser.data.isTempVerified;
+              
+              // Add user details from database
+              if (dbUser.data.phoneNumber) {
+                token.phoneNumber = dbUser.data.phoneNumber;
+              }
+              if (dbUser.data.countryCode) {
+                token.countryCode = dbUser.data.countryCode;
+              }
+              if (dbUser.data.avatar) {
+                token.image = dbUser.data.avatar;
+              }
+              if (dbUser.data.name) {
+                token.name = dbUser.data.name;
+              }
+              if (dbUser.data.email) {
+                token.email = dbUser.data.email;
+              }
+            }
           } catch (error) {
             console.error("Error storing OAuth user data:", error);
           }
@@ -172,10 +276,15 @@ export const authOptions: NextAuthOptions = {
           email: token.email as string,
           name: token.name as string,
           image: token.image as string,
+          phoneNumber: token.phoneNumber as string,
+          countryCode: token.countryCode as string,
         };
 
         session.provider = token.provider as string;
         session.providerAccountId = token.providerAccountId as string;
+        session.isPhoneVerified = token.isPhoneVerified as boolean;
+        session.isEmailVerified = token.isEmailVerified as boolean;
+        session.isTempVerified = token.isTempVerified as boolean;
       }
 
       return session;
@@ -208,11 +317,16 @@ declare module "next-auth" {
     accessToken?: string;
     provider?: string;
     providerAccountId?: string;
+    isPhoneVerified?: boolean;
+    isEmailVerified?: boolean;
+    isTempVerified?: boolean;
     user: {
       id?: string;
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      phoneNumber?: string | null;
+      countryCode?: string | null;
     };
   }
 }
@@ -227,6 +341,11 @@ declare module "next-auth/jwt" {
     email?: string;
     name?: string;
     image?: string;
+    phoneNumber?: string;
+    countryCode?: string;
+    isPhoneVerified?: boolean;
+    isEmailVerified?: boolean;
+    isTempVerified?: boolean;
     profile?: any;
   }
 }

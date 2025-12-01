@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useImmer } from "use-immer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSession, signIn, signOut } from "next-auth/react";
 import type {
   LoginData,
   PhoneSignupData,
@@ -44,6 +45,8 @@ import { authStorage } from "@/lib/auth/authStorage";
 export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+    // 1. HOOK INTO NEXTAUTH
+    const { data: session, status } = useSession(); 
 
   const [state, updateState] = useImmer<AuthState>({
     isLoading: false,
@@ -61,6 +64,8 @@ export const useAuth = () => {
     refreshToken: authStorage.getRefreshToken(),
   });
 
+  console.log("auth: [useAuth]", auth);
+
   const [isLoginOpen, setLoginOpen] = useImmer(false);
   const [step, setStep] = useState<AuthStep>("phone");
 
@@ -72,46 +77,88 @@ export const useAuth = () => {
     otpExpiresIn: 5,
   });
 
-  useEffect(() => {
-    const handleLogoutEvent = (event: CustomEvent) => {
-      // Clear auth storage (if not already cleared)
-      authStorage.clear();
 
-      // Update all auth states
+  useEffect(() => {
+    if (status === "authenticated" && session) {  
+      // Map NextAuth session user to your App's User type
+      const mappedUser: User = {
+        id: session.user.id || "",
+        name: session.user.name || "",
+        email: session.user.email || "",
+        avatar: session.user.image || "",
+        // You might need to extend the NextAuth session type or fetch profile here
+        // if these fields aren't in the session callback
+        phoneNumber: session.user.phoneNumber || "",
+        countryCode: session.user.countryCode || "",
+        isPhoneVerified: session.isPhoneVerified || false, 
+        isEmailVerified: session.isEmailVerified || false,
+      };
+
       updateState((draft) => {
-        draft.isAuthenticated = false;
-        draft.user = null;
-        draft.error = null;
+        draft.isAuthenticated = true;
+        draft.user = mappedUser;
+        draft.isLoading = false;
       });
 
       setAuth((draft) => {
-        draft.isLoggedIn = false;
-        draft.user = null;
-        draft.token = null;
-        draft.refreshToken = null;
+        draft.isLoggedIn = true;
+        draft.user = mappedUser;
+        draft.token = (session as any).accessToken;
       });
+      
+      // OPTIONAL: Keep storage in sync for legacy code, but DO NOT rely on it for Auth check
+      // authStorage.setToken((session as any).accessToken, true); 
+    } else if (status === "unauthenticated") {
+       // Clear state
+       updateState((draft) => {
+         draft.isAuthenticated = false;
+         draft.user = null;
+         draft.isLoading = false;
+       });
+       authStorage.clear();
+    }
+  }, [session, status, updateState, setAuth]);
 
-      // Clear React Query cache
-      queryClient.clear();
+  // useEffect(() => {
+  //   const handleLogoutEvent = (event: CustomEvent) => {
+  //     // Clear auth storage (if not already cleared)
+  //     authStorage.clear();
 
-      // Close login modal if open
-      // setLoginOpen(false);
+  //     // Update all auth states
+  //     updateState((draft) => {
+  //       draft.isAuthenticated = false;
+  //       draft.user = null;
+  //       draft.error = null;
+  //     });
 
-      // Optionally redirect to home or login page
-      // router.push("/");
-    };
+  //     setAuth((draft) => {
+  //       draft.isLoggedIn = false;
+  //       draft.user = null;
+  //       draft.token = null;
+  //       draft.refreshToken = null;
+  //     });
 
-    // Add event listener
-    window.addEventListener("auth:logout", handleLogoutEvent as EventListener);
+  //     // Clear React Query cache
+  //     queryClient.clear();
 
-    // Cleanup event listener
-    return () => {
-      window.removeEventListener(
-        "auth:logout",
-        handleLogoutEvent as EventListener
-      );
-    };
-  }, []);
+  //     // Close login modal if open
+  //     // setLoginOpen(false);
+
+  //     // Optionally redirect to home or login page
+  //     // router.push("/");
+  //   };
+
+  //   // Add event listener
+  //   window.addEventListener("auth:logout", handleLogoutEvent as EventListener);
+
+  //   // Cleanup event listener
+  //   return () => {
+  //     window.removeEventListener(
+  //       "auth:logout",
+  //       handleLogoutEvent as EventListener
+  //     );
+  //   };
+  // }, []);
 
   // React Query Mutations
   const checkUserExistsMutation = useMutation({
@@ -220,7 +267,7 @@ export const useAuth = () => {
           user,
           data.accessToken,
           data.refreshToken,
-          true // Remember user
+          true 
         );
 
         setAuth((draft) => {
@@ -607,11 +654,29 @@ export const useAuth = () => {
       }
 
       // Use React Query mutation
-      return loginMutation.mutateAsync({
-        phoneNumber: loginData.phoneNumber,
-        countryCode: loginData.countryCode,
-        password: loginData.password,
-      });
+      // return loginMutation.mutateAsync({
+      //   phoneNumber: loginData.phoneNumber,
+      //   countryCode: loginData.countryCode,
+      //   password: loginData.password,
+      // });
+
+
+        // Trigger NextAuth Credentials Flow
+        const result = await signIn("credentials", {
+          phoneNumber: loginData.phoneNumber,
+          countryCode: loginData.countryCode,
+          password: loginData.password,
+          redirect: false, // Prevents page reload
+        });
+
+        if (result?.error) {
+          throw new Error(result.error);
+        }
+        // Success is handled by the useEffect above detecting the new Session
+        // We return a mock response to satisfy the interface if needed
+        return { success: true } as AuthResponse;
+
+
     } catch (error) {
       const authError = createAuthError(
         error instanceof Error ? error.message : ERROR_MESSAGES.LOGIN_FAILED
@@ -679,8 +744,9 @@ export const useAuth = () => {
   // Logout function
   const logout = async (id?: string): Promise<void> => {
     try {
-      await logoutMutation.mutateAsync({ userId: id });
-      authStorage.clear();
+      // await logoutMutation.mutateAsync({ userId: id });
+      // authStorage.clear();
+      await signOut({ redirect: false });
     } catch (error) {
       console.warn("Logout request failed:", error);
     } finally {
