@@ -7,7 +7,7 @@ import axios, {
 } from "axios";
 import { authStorage } from "@/lib/auth/authStorage";
 import { ENV } from "@/config/env";
-import { getSession } from "next-auth/react"; 
+import { getSession, signOut } from "next-auth/react"; 
 
 // Helper function to detect country from current URL
 function detectCountryFromUrl(): "ae" | "in" {
@@ -95,6 +95,51 @@ export const COUNTRIES_CONFIG = {
 
 export type CountryCode = keyof typeof COUNTRIES_CONFIG;
 
+// Token refresh queue to prevent multiple simultaneous refresh calls
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value?: any) => void;
+  reject: (error?: any) => void;
+}> = [];
+
+const processQueue = (error: AxiosError | null, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
+/**
+ * Refresh token using NextAuth session update
+ * This triggers NextAuth's JWT callback which handles the actual refresh
+ */
+const refreshToken = async (): Promise<string | null> => {
+  try {
+    // Get fresh session - this will trigger NextAuth's JWT callback
+    // which checks token expiration and refreshes if needed
+    const session = await getSession();
+    
+    if (session?.accessToken) {
+      return session.accessToken;
+    }
+
+    // Check if session has error (refresh failed)
+    if ((session as any)?.error === "RefreshAccessTokenError") {
+      throw new Error("RefreshAccessTokenError");
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Token refresh failed:", error);
+    throw error;
+  }
+};
+
 const createApiClient = (baseURL: string): AxiosInstance => {
   const client = axios.create({
     baseURL,
@@ -139,13 +184,79 @@ const createApiClient = (baseURL: string): AxiosInstance => {
     (response: AxiosResponse) => {
       return response;
     },
-    (error: AxiosError) => {
-      if (error.response) {
-        if (error.response.status === 401) {
+    async (error: AxiosError) => {
+      const originalRequest = error.config as InternalAxiosRequestConfig & {
+        _retry?: boolean;
+      };
+
+      // Handle 401 Unauthorized errors
+      if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+        // Skip refresh for auth endpoints (login, signup, etc.) to avoid infinite loops
+        const isAuthEndpoint = originalRequest.url?.includes("/login") ||
+                               originalRequest.url?.includes("/signup") ||
+                               originalRequest.url?.includes("/check-user") ||
+                               originalRequest.url?.includes("/refresh-access-token");
+
+        if (isAuthEndpoint) {
+          return Promise.reject(error);
+        }
+
+        // If already refreshing, queue this request
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          })
+            .then((token) => {
+              if (originalRequest.headers) {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+              }
+              return client(originalRequest);
+            })
+            .catch((err) => {
+              return Promise.reject(err);
+            });
+        }
+
+        originalRequest._retry = true;
+        isRefreshing = true;
+
+        try {
+          // Attempt to refresh token via NextAuth
+          const newToken = await refreshToken();
+
+          if (newToken) {
+            // Update the original request with new token
+            if (originalRequest.headers) {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            }
+
+            // Process queued requests with new token
+            processQueue(null, newToken);
+
+            // Retry the original request
+            return client(originalRequest);
+          } else {
+            // No token available, refresh failed
+            throw new Error("No token available after refresh");
+          }
+        } catch (refreshError) {
+          // Refresh failed - clear auth and sign out
+          processQueue(refreshError as AxiosError, null);
+          
+          // Clear storage
           authStorage.clear();
-        
+
+          // Sign out from NextAuth
+          if (typeof window !== "undefined") {
+            await signOut({ redirect: false });
+          }
+
+          return Promise.reject(refreshError);
+        } finally {
+          isRefreshing = false;
         }
       }
+
       return Promise.reject(error);
     }
   );
@@ -163,7 +274,7 @@ const createDynamicMainApiClient = (): AxiosInstance => {
 
   // Request interceptor to add authorization header and dynamically set baseURL
   client.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
+    async (config: InternalAxiosRequestConfig) => {
       // Dynamically set baseURL based on country detection
       const country = detectCountryFromUrl();
 
@@ -171,9 +282,14 @@ const createDynamicMainApiClient = (): AxiosInstance => {
         country === "in" ? API_ENDPOINTS.INDIA : API_ENDPOINTS.MAIN;
       config.baseURL = baseURL;
 
-      console.log("baseURL: ", baseURL);
+      // Get token from NextAuth session first, fallback to storage
+      const session = await getSession();
+      let token = session?.accessToken;
+      
+      if (!token) {
+        token = authStorage.getToken() ?? undefined;
+      }
 
-      const token = authStorage.getToken();
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -194,14 +310,80 @@ const createDynamicMainApiClient = (): AxiosInstance => {
   // Response interceptor to handle token refresh
   client.interceptors.response.use(
     (response: AxiosResponse) => {
-      // console.log('Response received:', {
-      //   status: response.status,
-      //   url: response.config.url,
-      //   method: response.config.method,
-      // });
       return response;
     },
     async (error: AxiosError) => {
+      const originalRequest = error.config as InternalAxiosRequestConfig & {
+        _retry?: boolean;
+      };
+
+      // Handle 401 Unauthorized errors
+      if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+        // Skip refresh for auth endpoints
+        const isAuthEndpoint = originalRequest.url?.includes("/login") ||
+                               originalRequest.url?.includes("/signup") ||
+                               originalRequest.url?.includes("/check-user") ||
+                               originalRequest.url?.includes("/refresh-access-token");
+
+        if (isAuthEndpoint) {
+          return Promise.reject(error);
+        }
+
+        // If already refreshing, queue this request
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          })
+            .then((token) => {
+              if (originalRequest.headers) {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+              }
+              return client(originalRequest);
+            })
+            .catch((err) => {
+              return Promise.reject(err);
+            });
+        }
+
+        originalRequest._retry = true;
+        isRefreshing = true;
+
+        try {
+          // Attempt to refresh token via NextAuth
+          const newToken = await refreshToken();
+
+          if (newToken) {
+            // Update the original request with new token
+            if (originalRequest.headers) {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            }
+
+            // Process queued requests with new token
+            processQueue(null, newToken);
+
+            // Retry the original request
+            return client(originalRequest);
+          } else {
+            throw new Error("No token available after refresh");
+          }
+        } catch (refreshError) {
+          // Refresh failed - clear auth and sign out
+          processQueue(refreshError as AxiosError, null);
+          
+          // Clear storage
+          authStorage.clear();
+
+          // Sign out from NextAuth
+          if (typeof window !== "undefined") {
+            await signOut({ redirect: false });
+          }
+
+          return Promise.reject(refreshError);
+        } finally {
+          isRefreshing = false;
+        }
+      }
+
       return Promise.reject(error);
     }
   );

@@ -268,7 +268,9 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
-      if (!token.accessToken || !token.refreshToken) return token;
+      // Check token expiration on every JWT callback call (not just initial login)
+      // This ensures tokens are refreshed when needed, including when getSession() is called
+      if (token.accessToken && token.refreshToken) {
         // Check if the BACKEND Access Token is expired
         if (isTokenExpired(token.accessToken as string)) {
           if (process.env.NODE_ENV === "development") {
@@ -300,6 +302,7 @@ export const authOptions: NextAuthOptions = {
             return { ...token, error: "RefreshAccessTokenError" };
           }
         }
+      }
 
       if (trigger === "update" && session) {
         if (session.user?.name) token.name = session.user.name;
