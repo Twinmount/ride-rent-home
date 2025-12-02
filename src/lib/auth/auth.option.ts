@@ -188,7 +188,6 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async jwt({ token, trigger, session, account, user, profile }) {
-      console.log("jwt:[auth.option]", { token, trigger, session, account, user, profile });
       if (account && user) {
         token.provider = account.provider;
         if (user) {

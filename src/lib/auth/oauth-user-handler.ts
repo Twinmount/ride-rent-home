@@ -94,7 +94,7 @@ export async function handleOAuthUser(userData: {
   try {
     // 1. Check if user exists (or let backend handle this logic atomically)
     const userExists = await checkOAuthUserExists(userData.email);
-    
+
     let result: any;
 
     if (userExists.success) {
@@ -106,7 +106,6 @@ export async function handleOAuthUser(userData: {
         userData.providerAccountId,
         userData.accessToken // Pass idToken if your backend requires it for verification
       );
-      console.log("result[linkOAuthAccount]", result);
     } else {
       // 2b. New User: Create Account & LOGIN
       // NOTE: Ensure your backend API returns tokens here!
@@ -118,8 +117,7 @@ export async function handleOAuthUser(userData: {
         userData.image,
         userData.accessToken
       );
-
-      console.log("result[signupOAuth]", result);
+    
     }
 
     // 3. Normalize the response for NextAuth
