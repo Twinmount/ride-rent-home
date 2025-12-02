@@ -6,6 +6,20 @@
 
 import { authAPI } from "@/lib/api/auth.api";
 
+export interface BackendAuthResponse {
+  success: boolean;
+  accessToken?: string;
+  refreshToken?: string;
+  data?: {
+    userId: string;
+    phoneNumber?: string;
+    avatar?: string;
+    isPhoneVerified?: boolean;
+    // ... other user fields
+  };
+  message?: string;
+}
+
 interface OAuthUserData {
   email: string;
   name?: string | null;
@@ -67,147 +81,70 @@ export async function checkUserPhoneStatus(userId: string): Promise<any> {
   }
 }
 
-/**
- * Create or link OAuth user account
- */
-export async function handleOAuthUser(
-  userData: OAuthUserData
-): Promise<OAuthUserResult> {
+
+export async function handleOAuthUser(userData: {
+  email: string;
+  name?: string;
+  image?: string;
+  provider: string;
+  providerAccountId: string;
+  accessToken?: string;
+  idToken?: string; // Important for Google/Apple
+}): Promise<BackendAuthResponse> {
   try {
+    // 1. Check if user exists (or let backend handle this logic atomically)
     const userExists = await checkOAuthUserExists(userData.email);
+    
+    let result: any;
 
     if (userExists.success) {
-      // User exists - link OAuth account to existing user
-      try {
-        const linkResponse = await authAPI.linkOAuthAccount(
-          userData.email,
-          userData.provider,
-          userData.providerAccountId,
-          userData.accessToken
-        );
-
-        if (linkResponse.success) {
-          if (process.env.NODE_ENV === "development") {
-            console.log("✅ OAuth account linked successfully:", {
-              email: userData.email,
-              provider: userData.provider,
-              userId: linkResponse.data?.userId,
-            });
-          }
-
-          return {
-            success: true,
-            isNewUser: false,
-            userId: linkResponse.data?.userId,
-            message: linkResponse.message || "OAuth account linked to existing user",
-          };
-        } else {
-          console.error("Failed to link OAuth account:", linkResponse.message);
-          return {
-            success: false,
-            isNewUser: false,
-            message: linkResponse.message || "Failed to link OAuth account",
-          };
-        }
-      } catch (error: any) {
-        console.error("Error linking OAuth account:", error);
-        return {
-          success: false,
-          isNewUser: false,
-          message: error?.message || "Failed to link OAuth account",
-        };
-      }
+      // 2a. User Exists: Link Account & LOGIN
+      // NOTE: Ensure your backend API returns tokens here!
+      result = await authAPI.linkOAuthAccount(
+        userData.email,
+        userData.provider,
+        userData.providerAccountId,
+        userData.accessToken // Pass idToken if your backend requires it for verification
+      );
+      console.log("result[linkOAuthAccount]", result);
     } else {
-      // New user - create account with OAuth
-      try {
-        if (process.env.NODE_ENV === "development") {
-          console.log("🆕 Creating new OAuth user:", {
-            email: userData.email,
-            name: userData.name,
-            provider: userData.provider,
-          });
-        }
+      // 2b. New User: Create Account & LOGIN
+      // NOTE: Ensure your backend API returns tokens here!
+      result = await authAPI.signupOAuth(
+        userData.email,
+        userData.provider,
+        userData.providerAccountId,
+        userData.name,
+        userData.image,
+        userData.accessToken
+      );
 
-        const signupResponse = await authAPI.signupOAuth(
-          userData.email,
-          userData.provider,
-          userData.providerAccountId,
-          userData.name || undefined,
-          userData.image || undefined,
-          userData.accessToken
-        );
-
-        if (signupResponse.success) {
-          if (process.env.NODE_ENV === "development") {
-            console.log("✅ OAuth user created successfully:", {
-              email: userData.email,
-              provider: userData.provider,
-              userId: signupResponse.data?.userId,
-            });
-          }
-
-          return {
-            success: true,
-            isNewUser: true,
-            userId: signupResponse.data?.userId,
-            message: signupResponse.message || "OAuth user created successfully",
-          };
-        } else {
-          console.error("Failed to create OAuth user:", signupResponse.message);
-          return {
-            success: false,
-            isNewUser: true,
-            message: signupResponse.message || "Failed to create OAuth user",
-          };
-        }
-      } catch (error: any) {
-        console.error("Error creating OAuth user:", error);
-        return {
-          success: false,
-          isNewUser: true,
-          message: error?.message || "Failed to create OAuth user",
-        };
-      }
+      console.log("result[signupOAuth]", result);
     }
+
+    // 3. Normalize the response for NextAuth
+    if (result.success && result.accessToken && result.refreshToken) {
+      return {
+        success: true,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+        data: {
+          userId: result.data?.userId,
+          phoneNumber: result.data?.phoneNumber,
+          avatar: result.data?.avatar || userData.image,
+          isPhoneVerified: result.data?.isPhoneVerified ?? false,
+        },
+      };
+    }
+
+    return { success: false, message: result.message || "Failed to exchange token" };
+
   } catch (error: any) {
-    console.error("Error handling OAuth user:", error);
+    console.error("Error in Token Exchange:", error);
     return {
       success: false,
-      isNewUser: false,
-      message: error?.message || "Failed to handle OAuth user",
+      message: error?.message || "Token exchange failed",
     };
-  }
-}
-
-/**
- * Store OAuth user data in your database
- * This is called after successful OAuth authentication
- */
-export async function storeOAuthUserData(
-  userData: OAuthUserData,
-  userId?: string
-): Promise<boolean> {
-  try {
-    // TODO: Implement database storage
-    // This could involve:
-    // 1. Storing user profile data
-    // 2. Linking OAuth provider to user account
-    // 3. Storing access tokens (securely)
-    // 4. Updating user profile with OAuth data
-
-    if (process.env.NODE_ENV === "development") {
-      console.log("💾 Storing OAuth user data:", {
-        userId,
-        email: userData.email,
-        provider: userData.provider,
-      });
-    }
-
-    // Placeholder - implement actual database storage
-    return true;
-  } catch (error) {
-    console.error("Error storing OAuth user data:", error);
-    return false;
   }
 }
 

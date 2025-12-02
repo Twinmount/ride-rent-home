@@ -1,12 +1,11 @@
 "use client";
 
-import SafeImage from "@/components/common/SafeImage";
 import dynamic from "next/dynamic";
-import { useSession} from "next-auth/react";
-import { useParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
-import { extractCategory, getAvatarProps, trimName } from "@/helpers";
+import { getAvatarProps, trimName } from "@/helpers";
 import { noStatesDropdownRoutes } from ".";
 import LanguageSelector from "./LanguageSelector";
 import { LocationDialog } from "../dialog/location-dialog/LocationDialog";
@@ -33,7 +32,6 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { LoginDrawer } from "../dialog/login-dialog/LoginDrawer";
-import { authStorage } from "@/lib/auth";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 // dynamic import for sidebar - Fix the loading state
@@ -52,22 +50,17 @@ export const Navbar = () => {
 
   const router = useRouter();
   const {
-    user,
-    auth,
     logout,
     isLoginOpen,
-    useGetUserProfile,
     onHandleLoginmodal,
   } = useAuthContext();
 
-  const {data:sessionData,status:sessionStatus}=useSession();
-  console.log("sessionData: [Navbar]", sessionData);
-  console.log("sessionStatus: [Navbar]", sessionStatus);
+  const { data: sessionData, status: sessionStatus } = useSession();
+  console.log("sessionData[Navbar]", sessionData);
 
   useLayoutEffect(() => {
     setMounted(true);
   }, []);
-
 
   const { country, state, category } = useStateAndCategory();
 
@@ -89,10 +82,18 @@ export const Navbar = () => {
 
   const shouldRenderDropdowns = useShouldRender(noStatesDropdownRoutes);
 
+  // Check if user is authenticated using NextAuth session
+  const isAuthenticated = sessionStatus === "authenticated" && !!sessionData;
+
+  // Get user data directly from NextAuth session
+  const userName = sessionData?.user?.name || "";
+  const userEmail = sessionData?.user?.email || "";
+  const userAvatar = sessionData?.user?.image || "";
+  const userId = sessionData?.user?.id || "";
+
   const handleLogout = () => {
-    logout(auth?.user?.id || "");
+    logout(userId);
     onHandleLoginmodal({ isOpen: true });
-    // router.push("/");
   };
 
   // Navigation handlers
@@ -116,22 +117,6 @@ export const Navbar = () => {
     const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
     router.push(`/${profileCountry}/${profileState}/user-profile/saved-vehicles`);
   };
-
-  const userId = sessionData?.user?.id;
-
-  // Get user profile data
-  const userProfileQuery = useGetUserProfile(userId!, !!userId);
-
-  // Get user name from auth state
-  const userName = userProfileQuery.data?.data?.name
-    ? `${userProfileQuery.data?.data?.name || ""}`
-    : "";
-
-  const useAvatar = userProfileQuery.data?.data?.avatar
-    ? `${userProfileQuery.data?.data?.avatar || ""}`
-    : "?";
-
-    console.log("useAvatar",useAvatar)
 
   return (
     <>
@@ -179,11 +164,11 @@ export const Navbar = () => {
               </div>
 
               {/* User Authentication */}
-              {auth.isLoggedIn ? (
+              {isAuthenticated ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Avatar className="h-8 w-8 flex-shrink-0 cursor-pointer ring-2 ring-orange-200 transition-all hover:ring-orange-300">
-                      <AvatarImage src={useAvatar} alt={userName} />
+                      <AvatarImage src={userAvatar} alt={userName} />
                       <AvatarFallback className="bg-orange-100 text-xs font-semibold text-orange-600">
                         {getAvatarProps(userName).fallbackInitials}
                       </AvatarFallback>
@@ -199,7 +184,7 @@ export const Navbar = () => {
                           {trimName(userName, 15)}
                         </p>
                         <p className="text-xs leading-none text-muted-foreground">
-                          {user?.email}
+                          {userEmail}
                         </p>
                       </div>
                     </DropdownMenuLabel>

@@ -268,13 +268,16 @@ export class AuthAPI {
   }
 
   /**
-   * Refresh access token
+   * Refresh access token with token rotation
    */
-  static async refreshAccessToken(userId: string): Promise<AuthResponse> {
+  static async refreshAccessToken(
+    userId: string,
+    refreshToken: string
+  ): Promise<AuthResponse> {
     try {
-      const response = await createAuthenticatedRequest.auth.post(
+      const response = await authApiClient.post(
         AUTH_ENDPOINTS.REFRESH_TOKEN,
-        { userId }
+        { userId, refreshToken }
       );
       return response.data;
     } catch (error: any) {

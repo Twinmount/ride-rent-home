@@ -3,13 +3,71 @@ import FacebookProvider from "next-auth/providers/facebook";
 import AppleProvider from "next-auth/providers/apple";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { logExpectedRedirectUris, validateRedirectUriConfig } from "@/utils/debug-oauth";
-import { handleOAuthUser,checkOAuthUserPhoneStatus,checkUserPhoneStatus } from "./oauth-user-handler";
+import {
+  logExpectedRedirectUris,
+  validateRedirectUriConfig,
+} from "@/utils/debug-oauth";
+import {
+  handleOAuthUser,
+  checkOAuthUserPhoneStatus,
+  checkUserPhoneStatus,
+} from "./oauth-user-handler";
 import { authAPI } from "../api";
+
+/**
+ * Decode JWT token without verification (to check expiration)
+ * Works in both Node.js and browser environments
+ */
+function decodeJWT(token: string): { exp?: number; [key: string]: any } | null {
+  try {
+    const base64Url = token.split(".")[1];
+    if (!base64Url) return null;
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+
+    // Use atob for browser or Buffer for Node.js
+    let jsonPayload: string;
+    if (typeof window !== "undefined") {
+      // Browser environment
+      jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+    } else {
+      // Node.js environment
+      jsonPayload = Buffer.from(base64, "base64").toString("utf-8");
+    }
+
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error("Error decoding JWT:", error);
+    return null;
+  }
+  // dsds
+}
+
+/**
+ * Check if JWT token is expired or about to expire (within 5 minutes)
+ */
+function isTokenExpired(token: string): boolean {
+  const decoded = decodeJWT(token);
+  if (!decoded || !decoded.exp) return true;
+
+  // Check if token is expired or will expire within 5 minutes
+  const expirationTime = decoded.exp * 1000; // Convert to milliseconds
+  const currentTime = Date.now();
+  const fiveMinutesInMs = 5 * 60 * 1000;
+
+  return expirationTime <= currentTime + fiveMinutesInMs;
+}
 
 // Temporary cache to store tokens between authorize() and JWT callback
 // Key: userId, Value: { accessToken, refreshToken }
-const credentialsTokenCache = new Map<string, { accessToken?: string; refreshToken?: string }>();
+const credentialsTokenCache = new Map<
+  string,
+  { accessToken?: string; refreshToken?: string }
+>();
 
 const requiredEnvVars = {
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
@@ -27,11 +85,11 @@ if (process.env.NODE_ENV === "development") {
   const validation = validateRedirectUriConfig();
   if (!validation.isValid) {
     console.error("❌ Configuration Errors:");
-    validation.errors.forEach(error => console.error(`   - ${error}`));
+    validation.errors.forEach((error) => console.error(`   - ${error}`));
   }
   if (validation.warnings.length > 0) {
     console.warn("⚠️  Configuration Warnings:");
-    validation.warnings.forEach(warning => console.warn(`   - ${warning}`));
+    validation.warnings.forEach((warning) => console.warn(`   - ${warning}`));
   }
 
   Object.entries(requiredEnvVars).forEach(([key, value]) => {
@@ -53,7 +111,11 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          if (!credentials?.phoneNumber || !credentials?.countryCode || !credentials?.password) {
+          if (
+            !credentials?.phoneNumber ||
+            !credentials?.countryCode ||
+            !credentials?.password
+          ) {
             return null;
           }
 
@@ -66,13 +128,12 @@ export const authOptions: NextAuthOptions = {
           console.log("response:[CredentialsProvider] ", response);
 
           if (response.success && response.data?.userId) {
-            
             return {
               id: response.data.userId,
               name: response.data.name,
               email: response.data.email,
               image: response.data.avatar,
-              accessToken: response.accessToken,   
+              accessToken: response.accessToken,
               refreshToken: response.refreshToken,
               phoneNumber: response.data.phoneNumber,
               countryCode: response.data.countryCode,
@@ -83,15 +144,13 @@ export const authOptions: NextAuthOptions = {
           }
           return null;
         } catch (error) {
-          throw new Error(error instanceof Error ? error.message : "Login failed");
+          throw new Error(
+            error instanceof Error ? error.message : "Login failed"
+          );
         }
       },
     }),
 
-
-
-
-    
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
@@ -124,57 +183,14 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (process.env.NODE_ENV === "development") {
-        console.log("🔑 Sign in attempt:", {
-          provider: account?.provider,
-          email: user?.email,
-          redirectUri: account?.provider ? `${process.env.NEXTAUTH_URL}/api/auth/callback/${account.provider}` : "N/A",
-        });
-      }
-
-      if (account?.provider === "google" || account?.provider === "facebook" || account?.provider === "apple") {
-        if (user?.email && account) {
-          try {
-            const oauthResult = await handleOAuthUser({
-              email: user.email,
-              name: user.name ?? undefined,
-              image: user.image ?? undefined,
-              provider: account.provider,
-              providerAccountId: account.providerAccountId,
-              accessToken: account.access_token,
-            });
-
-            if (!oauthResult.success) {
-              console.error("Failed to handle OAuth user:", oauthResult.message);
-            } else {
-              if (process.env.NODE_ENV === "development") {
-                console.log(
-                  oauthResult.isNewUser ? "🆕 New OAuth user created" : "✅ Existing user linked",
-                  oauthResult.message
-                );
-              }
-            }
-          } catch (error) {
-            console.error("Error in OAuth user handling:", error);
-          }
-        }
-
-        return true;
-      }
+      
 
       return true;
     },
     async jwt({ token, trigger, session, account, user, profile }) {
-      if (account) {
+      console.log("jwt:[auth.option]", { token, trigger, session, account, user, profile });
+      if (account && user) {
         token.provider = account.provider;
-        
-        // For OAuth providers, get tokens from account
-        if (account.provider !== "credentials") {
-          token.accessToken = account.access_token;
-          token.refreshToken = account.refresh_token;
-          token.providerAccountId = account.providerAccountId;
-        }
-
         if (user) {
           token.id = user.id;
           token.email = user.email ?? undefined;
@@ -194,7 +210,7 @@ export const authOptions: NextAuthOptions = {
             token.isPhoneVerified = (user as any).isPhoneVerified ?? false;
             token.isEmailVerified = (user as any).isEmailVerified ?? false;
             token.isTempVerified = (user as any).isTempVerified ?? false;
-            
+
             if ((user as any).phoneNumber) {
               token.phoneNumber = (user as any).phoneNumber;
             }
@@ -215,48 +231,76 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
-        if (user?.email && account && account.provider !== "credentials") {
+        if (account.provider !== "credentials" && user.email) {
           try {
-            const dbUser=await checkOAuthUserPhoneStatus(user.id);
-            console.log("dbUser[checkOAuthUserPhoneStatus]", dbUser);
+            const tokenToVerify = account.id_token || account.access_token;
 
+            const oauthResult = await handleOAuthUser({
+              email: user.email,
+              name: user.name ?? undefined,
+              image: user.image ?? undefined,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              accessToken: tokenToVerify, // Send this to backend
+            });
 
-            if (dbUser.success && dbUser.data) {
-              // Add verification status
-              token.isPhoneVerified = dbUser.data.isPhoneVerified;
-              token.isEmailVerified = dbUser.data.isEmailVerified;
-              token.isTempVerified = dbUser.data.isTempVerified;
+            if (oauthResult.success && oauthResult.accessToken) {
+              // 🚨 OVERWRITE NextAuth values with Backend values
+              token.accessToken = oauthResult.accessToken;
+              token.refreshToken = oauthResult.refreshToken;
               
-              // Add user details from database
-              if (dbUser.data.phoneNumber) {
-                token.phoneNumber = dbUser.data.phoneNumber;
-              }
-              if (dbUser.data.countryCode) {
-                token.countryCode = dbUser.data.countryCode;
-              }
-              if (dbUser.data.avatar) {
-                token.image = dbUser.data.avatar;
-              }
-              if (dbUser.data.name) {
-                token.name = dbUser.data.name;
-              }
-              if (dbUser.data.email) {
-                token.email = dbUser.data.email;
-              }
+              // Map Backend User Data
+              token.id = oauthResult.data?.userId;
+              token.phoneNumber = oauthResult.data?.phoneNumber;
+              token.isPhoneVerified = oauthResult.data?.isPhoneVerified;
+              token.image = oauthResult.data?.avatar; // Prefer backend avatar
+              
+              // Set timestamp for your expiration logic
+              token.iat = Math.floor(Date.now() / 1000);
+            } else {
+              // Throwing error here redirects to error page
+              throw new Error("BackendTokenExchangeFailed");
             }
           } catch (error) {
-            console.error("Error storing OAuth user data:", error);
+            console.error("Error handling OAuth user:", error);
+            // Throwing error ensures we don't create a session without backend tokens
+            throw error; 
           }
         }
-
-        if (process.env.NODE_ENV === "development") {
-          console.log("✅ JWT created for:", {
-            provider: account.provider,
-            email: user?.email,
-            userId: user?.id,
-          });
-        }
       }
+
+      if (!token.accessToken || !token.refreshToken) return token;
+        // Check if the BACKEND Access Token is expired
+        if (isTokenExpired(token.accessToken as string)) {
+          if (process.env.NODE_ENV === "development") {
+            console.log(`🔄 Refreshing Token for user ${token.id}...`);
+          }
+
+          try {
+            // Call your Backend Refresh API
+            const refreshResponse = await authAPI.refreshAccessToken(
+              token.id as string,
+              token.refreshToken as string
+            );
+
+            if (refreshResponse.success && refreshResponse.accessToken) {
+              return {
+                ...token,
+                accessToken: refreshResponse.accessToken,
+                refreshToken:
+                  refreshResponse.refreshToken ?? token.refreshToken, // Fallback if backend doesn't rotate RT every time
+                iat: Math.floor(Date.now() / 1000), // Update 'issued at' time
+                error: undefined, // Clear any previous errors
+              };
+            } else {
+              console.error("❌ Refresh Failed (Token likely revoked)");
+              return { ...token, error: "RefreshAccessTokenError" };
+            }
+          } catch (error) {
+            console.error("❌ Refresh API Error:", error);
+            return { ...token, error: "RefreshAccessTokenError" };
+          }
+        }
 
       if (trigger === "update" && session) {
         if (session.user?.name) token.name = session.user.name;
@@ -267,6 +311,10 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
+      if (token.error) {
+        (session as any).error = token.error;
+      }
+
       if (token) {
         session.accessToken = token.accessToken as string;
 
@@ -314,6 +362,7 @@ export const authOptions: NextAuthOptions = {
 
 declare module "next-auth" {
   interface Session {
+    error?: string;
     accessToken?: string;
     provider?: string;
     providerAccountId?: string;
@@ -333,6 +382,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
+    error?: string;
     accessToken?: string;
     refreshToken?: string;
     provider?: string;

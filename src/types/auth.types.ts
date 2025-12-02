@@ -299,7 +299,7 @@ export interface AuthAPIInterface {
     userId: string,
     profileData: User
   ) => Promise<AuthResponse>;
-  refreshAccessToken: (userId: string) => Promise<AuthResponse>;
+  refreshAccessToken: (userId: string, refreshToken: string) => Promise<AuthResponse>;
 }
 
 /**

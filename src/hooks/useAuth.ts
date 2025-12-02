@@ -117,6 +117,10 @@ export const useAuth = () => {
        });
        authStorage.clear();
     }
+     if ((session as any)?.error === "RefreshAccessTokenError") {
+      signOut({ redirect: false });
+      clearAuthData();
+    }
   }, [session, status, updateState, setAuth]);
 
   // useEffect(() => {
@@ -574,6 +578,33 @@ export const useAuth = () => {
     },
   });
 
+  const clearAuthData = useCallback(() => {
+    // Clear auth storage
+    authStorage.clear();
+    // Update all auth states
+    updateState((draft) => {
+      draft.isAuthenticated = false;
+      draft.user = null;
+      draft.error = null;
+      draft.isLoading = false;
+    });
+
+    setAuth((draft) => {
+      draft.isLoggedIn = false;
+      draft.user = null;
+      draft.token = null;
+      draft.refreshToken = null;
+    });
+    // Clear React Query cache
+    queryClient.clear();
+    setUserAuthStep((draft) => {
+      draft.userId = "";
+      draft.otpId = "";
+      draft.name = "";
+      draft.otpExpiresIn = 5;
+    });
+  }, [updateState, setAuth, queryClient, setUserAuthStep]);
+
   // React Query for getUserProfile
   const useGetUserProfile = (userId: string, enabled: boolean = true) => {
     return useQuery({
@@ -706,41 +737,6 @@ export const useAuth = () => {
       throw authError;
     }
   };
-
-  const clearAuthData = useCallback(() => {
-    // Clear auth storage
-    authStorage.clear();
-
-    // Update all auth states
-    updateState((draft) => {
-      draft.isAuthenticated = false;
-      draft.user = null;
-      draft.error = null;
-      draft.isLoading = false;
-    });
-
-    setAuth((draft) => {
-      draft.isLoggedIn = false;
-      draft.user = null;
-      draft.token = null;
-      draft.refreshToken = null;
-    });
-
-    // Clear React Query cache
-    queryClient.clear();
-
-    // Close login modal
-    // setLoginOpen(false);
-
-    // Reset user auth step
-    setUserAuthStep((draft) => {
-      draft.userId = "";
-      draft.otpId = "";
-      draft.name = "";
-      draft.otpExpiresIn = 5;
-    });
-  }, [updateState, setAuth, queryClient, setUserAuthStep]);
-
   // Logout function
   const logout = async (id?: string): Promise<void> => {
     try {
