@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import MobileProfileCard from "@/components/root/vehicle-details/profile-card/mobile-profile-card/MobileProfileCard";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 import { sendPortfolioVisit } from "@/lib/api/general-api";
@@ -42,8 +43,10 @@ const DetailsSectionClientWrapper = ({
   const { vehicleCode, vehicleId } = profileData;
   const { auth } = useAppContext();
   const { user, authStorage, isAuthenticated } = auth;
+  const { data: session } = useSession();
 
-  const userId = user?.id || authStorage.getUser()?.id;
+  // Use NextAuth session userId as primary source, fallback to auth context user
+  const userId = session?.user?.id || user?.id || authStorage.getUser()?.id;
 
   const detailsSectionRef = useRef(null);
   const isInViewPort = useIntersectionObserver(detailsSectionRef);

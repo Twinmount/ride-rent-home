@@ -42,29 +42,7 @@ export function BookingConfirmationModal({
 }: BookingConfirmationModalProps) {
   const [step, setStep] = useState<"confirmation" | "success">("confirmation");
 
-  console.log("vehicleData: ", vehicleData);
-
-  // Default data fallback
-  const bookingData = vehicleData || {
-    carName: "Ford Mustang GT 2024",
-    carImage: "/ford-mustang-gt-2024.jpg",
-    startDate: "Sep 15, 2025",
-    endDate: "Sep 18, 2025",
-    totalDays: 3,
-    pricePerDay: 250,
-    totalPrice: 750,
-    location: "Dubai, UAE",
-    // insurance: 50, // commented out for now
-    // serviceFee: 25, // commented out for now
-    customer: {
-      name: "",
-      phone: "",
-      email: "",
-      // paymentMethod: "**** **** **** 1234", // commented out for now
-    },
-    pickupTime: "10:00 AM",
-    returnTime: "10:00 AM",
-  };
+  const bookingData = vehicleData 
 
   const handleConfirmBooking = async () => {
     if (onConfirm) {
@@ -97,14 +75,7 @@ export function BookingConfirmationModal({
                 <DialogTitle className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-2xl font-bold text-transparent">
                   Confirm Your Booking
                 </DialogTitle>
-                {/* <Button variant="ghost" size="icon" onClick={handleClose}>
-                  <X className="h-4 w-4" />
-                </Button> */}
               </div>
-              {/* <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Car className="h-4 w-4 text-orange-500" aria-hidden="true" />
-                <span>Ride.Rent - Premium Car Rental</span>
-              </div> */}
             </DialogHeader>
 
             <div className="space-y-6">
@@ -112,17 +83,17 @@ export function BookingConfirmationModal({
               <div className="rounded-lg border border-orange-200 bg-gradient-to-r from-orange-50 to-red-50 p-4">
                 <div className="flex gap-4">
                   <img
-                    src={bookingData.carImage || "/placeholder.svg"}
-                    alt={`${bookingData.carName} vehicle`}
+                    src={bookingData?.carImage || "/placeholder.svg"}
+                    alt={`${bookingData?.carName || "Vehicle"} vehicle`}
                     className="h-16 w-24 rounded-md object-cover"
                   />
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold">
-                      {bookingData.carName}
+                      {bookingData?.carName}
                     </h3>
                     <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
                       <MapPin className="h-3 w-3" aria-hidden="true" />
-                      <span>{bookingData.location}</span>
+                      <span>{bookingData?.location}</span>
                     </div>
                     <div className="mt-2 flex gap-2">
                       <Badge className="bg-orange-100 text-xs text-orange-700 hover:bg-orange-200">
@@ -152,7 +123,7 @@ export function BookingConfirmationModal({
                     <div>
                       <p className="text-sm font-medium">Pickup Date</p>
                       <p className="text-sm text-muted-foreground">
-                        {bookingData.startDate}
+                        {bookingData?.startDate}
                       </p>
                     </div>
                   </div>
@@ -166,7 +137,7 @@ export function BookingConfirmationModal({
                     <div>
                       <p className="text-sm font-medium">Return Date</p>
                       <p className="text-sm text-muted-foreground">
-                        {bookingData.endDate}
+                        {bookingData?.endDate}
                       </p>
                     </div>
                   </div>
@@ -184,7 +155,7 @@ export function BookingConfirmationModal({
                       className="h-4 w-4 text-orange-500"
                       aria-hidden="true"
                     />
-                    <span>{bookingData.customer?.name || "John Doe"}</span>
+                    <span>{bookingData?.customer?.name || "John Doe"}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone
@@ -192,16 +163,16 @@ export function BookingConfirmationModal({
                       aria-hidden="true"
                     />
                     <span>
-                      {bookingData.customer?.phone || "+971 50 123 4567"}
+                      {bookingData?.customer?.phone}
                     </span>
                   </div>
-                  {bookingData.customer?.email ? (
+                  {bookingData?.customer?.email ? (
                     <div className="flex items-center gap-3">
                       <Mail
                         className="h-4 w-4 text-orange-500"
                         aria-hidden="true"
                       />
-                      <span>{bookingData.customer?.email}</span>
+                      <span>{bookingData?.customer?.email}</span>
                     </div>
                   ) : (
                     <></>
@@ -291,7 +262,7 @@ export function BookingConfirmationModal({
               <div className="space-y-2">
                 <h2 className="text-2xl font-bold">Booking Confirmed!</h2>
                 <p className="text-muted-foreground">
-                  Your {bookingData.carName} has been successfully booked.
+                  Your {bookingData?.carName} has been successfully booked.
                 </p>
               </div>
 
@@ -308,11 +279,11 @@ export function BookingConfirmationModal({
               <div className="space-y-1 text-sm text-muted-foreground">
                 <p>
                   📧 Confirmation email sent to{" "}
-                  {bookingData.customer?.email || "john.doe@email.com"}
+                  {bookingData?.customer?.email || "john.doe@email.com"}
                 </p>
                 <p>
                   📱 SMS confirmation sent to{" "}
-                  {bookingData.customer?.phone || "+971 50 123 4567"}
+                  {bookingData?.customer?.phone}
                 </p>
               </div>
 

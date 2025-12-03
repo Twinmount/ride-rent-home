@@ -22,6 +22,8 @@ const AUTH_ENDPOINTS = {
   CHECK_USER_EXISTS: "/check-user-exists",
   CHECK_USER_EXISTS_BY_EMAIL: "/check-user-exists-by-email",
   CHECK_OAUTH_USER_PHONE_STATUS: "/check-oauth-user-phone",
+  ADD_PHONE_TO_OAUTH_USER: "/add-phone-to-oauth-user",
+  VERIFY_OAUTH_PHONE: "/verify-oauth-phone",
   LINK_OAUTH_ACCOUNT: "/link-oauth-account",
   SIGNUP_OAUTH: "/signup-oauth",
   SIGNUP: "/signup",
@@ -552,6 +554,54 @@ export class AuthAPI {
       );
     }
   }
+
+  /**
+   * Add phone number to OAuth user (sends OTP)
+   */
+  static async addPhoneToOAuthUser(
+    userId: string,
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.ADD_PHONE_TO_OAUTH_USER,
+        { userId, phoneNumber, countryCode }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to add phone number to OAuth user"
+      );
+    }
+  }
+
+  /**
+   * Verify OTP and link phone number to OAuth user
+   */
+  static async verifyOAuthPhone(
+    userId: string,
+    otpId: string,
+    otp: string,
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.VERIFY_OAUTH_PHONE,
+        { userId, otpId, otp, phoneNumber, countryCode }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to verify OAuth phone number"
+      );
+    }
+  }
 }
 
 
@@ -576,6 +626,8 @@ export const authAPI = {
   linkOAuthAccount: AuthAPI.linkOAuthAccount,
   signupOAuth: AuthAPI.signupOAuth,
   checkOAuthUserPhoneStatus: AuthAPI.checkOAuthUserPhoneStatus,
+  addPhoneToOAuthUser: AuthAPI.addPhoneToOAuthUser,
+  verifyOAuthPhone: AuthAPI.verifyOAuthPhone,
   requestPhoneNumberChange: AuthAPI.requestPhoneNumberChange,
   verifyPhoneNumberChange: AuthAPI.verifyPhoneNumberChange,
   requestEmailChange: AuthAPI.requestEmailChange,

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -32,12 +33,14 @@ interface SavedVehiclesProps {
 const SavedVehicles: React.FC<SavedVehiclesProps> = ({ className = "" }) => {
   const { auth } = useAppContext();
   const { user, authStorage } = auth;
+  const { data: session } = useSession();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("recent");
   const [filterBy, setFilterBy] = useState("all");
   const [page, setPage] = useState(0);
 
-  const userId = user?.id || authStorage.getUser()?.id;
+  // Use NextAuth session userId as primary source, fallback to auth context user
+  const userId = session?.user?.id || user?.id || authStorage.getUser()?.id;
 
   // Get current state and category context
   const { state, category, country } = useStateAndCategory();

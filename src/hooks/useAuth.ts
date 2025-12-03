@@ -69,7 +69,7 @@ export const useAuth = () => {
 
   const [isLoginOpen, setLoginOpen] = useImmer(false);
   const [step, setStep] = useState<AuthStep>("phone");
-
+  const [showOAuthPhoneModal, setShowOAuthPhoneModal] = useState(false);
 
   const [userAuthStep, setUserAuthStep] = useImmer({
     userId: "",
@@ -112,6 +112,22 @@ export const useAuth = () => {
       const accessToken = (session as any)?.accessToken || null;
       setToken(accessToken);
       
+      // ✅ Check if phone number is required for OAuth users
+      const isOAuthUser = session.provider && session.provider !== "credentials";
+      const needsPhoneNumber = isOAuthUser && 
+                            (!session.isPhoneVerified || !session.user?.phoneNumber);
+      
+      if (needsPhoneNumber) {
+        // Show modal for OAuth users who need to add phone number
+        setShowOAuthPhoneModal(true);
+        // Keep login drawer open if OAuth user needs to add phone
+      } else {
+        // Ensure modal is closed if phone is verified
+        setShowOAuthPhoneModal(false);
+        // Close login drawer when authentication is successful
+        setLoginOpen(false);
+      }
+      
       // OPTIONAL: Keep storage in sync for legacy code, but DO NOT rely on it for Auth check
       // authStorage.setToken((session as any).accessToken, true); 
     } else if (status === "unauthenticated") {
@@ -135,48 +151,7 @@ export const useAuth = () => {
     return () => {
       clearToken();
     };
-  }, [session, status, updateState, setAuth]);
-
-  // useEffect(() => {
-  //   const handleLogoutEvent = (event: CustomEvent) => {
-  //     // Clear auth storage (if not already cleared)
-  //     authStorage.clear();
-
-  //     // Update all auth states
-  //     updateState((draft) => {
-  //       draft.isAuthenticated = false;
-  //       draft.user = null;
-  //       draft.error = null;
-  //     });
-
-  //     setAuth((draft) => {
-  //       draft.isLoggedIn = false;
-  //       draft.user = null;
-  //       draft.token = null;
-  //       draft.refreshToken = null;
-  //     });
-
-  //     // Clear React Query cache
-  //     queryClient.clear();
-
-  //     // Close login modal if open
-  //     // setLoginOpen(false);
-
-  //     // Optionally redirect to home or login page
-  //     // router.push("/");
-  //   };
-
-  //   // Add event listener
-  //   window.addEventListener("auth:logout", handleLogoutEvent as EventListener);
-
-  //   // Cleanup event listener
-  //   return () => {
-  //     window.removeEventListener(
-  //       "auth:logout",
-  //       handleLogoutEvent as EventListener
-  //     );
-  //   };
-  // }, []);
+  }, [session, status, updateState, setAuth, setLoginOpen]);
 
   // React Query Mutations
   const checkUserExistsMutation = useMutation({
@@ -247,7 +222,7 @@ export const useAuth = () => {
           draft.token = data?.accessToken!;
           draft.refreshToken = data?.refreshToken!;
         });
-        // setLoginOpen(false);
+        // Note: Login drawer will close automatically when NextAuth session updates
         setError(null);
       }
     },
@@ -527,6 +502,114 @@ export const useAuth = () => {
     },
   });
 
+  // OAuth Phone Linking Mutations
+  const addOAuthPhoneMutation = useMutation({
+    mutationFn: ({
+      userId,
+      phoneNumber,
+      countryCode,
+    }: {
+      userId: string;
+      phoneNumber: string;
+      countryCode: string;
+    }) => authAPI.addPhoneToOAuthUser(userId, phoneNumber, countryCode),
+    onSuccess: (data, variables) => {
+      if (data.success && data.data) {
+        setUserAuthStep((draft) => {
+          draft.userId = data.data?.userId || variables.userId;
+          draft.otpId = data.data?.otpId || "";
+          draft.otpExpiresIn = data.data?.otpExpiresIn || 5;
+        });
+      }
+      setError(null);
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
+  const verifyOAuthPhoneMutation = useMutation({
+    mutationFn: ({
+      userId,
+      otpId,
+      otp,
+      phoneNumber,
+      countryCode,
+    }: {
+      userId: string;
+      otpId: string;
+      otp: string;
+      phoneNumber: string;
+      countryCode: string;
+    }) => authAPI.verifyOAuthPhone(userId, otpId, otp, phoneNumber, countryCode),
+    onSuccess: (data) => {
+      if (data.success && data.data) {
+        // Update user state with phone number and verification status
+        updateState((draft) => {
+          if (draft.user) {
+            if (data.data?.phoneNumber) {
+              draft.user.phoneNumber = data.data.phoneNumber;
+            }
+            if (data.data?.countryCode) {
+              draft.user.countryCode = data.data.countryCode;
+            }
+            if (data.data?.isPhoneVerified !== undefined) {
+              draft.user.isPhoneVerified = data.data.isPhoneVerified;
+            }
+          }
+        });
+
+        setAuth((draft) => {
+          if (draft.user) {
+            if (data.data?.phoneNumber) {
+              draft.user.phoneNumber = data.data.phoneNumber;
+            }
+            if (data.data?.countryCode) {
+              draft.user.countryCode = data.data.countryCode;
+            }
+            if (data.data?.isPhoneVerified !== undefined) {
+              draft.user.isPhoneVerified = data.data.isPhoneVerified;
+            }
+          }
+          if (data.accessToken) {
+            draft.token = data.accessToken;
+          }
+          if (data.refreshToken) {
+            draft.refreshToken = data.refreshToken;
+          }
+        });
+
+        // Update token if new tokens are provided
+        if (data.accessToken) {
+          setToken(data.accessToken);
+        }
+
+        // Update storage with the updated user object
+        if (state.user) {
+          const updatedUser = {
+            ...state.user,
+            ...(data.data?.phoneNumber && { phoneNumber: data.data.phoneNumber }),
+            ...(data.data?.countryCode && { countryCode: data.data.countryCode }),
+            ...(data.data?.isPhoneVerified !== undefined && {
+              isPhoneVerified: data.data.isPhoneVerified,
+            }),
+          };
+          authStorage.setUser(updatedUser, true);
+        }
+
+        // Close modal on success
+        setShowOAuthPhoneModal(false);
+        setError(null);
+
+        // Session will automatically refresh on next check
+        // The updated phone verification status will be reflected in the next session update
+      }
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
   const requestEmailChangeMutation = useMutation({
     mutationFn: ({ newEmail }: { newEmail: string }) =>
       authAPI.requestEmailChange(newEmail),
@@ -620,11 +703,15 @@ export const useAuth = () => {
   }, [updateState, setAuth, queryClient, setUserAuthStep]);
 
   // React Query for getUserProfile
+  // Uses NextAuth session to determine if query should be enabled
   const useGetUserProfile = (userId: string, enabled: boolean = true) => {
+    // Check if user is authenticated via NextAuth session
+    const isAuthenticated = status === "authenticated" && !!session?.user?.id;
+    
     return useQuery({
       queryKey: ["userProfile", userId],
       queryFn: () => authAPI.getUserProfile(userId),
-      enabled: !!userId && enabled && !!authStorage.getToken(),
+      enabled: !!userId && enabled && isAuthenticated,
       // retry: 2,
       // refetchOnWindowFocus: false,
     });
@@ -992,6 +1079,58 @@ export const useAuth = () => {
     }
   };
 
+  // Add phone number to OAuth user function
+  const addOAuthPhone = async (
+    userId: string,
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<AuthResponse> => {
+    try {
+      return addOAuthPhoneMutation.mutateAsync({
+        userId,
+        phoneNumber,
+        countryCode,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to add phone number",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
+  // Verify OAuth phone number function
+  const verifyOAuthPhone = async (
+    userId: string,
+    otpId: string,
+    otp: string,
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<AuthResponse> => {
+    try {
+      return verifyOAuthPhoneMutation.mutateAsync({
+        userId,
+        otpId,
+        otp,
+        phoneNumber,
+        countryCode,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to verify phone number",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
   const formatMemberSince = (createdAt: string): string => {
     if (!createdAt) return "Member since -"; // fallback if empty
 
@@ -1024,6 +1163,7 @@ export const useAuth = () => {
     ...state,
     step,
     isLoginOpen,
+    showOAuthPhoneModal,
     authStorage,
     userAuthStep,
 
@@ -1041,7 +1181,9 @@ export const useAuth = () => {
       requestPhoneChangeMutation.isPending ||
       verifyPhoneChangeMutation.isPending ||
       requestEmailChangeMutation.isPending ||
-      verifyEmailChangeMutation.isPending,
+      verifyEmailChangeMutation.isPending ||
+      addOAuthPhoneMutation.isPending ||
+      verifyOAuthPhoneMutation.isPending,
 
     // Actions
     setStep,
@@ -1059,6 +1201,9 @@ export const useAuth = () => {
     verifyPhoneNumberChange,
     requestEmailChange,
     verifyEmailChange,
+    addOAuthPhone,
+    verifyOAuthPhone,
+    setShowOAuthPhoneModal,
     clearError,
     onHandleLoginmodal,
     handleProfileNavigation,
@@ -1081,6 +1226,8 @@ export const useAuth = () => {
     verifyPhoneChangeMutation,
     requestEmailChangeMutation,
     verifyEmailChangeMutation,
+    addOAuthPhoneMutation,
+    verifyOAuthPhoneMutation,
 
     // Utilities
     clearAuthData,

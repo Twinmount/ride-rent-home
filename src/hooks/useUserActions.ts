@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppContext } from "@/context/useAppContext";
 import { useImmer } from "use-immer";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { ENV } from "@/config/env";
 import {
   getUserEnquiredVehicles,
@@ -39,10 +40,12 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
   const queryClient = useQueryClient();
   const { auth } = useAppContext();
   const { user, authStorage, isAuthenticated, onHandleLoginmodal } = auth;
+  const { data: session } = useSession();
 
   const [isSaved, setIsSaved] = useImmer(false);
 
-  const userId = user?.id || authStorage.getUser()?.id;
+  // Use NextAuth session userId as primary source, fallback to auth context user
+  const userId = session?.user?.id || user?.id || authStorage.getUser()?.id;
 
   // State for extracted saved vehicles data
   const [savedVehiclesState, setSavedVehiclesState] = useImmer({

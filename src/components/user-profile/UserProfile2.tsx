@@ -21,6 +21,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useImmer } from "use-immer";
+import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -86,6 +87,11 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
 
+  // Get NextAuth session for userId
+  const { data: session } = useSession();
+  const userId = session?.user?.id?.toString();
+
+console.log("userId[UserProfile2]", userId);
   // Get auth context
   const {
     deleteUser,
@@ -96,7 +102,6 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     verifyEmailChange,
     requestPhoneNumberChange,
     verifyPhoneNumberChange,
-    authStorage,
     deleteUserMutation,
     verifyOtpMutation,
     resendOtpMutation,
@@ -140,10 +145,9 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
   const [mobileOtpId, setMobileOtpId] = useState(""); // Add state for mobile OTP ID
   const [emailOtpId, setEmailOtpId] = useState(""); // Add state for email OTP ID
 
-  const userId = authStorage.getUser()?.id.toString();
-
   // Get user profile data
   const userProfileQuery = useGetUserProfile(userId!, !!userId);
+  console.log("userProfileQuery.data[UserProfile2]", userProfileQuery.data);
 
   const {
     userCarActionCountsQuery,

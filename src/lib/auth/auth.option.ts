@@ -257,13 +257,19 @@ export const authOptions: NextAuthOptions = {
               // Set timestamp for your expiration logic
               token.iat = Math.floor(Date.now() / 1000);
             } else {
-              // Throwing error here redirects to error page
-              throw new Error("BackendTokenExchangeFailed");
+              // Provide more detailed error message
+              const errorMessage = oauthResult.message || "BackendTokenExchangeFailed";
+              console.error("OAuth backend token exchange failed:", errorMessage);
+              throw new Error(errorMessage);
             }
           } catch (error) {
             console.error("Error handling OAuth user:", error);
+            // Preserve original error message if available
+            const errorMessage = error instanceof Error 
+              ? error.message 
+              : "OAuthAuthenticationFailed";
             // Throwing error ensures we don't create a session without backend tokens
-            throw error; 
+            throw new Error(errorMessage); 
           }
         }
       }
