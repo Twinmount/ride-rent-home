@@ -90,7 +90,7 @@ export function ProfileBreadcrumb({
               className="flex items-center gap-1 font-medium transition-colors hover:text-orange-500 hover:underline"
               asChild
             >
-              <Link href="/">
+              <Link href={`/${profileCountry}/${profileState}`}>
                 <Home className="h-4 w-4" />
                 <span className="hidden sm:inline">Home</span>
               </Link>
