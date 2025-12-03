@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { generateWhatsappUrl, getFormattedPhoneNumber } from "@/helpers";
 import ContactPopup from "../dialog/ContactPopup";
 import { useCarRent } from "@/hooks/useCarRent";
@@ -99,7 +100,12 @@ const RentNowButtonWide = ({
     setShowBookingConfirm(false);
   };
 
-  const { auth, onHandleLoginmodal } = useAuthContext();
+  // Use NextAuth for authentication check
+  const { data: sessionData, status: sessionStatus } = useSession();
+  const { onHandleLoginmodal } = useAuthContext();
+
+  // Check if user is authenticated using NextAuth session
+  const isAuthenticated = sessionStatus === "authenticated" && !!sessionData;
 
   // Define size classes based on variant with mobile responsiveness
   const sizeClasses =
@@ -130,7 +136,7 @@ const RentNowButtonWide = ({
     : null;
 
   const handleClick = () => {
-    if (!auth.isLoggedIn) {
+    if (!isAuthenticated) {
       onHandleLoginmodal({ isOpen: true });
       return;
     }

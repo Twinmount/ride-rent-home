@@ -56,7 +56,6 @@ export const Navbar = () => {
   } = useAuthContext();
 
   const { data: sessionData, status: sessionStatus } = useSession();
-  console.log("sessionData[Navbar]", sessionData);
 
   useLayoutEffect(() => {
     setMounted(true);
@@ -91,10 +90,14 @@ export const Navbar = () => {
   const userAvatar = sessionData?.user?.image || "";
   const userId = sessionData?.user?.id || "";
 
-  const handleLogout = () => {
-    router.push(`/${country}/${state}`);
-    logout(userId);
-    onHandleLoginmodal({ isOpen: true });
+  const handleLogout = async () => {
+    // router.push(`/${country}/${state}`);
+    await logout(userId);
+    // Open login modal after logout completes
+    // Use setTimeout to ensure session state has updated
+    setTimeout(() => {
+      onHandleLoginmodal({ isOpen: true });
+    }, 100);
   };
 
   // Navigation handlers

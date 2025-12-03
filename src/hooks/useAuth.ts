@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useImmer } from "use-immer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -65,9 +65,13 @@ export const useAuth = () => {
     refreshToken: authStorage.getRefreshToken(),
   });
 
-  console.log("auth: [useAuth]", auth);
 
-  const [isLoginOpen, setLoginOpen] = useImmer(false);
+
+  const [isLoginOpen, setLoginOpen] = useState(false);
+  console.log("isLoginOpen: [useAuth]", isLoginOpen);
+  // Use ref to track if modal was explicitly opened (e.g., after logout)
+  // This prevents the useEffect from closing it when session status changes
+  const wasExplicitlyOpened = useRef(false);
   const [step, setStep] = useState<AuthStep>("phone");
   const [showOAuthPhoneModal, setShowOAuthPhoneModal] = useState(false);
 
@@ -81,65 +85,30 @@ export const useAuth = () => {
 
   useEffect(() => {
     if (status === "authenticated" && session) {  
-      // Map NextAuth session user to your App's User type
-      const mappedUser: User = {
-        id: session.user.id || "",
-        name: session.user.name || "",
-        email: session.user.email || "",
-        avatar: session.user.image || "",
-        // You might need to extend the NextAuth session type or fetch profile here
-        // if these fields aren't in the session callback
-        phoneNumber: session.user.phoneNumber || "",
-        countryCode: session.user.countryCode || "",
-        isPhoneVerified: session.isPhoneVerified || false, 
-        isEmailVerified: session.isEmailVerified || false,
-      };
-
-      updateState((draft) => {
-        draft.isAuthenticated = true;
-        draft.user = mappedUser;
-        draft.isLoading = false;
-      });
-
-      setAuth((draft) => {
-        draft.isLoggedIn = true;
-        draft.user = mappedUser;
-        draft.token = (session as any).accessToken;
-      });
-
-      // Set token for axios interceptors (synchronous token access)
-      // Pass only the token string, not a closure, to prevent memory leaks
+     
       const accessToken = (session as any)?.accessToken || null;
       setToken(accessToken);
       
-      // ✅ Check if phone number is required for OAuth users
+    
       const isOAuthUser = session.provider && session.provider !== "credentials";
       const needsPhoneNumber = isOAuthUser && 
                             (!session.isPhoneVerified || !session.user?.phoneNumber);
       
-      if (needsPhoneNumber) {
-        // Show modal for OAuth users who need to add phone number
-        setShowOAuthPhoneModal(true);
-        // Keep login drawer open if OAuth user needs to add phone
-      } else {
-        // Ensure modal is closed if phone is verified
-        setShowOAuthPhoneModal(false);
-        // Close login drawer when authentication is successful
-        setLoginOpen(false);
-      }
-      
-      // OPTIONAL: Keep storage in sync for legacy code, but DO NOT rely on it for Auth check
-      // authStorage.setToken((session as any).accessToken, true); 
     } else if (status === "unauthenticated") {
-       // Clear state
-       updateState((draft) => {
-         draft.isAuthenticated = false;
-         draft.user = null;
-         draft.isLoading = false;
-       });
-       authStorage.clear();
-       // Clear token to prevent memory leaks
-       clearToken();
+      //  Clear state
+      //  updateState((draft) => {
+      //    draft.isAuthenticated = false;
+      //    draft.user = null;
+      //    draft.isLoading = false;
+      //  });
+      //  authStorage.clear();
+      // Don't automatically open login modal on unauthenticated status
+      // Let the UI components control when to open it (e.g., after logout)
+      // If modal was explicitly opened (e.g., after logout), keep it open
+      if (wasExplicitlyOpened.current && !isLoginOpen) {
+        setLoginOpen(true);
+      }
+      clearToken();
     }
      if ((session as any)?.error === "RefreshAccessTokenError") {
       signOut({ redirect: false });
@@ -151,7 +120,7 @@ export const useAuth = () => {
     return () => {
       clearToken();
     };
-  }, [session, status, updateState, setAuth, setLoginOpen]);
+  }, [session, status, updateState, setAuth]);
 
   // React Query Mutations
   const checkUserExistsMutation = useMutation({
@@ -718,10 +687,9 @@ export const useAuth = () => {
   };
 
   const onHandleLoginmodal = ({ isOpen }: { isOpen: boolean }) => {
-    setLoginOpen((draft) => {
-      draft = isOpen;
-      return draft;
-    });
+    setLoginOpen(isOpen);
+    // Track if modal was explicitly opened
+    wasExplicitlyOpened.current = isOpen;
   };
 
   const handleProfileNavigation = () => {
