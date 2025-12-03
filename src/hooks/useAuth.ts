@@ -38,6 +38,7 @@ import {
 // Import auth API service
 import { authAPI } from "@/lib/api/auth.api";
 import { authStorage } from "@/lib/auth/authStorage";
+import { setToken, clearToken } from "@/lib/api/axios.config";
 
 // Remove the old API_BASE_URL and AUTH_ENDPOINTS since they're now in the auth.api.ts file
 
@@ -105,6 +106,11 @@ export const useAuth = () => {
         draft.user = mappedUser;
         draft.token = (session as any).accessToken;
       });
+
+      // Set token for axios interceptors (synchronous token access)
+      // Pass only the token string, not a closure, to prevent memory leaks
+      const accessToken = (session as any)?.accessToken || null;
+      setToken(accessToken);
       
       // OPTIONAL: Keep storage in sync for legacy code, but DO NOT rely on it for Auth check
       // authStorage.setToken((session as any).accessToken, true); 
@@ -116,11 +122,19 @@ export const useAuth = () => {
          draft.isLoading = false;
        });
        authStorage.clear();
+       // Clear token to prevent memory leaks
+       clearToken();
     }
      if ((session as any)?.error === "RefreshAccessTokenError") {
       signOut({ redirect: false });
       clearAuthData();
+      clearToken();
     }
+
+    // Cleanup on unmount to prevent memory leaks
+    return () => {
+      clearToken();
+    };
   }, [session, status, updateState, setAuth]);
 
   // useEffect(() => {
