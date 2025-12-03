@@ -92,23 +92,18 @@ export const Navbar = () => {
   const userId = sessionData?.user?.id || "";
 
   const handleLogout = () => {
+    router.push(`/${country}/${state}`);
     logout(userId);
     onHandleLoginmodal({ isOpen: true });
   };
 
   // Navigation handlers
   const handleProfileNavigation = () => {
-    // Use current country and state, with fallbacks
-    const profileCountry = country || "in";
-    const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
-    router.push(`/${profileCountry}/${profileState}/user-profile`);
+    router.push(`/${country}/${state}/user-profile`);
   };
 
   const handleEnquiriesNavigation = () => {
-    // Use current country and state, with fallbacks
-    const profileCountry = country || "in";
-    const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
-    router.push(`/${profileCountry}/${profileState}/user-profile/enquired-vehicles`);
+    router.push(`/${country}/${state}/user-profile/enquired-vehicles`);
   };
 
   const handleFavoritesNavigation = () => {

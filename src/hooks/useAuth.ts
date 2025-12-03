@@ -841,8 +841,6 @@ export const useAuth = () => {
   // Logout function
   const logout = async (id?: string): Promise<void> => {
     try {
-      // await logoutMutation.mutateAsync({ userId: id });
-      // authStorage.clear();
       await signOut({ redirect: false });
     } catch (error) {
       console.warn("Logout request failed:", error);
