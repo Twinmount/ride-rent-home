@@ -386,7 +386,7 @@ export const PhoneStep = ({
           )}
         </Button>
       </div>
-      {/* {showSocial && ( */}
+      {showSocial && (
         <>
           <div className="relative mb-6 flex items-center justify-center">
             <div className="h-px w-full bg-slate-300"></div>
@@ -430,7 +430,7 @@ export const PhoneStep = ({
             </Button> */}
           </div>
         </>
-      {/* )} */}
+      )} 
     </div>
   );
 };
