@@ -49,11 +49,7 @@ export const Navbar = () => {
   const [mounted, setMounted] = useState(false);
 
   const router = useRouter();
-  const {
-    logout,
-    isLoginOpen,
-    onHandleLoginmodal,
-  } = useAuthContext();
+  const { logout, isLoginOpen, onHandleLoginmodal } = useAuthContext();
 
   const { data: sessionData, status: sessionStatus } = useSession();
 
@@ -88,6 +84,7 @@ export const Navbar = () => {
   const userName = sessionData?.user?.name || "";
   const userEmail = sessionData?.user?.email || "";
   const userAvatar = sessionData?.user?.image || "";
+  console.log("userAvatar: ", userAvatar);
   const userId = sessionData?.user?.id || "";
 
   const handleLogout = async () => {
@@ -112,8 +109,11 @@ export const Navbar = () => {
   const handleFavoritesNavigation = () => {
     // Use current country and state, with fallbacks
     const profileCountry = country || "in";
-    const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
-    router.push(`/${profileCountry}/${profileState}/user-profile/saved-vehicles`);
+    const profileState =
+      state || (profileCountry === "in" ? "bangalore" : "dubai");
+    router.push(
+      `/${profileCountry}/${profileState}/user-profile/saved-vehicles`
+    );
   };
 
   return (

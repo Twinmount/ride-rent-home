@@ -1,5 +1,5 @@
 "use client";
-
+import { useSession } from "next-auth/react";
 import { useAuthContext } from "@/auth";
 import { checkActiveEnquiry } from "@/lib/api/general-api";
 import { useQuery } from "@tanstack/react-query";
@@ -17,7 +17,7 @@ const ActiveEnquiryBanner = ({
   vehicleName,
   country = "ae",
 }: ActiveEnquiryBannerProps) => {
-  const { auth } = useAuthContext();
+  const { data: auth } = useSession();
 
   const { data: activeEnquiryData, isLoading } = useQuery({
     queryKey: ["activeEnquiry", vehicleId, auth?.user?.id],

@@ -1,21 +1,3 @@
-/**
- * UserProfile2 Component
- *
- * This component integrates with the phone number change API endpoints:
- * - /change-phone-number: Request phone number change and receive OTP
- * - /verify-phone-change: Verify the OTP to complete phone number change
- *
- * Phone Change Flow:
- * 1. User enters new phone number and clicks "Save & Send OTP"
- * 2. Component calls requestPhoneNumberChange() from useAuth hook
- * 3. OTP is sent to the new phone number, OTP ID is stored locally
- * 4. User enters OTP and clicks "Verify OTP"
- * 5. Component calls verifyPhoneNumberChange() with OTP ID and OTP
- * 6. On success, user's phone number is updated and profile is refreshed
- *
- * Note: Email change functionality is prepared but requires backend implementation
- */
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -74,16 +56,15 @@ interface UserProfileProps {
 
 export const UserProfile2 = ({ className }: UserProfileProps) => {
   return (
-    <ProtectedRoute showLoginModal={true}>
-      <UserProfileContent className={className} />
-    </ProtectedRoute>
+    // <ProtectedRoute showLoginModal={true}>
+    <UserProfileContent className={className} />
+    // </ProtectedRoute>
   );
 };
 
 const UserProfileContent = ({ className }: UserProfileProps) => {
   const router = useRouter();
   const { country, state } = useStateAndCategory();
-  const [languages, setLanguages] = useState("English, Arabic");
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
 
@@ -91,8 +72,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
   const { data: session } = useSession();
   const userId = session?.user?.id?.toString();
 
-console.log("userId[UserProfile2]", userId);
-  // Get auth context
+  console.log("userId[UserProfile2]", userId);
   const {
     deleteUser,
     updateProfile,
@@ -478,7 +458,8 @@ console.log("userId[UserProfile2]", userId);
 
   // Use current country and state, with fallbacks
   const profileCountry = country || "in";
-  const profileState = state || (profileCountry === "in" ? "bangalore" : "dubai");
+  const profileState =
+    state || (profileCountry === "in" ? "bangalore" : "dubai");
 
   const stats = [
     {
@@ -586,7 +567,7 @@ console.log("userId[UserProfile2]", userId);
         >
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <h1 className="mb-1 text-xl font-bold leading-tight sm:mb-2 sm:text-2xl md:text-3xl lg:text-4xl">
                 {`Hello ${trimName(profileData?.name || "", 15) || "User"}`}
               </h1>
@@ -694,12 +675,12 @@ console.log("userId[UserProfile2]", userId);
         <div className="grid grid-cols-1 gap-3 sm:gap-4 md:gap-6 lg:grid-cols-3 lg:gap-8">
           <div className="space-y-3 sm:space-y-4 md:space-y-6 lg:col-span-2">
             <Card className="border-0 shadow-lg">
-              <CardHeader className="pb-3 px-3 pt-3 sm:pb-4 sm:px-4 sm:pt-4 md:px-6 md:pt-6">
+              <CardHeader className="px-3 pb-3 pt-3 sm:px-4 sm:pb-4 sm:pt-4 md:px-6 md:pt-6">
                 <CardTitle className="flex flex-wrap items-center gap-2 text-base sm:gap-3 sm:text-lg md:text-xl lg:text-2xl">
                   <div className="rounded-md bg-orange-100 p-1.5 sm:rounded-lg sm:p-2">
                     <Settings className="h-3.5 w-3.5 text-orange-600 sm:h-4 sm:w-4 md:h-5 md:w-5" />
                   </div>
-                  <span className="flex-1 min-w-0">Profile Information</span>
+                  <span className="min-w-0 flex-1">Profile Information</span>
                   {userProfileQuery.isLoading && (
                     <span className="text-[10px] text-gray-500 sm:text-xs md:text-sm">
                       (Loading...)
@@ -742,10 +723,10 @@ console.log("userId[UserProfile2]", userId);
                       console.error("Avatar upload failed:", error);
                     }}
                   />
-                  <div className="flex-1 w-full text-center sm:text-left">
+                  <div className="w-full flex-1 text-center sm:text-left">
                     {!isEditingName ? (
                       <div className="mb-2 flex flex-col items-center gap-2 sm:mb-1 sm:flex-row sm:items-start">
-                        <h3 className="text-base font-bold text-gray-900 break-words sm:text-lg md:text-xl lg:text-2xl">
+                        <h3 className="break-words text-base font-bold text-gray-900 sm:text-lg md:text-xl lg:text-2xl">
                           {trimName(profileData?.name || "") || "User"}
                           {userProfileQuery.isLoading && (
                             <span className="ml-1.5 text-xs text-gray-500 sm:ml-2 sm:text-sm">
@@ -817,7 +798,9 @@ console.log("userId[UserProfile2]", userId);
                           className="border-green-200 text-[10px] text-green-600 sm:text-xs md:text-sm"
                         >
                           <Phone className="mr-0.5 h-2.5 w-2.5 sm:mr-1 sm:h-3 sm:w-3" />
-                          <span className="hidden sm:inline">Phone Verified</span>
+                          <span className="hidden sm:inline">
+                            Phone Verified
+                          </span>
                           <span className="sm:hidden">Phone</span>
                         </Badge>
                       )}
@@ -827,7 +810,9 @@ console.log("userId[UserProfile2]", userId);
                           className="border-blue-200 text-[10px] text-blue-600 sm:text-xs md:text-sm"
                         >
                           <Mail className="mr-0.5 h-2.5 w-2.5 sm:mr-1 sm:h-3 sm:w-3" />
-                          <span className="hidden sm:inline">Email Verified</span>
+                          <span className="hidden sm:inline">
+                            Email Verified
+                          </span>
                           <span className="sm:hidden">Email</span>
                         </Badge>
                       )}
@@ -1264,7 +1249,7 @@ console.log("userId[UserProfile2]", userId);
 
                   <div className="space-y-3 sm:space-y-4">
                     <div className="flex flex-col gap-2.5 rounded-lg bg-red-50 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-3">
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <Label className="text-xs font-medium text-gray-900 sm:text-sm">
                           Push Notifications
                         </Label>
@@ -1275,12 +1260,12 @@ console.log("userId[UserProfile2]", userId);
                       <Switch
                         checked={notifications}
                         onCheckedChange={setNotifications}
-                        className="cursor-pointer shrink-0 self-start data-[state=checked]:bg-orange-500 sm:self-center"
+                        className="shrink-0 cursor-pointer self-start data-[state=checked]:bg-orange-500 sm:self-center"
                       />
                     </div>
 
                     <div className="flex flex-col gap-2.5 rounded-lg bg-orange-50 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-3">
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <Label className="text-xs font-medium text-gray-900 sm:text-sm">
                           Email Alerts
                         </Label>
@@ -1292,7 +1277,7 @@ console.log("userId[UserProfile2]", userId);
                       <Switch
                         checked={emailAlerts}
                         onCheckedChange={setEmailAlerts}
-                        className="cursor-pointer shrink-0 self-start data-[state=checked]:bg-orange-500 sm:self-center"
+                        className="shrink-0 cursor-pointer self-start data-[state=checked]:bg-orange-500 sm:self-center"
                       />
                     </div>
                   </div>
@@ -1334,7 +1319,7 @@ console.log("userId[UserProfile2]", userId);
               <CardHeader className="px-3 pb-3 pt-3 sm:px-4 sm:pb-4 sm:pt-4 md:px-6 md:pt-6">
                 <CardTitle className="flex flex-wrap items-center gap-1.5 text-sm sm:gap-2 sm:text-base md:text-lg lg:text-xl">
                   <Activity className="h-3.5 w-3.5 text-blue-600 sm:h-4 sm:w-4 md:h-5 md:w-5" />
-                  <span className="flex-1 min-w-0">Recent Activity</span>
+                  <span className="min-w-0 flex-1">Recent Activity</span>
                   {userRecentActivitiesQuery.isLoading && (
                     <span className="text-[10px] text-gray-500 sm:text-xs md:text-sm">
                       (Loading...)
@@ -1427,7 +1412,9 @@ console.log("userId[UserProfile2]", userId);
                         <p className="line-clamp-2 text-[10px] font-medium text-gray-900 sm:text-xs md:text-sm">
                           {activity.action}
                         </p>
-                        <p className="text-[10px] text-gray-500 sm:text-xs">{activity.time}</p>
+                        <p className="text-[10px] text-gray-500 sm:text-xs">
+                          {activity.time}
+                        </p>
                         {activity.vehicleName && (
                           <p className="mt-0.5 line-clamp-1 text-[10px] font-medium text-orange-600 sm:text-xs">
                             {activity.vehicleName}

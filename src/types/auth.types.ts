@@ -180,6 +180,7 @@ export interface AuthResponse {
     isTempVerified?: string;
     hasValidTempToken?: boolean;
     expiredTempUser?: boolean;
+    accountLinked?: boolean; // Indicates if OAuth account was linked to existing account
     oauthProviders?: Array<{
       provider: string;
       providerAccountId: string;
@@ -299,7 +300,10 @@ export interface AuthAPIInterface {
     userId: string,
     profileData: User
   ) => Promise<AuthResponse>;
-  refreshAccessToken: (userId: string, refreshToken: string) => Promise<AuthResponse>;
+  refreshAccessToken: (
+    userId: string,
+    refreshToken: string
+  ) => Promise<AuthResponse>;
 }
 
 /**
@@ -363,6 +367,20 @@ export interface UseAuthReturn {
     phoneNumber: string,
     countryCode: string
   ) => Promise<AuthResponse>;
+  addOAuthPhone: (
+    userId: string,
+    phoneNumber: string,
+    countryCode: string
+  ) => Promise<AuthResponse>;
+  verifyOAuthPhone: (
+    userId: string,
+    phoneNumber: string,
+    countryCode: string,
+    otpId?: string,
+    otp?: string
+  ) => Promise<AuthResponse>;
+  setShowOAuthPhoneModal: (show: boolean) => void;
+  showOAuthPhoneModal: boolean;
 
   // Queries
   useGetUserProfile: (

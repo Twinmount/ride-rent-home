@@ -216,14 +216,15 @@ export class AuthAPI {
         `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`
       );
 
-      // Use axios client directly for FormData with explicit headers
-      const response = await authApiClient.put(
+      // Use createAuthenticatedRequest to ensure token is set in header
+      // The interceptor will automatically handle FormData and set Content-Type
+      const response = await createAuthenticatedRequest.auth.put(
         `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-          },
+          } as any,
           timeout: 30000, // 30 second timeout for file uploads
         }
       );
@@ -594,19 +595,33 @@ export class AuthAPI {
   }
 
   /**
-   * Verify OTP and link phone number to OAuth user
+   * Verify OTP and link phone number to OAuth user (or add phone directly if OTP is skipped)
+   * If phone number belongs to existing account, OAuth account will be linked to that account
+   * OTP verification can be skipped by not providing otpId and otp
    */
   static async verifyOAuthPhone(
     userId: string,
-    otpId: string,
-    otp: string,
     phoneNumber: string,
-    countryCode: string
+    countryCode: string,
+    otpId?: string,
+    otp?: string,
+    provider?: string,
+    providerAccountId?: string,
+    accessToken?: string
   ): Promise<AuthResponse> {
     try {
       const response = await createAuthenticatedRequest.auth.post(
         AUTH_ENDPOINTS.VERIFY_OAUTH_PHONE,
-        { userId, otpId, otp, phoneNumber, countryCode }
+        {
+          userId,
+          phoneNumber,
+          countryCode,
+          ...(otpId && { otpId }),
+          ...(otp && { otp }),
+          ...(provider && { provider }),
+          ...(providerAccountId && { providerAccountId }),
+          ...(accessToken && { accessToken }),
+        }
       );
       return response.data;
     } catch (error: any) {

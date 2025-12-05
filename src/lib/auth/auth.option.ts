@@ -163,7 +163,9 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       authorization: {
         params: {
-          prompt: "consent",
+          // Removed prompt: "consent" to allow automatic authentication
+          // Users with valid sessions will be authenticated silently
+          // Consent screen will only appear when required by Google (first time, permission changes, etc.)
           access_type: "offline",
           response_type: "code",
         },
@@ -345,9 +347,47 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (trigger === "update" && session) {
-        if (session.user?.name) token.name = session.user.name;
-        if (session.user?.email) token.email = session.user.email;
-        if (session.user?.image) token.image = session.user.image;
+        // Handle account linking - update user ID and tokens when account is linked
+        if ((session as any).accountLinked && (session as any).user?.id) {
+          // Account was linked - update user ID and tokens
+          token.id = (session as any).user.id;
+          if ((session as any).accessToken) {
+            token.accessToken = (session as any).accessToken;
+          }
+          if ((session as any).refreshToken) {
+            token.refreshToken = (session as any).refreshToken;
+          }
+          // Update other user fields
+          if ((session as any).user?.name)
+            token.name = (session as any).user.name;
+          if ((session as any).user?.email)
+            token.email = (session as any).user.email;
+          if ((session as any).user?.image)
+            token.image = (session as any).user.image;
+          if ((session as any).user?.phoneNumber)
+            token.phoneNumber = (session as any).user.phoneNumber;
+          if ((session as any).user?.countryCode)
+            token.countryCode = (session as any).user.countryCode;
+          if ((session as any).isPhoneVerified !== undefined)
+            token.isPhoneVerified = (session as any).isPhoneVerified;
+          if ((session as any).isEmailVerified !== undefined)
+            token.isEmailVerified = (session as any).isEmailVerified;
+          // Update issued at time
+          token.iat = Math.floor(Date.now() / 1000);
+        } else {
+          // Regular session update - update user fields
+          if (session.user?.name) token.name = session.user.name;
+          if (session.user?.email) token.email = session.user.email;
+          if (session.user?.image) token.image = session.user.image;
+          if ((session as any).user?.phoneNumber)
+            token.phoneNumber = (session as any).user.phoneNumber;
+          if ((session as any).user?.countryCode)
+            token.countryCode = (session as any).user.countryCode;
+          if ((session as any).isPhoneVerified !== undefined)
+            token.isPhoneVerified = (session as any).isPhoneVerified;
+          if ((session as any).isEmailVerified !== undefined)
+            token.isEmailVerified = (session as any).isEmailVerified;
+        }
       }
 
       return token;
@@ -406,11 +446,13 @@ declare module "next-auth" {
   interface Session {
     error?: string;
     accessToken?: string;
+    refreshToken?: string;
     provider?: string;
     providerAccountId?: string;
     isPhoneVerified?: boolean;
     isEmailVerified?: boolean;
     isTempVerified?: boolean;
+    accountLinked?: boolean;
     user: {
       id?: string;
       name?: string | null;

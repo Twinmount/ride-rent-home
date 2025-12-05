@@ -38,7 +38,11 @@ import {
 // Import auth API service
 import { authAPI } from "@/lib/api/auth.api";
 import { authStorage } from "@/lib/auth/authStorage";
-import { setToken, clearToken } from "@/lib/api/axios.config";
+import {
+  setToken,
+  clearToken,
+  createAuthenticatedRequest,
+} from "@/lib/api/axios.config";
 
 // Remove the old API_BASE_URL and AUTH_ENDPOINTS since they're now in the auth.api.ts file
 
@@ -47,7 +51,7 @@ export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   // 1. HOOK INTO NEXTAUTH
-  const { data: session, status } = useSession();
+  const { data: session, status, update: updateSession } = useSession();
   console.log("session: [useAuth]", session);
 
   const [state, updateState] = useImmer<AuthState>({
@@ -208,27 +212,46 @@ export const useAuth = () => {
 
   const setPasswordMutation = useMutation({
     mutationFn: authAPI.setPassword,
-    onSuccess: (data) => {
+    onSuccess: async (data, variables) => {
       if (data.success && data.data) {
-        const user: User = {
-          id: data?.data?.userId!,
-          phoneNumber: data?.data?.phoneNumber!,
-          countryCode: data?.data?.countryCode!,
-          email: data?.data?.email!,
-          isEmailVerified: data?.data?.isEmailVerified!,
-          isPhoneVerified: data?.data?.isPhoneVerified!,
-          avatar: data.data.avatar,
-          name: data.data.name,
-        };
+        // Sign in with NextAuth using credentials to create a session
+        // NextAuth will handle token storage and session management through its flow:
+        // 1. authorize() calls authAPI.login() which returns tokens
+        // 2. JWT callback stores tokens in NextAuth token
+        // 3. Session callback makes tokens available in session
+        // 4. useEffect in useAuth will pick up session and call setToken() for axios
+        try {
+          const signInResult = await signIn("credentials", {
+            phoneNumber: data.data.phoneNumber,
+            countryCode: data.data.countryCode,
+            password: variables.password, // Use the password that was just set
+            redirect: false, // Prevent page reload
+          });
 
-        setAuthenticated(user, data.accessToken, data.refreshToken, true);
+          if (signInResult?.error) {
+            console.error(
+              "NextAuth sign in failed after password set:",
+              signInResult.error
+            );
+            setError({ message: signInResult.error });
+            return;
+          }
 
-        setAuth((draft) => {
-          draft.isLoggedIn = true;
-          draft.user = user;
-          draft.token = data?.accessToken!;
-          draft.refreshToken = data?.refreshToken!;
-        });
+          // Invalidate session query to refresh UI with new session
+          await queryClient.invalidateQueries({ queryKey: ["session"] });
+        } catch (signInError) {
+          console.error(
+            "Error signing in with NextAuth after password set:",
+            signInError
+          );
+          setError({
+            message:
+              signInError instanceof Error
+                ? signInError.message
+                : "Failed to create session",
+          });
+          return;
+        }
       }
       setLoginOpen(false);
       setError(null);
@@ -489,22 +512,107 @@ export const useAuth = () => {
   });
 
   const verifyOAuthPhoneMutation = useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       userId,
-      otpId,
-      otp,
       phoneNumber,
       countryCode,
+      otpId,
+      otp,
+      provider,
+      providerAccountId,
+      accessToken,
     }: {
       userId: string;
-      otpId: string;
-      otp: string;
       phoneNumber: string;
       countryCode: string;
-    }) =>
-      authAPI.verifyOAuthPhone(userId, otpId, otp, phoneNumber, countryCode),
-    onSuccess: (data) => {
+      otpId?: string;
+      otp?: string;
+      provider?: string;
+      providerAccountId?: string;
+      accessToken?: string;
+    }) => {
+      try {
+        const response = await createAuthenticatedRequest.auth.post(
+          "/verify-oauth-phone",
+          {
+            userId,
+            phoneNumber,
+            countryCode,
+            ...(otpId && { otpId }),
+            ...(otp && { otp }),
+            ...(provider && { provider }),
+            ...(providerAccountId && { providerAccountId }),
+            ...(accessToken && { accessToken }),
+          }
+        );
+        return response.data;
+      } catch (error: any) {
+        throw new Error(
+          error.response?.data?.message ||
+            error.message ||
+            "Failed to verify OAuth phone number"
+        );
+      }
+    },
+    onSuccess: async (data) => {
       if (data.success && data.data) {
+        // Update token first if new tokens are provided
+        if (data.accessToken) {
+          setToken(data.accessToken);
+        }
+
+        // If account was linked, we need to update the session with new user ID and tokens
+        if (data.data?.accountLinked && data.data?.userId) {
+          // Account was linked to existing account - update Next-Auth session with new user ID and tokens
+          // This triggers the JWT callback with trigger === "update"
+          try {
+            await updateSession({
+              user: {
+                id: data.data.userId,
+                name: data.data.name || session?.user?.name || undefined,
+                email: data.data.email || session?.user?.email || undefined,
+                image: data.data.avatar || session?.user?.image || undefined,
+                phoneNumber: data.data.phoneNumber || undefined,
+                countryCode: data.data.countryCode || undefined,
+              },
+              accessToken: data.accessToken,
+              refreshToken: data.refreshToken,
+              isPhoneVerified: data.data.isPhoneVerified,
+              isEmailVerified: data.data.isEmailVerified,
+              accountLinked: true, // Flag to indicate account linking
+            });
+          } catch (updateError) {
+            console.error(
+              "Failed to update Next-Auth session after account linking:",
+              updateError
+            );
+            // Continue with local state updates even if session update fails
+          }
+        } else {
+          // Account not linked, just update phone verification status
+          // Update session to refresh phone verification status
+          try {
+            await updateSession({
+              user: {
+                phoneNumber:
+                  data.data.phoneNumber ||
+                  session?.user?.phoneNumber ||
+                  undefined,
+                countryCode:
+                  data.data.countryCode ||
+                  session?.user?.countryCode ||
+                  undefined,
+              },
+              isPhoneVerified: data.data.isPhoneVerified,
+            });
+          } catch (updateError) {
+            console.error(
+              "Failed to update Next-Auth session after phone verification:",
+              updateError
+            );
+          }
+        }
+
         // Update user state with phone number and verification status
         updateState((draft) => {
           if (draft.user) {
@@ -516,6 +624,21 @@ export const useAuth = () => {
             }
             if (data.data?.isPhoneVerified !== undefined) {
               draft.user.isPhoneVerified = data.data.isPhoneVerified;
+            }
+            if (data.data?.userId) {
+              draft.user.id = data.data.userId;
+            }
+            if (data.data?.isEmailVerified !== undefined) {
+              draft.user.isEmailVerified = data.data.isEmailVerified;
+            }
+            if (data.data?.name) {
+              draft.user.name = data.data.name;
+            }
+            if (data.data?.email) {
+              draft.user.email = data.data.email;
+            }
+            if (data.data?.avatar) {
+              draft.user.avatar = data.data.avatar;
             }
           }
         });
@@ -531,6 +654,21 @@ export const useAuth = () => {
             if (data.data?.isPhoneVerified !== undefined) {
               draft.user.isPhoneVerified = data.data.isPhoneVerified;
             }
+            if (data.data?.userId) {
+              draft.user.id = data.data.userId;
+            }
+            if (data.data?.isEmailVerified !== undefined) {
+              draft.user.isEmailVerified = data.data.isEmailVerified;
+            }
+            if (data.data?.name) {
+              draft.user.name = data.data.name;
+            }
+            if (data.data?.email) {
+              draft.user.email = data.data.email;
+            }
+            if (data.data?.avatar) {
+              draft.user.avatar = data.data.avatar;
+            }
           }
           if (data.accessToken) {
             draft.token = data.accessToken;
@@ -539,11 +677,6 @@ export const useAuth = () => {
             draft.refreshToken = data.refreshToken;
           }
         });
-
-        // Update token if new tokens are provided
-        if (data.accessToken) {
-          setToken(data.accessToken);
-        }
 
         // Update storage with the updated user object
         if (state.user) {
@@ -558,16 +691,36 @@ export const useAuth = () => {
             ...(data.data?.isPhoneVerified !== undefined && {
               isPhoneVerified: data.data.isPhoneVerified,
             }),
+            ...(data.data?.userId && {
+              id: data.data.userId,
+            }),
+            ...(data.data?.isEmailVerified !== undefined && {
+              isEmailVerified: data.data.isEmailVerified,
+            }),
+            ...(data.data?.name && {
+              name: data.data.name,
+            }),
+            ...(data.data?.email && {
+              email: data.data.email,
+            }),
+            ...(data.data?.avatar && {
+              avatar: data.data.avatar,
+            }),
           };
           authStorage.setUser(updatedUser, true);
         }
+
+        // Invalidate React Query cache to refresh any queries that depend on user data
+        await queryClient.invalidateQueries({ queryKey: ["session"] });
 
         // Close modal on success
         setShowOAuthPhoneModal(false);
         setError(null);
 
-        // Session will automatically refresh on next check
-        // The updated phone verification status will be reflected in the next session update
+        // If account was linked, show a message to the user
+        if (data.data?.accountLinked) {
+          console.log("OAuth account successfully linked to existing account");
+        }
       }
     },
     onError: (error: Error) => {
@@ -1060,21 +1213,29 @@ export const useAuth = () => {
     }
   };
 
-  // Verify OAuth phone number function
+  // Verify OAuth phone number function (OTP is optional - can skip verification)
   const verifyOAuthPhone = async (
     userId: string,
-    otpId: string,
-    otp: string,
     phoneNumber: string,
-    countryCode: string
+    countryCode: string,
+    otpId?: string,
+    otp?: string
   ): Promise<AuthResponse> => {
     try {
+      // Get OAuth provider information from session if available
+      const provider = session?.provider;
+      const providerAccountId = session?.providerAccountId;
+      // Note: accessToken is not stored in session for security, but we can get it from the OAuth user's data if needed
+      // For now, we'll let the backend extract it from the OAuth user record
+
       return verifyOAuthPhoneMutation.mutateAsync({
         userId,
-        otpId,
-        otp,
         phoneNumber,
         countryCode,
+        otpId,
+        otp,
+        provider,
+        providerAccountId,
       });
     } catch (error) {
       const authError: AuthError = {

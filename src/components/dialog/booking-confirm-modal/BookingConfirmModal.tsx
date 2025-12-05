@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSession } from "next-auth/react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Calendar,
   MapPin,
@@ -22,8 +26,13 @@ import {
   Phone,
   Mail,
   CreditCard,
+  AlertCircle,
+  Loader2,
 } from "lucide-react";
 import { VehicleDetailsData } from "@/types/car.rent.type";
+import { useAuthContext } from "@/auth";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { parsePhoneNumber } from "react-phone-number-input";
 
 interface BookingConfirmationModalProps {
   isOpen: boolean;
@@ -31,6 +40,7 @@ interface BookingConfirmationModalProps {
   onConfirm?: () => void;
   vehicleData?: VehicleDetailsData;
   isProcessing?: boolean;
+  onPhoneVerificationRequired?: () => void;
 }
 
 export function BookingConfirmationModal({
@@ -39,12 +49,206 @@ export function BookingConfirmationModal({
   onConfirm,
   vehicleData,
   isProcessing = false,
+  onPhoneVerificationRequired,
 }: BookingConfirmationModalProps) {
   const [step, setStep] = useState<"confirmation" | "success">("confirmation");
+  const [phoneStep, setPhoneStep] = useState<"phone" | "otp" | "verified">(
+    "phone"
+  );
+  const [phoneValue, setPhoneValue] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("");
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [otpId, setOtpId] = useState<string | null>(null);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const [resendTimer, setResendTimer] = useState(0);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const bookingData = vehicleData 
+  const { data: sessionData, update: updateSession } = useSession();
+  const queryClient = useQueryClient();
+  const { verifyOAuthPhone } = useAuthContext();
+
+  const bookingData = vehicleData;
+
+  // Check if user has a phone number (update when phoneStep is verified)
+  const hasPhoneNumber =
+    phoneStep === "verified" ||
+    (sessionData?.user?.phoneNumber && (sessionData as any)?.isPhoneVerified);
+
+  // Check if user is OAuth user without phone (needs phone verification)
+  const isOAuthUserWithoutPhone =
+    sessionData &&
+    !hasPhoneNumber &&
+    (sessionData as any)?.provider &&
+    (sessionData as any)?.provider !== "credentials";
+
+  // Reset phone step when modal opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      setPhoneStep("phone");
+      setPhoneValue("");
+      setPhoneNumber("");
+      setCountryCode("");
+      setOtp(["", "", "", ""]);
+      setOtpId(null);
+      setPhoneError(null);
+      setOtpError(null);
+      setResendTimer(0);
+    }
+  }, [isOpen]);
+
+  // Resend timer countdown
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [resendTimer]);
+
+  // Handle phone input change
+  const handlePhoneChange = (value: string | undefined) => {
+    setPhoneValue(value || "");
+    setPhoneError(null);
+
+    if (value) {
+      try {
+        const parsed = parsePhoneNumber(value);
+        if (parsed) {
+          setCountryCode(`+${parsed.countryCallingCode}`);
+          setPhoneNumber(parsed.nationalNumber);
+        }
+      } catch (e) {
+        // Handle parsing error
+        console.error("Phone parsing error:", e);
+      }
+    } else {
+      setPhoneNumber("");
+      setCountryCode("");
+    }
+  };
+
+  // Handle add phone number directly (no OTP verification)
+  const handleAddPhone = async () => {
+    if (!phoneNumber || !countryCode) {
+      setPhoneError("Please enter a valid phone number");
+      return;
+    }
+
+    if (!sessionData?.user?.id) {
+      setPhoneError("User session not found");
+      return;
+    }
+
+    setIsSendingOtp(true);
+    setPhoneError(null);
+
+    try {
+      // Directly add phone number without OTP verification
+      const response = await verifyOAuthPhone(
+        sessionData.user.id,
+        phoneNumber,
+        countryCode
+      );
+
+      if (response.success) {
+        setPhoneStep("verified");
+
+        // Refresh session to get updated phone number
+        await updateSession();
+        await queryClient.invalidateQueries({ queryKey: ["session"] });
+
+        // Phone is verified, user can now proceed with booking by clicking "Send enquiry"
+      } else {
+        setPhoneError(response.message || "Failed to add phone number");
+      }
+    } catch (error: any) {
+      setPhoneError(
+        error.message || "Failed to add phone number. Please try again."
+      );
+    } finally {
+      setIsSendingOtp(false);
+    }
+  };
+
+  // Handle OTP input change
+  const handleOtpChange = (index: number, value: string) => {
+    if (value.length > 1) return;
+    const newOtp = [...otp];
+    newOtp[index] = value.replace(/\D/g, ""); // Only allow digits
+    setOtp(newOtp);
+    setOtpError(null);
+
+    if (value && index < 3) {
+      otpRefs.current[index + 1]?.focus();
+    }
+
+    // Auto verify when all 4 digits are entered
+    if (newOtp.every((digit) => digit !== "") && newOtp.join("").length === 4) {
+      setTimeout(() => handleVerifyOtp(newOtp.join("")), 100);
+    }
+  };
+
+  // Handle OTP key down
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
+
+  // Handle verify OTP
+  const handleVerifyOtp = async (otpCode?: string) => {
+    const code = otpCode || otp.join("");
+    if (code.length !== 4) {
+      setOtpError("Please enter a 4-digit OTP");
+      return;
+    }
+
+    if (!otpId || !sessionData?.user?.id) {
+      setOtpError("OTP session expired. Please request a new OTP.");
+      return;
+    }
+
+    setIsVerifyingOtp(true);
+    setOtpError(null);
+
+    try {
+      const response = await verifyOAuthPhone(
+        sessionData.user.id,
+        phoneNumber,
+        countryCode,
+        otpId,
+        code
+      );
+
+      if (response.success) {
+        setPhoneStep("verified");
+
+        // Refresh session to get updated phone number
+        await updateSession();
+        await queryClient.invalidateQueries({ queryKey: ["session"] });
+
+        // Phone is verified, user can now proceed with booking by clicking "Send enquiry"
+        // Don't auto-submit - let user review and confirm
+      } else {
+        setOtpError(response.message || "Invalid OTP. Please try again.");
+        setOtp(["", "", "", ""]);
+        otpRefs.current[0]?.focus();
+      }
+    } catch (error: any) {
+      setOtpError(error.message || "Invalid OTP. Please try again.");
+      setOtp(["", "", "", ""]);
+      otpRefs.current[0]?.focus();
+    } finally {
+      setIsVerifyingOtp(false);
+    }
+  };
 
   const handleConfirmBooking = async () => {
+    // If user has phone number, proceed with booking
     if (onConfirm) {
       onConfirm();
     } else {
@@ -163,8 +367,15 @@ export function BookingConfirmationModal({
                       aria-hidden="true"
                     />
                     <span>
-                      {bookingData?.customer?.phone}
+                      {phoneStep === "verified" && phoneNumber
+                        ? `${countryCode} ${phoneNumber}`
+                        : bookingData?.customer?.phone ||
+                          sessionData?.user?.phoneNumber ||
+                          "Not provided"}
                     </span>
+                    {phoneStep === "verified" && (
+                      <CheckCircle className="h-3 w-3 text-green-600" />
+                    )}
                   </div>
                   {bookingData?.customer?.email ? (
                     <div className="flex items-center gap-3">
@@ -179,6 +390,78 @@ export function BookingConfirmationModal({
                   )}
                 </div>
               </div>
+
+              {/* Phone Number Input Section for OAuth Users */}
+              {isOAuthUserWithoutPhone && phoneStep === "phone" && (
+                <div className="space-y-4 rounded-lg border border-orange-200 bg-orange-50 p-4">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-orange-600" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-orange-900">
+                        Phone Number Required
+                      </p>
+                      <p className="mt-1 text-xs text-orange-700">
+                        Please add your phone number to complete the booking
+                        enquiry.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="booking-phone"
+                        className="text-sm font-medium"
+                      >
+                        Mobile Number
+                      </Label>
+                      <PhoneInput
+                        id="booking-phone"
+                        value={phoneValue}
+                        onChange={handlePhoneChange}
+                        defaultCountry="AE"
+                        placeholder="Enter phone number"
+                        className="w-full"
+                      />
+                      {phoneError && (
+                        <p className="text-xs text-red-600">{phoneError}</p>
+                      )}
+                    </div>
+
+                    <Button
+                      onClick={handleAddPhone}
+                      disabled={!phoneNumber || !countryCode || isSendingOtp}
+                      className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600"
+                    >
+                      {isSendingOtp ? (
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Adding Phone Number...
+                        </div>
+                      ) : (
+                        "Add Phone Number"
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Phone Verified Success Message */}
+              {phoneStep === "verified" && (
+                <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                    <div>
+                      <p className="text-sm font-medium text-green-900">
+                        Phone Number Verified Successfully
+                      </p>
+                      <p className="text-xs text-green-700">
+                        You can now proceed with your booking enquiry.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <Separator />
 
@@ -225,11 +508,13 @@ export function BookingConfirmationModal({
                 <Button
                   onClick={handleConfirmBooking}
                   className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600"
-                  disabled={isProcessing}
+                  disabled={isProcessing || isOAuthUserWithoutPhone}
                   aria-label={
                     isProcessing
                       ? "Processing enquiry, please wait"
-                      : "Send enquiry for this vehicle"
+                      : isOAuthUserWithoutPhone
+                        ? "Please verify phone number first"
+                        : "Send enquiry for this vehicle"
                   }
                 >
                   {isProcessing ? (
@@ -241,6 +526,8 @@ export function BookingConfirmationModal({
                       />
                       Processing...
                     </div>
+                  ) : isOAuthUserWithoutPhone ? (
+                    "Verify Phone to Continue"
                   ) : (
                     "Send enquiry"
                   )}
@@ -282,8 +569,7 @@ export function BookingConfirmationModal({
                   {bookingData?.customer?.email || "john.doe@email.com"}
                 </p>
                 <p>
-                  📱 SMS confirmation sent to{" "}
-                  {bookingData?.customer?.phone}
+                  📱 SMS confirmation sent to {bookingData?.customer?.phone}
                 </p>
               </div>
 

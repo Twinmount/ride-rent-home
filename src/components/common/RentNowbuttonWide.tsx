@@ -52,6 +52,10 @@ const RentNowButtonWide = ({
   const [showBookingConfirm, setShowBookingConfirm] = useState(false);
   const [showActiveEnquiryDialog, setShowActiveEnquiryDialog] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [
+    pendingBookingAfterPhoneVerification,
+    setPendingBookingAfterPhoneVerification,
+  ] = useState(false);
   const {
     open,
     carRentDate,
@@ -69,6 +73,8 @@ const RentNowButtonWide = ({
     vehicleId && agentId ? { vehicleId, agentId, country, vehicle } : undefined
   );
 
+  console.log("open for DateRangePicker", open);
+
   // Custom handle confirm for date picker
   const handleDateConfirm = () => {
     setOpen(false); // Close date picker
@@ -80,6 +86,25 @@ const RentNowButtonWide = ({
     setShowBookingConfirm(false);
     handleConfirm(); // This will trigger the rental enquiry
   };
+
+  // Use NextAuth for authentication check
+  const { data: sessionData, status: sessionStatus } = useSession();
+  const { onHandleLoginmodal, setShowOAuthPhoneModal, showOAuthPhoneModal } =
+    useAuthContext();
+
+  // Check if user is authenticated using NextAuth session
+  const isAuthenticated = sessionStatus === "authenticated" && !!sessionData;
+
+  // Check if user has a phone number
+  const hasPhoneNumber =
+    sessionData?.user?.phoneNumber && (sessionData as any)?.isPhoneVerified;
+
+  // Check if user is OAuth user without phone (needs phone verification)
+  const isOAuthUserWithoutPhone =
+    isAuthenticated &&
+    !hasPhoneNumber &&
+    (sessionData as any)?.provider &&
+    (sessionData as any)?.provider !== "credentials";
 
   // Show success toast when enquiry is successful
   useEffect(() => {
@@ -95,17 +120,37 @@ const RentNowButtonWide = ({
     return undefined;
   }, [rentalEnquiryMutation.isSuccess]);
 
+  // Handle OAuth phone verification completion - reopen booking confirmation
+  useEffect(() => {
+    // When OAuth phone modal closes and user now has phone number, reopen booking confirmation
+    if (
+      !showOAuthPhoneModal &&
+      isAuthenticated &&
+      sessionData?.user?.phoneNumber &&
+      (sessionData as any)?.isPhoneVerified &&
+      pendingBookingAfterPhoneVerification
+    ) {
+      // User completed phone verification, now show booking confirmation modal
+      setPendingBookingAfterPhoneVerification(false);
+      // Small delay to ensure session is fully updated
+      const timer = setTimeout(() => {
+        setShowBookingConfirm(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [
+    showOAuthPhoneModal,
+    isAuthenticated,
+    sessionData?.user?.phoneNumber,
+    pendingBookingAfterPhoneVerification,
+  ]);
+
   // Handle booking confirmation modal close
   const handleBookingConfirmClose = () => {
     setShowBookingConfirm(false);
+    setPendingBookingAfterPhoneVerification(false);
   };
-
-  // Use NextAuth for authentication check
-  const { data: sessionData, status: sessionStatus } = useSession();
-  const { onHandleLoginmodal } = useAuthContext();
-
-  // Check if user is authenticated using NextAuth session
-  const isAuthenticated = sessionStatus === "authenticated" && !!sessionData;
 
   // Define size classes based on variant with mobile responsiveness
   const sizeClasses =
@@ -136,10 +181,18 @@ const RentNowButtonWide = ({
     : null;
 
   const handleClick = () => {
+    console.log("handleClick");
     if (!isAuthenticated) {
       onHandleLoginmodal({ isOpen: true });
       return;
     }
+
+    // Check if OAuth user needs to add phone number
+    // if (isOAuthUserWithoutPhone) {
+    //   setPendingBookingAfterPhoneVerification(true);
+    //   setShowOAuthPhoneModal(true);
+    //   return;
+    // }
 
     // Check if user has an active enquiry for this vehicle
     if (activeEnquiryData?.hasActiveEnquiry) {
@@ -200,6 +253,9 @@ const RentNowButtonWide = ({
           onConfirm={handleBookingConfirm}
           vehicleData={VehicleDetailsData}
           isProcessing={rentalEnquiryMutation.isPending}
+          onPhoneVerificationRequired={() =>
+            setPendingBookingAfterPhoneVerification(true)
+          }
         />
       )}
 
