@@ -46,8 +46,9 @@ import { setToken, clearToken } from "@/lib/api/axios.config";
 export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-    // 1. HOOK INTO NEXTAUTH
-    const { data: session, status } = useSession(); 
+  // 1. HOOK INTO NEXTAUTH
+  const { data: session, status } = useSession();
+  console.log("session: [useAuth]", session);
 
   const [state, updateState] = useImmer<AuthState>({
     isLoading: false,
@@ -65,8 +66,6 @@ export const useAuth = () => {
     refreshToken: authStorage.getRefreshToken(),
   });
 
-
-
   const [isLoginOpen, setLoginOpen] = useState(false);
   console.log("isLoginOpen: [useAuth]", isLoginOpen);
   // Use ref to track if modal was explicitly opened (e.g., after logout)
@@ -82,18 +81,15 @@ export const useAuth = () => {
     otpExpiresIn: 5,
   });
 
-
   useEffect(() => {
-    if (status === "authenticated" && session) {  
-     
+    if (status === "authenticated" && session) {
       const accessToken = (session as any)?.accessToken || null;
       setToken(accessToken);
-      
-    
-      const isOAuthUser = session.provider && session.provider !== "credentials";
-      const needsPhoneNumber = isOAuthUser && 
-                            (!session.isPhoneVerified || !session.user?.phoneNumber);
-      
+
+      const isOAuthUser =
+        session.provider && session.provider !== "credentials";
+      const needsPhoneNumber =
+        isOAuthUser && (!session.isPhoneVerified || !session.user?.phoneNumber);
     } else if (status === "unauthenticated") {
       //  Clear state
       //  updateState((draft) => {
@@ -110,7 +106,7 @@ export const useAuth = () => {
       }
       clearToken();
     }
-     if ((session as any)?.error === "RefreshAccessTokenError") {
+    if ((session as any)?.error === "RefreshAccessTokenError") {
       signOut({ redirect: false });
       clearAuthData();
       clearToken();
@@ -225,12 +221,7 @@ export const useAuth = () => {
           name: data.data.name,
         };
 
-        setAuthenticated(
-          user,
-          data.accessToken,
-          data.refreshToken,
-          true 
-        );
+        setAuthenticated(user, data.accessToken, data.refreshToken, true);
 
         setAuth((draft) => {
           draft.isLoggedIn = true;
@@ -510,7 +501,8 @@ export const useAuth = () => {
       otp: string;
       phoneNumber: string;
       countryCode: string;
-    }) => authAPI.verifyOAuthPhone(userId, otpId, otp, phoneNumber, countryCode),
+    }) =>
+      authAPI.verifyOAuthPhone(userId, otpId, otp, phoneNumber, countryCode),
     onSuccess: (data) => {
       if (data.success && data.data) {
         // Update user state with phone number and verification status
@@ -557,8 +549,12 @@ export const useAuth = () => {
         if (state.user) {
           const updatedUser = {
             ...state.user,
-            ...(data.data?.phoneNumber && { phoneNumber: data.data.phoneNumber }),
-            ...(data.data?.countryCode && { countryCode: data.data.countryCode }),
+            ...(data.data?.phoneNumber && {
+              phoneNumber: data.data.phoneNumber,
+            }),
+            ...(data.data?.countryCode && {
+              countryCode: data.data.countryCode,
+            }),
             ...(data.data?.isPhoneVerified !== undefined && {
               isPhoneVerified: data.data.isPhoneVerified,
             }),
@@ -676,7 +672,7 @@ export const useAuth = () => {
   const useGetUserProfile = (userId: string, enabled: boolean = true) => {
     // Check if user is authenticated via NextAuth session
     const isAuthenticated = status === "authenticated" && !!session?.user?.id;
-    
+
     return useQuery({
       queryKey: ["userProfile", userId],
       queryFn: () => authAPI.getUserProfile(userId),
@@ -760,23 +756,20 @@ export const useAuth = () => {
       //   password: loginData.password,
       // });
 
+      // Trigger NextAuth Credentials Flow
+      const result = await signIn("credentials", {
+        phoneNumber: loginData.phoneNumber,
+        countryCode: loginData.countryCode,
+        password: loginData.password,
+        redirect: false, // Prevents page reload
+      });
 
-        // Trigger NextAuth Credentials Flow
-        const result = await signIn("credentials", {
-          phoneNumber: loginData.phoneNumber,
-          countryCode: loginData.countryCode,
-          password: loginData.password,
-          redirect: false, // Prevents page reload
-        });
-
-        if (result?.error) {
-          throw new Error(result.error);
-        }
-        // Success is handled by the useEffect above detecting the new Session
-        // We return a mock response to satisfy the interface if needed
-        return { success: true } as AuthResponse;
-
-
+      if (result?.error) {
+        throw new Error(result.error);
+      }
+      // Success is handled by the useEffect above detecting the new Session
+      // We return a mock response to satisfy the interface if needed
+      return { success: true } as AuthResponse;
     } catch (error) {
       const authError = createAuthError(
         error instanceof Error ? error.message : ERROR_MESSAGES.LOGIN_FAILED
@@ -1060,9 +1053,7 @@ export const useAuth = () => {
     } catch (error) {
       const authError: AuthError = {
         message:
-          error instanceof Error
-            ? error.message
-            : "Failed to add phone number",
+          error instanceof Error ? error.message : "Failed to add phone number",
       };
       setError(authError);
       throw authError;

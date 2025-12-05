@@ -19,6 +19,7 @@ import { authAPI } from "../api";
  * Works in both Node.js and browser environments
  */
 function decodeJWT(token: string): { exp?: number; [key: string]: any } | null {
+  console.log("token: [decodeJWT]", token);
   try {
     const base64Url = token.split(".")[1];
     if (!base64Url) return null;
@@ -38,7 +39,7 @@ function decodeJWT(token: string): { exp?: number; [key: string]: any } | null {
       // Node.js environment
       jsonPayload = Buffer.from(base64, "base64").toString("utf-8");
     }
-
+    console.log("jsonPayload: [decodeJWT]", jsonPayload);
     return JSON.parse(jsonPayload);
   } catch (error) {
     console.error("Error decoding JWT:", error);
@@ -51,6 +52,7 @@ function decodeJWT(token: string): { exp?: number; [key: string]: any } | null {
  * Check if JWT token is expired or about to expire (within 5 minutes)
  */
 function isTokenExpired(token: string): boolean {
+  console.log("token: [isTokenExpired]", token);
   const decoded = decodeJWT(token);
   if (!decoded || !decoded.exp) return true;
 
@@ -58,6 +60,11 @@ function isTokenExpired(token: string): boolean {
   const expirationTime = decoded.exp * 1000; // Convert to milliseconds
   const currentTime = Date.now();
   const fiveMinutesInMs = 5 * 60 * 1000;
+
+  console.log(
+    "expirationTime: [isTokenExpired]",
+    expirationTime <= currentTime + fiveMinutesInMs
+  );
 
   return expirationTime <= currentTime + fiveMinutesInMs;
 }
@@ -183,8 +190,6 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      
-
       return true;
     },
     async jwt({ token, trigger, session, account, user, profile }) {
@@ -247,29 +252,34 @@ export const authOptions: NextAuthOptions = {
               // 🚨 OVERWRITE NextAuth values with Backend values
               token.accessToken = oauthResult.accessToken;
               token.refreshToken = oauthResult.refreshToken;
-              
+
               // Map Backend User Data
               token.id = oauthResult.data?.userId;
               token.phoneNumber = oauthResult.data?.phoneNumber;
               token.isPhoneVerified = oauthResult.data?.isPhoneVerified;
               token.image = oauthResult.data?.avatar; // Prefer backend avatar
-              
+
               // Set timestamp for your expiration logic
               token.iat = Math.floor(Date.now() / 1000);
             } else {
               // Provide more detailed error message
-              const errorMessage = oauthResult.message || "BackendTokenExchangeFailed";
-              console.error("OAuth backend token exchange failed:", errorMessage);
+              const errorMessage =
+                oauthResult.message || "BackendTokenExchangeFailed";
+              console.error(
+                "OAuth backend token exchange failed:",
+                errorMessage
+              );
               throw new Error(errorMessage);
             }
           } catch (error) {
             console.error("Error handling OAuth user:", error);
             // Preserve original error message if available
-            const errorMessage = error instanceof Error 
-              ? error.message 
-              : "OAuthAuthenticationFailed";
+            const errorMessage =
+              error instanceof Error
+                ? error.message
+                : "OAuthAuthenticationFailed";
             // Throwing error ensures we don't create a session without backend tokens
-            throw new Error(errorMessage); 
+            throw new Error(errorMessage);
           }
         }
       }
@@ -290,6 +300,10 @@ export const authOptions: NextAuthOptions = {
               token.refreshToken as string
             );
 
+            if (process.env.NODE_ENV === "development") {
+              console.log("refreshResponse: [jwt]", refreshResponse);
+            }
+
             if (refreshResponse.success && refreshResponse.accessToken) {
               return {
                 ...token,
@@ -300,12 +314,32 @@ export const authOptions: NextAuthOptions = {
                 error: undefined, // Clear any previous errors
               };
             } else {
-              console.error("❌ Refresh Failed (Token likely revoked)");
+              if (process.env.NODE_ENV === "development") {
+                console.error("❌ Refresh Failed (Token likely revoked)");
+              }
               return { ...token, error: "RefreshAccessTokenError" };
             }
-          } catch (error) {
-            console.error("❌ Refresh API Error:", error);
-            return { ...token, error: "RefreshAccessTokenError" };
+          } catch (error: any) {
+            // Extract meaningful error message
+            const errorMessage =
+              error.message || "Failed to refresh access token";
+
+            // Log error details in development only
+            if (process.env.NODE_ENV === "development") {
+              console.error("❌ Refresh API Error:", {
+                message: errorMessage,
+                status: error.status,
+                userId: token.id,
+              });
+            }
+
+            // Return token with error flag - this will be handled in session callback
+            // Use the original error message if it's informative, otherwise use generic
+            return {
+              ...token,
+              error: "RefreshAccessTokenError",
+              errorMessage: errorMessage, // Preserve original message for debugging
+            };
           }
         }
       }
@@ -391,6 +425,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     error?: string;
+    errorMessage?: string;
     accessToken?: string;
     refreshToken?: string;
     provider?: string;

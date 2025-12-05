@@ -277,17 +277,34 @@ export class AuthAPI {
     refreshToken: string
   ): Promise<AuthResponse> {
     try {
-      const response = await authApiClient.post(
-        AUTH_ENDPOINTS.REFRESH_TOKEN,
-        { userId, refreshToken }
-      );
+      const response = await authApiClient.post(AUTH_ENDPOINTS.REFRESH_TOKEN, {
+        userId,
+        refreshToken,
+      });
       return response.data;
     } catch (error: any) {
-      throw new Error(
+      // Extract error message from API response
+      const errorMessage =
         error.response?.data?.message ||
-          error.message ||
-          "Failed to refresh token"
-      );
+        error.message ||
+        "Failed to refresh token";
+
+      // Only log in development to avoid noise in production
+      if (process.env.NODE_ENV === "development") {
+        console.error("refreshAccessToken error: [authAPI]", {
+          message: errorMessage,
+          status: error.response?.status,
+          userId,
+        });
+      }
+
+      // Create error with original message for proper handling upstream
+      const refreshError = new Error(errorMessage);
+      // Attach status code if available for better error handling
+      if (error.response?.status) {
+        (refreshError as any).status = error.response.status;
+      }
+      throw refreshError;
     }
   }
 
@@ -466,9 +483,7 @@ export class AuthAPI {
   /**
    * Check if user exists by email address (useful for OAuth)
    */
-  static async checkUserExistsByEmail(
-    email: string
-  ): Promise<AuthResponse> {
+  static async checkUserExistsByEmail(email: string): Promise<AuthResponse> {
     try {
       const response = await createAuthenticatedRequest.auth.post(
         AUTH_ENDPOINTS.CHECK_USER_EXISTS_BY_EMAIL,
@@ -543,7 +558,7 @@ export class AuthAPI {
     try {
       const response = await createAuthenticatedRequest.auth.post(
         AUTH_ENDPOINTS.CHECK_OAUTH_USER_PHONE_STATUS,
-        { providerAccountId:userId }
+        { providerAccountId: userId }
       );
       return response.data;
     } catch (error: any) {
@@ -603,7 +618,6 @@ export class AuthAPI {
     }
   }
 }
-
 
 // Export individual functions for easier usage
 export const authAPI = {
