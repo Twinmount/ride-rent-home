@@ -416,11 +416,9 @@ export function BookingConfirmationModal({
                       aria-hidden="true"
                     />
                     <span className="truncate">
-                      {phoneStep === "verified" && phoneNumber
-                        ? `${countryCode} ${phoneNumber}`
-                        : bookingData?.customer?.phone ||
-                          sessionData?.user?.phoneNumber ||
-                          "Not provided"}
+                      {sessionData?.user?.phoneNumber
+                        ? `${sessionData?.user?.countryCode} ${sessionData?.user?.phoneNumber}`
+                        : "Not provided"}
                     </span>
                     {phoneStep === "verified" && (
                       <CheckCircle className="h-2.5 w-2.5 flex-shrink-0 text-green-600 sm:h-3 sm:w-3" />

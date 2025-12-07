@@ -1,6 +1,6 @@
 /**
  * OAuth User Handler
- * 
+ *
  * Handles user creation, checking, and linking for OAuth authentication
  */
 
@@ -13,6 +13,7 @@ export interface BackendAuthResponse {
   data?: {
     userId: string;
     phoneNumber?: string;
+    countryCode?: string;
     avatar?: string;
     isPhoneVerified?: boolean;
     // ... other user fields
@@ -39,7 +40,7 @@ interface OAuthUserResult {
 /**
  * Check if user exists by email (for OAuth)
  */
- export async function checkOAuthUserExists(email: string): Promise<any> {
+export async function checkOAuthUserExists(email: string): Promise<any> {
   try {
     if (!email) {
       return false;
@@ -47,12 +48,12 @@ interface OAuthUserResult {
 
     const response = await authAPI.checkUserExistsByEmail(email);
     console.log("response[checkOAuthUserExists]", response);
-    
+
     if (response.success && response.data?.userExists === true) {
       return response;
     }
 
-    return {success: false, message: "User not found"};
+    return { success: false, message: "User not found" };
   } catch (error) {
     console.error("Error checking OAuth user existence:", error);
     return false;
@@ -80,7 +81,6 @@ export async function checkUserPhoneStatus(userId: string): Promise<any> {
     return false;
   }
 }
-
 
 export async function handleOAuthUser(userData: {
   email: string;
@@ -117,7 +117,6 @@ export async function handleOAuthUser(userData: {
         userData.image,
         userData.accessToken
       );
-    
     }
 
     // 3. Normalize the response for NextAuth
@@ -129,14 +128,17 @@ export async function handleOAuthUser(userData: {
         data: {
           userId: result.data?.userId,
           phoneNumber: result.data?.phoneNumber,
+          countryCode: result.data?.countryCode,
           avatar: result.data?.avatar || userData.image,
           isPhoneVerified: result.data?.isPhoneVerified ?? false,
         },
       };
     }
 
-    return { success: false, message: result.message || "Failed to exchange token" };
-
+    return {
+      success: false,
+      message: result.message || "Failed to exchange token",
+    };
   } catch (error: any) {
     console.error("Error in Token Exchange:", error);
     return {
@@ -145,4 +147,3 @@ export async function handleOAuthUser(userData: {
     };
   }
 }
-

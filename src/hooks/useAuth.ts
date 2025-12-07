@@ -43,6 +43,7 @@ import {
   clearToken,
   createAuthenticatedRequest,
 } from "@/lib/api/axios.config";
+import { useStateAndCategory } from "./useStateAndCategory";
 
 // Remove the old API_BASE_URL and AUTH_ENDPOINTS since they're now in the auth.api.ts file
 
@@ -50,6 +51,7 @@ import {
 export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { country, state: stateData } = useStateAndCategory();
   // 1. HOOK INTO NEXTAUTH
   const { data: session, status, update: updateSession } = useSession();
   console.log("session: [useAuth]", session);
@@ -370,21 +372,19 @@ export const useAuth = () => {
   const deleteUserMutation = useMutation({
     mutationFn: async (deleteUserData: DeleteUserData) =>
       authAPI.deleteUser(deleteUserData),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      router.push(`/${country}/${stateData}`);
+      setLoginOpen(true);
       setStep("phone");
       setAuthenticated(null);
-      setAuth((draft) => {
-        draft.isLoggedIn = false;
-        draft.user = null;
-        draft.token = null;
-        draft.refreshToken = null;
-      });
 
-      queryClient.clear(); // Clear cached data
+      await signOut({ redirect: false });
+
+      clearToken();
+      queryClient.clear();
     },
-    onError: (error) => {
+    onError: async (error) => {
       console.error("User deletion failed:", error);
-
       // Optionally handle cleanup even if delete fails
       setAuthenticated(null);
       setAuth((draft) => {
@@ -393,6 +393,10 @@ export const useAuth = () => {
         draft.token = null;
         draft.refreshToken = null;
       });
+
+      // Clear NextAuth session even on error
+      await signOut({ redirect: false });
+      clearToken(); // Clear axios token
     },
   });
 
@@ -430,8 +434,27 @@ export const useAuth = () => {
         newPhoneNumber,
         newCountryCode
       ),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setError(null);
+
+      // Update NextAuth session with new phone number and verification status
+      try {
+        await updateSession({
+          user: {
+            phoneNumber:
+              data.data?.phoneNumber || session?.user?.phoneNumber || undefined,
+            countryCode:
+              data.data?.countryCode || session?.user?.countryCode || undefined,
+          },
+          isPhoneVerified: data.data?.isPhoneVerified,
+        });
+      } catch (updateError) {
+        console.error(
+          "Failed to update NextAuth session after phone number change:",
+          updateError
+        );
+        // Continue with local state updates even if session update fails
+      }
 
       // Update user state with new phone number and verification status
       updateState((draft) => {
@@ -479,6 +502,9 @@ export const useAuth = () => {
         };
         authStorage.setUser(updatedUser, true); // Save to localStorage
       }
+
+      // Invalidate React Query cache to refresh any queries that depend on user data
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -613,104 +639,6 @@ export const useAuth = () => {
           }
         }
 
-        // Update user state with phone number and verification status
-        updateState((draft) => {
-          if (draft.user) {
-            if (data.data?.phoneNumber) {
-              draft.user.phoneNumber = data.data.phoneNumber;
-            }
-            if (data.data?.countryCode) {
-              draft.user.countryCode = data.data.countryCode;
-            }
-            if (data.data?.isPhoneVerified !== undefined) {
-              draft.user.isPhoneVerified = data.data.isPhoneVerified;
-            }
-            if (data.data?.userId) {
-              draft.user.id = data.data.userId;
-            }
-            if (data.data?.isEmailVerified !== undefined) {
-              draft.user.isEmailVerified = data.data.isEmailVerified;
-            }
-            if (data.data?.name) {
-              draft.user.name = data.data.name;
-            }
-            if (data.data?.email) {
-              draft.user.email = data.data.email;
-            }
-            if (data.data?.avatar) {
-              draft.user.avatar = data.data.avatar;
-            }
-          }
-        });
-
-        setAuth((draft) => {
-          if (draft.user) {
-            if (data.data?.phoneNumber) {
-              draft.user.phoneNumber = data.data.phoneNumber;
-            }
-            if (data.data?.countryCode) {
-              draft.user.countryCode = data.data.countryCode;
-            }
-            if (data.data?.isPhoneVerified !== undefined) {
-              draft.user.isPhoneVerified = data.data.isPhoneVerified;
-            }
-            if (data.data?.userId) {
-              draft.user.id = data.data.userId;
-            }
-            if (data.data?.isEmailVerified !== undefined) {
-              draft.user.isEmailVerified = data.data.isEmailVerified;
-            }
-            if (data.data?.name) {
-              draft.user.name = data.data.name;
-            }
-            if (data.data?.email) {
-              draft.user.email = data.data.email;
-            }
-            if (data.data?.avatar) {
-              draft.user.avatar = data.data.avatar;
-            }
-          }
-          if (data.accessToken) {
-            draft.token = data.accessToken;
-          }
-          if (data.refreshToken) {
-            draft.refreshToken = data.refreshToken;
-          }
-        });
-
-        // Update storage with the updated user object
-        if (state.user) {
-          const updatedUser = {
-            ...state.user,
-            ...(data.data?.phoneNumber && {
-              phoneNumber: data.data.phoneNumber,
-            }),
-            ...(data.data?.countryCode && {
-              countryCode: data.data.countryCode,
-            }),
-            ...(data.data?.isPhoneVerified !== undefined && {
-              isPhoneVerified: data.data.isPhoneVerified,
-            }),
-            ...(data.data?.userId && {
-              id: data.data.userId,
-            }),
-            ...(data.data?.isEmailVerified !== undefined && {
-              isEmailVerified: data.data.isEmailVerified,
-            }),
-            ...(data.data?.name && {
-              name: data.data.name,
-            }),
-            ...(data.data?.email && {
-              email: data.data.email,
-            }),
-            ...(data.data?.avatar && {
-              avatar: data.data.avatar,
-            }),
-          };
-          authStorage.setUser(updatedUser, true);
-        }
-
-        // Invalidate React Query cache to refresh any queries that depend on user data
         await queryClient.invalidateQueries({ queryKey: ["session"] });
 
         // Close modal on success

@@ -857,7 +857,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                           variant="ghost"
                           size="sm"
                           onClick={handleEditMobile}
-                          className="h-8 w-full cursor-pointer text-xs text-orange-600 hover:bg-orange-50 hover:text-orange-700 sm:h-auto sm:w-auto sm:text-sm"
+                          className="p[7px] h-8 w-full cursor-pointer text-xs text-orange-600 hover:bg-orange-50 hover:text-orange-700 sm:h-auto sm:w-auto sm:text-sm"
                         >
                           <Edit2 className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           Change
@@ -897,7 +897,7 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                                 size="sm"
                                 onClick={handleSaveMobile}
                                 disabled={requestPhoneChangeMutation.isPending}
-                                className="h-9 w-full cursor-pointer bg-orange-500 text-xs text-white hover:bg-orange-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:text-sm"
+                                className="h-9 w-full cursor-pointer bg-orange-500 p-[7px] text-xs text-white hover:bg-orange-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:text-sm"
                               >
                                 <Check className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 {requestPhoneChangeMutation.isPending

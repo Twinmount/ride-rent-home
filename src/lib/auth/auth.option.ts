@@ -163,9 +163,6 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       authorization: {
         params: {
-          // Removed prompt: "consent" to allow automatic authentication
-          // Users with valid sessions will be authenticated silently
-          // Consent screen will only appear when required by Google (first time, permission changes, etc.)
           access_type: "offline",
           response_type: "code",
         },
@@ -254,7 +251,7 @@ export const authOptions: NextAuthOptions = {
               // 🚨 OVERWRITE NextAuth values with Backend values
               token.accessToken = oauthResult.accessToken;
               token.refreshToken = oauthResult.refreshToken;
-
+              token.countryCode = oauthResult.data?.countryCode;
               // Map Backend User Data
               token.id = oauthResult.data?.userId;
               token.phoneNumber = oauthResult.data?.phoneNumber;
