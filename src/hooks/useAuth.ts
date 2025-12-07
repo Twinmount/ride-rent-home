@@ -73,7 +73,6 @@ export const useAuth = () => {
   });
 
   const [isLoginOpen, setLoginOpen] = useState(false);
-  console.log("isLoginOpen: [useAuth]", isLoginOpen);
   // Use ref to track if modal was explicitly opened (e.g., after logout)
   // This prevents the useEffect from closing it when session status changes
   const wasExplicitlyOpened = useRef(false);

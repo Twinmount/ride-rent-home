@@ -33,6 +33,7 @@ import {
 } from "../ui/dropdown-menu";
 import { LoginDrawer } from "../dialog/login-dialog/LoginDrawer";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
+import Image from "next/image";
 
 // dynamic import for sidebar - Fix the loading state
 const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
@@ -49,9 +50,11 @@ export const Navbar = () => {
   const [mounted, setMounted] = useState(false);
 
   const router = useRouter();
-  const { logout, isLoginOpen, onHandleLoginmodal } = useAuthContext();
+  const { logout, isLoginOpen, onHandleLoginmodal, useGetUserProfile } =
+    useAuthContext();
 
   const { data: sessionData, status: sessionStatus } = useSession();
+  const userId = sessionData?.user?.id || "";
 
   useLayoutEffect(() => {
     setMounted(true);
@@ -76,22 +79,21 @@ export const Navbar = () => {
   }, []);
 
   const shouldRenderDropdowns = useShouldRender(noStatesDropdownRoutes);
+  const userProfileQuery = useGetUserProfile(userId!, !!userId) || {};
+  const fetchedProfileData = userProfileQuery?.data?.data;
 
   // Check if user is authenticated using NextAuth session
   const isAuthenticated = sessionStatus === "authenticated" && !!sessionData;
 
-  // Get user data directly from NextAuth session
-  const userName = sessionData?.user?.name || "";
-  const userEmail = sessionData?.user?.email || "";
-  const userAvatar = sessionData?.user?.image || "";
-  console.log("userAvatar: ", userAvatar);
-  const userId = sessionData?.user?.id || "";
+  // Get user data: prefer fetched profile data, fallback to session data
+  const userName = fetchedProfileData?.name || sessionData?.user?.name || "";
+  const userEmail = fetchedProfileData?.email || sessionData?.user?.email || "";
+  const userAvatar =
+    fetchedProfileData?.avatar || sessionData?.user?.image || "";
 
   const handleLogout = async () => {
-    // router.push(`/${country}/${state}`);
     await logout(userId);
-    // Open login modal after logout completes
-    // Use setTimeout to ensure session state has updated
+
     setTimeout(() => {
       onHandleLoginmodal({ isOpen: true });
     }, 100);
@@ -166,10 +168,30 @@ export const Navbar = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Avatar className="h-8 w-8 flex-shrink-0 cursor-pointer ring-2 ring-orange-200 transition-all hover:ring-orange-300">
-                      <AvatarImage src={userAvatar} alt={userName} />
-                      <AvatarFallback className="bg-orange-100 text-xs font-semibold text-orange-600">
-                        {getAvatarProps(userName).fallbackInitials}
-                      </AvatarFallback>
+                      {userAvatar ? (
+                        <div className="relative h-full w-full overflow-hidden rounded-full">
+                          <Image
+                            src={userAvatar}
+                            alt={userName}
+                            fill
+                            className="object-cover"
+                            onError={() => {
+                              console.warn(
+                                "Avatar image failed to load:",
+                                userAvatar
+                              );
+                            }}
+                            referrerPolicy="no-referrer"
+                            unoptimized={userAvatar.includes(
+                              "googleusercontent.com"
+                            )}
+                          />
+                        </div>
+                      ) : (
+                        <AvatarFallback className="bg-orange-100 text-xs font-semibold text-orange-600">
+                          {getAvatarProps(userName).fallbackInitials}
+                        </AvatarFallback>
+                      )}
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end" forceMount>

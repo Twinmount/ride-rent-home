@@ -127,7 +127,6 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
 
   // Get user profile data
   const userProfileQuery = useGetUserProfile(userId!, !!userId);
-  console.log("userProfileQuery.data[UserProfile2]", userProfileQuery.data);
 
   const {
     userCarActionCountsQuery,
