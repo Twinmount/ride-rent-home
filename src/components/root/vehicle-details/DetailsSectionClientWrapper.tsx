@@ -43,10 +43,10 @@ const DetailsSectionClientWrapper = ({
   const { vehicleCode, vehicleId } = profileData;
   const { auth } = useAppContext();
   const { user, authStorage, isAuthenticated } = auth;
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   // Use NextAuth session userId as primary source, fallback to auth context user
-  const userId = session?.user?.id || user?.id || authStorage.getUser()?.id;
+  const userId = session?.user?.id;
 
   const detailsSectionRef = useRef(null);
   const isInViewPort = useIntersectionObserver(detailsSectionRef);
@@ -95,7 +95,7 @@ const DetailsSectionClientWrapper = ({
       return;
     }
 
-    if (userId && vehicleId && isAuthenticated) {
+    if (userId && vehicleId && status === "authenticated") {
       trackCarView(vehicleId, {
         source: "vehicle-details-page",
         country: country,

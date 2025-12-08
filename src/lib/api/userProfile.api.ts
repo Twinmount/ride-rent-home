@@ -85,6 +85,8 @@ export const trackCarView = async (
     carId,
     metadata,
   });
+
+  return response.data;
 };
 
 export const updateUserProfile = async (

@@ -418,7 +418,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       carId: string;
       metadata?: Record<string, any>;
     }) => {
-      console.log("Tracking car view in useUserActions:", { carId, metadata });
       return trackCarView(userId!, carId, metadata);
     },
     onSuccess: (data) => {
