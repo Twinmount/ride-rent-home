@@ -27,7 +27,7 @@ export default function OAuthCallbackPage() {
     const urlError = searchParams.get("error");
     if (urlError) {
       let errorMessage = "Authentication failed";
-      
+
       // Map common OAuth errors to user-friendly messages
       switch (urlError) {
         case "AccessDenied":
@@ -74,11 +74,12 @@ export default function OAuthCallbackPage() {
     // Handle successful authentication
     if (status === "authenticated" && session) {
       setIsProcessing(false);
-      
+
       // Notify parent window of success
       if (window.opener) {
-        const callbackUrl = searchParams.get("callbackUrl") || window.location.origin;
-        
+        const callbackUrl =
+          searchParams.get("callbackUrl") || window.location.origin;
+
         window.opener.postMessage(
           {
             type: "OAUTH_SUCCESS",
@@ -91,14 +92,15 @@ export default function OAuthCallbackPage() {
           },
           window.location.origin
         );
-        
+
         // Show success briefly before closing
         setTimeout(() => {
           window.close();
         }, 1000);
       } else {
         // If no opener, redirect normally (not in popup)
-        const callbackUrl = searchParams.get("callbackUrl") || window.location.origin;
+        const callbackUrl =
+          searchParams.get("callbackUrl") || window.location.origin;
         router.push(callbackUrl);
       }
     } else if (status === "unauthenticated") {
@@ -131,16 +133,17 @@ export default function OAuthCallbackPage() {
   if (isProcessing && !error) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-orange-50 via-white to-red-50">
-        <div className="text-center space-y-6 px-4">
+        <div className="space-y-6 px-4 text-center">
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-orange-500 to-red-500">
             <Loader2 className="h-10 w-10 animate-spin text-white" />
           </div>
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+            <h2 className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-2xl font-bold text-transparent">
               Completing Authentication...
             </h2>
             <p className="text-muted-foreground">
-              Please wait while we complete your {providerNames[provider] || "provider"} sign-in
+              Please wait while we complete your{" "}
+              {providerNames[provider] || "provider"} sign-in
             </p>
           </div>
         </div>
@@ -152,14 +155,15 @@ export default function OAuthCallbackPage() {
   if (!error && status === "authenticated" && session) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 via-white to-orange-50">
-        <div className="text-center space-y-6 px-4">
+        <div className="space-y-6 px-4 text-center">
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-emerald-500">
             <CheckCircle className="h-10 w-10 text-white" />
           </div>
           <div className="space-y-2">
             <h2 className="text-2xl font-bold text-green-600">Success!</h2>
             <p className="text-muted-foreground">
-              You've successfully signed in with {providerNames[provider] || "your provider"}
+              You&apos;ve successfully signed in with{" "}
+              {providerNames[provider] || "your provider"}
             </p>
             <p className="text-sm text-muted-foreground">
               Redirecting you now...
@@ -174,16 +178,18 @@ export default function OAuthCallbackPage() {
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-red-50 via-white to-orange-50">
-        <div className="text-center space-y-6 px-4 max-w-md">
+        <div className="max-w-md space-y-6 px-4 text-center">
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-red-100">
             <XCircle className="h-10 w-10 text-red-600" />
           </div>
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-red-600">Authentication Error</h2>
+            <h2 className="text-2xl font-bold text-red-600">
+              Authentication Error
+            </h2>
             <p className="text-muted-foreground">{error}</p>
             <p className="text-sm text-muted-foreground">
-              {window.opener 
-                ? "This window will close automatically..." 
+              {window.opener
+                ? "This window will close automatically..."
                 : "Redirecting you back..."}
             </p>
           </div>
@@ -194,4 +200,3 @@ export default function OAuthCallbackPage() {
 
   return null;
 }
-
