@@ -4,7 +4,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Eye, EyeOff, Lock, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  Loader2,
+  Eye,
+  EyeOff,
+  Lock,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 import { useAuthContext } from "@/auth";
 import { OtpType } from "@/types/auth.types";
 import { maskPhoneNumber } from "@/utils/helper";
@@ -12,21 +19,34 @@ import { maskPhoneNumber } from "@/utils/helper";
 interface PasswordResetSectionProps {
   phoneNumber: string | null | undefined;
   countryCode: string | null | undefined;
+  userProfileData: any;
+  isOAuthUser?: boolean;
+  isPasswordSet?: boolean;
 }
 
 export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
   phoneNumber,
   countryCode,
+  userProfileData,
+  isOAuthUser = false,
+  isPasswordSet = false,
 }) => {
   const {
     forgotPassword,
     verifyOTP,
     setPassword,
+    setupOAuthPassword,
     resendOTP,
     forgotPasswordMutation,
     setPasswordMutation,
+    setupOAuthPasswordMutation,
     userAuthStep,
   } = useAuthContext();
+
+  // Determine if this is an OAuth user without password (should show set password UI)
+  const isOAuthUserWithoutPassword = isOAuthUser && !isPasswordSet;
+
+  console.log("userProfileData: [PasswordResetSection]", userProfileData);
 
   const [showOtpSection, setShowOtpSection] = useState(false);
   const [showPasswordSection, setShowPasswordSection] = useState(false);
@@ -88,7 +108,9 @@ export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
         countryCode,
       });
     } catch (error: any) {
-      setError(error?.message || "Failed to send reset code. Please try again.");
+      setError(
+        error?.message || "Failed to send reset code. Please try again."
+      );
     }
   };
 
@@ -193,7 +215,8 @@ export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
       return;
     }
 
-    if (!tempToken) {
+    // For OAuth users, no tempToken is needed
+    if (!isOAuthUserWithoutPassword && !tempToken) {
       setError("Session expired. Please start over.");
       return;
     }
@@ -201,11 +224,20 @@ export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
     setError("");
 
     try {
-      await setPassword({
-        tempToken,
-        password: newPassword,
-        confirmPassword,
-      });
+      if (isOAuthUserWithoutPassword) {
+        // Use setupOAuthPassword for OAuth users
+        await setupOAuthPassword({
+          password: newPassword,
+          confirmPassword,
+        });
+      } else {
+        // Use regular setPassword for password reset flow
+        await setPassword({
+          tempToken,
+          password: newPassword,
+          confirmPassword,
+        });
+      }
 
       setSuccess(true);
       setShowPasswordSection(false);
@@ -220,7 +252,45 @@ export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
         setSuccess(false);
       }, 5000);
     } catch (error: any) {
-      setError(error?.message || "Failed to reset password. Please try again.");
+      setError(
+        error?.message ||
+          (isOAuthUserWithoutPassword
+            ? "Failed to set password. Please try again."
+            : "Failed to reset password. Please try again.")
+      );
+    }
+  };
+
+  const handleSetPassword = async () => {
+    if (!newPassword || !confirmPassword) {
+      setError("Please fill in all password fields");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setError("");
+
+    try {
+      await setupOAuthPassword({
+        password: newPassword,
+        confirmPassword,
+      });
+
+      setSuccess(true);
+      setShowPasswordSection(false);
+      setNewPassword("");
+      setConfirmPassword("");
+
+      // Reset after showing success message
+      setTimeout(() => {
+        setSuccess(false);
+      }, 5000);
+    } catch (error: any) {
+      setError(error?.message || "Failed to set password. Please try again.");
     }
   };
 
@@ -237,8 +307,172 @@ export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
     forgotPasswordMutation.reset();
   };
 
-  if (!phoneNumber || !countryCode) {
-    return null;
+  // if (!phoneNumber || !countryCode) {
+  //   return null;
+  // }
+
+  // If OAuth user without password, show a CTA first and reveal form on tap/click
+  if (isOAuthUserWithoutPassword) {
+    return (
+      <div className="space-y-4 border-t pt-4">
+        <div className="space-y-1">
+          <h4 className="flex items-center gap-2 text-base font-medium text-gray-900 lg:text-lg">
+            <Lock className="h-4 w-4 text-gray-500" />
+            Set Password
+          </h4>
+          <p className="text-sm text-gray-500">
+            Set a password for your account to enable credential-based login.
+          </p>
+        </div>
+
+        {success && (
+          <div className="flex flex-col gap-2 rounded-lg bg-green-50 p-3 text-green-700 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" />
+              <span className="text-sm font-medium">
+                Password set successfully!
+              </span>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full sm:w-auto"
+              onClick={() => setSuccess(false)}
+            >
+              Dismiss
+            </Button>
+          </div>
+        )}
+
+        {error && (
+          <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-red-700">
+            <AlertCircle className="h-4 w-4" />
+            <span className="text-sm">{error}</span>
+          </div>
+        )}
+
+        {!showPasswordSection ? (
+          <div className="space-y-3 rounded-lg border border-blue-200 bg-blue-50 p-3 shadow-sm sm:p-4">
+            <div className="space-y-1">
+              <h5 className="text-base font-medium text-gray-900 sm:text-lg">
+                Create your password
+              </h5>
+              <p className="text-sm text-gray-600">
+                Add a password to sign in with email/phone plus password. You
+                can still use your OAuth provider.
+              </p>
+            </div>
+            <Button
+              className="w-full bg-green-500 text-white hover:bg-green-600"
+              onClick={() => setShowPasswordSection(true)}
+            >
+              Set Password
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-4 rounded-lg border border-blue-200 bg-blue-50 p-3 sm:p-4">
+            <div className="space-y-2 text-center">
+              <h4 className="font-medium text-gray-900">Set Your Password</h4>
+              <p className="text-sm text-gray-600">
+                Create a strong password for your account
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="newPassword" className="text-sm font-medium">
+                New Password *
+              </Label>
+              <div className="relative">
+                <Input
+                  id="newPassword"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter new password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  disabled={setupOAuthPasswordMutation.isPending}
+                  className="pr-10 focus:border-orange-500 focus:ring-orange-500"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-sm font-medium">
+                Confirm Password *
+              </Label>
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={setupOAuthPasswordMutation.isPending}
+                  className="pr-10 focus:border-orange-500 focus:ring-orange-500"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <Button
+                onClick={handleSetPassword}
+                disabled={
+                  setupOAuthPasswordMutation.isPending ||
+                  !newPassword ||
+                  !confirmPassword ||
+                  newPassword !== confirmPassword
+                }
+                className="w-full bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 sm:w-auto"
+              >
+                {setupOAuthPasswordMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Setting...
+                  </>
+                ) : (
+                  "Set Password"
+                )}
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto"
+                onClick={() => {
+                  setShowPasswordSection(false);
+                  setError("");
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (
@@ -256,7 +490,9 @@ export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
       {success && (
         <div className="flex items-center gap-2 rounded-lg bg-green-50 p-3 text-green-700">
           <CheckCircle className="h-4 w-4" />
-          <span className="text-sm font-medium">Password reset successfully!</span>
+          <span className="text-sm font-medium">
+            Password reset successfully!
+          </span>
         </div>
       )}
 
@@ -277,7 +513,8 @@ export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
               <p className="text-xs text-orange-600 sm:text-sm">
                 A reset code will be sent to{" "}
                 <span className="font-medium">
-                  {countryCode} {maskPhoneNumber(phoneNumber)}
+                  {countryCode || ""}{" "}
+                  {phoneNumber ? maskPhoneNumber(phoneNumber) : ""}
                 </span>
               </p>
             </div>
@@ -370,14 +607,25 @@ export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
             <Button
               onClick={handleResetPassword}
               disabled={
-                setPasswordMutation.isPending ||
+                (isOAuthUserWithoutPassword
+                  ? setupOAuthPasswordMutation.isPending
+                  : setPasswordMutation.isPending) ||
                 !newPassword ||
                 !confirmPassword ||
                 newPassword !== confirmPassword
               }
               className="flex-1 bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"
             >
-              {setPasswordMutation.isPending ? (
+              {isOAuthUserWithoutPassword ? (
+                setupOAuthPasswordMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Setting...
+                  </>
+                ) : (
+                  "Set Password"
+                )
+              ) : setPasswordMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Resetting...
@@ -402,7 +650,8 @@ export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
             <p className="text-sm text-gray-600">
               Enter the 4-digit code sent to{" "}
               <span className="font-medium">
-                {countryCode} {maskPhoneNumber(phoneNumber)}
+                {countryCode || ""}{" "}
+                {phoneNumber ? maskPhoneNumber(phoneNumber) : ""}
               </span>
             </p>
           </div>
@@ -463,4 +712,3 @@ export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
     </div>
   );
 };
-

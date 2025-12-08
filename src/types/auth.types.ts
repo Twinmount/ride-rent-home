@@ -113,6 +113,14 @@ export interface ForgotPasswordData {
 }
 
 /**
+ * Setup password for OAuth user request data interface
+ */
+export interface SetupOAuthPasswordData {
+  password: string;
+  confirmPassword: string;
+}
+
+/**
  * Phone number change verification data interface
  */
 export interface PhoneChangeVerificationData {
@@ -180,6 +188,8 @@ export interface AuthResponse {
     isTempVerified?: string;
     hasValidTempToken?: boolean;
     expiredTempUser?: boolean;
+    isPasswordSet?: boolean;
+    isOAuthUser?: boolean;
     accountLinked?: boolean; // Indicates if OAuth account was linked to existing account
     oauthProviders?: Array<{
       provider: string;
@@ -333,6 +343,9 @@ export interface UseAuthReturn {
     otp,
   }: OtpVerificationData) => Promise<AuthResponse>;
   setPassword: (passwordData: SetPasswordData) => Promise<AuthResponse>;
+  setupOAuthPassword: (
+    passwordData: SetupOAuthPasswordData
+  ) => Promise<AuthResponse>;
   forgotPassword: (
     forgotPasswordData: ForgotPasswordData
   ) => Promise<AuthResponse>;
@@ -419,6 +432,12 @@ export interface UseAuthReturn {
     AuthResponse,
     Error,
     SetPasswordData,
+    unknown
+  >;
+  setupOAuthPasswordMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    SetupOAuthPasswordData,
     unknown
   >;
   forgotPasswordMutation: UseMutationResult<

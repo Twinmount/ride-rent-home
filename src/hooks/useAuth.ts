@@ -287,6 +287,22 @@ export const useAuth = () => {
     },
   });
 
+  const setupOAuthPasswordMutation = useMutation({
+    mutationFn: authAPI.setupOAuthPassword,
+    onSuccess: async (data) => {
+      setError(null);
+      // Invalidate session query to refresh UI with updated user data
+
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["userProfile", session?.user?.id],
+      });
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
   const updateUserNameAndAvatar = useMutation({
     mutationFn: ({
       userId,
@@ -957,6 +973,34 @@ export const useAuth = () => {
     }
   };
 
+  // Setup password for OAuth user
+  const setupOAuthPassword = async (passwordData: {
+    password: string;
+    confirmPassword: string;
+  }): Promise<AuthResponse> => {
+    try {
+      const passwordValidation = validatePassword(passwordData.password);
+      if (!passwordValidation.isValid) {
+        throw new Error(passwordValidation.errors[0]);
+      }
+
+      if (passwordData.password !== passwordData.confirmPassword) {
+        throw new Error("Passwords do not match");
+      }
+
+      return setupOAuthPasswordMutation.mutateAsync(passwordData);
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to setup password for OAuth user",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
   // Resend OTP function
   const resendOTP = useCallback(
     async (
@@ -1216,6 +1260,7 @@ export const useAuth = () => {
       loginMutation.isPending ||
       verifyOtpMutation.isPending ||
       setPasswordMutation.isPending ||
+      setupOAuthPasswordMutation.isPending ||
       resendOtpMutation.isPending ||
       updateUserNameAndAvatar.isPending ||
       logoutMutation.isPending ||
@@ -1234,6 +1279,7 @@ export const useAuth = () => {
     logout,
     verifyOTP,
     setPassword,
+    setupOAuthPassword,
     forgotPassword,
     setHasUserSaved,
     resendOTP,
@@ -1260,6 +1306,7 @@ export const useAuth = () => {
     loginMutation,
     verifyOtpMutation,
     setPasswordMutation,
+    setupOAuthPasswordMutation,
     forgotPasswordMutation,
     resendOtpMutation,
     updateUserNameAndAvatar,

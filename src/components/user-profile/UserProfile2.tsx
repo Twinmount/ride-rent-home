@@ -84,6 +84,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     isPhoneVerified: boolean;
     isEmailVerified: boolean;
     joinedAt?: string;
+    isPasswordSet?: boolean;
+    isOAuthUser?: boolean;
   } | null>(null);
 
   // Toast state
@@ -116,6 +118,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
         countryCode: fetchedProfileData.countryCode || null,
         isPhoneVerified: fetchedProfileData.isPhoneVerified || false,
         isEmailVerified: fetchedProfileData.isEmailVerified || false,
+        isPasswordSet: fetchedProfileData.isPasswordSet || false,
+        isOAuthUser: fetchedProfileData.isOAuthUser || false,
         joinedAt:
           (fetchedProfileData as any).createdAt ||
           (fetchedProfileData as any).updatedAt ||
@@ -324,14 +328,14 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   setShowSuccessToast={setShowSuccessToast}
                 />
                 {/* account managment */}
-                <AccountManagementSection
-                  onConfirmDeleteUser={() => deleteUser({ userId: userId! })}
-                  isDeletingAccount={deleteUserMutation.isPending}
-                />
+
                 {/* Password Reset */}
                 <PasswordResetSection
                   phoneNumber={profileData?.phoneNumber}
                   countryCode={profileData?.countryCode}
+                  userProfileData={profileData}
+                  isOAuthUser={profileData?.isOAuthUser}
+                  isPasswordSet={profileData?.isPasswordSet}
                 />
                 {/* Preferences */}
                 <div className="space-y-3 border-t pt-3 sm:space-y-4 sm:pt-4">
@@ -375,6 +379,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                     </div>
                   </div>
                 </div>
+                <AccountManagementSection
+                  onConfirmDeleteUser={() => deleteUser({ userId: userId! })}
+                  isDeletingAccount={deleteUserMutation.isPending}
+                />
 
                 <Button
                   onClick={handleSaveAllChanges}

@@ -5,6 +5,7 @@ import type {
   AuthResponse,
   OtpVerificationData,
   SetPasswordData,
+  SetupOAuthPasswordData,
   ResendOtpData,
   ProfileUpdateData,
   ForgotPasswordData,
@@ -31,6 +32,7 @@ const AUTH_ENDPOINTS = {
   DELETE_USER: "/delete-user",
   VERIFY_OTP: "/verify-otp",
   SET_PASSWORD: "/set-password",
+  SETUP_OAUTH_PASSWORD: "/setup-oauth-password",
   RESEND_OTP: "/resend-otp",
   PROFILE: "/profile",
   GET_USER_PROFILE: "/user/profile",
@@ -134,6 +136,28 @@ export class AuthAPI {
         error.response?.data?.message ||
           error.message ||
           "Failed to set password"
+      );
+    }
+  }
+
+  /**
+   * Setup password for OAuth user (no OTP required)
+   */
+  static async setupOAuthPassword(passwordData: {
+    password: string;
+    confirmPassword: string;
+  }): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.SETUP_OAUTH_PASSWORD,
+        passwordData
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to setup password for OAuth user"
       );
     }
   }
@@ -641,6 +665,7 @@ export const authAPI = {
   verifyOtp: AuthAPI.verifyOtp,
   deleteUser: AuthAPI.deleteUser,
   setPassword: AuthAPI.setPassword,
+  setupOAuthPassword: AuthAPI.setupOAuthPassword,
   resendOtp: AuthAPI.resendOtp,
   getProfile: AuthAPI.getProfile,
   getUserProfile: AuthAPI.getUserProfile,
