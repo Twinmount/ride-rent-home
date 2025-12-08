@@ -1,15 +1,26 @@
-import React from "react";
+// In your existing VehicleListingGridWrapper component
+import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
+
+type VehicleListingGridWrapperProps = {
+  children: ReactNode;
+  className?: string;
+};
 
 const VehicleListingGridWrapper = ({
   children,
-  classNames = "",
-}: {
-  children: React.ReactNode;
-  classNames?: string;
-}) => {
+  className,
+}: VehicleListingGridWrapperProps) => {
   return (
     <div
-      className={`mx-auto grid w-full max-w-full grid-cols-1 justify-items-stretch gap-3 sm:grid-cols-1 sm:px-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 ${classNames}`}
+      className={cn(
+        "grid gap-4",
+        // INCREASED: from 20rem to 22rem for more space
+        "grid-cols-[repeat(auto-fill,minmax(min(100%,22rem),1fr))]",
+        "auto-rows-fr",
+        "sm:gap-5 md:gap-6",
+        className
+      )}
     >
       {children}
     </div>

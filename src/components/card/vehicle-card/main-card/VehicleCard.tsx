@@ -10,6 +10,7 @@ import CardPriceOfferTimer from "../CardPriceOfferTimer";
 import { isPriceOfferActive } from "@/helpers/price-offer.helper";
 import VehicleCardButton from "../VehicleCardButton";
 import VehicleFeatureBadges from "../VehicleFeatureBadges";
+import VehicleRentalTypeBadges from "../VehicleRentalTypeBadges";
 
 type VehicleCardProps = {
   vehicle: NewVehicleCardType;
@@ -35,7 +36,6 @@ const VehicleCard = ({
   });
 
   const classes = getVehicleCardStyle(layoutType);
-
   const hasActiveOffer = isPriceOfferActive(vehicle.priceOffer);
 
   return (
@@ -80,6 +80,11 @@ const VehicleCard = ({
         <VehicleFeatureBadges
           hasPayOnPickup={true}
           hasNoDeposit={!vehicle.securityDeposit.enabled}
+        />
+
+        <VehicleRentalTypeBadges
+          isSelfDriveAvailable={vehicle.isSelfDriveAvailable}
+          isDriverAvailable={vehicle.isDriverAvailable}
         />
       </LinkWrapper>
 

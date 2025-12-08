@@ -80,7 +80,7 @@ const BestPriceGuarantee = ({
             />
           </motion.div>
           <motion.span
-            className={`text-sm font-medium underline ${isDisabled ? "text-gray-400" : "text-yellow"}`}
+            className={`text-[0.81rem] font-medium underline ${isDisabled ? "text-gray-400" : "text-yellow"}`}
             initial={{ x: 200, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}

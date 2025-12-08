@@ -649,12 +649,14 @@ export function restoreVehicleCodeFormat(lowerCaseCode: string): string {
  */
 export function getVehicleCardStyle(layoutType: "carousel" | "grid"): string {
   const styles = {
-    carousel: `w-[14.8rem] min-w-[14.8rem] md:w-[14.84rem] md:min-w-[14.84rem] lg:w-[14.6rem] lg:min-w-[14.3rem]`,
-    grid: `min-w-[12rem] max-w-full w-full md:max-w-[18rem] justify-self-center`,
+    carousel: `min-w-[16rem] w-[16rem] md:min-w-[17rem] md:w-[17rem] lg:min-w-[18rem] lg:w-[18rem]`,
+    grid: `w-full h-full`,
   };
 
   return styles[layoutType] || "";
 }
+
+
 
 export const trimName = (name: string, maxLength: number = 20): string => {
   if (name.length <= maxLength) {
