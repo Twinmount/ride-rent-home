@@ -148,17 +148,19 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
         <Avatar
           className={`${sizeClasses[size]} border-4 border-white shadow-lg`}
         >
-          <Image
-            src={displayAvatar || ""}
-            alt={`${userName}'s avatar`}
-            fill
-            className="object-cover"
-            onError={() => {
-              console.warn("Avatar image failed to load:", displayAvatar);
-            }}
-            referrerPolicy="no-referrer"
-            unoptimized={displayAvatar?.includes("googleusercontent.com")}
-          />
+          {displayAvatar && (
+            <Image
+              src={displayAvatar || ""}
+              alt={`${userName}'s avatar`}
+              fill
+              className="object-cover"
+              onError={() => {
+                console.warn("Avatar image failed to load:", displayAvatar);
+              }}
+              referrerPolicy="no-referrer"
+              unoptimized={displayAvatar?.includes("googleusercontent.com")}
+            />
+          )}
           {/* <AvatarImage
             src={displayAvatar || undefined}
             alt={`${userName}'s avatar`}

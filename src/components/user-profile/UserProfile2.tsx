@@ -70,6 +70,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     resendOtpMutation,
     requestPhoneChangeMutation,
     verifyPhoneChangeMutation,
+    requestEmailChangeMutation,
+    verifyEmailChangeMutation,
   } = useAuthContext();
 
   // Profile data state
@@ -313,6 +315,8 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   updateProfileMutation={updateProfileMutation}
                   requestPhoneChangeMutation={requestPhoneChangeMutation}
                   verifyPhoneChangeMutation={verifyPhoneChangeMutation}
+                  requestEmailChangeMutation={requestEmailChangeMutation}
+                  verifyEmailChangeMutation={verifyEmailChangeMutation}
                   verifyOtpMutation={verifyOtpMutation}
                   resendOtpMutation={resendOtpMutation}
                   formatMemberSince={formatMemberSince}

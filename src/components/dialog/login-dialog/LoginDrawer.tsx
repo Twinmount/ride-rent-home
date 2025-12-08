@@ -88,7 +88,7 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
   });
 
   useEffect(() => {
-    if (logoutMutation.isSuccess||deleteUserMutation.isSuccess) {
+    if (logoutMutation.isSuccess || deleteUserMutation.isSuccess) {
       setStep("phone");
       setStatus("idle");
       setStatusMessage("");
@@ -96,16 +96,17 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
       setDrawerState(initialDrawerState);
       clearError();
     }
-  }, [logoutMutation.isSuccess,deleteUserMutation.isSuccess]);
+  }, [logoutMutation.isSuccess, deleteUserMutation.isSuccess]);
 
   // Close drawer when NextAuth authentication succeeds
   useEffect(() => {
     if (sessionStatus === "authenticated" && session && isOpen) {
       // Check if OAuth user needs to add phone number
-      const isOAuthUser = session.provider && session.provider !== "credentials";
-      const needsPhoneNumber = isOAuthUser && 
-                            (!session.isPhoneVerified || !session.user?.phoneNumber);
-      
+      const isOAuthUser =
+        session.provider && session.provider !== "credentials";
+      const needsPhoneNumber =
+        isOAuthUser && (!session.isPhoneVerified || !session.user?.phoneNumber);
+
       // Only close if phone is verified or not an OAuth user
       if (!needsPhoneNumber) {
         // Set success status before closing
@@ -227,11 +228,13 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
           {/* Content */}
           <div className="flex-1 space-y-6 overflow-y-auto p-6">
             {step === "phone" && (
-              <Suspense fallback={
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
-                </div>
-              }>
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
+                  </div>
+                }
+              >
                 <PhoneStep
                   setStep={setStep}
                   setStatus={setStatus}

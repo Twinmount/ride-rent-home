@@ -69,6 +69,12 @@ interface ProfileInformationSectionProps {
   verifyPhoneChangeMutation: {
     isPending: boolean;
   };
+  requestEmailChangeMutation: {
+    isPending: boolean;
+  };
+  verifyEmailChangeMutation: {
+    isPending: boolean;
+  };
   verifyOtpMutation: {
     isPending: boolean;
   };
@@ -94,12 +100,15 @@ export const ProfileInformationSection: React.FC<
   updateProfileMutation,
   requestPhoneChangeMutation,
   verifyPhoneChangeMutation,
+  requestEmailChangeMutation,
+  verifyEmailChangeMutation,
   verifyOtpMutation,
   resendOtpMutation,
   formatMemberSince,
   setProfileData,
   setShowSuccessToast,
 }) => {
+  console.log("profileData[ProfileInformationSection]", profileData);
   // Editing states
   const [isEditingMobile, setIsEditingMobile] = useState(false);
   const [tempCountryCode, setTempCountryCode] = useState("");
@@ -413,7 +422,7 @@ export const ProfileInformationSection: React.FC<
                 variant="ghost"
                 size="sm"
                 onClick={handleEditName}
-                className="h-8 w-8 shrink-0 cursor-pointer p-0 text-orange-600 hover:bg-orange-50 hover:text-orange-700 sm:h-auto sm:w-auto sm:px-2"
+                className="h-8 w-8 shrink-0 cursor-pointer p-1 text-orange-600 hover:bg-orange-50 hover:text-orange-700 sm:h-auto sm:w-auto sm:px-2 sm:py-1.5 md:px-2.5 md:py-1.5 lg:px-3 lg:py-2"
                 disabled={userProfileQuery.isLoading}
               >
                 <Edit2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -434,7 +443,7 @@ export const ProfileInformationSection: React.FC<
                   size="sm"
                   onClick={handleSaveName}
                   disabled={!tempName.trim() || updateProfileMutation.isPending}
-                  className="h-9 cursor-pointer bg-orange-500 text-xs text-white hover:bg-orange-600 disabled:opacity-50 sm:h-auto sm:text-sm"
+                  className="h-9 cursor-pointer bg-orange-500 px-3 py-1.5 text-xs text-white hover:bg-orange-600 disabled:opacity-50 sm:h-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
                 >
                   <Check className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   {updateProfileMutation.isPending ? "Saving..." : "Save"}
@@ -443,7 +452,7 @@ export const ProfileInformationSection: React.FC<
                   size="sm"
                   variant="outline"
                   onClick={handleCancelName}
-                  className="h-9 cursor-pointer bg-transparent text-xs sm:h-auto sm:text-sm"
+                  className="h-9 cursor-pointer bg-transparent px-3 py-1.5 text-xs sm:h-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
                 >
                   <X className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   Cancel
@@ -497,72 +506,123 @@ export const ProfileInformationSection: React.FC<
             Mobile Number
           </Label>
           {!isEditingMobile ? (
-            <div className="flex flex-col gap-2 rounded-lg border bg-gray-50 p-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-3">
+            <div
+              className={`flex flex-col gap-2 rounded-lg border p-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-3 ${
+                !profileData?.phoneNumber
+                  ? "border-orange-200 bg-orange-50"
+                  : "bg-gray-50"
+              }`}
+            >
               <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5 sm:gap-2">
-                <span className="break-all text-xs text-gray-900 sm:text-sm">
-                  {`${profileData?.countryCode || ""} ${profileData?.phoneNumber || ""}`}
-                </span>
-                {profileData?.isPhoneVerified && (
-                  <Badge className="shrink-0 bg-green-100 text-[10px] text-green-800 hover:bg-green-100 sm:text-xs">
-                    <CheckCircle className="mr-0.5 h-2.5 w-2.5 sm:mr-1 sm:h-3 sm:w-3" />
-                    Verified
-                  </Badge>
+                {!profileData?.phoneNumber ? (
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <div className="rounded-full bg-orange-100 p-0.5 sm:p-1">
+                      <Phone className="h-2.5 w-2.5 text-orange-600 sm:h-3 sm:w-3" />
+                    </div>
+                    <span className="text-xs font-medium text-orange-700 sm:text-sm md:text-base">
+                      Add your phone number
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5 sm:gap-2">
+                    <span className="break-all text-xs text-gray-900 sm:text-sm">
+                      {`${profileData?.countryCode || ""} ${profileData?.phoneNumber || ""}`}
+                    </span>
+                    {profileData?.isPhoneVerified && (
+                      <Badge className="shrink-0 bg-green-100 text-[10px] text-green-800 hover:bg-green-100 sm:text-xs">
+                        <CheckCircle className="mr-0.5 h-2.5 w-2.5 sm:mr-1 sm:h-3 sm:w-3" />
+                        Verified
+                      </Badge>
+                    )}
+                  </div>
                 )}
               </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleEditMobile}
-                className="p[7px] h-8 w-full cursor-pointer text-xs text-orange-600 hover:bg-orange-50 hover:text-orange-700 sm:h-auto sm:w-auto sm:text-sm"
+                className={`h-8 w-full cursor-pointer px-3 py-1.5 text-xs sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5 ${
+                  !profileData?.phoneNumber
+                    ? "text-orange-600 hover:bg-orange-100 hover:text-orange-700"
+                    : "text-orange-600 hover:bg-orange-50 hover:text-orange-700"
+                }`}
               >
-                <Edit2 className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Change
+                {!profileData?.phoneNumber ? (
+                  <>
+                    <Phone className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Add Phone
+                  </>
+                ) : (
+                  <>
+                    <Edit2 className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Change
+                  </>
+                )}
               </Button>
             </div>
           ) : (
             <div className="space-y-3 rounded-lg border bg-blue-50 p-2.5 sm:p-3 md:p-4">
               {!showMobileOtp ? (
                 <>
-                  <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
-                    <Select
-                      value={tempCountryCode}
-                      onValueChange={setTempCountryCode}
-                    >
-                      <SelectTrigger className="h-9 w-full cursor-pointer text-xs sm:h-10 sm:w-32 sm:text-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                        <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                        <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                        <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                        <SelectItem value="+966">🇸🇦 +966</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      value={tempMobileNumber}
-                      onChange={(e) => setTempMobileNumber(e.target.value)}
-                      placeholder="Enter mobile number"
-                      className="h-9 flex-1 text-xs sm:h-10 sm:text-sm"
-                    />
+                  <div className="space-y-2 sm:space-y-2">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
+                      <Select
+                        value={tempCountryCode}
+                        onValueChange={setTempCountryCode}
+                      >
+                        <SelectTrigger className="h-9 w-full cursor-pointer text-xs sm:h-10 sm:w-32 sm:text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                          <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                          <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                          <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                          <SelectItem value="+966">🇸🇦 +966</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        value={tempMobileNumber}
+                        onChange={(e) => setTempMobileNumber(e.target.value)}
+                        placeholder={
+                          !profileData?.phoneNumber
+                            ? "Enter your phone number"
+                            : "Enter mobile number"
+                        }
+                        className="h-9 flex-1 text-xs sm:h-10 sm:text-sm"
+                      />
+                    </div>
+
+                    {!profileData?.phoneNumber && (
+                      <p className="text-[10px] leading-relaxed text-blue-600 sm:text-xs md:text-sm">
+                        Adding a phone number will help you receive important
+                        notifications and secure your account. Add your phone
+                        number to get important updates on your booking.
+                      </p>
+                    )}
                   </div>
                   <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
                     <Button
                       size="sm"
                       onClick={handleSaveMobile}
-                      disabled={requestPhoneChangeMutation.isPending}
-                      className="h-9 w-full cursor-pointer bg-orange-500 p-[7px] text-xs text-white hover:bg-orange-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:text-sm"
+                      disabled={
+                        !tempMobileNumber.trim() ||
+                        requestPhoneChangeMutation.isPending
+                      }
+                      className="h-9 w-full cursor-pointer bg-orange-500 px-3 py-1.5 text-xs text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50 sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
                     >
                       <Check className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       {requestPhoneChangeMutation.isPending
                         ? "Sending..."
-                        : "Save & Send OTP"}
+                        : !profileData?.phoneNumber
+                          ? "Add Phone & Send OTP"
+                          : "Save & Send OTP"}
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={handleCancelMobile}
-                      className="h-9 w-full cursor-pointer bg-transparent text-xs sm:h-auto sm:w-auto sm:text-sm"
+                      className="h-9 w-full cursor-pointer bg-transparent px-3 py-1.5 text-xs sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
                     >
                       <X className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       Cancel
@@ -624,7 +684,7 @@ export const ProfileInformationSection: React.FC<
                         size="sm"
                         onClick={() => handleResendOtp("mobile")}
                         disabled={requestPhoneChangeMutation.isPending}
-                        className="h-auto p-0 text-xs text-orange-600 sm:text-sm"
+                        className="h-auto px-2 py-1 text-xs text-orange-600 sm:px-3 sm:py-1.5 sm:text-sm md:px-3 md:py-1.5 lg:px-4 lg:py-2"
                       >
                         {requestPhoneChangeMutation.isPending
                           ? "Sending..."
@@ -641,7 +701,7 @@ export const ProfileInformationSection: React.FC<
                         mobileOtp.length !== 4 ||
                         verifyPhoneChangeMutation.isPending
                       }
-                      className="h-9 w-full cursor-pointer bg-green-500 text-xs text-white hover:bg-green-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:text-sm"
+                      className="h-9 w-full cursor-pointer bg-green-500 px-3 py-1.5 text-xs text-white hover:bg-green-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
                     >
                       {verifyPhoneChangeMutation.isPending
                         ? "Verifying..."
@@ -651,7 +711,7 @@ export const ProfileInformationSection: React.FC<
                       size="sm"
                       variant="outline"
                       onClick={handleCancelMobile}
-                      className="h-9 w-full cursor-pointer bg-transparent text-xs sm:h-auto sm:w-auto sm:text-sm"
+                      className="h-9 w-full cursor-pointer bg-transparent px-3 py-1.5 text-xs sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
                     >
                       <X className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       Cancel
@@ -706,7 +766,7 @@ export const ProfileInformationSection: React.FC<
                 variant="ghost"
                 size="sm"
                 onClick={handleEditEmail}
-                className={`h-8 w-full cursor-pointer text-xs sm:h-auto sm:w-auto sm:text-sm ${
+                className={`h-8 w-full cursor-pointer px-3 py-1.5 text-xs sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5 ${
                   !profileData?.email
                     ? "text-orange-600 hover:bg-orange-100 hover:text-orange-700"
                     : "text-orange-600 hover:bg-orange-50 hover:text-orange-700"
@@ -757,13 +817,13 @@ export const ProfileInformationSection: React.FC<
                       disabled={
                         !tempEmail.trim() ||
                         !tempEmail.includes("@") ||
-                        updateProfileMutation.isPending
+                        requestEmailChangeMutation.isPending
                       }
-                      className="h-9 w-full cursor-pointer bg-orange-500 text-xs text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50 sm:h-auto sm:w-auto sm:text-sm"
+                      className="h-9 w-full cursor-pointer bg-orange-500 px-3 py-1.5 text-xs text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50 sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
                     >
                       <Check className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                      {updateProfileMutation.isPending
-                        ? "Saving..."
+                      {requestEmailChangeMutation.isPending
+                        ? "Sending..."
                         : !profileData?.email
                           ? "Add Email & Send OTP"
                           : "Save & Send OTP"}
@@ -772,7 +832,7 @@ export const ProfileInformationSection: React.FC<
                       size="sm"
                       variant="outline"
                       onClick={handleCancelEmail}
-                      className="h-9 w-full cursor-pointer bg-transparent text-xs sm:h-auto sm:w-auto sm:text-sm"
+                      className="h-9 w-full cursor-pointer bg-transparent px-3 py-1.5 text-xs sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
                     >
                       <X className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       Cancel
@@ -812,7 +872,7 @@ export const ProfileInformationSection: React.FC<
                           }
                         }}
                         className="h-11 w-11 text-center text-base font-bold sm:h-12 sm:w-12 sm:text-lg md:h-14 md:w-14"
-                        disabled={verifyOtpMutation.isPending}
+                        disabled={verifyEmailChangeMutation.isPending}
                       />
                     ))}
                   </div>
@@ -831,10 +891,10 @@ export const ProfileInformationSection: React.FC<
                         variant="link"
                         size="sm"
                         onClick={() => handleResendOtp("email")}
-                        disabled={resendOtpMutation.isPending}
-                        className="h-auto p-0 text-xs text-orange-600 sm:text-sm"
+                        disabled={requestEmailChangeMutation.isPending}
+                        className="h-auto px-2 py-1 text-xs text-orange-600 sm:px-3 sm:py-1.5 sm:text-sm md:px-3 md:py-1.5 lg:px-4 lg:py-2"
                       >
-                        {resendOtpMutation.isPending
+                        {requestEmailChangeMutation.isPending
                           ? "Sending..."
                           : "Resend OTP"}
                       </Button>
@@ -846,11 +906,12 @@ export const ProfileInformationSection: React.FC<
                       size="sm"
                       onClick={handleVerifyEmailOtp}
                       disabled={
-                        emailOtp.length !== 4 || verifyOtpMutation.isPending
+                        emailOtp.length !== 4 ||
+                        verifyEmailChangeMutation.isPending
                       }
-                      className="h-9 w-full cursor-pointer bg-green-500 text-xs text-white hover:bg-green-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:text-sm"
+                      className="h-9 w-full cursor-pointer bg-green-500 px-3 py-1.5 text-xs text-white hover:bg-green-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
                     >
-                      {verifyOtpMutation.isPending
+                      {verifyEmailChangeMutation.isPending
                         ? "Verifying..."
                         : "Verify OTP"}
                     </Button>
@@ -858,7 +919,7 @@ export const ProfileInformationSection: React.FC<
                       size="sm"
                       variant="outline"
                       onClick={handleCancelEmail}
-                      className="h-9 w-full cursor-pointer bg-transparent text-xs sm:h-auto sm:w-auto sm:text-sm"
+                      className="h-9 w-full cursor-pointer bg-transparent px-3 py-1.5 text-xs sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
                     >
                       <X className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       Cancel

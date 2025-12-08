@@ -320,7 +320,7 @@ export interface UseAuthReturn {
   isLoading: boolean;
   authStorage: AuthStorageInterface;
   userAuthStep: UserAuthStep;
-
+  hasUserSaved: boolean;
   // Actions
   setStep: React.Dispatch<React.SetStateAction<AuthStep>>;
   deleteUser: (userData: DeleteUserData) => Promise<AuthResponse>;
@@ -380,6 +380,7 @@ export interface UseAuthReturn {
     otp?: string
   ) => Promise<AuthResponse>;
   setShowOAuthPhoneModal: (show: boolean) => void;
+  setHasUserSaved: (show: boolean) => void;
   showOAuthPhoneModal: boolean;
 
   // Queries

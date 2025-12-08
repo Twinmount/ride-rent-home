@@ -52,9 +52,7 @@ export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { country, state: stateData } = useStateAndCategory();
-  // 1. HOOK INTO NEXTAUTH
   const { data: session, status, update: updateSession } = useSession();
-  console.log("session: [useAuth]", session);
 
   const [state, updateState] = useImmer<AuthState>({
     isLoading: false,
@@ -62,8 +60,6 @@ export const useAuth = () => {
     isAuthenticated: !!authStorage.getToken(),
     user: authStorage.getUser(),
   });
-
-  const [] = useImmer({});
 
   const [auth, setAuth] = useImmer<InternalAuthState>({
     isLoggedIn: !!authStorage.getToken(),
@@ -73,6 +69,7 @@ export const useAuth = () => {
   });
 
   const [isLoginOpen, setLoginOpen] = useState(false);
+  const [hasUserSaved, setHasUserSaved] = useState(false);
   // Use ref to track if modal was explicitly opened (e.g., after logout)
   // This prevents the useEffect from closing it when session status changes
   const wasExplicitlyOpened = useRef(false);
@@ -326,16 +323,9 @@ export const useAuth = () => {
           }
         }
       });
-
-      // Update storage with the updated user object
-      if (state.user) {
-        const updatedUser = {
-          ...state.user,
-          ...(data?.data?.name && { name: data.data.name }),
-          ...(data?.data?.avatar && { avatar: data.data.avatar }),
-        };
-        authStorage.setUser(updatedUser, true); // Save to localStorage
-      }
+      queryClient.invalidateQueries({
+        queryKey: ["userProfile", session?.user?.id],
+      });
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -353,6 +343,10 @@ export const useAuth = () => {
         draft.token = null;
         draft.refreshToken = null;
       });
+      queryClient.invalidateQueries({
+        queryKey: ["userProfile", session?.user?.id],
+      });
+      queryClient.invalidateQueries({ queryKey: ["session"] });
       queryClient.clear(); // Clear all cached data on logout
     },
     onError: (error) => {
@@ -758,7 +752,7 @@ export const useAuth = () => {
       queryFn: () => authAPI.getUserProfile(userId),
       enabled: !!userId && enabled && isAuthenticated,
       // retry: 2,
-      // refetchOnWindowFocus: false,
+      refetchOnWindowFocus: false,
     });
   };
 
@@ -882,7 +876,9 @@ export const useAuth = () => {
   // Logout function
   const logout = async (id?: string): Promise<void> => {
     try {
+      logoutMutation.mutateAsync({ userId: id });
       await signOut({ redirect: false });
+      router.push(`/${country}/${stateData}`);
     } catch (error) {
       console.warn("Logout request failed:", error);
     } finally {
@@ -1239,6 +1235,7 @@ export const useAuth = () => {
     verifyOTP,
     setPassword,
     forgotPassword,
+    setHasUserSaved,
     resendOTP,
     deleteUser,
     updateProfile,
@@ -1257,6 +1254,7 @@ export const useAuth = () => {
     useGetUserProfile,
 
     // Mutation states for granular loading control
+    hasUserSaved,
     checkUserExistsMutation,
     signupMutation,
     loginMutation,

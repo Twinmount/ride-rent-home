@@ -25,7 +25,8 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Use the userActions hook
-  const { useSavedVehicle, isAuthenticated } = useUserActions();
+  const { useSavedVehicle, isAuthenticated, onHandleUserSavedCar } =
+    useUserActions();
 
   // Always call the hook, but use a fallback vehicleId if not provided
   const savedVehicleHook = useSavedVehicle({
@@ -80,23 +81,7 @@ const ShareLikeComponent: React.FC<ShareLikeProps> = ({
   };
 
   const handleLike = () => {
-    if (vehicleId) {
-      savedVehicleHook.toggleSaved();
-    } else {
-      // Fall back to local state management
-      const newLikedState = !localIsLiked;
-      setLocalIsLiked(newLikedState);
-      onLike?.(newLikedState);
-
-      // Show toast only when liking (not unliking)
-      if (newLikedState) {
-        setShowToast(true);
-        // Auto hide toast after 3 seconds
-        setTimeout(() => {
-          setShowToast(false);
-        }, 3000);
-      }
-    }
+    onHandleUserSavedCar();
   };
 
   return (

@@ -19,6 +19,8 @@ const ActiveEnquiryBanner = ({
 }: ActiveEnquiryBannerProps) => {
   const { data: auth } = useSession();
 
+  const { hasUserSaved, setHasUserSaved } = useAuthContext();
+
   const { data: activeEnquiryData, isLoading } = useQuery({
     queryKey: ["activeEnquiry", vehicleId, auth?.user?.id],
     queryFn: () =>
