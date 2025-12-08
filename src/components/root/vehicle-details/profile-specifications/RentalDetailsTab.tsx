@@ -378,27 +378,55 @@ const RentalDetailsTab = ({
             </div>
           </div>
 
-          <div className="flex flex-col items-center justify-between gap-2 py-2 pr-1 lg:mb-2 lg:flex-row lg:gap-4 lg:py-1">
+          <div className="flex flex-col items-center justify-between gap-2 py-2 pr-1 lg:mb-1 lg:ml-1 lg:flex-row lg:gap-4 lg:py-1">
             {/* Vehicle Type Badge */}
             {shouldShowBadge && (
-              <div
-                className="inline-flex select-none items-center rounded-full bg-orange/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-orange shadow-sm"
-                style={{
-                  fontWeight: 500,
-                  letterSpacing: "0.02em",
-                  background: "rgba(255,120,0,0.09)",
-                  boxShadow: "0 1px 4px rgba(80,80,80,0.05)",
-                }}
-              >
+              <div className="inline-flex items-center gap-1 text-sm">
                 {hasSelfDrive ? (
-                  "Self Drive Rental"
-                ) : (
-                  <span className="flex items-center gap-1">
-                    <span>Captain Included</span>
-                    <span className="text-xs font-normal text-orange/60">
-                      (Price Inclusive)
+                  <>
+                    <div className="flex h-4 w-4 items-center justify-center">
+                      <svg
+                        className="h-4 w-4 text-orange"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                        />
+                      </svg>
+                    </div>
+                    <span className="font-medium text-gray-800">
+                      Self Drive Rental
                     </span>
-                  </span>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex h-4 w-4 items-center justify-center">
+                      <svg
+                        className="h-4 w-4 text-orange"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                    </div>
+                    <span className="font-medium text-gray-800">
+                      Driver Included{" "}
+                      <span className="font-normal text-gray-700">
+                        · Price Inclusive
+                      </span>
+                    </span>
+                  </>
                 )}
               </div>
             )}
@@ -418,7 +446,7 @@ const RentalDetailsTab = ({
               aria-expanded={showMoreOptions}
               style={{ background: "transparent", border: "none" }}
             >
-              <span className="text-sm font-normal tracking-wide text-gray-700 transition-colors duration-150 group-hover:text-orange">
+              <span className="text-base font-normal tracking-wide text-gray-700 transition-colors duration-150 group-hover:text-orange">
                 More Rental Options
               </span>
               <svg
