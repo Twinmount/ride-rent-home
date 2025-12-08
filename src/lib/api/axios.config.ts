@@ -7,6 +7,7 @@ import axios, {
 } from "axios";
 import { authStorage } from "@/lib/auth/authStorage";
 import { ENV } from "@/config/env";
+import { getSession, signOut } from "next-auth/react";
 
 // Helper function to detect country from current URL
 function detectCountryFromUrl(): "ae" | "in" {
@@ -48,7 +49,7 @@ function getAssetsUrl(country?: "ae" | "in" | string): string {
 }
 
 // Define API base URLs
-const API_ENDPOINTS = {
+export const API_ENDPOINTS = {
   AUTH:
     ENV.NEXT_PUBLIC_AUTH_API_URL || "http://localhost:5000/v1/riderent/auth/",
   MAIN:
@@ -94,67 +95,163 @@ export const COUNTRIES_CONFIG = {
 
 export type CountryCode = keyof typeof COUNTRIES_CONFIG;
 
-// Flag to prevent multiple refresh attempts
+// Token storage - stores only the token string, not closures or large objects
+// This prevents memory leaks from closures capturing session objects
+let currentToken: string | null | undefined = null;
+
+/**
+ * Set the current token
+ * This should be called from your auth context/hook when session changes
+ * Pass only the token string, not a function that captures the session object
+ */
+export const setToken = (token: string | null | undefined) => {
+  currentToken = token;
+};
+
+/**
+ * Clear the current token
+ * Should be called on logout/unmount to prevent memory leaks
+ */
+export const clearToken = () => {
+  currentToken = null;
+};
+
+/**
+ * Get token from current token (set via NextAuth session)
+ * This is synchronous and doesn't call getSession()
+ *
+ * Note: No longer uses authStorage fallback - fully migrated to NextAuth
+ */
+export const getToken = (): string | null | undefined => {
+  // Return the current token set from NextAuth session
+  // This is set via setToken() in useAuth hook when session changes
+  return currentToken || null;
+};
+
+// Token refresh queue to prevent multiple simultaneous refresh calls
 let isRefreshing = false;
-let refreshSubscribers: Array<(token: string) => void> = [];
+let failedQueue: Array<{
+  resolve: (value?: any) => void;
+  reject: (error?: any) => void;
+}> = [];
 
-// Function to add subscribers waiting for token refresh
-const subscribeTokenRefresh = (cb: (token: string) => void) => {
-  refreshSubscribers.push(cb);
+const processQueue = (
+  error: AxiosError | null,
+  token: string | null = null
+) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
 };
 
-// Function to notify all subscribers when token is refreshed
-const onTokenRefreshed = (token: string) => {
-  refreshSubscribers.forEach((cb) => cb(token));
-  refreshSubscribers = [];
-};
-
-// Function to refresh access token
-const refreshAccessToken = async (): Promise<string | null> => {
+/**
+ * Refresh token using NextAuth session update
+ * This triggers NextAuth's JWT callback which handles the actual refresh
+ * Only called when a 401 error occurs, not on every request
+ */
+const refreshToken = async (): Promise<string | null> => {
   try {
-    const user = authStorage.getUser();
-    if (!user?.id) {
-      throw new Error("No user found");
+    // Get fresh session - this will trigger NextAuth's JWT callback
+    // which checks token expiration and refreshes if needed
+    const session = await getSession();
+
+    if (session?.accessToken) {
+      return session.accessToken;
     }
 
-    // Use a fresh axios instance for refresh to avoid circular dependency
-    const refreshClient = axios.create({
-      baseURL: API_ENDPOINTS.AUTH,
-      timeout: 10000,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const response = await refreshClient.post("/refresh-access-token", {
-      userId: user.id,
-    });
-
-    if (response.data.success && response.data.accessToken) {
-      const newToken = response.data.accessToken;
-
-      // Update token in storage (use localStorage if refreshToken exists, otherwise sessionStorage)
-      const refreshToken = authStorage.getRefreshToken();
-      const rememberMe = !!refreshToken;
-      authStorage.setToken(newToken, rememberMe);
-
-      return newToken;
+    // Check if session has error (refresh failed)
+    if ((session as any)?.error === "RefreshAccessTokenError") {
+      throw new Error("RefreshAccessTokenError");
     }
 
-    throw new Error("Failed to refresh token");
+    return null;
   } catch (error) {
     console.error("Token refresh failed:", error);
-    // Clear auth storage and redirect to login
-    authStorage.clear();
-    // Optionally redirect to login page
-    if (typeof window !== "undefined") {
-      // window.location.href = "/";
-    }
-    return null;
+    throw error;
   }
 };
 
-// Function to create axios instance with interceptors
+// Shared 401 error handler
+const handle401Error = async (
+  error: AxiosError,
+  client: AxiosInstance
+): Promise<any> => {
+  const originalRequest = error.config as InternalAxiosRequestConfig & {
+    _retry?: boolean;
+  };
+
+  if (
+    error.response?.status !== 401 ||
+    !originalRequest ||
+    originalRequest._retry
+  ) {
+    return Promise.reject(error);
+  }
+
+  // Skip refresh for auth endpoints
+  const isAuthEndpoint =
+    originalRequest.url?.includes("/login") ||
+    originalRequest.url?.includes("/signup") ||
+    originalRequest.url?.includes("/check-user") ||
+    originalRequest.url?.includes("/refresh-access-token");
+
+  if (isAuthEndpoint) {
+    return Promise.reject(error);
+  }
+
+  // Queue if already refreshing
+  if (isRefreshing) {
+    return new Promise((resolve, reject) => {
+      failedQueue.push({ resolve, reject });
+    })
+      .then((token) => {
+        if (originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+        }
+        return client(originalRequest);
+      })
+      .catch((err) => Promise.reject(err));
+  }
+
+  originalRequest._retry = true;
+  isRefreshing = true;
+
+  try {
+    const newToken = await refreshToken();
+
+    if (newToken) {
+      setToken(newToken); // Update current token
+
+      if (originalRequest.headers) {
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+      }
+
+      processQueue(null, newToken);
+      return client(originalRequest);
+    } else {
+      throw new Error("No token available after refresh");
+    }
+  } catch (refreshError) {
+    processQueue(refreshError as AxiosError, null);
+    authStorage.clear();
+    clearToken(); // Clear current token
+
+    if (typeof window !== "undefined") {
+      await signOut({ redirect: false });
+    }
+
+    return Promise.reject(refreshError);
+  } finally {
+    isRefreshing = false;
+  }
+};
+
 const createApiClient = (baseURL: string): AxiosInstance => {
   const client = axios.create({
     baseURL,
@@ -164,52 +261,39 @@ const createApiClient = (baseURL: string): AxiosInstance => {
     },
   });
 
-  // Request interceptor to add authorization header and handle dynamic URL switching
+  // Then use it in both interceptors:
+  client.interceptors.response.use(
+    (response: AxiosResponse) => response,
+    (error: AxiosError) => handle401Error(error, client)
+  );
+
   client.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      const token = authStorage.getToken();
+      // Extract token from explicit Authorization header or use stored token
+      const authHeader = config.headers?.Authorization as string | undefined;
+      const token = authHeader?.startsWith("Bearer ")
+        ? authHeader.slice(7) // Remove "Bearer " prefix
+        : getToken();
+
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
 
-      // Handle FormData properly - let the browser set the content-type
+      // Handle FormData
       if (config.data instanceof FormData) {
         delete config.headers["Content-Type"];
       }
 
       return config;
     },
-    (error: AxiosError) => {
-      if (error.response?.status === 401) {
-        console.log("error.response?.status: ", error.response?.status);
-      }
-      console.error("Request interceptor error:", error);
-      return Promise.reject(error);
-    }
+    (error: AxiosError) => Promise.reject(error)
   );
+
   client.interceptors.response.use(
     (response: AxiosResponse) => {
       return response;
     },
-    (error: AxiosError) => {
-      if (error.response) {
-        if (error.response.status === 401) {
-          authStorage.clear();
-          console.log(
-            "createApiClient: >>> 401 Unauthorized error DETECTED! <<<"
-          );
-          // if (typeof window !== "undefined") {
-          //   window.dispatchEvent(
-          //     new CustomEvent("auth:logout", {
-          //       detail: { reason: "unauthorized" },
-          //     })
-          //   );
-          // }
-        }
-      }
-      // CRITICAL: Re-throw the error so it can be caught by the calling code (`try...catch` blocks)
-      return Promise.reject(error);
-    }
+    async (error: AxiosError) => handle401Error(error, client)
   );
   return client;
 };
@@ -223,133 +307,40 @@ const createDynamicMainApiClient = (): AxiosInstance => {
     },
   });
 
-  // Request interceptor to add authorization header and dynamically set baseURL
   client.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      // Dynamically set baseURL based on country detection
+      // Extract token from explicit Authorization header or use stored token
       const country = detectCountryFromUrl();
 
       const baseURL =
         country === "in" ? API_ENDPOINTS.INDIA : API_ENDPOINTS.MAIN;
       config.baseURL = baseURL;
 
-      console.log("baseURL: ", baseURL);
+      const authHeader = config.headers?.Authorization as string | undefined;
+      const token = authHeader?.startsWith("Bearer ")
+        ? authHeader.slice(7) // Remove "Bearer " prefix
+        : getToken();
 
-      const token = authStorage.getToken();
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
 
-      // Handle FormData properly - let the browser set the content-type
+      // Handle FormData
       if (config.data instanceof FormData) {
         delete config.headers["Content-Type"];
       }
 
       return config;
     },
-    (error: AxiosError) => {
-      console.error("Request interceptor error:", error);
-      return Promise.reject(error);
-    }
+    (error: AxiosError) => Promise.reject(error)
   );
 
   // Response interceptor to handle token refresh
   client.interceptors.response.use(
     (response: AxiosResponse) => {
-      // console.log('Response received:', {
-      //   status: response.status,
-      //   url: response.config.url,
-      //   method: response.config.method,
-      // });
       return response;
     },
-    async (error: AxiosError) => {
-      console.error("Response error:", {
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        url: error.config?.url,
-        method: error.config?.method,
-        data: error.response?.data,
-      });
-      const originalRequest = error.config as InternalAxiosRequestConfig & {
-        _retry?: boolean;
-      };
-      console.log("error.response?.status: ", error.response?.status);
-
-      // Check if error is 401 and we haven't already tried to refresh
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        if (isRefreshing) {
-          // If refresh is already in progress, wait for it to complete
-          return new Promise((resolve) => {
-            subscribeTokenRefresh((token: string) => {
-              if (originalRequest.headers) {
-                originalRequest.headers.Authorization = `Bearer ${token}`;
-              }
-              resolve(client(originalRequest));
-            });
-          });
-        }
-
-        originalRequest._retry = true;
-        isRefreshing = true;
-
-        try {
-          const newToken = await refreshAccessToken();
-
-          if (newToken) {
-            isRefreshing = false;
-            onTokenRefreshed(newToken);
-
-            // Retry original request with new token
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            }
-            return client(originalRequest);
-          }
-        } catch (refreshError) {
-          console.log("refreshError: ", refreshError);
-          isRefreshing = false;
-          // Clear waiting subscribers
-          refreshSubscribers = [];
-
-          // Clear auth storage
-          // authStorage.clear();
-
-          // // Optionally redirect to login
-          // if (typeof window !== 'undefined') {
-          //   window.location.href = '/';
-          // }
-
-          return Promise.reject(refreshError);
-        }
-      }
-
-      return Promise.reject(error);
-    }
-  );
-
-  return client;
-};
-
-// Create dynamic assets API client that switches based on country
-const createDynamicAssetsApiClient = (): AxiosInstance => {
-  const client = axios.create({
-    timeout: 30000,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  client.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
-      // Dynamically set baseURL based on country detection
-      config.baseURL = getAssetsUrl();
-      return config;
-    },
-    (error: AxiosError) => {
-      console.error("Assets request interceptor error:", error);
-      return Promise.reject(error);
-    }
+    async (error: AxiosError) => handle401Error(error, client)
   );
 
   return client;
@@ -358,76 +349,20 @@ const createDynamicAssetsApiClient = (): AxiosInstance => {
 // Create multiple API clients for different services
 export const authApiClient = createApiClient(API_ENDPOINTS.AUTH);
 export const mainApiClient = createDynamicMainApiClient(); // Dynamic client that switches based on URL
-export const indiaApiClient = createApiClient(API_ENDPOINTS.INDIA);
-export const uaeApiClient = createApiClient(API_ENDPOINTS.UAE);
-export const assetsApiClient = createDynamicAssetsApiClient(); // Dynamic assets client
 
 // Create country-specific API clients
 export const countryApiClients = {
   INDIA: createApiClient(API_ENDPOINTS.INDIA),
   UAE: createApiClient(API_ENDPOINTS.UAE),
   // Future countries can be added here
-  // SAUDI: createApiClient(API_ENDPOINTS.SAUDI),
 } as const;
 
 // Default export (dynamic main API client)
 export default mainApiClient;
 
 // Export API endpoints for reference
-export { API_ENDPOINTS };
-
 // Export the getAssetsUrl helper function
 export { getAssetsUrl };
-
-// Helper function to get appropriate API client based on URL
-export const getApiClientByUrl = () => {
-  const country = detectCountryFromUrl();
-
-  switch (country) {
-    case "in":
-      return indiaApiClient;
-    case "ae":
-    default:
-      return mainApiClient;
-  }
-};
-
-// Enhanced request helper that auto-detects country from URL
-export const smartApiRequest = {
-  get: <T = any>(
-    url: string,
-    config?: InternalAxiosRequestConfig
-  ): Promise<AxiosResponse<T>> => {
-    const client = getApiClientByUrl();
-    return client.get<T>(url, config);
-  },
-
-  post: <T = any>(
-    url: string,
-    data?: any,
-    config?: InternalAxiosRequestConfig
-  ): Promise<AxiosResponse<T>> => {
-    const client = getApiClientByUrl();
-    return client.post<T>(url, data, config);
-  },
-
-  put: <T = any>(
-    url: string,
-    data?: any,
-    config?: InternalAxiosRequestConfig
-  ): Promise<AxiosResponse<T>> => {
-    const client = getApiClientByUrl();
-    return client.put<T>(url, data, config);
-  },
-
-  delete: <T = any>(
-    url: string,
-    config?: InternalAxiosRequestConfig
-  ): Promise<AxiosResponse<T>> => {
-    const client = getApiClientByUrl();
-    return client.delete<T>(url, config);
-  },
-};
 
 // Export helper functions for different APIs
 export const createAuthenticatedRequest = {
@@ -479,44 +414,5 @@ export const createAuthenticatedRequest = {
       url: string,
       config?: InternalAxiosRequestConfig
     ): Promise<AxiosResponse<T>> => mainApiClient.delete(url, config),
-  },
-
-  // India API requests
-  india: {
-    get: <T = any>(
-      url: string,
-      config?: InternalAxiosRequestConfig
-    ): Promise<AxiosResponse<T>> => indiaApiClient.get(url, config),
-
-    post: <T = any>(
-      url: string,
-      data?: any,
-      config?: InternalAxiosRequestConfig
-    ): Promise<AxiosResponse<T>> => indiaApiClient.post(url, data, config),
-
-    put: <T = any>(
-      url: string,
-      data?: any,
-      config?: InternalAxiosRequestConfig
-    ): Promise<AxiosResponse<T>> => indiaApiClient.put(url, data, config),
-
-    delete: <T = any>(
-      url: string,
-      config?: InternalAxiosRequestConfig
-    ): Promise<AxiosResponse<T>> => indiaApiClient.delete(url, config),
-  },
-
-  // Assets API requests (dynamic based on country)
-  assets: {
-    get: <T = any>(
-      url: string,
-      config?: InternalAxiosRequestConfig
-    ): Promise<AxiosResponse<T>> => assetsApiClient.get(url, config),
-
-    post: <T = any>(
-      url: string,
-      data?: any,
-      config?: InternalAxiosRequestConfig
-    ): Promise<AxiosResponse<T>> => assetsApiClient.post(url, data, config),
   },
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useSession } from "next-auth/react";
 import { useAppContext } from "@/context/useAppContext";
 
 interface UseAvatarUploadOptions {
@@ -34,9 +35,10 @@ export const useAvatarUpload = (
 
   const { auth } = useAppContext();
   const { updateProfile, user, authStorage } = auth;
+  const { data: session } = useSession();
 
-  // Get user ID from context if not provided
-  const currentUserId = userId || user?.id || authStorage.getUser()?.id;
+  // Use NextAuth session userId as primary source, fallback to auth context user
+  const currentUserId = userId || session?.user?.id || user?.id || authStorage.getUser()?.id;
 
   const validateFile = useCallback(
     (file: File): string | null => {

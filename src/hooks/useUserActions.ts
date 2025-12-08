@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppContext } from "@/context/useAppContext";
 import { useImmer } from "use-immer";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { ENV } from "@/config/env";
 import {
   getUserEnquiredVehicles,
@@ -39,10 +40,12 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
   const queryClient = useQueryClient();
   const { auth } = useAppContext();
   const { user, authStorage, isAuthenticated, onHandleLoginmodal } = auth;
+  const { data: session, status } = useSession();
 
   const [isSaved, setIsSaved] = useImmer(false);
 
-  const userId = user?.id || authStorage.getUser()?.id;
+  // Use NextAuth session userId as primary source, fallback to auth context user
+  const userId = session?.user?.id;
 
   // State for extracted saved vehicles data
   const [savedVehiclesState, setSavedVehiclesState] = useImmer({
@@ -74,46 +77,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       staleTime: 5 * 60 * 1000, // 5 minutes
       retry: 2,
     });
-
-    // Check if current vehicle is in saved list
-    useEffect(() => {
-      if (savedVehicles && vehicleId) {
-        // Handle different possible API response structures
-        let dataArray: any[] = [];
-
-        if (
-          savedVehicles.result?.data &&
-          Array.isArray(savedVehicles.result.data)
-        ) {
-          // New API structure: { result: { data: [...] } }
-          dataArray = savedVehicles.result.data;
-        } else if (Array.isArray(savedVehicles.result)) {
-          // Fallback: { result: [...] }
-          dataArray = savedVehicles.result;
-        } else if (Array.isArray(savedVehicles)) {
-          // Fallback: direct array
-          dataArray = savedVehicles;
-        }
-
-        if (dataArray.length > 0) {
-          const isVehicleSaved = dataArray.some((savedVehicle: any) => {
-            // Check multiple possible ID fields from the API response
-            const savedVehicleId =
-              savedVehicle.vehicleDetails?.carId ||
-              savedVehicle.vehicleDetails?._id ||
-              savedVehicle.carId ||
-              savedVehicle.vehicleId ||
-              savedVehicle.vehicle?.vehicleId;
-
-            return savedVehicleId === vehicleId;
-          });
-
-          setIsSaved(isVehicleSaved);
-        } else {
-          setIsSaved(false);
-        }
-      }
-    }, [savedVehicles, vehicleId]);
 
     // Mutation to add vehicle to saved list
     const saveMutation = useMutation({
@@ -175,8 +138,8 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       },
     });
 
-    const toggleSaved = () => {
-      if (!isAuthenticated || !userId) {
+    const onHandleSaveVehicleMutation = () => {
+      if (status !== "authenticated" || !session?.user?.id) {
         onHandleLoginmodal({ isOpen: true });
         return;
       }
@@ -194,7 +157,7 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       isSaved,
       isLoading: isLoading || isCheckingStatus,
       isAuthenticated,
-      toggleSaved,
+      onHandleSaveVehicleMutation,
       error: saveMutation.error || unsaveMutation.error,
     };
   };
@@ -455,7 +418,6 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
       carId: string;
       metadata?: Record<string, any>;
     }) => {
-      console.log("Tracking car view in useUserActions:", { carId, metadata });
       return trackCarView(userId!, carId, metadata);
     },
     onSuccess: (data) => {
@@ -530,7 +492,7 @@ export const useUserActions = (vehicleId?: string): UseUserActionsReturn => {
   };
 
   const onHandleUserSavedCar = () => {
-    if (!isAuthenticated || !userId) {
+    if (status !== "authenticated" || !session?.user?.id) {
       // Handle unauthenticated user
       onHandleLoginmodal({ isOpen: true });
       return;

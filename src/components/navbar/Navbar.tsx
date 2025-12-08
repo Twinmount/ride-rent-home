@@ -1,11 +1,11 @@
 "use client";
 
-import SafeImage from "@/components/common/SafeImage";
 import dynamic from "next/dynamic";
-import { useParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useShouldRender } from "@/hooks/useShouldRender";
 import { SearchDialog } from "../dialog/search-dialog/SearchDialog";
-import { extractCategory, getAvatarProps, trimName } from "@/helpers";
+import { getAvatarProps, trimName } from "@/helpers";
 import { noStatesDropdownRoutes } from ".";
 import LanguageSelector from "./LanguageSelector";
 import { LocationDialog } from "../dialog/location-dialog/LocationDialog";
@@ -32,8 +32,8 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { LoginDrawer } from "../dialog/login-dialog/LoginDrawer";
-import { authStorage } from "@/lib/auth";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
+import Image from "next/image";
 
 // dynamic import for sidebar - Fix the loading state
 const MobileSidebar = dynamic(() => import("../sidebar/MobileSidebar"), {
@@ -50,23 +50,15 @@ export const Navbar = () => {
   const [mounted, setMounted] = useState(false);
 
   const router = useRouter();
-  const {
-    user,
-    auth,
-    logout,
-    isLoginOpen,
-    useGetUserProfile,
-    onHandleLoginmodal,
-    handleProfileNavigation,
-  } = useAuthContext();
+  const { logout, isLoginOpen, onHandleLoginmodal, useGetUserProfile } =
+    useAuthContext();
+
+  const { data: sessionData, status: sessionStatus } = useSession();
+  const userId = sessionData?.user?.id || "";
 
   useLayoutEffect(() => {
     setMounted(true);
   }, []);
-
-  console.log("auth: ", auth);
-
-  console.log("isLoginOpen:Navbar ", isLoginOpen);
 
   const { country, state, category } = useStateAndCategory();
 
@@ -87,35 +79,44 @@ export const Navbar = () => {
   }, []);
 
   const shouldRenderDropdowns = useShouldRender(noStatesDropdownRoutes);
+  const userProfileQuery = useGetUserProfile(userId!, !!userId) || {};
+  const fetchedProfileData = userProfileQuery?.data?.data;
 
-  const handleLogout = () => {
-    logout(auth?.user?.id || "");
-    onHandleLoginmodal({ isOpen: true });
-    // router.push("/");
+  // Check if user is authenticated using NextAuth session
+  const isAuthenticated = sessionStatus === "authenticated" && !!sessionData;
+
+  // Get user data: prefer fetched profile data, fallback to session data
+  const userName = fetchedProfileData?.name || sessionData?.user?.name || "";
+  const userEmail = fetchedProfileData?.email || sessionData?.user?.email || "";
+  const userAvatar =
+    fetchedProfileData?.avatar || sessionData?.user?.image || "";
+
+  const handleLogout = async () => {
+    await logout(userId);
+
+    setTimeout(() => {
+      onHandleLoginmodal({ isOpen: true });
+    }, 100);
   };
 
   // Navigation handlers
+  const handleProfileNavigation = () => {
+    router.push(`/${country}/${state}/user-profile`);
+  };
+
   const handleEnquiriesNavigation = () => {
-    router.push("/user-profile/enquired-vehicles");
+    router.push(`/${country}/${state}/user-profile/enquired-vehicles`);
   };
 
   const handleFavoritesNavigation = () => {
-    router.push("/user-profile/saved-vehicles");
+    // Use current country and state, with fallbacks
+    const profileCountry = country || "in";
+    const profileState =
+      state || (profileCountry === "in" ? "bangalore" : "dubai");
+    router.push(
+      `/${profileCountry}/${profileState}/user-profile/saved-vehicles`
+    );
   };
-
-  const userId = authStorage.getUser()?.id.toString();
-
-  // Get user profile data
-  const userProfileQuery = useGetUserProfile(userId!, !!userId);
-
-  // Get user name from auth state
-  const userName = userProfileQuery.data?.data?.name
-    ? `${userProfileQuery.data?.data?.name || ""}`
-    : "";
-
-  const useAvatar = userProfileQuery.data?.data?.avatar
-    ? `${userProfileQuery.data?.data?.avatar || ""}`
-    : "?";
 
   return (
     <>
@@ -163,14 +164,34 @@ export const Navbar = () => {
               </div>
 
               {/* User Authentication */}
-              {auth.isLoggedIn ? (
+              {isAuthenticated ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Avatar className="h-8 w-8 flex-shrink-0 cursor-pointer ring-2 ring-orange-200 transition-all hover:ring-orange-300">
-                      <AvatarImage src={useAvatar} alt={userName} />
-                      <AvatarFallback className="bg-orange-100 text-xs font-semibold text-orange-600">
-                        {getAvatarProps(userName).fallbackInitials}
-                      </AvatarFallback>
+                      {userAvatar ? (
+                        <div className="relative h-full w-full overflow-hidden rounded-full">
+                          <Image
+                            src={userAvatar}
+                            alt={userName}
+                            fill
+                            className="object-cover"
+                            onError={() => {
+                              console.warn(
+                                "Avatar image failed to load:",
+                                userAvatar
+                              );
+                            }}
+                            referrerPolicy="no-referrer"
+                            unoptimized={userAvatar.includes(
+                              "googleusercontent.com"
+                            )}
+                          />
+                        </div>
+                      ) : (
+                        <AvatarFallback className="bg-orange-100 text-xs font-semibold text-orange-600">
+                          {getAvatarProps(userName).fallbackInitials}
+                        </AvatarFallback>
+                      )}
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -183,7 +204,7 @@ export const Navbar = () => {
                           {trimName(userName, 15)}
                         </p>
                         <p className="text-xs leading-none text-muted-foreground">
-                          {user?.email}
+                          {userEmail}
                         </p>
                       </div>
                     </DropdownMenuLabel>

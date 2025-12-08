@@ -193,6 +193,6 @@ export interface UseSavedVehicleReturn {
   isSaved: boolean;
   isLoading: boolean;
   isAuthenticated: boolean;
-  toggleSaved: () => void;
+  onHandleSaveVehicleMutation: () => void;
   error: Error | null;
 }
