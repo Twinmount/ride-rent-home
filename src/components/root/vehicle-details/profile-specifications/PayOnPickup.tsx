@@ -14,7 +14,7 @@ const PayOnPickup = ({ hasPayOnPickup = false }: PayOnPickupProps) => {
       <CheckCircle className={`h-4 w-4 flex-shrink-0`} />
 
       <span className={`ml-1 whitespace-nowrap text-xs font-normal capitalize`}>
-        Pay on Pickup
+        Pay only on Pickup
       </span>
     </div>
   );

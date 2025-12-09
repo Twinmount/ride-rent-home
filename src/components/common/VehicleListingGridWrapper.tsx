@@ -15,8 +15,7 @@ const VehicleListingGridWrapper = ({
     <div
       className={cn(
         "grid gap-4",
-        // INCREASED: from 20rem to 22rem for more space
-        "grid-cols-[repeat(auto-fill,minmax(min(100%,22rem),1fr))]",
+        "grid-cols-[repeat(auto-fill,minmax(min(100%,18rem),1fr))]",
         "auto-rows-fr",
         "sm:gap-5 md:gap-6",
         className
