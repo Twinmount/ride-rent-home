@@ -1,170 +1,153 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { memo } from "react";
 
 type VehicleRentalTypeBadgesProps = {
   isSelfDriveAvailable?: boolean;
   isDriverAvailable?: boolean;
 };
 
-// Optimized: Use CSS keyframes instead of Framer Motion for shimmer
-const shimmerStyles = `
-  @keyframes badge-shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-`;
+const VehicleRentalTypeBadges = ({
+  isSelfDriveAvailable,
+  isDriverAvailable,
+}: VehicleRentalTypeBadgesProps) => {
+  // Show only if ONE is true, not both
+  const showOnlyOneType = isSelfDriveAvailable !== isDriverAvailable;
 
-const VehicleRentalTypeBadges = memo(
-  ({
-    isSelfDriveAvailable,
-    isDriverAvailable,
-  }: VehicleRentalTypeBadgesProps) => {
-    if (!isSelfDriveAvailable && !isDriverAvailable) return null;
+  if (!showOnlyOneType) return null;
 
-    return (
-      <>
-        <style>{shimmerStyles}</style>
-        <motion.div
-          className="flex items-center gap-1.5"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-        >
-          {isSelfDriveAvailable && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                duration: 0.5,
-                delay: 0.1,
-                type: "spring",
-                stiffness: 200,
-                damping: 15,
-              }}
-              whileHover={{
-                scale: 1.05,
-                y: -2,
-              }}
-              whileTap={{ scale: 0.98 }}
-              className={cn(
-                "group relative inline-flex cursor-pointer items-center gap-1 overflow-hidden",
-                "rounded-md px-2 py-1",
-                "text-[10px] font-semibold tracking-wide",
-                "bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600",
-                "flex-shrink-0 text-white",
-                "shadow-[0_2px_8px_-2px_rgba(251,146,60,0.3)]",
-                "ring-1 ring-inset ring-white/20",
-                "transition-shadow duration-200"
-              )}
-            >
-              {/* Optimized: CSS animation instead of Framer Motion */}
-              <div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                style={{
-                  animation: "badge-shimmer 2.5s linear infinite",
-                  animationDelay: "0s",
-                }}
-              />
+  const badgeStyles = cn(
+    // Layout
+    "group relative inline-flex items-center gap-1.5 rounded-full overflow-hidden",
+    // Responsive padding
+    "px-3 py-1.5 w-full",
+    "sm:px-3.5 sm:py-1.5 sm:w-auto sm:min-w-[160px]",
+    "md:px-4 md:min-w-[170px]",
+    // Colors - subtle gradient
+    "bg-gradient-to-r from-gray-50 to-blue-50/30",
+    "text-gray-800",
+    // Shadow with glow
+    "shadow-sm shadow-blue-100/50",
+    // Hover
+    "transition-all duration-300 ease-out",
+    "hover:shadow-lg hover:shadow-blue-200/60 hover:-translate-y-0.5",
+    "hover:from-gray-50 hover:to-blue-50/50"
+  );
 
-              {/* Inner glow - static, no animation needed */}
-              <div className="pointer-events-none absolute inset-0 rounded-md bg-gradient-to-b from-white/15 to-transparent" />
+  return (
+    <>
+      <style>{`
+        @keyframes border-glow {
+          0%, 100% {
+            background-position: 0% 50%;
+            opacity: 0.6;
+          }
+          50% {
+            background-position: 100% 50%;
+            opacity: 1;
+          }
+        }
+        
+        @keyframes shimmer-slide {
+          0% {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          50% {
+            opacity: 0.3;
+          }
+          100% {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+        }
+        
+        .animated-border {
+          position: relative;
+        }
+        
+        .animated-border::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 9999px;
+          padding: 1.5px;
+          background: linear-gradient(90deg, 
+            rgba(59, 130, 246, 0.2),
+            rgba(96, 165, 250, 0.6),
+            rgba(147, 197, 253, 0.8),
+            rgba(59, 130, 246, 0.9),
+            rgba(147, 197, 253, 0.8),
+            rgba(96, 165, 250, 0.6),
+            rgba(59, 130, 246, 0.2)
+          );
+          background-size: 300% 100%;
+          animation: border-glow 3s ease-in-out infinite;
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          filter: blur(0.5px);
+        }
+        
+        .shimmer-effect {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(90deg, 
+            transparent, 
+            rgba(255, 255, 255, 0.4), 
+            transparent
+          );
+          animation: shimmer-slide 3s ease-in-out infinite;
+        }
+      `}</style>
 
-              {/* Optimized: Simple SVG without motion wrapper */}
+      <div className="flex w-full items-center sm:w-auto">
+        {isSelfDriveAvailable && (
+          <div className={cn(badgeStyles, "animated-border")}>
+            {/* Inner shimmer effect */}
+            <div className="shimmer-effect" />
+
+            <div className="relative z-10 flex w-full items-center gap-1.5">
+              {/* Car icon with subtle glow */}
               <svg
-                className="relative z-10 h-3 w-3 flex-shrink-0 transition-transform duration-500 ease-in-out group-hover:rotate-[360deg]"
+                className="h-3.5 w-3.5 flex-shrink-0 text-blue-600 drop-shadow-sm transition-transform duration-300 group-hover:scale-110"
                 viewBox="0 0 24 24"
-                fill="none"
+                fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  fill="currentColor"
-                  opacity="0.9"
-                />
-                <path
-                  d="M9 12l2 2 4-4"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+                <path d="M18.92 5.01C18.72 4.42 18.16 4 17.5 4h-11c-.66 0-1.21.42-1.42 1.01L3 11v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 15c-.83 0-1.5-.67-1.5-1.5S5.67 12 6.5 12s1.5.67 1.5 1.5S7.33 15 6.5 15zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 10l1.5-4.5h11L19 10H5z" />
               </svg>
 
-              <span className="relative z-10 whitespace-nowrap leading-none">
-                Self Drive
+              <span className="truncate text-[10px] font-medium leading-none tracking-wide sm:text-[11px]">
+                Self Drive Available
               </span>
-            </motion.div>
-          )}
+            </div>
+          </div>
+        )}
 
-          {isDriverAvailable && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                duration: 0.5,
-                delay: 0.2,
-                type: "spring",
-                stiffness: 200,
-                damping: 15,
-              }}
-              whileHover={{
-                scale: 1.05,
-                y: -2,
-              }}
-              whileTap={{ scale: 0.98 }}
-              className={cn(
-                "group relative inline-flex cursor-pointer items-center gap-1 overflow-hidden",
-                "rounded-md px-2 py-1",
-                "text-[10px] font-semibold tracking-wide",
-                "bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600",
-                "flex-shrink-0 text-white",
-                "shadow-[0_2px_8px_-2px_rgba(59,130,246,0.3)]",
-                "ring-1 ring-inset ring-white/20",
-                "transition-shadow duration-200"
-              )}
-            >
-              {/* Optimized: CSS animation with delay */}
-              <div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                style={{
-                  animation: "badge-shimmer 2.5s linear infinite",
-                  animationDelay: "1s",
-                }}
-              />
+        {isDriverAvailable && (
+          <div className={cn(badgeStyles, "animated-border")}>
+            {/* Inner shimmer effect */}
+            <div className="shimmer-effect" />
 
-              {/* Inner glow - static */}
-              <div className="pointer-events-none absolute inset-0 rounded-md bg-gradient-to-b from-white/15 to-transparent" />
-
-              {/* Optimized: CSS-only hover animation */}
+            <div className="relative z-10 flex w-full items-center gap-1.5">
+              {/* Driver icon with subtle glow */}
               <svg
-                className="relative z-10 h-3 w-3 flex-shrink-0 transition-transform duration-300 ease-out group-hover:scale-110"
+                className="h-3.5 w-3.5 flex-shrink-0 text-blue-600 drop-shadow-sm transition-transform duration-300 group-hover:scale-110"
                 viewBox="0 0 24 24"
-                fill="none"
+                fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <circle cx="12" cy="7" r="4" fill="currentColor" />
-                <path
-                  d="M12 12c-4 0-8 2-8 5v2h16v-2c0-3-4-5-8-5z"
-                  fill="currentColor"
-                />
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
               </svg>
 
-              <span className="relative z-10 whitespace-nowrap leading-none">
-                With Driver
+              <span className="truncate text-[10px] font-medium leading-none tracking-wide sm:text-[11px]">
+                Driver Available
               </span>
-            </motion.div>
-          )}
-        </motion.div>
-      </>
-    );
-  }
-);
-
-VehicleRentalTypeBadges.displayName = "VehicleRentalTypeBadges";
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
 
 export default VehicleRentalTypeBadges;
