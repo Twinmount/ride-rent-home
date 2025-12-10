@@ -23,34 +23,17 @@ export default function LoadMoreBlogs({
   const pageRef = useRef(2);
   const loadingRef = useRef(false);
 
-  // console.log("🎬 RENDER:", {
-  //   inView,
-  //   hasMore,
-  //   isLoading,
-  //   loadingRef: loadingRef.current,
-  //   page: pageRef.current,
-  //   blogsCount: blogs.length,
-  // });
-
   useEffect(() => {
-    // console.log("🔄 EFFECT TRIGGERED:", {
-    //   inView,
-    //   hasMore,
-    //   loadingRef: loadingRef.current,
-    // });
-
     if (loadingRef.current || !hasMore || !inView) {
       console.log("❌ SKIPPING - Guard failed");
       return;
     }
 
     const loadMore = async () => {
-      // console.log(`🚀 STARTING FETCH for page ${pageRef.current}`);
       loadingRef.current = true;
       setIsLoading(true);
 
       try {
-        // console.log("📞 CALLING API route...");
         const response = await fetch("/api/blogs", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -82,15 +65,12 @@ export default function LoadMoreBlogs({
   }, [inView, hasMore, selectedTag, country]);
 
   useEffect(() => {
-    // console.log("🔄 TAG CHANGED - RESETTING");
     setBlogs([]);
     pageRef.current = 2;
     setHasMore(true);
     setIsLoading(false);
     loadingRef.current = false;
   }, [selectedTag]);
-
-  // console.log("🎨 RENDERING UI with", blogs.length, "blogs");
 
   return (
     <>
