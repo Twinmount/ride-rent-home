@@ -1,4 +1,3 @@
-// In your existing VehicleListingGridWrapper component
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 
@@ -16,6 +15,7 @@ const VehicleListingGridWrapper = ({
       className={cn(
         "grid gap-4",
         "grid-cols-[repeat(auto-fill,minmax(min(100%,18rem),1fr))]",
+        "lg:grid-cols-3",
         "auto-rows-fr",
         "sm:gap-5 md:gap-6",
         className
