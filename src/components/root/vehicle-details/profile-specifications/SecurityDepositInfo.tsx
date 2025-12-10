@@ -18,27 +18,27 @@ const SecurityDepositInfo = ({
 
   return (
     <div
-      className={`mx-4 flex items-center justify-center text-xs ${
+      className={`mx-2 my-4 flex items-center text-xs ${
         isDisabled ? "text-gray-400" : "text-text-secondary"
       }`}
     >
       {securityDeposit?.enabled ? (
-        <div className="relative h-5 w-5 flex-shrink-0">
+        <div className="relative h-[18px] w-[18px] flex-shrink-0">
           <SafeImage
             src="/assets/icons/detail-page/deposits.svg"
             alt="deposit"
             fill
             className={`object-contain ${isDisabled ? "opacity-50" : ""}`}
-            sizes="20px"
+            sizes="18px"
           />
         </div>
       ) : (
         <CheckCircle
-          className={`h-4 w-4 flex-shrink-0 ${isDisabled ? "opacity-50" : ""}`}
+          className={`h-[18px] w-[18px] flex-shrink-0 ${isDisabled ? "opacity-50" : ""}`}
         />
       )}
       <span
-        className={`ml-1 whitespace-nowrap text-xs font-normal capitalize ${
+        className={`ml-1.5 whitespace-nowrap text-xs font-normal capitalize leading-[18px] ${
           isDisabled ? "text-gray-400" : ""
         }`}
       >

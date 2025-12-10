@@ -386,7 +386,7 @@ const RentalDetailsTab = ({
                   <>
                     <div className="flex h-4 w-4 items-center justify-center">
                       <svg
-                        className="h-4 w-4 text-orange"
+                        className="h-4 w-4 text-black"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
