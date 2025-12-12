@@ -321,7 +321,6 @@ export const fetchVehicleTypesByValue = async (
     }
 
     const data = await response.json();
-    console.log("Fetched vehicle types data:", data.result);
     return data;
   } catch (error) {
     console.error("Error in fetchVehicleTypes:", error);

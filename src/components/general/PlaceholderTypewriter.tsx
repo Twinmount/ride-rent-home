@@ -44,6 +44,11 @@ export const PlaceholderTypewriter = ({
   }, [category]);
 
   useEffect(() => {
+    // Guard against undefined currentText or empty array
+    if (!currentText || TEXT_ARRAY.length === 0) {
+      return;
+    }
+
     let typingTimeout: NodeJS.Timeout;
 
     if (!isDeleting) {
@@ -78,7 +83,7 @@ export const PlaceholderTypewriter = ({
     }
 
     return () => clearTimeout(typingTimeout); // Cleanup on unmount/re-render
-  }, [displayedText, isDeleting, currentIndex, currentText]);
+  }, [displayedText, isDeleting, currentIndex, currentText, TEXT_ARRAY.length]);
 
   if (!shouldShowTypewriter) {
     return (

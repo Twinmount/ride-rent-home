@@ -117,7 +117,9 @@ export default function RootLayout({
           <SessionProvider>
             {/* global context provider */}
             <ReactQueryProvider>
-              <GlobalContextProvider>{children}</GlobalContextProvider>
+              <GlobalContextProvider>
+                {children}
+              </GlobalContextProvider>
             <ToastContainer
               position="top-right"
               autoClose={2000}

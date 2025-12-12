@@ -8,8 +8,8 @@ import {
 import { useImmer } from "use-immer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { sendRentalEnquiry, checkActiveEnquiry } from "@/lib/api/general-api";
-import { useAuthContext } from "@/auth";
 import { tostHandler } from "@/utils/helper";
+import { useSession } from "next-auth/react";
 
 export const useCarRent = (
   onDateChange?: (range: { startDate: Date; endDate: Date }) => void,
@@ -20,14 +20,9 @@ export const useCarRent = (
     vehicle?: any;
   }
 ): UseCarRentReturn => {
-  const { auth, authStorage, useGetUserProfile } = useAuthContext();
+  const { data: session } = useSession();
   const { vehicleId, agentId, country, vehicle } = vehicleData || {};
   const queryClient = useQueryClient();
-
-  const { data: userProfile } = useGetUserProfile(
-    auth?.user?.id || "",
-    !!auth?.user?.id
-  );
 
   const initialDateRange = {
     startDate: new Date(),
@@ -41,19 +36,22 @@ export const useCarRent = (
   const [open, setOpen] = useImmer(false);
   const [showBookingPopup, setShowBookingPopup] = useImmer(false);
 
+  // Get user ID from NextAuth session
+  const userId = session?.user?.id;
+
   // Check for active enquiry for this car and user
   const {
     data: { result: activeEnquiryData } = {},
     isLoading: isCheckingActiveEnquiry,
   } = useQuery({
-    queryKey: ["activeEnquiry", vehicleId, auth?.user?.id],
+    queryKey: ["activeEnquiry", vehicleId, userId],
     queryFn: () =>
       checkActiveEnquiry({
         carId: vehicleId || "",
-        userId: auth?.user?.id || "",
+        userId: userId || "",
         country: country || "ae",
       }),
-    enabled: !!(vehicleId && auth?.user?.id),
+    enabled: !!(vehicleId && userId),
     refetchOnWindowFocus: true,
   });
 
@@ -110,11 +108,11 @@ export const useCarRent = (
     pickupTime: "10:00 AM",
     returnTime: "10:00 AM",
 
-    // Customer Information (dynamic based on authenticated user)
+    // Customer Information (dynamic based on authenticated user from NextAuth session)
     customer: {
-      name: userProfile?.data?.name || "",
-      phone: userProfile?.data?.phoneNumber || "",
-      email: userProfile?.data?.email || "",
+      name: session?.user?.name || "",
+      phone: session?.user?.phoneNumber || "",
+      email: session?.user?.email || "",
       // paymentMethod: "", // commented out for now, can be enabled in future
     },
 
@@ -201,8 +199,9 @@ export const useCarRent = (
       countryCode: string;
       email?: string;
     }) => {
-      const user = authStorage.getUser();
-      if (!user?.id) {
+      // Get user ID from NextAuth session
+      const userId = session?.user?.id;
+      if (!userId) {
         throw new Error("User must be logged in to send enquiry");
       }
 
@@ -212,7 +211,7 @@ export const useCarRent = (
 
       return sendRentalEnquiry({
         message,
-        userId: user.id.toString(),
+        userId: userId.toString(),
         agentId: vehicleData.agentId,
         carId: vehicleData.vehicleId,
         rentalStartDate: startDate.toISOString(),
@@ -226,7 +225,7 @@ export const useCarRent = (
     onSuccess: () => {
       // Invalidate the active enquiry query to refetch updated data
       queryClient.invalidateQueries({
-        queryKey: ["activeEnquiry", vehicleId, auth?.user?.id],
+        queryKey: ["activeEnquiry", vehicleId, userId],
       });
       handleBookingComplete();
     },
@@ -254,28 +253,33 @@ export const useCarRent = (
   };
 
   const handleBookingConfirm = (
-    message: string = "I am interested in this car. Is it still available? To Can you confirm the availability for this booking?’"
+    message: string = "I am interested in this car. Is it still available? To Can you confirm the availability for this booking?'"
   ) => {
     const endDate = carRentDate[0].endDate;
     const startDate = carRentDate[0].startDate;
-    const email = userProfile?.data?.email;
+    
+    // Get user data from NextAuth session
+    const userName = session?.user?.name || "";
+    const userPhone = session?.user?.phoneNumber || "";
+    const userCountryCode = session?.user?.countryCode || "";
+    const userEmail = session?.user?.email || "";
 
-    console.log("userProfile: ", userProfile);
     const mutationData: any = {
       message,
       startDate,
       endDate,
-      name: userProfile?.data?.name || "",
-      phone: userProfile?.data?.phoneNumber || "",
-      countryCode: userProfile?.data?.countryCode || "",
+      name: userName,
+      phone: userPhone,
+      countryCode: userCountryCode,
     };
 
     // Only include email if it has a value
-    if (email) {
-      mutationData.email = email;
+    if (userEmail) {
+      mutationData.email = userEmail;
     }
 
-    if (userProfile?.data?.name && userProfile?.data?.phoneNumber) {
+    // Only proceed if we have required user data
+    if (userName && userPhone) {
       rentalEnquiryMutation.mutate(mutationData);
     }
   };

@@ -19,7 +19,7 @@ export default function RentalDetails({
 }: RentalDetailsProps) {
   const searchParams = useSearchParams();
   const urlPeriod = searchParams.get("period");
-
+  
   const rentalPeriod = getRentalPeriodDetails(
     rentalDetails,
     urlPeriod as Period

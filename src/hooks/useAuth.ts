@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useImmer } from "use-immer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSession, signIn, signOut } from "next-auth/react";
 import type {
   LoginData,
   PhoneSignupData,
@@ -20,6 +21,7 @@ import type {
   OtpType,
   OtpVerificationData,
   DeleteUserData,
+  AuthStep,
 } from "@/types/auth.types";
 
 // Import constants
@@ -36,6 +38,12 @@ import {
 // Import auth API service
 import { authAPI } from "@/lib/api/auth.api";
 import { authStorage } from "@/lib/auth/authStorage";
+import {
+  setToken,
+  clearToken,
+  createAuthenticatedRequest,
+} from "@/lib/api/axios.config";
+import { useStateAndCategory } from "./useStateAndCategory";
 
 // Remove the old API_BASE_URL and AUTH_ENDPOINTS since they're now in the auth.api.ts file
 
@@ -43,6 +51,8 @@ import { authStorage } from "@/lib/auth/authStorage";
 export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { country, state: stateData } = useStateAndCategory();
+  const { data: session, status, update: updateSession } = useSession();
 
   const [state, updateState] = useImmer<AuthState>({
     isLoading: false,
@@ -51,8 +61,6 @@ export const useAuth = () => {
     user: authStorage.getUser(),
   });
 
-  const [] = useImmer({});
-
   const [auth, setAuth] = useImmer<InternalAuthState>({
     isLoggedIn: !!authStorage.getToken(),
     user: authStorage.getUser(),
@@ -60,7 +68,13 @@ export const useAuth = () => {
     refreshToken: authStorage.getRefreshToken(),
   });
 
-  const [isLoginOpen, setLoginOpen] = useImmer(false);
+  const [isLoginOpen, setLoginOpen] = useState(false);
+  const [hasUserSaved, setHasUserSaved] = useState(false);
+  // Use ref to track if modal was explicitly opened (e.g., after logout)
+  // This prevents the useEffect from closing it when session status changes
+  const wasExplicitlyOpened = useRef(false);
+  const [step, setStep] = useState<AuthStep>("phone");
+  const [showOAuthPhoneModal, setShowOAuthPhoneModal] = useState(false);
 
   const [userAuthStep, setUserAuthStep] = useImmer({
     userId: "",
@@ -70,45 +84,41 @@ export const useAuth = () => {
   });
 
   useEffect(() => {
-    const handleLogoutEvent = (event: CustomEvent) => {
-      // Clear auth storage (if not already cleared)
-      authStorage.clear();
+    if (status === "authenticated" && session) {
+      const accessToken = (session as any)?.accessToken || null;
+      setToken(accessToken);
 
-      // Update all auth states
-      updateState((draft) => {
-        draft.isAuthenticated = false;
-        draft.user = null;
-        draft.error = null;
-      });
+      const isOAuthUser =
+        session.provider && session.provider !== "credentials";
+      const needsPhoneNumber =
+        isOAuthUser && (!session.isPhoneVerified || !session.user?.phoneNumber);
+    } else if (status === "unauthenticated") {
+      //  Clear state
+      //  updateState((draft) => {
+      //    draft.isAuthenticated = false;
+      //    draft.user = null;
+      //    draft.isLoading = false;
+      //  });
+      //  authStorage.clear();
+      // Don't automatically open login modal on unauthenticated status
+      // Let the UI components control when to open it (e.g., after logout)
+      // If modal was explicitly opened (e.g., after logout), keep it open
+      if (wasExplicitlyOpened.current && !isLoginOpen) {
+        setLoginOpen(true);
+      }
+      clearToken();
+    }
+    if ((session as any)?.error === "RefreshAccessTokenError") {
+      signOut({ redirect: false });
+      clearAuthData();
+      clearToken();
+    }
 
-      setAuth((draft) => {
-        draft.isLoggedIn = false;
-        draft.user = null;
-        draft.token = null;
-        draft.refreshToken = null;
-      });
-
-      // Clear React Query cache
-      queryClient.clear();
-
-      // Close login modal if open
-      // setLoginOpen(false);
-
-      // Optionally redirect to home or login page
-      // router.push("/");
-    };
-
-    // Add event listener
-    window.addEventListener("auth:logout", handleLogoutEvent as EventListener);
-
-    // Cleanup event listener
+    // Cleanup on unmount to prevent memory leaks
     return () => {
-      window.removeEventListener(
-        "auth:logout",
-        handleLogoutEvent as EventListener
-      );
+      clearToken();
     };
-  }, []);
+  }, [session, status, updateState, setAuth]);
 
   // React Query Mutations
   const checkUserExistsMutation = useMutation({
@@ -179,7 +189,7 @@ export const useAuth = () => {
           draft.token = data?.accessToken!;
           draft.refreshToken = data?.refreshToken!;
         });
-        // setLoginOpen(false);
+        // Note: Login drawer will close automatically when NextAuth session updates
         setError(null);
       }
     },
@@ -200,32 +210,46 @@ export const useAuth = () => {
 
   const setPasswordMutation = useMutation({
     mutationFn: authAPI.setPassword,
-    onSuccess: (data) => {
+    onSuccess: async (data, variables) => {
       if (data.success && data.data) {
-        const user: User = {
-          id: data?.data?.userId!,
-          phoneNumber: data?.data?.phoneNumber!,
-          countryCode: data?.data?.countryCode!,
-          email: data?.data?.email!,
-          isEmailVerified: data?.data?.isEmailVerified!,
-          isPhoneVerified: data?.data?.isPhoneVerified!,
-          avatar: data.data.avatar,
-          name: data.data.name,
-        };
+        // Sign in with NextAuth using credentials to create a session
+        // NextAuth will handle token storage and session management through its flow:
+        // 1. authorize() calls authAPI.login() which returns tokens
+        // 2. JWT callback stores tokens in NextAuth token
+        // 3. Session callback makes tokens available in session
+        // 4. useEffect in useAuth will pick up session and call setToken() for axios
+        try {
+          const signInResult = await signIn("credentials", {
+            phoneNumber: data.data.phoneNumber,
+            countryCode: data.data.countryCode,
+            password: variables.password, // Use the password that was just set
+            redirect: false, // Prevent page reload
+          });
 
-        setAuthenticated(
-          user,
-          data.accessToken,
-          data.refreshToken,
-          true // Remember user
-        );
+          if (signInResult?.error) {
+            console.error(
+              "NextAuth sign in failed after password set:",
+              signInResult.error
+            );
+            setError({ message: signInResult.error });
+            return;
+          }
 
-        setAuth((draft) => {
-          draft.isLoggedIn = true;
-          draft.user = user;
-          draft.token = data?.accessToken!;
-          draft.refreshToken = data?.refreshToken!;
-        });
+          // Invalidate session query to refresh UI with new session
+          await queryClient.invalidateQueries({ queryKey: ["session"] });
+        } catch (signInError) {
+          console.error(
+            "Error signing in with NextAuth after password set:",
+            signInError
+          );
+          setError({
+            message:
+              signInError instanceof Error
+                ? signInError.message
+                : "Failed to create session",
+          });
+          return;
+        }
       }
       setLoginOpen(false);
       setError(null);
@@ -257,6 +281,22 @@ export const useAuth = () => {
         draft.otpId = data.data?.otpId || "";
       });
       setError(null);
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
+  const setupOAuthPasswordMutation = useMutation({
+    mutationFn: authAPI.setupOAuthPassword,
+    onSuccess: async (data) => {
+      setError(null);
+      // Invalidate session query to refresh UI with updated user data
+
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["userProfile", session?.user?.id],
+      });
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -299,16 +339,9 @@ export const useAuth = () => {
           }
         }
       });
-
-      // Update storage with the updated user object
-      if (state.user) {
-        const updatedUser = {
-          ...state.user,
-          ...(data?.data?.name && { name: data.data.name }),
-          ...(data?.data?.avatar && { avatar: data.data.avatar }),
-        };
-        authStorage.setUser(updatedUser, true); // Save to localStorage
-      }
+      queryClient.invalidateQueries({
+        queryKey: ["userProfile", session?.user?.id],
+      });
     },
     onError: (error: Error) => {
       setError({ message: error.message });
@@ -326,6 +359,10 @@ export const useAuth = () => {
         draft.token = null;
         draft.refreshToken = null;
       });
+      queryClient.invalidateQueries({
+        queryKey: ["userProfile", session?.user?.id],
+      });
+      queryClient.invalidateQueries({ queryKey: ["session"] });
       queryClient.clear(); // Clear all cached data on logout
     },
     onError: (error) => {
@@ -344,22 +381,19 @@ export const useAuth = () => {
   const deleteUserMutation = useMutation({
     mutationFn: async (deleteUserData: DeleteUserData) =>
       authAPI.deleteUser(deleteUserData),
-    onSuccess: (data) => {
-      console.log("data: ", data);
-      // Clear authentication & cached data (like logout)
+    onSuccess: async (data) => {
+      router.push(`/${country}/${stateData}`);
+      setLoginOpen(true);
+      setStep("phone");
       setAuthenticated(null);
-      setAuth((draft) => {
-        draft.isLoggedIn = false;
-        draft.user = null;
-        draft.token = null;
-        draft.refreshToken = null;
-      });
 
-      queryClient.clear(); // Clear cached data
+      await signOut({ redirect: false });
+
+      clearToken();
+      queryClient.clear();
     },
-    onError: (error) => {
+    onError: async (error) => {
       console.error("User deletion failed:", error);
-
       // Optionally handle cleanup even if delete fails
       setAuthenticated(null);
       setAuth((draft) => {
@@ -368,6 +402,10 @@ export const useAuth = () => {
         draft.token = null;
         draft.refreshToken = null;
       });
+
+      // Clear NextAuth session even on error
+      await signOut({ redirect: false });
+      clearToken(); // Clear axios token
     },
   });
 
@@ -405,8 +443,27 @@ export const useAuth = () => {
         newPhoneNumber,
         newCountryCode
       ),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setError(null);
+
+      // Update NextAuth session with new phone number and verification status
+      try {
+        await updateSession({
+          user: {
+            phoneNumber:
+              data.data?.phoneNumber || session?.user?.phoneNumber || undefined,
+            countryCode:
+              data.data?.countryCode || session?.user?.countryCode || undefined,
+          },
+          isPhoneVerified: data.data?.isPhoneVerified,
+        });
+      } catch (updateError) {
+        console.error(
+          "Failed to update NextAuth session after phone number change:",
+          updateError
+        );
+        // Continue with local state updates even if session update fails
+      }
 
       // Update user state with new phone number and verification status
       updateState((draft) => {
@@ -453,6 +510,154 @@ export const useAuth = () => {
           }),
         };
         authStorage.setUser(updatedUser, true); // Save to localStorage
+      }
+
+      // Invalidate React Query cache to refresh any queries that depend on user data
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
+  // OAuth Phone Linking Mutations
+  const addOAuthPhoneMutation = useMutation({
+    mutationFn: ({
+      userId,
+      phoneNumber,
+      countryCode,
+    }: {
+      userId: string;
+      phoneNumber: string;
+      countryCode: string;
+    }) => authAPI.addPhoneToOAuthUser(userId, phoneNumber, countryCode),
+    onSuccess: (data, variables) => {
+      if (data.success && data.data) {
+        setUserAuthStep((draft) => {
+          draft.userId = data.data?.userId || variables.userId;
+          draft.otpId = data.data?.otpId || "";
+          draft.otpExpiresIn = data.data?.otpExpiresIn || 5;
+        });
+      }
+      setError(null);
+    },
+    onError: (error: Error) => {
+      setError({ message: error.message });
+    },
+  });
+
+  const verifyOAuthPhoneMutation = useMutation({
+    mutationFn: async ({
+      userId,
+      phoneNumber,
+      countryCode,
+      otpId,
+      otp,
+      provider,
+      providerAccountId,
+      accessToken,
+    }: {
+      userId: string;
+      phoneNumber: string;
+      countryCode: string;
+      otpId?: string;
+      otp?: string;
+      provider?: string;
+      providerAccountId?: string;
+      accessToken?: string;
+    }) => {
+      try {
+        const response = await createAuthenticatedRequest.auth.post(
+          "/verify-oauth-phone",
+          {
+            userId,
+            phoneNumber,
+            countryCode,
+            ...(otpId && { otpId }),
+            ...(otp && { otp }),
+            ...(provider && { provider }),
+            ...(providerAccountId && { providerAccountId }),
+            ...(accessToken && { accessToken }),
+          }
+        );
+        return response.data;
+      } catch (error: any) {
+        throw new Error(
+          error.response?.data?.message ||
+            error.message ||
+            "Failed to verify OAuth phone number"
+        );
+      }
+    },
+    onSuccess: async (data) => {
+      if (data.success && data.data) {
+        // Update token first if new tokens are provided
+        if (data.accessToken) {
+          setToken(data.accessToken);
+        }
+
+        // If account was linked, we need to update the session with new user ID and tokens
+        if (data.data?.accountLinked && data.data?.userId) {
+          // Account was linked to existing account - update Next-Auth session with new user ID and tokens
+          // This triggers the JWT callback with trigger === "update"
+          try {
+            await updateSession({
+              user: {
+                id: data.data.userId,
+                name: data.data.name || session?.user?.name || undefined,
+                email: data.data.email || session?.user?.email || undefined,
+                image: data.data.avatar || session?.user?.image || undefined,
+                phoneNumber: data.data.phoneNumber || undefined,
+                countryCode: data.data.countryCode || undefined,
+              },
+              accessToken: data.accessToken,
+              refreshToken: data.refreshToken,
+              isPhoneVerified: data.data.isPhoneVerified,
+              isEmailVerified: data.data.isEmailVerified,
+              accountLinked: true, // Flag to indicate account linking
+            });
+          } catch (updateError) {
+            console.error(
+              "Failed to update Next-Auth session after account linking:",
+              updateError
+            );
+            // Continue with local state updates even if session update fails
+          }
+        } else {
+          // Account not linked, just update phone verification status
+          // Update session to refresh phone verification status
+          try {
+            await updateSession({
+              user: {
+                phoneNumber:
+                  data.data.phoneNumber ||
+                  session?.user?.phoneNumber ||
+                  undefined,
+                countryCode:
+                  data.data.countryCode ||
+                  session?.user?.countryCode ||
+                  undefined,
+              },
+              isPhoneVerified: data.data.isPhoneVerified,
+            });
+          } catch (updateError) {
+            console.error(
+              "Failed to update Next-Auth session after phone verification:",
+              updateError
+            );
+          }
+        }
+
+        await queryClient.invalidateQueries({ queryKey: ["session"] });
+
+        // Close modal on success
+        setShowOAuthPhoneModal(false);
+        setError(null);
+
+        // If account was linked, show a message to the user
+        if (data.data?.accountLinked) {
+          console.log("OAuth account successfully linked to existing account");
+        }
       }
     },
     onError: (error: Error) => {
@@ -525,22 +730,52 @@ export const useAuth = () => {
     },
   });
 
+  const clearAuthData = useCallback(() => {
+    // Clear auth storage
+    authStorage.clear();
+    // Update all auth states
+    updateState((draft) => {
+      draft.isAuthenticated = false;
+      draft.user = null;
+      draft.error = null;
+      draft.isLoading = false;
+    });
+
+    setAuth((draft) => {
+      draft.isLoggedIn = false;
+      draft.user = null;
+      draft.token = null;
+      draft.refreshToken = null;
+    });
+    // Clear React Query cache
+    queryClient.clear();
+    setUserAuthStep((draft) => {
+      draft.userId = "";
+      draft.otpId = "";
+      draft.name = "";
+      draft.otpExpiresIn = 5;
+    });
+  }, [updateState, setAuth, queryClient, setUserAuthStep]);
+
   // React Query for getUserProfile
+  // Uses NextAuth session to determine if query should be enabled
   const useGetUserProfile = (userId: string, enabled: boolean = true) => {
+    // Check if user is authenticated via NextAuth session
+    const isAuthenticated = status === "authenticated" && !!session?.user?.id;
+
     return useQuery({
       queryKey: ["userProfile", userId],
       queryFn: () => authAPI.getUserProfile(userId),
-      enabled: !!userId && enabled && !!authStorage.getToken(),
+      enabled: !!userId && enabled && isAuthenticated,
       // retry: 2,
-      // refetchOnWindowFocus: false,
+      refetchOnWindowFocus: false,
     });
   };
 
   const onHandleLoginmodal = ({ isOpen }: { isOpen: boolean }) => {
-    setLoginOpen((draft) => {
-      draft = isOpen;
-      return draft;
-    });
+    setLoginOpen(isOpen);
+    // Track if modal was explicitly opened
+    wasExplicitlyOpened.current = isOpen;
   };
 
   const handleProfileNavigation = () => {
@@ -605,11 +840,26 @@ export const useAuth = () => {
       }
 
       // Use React Query mutation
-      return loginMutation.mutateAsync({
+      // return loginMutation.mutateAsync({
+      //   phoneNumber: loginData.phoneNumber,
+      //   countryCode: loginData.countryCode,
+      //   password: loginData.password,
+      // });
+
+      // Trigger NextAuth Credentials Flow
+      const result = await signIn("credentials", {
         phoneNumber: loginData.phoneNumber,
         countryCode: loginData.countryCode,
         password: loginData.password,
+        redirect: false, // Prevents page reload
       });
+
+      if (result?.error) {
+        throw new Error(result.error);
+      }
+      // Success is handled by the useEffect above detecting the new Session
+      // We return a mock response to satisfy the interface if needed
+      return { success: true } as AuthResponse;
     } catch (error) {
       const authError = createAuthError(
         error instanceof Error ? error.message : ERROR_MESSAGES.LOGIN_FAILED
@@ -639,46 +889,12 @@ export const useAuth = () => {
       throw authError;
     }
   };
-
-  const clearAuthData = useCallback(() => {
-    // Clear auth storage
-    authStorage.clear();
-
-    // Update all auth states
-    updateState((draft) => {
-      draft.isAuthenticated = false;
-      draft.user = null;
-      draft.error = null;
-      draft.isLoading = false;
-    });
-
-    setAuth((draft) => {
-      draft.isLoggedIn = false;
-      draft.user = null;
-      draft.token = null;
-      draft.refreshToken = null;
-    });
-
-    // Clear React Query cache
-    queryClient.clear();
-
-    // Close login modal
-    // setLoginOpen(false);
-
-    // Reset user auth step
-    setUserAuthStep((draft) => {
-      draft.userId = "";
-      draft.otpId = "";
-      draft.name = "";
-      draft.otpExpiresIn = 5;
-    });
-  }, [updateState, setAuth, queryClient, setUserAuthStep]);
-
   // Logout function
   const logout = async (id?: string): Promise<void> => {
     try {
-      await logoutMutation.mutateAsync({ userId: id });
-      authStorage.clear();
+      logoutMutation.mutateAsync({ userId: id });
+      await signOut({ redirect: false });
+      router.push(`/${country}/${stateData}`);
     } catch (error) {
       console.warn("Logout request failed:", error);
     } finally {
@@ -751,6 +967,34 @@ export const useAuth = () => {
       const authError: AuthError = {
         message:
           error instanceof Error ? error.message : "Failed to set password",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
+  // Setup password for OAuth user
+  const setupOAuthPassword = async (passwordData: {
+    password: string;
+    confirmPassword: string;
+  }): Promise<AuthResponse> => {
+    try {
+      const passwordValidation = validatePassword(passwordData.password);
+      if (!passwordValidation.isValid) {
+        throw new Error(passwordValidation.errors[0]);
+      }
+
+      if (passwordData.password !== passwordData.confirmPassword) {
+        throw new Error("Passwords do not match");
+      }
+
+      return setupOAuthPasswordMutation.mutateAsync(passwordData);
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to setup password for OAuth user",
       };
       setError(authError);
       throw authError;
@@ -914,6 +1158,64 @@ export const useAuth = () => {
     }
   };
 
+  // Add phone number to OAuth user function
+  const addOAuthPhone = async (
+    userId: string,
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<AuthResponse> => {
+    try {
+      return addOAuthPhoneMutation.mutateAsync({
+        userId,
+        phoneNumber,
+        countryCode,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error ? error.message : "Failed to add phone number",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
+  // Verify OAuth phone number function (OTP is optional - can skip verification)
+  const verifyOAuthPhone = async (
+    userId: string,
+    phoneNumber: string,
+    countryCode: string,
+    otpId?: string,
+    otp?: string
+  ): Promise<AuthResponse> => {
+    try {
+      // Get OAuth provider information from session if available
+      const provider = session?.provider;
+      const providerAccountId = session?.providerAccountId;
+      // Note: accessToken is not stored in session for security, but we can get it from the OAuth user's data if needed
+      // For now, we'll let the backend extract it from the OAuth user record
+
+      return verifyOAuthPhoneMutation.mutateAsync({
+        userId,
+        phoneNumber,
+        countryCode,
+        otpId,
+        otp,
+        provider,
+        providerAccountId,
+      });
+    } catch (error) {
+      const authError: AuthError = {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to verify phone number",
+      };
+      setError(authError);
+      throw authError;
+    }
+  };
+
   const formatMemberSince = (createdAt: string): string => {
     if (!createdAt) return "Member since -"; // fallback if empty
 
@@ -944,7 +1246,9 @@ export const useAuth = () => {
     // State
     auth,
     ...state,
+    step,
     isLoginOpen,
+    showOAuthPhoneModal,
     authStorage,
     userAuthStep,
 
@@ -956,22 +1260,28 @@ export const useAuth = () => {
       loginMutation.isPending ||
       verifyOtpMutation.isPending ||
       setPasswordMutation.isPending ||
+      setupOAuthPasswordMutation.isPending ||
       resendOtpMutation.isPending ||
       updateUserNameAndAvatar.isPending ||
       logoutMutation.isPending ||
       requestPhoneChangeMutation.isPending ||
       verifyPhoneChangeMutation.isPending ||
       requestEmailChangeMutation.isPending ||
-      verifyEmailChangeMutation.isPending,
+      verifyEmailChangeMutation.isPending ||
+      addOAuthPhoneMutation.isPending ||
+      verifyOAuthPhoneMutation.isPending,
 
     // Actions
+    setStep,
     checkUserExists,
     login,
     signup,
     logout,
     verifyOTP,
     setPassword,
+    setupOAuthPassword,
     forgotPassword,
+    setHasUserSaved,
     resendOTP,
     deleteUser,
     updateProfile,
@@ -979,6 +1289,9 @@ export const useAuth = () => {
     verifyPhoneNumberChange,
     requestEmailChange,
     verifyEmailChange,
+    addOAuthPhone,
+    verifyOAuthPhone,
+    setShowOAuthPhoneModal,
     clearError,
     onHandleLoginmodal,
     handleProfileNavigation,
@@ -987,11 +1300,13 @@ export const useAuth = () => {
     useGetUserProfile,
 
     // Mutation states for granular loading control
+    hasUserSaved,
     checkUserExistsMutation,
     signupMutation,
     loginMutation,
     verifyOtpMutation,
     setPasswordMutation,
+    setupOAuthPasswordMutation,
     forgotPasswordMutation,
     resendOtpMutation,
     updateUserNameAndAvatar,
@@ -1001,6 +1316,8 @@ export const useAuth = () => {
     verifyPhoneChangeMutation,
     requestEmailChangeMutation,
     verifyEmailChangeMutation,
+    addOAuthPhoneMutation,
+    verifyOAuthPhoneMutation,
 
     // Utilities
     clearAuthData,

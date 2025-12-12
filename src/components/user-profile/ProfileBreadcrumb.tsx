@@ -25,49 +25,58 @@ type ProfileBreadcrumbProps = {
   currentSection?: ProfileSection;
   className?: string;
   hasShowUsername?: boolean;
+  country?: string;
+  state?: string;
 };
 
-const sectionConfig = {
-  dashboard: { label: "Dashboard", icon: User, path: "/user-profile" },
+const getSectionConfig = (country: string, state: string) => ({
+  dashboard: { label: "Dashboard", icon: User, path: `/${country}/${state}/user-profile` },
   settings: {
     label: "Settings",
     icon: Settings,
-    path: "/user-profile/settings",
+    path: `/${country}/${state}/user-profile/settings`,
   },
   favorites: {
     label: "Favorites",
     icon: Heart,
-    path: "/user-profile/favorites",
+    path: `/${country}/${state}/user-profile/favorites`,
   },
-  activity: { label: "Activity", icon: Eye, path: "/user-profile/activity" },
+  activity: { label: "Activity", icon: Eye, path: `/${country}/${state}/user-profile/activity` },
   enquiries: {
     label: "Enquiries",
     icon: MessageSquare,
-    path: "/user-profile/enquiries",
+    path: `/${country}/${state}/user-profile/enquiries`,
   },
   "saved-vehicles": {
     label: "Saved Vehicles",
     icon: Heart,
-    path: "/user-profile/saved-vehicles",
+    path: `/${country}/${state}/user-profile/saved-vehicles`,
   },
   "viewed-vehicles": {
     label: "Recently Viewed",
     icon: Eye,
-    path: "/user-profile/viewed-vehicles",
+    path: `/${country}/${state}/user-profile/viewed-vehicles`,
   },
   "enquired-vehicles": {
     label: "Enquired Vehicles",
     icon: MessageSquare,
-    path: "/user-profile/enquired-vehicles",
+    path: `/${country}/${state}/user-profile/enquired-vehicles`,
   },
-};
+});
 
 export function ProfileBreadcrumb({
   userName = "User",
   currentSection = "dashboard",
   className = "",
   hasShowUsername = false,
+  country = "in",
+  state: stateParam = "bangalore",
 }: ProfileBreadcrumbProps) {
+  // Use current country and state, with fallbacks
+  const profileCountry = country || "in";
+  const profileState = stateParam || (profileCountry === "in" ? "bangalore" : "dubai");
+  
+  const sectionConfig = getSectionConfig(profileCountry, profileState);
   const currentConfig = sectionConfig[currentSection];
   const CurrentIcon = currentConfig.icon;
 
@@ -81,7 +90,7 @@ export function ProfileBreadcrumb({
               className="flex items-center gap-1 font-medium transition-colors hover:text-orange-500 hover:underline"
               asChild
             >
-              <Link href="/">
+              <Link href={`/${profileCountry}/${profileState}`}>
                 <Home className="h-4 w-4" />
                 <span className="hidden sm:inline">Home</span>
               </Link>
@@ -95,7 +104,7 @@ export function ProfileBreadcrumb({
               className="flex items-center gap-1 font-medium transition-colors hover:text-orange-500 hover:underline"
               asChild
             >
-              <Link href="/user-profile">
+              <Link href={`/${profileCountry}/${profileState}/user-profile`}>
                 <User className="h-4 w-4" />
                 <span className="hidden sm:inline">Profile</span>
               </Link>

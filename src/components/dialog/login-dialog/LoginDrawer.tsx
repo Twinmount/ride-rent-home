@@ -12,6 +12,7 @@ import { useImmer } from "use-immer";
 import { useAuthContext } from "@/auth";
 import { AdBanner } from "./LoginDrawerHeader";
 import { ForgotPasswordStep } from "./components/ForgotPasswordStep";
+import { useSession } from "next-auth/react";
 
 export type AuthStep =
   | "phone"
@@ -47,6 +48,8 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
   onClose,
 }) => {
   const {
+    step,
+    setStep,
     signup,
     login,
     verifyOTP,
@@ -63,29 +66,15 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
     logoutMutation,
     loginMutation,
     forgotPasswordMutation,
+    deleteUserMutation,
+    isAuthenticated,
   } = useAuthContext();
 
-  useEffect(() => {
-    if (logoutMutation.isSuccess) {
-      setStep("phone");
-      setStatus("idle");
-      setStatusMessage("");
-      setUserExists(false);
-      setDrawerState(initialDrawerState);
-      clearError();
-    }
-  }, [logoutMutation.isSuccess]);
+  // Get NextAuth session to detect authentication state
+  const { data: session, status: sessionStatus } = useSession();
 
-  useEffect(() => {
-    if (loginMutation.isSuccess) {
-      setTimeout(() => {
-        handleClose();
-      }, 1000);
-    }
-  }, [loginMutation.isSuccess]);
-
-  // Common State
-  const [step, setStep] = useState<AuthStep>("phone");
+  // Common State - Declare before useEffects that use them
+  // const [step, setStep] = useState<AuthStep>("phone");
   const [status, setStatus] = useState<StatusType>("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [userExists, setUserExists] = useState<boolean>(false);
@@ -99,9 +88,51 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
   });
 
   useEffect(() => {
+    if (logoutMutation.isSuccess || deleteUserMutation.isSuccess) {
+      setStep("phone");
+      setStatus("idle");
+      setStatusMessage("");
+      setUserExists(false);
+      setDrawerState(initialDrawerState);
+      clearError();
+    }
+  }, [logoutMutation.isSuccess, deleteUserMutation.isSuccess]);
+
+  // Close drawer when NextAuth authentication succeeds
+  useEffect(() => {
+    if (sessionStatus === "authenticated" && session && isOpen) {
+      // Check if OAuth user needs to add phone number
+      const isOAuthUser =
+        session.provider && session.provider !== "credentials";
+      const needsPhoneNumber =
+        isOAuthUser && (!session.isPhoneVerified || !session.user?.phoneNumber);
+
+      // Only close if phone is verified or not an OAuth user
+      if (!needsPhoneNumber) {
+        // Set success status before closing
+        setStatus("success");
+        setStatusMessage("Login successful!");
+        // Small delay to show success state before closing
+        setTimeout(() => {
+          handleClose();
+        }, 1000);
+      }
+    }
+  }, [sessionStatus, session, isOpen, setStatus, setStatusMessage]);
+
+  // Legacy: Close drawer when loginMutation succeeds (for backward compatibility)
+  useEffect(() => {
+    if (loginMutation.isSuccess) {
+      setTimeout(() => {
+        handleClose();
+      }, 1000);
+    }
+  }, [loginMutation.isSuccess]);
+
+  // Reset state when drawer closes
+  useEffect(() => {
     if (!isOpen) {
       resetState();
-      onClose();
       setDrawerState(initialDrawerState);
     }
   }, [isOpen]);
@@ -197,11 +228,13 @@ export const LoginDrawer: React.FC<LoginDrawerProps> = ({
           {/* Content */}
           <div className="flex-1 space-y-6 overflow-y-auto p-6">
             {step === "phone" && (
-              <Suspense fallback={
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
-                </div>
-              }>
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
+                  </div>
+                }
+              >
                 <PhoneStep
                   setStep={setStep}
                   setStatus={setStatus}
