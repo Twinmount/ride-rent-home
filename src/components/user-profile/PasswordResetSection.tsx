@@ -358,8 +358,8 @@ export const PasswordResetSection: React.FC<PasswordResetSectionProps> = ({
                 Create your password
               </h5>
               <p className="text-sm text-gray-600">
-                Add a password to sign in with email/phone plus password. You
-                can still use your OAuth provider.
+                Add a password to sign in. You can also continue using your
+                OAuth provider.
               </p>
             </div>
             <Button

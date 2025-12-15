@@ -5,6 +5,7 @@ import { checkActiveEnquiry } from "@/lib/api/general-api";
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircle, Calendar, MessageSquare, Clock } from "lucide-react";
 import Link from "next/link";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 interface ActiveEnquiryBannerProps {
   vehicleId: string;
@@ -18,8 +19,7 @@ const ActiveEnquiryBanner = ({
   country = "ae",
 }: ActiveEnquiryBannerProps) => {
   const { data: auth } = useSession();
-
-  const { hasUserSaved, setHasUserSaved } = useAuthContext();
+  const { country: countryData, state } = useStateAndCategory();
 
   const { data: activeEnquiryData, isLoading } = useQuery({
     queryKey: ["activeEnquiry", vehicleId, auth?.user?.id],
@@ -109,7 +109,7 @@ const ActiveEnquiryBanner = ({
 
           <div className="mt-3 flex gap-2">
             <Link
-              href="/user-profile/enquired-vehicles"
+              href={`/${countryData}/${state}/user-profile/enquired-vehicles`}
               className="text-sm font-medium underline hover:no-underline"
             >
               View All Enquiries

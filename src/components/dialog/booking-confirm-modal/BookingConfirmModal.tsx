@@ -507,10 +507,10 @@ export function BookingConfirmationModal({
                     <CheckCircle className="h-3 w-3 flex-shrink-0 text-green-600 sm:h-5 sm:w-5" />
                     <div className="min-w-0">
                       <p className="text-[10px] font-medium text-green-900 sm:text-sm">
-                        Phone Number Verified Successfully
+                        Phone Number added successfully.
                       </p>
                       <p className="text-[9px] text-green-700 sm:text-xs">
-                        You can now proceed with your booking enquiry.
+                        You can now process your booking enquiry.
                       </p>
                     </div>
                   </div>
