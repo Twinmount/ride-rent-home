@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Calendar, Clock, MessageSquare } from "lucide-react";
+import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 
 interface ActiveEnquiryDialogProps {
   isOpen: boolean;
@@ -30,6 +31,8 @@ const ActiveEnquiryDialog = ({
   enquiry,
   vehicleName,
 }: ActiveEnquiryDialogProps) => {
+  const { country: countryData, state } = useStateAndCategory();
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -132,7 +135,10 @@ const ActiveEnquiryDialog = ({
           >
             Close
           </Button>
-          <Link href="/user-profile/enquired-vehicles" className="flex-1">
+          <Link
+            href={`/${countryData}/${state}/user-profile/enquired-vehicles`}
+            className="flex-1"
+          >
             <Button
               className="w-full"
               onClick={onClose}

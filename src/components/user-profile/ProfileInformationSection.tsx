@@ -24,6 +24,8 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { trimName } from "@/helpers";
+import { PhoneInput2 } from "@/components/phoneInput/PhoneInput2";
+import { getNumberAfterSpaceStrict, getDotCount } from "@/utils/helper";
 
 interface ProfileData {
   name: string;
@@ -137,6 +139,8 @@ export const ProfileInformationSection: React.FC<
   const [isEditingMobile, setIsEditingMobile] = useState(false);
   const [tempCountryCode, setTempCountryCode] = useState("");
   const [tempMobileNumber, setTempMobileNumber] = useState("");
+  const [phoneValue, setPhoneValue] = useState("");
+  const [allowNumberCount, setAllowNumberCount] = useState(0);
 
   // Phone verification state (for unverified phones)
   const [showPhoneVerification, setShowPhoneVerification] = useState(false);
@@ -209,10 +213,65 @@ export const ProfileInformationSection: React.FC<
 
   const handleEditMobile = () => {
     if (profileData) {
-      setTempCountryCode(profileData.countryCode || "+971");
-      setTempMobileNumber(profileData.phoneNumber || "");
+      const countryCode = profileData.countryCode || "+971";
+      const phoneNumber = profileData.phoneNumber || "";
+      setTempCountryCode(countryCode);
+      setTempMobileNumber(phoneNumber);
+      // Initialize phoneValue for PhoneInput2
+      setPhoneValue(
+        phoneNumber ? `${countryCode} ${phoneNumber}` : countryCode
+      );
     }
     setIsEditingMobile(true);
+  };
+
+  // Helper to get country ISO from country code (e.g., "+971" -> "ae")
+  const getCountryFromCode = (code: string): string => {
+    const codeMap: Record<string, string> = {
+      "+971": "ae",
+      "+91": "in",
+      "+1": "us",
+      "+44": "gb",
+      "+966": "sa",
+    };
+    return codeMap[code] || "ae";
+  };
+
+  // Handle country code change from PhoneInput2
+  const handlePhoneInputChange = (value: string, country: any) => {
+    const phoneDetails = getNumberAfterSpaceStrict(country.inputValue);
+    const newAllowCount = getDotCount(country.country.format);
+    const newCountryCode = `+${country.country.dialCode}`;
+
+    // Update display value
+    setPhoneValue(value);
+
+    // Update country code and allowed number count
+    setTempCountryCode(newCountryCode);
+    setAllowNumberCount(newAllowCount);
+
+    // Update phone number if it fits the new format
+    if (
+      newAllowCount === 0 ||
+      phoneDetails.phoneNumber.length <= newAllowCount
+    ) {
+      setTempMobileNumber(phoneDetails.phoneNumber);
+    }
+  };
+
+  // Handle phone number input change
+  const handlePhoneNumberInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let value = e.target.value;
+    // Only allow numeric characters
+    value = value.replace(/[^0-9]/g, "");
+
+    // Limit to allowed number count if specified
+    value = allowNumberCount > 0 ? value.slice(0, allowNumberCount) : value;
+
+    e.target.value = value;
+    setTempMobileNumber(value);
   };
 
   const handleSaveMobile = async () => {
@@ -246,6 +305,9 @@ export const ProfileInformationSection: React.FC<
     setMobileOtpId("");
     setOtpError("");
     setOtpCountdown(0);
+    // Reset phone input state
+    setPhoneValue("");
+    setAllowNumberCount(0);
   };
 
   const handleEditEmail = () => {
@@ -812,33 +874,20 @@ export const ProfileInformationSection: React.FC<
               {!showMobileOtp ? (
                 <>
                   <div className="space-y-2 sm:space-y-2">
-                    <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
-                      <Select
-                        value={tempCountryCode}
-                        onValueChange={setTempCountryCode}
-                      >
-                        <SelectTrigger className="h-9 w-full cursor-pointer text-xs sm:h-10 sm:w-32 sm:text-sm">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                          <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                          <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                          <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                          <SelectItem value="+966">🇸🇦 +966</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        value={tempMobileNumber}
-                        onChange={(e) => setTempMobileNumber(e.target.value)}
-                        placeholder={
-                          !profileData?.phoneNumber
-                            ? "Enter your phone number"
-                            : "Enter mobile number"
-                        }
-                        className="h-9 flex-1 text-xs sm:h-10 sm:text-sm"
-                      />
-                    </div>
+                    <PhoneInput2
+                      value={phoneValue}
+                      onChange={handlePhoneInputChange}
+                      defaultCountry={getCountryFromCode(tempCountryCode)}
+                      phoneNumber={tempMobileNumber}
+                      countryCode={tempCountryCode}
+                      onHandlePhoneNumberChange={handlePhoneNumberInputChange}
+                      placeholder={
+                        !profileData?.phoneNumber
+                          ? "Enter your phone number"
+                          : "Enter mobile number"
+                      }
+                      className="w-full"
+                    />
 
                     {!profileData?.phoneNumber && (
                       <p className="text-[10px] leading-relaxed text-blue-600 sm:text-xs md:text-sm">
