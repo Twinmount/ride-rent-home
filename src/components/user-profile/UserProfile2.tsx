@@ -72,6 +72,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
     verifyPhoneChangeMutation,
     requestEmailChangeMutation,
     verifyEmailChangeMutation,
+    addOAuthPhone,
+    verifyOAuthPhone,
+    addOAuthPhoneMutation,
+    verifyOAuthPhoneMutation,
   } = useAuthContext();
 
   // Profile data state
@@ -326,6 +330,10 @@ const UserProfileContent = ({ className }: UserProfileProps) => {
                   formatMemberSince={formatMemberSince}
                   setProfileData={setProfileData}
                   setShowSuccessToast={setShowSuccessToast}
+                  addOAuthPhone={addOAuthPhone}
+                  verifyOAuthPhone={verifyOAuthPhone}
+                  addOAuthPhoneMutation={addOAuthPhoneMutation}
+                  verifyOAuthPhoneMutation={verifyOAuthPhoneMutation}
                 />
                 {/* account managment */}
 

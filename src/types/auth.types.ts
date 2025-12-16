@@ -497,6 +497,31 @@ export interface UseAuthReturn {
     },
     unknown
   >;
+  addOAuthPhoneMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    {
+      userId: string;
+      phoneNumber: string;
+      countryCode: string;
+    },
+    unknown
+  >;
+  verifyOAuthPhoneMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    {
+      userId: string;
+      phoneNumber: string;
+      countryCode: string;
+      otpId?: string;
+      otp?: string;
+      provider?: string;
+      providerAccountId?: string;
+      accessToken?: string;
+    },
+    unknown
+  >;
 
   // Utilities
   validateEmail: (email: string) => boolean;

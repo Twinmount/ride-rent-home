@@ -24,6 +24,8 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { trimName } from "@/helpers";
+import { PhoneInput2 } from "@/components/phoneInput/PhoneInput2";
+import { getNumberAfterSpaceStrict, getDotCount } from "@/utils/helper";
 
 interface ProfileData {
   name: string;
@@ -34,6 +36,7 @@ interface ProfileData {
   isPhoneVerified: boolean;
   isEmailVerified: boolean;
   joinedAt?: string;
+  isOAuthUser?: boolean;
 }
 
 interface ProfileInformationSectionProps {
@@ -84,6 +87,25 @@ interface ProfileInformationSectionProps {
   formatMemberSince: (date: string) => string;
   setProfileData: (updater: (draft: ProfileData | null) => void) => void;
   setShowSuccessToast: (show: boolean) => void;
+  // OAuth phone verification functions (optional)
+  addOAuthPhone?: (
+    userId: string,
+    phoneNumber: string,
+    countryCode: string
+  ) => Promise<any>;
+  verifyOAuthPhone?: (
+    userId: string,
+    phoneNumber: string,
+    countryCode: string,
+    otpId?: string,
+    otp?: string
+  ) => Promise<any>;
+  addOAuthPhoneMutation?: {
+    isPending: boolean;
+  };
+  verifyOAuthPhoneMutation?: {
+    isPending: boolean;
+  };
 }
 
 export const ProfileInformationSection: React.FC<
@@ -107,12 +129,23 @@ export const ProfileInformationSection: React.FC<
   formatMemberSince,
   setProfileData,
   setShowSuccessToast,
+  addOAuthPhone,
+  verifyOAuthPhone,
+  addOAuthPhoneMutation,
+  verifyOAuthPhoneMutation,
 }) => {
   console.log("profileData[ProfileInformationSection]", profileData);
   // Editing states
   const [isEditingMobile, setIsEditingMobile] = useState(false);
   const [tempCountryCode, setTempCountryCode] = useState("");
   const [tempMobileNumber, setTempMobileNumber] = useState("");
+  const [phoneValue, setPhoneValue] = useState("");
+  const [allowNumberCount, setAllowNumberCount] = useState(0);
+
+  // Phone verification state (for unverified phones)
+  const [showPhoneVerification, setShowPhoneVerification] = useState(false);
+  const [phoneVerificationOtp, setPhoneVerificationOtp] = useState("");
+  const [phoneVerificationOtpId, setPhoneVerificationOtpId] = useState("");
 
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [tempEmail, setTempEmail] = useState("");
@@ -180,10 +213,65 @@ export const ProfileInformationSection: React.FC<
 
   const handleEditMobile = () => {
     if (profileData) {
-      setTempCountryCode(profileData.countryCode || "+971");
-      setTempMobileNumber(profileData.phoneNumber || "");
+      const countryCode = profileData.countryCode || "+971";
+      const phoneNumber = profileData.phoneNumber || "";
+      setTempCountryCode(countryCode);
+      setTempMobileNumber(phoneNumber);
+      // Initialize phoneValue for PhoneInput2
+      setPhoneValue(
+        phoneNumber ? `${countryCode} ${phoneNumber}` : countryCode
+      );
     }
     setIsEditingMobile(true);
+  };
+
+  // Helper to get country ISO from country code (e.g., "+971" -> "ae")
+  const getCountryFromCode = (code: string): string => {
+    const codeMap: Record<string, string> = {
+      "+971": "ae",
+      "+91": "in",
+      "+1": "us",
+      "+44": "gb",
+      "+966": "sa",
+    };
+    return codeMap[code] || "ae";
+  };
+
+  // Handle country code change from PhoneInput2
+  const handlePhoneInputChange = (value: string, country: any) => {
+    const phoneDetails = getNumberAfterSpaceStrict(country.inputValue);
+    const newAllowCount = getDotCount(country.country.format);
+    const newCountryCode = `+${country.country.dialCode}`;
+
+    // Update display value
+    setPhoneValue(value);
+
+    // Update country code and allowed number count
+    setTempCountryCode(newCountryCode);
+    setAllowNumberCount(newAllowCount);
+
+    // Update phone number if it fits the new format
+    if (
+      newAllowCount === 0 ||
+      phoneDetails.phoneNumber.length <= newAllowCount
+    ) {
+      setTempMobileNumber(phoneDetails.phoneNumber);
+    }
+  };
+
+  // Handle phone number input change
+  const handlePhoneNumberInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let value = e.target.value;
+    // Only allow numeric characters
+    value = value.replace(/[^0-9]/g, "");
+
+    // Limit to allowed number count if specified
+    value = allowNumberCount > 0 ? value.slice(0, allowNumberCount) : value;
+
+    e.target.value = value;
+    setTempMobileNumber(value);
   };
 
   const handleSaveMobile = async () => {
@@ -217,6 +305,9 @@ export const ProfileInformationSection: React.FC<
     setMobileOtpId("");
     setOtpError("");
     setOtpCountdown(0);
+    // Reset phone input state
+    setPhoneValue("");
+    setAllowNumberCount(0);
   };
 
   const handleEditEmail = () => {
@@ -374,6 +465,108 @@ export const ProfileInformationSection: React.FC<
     }
   };
 
+  // Phone verification handlers (for unverified phones)
+  const handleStartPhoneVerification = async () => {
+    if (!profileData?.phoneNumber || !profileData?.countryCode) {
+      return;
+    }
+
+    try {
+      setOtpError("");
+
+      const response = await requestPhoneNumberChange(
+        profileData.phoneNumber,
+        profileData.countryCode
+      );
+
+      if (response.success && response.data?.otpId) {
+        setPhoneVerificationOtpId(response.data.otpId);
+        setShowPhoneVerification(true);
+        setOtpCountdown(300);
+        setPhoneVerificationOtp("");
+      } else {
+        throw new Error(
+          response.message || "Failed to request phone verification"
+        );
+      }
+    } catch (error: any) {
+      console.error("Failed to start phone verification:", error);
+      setOtpError(error.message || "Failed to request phone verification");
+    }
+  };
+
+  const handleVerifyPhoneVerificationOtp = async () => {
+    if (!profileData?.phoneNumber || !profileData?.countryCode) {
+      return;
+    }
+
+    try {
+      setOtpError("");
+
+      if (!phoneVerificationOtpId) {
+        throw new Error("OTP ID not found. Please try again.");
+      }
+
+      const response = await verifyPhoneNumberChange(
+        phoneVerificationOtpId,
+        phoneVerificationOtp,
+        profileData.phoneNumber,
+        profileData.countryCode
+      );
+
+      if (response.success) {
+        setProfileData((draft) => {
+          if (draft) {
+            draft.isPhoneVerified = true;
+          }
+        });
+
+        setShowPhoneVerification(false);
+        setPhoneVerificationOtp("");
+        setPhoneVerificationOtpId("");
+        setOtpCountdown(0);
+
+        setShowSuccessToast(true);
+        setTimeout(() => {
+          setShowSuccessToast(false);
+        }, 4000);
+
+        await userProfileQuery.refetch();
+      } else {
+        throw new Error(response.message || "Failed to verify phone number");
+      }
+    } catch (error: any) {
+      setOtpError(error.message || "Invalid OTP. Please try again.");
+    }
+  };
+
+  const handleResendPhoneVerificationOtp = async () => {
+    if (!profileData?.phoneNumber || !profileData?.countryCode) {
+      return;
+    }
+
+    try {
+      setOtpError("");
+
+      const response = await requestPhoneNumberChange(
+        profileData.phoneNumber,
+        profileData.countryCode
+      );
+
+      if (response.success && response.data?.otpId) {
+        setPhoneVerificationOtpId(response.data.otpId);
+        setPhoneVerificationOtp("");
+        setOtpCountdown(300);
+      } else {
+        throw new Error(
+          response.message || "Failed to resend OTP for phone verification"
+        );
+      }
+    } catch (error: any) {
+      setOtpError(error.message || "Failed to resend OTP.");
+    }
+  };
+
   return (
     <div className="space-y-3 sm:space-y-4 md:space-y-6 lg:space-y-8">
       <div className="flex flex-col items-center gap-3 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 p-3 sm:flex-row sm:items-center sm:gap-4 sm:rounded-xl sm:p-4 md:gap-5 md:p-5 lg:gap-6 lg:p-6">
@@ -505,7 +698,7 @@ export const ProfileInformationSection: React.FC<
             <Phone className="h-3.5 w-3.5 text-gray-500 sm:h-4 sm:w-4" />
             Mobile Number
           </Label>
-          {!isEditingMobile ? (
+          {!isEditingMobile && !showPhoneVerification ? (
             <div
               className={`flex flex-col gap-2 rounded-lg border p-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-3 ${
                 !profileData?.phoneNumber
@@ -528,70 +721,173 @@ export const ProfileInformationSection: React.FC<
                     <span className="break-all text-xs text-gray-900 sm:text-sm">
                       {`${profileData?.countryCode || ""} ${profileData?.phoneNumber || ""}`}
                     </span>
-                    {profileData?.isPhoneVerified && (
+                    {profileData?.isPhoneVerified ? (
                       <Badge className="shrink-0 bg-green-100 text-[10px] text-green-800 hover:bg-green-100 sm:text-xs">
                         <CheckCircle className="mr-0.5 h-2.5 w-2.5 sm:mr-1 sm:h-3 sm:w-3" />
                         Verified
+                      </Badge>
+                    ) : (
+                      <Badge className="shrink-0 bg-orange-100 text-[10px] text-orange-800 hover:bg-orange-100 sm:text-xs">
+                        <Phone className="mr-0.5 h-2.5 w-2.5 sm:mr-1 sm:h-3 sm:w-3" />
+                        Needs Verification
                       </Badge>
                     )}
                   </div>
                 )}
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleEditMobile}
-                className={`h-8 w-full cursor-pointer px-3 py-1.5 text-xs sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5 ${
-                  !profileData?.phoneNumber
-                    ? "text-orange-600 hover:bg-orange-100 hover:text-orange-700"
-                    : "text-orange-600 hover:bg-orange-50 hover:text-orange-700"
-                }`}
-              >
-                {!profileData?.phoneNumber ? (
-                  <>
-                    <Phone className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    Add Phone
-                  </>
-                ) : (
-                  <>
-                    <Edit2 className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    Change
-                  </>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                {profileData?.phoneNumber && !profileData?.isPhoneVerified && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={handleStartPhoneVerification}
+                    disabled={requestPhoneChangeMutation.isPending}
+                    className="h-8 w-full cursor-pointer bg-green-500 px-3 py-1.5 text-xs text-white hover:bg-green-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
+                  >
+                    <CheckCircle className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    {requestPhoneChangeMutation.isPending
+                      ? "Sending..."
+                      : "Verify Phone"}
+                  </Button>
                 )}
-              </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleEditMobile}
+                  className={`h-8 w-full cursor-pointer px-3 py-1.5 text-xs sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5 ${
+                    !profileData?.phoneNumber
+                      ? "text-orange-600 hover:bg-orange-100 hover:text-orange-700"
+                      : "text-orange-600 hover:bg-orange-50 hover:text-orange-700"
+                  }`}
+                >
+                  {!profileData?.phoneNumber ? (
+                    <>
+                      <Phone className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                      Add Phone
+                    </>
+                  ) : (
+                    <>
+                      <Edit2 className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                      Change
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          ) : showPhoneVerification ? (
+            <div className="space-y-3 rounded-lg border bg-blue-50 p-2.5 sm:p-3 md:p-4">
+              <div className="space-y-1.5 text-center sm:space-y-2">
+                <h4 className="text-sm font-medium text-gray-900 sm:text-base">
+                  Verify Phone Number
+                </h4>
+                <p className="text-xs text-gray-600 sm:text-sm">
+                  Enter the 4-digit code sent to{" "}
+                  <span className="break-all font-medium">
+                    {profileData?.countryCode} {profileData?.phoneNumber}
+                  </span>
+                </p>
+              </div>
+              <div className="flex justify-center gap-1.5 sm:gap-2">
+                {Array.from({ length: 4 }, (_, index) => (
+                  <Input
+                    key={index}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={phoneVerificationOtp[index] || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const newOtp = phoneVerificationOtp.split("");
+                      newOtp[index] = value;
+                      setPhoneVerificationOtp(newOtp.join(""));
+
+                      if (value && index < 3) {
+                        const nextInput = e.target.parentElement?.children[
+                          index + 1
+                        ] as HTMLInputElement;
+                        nextInput?.focus();
+                      }
+                    }}
+                    className="h-11 w-11 text-center text-base font-bold sm:h-12 sm:w-12 sm:text-lg md:h-14 md:w-14"
+                    disabled={verifyPhoneChangeMutation.isPending}
+                  />
+                ))}
+              </div>
+
+              {otpError && (
+                <div className="text-center text-xs text-red-600 sm:text-sm">
+                  {otpError}
+                </div>
+              )}
+
+              <div className="text-center text-xs text-gray-600 sm:text-sm">
+                {otpCountdown > 0 ? (
+                  <span>Resend OTP in {formatTime(otpCountdown)}</span>
+                ) : (
+                  <Button
+                    variant="link"
+                    size="sm"
+                    onClick={handleResendPhoneVerificationOtp}
+                    disabled={requestPhoneChangeMutation.isPending}
+                    className="h-auto px-2 py-1 text-xs text-orange-600 sm:px-3 sm:py-1.5 sm:text-sm md:px-3 md:py-1.5 lg:px-4 lg:py-2"
+                  >
+                    {requestPhoneChangeMutation.isPending
+                      ? "Sending..."
+                      : "Resend OTP"}
+                  </Button>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
+                <Button
+                  size="sm"
+                  onClick={handleVerifyPhoneVerificationOtp}
+                  disabled={
+                    phoneVerificationOtp.length !== 4 ||
+                    verifyPhoneChangeMutation.isPending
+                  }
+                  className="h-9 w-full cursor-pointer bg-green-500 px-3 py-1.5 text-xs text-white hover:bg-green-600 disabled:opacity-50 sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
+                >
+                  {verifyPhoneChangeMutation.isPending
+                    ? "Verifying..."
+                    : "Verify OTP"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setShowPhoneVerification(false);
+                    setPhoneVerificationOtp("");
+                    setPhoneVerificationOtpId("");
+                    setOtpError("");
+                    setOtpCountdown(0);
+                  }}
+                  className="h-9 w-full cursor-pointer bg-transparent px-3 py-1.5 text-xs sm:h-auto sm:w-auto sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 lg:px-5 lg:py-2.5"
+                >
+                  <X className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  Cancel
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="space-y-3 rounded-lg border bg-blue-50 p-2.5 sm:p-3 md:p-4">
               {!showMobileOtp ? (
                 <>
                   <div className="space-y-2 sm:space-y-2">
-                    <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
-                      <Select
-                        value={tempCountryCode}
-                        onValueChange={setTempCountryCode}
-                      >
-                        <SelectTrigger className="h-9 w-full cursor-pointer text-xs sm:h-10 sm:w-32 sm:text-sm">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                          <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                          <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                          <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                          <SelectItem value="+966">🇸🇦 +966</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        value={tempMobileNumber}
-                        onChange={(e) => setTempMobileNumber(e.target.value)}
-                        placeholder={
-                          !profileData?.phoneNumber
-                            ? "Enter your phone number"
-                            : "Enter mobile number"
-                        }
-                        className="h-9 flex-1 text-xs sm:h-10 sm:text-sm"
-                      />
-                    </div>
+                    <PhoneInput2
+                      value={phoneValue}
+                      onChange={handlePhoneInputChange}
+                      defaultCountry={getCountryFromCode(tempCountryCode)}
+                      phoneNumber={tempMobileNumber}
+                      countryCode={tempCountryCode}
+                      onHandlePhoneNumberChange={handlePhoneNumberInputChange}
+                      placeholder={
+                        !profileData?.phoneNumber
+                          ? "Enter your phone number"
+                          : "Enter mobile number"
+                      }
+                      className="w-full"
+                    />
 
                     {!profileData?.phoneNumber && (
                       <p className="text-[10px] leading-relaxed text-blue-600 sm:text-xs md:text-sm">
