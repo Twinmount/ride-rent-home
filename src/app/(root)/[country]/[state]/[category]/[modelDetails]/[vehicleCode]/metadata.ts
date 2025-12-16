@@ -121,7 +121,7 @@ export async function generateVehicleMetadata(
 }
 
 // Function to generate JSON-LD
-export function getVehicleJsonLd(
+export async function getVehicleJsonLd(
   vehicle: VehicleDetailsPageType,
   state: string,
   category: string,
@@ -129,6 +129,27 @@ export function getVehicleJsonLd(
   country: string
 ) {
   const rootImage = `${getAssetsUrl(country)}/root/ride-rent-social.jpeg`;
+
+  // Fetch FAQ data
+  let faqData: { question: string; answer: string }[] = [];
+  try {
+    const response = await API({
+      path: `/vehicle-faq/${vehicleCode}`,
+      options: {
+        method: "GET",
+        cache: "no-cache",
+      },
+      country,
+    });
+
+    const result = await response.json();
+
+    if (result.status === "SUCCESS" && Array.isArray(result.result)) {
+      faqData = result.result;
+    }
+  } catch (error) {
+    faqData = [];
+  }
 
   // Generate URLs using the helper
   const vehicleDetailsPageLink = getAbsoluteUrl(
@@ -152,7 +173,7 @@ export function getVehicleJsonLd(
   const isVehicleAvailable =
     !!vehicle?.company?.companyName && !!vehicle?.company?.companyProfile;
 
-  return {
+  const baseSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: vehicle.vehicleTitle || vehicle.modelName,
@@ -217,4 +238,25 @@ export function getVehicleJsonLd(
       logo: rootImage,
     },
   };
+
+  // Build FAQPage schema if FAQ data exists
+  const faqSchema = faqData.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqData.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  } : null;
+
+  // If FAQ data exists, return both schemas as an array
+  if (faqSchema) {
+    return [baseSchema, faqSchema];
+  }
+
+  return baseSchema;
 }

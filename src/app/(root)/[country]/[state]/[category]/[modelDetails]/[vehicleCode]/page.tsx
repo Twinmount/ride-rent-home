@@ -126,7 +126,7 @@ export default async function VehicleDetails(props: ParamsProps) {
   };
 
   // Generate JSON-LD
-  const jsonLdData = getVehicleJsonLd(
+  const jsonLdData = await getVehicleJsonLd(
     vehicle,
     state,
     category,

@@ -45,7 +45,7 @@ export default async function Home(props: PageProps) {
   // console.log("Page params:", { country, state, category });
 
   // Generate JSON-LD
-  const jsonLdData = getHomePageJsonLd(state, category, country);
+  const jsonLdData = await getHomePageJsonLd(state, category, country);
 
   return (
     <>
