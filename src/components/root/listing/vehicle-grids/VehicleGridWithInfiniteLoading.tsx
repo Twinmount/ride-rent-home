@@ -64,6 +64,7 @@ const VehicleGridWithInfiniteLoading: React.FC<Props> = ({
     searchParams: searchParams.toString(),
     coordinates: stateValue === state ? parsedCoordinates : null,
   });
+  // console.log("fetchedVehicles", fetchedVehicles);
 
   const [isInitialLoad, setIsInitialLoad] = useImmer(true);
   const [apiCallDelay, setApiCallDelay] = useImmer(false);
@@ -203,7 +204,9 @@ const VehicleGridWithInfiniteLoading: React.FC<Props> = ({
           location: vehicle.location,
         };
       })
-      .filter((v) => v !== null && !seen.has(v.vehicleId) && seen.add(v.vehicleId));
+      .filter(
+        (v) => v !== null && !seen.has(v.vehicleId) && seen.add(v.vehicleId)
+      );
 
     // Send to global context for rendering on map
     setVehiclesListVisible(data);
@@ -242,8 +245,9 @@ const VehicleGridWithInfiniteLoading: React.FC<Props> = ({
           <>
             {/* List Layer (Always Mounted, visibility toggled) */}
             <div
-              className={`relative z-10 w-full transition-opacity duration-300 ${showMap ? "pointer-events-none opacity-0" : "opacity-100"
-                }`}
+              className={`relative z-10 w-full transition-opacity duration-300 ${
+                showMap ? "pointer-events-none opacity-0" : "opacity-100"
+              }`}
             >
               {Object.keys(vehicles).length === 0 ? (
                 <NoResultsFound />
@@ -287,10 +291,11 @@ const VehicleGridWithInfiniteLoading: React.FC<Props> = ({
 
             {/* Map Layer (Always Mounted) */}
             <div
-              className={`fixed inset-0 top-[4rem] transition-opacity duration-300 ${showMap
-                ? "z-40 opacity-100"
-                : "pointer-events-none z-0 opacity-0"
-                }`}
+              className={`fixed inset-0 top-[4rem] transition-opacity duration-300 ${
+                showMap
+                  ? "z-40 opacity-100"
+                  : "pointer-events-none z-0 opacity-0"
+              }`}
             >
               {mountMap && <MapClientWrapper />}
             </div>
