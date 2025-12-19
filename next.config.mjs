@@ -2,45 +2,40 @@ import path from "path";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
+
   images: {
+    unoptimized: true, // 🚨 CRITICAL FIX
     remotePatterns: [
       {
         protocol: "https",
         hostname: "storage.googleapis.com",
-        port: "",
-        pathname: "/**", // This allows any subpath within the specified base path
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "images.unsplash.com",
-        port: "",
-        pathname: "/**", // This allows any subpath within the specified base path
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
-        port: "",
         pathname: "/**",
       },
-      // Also add other Google CDN domains that might be used
       {
         protocol: "https",
         hostname: "*.googleusercontent.com",
-        port: "",
         pathname: "/**",
       },
     ],
   },
+
   sassOptions: {
     includePaths: [path.join(process.cwd(), "src/styles")],
   },
+
   async redirects() {
     return [
-      // {
-      //   source: "/",
-      //   destination: "/ae/dubai",
-      //   permanent: true,
-      // },
       {
         source: "/ae/faq",
         destination: "/ae/faq/dubai",
@@ -51,7 +46,6 @@ const nextConfig = {
         destination: "/ae/profile/:path*",
         permanent: true,
       },
-
       {
         source:
           "/:state(dubai|sharjah|abu-dhabi|al-ain|fujairah|ras-al-khaima|ajman|umm-al-quwain)/:path*",
