@@ -30,6 +30,7 @@ import { useAuthContext } from "@/auth";
 import { parsePhoneNumber } from "react-phone-number-input";
 import { PhoneInput2 } from "@/components/phoneInput/PhoneInput2";
 import { getNumberAfterSpaceStrict, getDotCount } from "@/utils/helper";
+import { useLocationDetection } from "@/hooks/useLocationDetection";
 
 interface BookingConfirmationModalProps {
   isOpen: boolean;
@@ -69,6 +70,10 @@ export function BookingConfirmationModal({
   const queryClient = useQueryClient();
   const { verifyOAuthPhone } = useAuthContext();
 
+  // Call location detection hook to get default country and dial code
+  const { location, dialCode: detectedDialCode } = useLocationDetection(true);
+  console.log("location: ", location);
+  console.log("detectedDialCode: ", detectedDialCode);
   const bookingData = vehicleData;
 
   // Check if user has a phone number (update when phoneStep is verified)
@@ -82,6 +87,19 @@ export function BookingConfirmationModal({
     !hasPhoneNumber &&
     (sessionData as any)?.provider &&
     (sessionData as any)?.provider !== "credentials";
+
+  // Initialize country code from detected location only (no hardcoded fallback)
+  useEffect(() => {
+    if (isOpen && !countryCode && detectedDialCode) {
+      // Only set country code if location is actually detected
+      // Don't set a default - let user choose manually if no location detected
+      setCountryCode(detectedDialCode);
+      // Initialize phoneValue to trigger PhoneInput initialization
+      if (!phoneValue) {
+        setPhoneValue(detectedDialCode);
+      }
+    }
+  }, [detectedDialCode, countryCode, isOpen, phoneValue]);
 
   // Reset phone step when modal opens/closes
   useEffect(() => {
@@ -467,9 +485,9 @@ export function BookingConfirmationModal({
                       <PhoneInput2
                         value={phoneValue}
                         onChange={handleCountryCodeChange}
-                        defaultCountry="AE"
+                        defaultCountry={location?.country || "ae"}
                         phoneNumber={phoneNumber}
-                        countryCode={countryCode}
+                        countryCode={countryCode || detectedDialCode || ""}
                         onHandlePhoneNumberChange={handlePhoneNumberChange}
                         placeholder="Enter phone number"
                       />
@@ -507,10 +525,10 @@ export function BookingConfirmationModal({
                     <CheckCircle className="h-3 w-3 flex-shrink-0 text-green-600 sm:h-5 sm:w-5" />
                     <div className="min-w-0">
                       <p className="text-[10px] font-medium text-green-900 sm:text-sm">
-                        Phone Number Verified Successfully
+                        Phone Number added successfully.
                       </p>
                       <p className="text-[9px] text-green-700 sm:text-xs">
-                        You can now proceed with your booking enquiry.
+                        You can now process your booking enquiry.
                       </p>
                     </div>
                   </div>

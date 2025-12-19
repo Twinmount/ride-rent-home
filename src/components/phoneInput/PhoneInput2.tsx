@@ -22,6 +22,8 @@ export const PhoneInput2 = ({
   className = "",
   placeholder = "enter phone number",
 }: PhoneInput2Props) => {
+  console.log("defaultCountry: ", defaultCountry);
+  console.log("value: ", value);
   return (
     <div className={className}>
       <div className="relative z-10 flex gap-2">

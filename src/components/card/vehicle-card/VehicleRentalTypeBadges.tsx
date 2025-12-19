@@ -9,7 +9,11 @@ const VehicleRentalTypeBadges = ({
   isSelfDriveAvailable,
   isDriverAvailable,
 }: VehicleRentalTypeBadgesProps) => {
-  const showOnlyOneType = isSelfDriveAvailable !== isDriverAvailable;
+  // Convert undefined to false for consistent comparison
+  const hasSelfDrive = isSelfDriveAvailable === true;
+  const hasDriver = isDriverAvailable === true;
+
+  const showOnlyOneType = hasSelfDrive !== hasDriver;
   const showFlexibleOptions = !showOnlyOneType; // Both true OR both false
 
   const badgeStyles = cn(
@@ -111,7 +115,7 @@ const VehicleRentalTypeBadges = ({
 
       <div className="flex w-full items-center sm:w-auto">
         {showOnlyOneType &&
-          isSelfDriveAvailable &&
+          hasSelfDrive &&
           renderBadge(
             <svg
               className={iconStyles}
@@ -125,7 +129,7 @@ const VehicleRentalTypeBadges = ({
           )}
 
         {showOnlyOneType &&
-          isDriverAvailable &&
+          hasDriver &&
           renderBadge(
             <svg
               className={iconStyles}
