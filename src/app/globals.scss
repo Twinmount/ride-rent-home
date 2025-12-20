@@ -471,11 +471,8 @@ body {
 /* Vehicle type card specific fixes */
 .vehicle-type-stable {
   width: 92px !important;
-  height: 64px !important;
   min-width: 92px !important;
-  min-height: 64px !important;
   max-width: 92px !important;
-  max-height: 64px !important;
   flex-shrink: 0 !important;
   contain: layout !important;
 }

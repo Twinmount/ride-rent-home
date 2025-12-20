@@ -17,6 +17,7 @@ import NewlyArrived from "@/components/root/landing/NewlyArrived";
 import CategoryTypesAndFilter from "@/components/root/landing/CategoryTypesAndFilter";
 import HeroSection from "@/components/root/landing/HeroSection";
 import VehicleCardCarouselSkeleton from "@/components/skelton/VehicleCardCarouselSkeleton";
+import FeaturedVehiclesSkeleton from "@/components/skelton/FeaturedVehiclesSkeleton";
 import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
 import JsonLd from "@/components/common/JsonLd";
 import Banner from "@/components/root/landing/Banner";
@@ -60,9 +61,7 @@ export default async function Home(props: PageProps) {
 
       <CategoryTypesAndFilter />
 
-      <Suspense
-        fallback={<VehicleCardCarouselSkeleton layoutType="carousel" />}
-      >
+      <Suspense fallback={<FeaturedVehiclesSkeleton layoutType="carousel" />}>
         <FeaturedVehicles
           state={state}
           category={category}
