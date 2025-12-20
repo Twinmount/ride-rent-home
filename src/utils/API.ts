@@ -43,11 +43,10 @@ export async function API({
   const url = path.startsWith("/") ? BASE_URL + path : BASE_URL + "/" + path;
 
   const response = await fetch(`${url}`, options);
-
   if (!response.ok) {
     console.log("path:",path)
-    console.log("path:",response)
-    // throw new Error(`API error: ${response.status}`);
+    // console.log("path:",response)
+    throw new Error(`API error: ${response.status}`);
   }
 
   return response;
