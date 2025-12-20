@@ -76,7 +76,7 @@ export default function VehicleTypesCarousel() {
   return (
     <VehicleTypesCarouselWrapper>
       <Carousel opts={{ align: "start" }}>
-        <CarouselContent className="flex h-fit gap-x-3 px-1 py-0 lg:gap-x-4">
+        <CarouselContent className="flex h-fit gap-x-3 lg:gap-x-4">
           {vehicleTypes.map((type, index) => (
             <div key={type.typeId} className="vehicle-type-stable">
               <VehicleTypeCard
