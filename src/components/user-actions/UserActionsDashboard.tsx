@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -23,9 +24,11 @@ const UserActionsDashboard: React.FC<UserActionsDashboardProps> = ({
 }) => {
   const { auth } = useAppContext();
   const { user, authStorage } = auth;
+  const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState(defaultTab);
 
-  const userId = user?.id || authStorage.getUser()?.id;
+  // Use NextAuth session userId as primary source, fallback to auth context user
+  const userId = session?.user?.id || user?.id || authStorage.getUser()?.id;
 
   // Get user action counts for badge display
   const { data: actionCounts } = useQuery({

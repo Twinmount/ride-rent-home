@@ -17,7 +17,7 @@ const MileageInfo = ({
   return (
     <>
       <div
-        className={`m-4 flex items-center gap-x-2 text-xs lg:m-2 ${
+        className={`m-4 flex items-center gap-x-1.5 text-xs lg:m-2 ${
           isDisabled ? "text-gray-400" : "text-text-secondary"
         }`}
       >
@@ -29,15 +29,17 @@ const MileageInfo = ({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: isDisabled ? 0 : 0.1, ease: "easeInOut" }}
-              className="flex items-center gap-x-2"
+              className="flex items-center gap-x-1.5"
             >
               <Infinity
-                className={`h-5 w-5 flex-shrink-0 ${
+                className={`h-[18px] w-[18px] flex-shrink-0 ${
                   isDisabled ? "text-gray-400" : "animate-pulse text-yellow"
                 }`}
               />
               <div className="relative overflow-hidden">
-                <span className={isDisabled ? "" : "shine-text"}>
+                <span
+                  className={`leading-[18px] ${isDisabled ? "" : "shine-text"}`}
+                >
                   Unlimited Mileage
                 </span>
               </div>
@@ -52,7 +54,7 @@ const MileageInfo = ({
                 duration: isDisabled ? 0 : 0.08,
                 ease: "easeInOut",
               }}
-              className="flex items-center gap-1"
+              className="flex items-center gap-x-1.5"
             >
               <div className="relative h-[18px] w-[18px] flex-shrink-0">
                 <SafeImage
@@ -63,7 +65,9 @@ const MileageInfo = ({
                   sizes="18px"
                 />
               </div>
-              <span>Mileage Limit: {mileageLimit} KM</span>
+              <span className="leading-[18px]">
+                Mileage Limit: {mileageLimit} KM
+              </span>
             </motion.div>
           )}
         </AnimatePresence>

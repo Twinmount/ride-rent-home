@@ -42,6 +42,7 @@ const FeaturedVehicles = async ({
 
   const data: FetchVehicleCardsResponseV2 = await response.json();
   const vehicles = data?.result?.list || [];
+  // console.log("FeaturedVehicles vehicles:", vehicles);
 
   if (vehicles.length === 0) {
     return null;

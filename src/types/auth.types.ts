@@ -9,6 +9,15 @@ export enum OtpType {
   PASSWORD_CHANGE = "PASSWORD_CHANGE",
 }
 
+export type AuthStep =
+  | "phone"
+  | "password"
+  | "otp"
+  | "register"
+  | "forgot-password"
+  | "new-password"
+  | "success";
+
 /**
  * Login request data interface
  */
@@ -104,6 +113,14 @@ export interface ForgotPasswordData {
 }
 
 /**
+ * Setup password for OAuth user request data interface
+ */
+export interface SetupOAuthPasswordData {
+  password: string;
+  confirmPassword: string;
+}
+
+/**
  * Phone number change verification data interface
  */
 export interface PhoneChangeVerificationData {
@@ -166,6 +183,20 @@ export interface AuthResponse {
     avatar?: string;
     isEmailVerified?: boolean;
     isPhoneVerified?: boolean;
+    userExists?: boolean;
+    isProfileNavigationRequired?: boolean;
+    isTempVerified?: string;
+    hasValidTempToken?: boolean;
+    expiredTempUser?: boolean;
+    isPasswordSet?: boolean;
+    isOAuthUser?: boolean;
+    accountLinked?: boolean; // Indicates if OAuth account was linked to existing account
+    oauthProviders?: Array<{
+      provider: string;
+      providerAccountId: string;
+      accessToken?: string;
+      createdAt?: Date;
+    }>;
   };
   accessToken?: string;
   refreshToken?: string;
@@ -279,7 +310,10 @@ export interface AuthAPIInterface {
     userId: string,
     profileData: User
   ) => Promise<AuthResponse>;
-  refreshAccessToken: (userId: string) => Promise<AuthResponse>;
+  refreshAccessToken: (
+    userId: string,
+    refreshToken: string
+  ) => Promise<AuthResponse>;
 }
 
 /**
@@ -287,6 +321,7 @@ export interface AuthAPIInterface {
  */
 export interface UseAuthReturn {
   // State
+  step: AuthStep;
   auth: InternalAuthState;
   user: User | null;
   isAuthenticated: boolean;
@@ -295,8 +330,9 @@ export interface UseAuthReturn {
   isLoading: boolean;
   authStorage: AuthStorageInterface;
   userAuthStep: UserAuthStep;
-
+  hasUserSaved: boolean;
   // Actions
+  setStep: React.Dispatch<React.SetStateAction<AuthStep>>;
   deleteUser: (userData: DeleteUserData) => Promise<AuthResponse>;
   login: (loginData: LoginData) => Promise<AuthResponse>;
   signup: (signupData: PhoneSignupData) => Promise<AuthResponse>;
@@ -307,6 +343,9 @@ export interface UseAuthReturn {
     otp,
   }: OtpVerificationData) => Promise<AuthResponse>;
   setPassword: (passwordData: SetPasswordData) => Promise<AuthResponse>;
+  setupOAuthPassword: (
+    passwordData: SetupOAuthPasswordData
+  ) => Promise<AuthResponse>;
   forgotPassword: (
     forgotPasswordData: ForgotPasswordData
   ) => Promise<AuthResponse>;
@@ -341,6 +380,21 @@ export interface UseAuthReturn {
     phoneNumber: string,
     countryCode: string
   ) => Promise<AuthResponse>;
+  addOAuthPhone: (
+    userId: string,
+    phoneNumber: string,
+    countryCode: string
+  ) => Promise<AuthResponse>;
+  verifyOAuthPhone: (
+    userId: string,
+    phoneNumber: string,
+    countryCode: string,
+    otpId?: string,
+    otp?: string
+  ) => Promise<AuthResponse>;
+  setShowOAuthPhoneModal: (show: boolean) => void;
+  setHasUserSaved: (show: boolean) => void;
+  showOAuthPhoneModal: boolean;
 
   // Queries
   useGetUserProfile: (
@@ -378,6 +432,12 @@ export interface UseAuthReturn {
     AuthResponse,
     Error,
     SetPasswordData,
+    unknown
+  >;
+  setupOAuthPasswordMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    SetupOAuthPasswordData,
     unknown
   >;
   forgotPasswordMutation: UseMutationResult<
@@ -434,6 +494,31 @@ export interface UseAuthReturn {
       otpId: string;
       otp: string;
       newEmail: string;
+    },
+    unknown
+  >;
+  addOAuthPhoneMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    {
+      userId: string;
+      phoneNumber: string;
+      countryCode: string;
+    },
+    unknown
+  >;
+  verifyOAuthPhoneMutation: UseMutationResult<
+    AuthResponse,
+    Error,
+    {
+      userId: string;
+      phoneNumber: string;
+      countryCode: string;
+      otpId?: string;
+      otp?: string;
+      provider?: string;
+      providerAccountId?: string;
+      accessToken?: string;
     },
     unknown
   >;

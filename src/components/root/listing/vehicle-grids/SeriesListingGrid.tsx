@@ -92,7 +92,7 @@ const SeriesListingGrid: React.FC<SeriesListingGridProps> = ({
     country,
     category,
   });
-
+  console.log("Fetched vehicles:", fetchedVehicles);
   const { data: relatedSeries } = useQuery({
     queryKey: ["related-series", series],
     queryFn: () =>

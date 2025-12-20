@@ -16,6 +16,19 @@ const nextConfig = {
         port: "",
         pathname: "/**", // This allows any subpath within the specified base path
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
+      // Also add other Google CDN domains that might be used
+      {
+        protocol: "https",
+        hostname: "*.googleusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   sassOptions: {

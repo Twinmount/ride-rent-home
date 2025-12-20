@@ -129,7 +129,7 @@ export default async function RelatedResults({
   // Get section configuration with dynamic URL
   const sectionConfig = getSectionConfig(
     selectedSection,
-    convertToLabel(category),
+    category,
     country,
     state,
     category,

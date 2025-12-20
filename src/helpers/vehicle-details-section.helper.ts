@@ -149,7 +149,7 @@ export function getSectionConfig(
       const brandValue = sectionData?.brandValue || "";
 
       return {
-        title: `More from Brand`,
+        title: `More from the same brand`,
         description: `Explore more ${formattedCategory} from the same trusted brand.`,
         url: brandValue
           ? `${baseUrl}/brand/${brandValue}`

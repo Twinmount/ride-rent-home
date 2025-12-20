@@ -101,7 +101,6 @@ export default async function VehicleDetails(props: ParamsProps) {
   }
 
   const vehicle = data.result;
-  // console.log("vehicle details data: ", data.result);
 
   // generating prop data for profile card and mobile profile card
   const ProfileCardData: ProfileCardDataType = {
@@ -127,7 +126,7 @@ export default async function VehicleDetails(props: ParamsProps) {
   };
 
   // Generate JSON-LD
-  const jsonLdData = getVehicleJsonLd(
+  const jsonLdData = await getVehicleJsonLd(
     vehicle,
     state,
     category,

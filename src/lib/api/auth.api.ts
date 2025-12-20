@@ -5,6 +5,7 @@ import type {
   AuthResponse,
   OtpVerificationData,
   SetPasswordData,
+  SetupOAuthPasswordData,
   ResendOtpData,
   ProfileUpdateData,
   ForgotPasswordData,
@@ -20,11 +21,18 @@ import { createAuthenticatedRequest, authApiClient } from "./axios.config";
 // API endpoints configuration (relative paths since base URL is handled by axios config)
 const AUTH_ENDPOINTS = {
   CHECK_USER_EXISTS: "/check-user-exists",
+  CHECK_USER_EXISTS_BY_EMAIL: "/check-user-exists-by-email",
+  CHECK_OAUTH_USER_PHONE_STATUS: "/check-oauth-user-phone",
+  ADD_PHONE_TO_OAUTH_USER: "/add-phone-to-oauth-user",
+  VERIFY_OAUTH_PHONE: "/verify-oauth-phone",
+  LINK_OAUTH_ACCOUNT: "/link-oauth-account",
+  SIGNUP_OAUTH: "/signup-oauth",
   SIGNUP: "/signup",
   LOGIN: "/login",
   DELETE_USER: "/delete-user",
   VERIFY_OTP: "/verify-otp",
   SET_PASSWORD: "/set-password",
+  SETUP_OAUTH_PASSWORD: "/setup-oauth-password",
   RESEND_OTP: "/resend-otp",
   PROFILE: "/profile",
   GET_USER_PROFILE: "/user/profile",
@@ -133,6 +141,28 @@ export class AuthAPI {
   }
 
   /**
+   * Setup password for OAuth user (no OTP required)
+   */
+  static async setupOAuthPassword(passwordData: {
+    password: string;
+    confirmPassword: string;
+  }): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.SETUP_OAUTH_PASSWORD,
+        passwordData
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to setup password for OAuth user"
+      );
+    }
+  }
+
+  /**
    * Resend OTP for phone verification
    */
   static async resendOtp(resendData: ResendOtpData): Promise<AuthResponse> {
@@ -210,14 +240,15 @@ export class AuthAPI {
         `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`
       );
 
-      // Use axios client directly for FormData with explicit headers
-      const response = await authApiClient.put(
+      // Use createAuthenticatedRequest to ensure token is set in header
+      // The interceptor will automatically handle FormData and set Content-Type
+      const response = await createAuthenticatedRequest.auth.put(
         `${AUTH_ENDPOINTS.UPDATE_PROFILE}/${userId}/form-data`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-          },
+          } as any,
           timeout: 30000, // 30 second timeout for file uploads
         }
       );
@@ -264,21 +295,41 @@ export class AuthAPI {
   }
 
   /**
-   * Refresh access token
+   * Refresh access token with token rotation
    */
-  static async refreshAccessToken(userId: string): Promise<AuthResponse> {
+  static async refreshAccessToken(
+    userId: string,
+    refreshToken: string
+  ): Promise<AuthResponse> {
     try {
-      const response = await createAuthenticatedRequest.auth.post(
-        AUTH_ENDPOINTS.REFRESH_TOKEN,
-        { userId }
-      );
+      const response = await authApiClient.post(AUTH_ENDPOINTS.REFRESH_TOKEN, {
+        userId,
+        refreshToken,
+      });
       return response.data;
     } catch (error: any) {
-      throw new Error(
+      // Extract error message from API response
+      const errorMessage =
         error.response?.data?.message ||
-          error.message ||
-          "Failed to refresh token"
-      );
+        error.message ||
+        "Failed to refresh token";
+
+      // Only log in development to avoid noise in production
+      if (process.env.NODE_ENV === "development") {
+        console.error("refreshAccessToken error: [authAPI]", {
+          message: errorMessage,
+          status: error.response?.status,
+          userId,
+        });
+      }
+
+      // Create error with original message for proper handling upstream
+      const refreshError = new Error(errorMessage);
+      // Attach status code if available for better error handling
+      if (error.response?.status) {
+        (refreshError as any).status = error.response.status;
+      }
+      throw refreshError;
     }
   }
 
@@ -453,6 +504,158 @@ export class AuthAPI {
       );
     }
   }
+
+  /**
+   * Check if user exists by email address (useful for OAuth)
+   */
+  static async checkUserExistsByEmail(email: string): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.CHECK_USER_EXISTS_BY_EMAIL,
+        { email }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to check user existence by email"
+      );
+    }
+  }
+
+  /**
+   * Link OAuth account to existing user
+   */
+  static async linkOAuthAccount(
+    email: string,
+    provider: string,
+    providerAccountId: string,
+    accessToken?: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.LINK_OAUTH_ACCOUNT,
+        { email, provider, providerAccountId, accessToken }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to link OAuth account"
+      );
+    }
+  }
+
+  /**
+   * Signup new user with OAuth provider
+   */
+  static async signupOAuth(
+    email: string,
+    provider: string,
+    providerAccountId: string,
+    name?: string,
+    avatar?: string,
+    accessToken?: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.SIGNUP_OAUTH,
+        { email, provider, providerAccountId, name, avatar, accessToken }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to signup with OAuth"
+      );
+    }
+  }
+
+  /**
+   * Check OAuth user phone number status
+   */
+  static async checkOAuthUserPhoneStatus(
+    userId: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.CHECK_OAUTH_USER_PHONE_STATUS,
+        { providerAccountId: userId }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to check OAuth user phone status"
+      );
+    }
+  }
+
+  /**
+   * Add phone number to OAuth user (sends OTP)
+   */
+  static async addPhoneToOAuthUser(
+    userId: string,
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.ADD_PHONE_TO_OAUTH_USER,
+        { userId, phoneNumber, countryCode }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to add phone number to OAuth user"
+      );
+    }
+  }
+
+  /**
+   * Verify OTP and link phone number to OAuth user (or add phone directly if OTP is skipped)
+   * If phone number belongs to existing account, OAuth account will be linked to that account
+   * OTP verification can be skipped by not providing otpId and otp
+   */
+  static async verifyOAuthPhone(
+    userId: string,
+    phoneNumber: string,
+    countryCode: string,
+    otpId?: string,
+    otp?: string,
+    provider?: string,
+    providerAccountId?: string,
+    accessToken?: string
+  ): Promise<AuthResponse> {
+    try {
+      const response = await createAuthenticatedRequest.auth.post(
+        AUTH_ENDPOINTS.VERIFY_OAUTH_PHONE,
+        {
+          userId,
+          phoneNumber,
+          countryCode,
+          ...(otpId && { otpId }),
+          ...(otp && { otp }),
+          ...(provider && { provider }),
+          ...(providerAccountId && { providerAccountId }),
+          ...(accessToken && { accessToken }),
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to verify OAuth phone number"
+      );
+    }
+  }
 }
 
 // Export individual functions for easier usage
@@ -462,6 +665,7 @@ export const authAPI = {
   verifyOtp: AuthAPI.verifyOtp,
   deleteUser: AuthAPI.deleteUser,
   setPassword: AuthAPI.setPassword,
+  setupOAuthPassword: AuthAPI.setupOAuthPassword,
   resendOtp: AuthAPI.resendOtp,
   getProfile: AuthAPI.getProfile,
   getUserProfile: AuthAPI.getUserProfile,
@@ -472,6 +676,12 @@ export const authAPI = {
   forgotPassword: AuthAPI.forgotPassword,
   resetPassword: AuthAPI.resetPassword,
   checkUserExists: AuthAPI.checkUserExists,
+  checkUserExistsByEmail: AuthAPI.checkUserExistsByEmail,
+  linkOAuthAccount: AuthAPI.linkOAuthAccount,
+  signupOAuth: AuthAPI.signupOAuth,
+  checkOAuthUserPhoneStatus: AuthAPI.checkOAuthUserPhoneStatus,
+  addPhoneToOAuthUser: AuthAPI.addPhoneToOAuthUser,
+  verifyOAuthPhone: AuthAPI.verifyOAuthPhone,
   requestPhoneNumberChange: AuthAPI.requestPhoneNumberChange,
   verifyPhoneNumberChange: AuthAPI.verifyPhoneNumberChange,
   requestEmailChange: AuthAPI.requestEmailChange,

@@ -66,7 +66,7 @@ export const useFetchListingVehicles = ({
 
   // Flatten all pages into a single array of vehicle data
   const vehicles = data?.pages.flatMap((page) => page.result.list) || [];
-
+    console.log("Fetched vehicles:", vehicles);
   return {
     vehicles,
     fetchNextPage,

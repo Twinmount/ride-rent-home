@@ -152,4 +152,3 @@ const ProfileCard = memo(
 
 ProfileCard.displayName = "ProfileCard";
 export default ProfileCard;
-

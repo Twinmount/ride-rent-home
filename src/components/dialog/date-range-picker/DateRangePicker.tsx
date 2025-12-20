@@ -110,37 +110,48 @@ export const DateRangePicker = ({
     <div className="w-full">
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogTrigger asChild></DialogTrigger>
-        <DialogContent className="max-w-fit">
-          <DialogHeader>
-            <DialogTitle> {title} </DialogTitle>
+        <DialogContent className="w-full max-w-[95vw] p-3 sm:max-w-fit sm:p-6">
+          <DialogHeader className="px-1 sm:px-0">
+            <DialogTitle className="text-base sm:text-lg">
+              {" "}
+              {title}{" "}
+            </DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-4">
-            {isMobile ? (
-              <RDateRange
-                editableDateInputs={true}
-                onChange={handleDateChange}
-                moveRangeOnFirstSelection={false}
-                ranges={carRentDate}
-                minDate={new Date()}
-              />
-            ) : (
-              <RDateRangePicker
-                staticRanges={customStaticRanges}
-                onChange={handleDateChange}
-                moveRangeOnFirstSelection={false}
-                months={2}
-                ranges={carRentDate}
-                direction="horizontal"
-                minDate={new Date()}
-              />
-            )}
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={handleClose}>
+          <div className="flex flex-col gap-3 sm:gap-4">
+            <div className="-mx-2 overflow-x-auto sm:mx-0">
+              {isMobile ? (
+                <div className="px-2">
+                  <RDateRange
+                    editableDateInputs={true}
+                    onChange={handleDateChange}
+                    moveRangeOnFirstSelection={false}
+                    ranges={carRentDate}
+                    minDate={new Date()}
+                  />
+                </div>
+              ) : (
+                <RDateRangePicker
+                  staticRanges={customStaticRanges}
+                  onChange={handleDateChange}
+                  moveRangeOnFirstSelection={false}
+                  months={2}
+                  ranges={carRentDate}
+                  direction="horizontal"
+                  minDate={new Date()}
+                />
+              )}
+            </div>
+            <div className="flex flex-col justify-end gap-2 pt-2 sm:flex-row">
+              <Button
+                variant="outline"
+                onClick={handleClose}
+                className="w-full text-sm sm:w-auto sm:text-base"
+              >
                 Cancel
               </Button>
               <Button
                 onClick={handleConfirm}
-                className="border-orange-600 bg-orange-600 hover:border-orange-700 hover:bg-orange-700"
+                className="w-full border-orange-600 bg-orange-600 text-sm hover:border-orange-700 hover:bg-orange-700 sm:w-auto sm:text-base"
               >
                 {ConfirmBtnTxt || "Confirm Booking"}
               </Button>

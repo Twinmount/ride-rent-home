@@ -5,6 +5,7 @@ import { Camera, Upload, X, User, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAvatarUpload } from "@/hooks/useAvatarUpload";
+import Image from "next/image";
 
 interface AvatarUploadProps {
   currentAvatar?: string | null;
@@ -36,7 +37,7 @@ const iconSizes = {
 };
 
 export const AvatarUpload: React.FC<AvatarUploadProps> = ({
-  currentAvatar,
+  currentAvatar = "",
   userName = "User",
   userId,
   size = "lg",
@@ -147,11 +148,24 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
         <Avatar
           className={`${sizeClasses[size]} border-4 border-white shadow-lg`}
         >
-          <AvatarImage
+          {displayAvatar && (
+            <Image
+              src={displayAvatar || ""}
+              alt={`${userName}'s avatar`}
+              fill
+              className="object-cover"
+              onError={() => {
+                console.warn("Avatar image failed to load:", displayAvatar);
+              }}
+              referrerPolicy="no-referrer"
+              unoptimized={displayAvatar?.includes("googleusercontent.com")}
+            />
+          )}
+          {/* <AvatarImage
             src={displayAvatar || undefined}
             alt={`${userName}'s avatar`}
             className="object-cover"
-          />
+          /> */}
           <AvatarFallback className="bg-gradient-to-br from-orange-400 to-red-500 text-lg font-semibold text-white">
             {userName.charAt(0).toUpperCase()}
           </AvatarFallback>

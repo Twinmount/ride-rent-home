@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useCallback,
   useTransition,
+  useMemo,
   memo,
 } from "react";
 import { Button } from "@/components/ui/button";
@@ -41,7 +42,7 @@ const InternalMemoizedPhoneInput = memo(
         inputClassName="hidden"
         countrySelectorStyleProps={{
           className:
-            "bg-transparent !text-xs !p-0 !bg-transparent !shadow-none",
+            "bg-transparent !text-xs !p-0 !bg-transparent !shadow-none cursor-pointer hover:opacity-80",
           style: {
             padding: 0,
             backgroundColor: "transparent",
@@ -49,7 +50,7 @@ const InternalMemoizedPhoneInput = memo(
             boxShadow: "none",
           },
           buttonClassName:
-            "!border-none outline-none !h-full !w-full !rounded-none bg-transparent !p-0 !bg-transparent !shadow-none",
+            "!border-none outline-none !h-full !w-full !rounded-none bg-transparent !p-0 !bg-transparent !shadow-none cursor-pointer hover:opacity-80 transition-opacity",
         }}
       />
     );
@@ -78,21 +79,56 @@ export const PhoneStep = ({
   setDrawerState,
 }: any) => {
   const { auth } = useAuthContext();
-  const { signInWithProvider, isLoading: isOAuthLoading } = useOAuth();
+  const {
+    signInWithProvider,
+    isLoading: isOAuthLoading,
+    session: oauthSession,
+  } = useOAuth();
   const searchParams = useSearchParams();
-  
-  // Get showSocial query parametera
-  const showSocial = searchParams.get("showSocial") === "true";
-  
-  let detectedCountryLocal;
 
-  const { location, isLoading: isLocationLoading } = useLocationDetection(
-    !auth.isLoggedIn && !detectedCountryLocal
+  // Get showSocial query parameter - safely handle SSR
+  const [showSocial, setShowSocial] = useState(false);
+
+  useEffect(() => {
+    // Only check searchParams on client side
+    if (typeof window !== "undefined") {
+      const showSocialParam = searchParams.get("showSocial") === "true";
+      setShowSocial(showSocialParam);
+    }
+  }, [searchParams]);
+
+  // Initialize detectedCountry from sessionStorage synchronously (if available)
+  const getInitialCountry = (): string => {
+    if (typeof window !== "undefined") {
+      const stored = sessionStorage.getItem("detectedCountry");
+      return stored || "";
+    }
+    return "";
+  };
+
+  // Location state - initialize from sessionStorage if available
+  const [detectedCountry, setDetectedCountry] =
+    useState<string>(getInitialCountry());
+
+  const [userSelectedCountry, setUserSelectedCountry] = useState<string | null>(
+    null
   );
+
+  // Only fetch location if user is not logged in and we don't have a detected country
+  // Use useMemo to prevent unnecessary recalculations and ensure stable reference
+  const shouldFetchLocation = useMemo(
+    () => !auth.isLoggedIn && !detectedCountry && !userSelectedCountry,
+    [auth.isLoggedIn, detectedCountry, userSelectedCountry]
+  );
+
+  const {
+    location,
+    isLoading: isLocationLoading,
+    dialCode: detectedDialCode,
+  } = useLocationDetection(shouldFetchLocation);
 
   // useTransition for non-urgent state updates
   const [isPending, startTransition] = useTransition();
-
 
   // Phone state
   const [phoneValue, setPhoneValue] = useState("");
@@ -100,22 +136,7 @@ export const PhoneStep = ({
   const [countryCode, setCountryCode] = useState("");
   const [allowNumberCount, setAllowNumberCount] = useState(0);
 
-  // Location state
-  const [detectedCountry, setDetectedCountry] = useState<string>(
-    detectedCountryLocal ? detectedCountryLocal : ""
-  );
-
-  const [userSelectedCountry, setUserSelectedCountry] = useState<string | null>(
-    null
-  );
-
   const [showSkipOption, setShowSkipOption] = useState<boolean>(false);
-
-  useEffect(() => {
-    detectedCountryLocal = sessionStorage.getItem("detectedCountry");
-    console.log("country: ", detectedCountryLocal);
-    if (detectedCountryLocal) setDetectedCountry(detectedCountryLocal);
-  }, []);
 
   useEffect(() => {
     if (isLocationLoading) {
@@ -129,40 +150,106 @@ export const PhoneStep = ({
     }
   }, [isLocationLoading]);
 
+  // Update detected country when location is detected
+  // This effect captures the location before shouldFetchLocation becomes false
   useEffect(() => {
-    if (location && !isLocationLoading && !userSelectedCountry) {
-      setDetectedCountry(location.country);
-      sessionStorage.setItem("detectedCountry", location.country);
+    if (
+      location &&
+      !isLocationLoading &&
+      !userSelectedCountry &&
+      !detectedCountry
+    ) {
+      const country = location.country;
+      if (country) {
+        setDetectedCountry(country);
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("detectedCountry", country);
+        }
+      }
     }
-  }, [location, userSelectedCountry, isLocationLoading]);
+  }, [location, userSelectedCountry, isLocationLoading, detectedCountry]);
+
+  // Initialize country code when location is detected or country is loaded from storage
+  useEffect(() => {
+    if (detectedDialCode && !countryCode && !userSelectedCountry) {
+      // Initialize country code from detected location
+      startTransition(() => {
+        setCountryCode(detectedDialCode);
+      });
+    }
+  }, [detectedDialCode, countryCode, userSelectedCountry]);
+
+  // Ensure PhoneInput initializes country code when country changes
+  // This effect triggers when detectedCountry changes and we have a country but no code yet
+  useEffect(() => {
+    if (
+      detectedCountry &&
+      !countryCode &&
+      !userSelectedCountry &&
+      !detectedDialCode
+    ) {
+      // If we have a country from storage but no dial code,
+      // PhoneInput should initialize it via onChange when it mounts
+      // Set a small value to trigger PhoneInput initialization
+      if (!phoneValue && detectedCountry) {
+        // Setting an empty string will make PhoneInput initialize with defaultCountry
+        setPhoneValue("");
+      }
+    }
+  }, [
+    detectedCountry,
+    countryCode,
+    userSelectedCountry,
+    detectedDialCode,
+    phoneValue,
+  ]);
 
   const handleSkipDetection = () => {
-    setUserSelectedCountry("ae");
-    setDetectedCountry("ae");
+    const defaultCountry = "ae";
+    const defaultDialCode = "+971"; // UAE dial code
+    setUserSelectedCountry(defaultCountry);
+    setDetectedCountry(defaultCountry);
+    setCountryCode(defaultDialCode);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("detectedCountry", defaultCountry);
+    }
   };
 
   // Handle country code change with transition
-  const onChangeCountryCode = useCallback((value: any, country: any) => {
-    const phoneDetails = getNumberAfterSpaceStrict(country.inputValue);
-    const newAllowCount = getDotCount(country.country.format);
-    const newCountryCode = `+${country.country.dialCode}`;
+  const onChangeCountryCode = useCallback(
+    (value: any, country: any) => {
+      const phoneDetails = getNumberAfterSpaceStrict(country.inputValue);
+      const newAllowCount = getDotCount(country.country.format);
+      const newCountryCode = `+${country.country.dialCode}`;
+      const newCountry = country.country.iso2.toLowerCase();
 
-    // Update display value immediately (urgent update)
-    setPhoneValue(value);
+      // Update display value immediately (urgent update)
+      setPhoneValue(value);
 
-    // Mark these updates as non-urgent
-    startTransition(() => {
-      setCountryCode(newCountryCode);
-      setAllowNumberCount(newAllowCount);
+      // Mark these updates as non-urgent
+      startTransition(() => {
+        setCountryCode(newCountryCode);
+        setAllowNumberCount(newAllowCount);
 
-      if (
-        newAllowCount === 0 ||
-        phoneDetails.phoneNumber.length <= newAllowCount
-      ) {
-        setPhoneNumber(phoneDetails.phoneNumber);
-      }
-    });
-  }, []);
+        // Track user selection - user manually changed country
+        if (newCountry !== detectedCountry) {
+          setUserSelectedCountry(newCountry);
+          setDetectedCountry(newCountry);
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("detectedCountry", newCountry);
+          }
+        }
+
+        if (
+          newAllowCount === 0 ||
+          phoneDetails.phoneNumber.length <= newAllowCount
+        ) {
+          setPhoneNumber(phoneDetails.phoneNumber);
+        }
+      });
+    },
+    [detectedCountry]
+  );
 
   // Handle phone number input with transition
   const onHandlePhoneNumberChange = useCallback(
@@ -324,16 +411,25 @@ export const PhoneStep = ({
 
           <div onKeyDown={(e) => e.key === "Enter" && handlePhoneSubmit()}>
             <div className="relative z-10 flex gap-2">
-              <div className="flex h-10 w-20 flex-shrink-0 items-center justify-center rounded-lg border-2 bg-transparent backdrop-blur-sm transition-all">
-                {detectedCountry && (
-                  <MemoizedPhoneInput
-                    defaultCountry={detectedCountry ? detectedCountry : "ae"}
-                    value={phoneValue}
-                    onChange={onChangeCountryCode}
-                  />
-                )}
+              <div
+                className="flex h-10 w-20 flex-shrink-0 items-center justify-center rounded-lg border-2 bg-transparent backdrop-blur-sm transition-all hover:border-orange-300"
+                title="Click to change country"
+                role="button"
+                aria-label="Country code selector"
+              >
+                <MemoizedPhoneInput
+                  key={detectedCountry || userSelectedCountry || "ae"}
+                  defaultCountry={
+                    detectedCountry || userSelectedCountry || "ae"
+                  }
+                  value={phoneValue}
+                  onChange={onChangeCountryCode}
+                />
                 <span className="mx-0.5 text-xs font-semibold">
-                  {countryCode}
+                  {countryCode ||
+                    (detectedDialCode && !userSelectedCountry
+                      ? detectedDialCode
+                      : "")}
                 </span>
               </div>
               <input
@@ -375,35 +471,36 @@ export const PhoneStep = ({
           )}
         </Button>
       </div>
-      {showSocial && (
-        <>
-          <div className="relative mb-6 flex items-center justify-center">
-            <div className="h-px w-full bg-slate-300"></div>
-            <span className="absolute rounded-sm bg-white px-3 text-sm text-slate-500">
-              or
-            </span>
-          </div>
-          <div
-            className="mt-10 flex flex-col items-center justify-center gap-3"
-            style={{ marginTop: "30px" }}
+      {/* {showSocial && ( */}
+      <>
+        <div className="relative mb-6 flex items-center justify-center">
+          <div className="h-px w-full bg-slate-300"></div>
+          <span className="absolute rounded-sm bg-white px-3 text-sm text-slate-500">
+            or
+          </span>
+        </div>
+        <div
+          className="mt-10 flex flex-col items-center justify-center gap-3"
+          style={{ marginTop: "30px" }}
+        >
+          <Button
+            onClick={() => signInWithProvider("google", { usePopup: true })}
+            disabled={isOAuthLoading || isCurrentlyLoading}
+            className="flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+            aria-label="Continue with Google"
           >
+            <img
+              src="/assets/icons/social-login/google-icon.png"
+              alt="Google icon"
+              className="h-5 w-5"
+            />
+            <span className="text-sm font-medium text-slate-700">
+              Continue with Google
+            </span>
+          </Button>
+          {showSocial && (
             <Button
-              onClick={() => signInWithProvider("google")}
-              disabled={isOAuthLoading || isCurrentlyLoading}
-              className="flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
-              aria-label="Continue with Google"
-            >
-              <img
-                src="/assets/icons/social-login/google-icon.png"
-                alt="Google icon"
-                className="h-5 w-5"
-              />
-              <span className="text-sm font-medium text-slate-700">
-                Continue with Google
-              </span>
-            </Button>
-            <Button
-              onClick={() => signInWithProvider("facebook")}
+              onClick={() => signInWithProvider("facebook", { usePopup: true })}
               disabled={isOAuthLoading || isCurrentlyLoading}
               className="flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
               aria-label="Continue with Facebook"
@@ -417,9 +514,10 @@ export const PhoneStep = ({
                 Continue with Facebook
               </span>
             </Button>
-          </div>
-        </>
-      )}
+          )}
+        </div>
+      </>
+      {/* )}  */}
     </div>
   );
 };
