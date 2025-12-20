@@ -36,7 +36,7 @@ export async function API({
   const BASE_URL = getBaseUrl(detectedCountry as "ae" | "in");
 
   if (!BASE_URL) {
-    throw new Error("API URL is not defined in environment variables");
+    throw new Error("API URL is not defined in environment variables.");
   }
 
   // Prepend the base URL if the path doesn't start with a slash
