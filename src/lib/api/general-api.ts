@@ -350,11 +350,11 @@ export const fetchPriceRange = async ({
     });
 
     // Check if the response is OK
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch  price range. Status: ${response.status}`
-      );
-    }
+    // if (!response.ok) {
+    //   throw new Error(
+    //     `Failed to fetch  price range. Status: ${response.status}`
+    //   );
+    // }
 
     const data = await response.json();
 
