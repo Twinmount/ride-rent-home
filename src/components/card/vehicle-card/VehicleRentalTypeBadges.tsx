@@ -19,8 +19,8 @@ const VehicleRentalTypeBadges = ({
   const badgeStyles = cn(
     "group relative inline-flex items-center gap-1.5 rounded-full overflow-hidden",
     "px-3 py-1.5 w-full",
-    "sm:px-3.5 sm:py-1.5 sm:w-auto sm:min-w-[160px]",
-    "md:px-4 md:min-w-[170px]",
+    "sm:px-3.5 sm:py-1.5 sm:w-auto",
+    "md:px-4",
     "bg-gradient-to-r from-gray-50 to-blue-50/30",
     "text-gray-800",
     "shadow-sm shadow-blue-100/50",

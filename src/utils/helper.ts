@@ -77,9 +77,8 @@ export const tostHandler = (
   }
 };
 
-export const getDotCount = (str: String): number => {
-  if (typeof str !== "string") {
-    console.error("Invalid input: Please provide a string.");
+export const getDotCount = (str?: string | null): number => {
+  if (!str || typeof str !== "string") {
     return 0;
   }
 

@@ -60,19 +60,12 @@ export function VehicleTypeCard({
         />
       </div>
       <span
-        className={`line-clamp-1 w-full text-center text-[0.56rem] font-normal text-gray-600 lg:text-[0.65rem] ${
+        className={`line-clamp-1 w-full text-center text-[0.5rem] font-normal text-gray-600 lg:text-[0.55rem] ${
           isSelected && "font-semibold text-black"
         }`}
       >
         {type.name}
       </span>
-      <div
-        className={`absolute bottom-0 left-1/2 h-[0.20rem] w-[85%] -translate-x-1/2 transform rounded-full transition-opacity duration-200 ${
-          isSelected
-            ? "bg-yellow"
-            : "bg-yellow opacity-0 group-hover:opacity-100"
-        }`}
-      />
     </div>
   );
 }

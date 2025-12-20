@@ -1,12 +1,11 @@
 import { StateCategoryProps, VehicleHomeFilter } from "@/types";
 import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { API } from "@/utils/API";
-import VehicleCard from "@/components/card/vehicle-card/main-card/VehicleCard";
-import ViewAllGridCard from "@/components/card/ViewAllGridCard";
 import { convertToLabel } from "@/helpers";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Slug } from "@/constants/apiEndpoints";
+import FeaturedVehiclesAnimated from "./FeaturedVehiclesAnimated";
 
 type FeaturedVehiclesProps = StateCategoryProps & {
   vehicleType: string | undefined;
@@ -42,7 +41,6 @@ const FeaturedVehicles = async ({
 
   const data: FetchVehicleCardsResponseV2 = await response.json();
   const vehicles = data?.result?.list || [];
-  // console.log("FeaturedVehicles vehicles:", vehicles);
 
   if (vehicles.length === 0) {
     return null;
@@ -66,32 +64,14 @@ const FeaturedVehicles = async ({
     <div className="section-container">
       {" "}
       <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen lg:relative lg:left-auto lg:right-auto lg:ml-0 lg:mr-0 lg:w-full">
-        <div className="mx-auto flex w-fit max-w-full snap-x snap-mandatory items-center justify-between gap-1 overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:max-w-[90%] lg:snap-none lg:px-1 xl:max-w-full [&::-webkit-scrollbar]:hidden">
-          {mainVehicles.map((vehicle, index) => (
-            <div
-              key={vehicle.vehicleId}
-              className="flex-shrink-0 snap-start lg:snap-align-none"
-            >
-              <VehicleCard
-                vehicle={vehicle}
-                index={index}
-                country={country}
-                layoutType="carousel"
-              />
-            </div>
-          ))}
-
-          {gridThumbnails.length > 0 && (
-            <div className="flex-shrink-0 snap-start lg:snap-align-none">
-              <ViewAllGridCard
-                thumbnails={gridThumbnails}
-                totalCount={totalVehicles}
-                label={`More ${formattedVehicleType || formattedCategory} `}
-                viewAllLink={viewAllLink}
-              />
-            </div>
-          )}
-        </div>
+        <FeaturedVehiclesAnimated
+          mainVehicles={mainVehicles}
+          gridThumbnails={gridThumbnails}
+          totalVehicles={totalVehicles}
+          viewAllLink={viewAllLink}
+          label={`More ${formattedVehicleType || formattedCategory} `}
+          country={country}
+        />
 
         <div
           className="mx-2 md:hidden"
