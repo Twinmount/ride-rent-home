@@ -41,11 +41,7 @@ export function usePriceFilter() {
   // Get min and max values for the selected period
   const selectedPriceRange = useMemo(() => {
     if (selectedPeriod && data?.result[selectedPeriod]) {
-      const range = data.result[selectedPeriod];
-      return adjustMinMaxIfEqual({
-        min: range.min ?? 0,
-        max: range.max ?? 100,
-      });
+      return adjustMinMaxIfEqual(data.result[selectedPeriod]);
     }
     return { min: 0, max: 100 };
   }, [selectedPeriod, data]);
