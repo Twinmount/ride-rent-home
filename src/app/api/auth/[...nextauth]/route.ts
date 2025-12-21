@@ -1,5 +1,3 @@
-
-
 import { authOptions } from "@/lib/auth/auth.option";
 import NextAuth from "next-auth";
 
