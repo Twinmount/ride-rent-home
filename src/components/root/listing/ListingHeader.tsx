@@ -1,13 +1,13 @@
 import { FilterSidebar } from "@/components/root/listing/filter/FilterSidebar";
 
-type ListingHeadingProps = {
+type ListingHeaderProps = {
   pageHeading: {
     h1: string;
     h2: string;
   };
 };
 
-export default function ListingHeading({ pageHeading }: ListingHeadingProps) {
+export default function ListingHeader({ pageHeading }: ListingHeaderProps) {
   return (
     <div className="mb-2 mt-20 flex h-fit w-full min-w-full flex-col">
       <h1 className="break-words text-lg font-[500] max-md:mr-auto md:text-xl lg:text-3xl">
