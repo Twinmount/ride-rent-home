@@ -183,48 +183,6 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async redirect({ url, baseUrl }) {
-
-      // FORCE production URL in production
-      const productionUrl = 'https://ride.rent';
-      const isProduction = process.env.NODE_ENV === 'production';
-      console.log('isProduction:', isProduction);
-      const actualBaseUrl = isProduction ? productionUrl : baseUrl;
-      
-      console.log('Redirect callback:', { url, baseUrl, actualBaseUrl, isProduction });
-      
-      // If URL contains localhost in production, replace it
-      if (isProduction && url.includes('localhost')) {
-        url = url.replace(/http:\/\/localhost:\d+/, productionUrl);
-      }
-      
-      // Handle relative URLs
-      if (url.startsWith("/")) {
-        return `${actualBaseUrl}${url}`;
-      }
-      
-      // Parse and validate URL
-      try {
-        const urlObj = new URL(url);
-        
-        // If it's localhost in production, redirect to production
-        if (isProduction && urlObj.hostname === 'localhost') {
-          return `${productionUrl}${urlObj.pathname}${urlObj.search}`;
-        }
-        
-        // If it matches our domain, allow it
-        if (urlObj.origin === actualBaseUrl) {
-          return url;
-        }
-      } catch (error) {
-        console.error('Invalid URL in redirect:', url);
-      }
-      
-      // Default: redirect to home
-      return actualBaseUrl;
-    },
-
-
     async signIn({ user, account, profile }) {
       return true;
     },
@@ -452,6 +410,55 @@ export const authOptions: NextAuthOptions = {
       }
 
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      const productionUrl = 'https://ride.rent';
+      const isProduction = process.env.NODE_ENV === 'production';
+      const actualBaseUrl = isProduction ? productionUrl : baseUrl;
+      
+      console.log('=== Redirect Callback ===');
+      console.log('URL:', url);
+      console.log('Base URL:', baseUrl);
+      console.log('Actual Base URL:', actualBaseUrl);
+      console.log('Is Production:', isProduction);
+      
+      // If URL contains localhost in production, replace it
+      if (isProduction && url.includes('localhost')) {
+        const newUrl = url.replace(/http:\/\/localhost:\d+/, productionUrl);
+        console.log('Replaced localhost URL:', newUrl);
+        return newUrl;
+      }
+      
+      // Handle relative URLs
+      if (url.startsWith("/")) {
+        const finalUrl = `${actualBaseUrl}${url}`;
+        console.log('Relative URL resolved to:', finalUrl);
+        return finalUrl;
+      }
+      
+      // Parse and validate URL
+      try {
+        const urlObj = new URL(url);
+        
+        // If it's localhost in production, redirect to production
+        if (isProduction && urlObj.hostname === 'localhost') {
+          const finalUrl = `${productionUrl}${urlObj.pathname}${urlObj.search}`;
+          console.log('Localhost hostname replaced:', finalUrl);
+          return finalUrl;
+        }
+        
+        // If it matches our domain, allow it
+        if (urlObj.origin === actualBaseUrl) {
+          console.log('URL matches base, allowing:', url);
+          return url;
+        }
+      } catch (error) {
+        console.error('Invalid URL in redirect:', url, error);
+      }
+      
+      // Default: redirect to home
+      console.log('Defaulting to base URL:', actualBaseUrl);
+      return actualBaseUrl;
     },
   },
 
