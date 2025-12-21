@@ -71,11 +71,6 @@ function isTokenExpired(token: string): boolean {
 
 // Temporary cache to store tokens between authorize() and JWT callback
 // Key: userId, Value: { accessToken, refreshToken }
-const credentialsTokenCache = new Map<
-  string,
-  { accessToken?: string; refreshToken?: string }
->();
-
 const requiredEnvVars = {
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
@@ -85,7 +80,7 @@ const requiredEnvVars = {
 
 if (process.env.NODE_ENV === "development") {
   // console.log("🔐 NextAuth Configuration:");
-  // console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL || "❌ NOT SET");
+  console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL || "❌ NOT SET");
 
   // logExpectedRedirectUris();
 
@@ -188,6 +183,48 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async redirect({ url, baseUrl }) {
+
+      // FORCE production URL in production
+      const productionUrl = 'https://ride.rent';
+      const isProduction = process.env.NODE_ENV === 'production';
+      console.log('isProduction:', isProduction);
+      const actualBaseUrl = isProduction ? productionUrl : baseUrl;
+      
+      console.log('Redirect callback:', { url, baseUrl, actualBaseUrl, isProduction });
+      
+      // If URL contains localhost in production, replace it
+      if (isProduction && url.includes('localhost')) {
+        url = url.replace(/http:\/\/localhost:\d+/, productionUrl);
+      }
+      
+      // Handle relative URLs
+      if (url.startsWith("/")) {
+        return `${actualBaseUrl}${url}`;
+      }
+      
+      // Parse and validate URL
+      try {
+        const urlObj = new URL(url);
+        
+        // If it's localhost in production, redirect to production
+        if (isProduction && urlObj.hostname === 'localhost') {
+          return `${productionUrl}${urlObj.pathname}${urlObj.search}`;
+        }
+        
+        // If it matches our domain, allow it
+        if (urlObj.origin === actualBaseUrl) {
+          return url;
+        }
+      } catch (error) {
+        console.error('Invalid URL in redirect:', url);
+      }
+      
+      // Default: redirect to home
+      return actualBaseUrl;
+    },
+
+
     async signIn({ user, account, profile }) {
       return true;
     },
@@ -415,17 +452,6 @@ export const authOptions: NextAuthOptions = {
       }
 
       return session;
-    },
-    async redirect({ url, baseUrl }) {
-      if (url.startsWith("/")) {
-        return `${baseUrl}${url}`;
-      }
-
-      if (new URL(url).origin === baseUrl) {
-        return url;
-      }
-
-      return baseUrl;
     },
   },
 
