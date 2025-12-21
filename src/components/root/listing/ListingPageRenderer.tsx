@@ -1,7 +1,7 @@
 import VehicleGridWithInfiniteLoading from "@/components/root/listing/vehicle-grids/VehicleGridWithInfiniteLoading";
 import JsonLd from "@/components/common/JsonLd";
 import MapClientWrapper from "@/components/listing/MapClientWrapper";
-import ListingHeading from "@/components/root/listing/ListingHeading";
+import ListingHeader from "@/components/root/listing/ListingHeader";
 import {
   generateListingHeadings,
   getListingPageJsonLd,
@@ -61,7 +61,7 @@ const ListingPageRenderer = async ({
     <>
       <JsonLd id={jsonLdId} key={jsonLdId} jsonLdData={jsonLdData} />
 
-      <ListingHeading pageHeading={pageHeading} />
+      <ListingHeader pageHeading={pageHeading} />
 
       <div className="flex flex-wrap">
         {/* Left: Map */}
