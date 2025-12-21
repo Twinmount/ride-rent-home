@@ -39,7 +39,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 export default async function Home(props: PageProps) {
   const searchParams = await props.searchParams;
   const params = await props.params;
-
+console.log("*****",params)
   const { country, state, category } = params;
 
   const vehicleType = searchParams.type;

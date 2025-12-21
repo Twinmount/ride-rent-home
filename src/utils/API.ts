@@ -36,15 +36,16 @@ export async function API({
   const BASE_URL = getBaseUrl(detectedCountry as "ae" | "in");
 
   if (!BASE_URL) {
-    throw new Error("API URL is not defined in environment variables");
+    throw new Error("API URL is not defined in environment variables.");
   }
 
   // Prepend the base URL if the path doesn't start with a slash
   const url = path.startsWith("/") ? BASE_URL + path : BASE_URL + "/" + path;
 
   const response = await fetch(`${url}`, options);
-
   if (!response.ok) {
+    console.log("path:",path)
+    // console.log("path:",response)
     throw new Error(`API error: ${response.status}`);
   }
 

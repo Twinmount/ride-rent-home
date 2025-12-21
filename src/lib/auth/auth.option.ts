@@ -19,7 +19,7 @@ import { authAPI } from "../api";
  * Works in both Node.js and browser environments
  */
 function decodeJWT(token: string): { exp?: number; [key: string]: any } | null {
-  console.log("token: [decodeJWT]", token);
+  // console.log("token: [decodeJWT]", token);
   try {
     const base64Url = token.split(".")[1];
     if (!base64Url) return null;
@@ -39,7 +39,7 @@ function decodeJWT(token: string): { exp?: number; [key: string]: any } | null {
       // Node.js environment
       jsonPayload = Buffer.from(base64, "base64").toString("utf-8");
     }
-    console.log("jsonPayload: [decodeJWT]", jsonPayload);
+    // console.log("jsonPayload: [decodeJWT]", jsonPayload);
     return JSON.parse(jsonPayload);
   } catch (error) {
     console.error("Error decoding JWT:", error);
@@ -52,7 +52,7 @@ function decodeJWT(token: string): { exp?: number; [key: string]: any } | null {
  * Check if JWT token is expired or about to expire (within 5 minutes)
  */
 function isTokenExpired(token: string): boolean {
-  console.log("token: [isTokenExpired]", token);
+  // console.log("token: [isTokenExpired]", token);
   const decoded = decodeJWT(token);
   if (!decoded || !decoded.exp) return true;
 
@@ -61,10 +61,10 @@ function isTokenExpired(token: string): boolean {
   const currentTime = Date.now();
   const fiveMinutesInMs = 5 * 60 * 1000;
 
-  console.log(
-    "expirationTime: [isTokenExpired]",
-    expirationTime <= currentTime + fiveMinutesInMs
-  );
+  // console.log(
+  //   "expirationTime: [isTokenExpired]",
+  //   expirationTime <= currentTime + fiveMinutesInMs
+  // );
 
   return expirationTime <= currentTime + fiveMinutesInMs;
 }
@@ -84,10 +84,10 @@ const requiredEnvVars = {
 };
 
 if (process.env.NODE_ENV === "development") {
-  console.log("🔐 NextAuth Configuration:");
-  console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL || "❌ NOT SET");
+  // console.log("🔐 NextAuth Configuration:");
+  // console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL || "❌ NOT SET");
 
-  logExpectedRedirectUris();
+  // logExpectedRedirectUris();
 
   const validation = validateRedirectUriConfig();
   if (!validation.isValid) {
@@ -132,7 +132,7 @@ export const authOptions: NextAuthOptions = {
             countryCode: credentials.countryCode,
             password: credentials.password,
           });
-          console.log("response:[CredentialsProvider] ", response);
+          // console.log("response:[CredentialsProvider] ", response);
 
           if (response.success && response.data?.userId) {
             return {
@@ -289,7 +289,7 @@ export const authOptions: NextAuthOptions = {
         // Check if the BACKEND Access Token is expired
         if (isTokenExpired(token.accessToken as string)) {
           if (process.env.NODE_ENV === "development") {
-            console.log(`🔄 Refreshing Token for user ${token.id}...`);
+            // console.log(`🔄 Refreshing Token for user ${token.id}...`);
           }
 
           try {
