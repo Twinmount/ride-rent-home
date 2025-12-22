@@ -57,7 +57,7 @@ class ComponentErrorBoundary extends Component<Props, State> {
               ⚠️ {this.props.componentName} Error
             </h3>
             <p style={{ margin: "0", color: "#666", fontSize: "14px" }}>
-              This section couldn't load. The rest of the page should work
+              This section could not load. The rest of the page should work
               normally.
             </p>
             {process.env.NODE_ENV === "development" && (
