@@ -42,14 +42,29 @@ export async function API({
   // Prepend the base URL if the path doesn't start with a slash
   const url = path.startsWith("/") ? BASE_URL + path : BASE_URL + "/" + path;
 
-  const response = await fetch(`${url}`, options);
-  if (!response.ok) {
+  let response;
+
+  try {
+    response = await fetch(`${url}`, options);
+  } catch (error) {
+    console.log("############# from catch block\n");
+    console.log("********ERROR occured in API:", error);
     console.log("path:", path);
+    console.log("url:", url);
+    console.log("options : ", options);
+    console.log("#############");
+  }
+  if (!response?.ok) {
+    console.log("############# from if block\n");
+    console.log("path:", path);
+    console.log("url:", url);
+    console.log("options : ", options);
+    console.log("#############");
     // console.log("path:",response)
     // throw new Error(`API error: ${response.status}`);
   }
 
-  return response;
+  return response as unknown as Response;
 }
 
 /**
