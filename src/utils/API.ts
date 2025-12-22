@@ -44,9 +44,9 @@ export async function API({
 
   const response = await fetch(`${url}`, options);
   if (!response.ok) {
-    console.log("path:",path)
+    console.log("path:", path);
     // console.log("path:",response)
-    throw new Error(`API error: ${response.status}`);
+    // throw new Error(`API error: ${response.status}`);
   }
 
   return response;
