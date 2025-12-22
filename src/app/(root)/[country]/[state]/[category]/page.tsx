@@ -25,6 +25,7 @@ import CarSection from "@/components/root/landing/CarSection";
 import PromotionDeals from "@/components/root/landing/PromotionDeals";
 import BannerSkeleton from "@/components/skelton/BannerSkeleton";
 import PromotionSkeleton from "@/components/skelton/PromotionSkeleton";
+import ComponentErrorBoundary from "@/app/ComponentErrorBoundary";
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
@@ -39,7 +40,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 export default async function Home(props: PageProps) {
   const searchParams = await props.searchParams;
   const params = await props.params;
-console.log("*****",params)
+
   const { country, state, category } = params;
 
   const vehicleType = searchParams.type;
@@ -51,62 +52,92 @@ console.log("*****",params)
   return (
     <>
       {/* Inject JSON-LD into the <head> */}
-      <JsonLd jsonLdData={jsonLdData} id="json-ld-homepage" />
+      <ComponentErrorBoundary componentName="JsonLd">
+        <JsonLd jsonLdData={jsonLdData} id="json-ld-homepage" />
+      </ComponentErrorBoundary>
 
-      <Suspense fallback={<BannerSkeleton />}>
-        <Banner state={state} country={country} />
-      </Suspense>
+      <ComponentErrorBoundary componentName="Banner">
+        <Suspense fallback={<BannerSkeleton />}>
+          <Banner state={state} country={country} />
+        </Suspense>
+      </ComponentErrorBoundary>
 
-      <HeroSection country={country} state={state} category={category} />
+      <ComponentErrorBoundary componentName="HeroSection">
+        <HeroSection country={country} state={state} category={category} />
+      </ComponentErrorBoundary>
 
-      <CategoryTypesAndFilter />
+      <ComponentErrorBoundary componentName="CategoryTypesAndFilter">
+        <CategoryTypesAndFilter />
+      </ComponentErrorBoundary>
 
-      <Suspense fallback={<FeaturedVehiclesSkeleton layoutType="carousel" />}>
-        <FeaturedVehicles
-          state={state}
-          category={category}
-          vehicleType={vehicleType}
-          country={country}
-        />
-      </Suspense>
+      <ComponentErrorBoundary componentName="FeaturedVehicles">
+        <Suspense fallback={<FeaturedVehiclesSkeleton layoutType="carousel" />}>
+          <FeaturedVehicles
+            state={state}
+            category={category}
+            vehicleType={vehicleType}
+            country={country}
+          />
+        </Suspense>
+      </ComponentErrorBoundary>
 
-      <Suspense fallback={<PromotionSkeleton />}>
-        <PromotionDeals state={state} country={country} />
-      </Suspense>
+      <ComponentErrorBoundary componentName="PromotionDeals">
+        <Suspense fallback={<PromotionSkeleton />}>
+          <PromotionDeals state={state} country={country} />
+        </Suspense>
+      </ComponentErrorBoundary>
 
-      <Suspense
-        fallback={<VehicleCardCarouselSkeleton layoutType="carousel" />}
-      >
-        <NewlyArrived state={state} category={category} country={country} />
-      </Suspense>
+      <ComponentErrorBoundary componentName="NewlyArrived">
+        <Suspense
+          fallback={<VehicleCardCarouselSkeleton layoutType="carousel" />}
+        >
+          <NewlyArrived state={state} category={category} country={country} />
+        </Suspense>
+      </ComponentErrorBoundary>
 
-      <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
-        <TopBrands state={state} category={category} country={country} />
-      </Suspense>
+      <ComponentErrorBoundary componentName="TopBrands">
+        <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
+          <TopBrands state={state} category={category} country={country} />
+        </Suspense>
+      </ComponentErrorBoundary>
 
-      <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
-        <CarSection />
-      </Suspense>
+      <ComponentErrorBoundary componentName="CarSection">
+        <Suspense fallback={<BrandsCarouselSkeleton state={state} />}>
+          <CarSection />
+        </Suspense>
+      </ComponentErrorBoundary>
 
-      <Suspense fallback={<SectionLoading />}>
-        <RideRentFeatures state={state} category={category} country={country} />
-      </Suspense>
+      <ComponentErrorBoundary componentName="RideRentFeatures">
+        <Suspense fallback={<SectionLoading />}>
+          <RideRentFeatures
+            state={state}
+            category={category}
+            country={country}
+          />
+        </Suspense>
+      </ComponentErrorBoundary>
 
-      <Suspense fallback={<StatesGridSkeleton />}>
-        <States category={category} country={country} state={state} />
-      </Suspense>
+      <ComponentErrorBoundary componentName="States">
+        <Suspense fallback={<StatesGridSkeleton />}>
+          <States category={category} country={country} state={state} />
+        </Suspense>
+      </ComponentErrorBoundary>
 
-      <Suspense fallback={<StatesGridSkeleton />}>
-        <Documents state={state} category={category} country={country} />
-      </Suspense>
+      <ComponentErrorBoundary componentName="Documents">
+        <Suspense fallback={<StatesGridSkeleton />}>
+          <Documents state={state} category={category} country={country} />
+        </Suspense>
+      </ComponentErrorBoundary>
 
-      <Suspense fallback={<SectionLoading />}>
-        <FAQ
-          state={state || (country === "in" ? "bangalore" : "dubai")}
-          limit={8}
-          country={country}
-        />
-      </Suspense>
+      <ComponentErrorBoundary componentName="FAQ">
+        <Suspense fallback={<SectionLoading />}>
+          <FAQ
+            state={state || (country === "in" ? "bangalore" : "dubai")}
+            limit={8}
+            country={country}
+          />
+        </Suspense>
+      </ComponentErrorBoundary>
     </>
   );
 }
