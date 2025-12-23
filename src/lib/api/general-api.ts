@@ -20,7 +20,7 @@ import {
 import { API } from "@/utils/API";
 import { mainApiClient } from "./axios.config";
 import { Slug } from "@/constants/apiEndpoints";
-import { CACHE_REVALIDATE } from "@/constants";
+import { getCacheConfig } from "@/utils/cache.utils";
 
 interface FetchVehicleByFiltersParams {
   query: string;
@@ -592,8 +592,7 @@ export const fetchFAQ = async (
       path: `/state-faq/client/${stateValue}`,
       options: {
         method: "GET",
-        cache: "force-cache",
-        next: { revalidate: CACHE_REVALIDATE.DEFAULT },
+        ...getCacheConfig(),
       },
       country,
     });
@@ -850,8 +849,7 @@ export async function fetchPromotionDeals(
     path: `${Slug.GET_HOMEPAGE_PROMOTIONS}?stateValue=${state}`,
     options: {
       method: "GET",
-      cache: "force-cache",
-      next: { revalidate: CACHE_REVALIDATE.DEFAULT },
+      ...getCacheConfig(),
     },
     country,
   });
@@ -881,8 +879,7 @@ export async function fetchNewlyArrivedVehicles(
     path: `${Slug.GET_HOMEPAGE_LIST}?${params.toString()}`,
     options: {
       method: "GET",
-      cache: "force-cache",
-      next: { revalidate: CACHE_REVALIDATE.DEFAULT },
+      ...getCacheConfig(),
     },
     country,
   });
@@ -902,8 +899,7 @@ export async function fetchTopBrands(
     path: `${Slug.GET_TOP_BRANDS}?categoryValue=${category}&hasVehicle=true`,
     options: {
       method: "GET",
-      cache: "force-cache",
-      next: { revalidate: CACHE_REVALIDATE.DEFAULT },
+      ...getCacheConfig(),
     },
     country: country,
   });

@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import BannerSlider from "./BannerSlider";
 import { API } from "@/utils/API";
 import { Slug } from "@/constants/apiEndpoints";
-import { CACHE_REVALIDATE } from "@/constants";
+import { getCacheConfig } from "@/utils/cache.utils";
 
 export type ImageSrc = {
   link?: string;
@@ -24,8 +24,7 @@ export default async function Banner({
     path: `${Slug.GET_HOMEPAGE_BANNER}?state=${state}&isMobile=${isMobile}`,
     options: {
       method: "GET",
-      cache: "force-cache",
-      next: { revalidate: CACHE_REVALIDATE.DEFAULT },
+      ...getCacheConfig(),
     },
     country: country,
   });
