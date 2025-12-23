@@ -47,19 +47,14 @@ export async function API({
   try {
     response = await fetch(`${url}`, options);
   } catch (error) {
-    console.log("############# from catch block\n");
-    console.log("********ERROR occured in API:", error);
-    console.log("path:", path);
-    console.log("url:", url);
-    console.log("options : ", options);
-    console.log("#############");
+    console.error("ERROR occured in API:", error);
   }
   if (!response?.ok) {
-    console.log("############# from if block\n");
-    console.log("path:", path);
-    console.log("url:", url);
-    console.log("options : ", options);
-    console.log("#############");
+    // console.log("############# from if block\n");
+    // console.log("path:", path);
+    // console.log("url:", url);
+    // console.log("options : ", options);
+    // console.log("#############");
     // console.log("path:",response)
     // throw new Error(`API error: ${response.status}`);
   }

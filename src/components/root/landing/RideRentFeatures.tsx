@@ -4,7 +4,7 @@ import { StateCategoryProps } from "@/types";
 import { getHomePageFeatures } from "@/helpers/homepage-content.helper";
 import SafeImage from "@/components/common/SafeImage";
 
-const Features = ({ state, category, country }: StateCategoryProps) => {
+const RideRentFeatures = ({ state, category, country }: StateCategoryProps) => {
   const { heading, description, cards } = getHomePageFeatures({
     country,
     state,
@@ -110,4 +110,4 @@ const Features = ({ state, category, country }: StateCategoryProps) => {
   );
 };
 
-export default Features;
+export default RideRentFeatures;

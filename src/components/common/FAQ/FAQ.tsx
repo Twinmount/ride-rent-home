@@ -3,11 +3,10 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { fetchFAQ } from '@/lib/api/general-api';
-import { SectionHeading } from '../SectionHeading';
-import ViewAllButton from '../ViewAllButton';
-import { CiCircleQuestion } from 'react-icons/ci';
+} from "@/components/ui/accordion";
+import { fetchFAQ } from "@/lib/api/general-api";
+import { SectionHeading } from "../SectionHeading";
+import ViewAllButton from "../ViewAllButton";
 
 type FAQStateProps = {
   state: string;

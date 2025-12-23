@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Slug } from "@/constants/apiEndpoints";
 import FeaturedVehiclesAnimated from "./FeaturedVehiclesAnimated";
+import { getCacheConfig } from "@/utils/cache.utils";
 
 type FeaturedVehiclesProps = StateCategoryProps & {
   vehicleType: string | undefined;
@@ -34,7 +35,7 @@ const FeaturedVehicles = async ({
     path: `${Slug.GET_HOMEPAGE_LIST}?${params.toString()}`,
     options: {
       method: "GET",
-      cache: "no-cache",
+      ...getCacheConfig(),
     },
     country,
   });

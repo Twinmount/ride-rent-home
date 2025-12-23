@@ -1,3 +1,5 @@
+"use client";
+
 import MotionSection from "@/components/general/framer-motion/MotionSection";
 import DocumentsRequired from "./DocumentsRequired";
 import { convertToLabel, singularizeValue } from "@/helpers";

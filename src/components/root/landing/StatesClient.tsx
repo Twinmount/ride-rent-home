@@ -1,13 +1,15 @@
-import MotionSection from "@/components/general/framer-motion/MotionSection";
-import { FetchStatesResponse } from "@/types";
-import { rearrangeStates } from "@/helpers";
-import StateCard from "./StateCard";
-import { SectionHeading } from "@/components/common/SectionHeading";
-import { API } from "@/utils/API";
-import ViewAllButton from "@/components/common/ViewAllButton";
-import { Slug } from "@/constants/apiEndpoints";
+"use client";
 
-export default async function States({
+import MotionSection from "@/components/general/framer-motion/MotionSection";
+import { rearrangeStates } from "@/helpers";
+import StateCard from "@/components/card/StateCard";
+import { SectionHeading } from "@/components/common/SectionHeading";
+import ViewAllButton from "@/components/common/ViewAllButton";
+import { useQuery } from "@tanstack/react-query";
+import { fetchStates } from "@/lib/api/general-api";
+import StatesGridSkeleton from "@/components/skelton/StatesGridSkeleton";
+
+export default function StatesClient({
   category,
   state,
   country,
@@ -16,16 +18,18 @@ export default async function States({
   state: string;
   country: string;
 }) {
-  const response = await API({
-    path: `${Slug.GET_STATES_LIST}?hasVehicle=true`,
-    options: {
-      cache: "no-cache",
-    },
-    country,
+  const { data, isLoading } = useQuery({
+    queryKey: ["states", country],
+    queryFn: () => fetchStates({ country }),
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    enabled: !!country,
   });
 
-  const data: FetchStatesResponse = await response.json();
-  let states = data.result;
+  if (isLoading) {
+    return <StatesGridSkeleton />;
+  }
+
+  let states = data?.result || [];
   states = rearrangeStates(states, country);
 
   if (states.length === 0) return null;

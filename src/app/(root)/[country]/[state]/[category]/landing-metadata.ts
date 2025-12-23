@@ -124,11 +124,6 @@ function getCountryLabel(country: string): string {
 
 /**
  * Generates JSON-LD structured data for the homepage dynamically.
- *
- * @param {string} state - Selected state (e.g., "dubai", "sharjah").
- * @param {string} category - Selected vehicle category (e.g., "cars", "yachts").
- * @param {string} country - Selected country (e.g., "ae", "in").
- * @returns {object} JSON-LD structured data object.
  */
 export async function getHomePageJsonLd(
   state: string,
@@ -149,18 +144,21 @@ export async function getHomePageJsonLd(
   }
 
   // Build FAQPage schema if FAQ data exists
-  const faqSchema = faqData.length > 0 ? {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqData.slice(0, 8).map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
-    })),
-  } : null;
+  const faqSchema =
+    faqData.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqData.slice(0, 8).map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.answer,
+            },
+          })),
+        }
+      : null;
 
   const baseSchema = {
     "@context": "https://schema.org",
