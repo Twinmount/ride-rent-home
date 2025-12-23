@@ -78,28 +78,29 @@ const requiredEnvVars = {
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 };
 
-if (process.env.NODE_ENV === "development") {
-  // console.log("🔐 NextAuth Configuration:");
-  console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL || "❌ NOT SET");
+console.log("requiredEnvVars", requiredEnvVars);
 
-  // logExpectedRedirectUris();
-
-  const validation = validateRedirectUriConfig();
-  if (!validation.isValid) {
-    console.error("❌ Configuration Errors:");
-    validation.errors.forEach((error) => console.error(`   - ${error}`));
-  }
-  if (validation.warnings.length > 0) {
-    console.warn("⚠️  Configuration Warnings:");
-    validation.warnings.forEach((warning) => console.warn(`   - ${warning}`));
-  }
-
-  Object.entries(requiredEnvVars).forEach(([key, value]) => {
-    if (!value) {
-      console.warn(`⚠️  Missing environment variable: ${key}`);
-    }
-  });
+if (process.env.NODE_ENV === "production") {
+  console.log("🔍 Production Environment Check:");
+  console.log(
+    "NEXTAUTH_URL:",
+    process.env.NEXTAUTH_URL ? "✅ SET" : "❌ MISSING"
+  );
+  console.log(
+    "GOOGLE_CLIENT_ID:",
+    process.env.GOOGLE_CLIENT_ID ? "✅ SET" : "❌ MISSING"
+  );
+  console.log(
+    "GOOGLE_CLIENT_SECRET:",
+    process.env.GOOGLE_CLIENT_SECRET ? "✅ SET" : "❌ MISSING"
+  );
 }
+
+console.log("process.env.GOOGLE_CLIENT_ID", process.env.GOOGLE_CLIENT_ID);
+console.log(
+  " process.env.GOOGLE_CLIENT_SECRET ",
+  process.env.GOOGLE_CLIENT_SECRET
+);
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -178,6 +179,7 @@ export const authOptions: NextAuthOptions = {
       authorization: {
         params: {
           scope: "name email",
+          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
         },
       },
     }),
@@ -412,52 +414,52 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      const productionUrl = 'https://ride.rent';
-      const isProduction = process.env.NODE_ENV === 'production';
+      const productionUrl = "https://ride.rent";
+      const isProduction = process.env.NODE_ENV === "production";
       const actualBaseUrl = isProduction ? productionUrl : baseUrl;
-      
-      console.log('=== Redirect Callback ===');
-      console.log('URL:', url);
-      console.log('Base URL:', baseUrl);
-      console.log('Actual Base URL:', actualBaseUrl);
-      console.log('Is Production:', isProduction);
-      
+
+      console.log("=== Redirect Callback ===");
+      console.log("URL:", url);
+      console.log("Base URL:", baseUrl);
+      console.log("Actual Base URL:", actualBaseUrl);
+      console.log("Is Production:", isProduction);
+
       // If URL contains localhost in production, replace it
-      if (isProduction && url.includes('localhost')) {
+      if (isProduction && url.includes("localhost")) {
         const newUrl = url.replace(/http:\/\/localhost:\d+/, productionUrl);
-        console.log('Replaced localhost URL:', newUrl);
+        console.log("Replaced localhost URL:", newUrl);
         return newUrl;
       }
-      
+
       // Handle relative URLs
       if (url.startsWith("/")) {
         const finalUrl = `${actualBaseUrl}${url}`;
-        console.log('Relative URL resolved to:', finalUrl);
+        console.log("Relative URL resolved to:", finalUrl);
         return finalUrl;
       }
-      
+
       // Parse and validate URL
       try {
         const urlObj = new URL(url);
-        
+
         // If it's localhost in production, redirect to production
-        if (isProduction && urlObj.hostname === 'localhost') {
+        if (isProduction && urlObj.hostname === "localhost") {
           const finalUrl = `${productionUrl}${urlObj.pathname}${urlObj.search}`;
-          console.log('Localhost hostname replaced:', finalUrl);
+          console.log("Localhost hostname replaced:", finalUrl);
           return finalUrl;
         }
-        
+
         // If it matches our domain, allow it
         if (urlObj.origin === actualBaseUrl) {
-          console.log('URL matches base, allowing:', url);
+          console.log("URL matches base, allowing:", url);
           return url;
         }
       } catch (error) {
-        console.error('Invalid URL in redirect:', url, error);
+        console.error("Invalid URL in redirect:", url, error);
       }
-      
+
       // Default: redirect to home
-      console.log('Defaulting to base URL:', actualBaseUrl);
+      console.log("Defaulting to base URL:", actualBaseUrl);
       return actualBaseUrl;
     },
   },
