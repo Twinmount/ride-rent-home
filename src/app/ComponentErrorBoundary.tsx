@@ -57,29 +57,27 @@ class ComponentErrorBoundary extends Component<Props, State> {
               ⚠️ {this.props.componentName} Error
             </h3>
             <p style={{ margin: "0", color: "#666", fontSize: "14px" }}>
-              This section could not load. The rest of the page should work
-              normally.
+              This section could not load.
             </p>
-            {process.env.NODE_ENV === "development" && (
-              <details style={{ marginTop: "10px" }}>
-                <summary style={{ cursor: "pointer", color: "#666" }}>
-                  Debug Info (Dev Only)
-                </summary>
-                <pre
-                  style={{
-                    fontSize: "12px",
-                    backgroundColor: "#f5f5f5",
-                    padding: "10px",
-                    overflow: "auto",
-                    maxHeight: "200px",
-                  }}
-                >
-                  {this.state.error?.message}
-                  {"\n\n"}
-                  {this.state.error?.stack}
-                </pre>
-              </details>
-            )}
+
+            <details style={{ marginTop: "10px" }}>
+              <summary style={{ cursor: "pointer", color: "#666" }}>
+                Debug Info (Dev Only)
+              </summary>
+              <pre
+                style={{
+                  fontSize: "12px",
+                  backgroundColor: "#f5f5f5",
+                  padding: "10px",
+                  overflow: "auto",
+                  maxHeight: "200px",
+                }}
+              >
+                {this.state.error?.message}
+                {"\n\n"}
+                {this.state.error?.stack}
+              </pre>
+            </details>
           </div>
         )
       );

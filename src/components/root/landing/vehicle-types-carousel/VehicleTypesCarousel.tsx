@@ -11,7 +11,7 @@ import { fetchVehicleTypesByValue } from "@/lib/api/general-api";
 import { useStateAndCategory } from "@/hooks/useStateAndCategory";
 import VehicleTypesCarouselSkelton from "@/components/skelton/VehicleTypesCarouselSkelton";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { formUrlQuery, removeKeysFromQuery } from "@/helpers";
 import { VehicleTypeCard } from "../../../card/VehicleTypeCard";
 
@@ -24,9 +24,14 @@ const PRIORITY_TYPES = [
 ];
 
 export default function VehicleTypesCarousel() {
+  const [isMounted, setIsMounted] = useState(false);
   const { state, category, country } = useStateAndCategory();
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const { data, isLoading } = useQuery({
     queryKey: ["vehicleTypes", category, state],
@@ -68,8 +73,11 @@ export default function VehicleTypesCarousel() {
     [searchParams, router]
   );
 
-  if (isLoading) return <VehicleTypesCarouselSkelton />;
-  if (vehicleTypes.length === 0) return null;
+  if (!isMounted || isLoading || vehicleTypes.length === 0) {
+    return <VehicleTypesCarouselSkelton />;
+  }
+
+  // if (vehicleTypes.length === 0) return null;
 
   const currentType = searchParams.get("type");
 

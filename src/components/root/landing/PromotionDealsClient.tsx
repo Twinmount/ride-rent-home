@@ -1,34 +1,39 @@
-import PromotionCard from "@/components/card/vehicle-card/PromotionCard";
-import { Slug } from "@/constants/apiEndpoints";
-import { convertToLabel } from "@/helpers";
-import { FetchRidePromotionsResponse } from "@/types";
-import { API } from "@/utils/API";
+"use client";
 
-export const revalidate = 900;
+import PromotionCard from "@/components/card/vehicle-card/PromotionCard";
+import { convertToLabel } from "@/helpers";
+import { fetchPromotionDeals } from "@/lib/api/general-api";
+import PromotionSkeleton from "@/components/skelton/PromotionSkeleton";
+import { useQuery } from "@tanstack/react-query";
 
 type PromotionDealsProps = {
   state: string | undefined;
   country: string | undefined;
 };
 
-/*
- * Server Rendered PromotionDeals
+/**
+ * Client component equivalent to SSR-PromotionDeals
  */
-export default async function PromotionDeals({
+export default function PromotionDealsClient({
   state,
   country,
 }: PromotionDealsProps) {
-  const response = await API({
-    path: `${Slug.GET_HOMEPAGE_PROMOTIONS}?stateValue=${state}`,
-    options: {
-      method: "GET",
-      cache: "no-cache",
-    },
-    country,
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["promotions", state, country],
+    queryFn: () => fetchPromotionDeals(state, country),
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    enabled: !!state && !!country,
   });
-  const data: FetchRidePromotionsResponse = await response.json();
 
-  const promotionData = data.result || null;
+  if (isLoading) {
+    return <PromotionSkeleton />;
+  }
+
+  if (error) {
+    return null;
+  }
+
+  const promotionData = data?.result || null;
   const promotions = promotionData?.cards || [];
 
   if (!promotionData || promotions.length === 0) {
@@ -39,13 +44,6 @@ export default async function PromotionDeals({
 
   return (
     <section className="no-global-padding relative mb-5 h-auto overflow-hidden py-10">
-      <link
-        rel="preload"
-        href="/assets/img/bg/promotion-bg.webp"
-        as="image"
-        fetchPriority="high"
-      />
-
       <div
         className="absolute inset-0 scale-110 bg-cover bg-center"
         style={{

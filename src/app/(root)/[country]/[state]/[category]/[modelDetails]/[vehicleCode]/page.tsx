@@ -25,6 +25,8 @@ import ProtectedVehicleDetails from "@/components/common/ProtectedVehicleDetails
 import ActiveEnquiryBanner from "@/components/root/vehicle-details/ActiveEnquiryBanner";
 import { API } from "@/utils/API";
 import { Slug } from "@/constants/apiEndpoints";
+import { getCacheConfig } from "@/utils/cache.utils";
+import ComponentErrorBoundary from "@/app/ComponentErrorBoundary";
 
 type ParamsProps = {
   params: Promise<{
@@ -69,7 +71,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     path: `${Slug.GET_VEHICLE_DETAILS}?vehicleCode=${formattedVehicleCode}`,
     options: {
       method: "GET",
-      cache: "no-cache",
+      ...getCacheConfig(),
     },
     country,
   });
@@ -263,8 +265,8 @@ export default async function VehicleDetails(props: ParamsProps) {
           <Description description={vehicle.description} />
         </DetailsSectionClientWrapper>
 
-        {/* related result */}
-        <Suspense fallback={<SectionLoading />}>
+        {/* related result (CSR) */}
+        <ComponentErrorBoundary componentName="PromotionDealsClient">
           <RelatedResults
             state={state}
             category={category}
@@ -275,15 +277,14 @@ export default async function VehicleDetails(props: ParamsProps) {
               rentalDetails: vehicle.rentalDetails,
             }}
           />
-        </Suspense>
+        </ComponentErrorBoundary>
 
-        {/* FAQ */}
-        <Suspense fallback={<SectionLoading />}>
-          <DynamicFAQ vehicle={vehicle} country={country} />
-        </Suspense>
-
-        {/* Supplier Details */}
-        {/* <SupplierDetails {...SupplierDetailsPropsData} /> */}
+        {/* FAQ (SSR) */}
+        <ComponentErrorBoundary componentName="PromotionDealsClient">
+          <Suspense fallback={<SectionLoading />}>
+            <DynamicFAQ vehicle={vehicle} country={country} />
+          </Suspense>
+        </ComponentErrorBoundary>
       </div>
     </ProtectedVehicleDetails>
   );

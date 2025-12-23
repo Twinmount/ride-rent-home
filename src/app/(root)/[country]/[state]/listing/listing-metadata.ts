@@ -1,4 +1,3 @@
-import { ENV } from "@/config/env";
 import { convertToLabel, singularizeValue } from "@/helpers";
 import {
   generateFallbackMetadata,

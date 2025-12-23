@@ -1,6 +1,3 @@
-import { Slug } from "@/constants/apiEndpoints";
-import { API } from "@/utils/API";
-
 interface BestOfferParams {
   rentalType: string;
   originalPrice: number;
@@ -47,73 +44,6 @@ export function getBestOfferParams(rentalDetails: any): BestOfferParams | null {
   }
 
   return null;
-}
-
-// Fetch data for specific similar cars section
-export async function fetchSectionData(
-  sectionType: string,
-  state: string,
-  category: string,
-  vehicleCode: string,
-  country: string,
-  currentVehicle?: any
-) {
-  const baseParams = new URLSearchParams({
-    page: "1",
-    limit: "6",
-    state: state,
-    category: category,
-    excludeVehicleCode: vehicleCode,
-    sectionType: sectionType,
-  });
-
-  // Add section-specific parameters
-  switch (sectionType) {
-    case "BEST_OFFERS":
-      if (currentVehicle?.rentalDetails) {
-        const bestOfferParams = getBestOfferParams(
-          currentVehicle.rentalDetails
-        );
-
-        if (bestOfferParams) {
-          baseParams.append("rentalType", bestOfferParams.rentalType);
-          baseParams.append("maxPrice", bestOfferParams.maxPrice.toString());
-
-          if (
-            bestOfferParams.rentalType === "hour" &&
-            bestOfferParams.minHours
-          ) {
-            baseParams.append("minHours", bestOfferParams.minHours.toString());
-          }
-        } else {
-          baseParams.append("maxPrice", "0");
-        }
-      } else {
-        baseParams.append("maxPrice", "0");
-      }
-      break;
-
-    case "MORE_FROM_BRAND":
-      if (currentVehicle?.brandValue) {
-        baseParams.append("brandValue", currentVehicle.brandValue);
-      } else {
-        baseParams.append("brandValue", "nonexistent-brand");
-      }
-      break;
-
-    case "NEWLY_ARRIVED":
-      // No additional parameters needed
-      break;
-  }
-
-  return await API({
-    path: `${Slug.GET_SIMILAR_VEHICLES}?${baseParams.toString()}`,
-    options: {
-      method: "GET",
-      cache: "no-cache",
-    },
-    country,
-  });
 }
 
 export function getSectionConfig(
@@ -172,5 +102,30 @@ export function getSectionConfig(
         description: `Check out more options you might like.`,
         url: `${baseUrl}?filter=latest-models`,
       };
+  }
+}
+
+export function getSectionDataForUrl(sectionType: string, currentVehicle: any) {
+  switch (sectionType) {
+    case "BEST_OFFERS":
+      // Extract rental type and price range from current vehicle
+      const bestOfferParams = getBestOfferParams(currentVehicle?.rentalDetails);
+      if (bestOfferParams) {
+        return {
+          rentalType: bestOfferParams.rentalType,
+          minPrice: 0, // Start from 0
+          maxPrice: bestOfferParams.maxPrice,
+        };
+      }
+      return { rentalType: "day", minPrice: 0, maxPrice: 1000 };
+
+    case "MORE_FROM_BRAND":
+      return {
+        brandValue: currentVehicle?.brandValue,
+      };
+
+    case "NEWLY_ARRIVED":
+    default:
+      return {};
   }
 }
