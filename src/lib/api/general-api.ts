@@ -9,10 +9,13 @@ import {
   FetchLinksResponse,
   FetchPriceRangeResponse,
   FetchRelatedStateResponse,
+  FetchRidePromotionsResponse,
   FetchSearchResultsResponse,
   FetchStatesResponse,
+  FetchTopBrandsResponse,
   FetchTypesResponse,
   ServerTimeResponse,
+  VehicleHomeFilter,
 } from "@/types";
 import { API } from "@/utils/API";
 import { mainApiClient } from "./axios.config";
@@ -399,12 +402,13 @@ export const fetchStates = async ({
   countryId,
   country,
 }: {
-  countryId: string;
+  countryId?: string;
   country: string;
 }): Promise<FetchStatesResponse | undefined> => {
+  const url = `${Slug.GET_STATES_LIST}?hasVehicle=true${countryId ? `&countryId=${countryId}` : ""}`;
   try {
     const res = await API({
-      path: `${Slug.GET_STATES_LIST}?hasVehicle=true&countryId=${countryId}`,
+      path: url,
       options: {
         method: "GET",
         cache: "no-cache",
@@ -834,4 +838,67 @@ export async function fetchServerTime(
   }
 
   return response.json();
+}
+
+export async function fetchPromotionDeals(
+  state: string | undefined,
+  country: string | undefined
+): Promise<FetchRidePromotionsResponse> {
+  const response = await API({
+    path: `${Slug.GET_HOMEPAGE_PROMOTIONS}?stateValue=${state}`,
+    options: {
+      method: "GET",
+      cache: "no-cache",
+    },
+    country,
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch promotion deals");
+  }
+
+  return await response.json();
+}
+
+export async function fetchNewlyArrivedVehicles(
+  state: string,
+  category: string,
+  country: string
+): Promise<FetchVehicleCardsResponseV2> {
+  const params = new URLSearchParams({
+    page: "1",
+    limit: "6",
+    state: state,
+    sortOrder: "DESC",
+    category: category,
+    filter: VehicleHomeFilter.LATEST_MODELS,
+  });
+
+  const response = await API({
+    path: `${Slug.GET_HOMEPAGE_LIST}?${params.toString()}`,
+    options: {
+      method: "GET",
+      cache: "no-cache",
+    },
+    country,
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch newly arrived vehicles");
+  }
+
+  return await response.json();
+}
+
+export async function fetchTopBrands(
+  category: string | undefined,
+  country: string | undefined
+): Promise<FetchTopBrandsResponse> {
+  const response = await API({
+    path: `${Slug.GET_TOP_BRANDS}?categoryValue=${category}&hasVehicle=true`,
+    options: {},
+    country: country,
+  });
+
+  return await response.json();
 }

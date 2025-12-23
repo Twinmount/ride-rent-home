@@ -1,19 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useState } from 'react';
-import { fetchCategories } from '@/lib/api/general-api';
-import { useQuery } from '@tanstack/react-query';
-import { sortCategories } from '@/helpers';
+import { useEffect, useMemo, useState } from "react";
+import { fetchCategories } from "@/lib/api/general-api";
+import { useQuery } from "@tanstack/react-query";
+import { sortCategories } from "@/helpers";
 import { getAssetsUrl } from "@/utils/getCountryAssets";
-import { useStateAndCategory } from './useStateAndCategory';
-import { notFound, usePathname } from 'next/navigation';
-import { CategoryType } from '@/types';
+import { useStateAndCategory } from "./useStateAndCategory";
+import { notFound, usePathname } from "next/navigation";
 
-const NO_CATEGORY_PATHS = ['/blog'];
-
-// Local storage key based on country and state
-const getCategoryStorageKey = (country: string, state: string) =>
-  `cachedCategories_${country}_${state}`;
+const NO_CATEGORY_PATHS = ["/blog"];
 
 export function useFetchVehicleCategories({
   needRedirection = true,
@@ -21,64 +16,26 @@ export function useFetchVehicleCategories({
   needRedirection?: boolean;
 } = {}) {
   const { state, category, country } = useStateAndCategory();
-  const [cachedCategories, setCachedCategories] = useState<CategoryType[]>([]);
 
   const pathname = usePathname();
 
-  const storageKey = getCategoryStorageKey(country, state);
-
   // Fetch categories using react-query
-  const { data, isLoading, isFetching } = useQuery({
-    queryKey: ['categories', state, country],
+  const { data, isLoading } = useQuery({
+    queryKey: ["categories", state, country],
     queryFn: () => fetchCategories(state, country),
+    staleTime: Infinity,
+    gcTime: 2 * 60 * 60 * 1000,
   });
 
-  // Load from localStorage if API data is missing
-  useEffect(() => {
-    if (data?.result?.list?.length) return;
-
-    const stored = localStorage.getItem(storageKey);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          setCachedCategories(parsed);
-        }
-      } catch (e) {
-        console.warn('Failed to parse cached categories:', e);
-      }
-    }
-  }, [storageKey, data]);
-
-  const fetchedCategories = data?.result?.list || [];
-
-  // Use categories from localStorage if API returned nothing
-  const finalCategories =
-    fetchedCategories.length > 0
-      ? fetchedCategories
-      : cachedCategories.length > 0
-        ? cachedCategories
-        : [];
-
-  // Load categories from localStorage if API returned nothing
-  useEffect(() => {
-    if (fetchedCategories.length > 0) {
-      const isSame =
-        JSON.stringify(fetchedCategories) === JSON.stringify(cachedCategories);
-      if (!isSame) {
-        localStorage.setItem(storageKey, JSON.stringify(fetchedCategories));
-        setCachedCategories(fetchedCategories);
-      }
-    }
-  }, [fetchedCategories, isLoading, cachedCategories, storageKey]);
+  const categories = data?.result?.list || [];
 
   // Sort categories
   const sortedCategories = useMemo(
-    () => sortCategories(finalCategories),
-    [finalCategories]
+    () => sortCategories(categories),
+    [categories]
   );
 
-  const isDataReady = !isLoading && !isFetching && finalCategories.length > 0;
+  const isDataReady = !isLoading && categories.length > 0;
 
   // if current path starts with one of the specified paths, skip 404
   const shouldSkip404 = NO_CATEGORY_PATHS.some((safePath) =>
@@ -92,7 +49,7 @@ export function useFetchVehicleCategories({
     !shouldSkip404 &&
     needRedirection
   ) {
-    console.warn('triggering not found');
+    console.warn("triggering not found because no categories found");
     return notFound();
   }
 
@@ -103,21 +60,19 @@ export function useFetchVehicleCategories({
     sortedCategories.length > 0 &&
     !shouldSkip404
   ) {
-    const foundCategory = finalCategories.find((cat) => cat.value === category);
+    const foundCategory = categories.find((cat) => cat.value === category);
     if (!foundCategory && needRedirection) {
-      console.warn('triggering not found');
+      console.warn("triggering not found because category not matching");
       return notFound();
     }
   }
 
   const baseAssetsUrl = getAssetsUrl(country);
 
-  const isCategoriesLoading = isFetching || isLoading;
-
   return {
-    categories: finalCategories,
+    categories,
     sortedCategories,
-    isCategoriesLoading,
+    isCategoriesLoading: isLoading,
     baseAssetsUrl,
     country,
     state,
