@@ -131,7 +131,7 @@ export const DETAILS_PAGE_RELATED_RESULTS_VARIANTS = {};
  */
 export const CACHE_REVALIDATE = {
   DEFAULT: getCacheTime(6 * 60 * 60), // 6 hours
-  SHORT: getCacheTime(1 * 60 * 60), // 1 hour
-  LONG: getCacheTime(24 * 60 * 60), // 24 hours
-  VERY_SHORT: getCacheTime(15 * 60), // 15 minutes
+  ONE_HOUR: getCacheTime(1 * 60 * 60), // 1 hour
+  ONE_DAY: getCacheTime(24 * 60 * 60), // 24 hours
+  FIFTEEN_MINUTES: getCacheTime(15 * 60), // 15 minutes
 } as const;

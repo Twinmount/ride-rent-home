@@ -850,7 +850,8 @@ export async function fetchPromotionDeals(
     path: `${Slug.GET_HOMEPAGE_PROMOTIONS}?stateValue=${state}`,
     options: {
       method: "GET",
-      cache: "no-cache",
+      cache: "force-cache",
+      next: { revalidate: CACHE_REVALIDATE.DEFAULT },
     },
     country,
   });
@@ -880,7 +881,8 @@ export async function fetchNewlyArrivedVehicles(
     path: `${Slug.GET_HOMEPAGE_LIST}?${params.toString()}`,
     options: {
       method: "GET",
-      cache: "no-cache",
+      cache: "force-cache",
+      next: { revalidate: CACHE_REVALIDATE.DEFAULT },
     },
     country,
   });
@@ -898,7 +900,11 @@ export async function fetchTopBrands(
 ): Promise<FetchTopBrandsResponse> {
   const response = await API({
     path: `${Slug.GET_TOP_BRANDS}?categoryValue=${category}&hasVehicle=true`,
-    options: {},
+    options: {
+      method: "GET",
+      cache: "force-cache",
+      next: { revalidate: CACHE_REVALIDATE.DEFAULT },
+    },
     country: country,
   });
 
