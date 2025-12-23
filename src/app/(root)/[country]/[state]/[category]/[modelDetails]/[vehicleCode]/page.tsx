@@ -71,7 +71,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     path: `${Slug.GET_VEHICLE_DETAILS}?vehicleCode=${formattedVehicleCode}`,
     options: {
       method: "GET",
-      ...getCacheConfig(),
+      ...getCacheConfig({ revalidateTime: 0 }),
     },
     country,
   });
@@ -272,7 +272,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         </DetailsSectionClientWrapper>
 
         {/* related result (CSR) */}
-        <ComponentErrorBoundary componentName="PromotionDealsClient">
+        <ComponentErrorBoundary componentName="RelatedResults">
           <RelatedResults
             state={state}
             category={category}
@@ -286,7 +286,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         </ComponentErrorBoundary>
 
         {/* FAQ (SSR) */}
-        <ComponentErrorBoundary componentName="PromotionDealsClient">
+        <ComponentErrorBoundary componentName="Vehicle Dynamic FAQ">
           <Suspense fallback={<SectionLoading />}>
             <DynamicFAQ vehicle={vehicle} country={country} />
           </Suspense>
