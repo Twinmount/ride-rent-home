@@ -1,3 +1,5 @@
+import { getCacheTime } from "@/helpers/cache.helper";
+
 // Generate model years in 5-year increments starting from the current year
 export const modelYears = Array.from(
   { length: Math.ceil((new Date().getFullYear() - 1900) / 5) },
@@ -122,3 +124,14 @@ export const CATEGORIES = {
 };
 
 export const DETAILS_PAGE_RELATED_RESULTS_VARIANTS = {};
+
+/**
+ * Cache revalidation times for Next.js SSR components (in seconds)
+ * 10 sec in APP_ENV=development, specified seconds in APP_ENV=production
+ */
+export const CACHE_REVALIDATE = {
+  DEFAULT: getCacheTime(6 * 60 * 60), // 6 hours
+  SHORT: getCacheTime(1 * 60 * 60), // 1 hour
+  LONG: getCacheTime(24 * 60 * 60), // 24 hours
+  VERY_SHORT: getCacheTime(15 * 60), // 15 minutes
+} as const;

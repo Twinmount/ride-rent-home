@@ -20,6 +20,7 @@ import {
 import { API } from "@/utils/API";
 import { mainApiClient } from "./axios.config";
 import { Slug } from "@/constants/apiEndpoints";
+import { CACHE_REVALIDATE } from "@/constants";
 
 interface FetchVehicleByFiltersParams {
   query: string;
@@ -591,7 +592,8 @@ export const fetchFAQ = async (
       path: `/state-faq/client/${stateValue}`,
       options: {
         method: "GET",
-        cache: "no-cache",
+        cache: "force-cache",
+        next: { revalidate: CACHE_REVALIDATE.DEFAULT },
       },
       country,
     });
