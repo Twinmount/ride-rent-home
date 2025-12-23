@@ -14,6 +14,9 @@ export default async function SitemapPage(props: PropsType) {
   // Get country configuration
   const config = COUNTRY_CONFIGS[country as CountryCode];
   if (!config) {
+    console.warn(
+      "triggering not found from sitemap page because of invalid country"
+    );
     return notFound();
   }
 

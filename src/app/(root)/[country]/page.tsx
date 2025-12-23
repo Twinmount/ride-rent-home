@@ -9,7 +9,7 @@ const CountryPage = async (props: PageProps) => {
   const countries = ["ae", "in"];
 
   if (!countries.includes(country)) {
-    console.warn("triggering not found");
+    console.warn("triggering not found from /[country] page because of invalid country");
     return notFound();
   }
 

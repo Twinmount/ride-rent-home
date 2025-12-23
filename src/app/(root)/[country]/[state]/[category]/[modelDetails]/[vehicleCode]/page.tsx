@@ -71,7 +71,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     path: `${Slug.GET_VEHICLE_DETAILS}?vehicleCode=${formattedVehicleCode}`,
     options: {
       method: "GET",
-      ...getCacheConfig(),
+      ...getCacheConfig({ revalidateTime: 0 }),
     },
     country,
   });
@@ -83,11 +83,17 @@ export default async function VehicleDetails(props: ParamsProps) {
     response.status === 400 ||
     !data.result
   ) {
+    console.warn(
+      "triggering not found from vehicle details page because of invalid response"
+    );
     return notFound();
   }
 
   // if the state in the url doesn't match the state in the data , return 404 not found
   if (state !== data.result.state.value) {
+    console.warn(
+      "triggering not found from vehicle details page because of invalid state"
+    );
     return notFound();
   }
 
@@ -266,7 +272,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         </DetailsSectionClientWrapper>
 
         {/* related result (CSR) */}
-        <ComponentErrorBoundary componentName="PromotionDealsClient">
+        <ComponentErrorBoundary componentName="RelatedResults">
           <RelatedResults
             state={state}
             category={category}
@@ -280,7 +286,7 @@ export default async function VehicleDetails(props: ParamsProps) {
         </ComponentErrorBoundary>
 
         {/* FAQ (SSR) */}
-        <ComponentErrorBoundary componentName="PromotionDealsClient">
+        <ComponentErrorBoundary componentName="Vehicle Dynamic FAQ">
           <Suspense fallback={<SectionLoading />}>
             <DynamicFAQ vehicle={vehicle} country={country} />
           </Suspense>

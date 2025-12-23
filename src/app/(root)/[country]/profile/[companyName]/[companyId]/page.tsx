@@ -55,7 +55,9 @@ export default async function AgentProfilePage(props: PropsType) {
   // Handle API errors or invalid data
   if (!response.ok || !data.result) {
     console.error("Invalid API response:", response.statusText);
-    console.warn("triggering not found");
+    console.warn(
+      "triggering not found from agent profile page because of invalid data"
+    );
     return notFound();
   }
 
@@ -66,7 +68,7 @@ export default async function AgentProfilePage(props: PropsType) {
 
   // convert to lowercased-hyphen separated version
   const formattedCompanyName = convertToValue(
-    companyDetails.companyName as string,
+    companyDetails.companyName as string
   );
 
   // if url companyName doesn't match the formattedCompanyName, then redirect to the correct url
@@ -74,7 +76,7 @@ export default async function AgentProfilePage(props: PropsType) {
     const validProfileLink = generateCompanyProfilePageLink(
       companyDetails.companyName,
       companyId,
-      country,
+      country
     );
 
     return redirect(validProfileLink);
@@ -87,7 +89,7 @@ export default async function AgentProfilePage(props: PropsType) {
     companyDetails.companyName,
     companyDetails.companyAddress,
     companyDetails.companyLogo,
-    country,
+    country
   );
 
   return (

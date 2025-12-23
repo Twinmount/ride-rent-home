@@ -29,7 +29,9 @@ export default async function Layout({ children, params }: LayoutProps) {
       // Redirect to same path but with "ae" prefixed
       redirect(`/ae${currentPath}`);
     } else {
-      console.warn("country not found");
+      console.warn(
+        "triggering not found from country layout because of invalid country"
+      );
       notFound();
     }
   }

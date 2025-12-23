@@ -42,6 +42,18 @@ export function getCacheConfig({
     };
   }
 
+  if (cacheType === "no-cache") {
+    return {
+      cache: "no-cache" as const,
+    };
+  }
+
+  if (revalidateTime <= 0) {
+    return {
+      cache: "no-cache" as const,
+    };
+  }
+
   // In production, enable caching with specified revalidation time
   return {
     cache: cacheType,
