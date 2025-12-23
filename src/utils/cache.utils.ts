@@ -19,7 +19,7 @@ export const CACHE_REVALIDATE = {
 } as const;
 
 /**
- * Get cache configuration for Next.js fetch options
+ * Get cache configuration for Next.js fetch function options
  *
  * Development: Always uses no-store (no caching)
  * Production: Uses specified cache strategy with revalidation

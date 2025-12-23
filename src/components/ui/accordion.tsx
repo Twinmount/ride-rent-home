@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { ChevronDown } from 'lucide-react';
+import * as React from "react";
+import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import { ChevronDown } from "lucide-react";
 
-import { cn } from '@/lib/utils';
-import { CiCircleQuestion } from 'react-icons/ci';
+import { cn } from "@/lib/utils";
+import { CiCircleQuestion } from "react-icons/ci";
 
 const Accordion = AccordionPrimitive.Root;
 
@@ -16,13 +16,13 @@ const AccordionItem = React.forwardRef<
   <AccordionPrimitive.Item
     ref={ref}
     className={cn(
-      'mx-4 overflow-hidden rounded-lg border border-b border-border-default bg-white lg:mx-0',
+      "mx-4 overflow-hidden rounded-lg border border-b border-border-default bg-white lg:mx-0",
       className
     )}
     {...props}
   />
 ));
-AccordionItem.displayName = 'AccordionItem';
+AccordionItem.displayName = "AccordionItem";
 
 const AccordionTrigger = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Trigger>,
@@ -33,7 +33,7 @@ const AccordionTrigger = React.forwardRef<
       ref={ref}
       className={cn(
         "flex flex-1 items-center justify-between py-4 font-medium transition-all [&[data-state=open]>svg]:rotate-180",
-        "px-6 text-start text-[0.6rem] font-normal text-text-secondary hover:no-underline lg:px-4 lg:text-base",
+        "px-6 text-start text-[0.9rem] font-normal text-text-secondary hover:no-underline lg:px-4 lg:text-base",
         className
       )}
       {...props}
