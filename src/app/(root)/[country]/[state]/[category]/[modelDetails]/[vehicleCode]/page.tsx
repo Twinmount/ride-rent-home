@@ -83,11 +83,17 @@ export default async function VehicleDetails(props: ParamsProps) {
     response.status === 400 ||
     !data.result
   ) {
+    console.warn(
+      "triggering not found from vehicle details page because of invalid response"
+    );
     return notFound();
   }
 
   // if the state in the url doesn't match the state in the data , return 404 not found
   if (state !== data.result.state.value) {
+    console.warn(
+      "triggering not found from vehicle details page because of invalid state"
+    );
     return notFound();
   }
 

@@ -52,6 +52,9 @@ export default async function BlogDetails(props: PageProps) {
     response.status === 400 ||
     !blogData.result
   ) {
+    console.warn(
+      "triggering not found from blog detail page because of invalid response"
+    );
     return notFound();
   }
 

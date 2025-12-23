@@ -54,6 +54,7 @@ export async function generateVehicleMetadata(
   const data = await fetchVehicleMetaData(vehicleCode, country);
 
   if (!data?.result) {
+    console.warn("triggering not found from vehicle details page metadata");
     return notFound();
   }
 
