@@ -27,6 +27,8 @@ import { API } from "@/utils/API";
 import { Slug } from "@/constants/apiEndpoints";
 import { getCacheConfig } from "@/utils/cache.utils";
 import ComponentErrorBoundary from "@/app/ComponentErrorBoundary";
+import { COUNTRY_CONFIG } from "@/config/country-config";
+import { VEHICLE_CODE_PREFIX } from "@/constants";
 
 type ParamsProps = {
   params: Promise<{
@@ -63,6 +65,27 @@ export default async function VehicleDetails(props: ParamsProps) {
   const { ref } = searchParams;
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
+
+  // if country is India and the vehicle code starts with "RDVH", redirect to the new vehicle code "ADVH"
+  if (
+    country === COUNTRY_CONFIG.INDIA.country &&
+    formattedVehicleCode.startsWith(VEHICLE_CODE_PREFIX.UAE) // "RDVH"
+  ) {
+    const newVehicleCode = formattedVehicleCode.replace(
+      VEHICLE_CODE_PREFIX.UAE,
+      VEHICLE_CODE_PREFIX.INDIA
+    );
+
+    const newVehicleCodeUrl = newVehicleCode.toLowerCase();
+
+    console.warn(
+      `Redirecting to new vehicle code: ${newVehicleCodeUrl} from old vehicle code: ${vehicleCode}`
+    );
+
+    redirect(
+      `/${country}/${state}/${category}/${modelDetails}/${newVehicleCodeUrl}`
+    );
+  }
 
   const currentUrlVehicleTitle = modelDetails.replace(/-for-rent$/, "");
 
@@ -103,6 +126,9 @@ export default async function VehicleDetails(props: ParamsProps) {
   );
 
   if (currentUrlVehicleTitle !== normalizedActualTitle) {
+    console.warn(
+      "triggering redirection from vehicle details page because of invalid vehicle title"
+    );
     redirect(
       `/${country}/${state}/${category}/${normalizedActualTitle}-for-rent/${vehicleCode}`
     );

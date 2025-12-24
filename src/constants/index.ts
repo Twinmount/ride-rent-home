@@ -122,3 +122,8 @@ export const CATEGORIES = {
 };
 
 export const DETAILS_PAGE_RELATED_RESULTS_VARIANTS = {};
+
+export const VEHICLE_CODE_PREFIX = {
+  UAE: "RDVH",
+  INDIA: "ADVH",
+};

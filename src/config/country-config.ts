@@ -11,14 +11,16 @@ export const COUNTRY_CONFIG = {
   },
 } as const;
 
-export type CountryCode = "ae" | "in";
+export type CountryCodeType = "ae" | "in";
 
 // array of countries [ae, in]
 export const COUNTRIES = Object.values(COUNTRY_CONFIG).map(
   (config) => config.country
-) as CountryCode[];
+) as CountryCodeType[];
 
-export function isValidCountryCode(code: string | null): code is CountryCode {
+export function isValidCountryCode(
+  code: string | null
+): code is CountryCodeType {
   if (!code) return false;
-  return COUNTRIES.includes(code as CountryCode);
+  return COUNTRIES.includes(code as CountryCodeType);
 }
