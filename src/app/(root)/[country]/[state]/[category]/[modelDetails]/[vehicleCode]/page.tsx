@@ -78,7 +78,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
     const newVehicleCodeUrl = newVehicleCode.toLowerCase();
 
-    console.warn(
+    console.log(
       `Redirecting to new vehicle code: ${newVehicleCodeUrl} from old vehicle code: ${vehicleCode}`
     );
 
@@ -106,7 +106,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     response.status === 400 ||
     !data.result
   ) {
-    console.warn(
+    console.log(
       "triggering not found from vehicle details page because of invalid response"
     );
     return notFound();
@@ -114,7 +114,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   // if the state in the url doesn't match the state in the data , return 404 not found
   if (state !== data.result.state.value) {
-    console.warn(
+    console.log(
       "triggering not found from vehicle details page because of invalid state"
     );
     return notFound();
@@ -126,7 +126,7 @@ export default async function VehicleDetails(props: ParamsProps) {
   );
 
   if (currentUrlVehicleTitle !== normalizedActualTitle) {
-    console.warn(
+    console.log(
       "triggering redirection from vehicle details page because of invalid vehicle title"
     );
     redirect(
