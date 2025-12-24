@@ -21,6 +21,7 @@ import CountryDropdown from "@/components/dropdown/CountryDropdown";
 import LocationDialogBanner from "./LocationDialogBanner";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
+import { COUNTRY_CONFIG } from "@/config/country-config";
 
 export function LocationDialog() {
   const router = useRouter();
@@ -39,7 +40,9 @@ export function LocationDialog() {
   }>();
 
   const [selectedCountry, setSelectedCountry] = useState(
-    country === "in" ? "68ea1314-08ed-4bba-a2b1-af549946523d" : COUNTRIES[0].id
+    country === "in"
+      ? COUNTRY_CONFIG.INDIA.countryId
+      : COUNTRY_CONFIG.UAE.countryId
   );
 
   const [selectedState, setSelectedState] = useState<StateType | undefined>();
@@ -49,9 +52,17 @@ export function LocationDialog() {
 
   const { states, isLoading, isStatesFetching } = useFetchStates({
     countryId: selectedCountry,
-    country:
-      selectedCountry === "68ea1314-08ed-4bba-a2b1-af549946523d" ? "in" : "ae",
+    country: selectedCountry === COUNTRY_CONFIG.INDIA.countryId ? "in" : "ae",
   });
+
+  // Skip redirect to home page if user is on any of the following pages
+  const shouldSkipRedirect =
+    ["/blog", "/careers", "/interns"].some((path) =>
+      pathname?.startsWith(`/${country}${path}`)
+    ) ||
+    pathname === "/in" ||
+    pathname === "/ae" ||
+    pathname === "/";
 
   const getMatchScore = (itemName: string, query: string): number => {
     const name = itemName.toLowerCase();
@@ -90,13 +101,6 @@ export function LocationDialog() {
   useEffect(() => {
     if (isLoading || isStatesFetching || states.length === 0) return;
 
-    const shouldSkipRedirect =
-      ["/blog", "/careers", "/interns"].some((path) =>
-        pathname?.startsWith(`/${country}${path}`)
-      ) ||
-      pathname === "/in" ||
-      pathname === "/ae";
-
     if (states.length > 0) {
       const foundState = states.find((data) => data.stateValue === state);
       if (foundState) {
@@ -130,7 +134,7 @@ export function LocationDialog() {
       (c) => c.id === selectedCountry
     )?.value;
     const countryCode =
-      selectedCountry === "68ea1314-08ed-4bba-a2b1-af549946523d" ? "in" : "ae";
+      selectedCountry === COUNTRY_CONFIG.INDIA.countryId ? "in" : "ae";
 
     try {
       const res = await fetchCategories(stateValue, countryCode);
@@ -155,7 +159,7 @@ export function LocationDialog() {
   };
 
   const handleCountrySelect = (countryId: string) => {
-    setSelectedCountry(countryId);
+    setSelectedCountry(countryId as any);
     setSelectedState(undefined);
   };
 
