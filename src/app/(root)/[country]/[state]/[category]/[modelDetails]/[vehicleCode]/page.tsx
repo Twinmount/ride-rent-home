@@ -27,6 +27,8 @@ import { API } from "@/utils/API";
 import { Slug } from "@/constants/apiEndpoints";
 import { getCacheConfig } from "@/utils/cache.utils";
 import ComponentErrorBoundary from "@/app/ComponentErrorBoundary";
+import { COUNTRY_CONFIG } from "@/config/country-config";
+import { VEHICLE_CODE_PREFIX } from "@/constants";
 
 type ParamsProps = {
   params: Promise<{
@@ -64,6 +66,27 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   const formattedVehicleCode = restoreVehicleCodeFormat(vehicleCode);
 
+  // if country is India and the vehicle code starts with "RDVH", redirect to the new vehicle code "ADVH"
+  if (
+    country === COUNTRY_CONFIG.INDIA.country &&
+    formattedVehicleCode.startsWith(VEHICLE_CODE_PREFIX.UAE) // "RDVH"
+  ) {
+    const newVehicleCode = formattedVehicleCode.replace(
+      VEHICLE_CODE_PREFIX.UAE,
+      VEHICLE_CODE_PREFIX.INDIA
+    );
+
+    const newVehicleCodeUrl = newVehicleCode.toLowerCase();
+
+    console.log(
+      `Redirecting to new vehicle code: ${newVehicleCodeUrl} from old vehicle code: ${vehicleCode}`
+    );
+
+    redirect(
+      `/${country}/${state}/${category}/${modelDetails}/${newVehicleCodeUrl}`
+    );
+  }
+
   const currentUrlVehicleTitle = modelDetails.replace(/-for-rent$/, "");
 
   // Fetch the vehicle data from the API
@@ -83,7 +106,7 @@ export default async function VehicleDetails(props: ParamsProps) {
     response.status === 400 ||
     !data.result
   ) {
-    console.warn(
+    console.log(
       "triggering not found from vehicle details page because of invalid response"
     );
     return notFound();
@@ -91,7 +114,7 @@ export default async function VehicleDetails(props: ParamsProps) {
 
   // if the state in the url doesn't match the state in the data , return 404 not found
   if (state !== data.result.state.value) {
-    console.warn(
+    console.log(
       "triggering not found from vehicle details page because of invalid state"
     );
     return notFound();
@@ -103,6 +126,9 @@ export default async function VehicleDetails(props: ParamsProps) {
   );
 
   if (currentUrlVehicleTitle !== normalizedActualTitle) {
+    console.log(
+      "triggering redirection from vehicle details page because of invalid vehicle title"
+    );
     redirect(
       `/${country}/${state}/${category}/${normalizedActualTitle}-for-rent/${vehicleCode}`
     );

@@ -1,5 +1,4 @@
 import BrandImage from "@/components/common/BrandImage";
-import { COUNTRY_CONFIGS } from "@/config/country-config";
 import Link from "next/link";
 
 type Props = {

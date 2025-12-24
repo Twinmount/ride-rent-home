@@ -54,7 +54,7 @@ export async function generateVehicleMetadata(
   const data = await fetchVehicleMetaData(vehicleCode, country);
 
   if (!data?.result) {
-    console.warn("triggering not found from vehicle details page metadata");
+    console.log("triggering not found from vehicle details page metadata");
     return notFound();
   }
 
@@ -241,18 +241,21 @@ export async function getVehicleJsonLd(
   };
 
   // Build FAQPage schema if FAQ data exists
-  const faqSchema = faqData.length > 0 ? {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqData.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
-    })),
-  } : null;
+  const faqSchema =
+    faqData.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqData.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.answer,
+            },
+          })),
+        }
+      : null;
 
   // If FAQ data exists, return both schemas as an array
   if (faqSchema) {
