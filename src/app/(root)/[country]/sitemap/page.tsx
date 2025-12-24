@@ -1,4 +1,4 @@
-import { COUNTRY_CONFIGS, CountryCode } from "@/config/country-config";
+import { COUNTRY_CONFIG } from "@/config/country-config";
 import { PageSitemapService } from "@/services/PageSitemapService";
 import { MetadataRoute } from "next";
 import { notFound } from "next/navigation";
@@ -11,8 +11,15 @@ export default async function SitemapPage(props: PropsType) {
   const params = await props.params;
   const { country } = params;
 
+  const countryConfigKey =
+    country === "in"
+      ? COUNTRY_CONFIG.INDIA.countryName.toUpperCase()
+      : COUNTRY_CONFIG.UAE.countryName.toUpperCase();
+
   // Get country configuration
-  const config = COUNTRY_CONFIGS[country as CountryCode];
+  const config =
+    COUNTRY_CONFIG[countryConfigKey as keyof typeof COUNTRY_CONFIG];
+
   if (!config) {
     console.warn(
       "triggering not found from sitemap page because of invalid country"

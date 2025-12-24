@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { RouteXmlSitemapService } from "@/services/RouteXmlSitemapService";
 import { generateSitemapXML } from "@/helpers/xml-generator";
-import { COUNTRY_CONFIGS } from "@/config/country-config";
+import { COUNTRY_CONFIG } from "@/config/country-config";
 
 /**
  * Main GET handler for AE sitemap generation
@@ -11,7 +11,7 @@ export async function GET() {
     console.log("Starting AE sitemap generation...");
 
     // Get AE country configuration
-    const config = COUNTRY_CONFIGS.ae;
+    const config = COUNTRY_CONFIG.UAE;
     const sitemapService = new RouteXmlSitemapService(
       config.country,
       config.countryId
@@ -49,7 +49,7 @@ export async function GET() {
     console.error("Error generating AE sitemap:", error);
 
     // Return a minimal sitemap on error
-    const config = COUNTRY_CONFIGS.ae;
+    const config = COUNTRY_CONFIG.UAE;
     const sitemapService = new RouteXmlSitemapService(
       config.country,
       config.countryId
