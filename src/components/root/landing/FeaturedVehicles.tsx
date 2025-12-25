@@ -37,7 +37,7 @@ const FeaturedVehicles = async ({
     options: {
       method: "GET",
       ...getCacheConfig({
-        tags: [CACHE_TAGS.FEATURED_VEHICLES],
+        tags: [CACHE_TAGS.HOMEPAGE_FEATURED_VEHICLES],
       }),
     },
     country,

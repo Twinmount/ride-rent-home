@@ -852,7 +852,9 @@ export async function fetchPromotionDeals(
     path: `${Slug.GET_HOMEPAGE_PROMOTIONS}?stateValue=${state}`,
     options: {
       method: "GET",
-      ...getCacheConfig(),
+      ...getCacheConfig({
+        tags: [CACHE_TAGS.HOMEPAGE_PROMOTIONS],
+      }),
     },
     country,
   });
@@ -882,7 +884,9 @@ export async function fetchNewlyArrivedVehicles(
     path: `${Slug.GET_HOMEPAGE_LIST}?${params.toString()}`,
     options: {
       method: "GET",
-      ...getCacheConfig(),
+      ...getCacheConfig({
+        tags: [CACHE_TAGS.HOMEPAGE_NEWLY_ARRIVED_VEHICLES],
+      }),
     },
     country,
   });
@@ -902,7 +906,9 @@ export async function fetchTopBrands(
     path: `${Slug.GET_TOP_BRANDS}?categoryValue=${category}&hasVehicle=true`,
     options: {
       method: "GET",
-      ...getCacheConfig(),
+      ...getCacheConfig({
+        tags: [CACHE_TAGS.HOMEPAGE_TOP_BRANDS],
+      }),
     },
     country: country,
   });
@@ -972,7 +978,7 @@ export async function fetchSimilarVehiclesData(
     options: {
       method: "GET",
       ...getCacheConfig({
-        tags: [CACHE_TAGS.SIMILAR_VEHICLES],
+        tags: [CACHE_TAGS.VEHICLE_DETAILS_SIMILAR_VEHICLES],
       }),
     },
     country,
