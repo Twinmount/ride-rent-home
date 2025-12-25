@@ -13,6 +13,7 @@ import VehicleDescription from "../../profile-specifications/VehicleDescription"
 import Link from "next/link";
 import PriceOfferDetails from "../PriceOfferDetails";
 import { cn } from "@/lib/utils";
+import { usePriceOfferCountdown } from "@/hooks/usePriceOfferCountdown";
 
 type ProfileCardProps = {
   profileData: ProfileCardDataType;
@@ -36,6 +37,9 @@ const ProfileCard = memo(
       vehicleId,
       priceOffer,
     } = profileData;
+
+    // Check if price offer is actually active (not just exists)
+    const { isActive: isOfferActive } = usePriceOfferCountdown(priceOffer);
 
     // Enhanced availability check
     const isVehicleAvailable = () => {
@@ -112,7 +116,7 @@ const ProfileCard = memo(
                 vehicleId={vehicleId}
                 agentId={profileData.agentId}
                 contactDetails={company.contactDetails}
-                className={cn("!my-auto", priceOffer ? "!w-[30%]" : "w-full")}
+                className={cn("!my-auto", isOfferActive ? "!w-[30%]" : "w-full")}
               />
             </div>
           ) : (
