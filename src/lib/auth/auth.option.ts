@@ -61,20 +61,8 @@ function isTokenExpired(token: string): boolean {
   const currentTime = Date.now();
   const fiveMinutesInMs = 5 * 60 * 1000;
 
-  // console.log(
-  //   "expirationTime: [isTokenExpired]",
-  //   expirationTime <= currentTime + fiveMinutesInMs
-  // );
-
   return expirationTime <= currentTime + fiveMinutesInMs;
 }
-
-// Temporary cache to store tokens between authorize() and JWT callback
-// Key: userId, Value: { accessToken, refreshToken }
-const credentialsTokenCache = new Map<
-  string,
-  { accessToken?: string; refreshToken?: string }
->();
 
 const requiredEnvVars = {
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
@@ -85,21 +73,21 @@ const requiredEnvVars = {
 
 console.log("requiredEnvVars", requiredEnvVars);
 
-if (process.env.NODE_ENV === "production") {
-  console.log("🔍 Production Environment Check:");
-  console.log(
-    "NEXTAUTH_URL:",
-    process.env.NEXTAUTH_URL ? "✅ SET" : "❌ MISSING"
-  );
-  console.log(
-    "GOOGLE_CLIENT_ID:",
-    process.env.GOOGLE_CLIENT_ID ? "✅ SET" : "❌ MISSING"
-  );
-  console.log(
-    "GOOGLE_CLIENT_SECRET:",
-    process.env.GOOGLE_CLIENT_SECRET ? "✅ SET" : "❌ MISSING"
-  );
-}
+// if (process.env.NODE_ENV === "production") {
+//   console.log("🔍 Production Environment Check:");
+//   console.log(
+//     "NEXTAUTH_URL:",
+//     process.env.NEXTAUTH_URL ? "✅ SET" : "❌ MISSING"
+//   );
+//   console.log(
+//     "GOOGLE_CLIENT_ID:",
+//     process.env.GOOGLE_CLIENT_ID ? "✅ SET" : "❌ MISSING"
+//   );
+//   console.log(
+//     "GOOGLE_CLIENT_SECRET:",
+//     process.env.GOOGLE_CLIENT_SECRET ? "✅ SET" : "❌ MISSING"
+//   );
+// }
 
 console.log("process.env.GOOGLE_CLIENT_ID", process.env.GOOGLE_CLIENT_ID);
 console.log(
@@ -175,16 +163,6 @@ export const authOptions: NextAuthOptions = {
       authorization: {
         params: {
           scope: "email public_profile",
-        },
-      },
-    }),
-    AppleProvider({
-      clientId: process.env.APPLE_ID as string,
-      clientSecret: process.env.APPLE_SECRET as string,
-      authorization: {
-        params: {
-          scope: "name email",
-          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
         },
       },
     }),
@@ -432,14 +410,14 @@ export const authOptions: NextAuthOptions = {
       // If URL contains localhost in production, replace it
       if (isProduction && url.includes("localhost")) {
         const newUrl = url.replace(/http:\/\/localhost:\d+/, productionUrl);
-        console.log("Replaced localhost URL:", newUrl);
+        // console.log("Replaced localhost URL:", newUrl);
         return newUrl;
       }
 
       // Handle relative URLs
       if (url.startsWith("/")) {
         const finalUrl = `${actualBaseUrl}${url}`;
-        console.log("Relative URL resolved to:", finalUrl);
+        // console.log("Relative URL resolved to:", finalUrl);
         return finalUrl;
       }
 
@@ -450,21 +428,21 @@ export const authOptions: NextAuthOptions = {
         // If it's localhost in production, redirect to production
         if (isProduction && urlObj.hostname === "localhost") {
           const finalUrl = `${productionUrl}${urlObj.pathname}${urlObj.search}`;
-          console.log("Localhost hostname replaced:", finalUrl);
+          // console.log("Localhost hostname replaced:", finalUrl);
           return finalUrl;
         }
 
         // If it matches our domain, allow it
         if (urlObj.origin === actualBaseUrl) {
-          console.log("URL matches base, allowing:", url);
+          // console.log("URL matches base, allowing:", url);
           return url;
         }
       } catch (error) {
-        console.error("Invalid URL in redirect:", url, error);
+        // console.error("Invalid URL in redirect:", url, error);
       }
 
       // Default: redirect to home
-      console.log("Defaulting to base URL:", actualBaseUrl);
+      // console.log("Defaulting to base URL:", actualBaseUrl);
       return actualBaseUrl;
     },
   },
