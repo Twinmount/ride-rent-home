@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Slug } from "@/constants/apiEndpoints";
 import FeaturedVehiclesAnimated from "./FeaturedVehiclesAnimated";
 import { getCacheConfig } from "@/utils/cache.utils";
+import { CACHE_TAGS } from "@/constants/cache.constants";
 
 type FeaturedVehiclesProps = StateCategoryProps & {
   vehicleType: string | undefined;
@@ -35,7 +36,9 @@ const FeaturedVehicles = async ({
     path: `${Slug.GET_HOMEPAGE_LIST}?${params.toString()}`,
     options: {
       method: "GET",
-      ...getCacheConfig(),
+      ...getCacheConfig({
+        tags: [CACHE_TAGS.FEATURED_VEHICLES],
+      }),
     },
     country,
   });

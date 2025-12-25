@@ -1,7 +1,7 @@
 import { FetchVehicleCardsResponseV2 } from "@/types/vehicle-types";
 import { handleError } from "../utils";
 import {
-  FetcFAQResponse,
+  FetchFAQResponse,
   FetchBrandsResponse,
   FetchCategoriesResponse,
   FetchCitiesResponse,
@@ -22,6 +22,7 @@ import { mainApiClient } from "./axios.config";
 import { Slug } from "@/constants/apiEndpoints";
 import { getCacheConfig } from "@/utils/cache.utils";
 import { getBestOfferParams } from "@/helpers/vehicle-details-section.helper";
+import { CACHE_TAGS } from "@/constants/cache.constants";
 
 interface FetchVehicleByFiltersParams {
   query: string;
@@ -587,13 +588,15 @@ export const fetchExchangeRates = async ({
 export const fetchFAQ = async (
   stateValue: string,
   country: string
-): Promise<FetcFAQResponse | undefined> => {
+): Promise<FetchFAQResponse | undefined> => {
   try {
     const response = await API({
       path: `/state-faq/client/${stateValue}`,
       options: {
         method: "GET",
-        ...getCacheConfig(),
+        ...getCacheConfig({
+          tags: [CACHE_TAGS.HOMEPAGE_FAQ],
+        }),
       },
       country,
     });
@@ -626,7 +629,6 @@ export const fetchFAQ = async (
 };
 
 // Fetches a list of related vehicle series based on specified filters
-
 export const fetchRelatedSeriesList = async (
   category: string,
   brand: string,
@@ -969,7 +971,9 @@ export async function fetchSimilarVehiclesData(
     path: `${Slug.GET_SIMILAR_VEHICLES}?${baseParams.toString()}`,
     options: {
       method: "GET",
-      ...getCacheConfig(),
+      ...getCacheConfig({
+        tags: [CACHE_TAGS.SIMILAR_VEHICLES],
+      }),
     },
     country,
   });

@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { CACHE_TAGS } from "@/constants/cache.constants";
 
 import { VehicleDetailsPageType } from "@/types/vehicle-details-types";
 import { API } from "@/utils/API";
@@ -31,7 +32,9 @@ export default async function DynamicFAQ({
       path: `/vehicle-faq/${vehicle.vehicleCode}`,
       options: {
         method: "GET",
-        ...getCacheConfig(),
+        ...getCacheConfig({
+          tags: [CACHE_TAGS.VEHICLE_DETAILS_FAQ],
+        }),
       },
       country,
     });
