@@ -3,6 +3,7 @@ import BannerSlider from "./BannerSlider";
 import { API } from "@/utils/API";
 import { Slug } from "@/constants/apiEndpoints";
 import { getCacheConfig } from "@/utils/cache.utils";
+import { CACHE_TAGS } from "@/constants/cache.constants";
 
 export type ImageSrc = {
   link?: string;
@@ -24,7 +25,9 @@ export default async function Banner({
     path: `${Slug.GET_HOMEPAGE_BANNER}?state=${state}&isMobile=${isMobile}`,
     options: {
       method: "GET",
-      ...getCacheConfig(),
+      ...getCacheConfig({
+        tags: [CACHE_TAGS.HOMEPAGE_BANNER],
+      }),
     },
     country: country,
   });
