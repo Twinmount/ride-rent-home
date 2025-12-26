@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { categoryTags } from "@/constants/blog";
+import { categoryTags } from "@/constants/blog.constants";
 import { formBlogUrlQuery } from "@/helpers/blog-helpers";
 import { CategoryType } from "@/types/blog";
 import { useTopLoader } from "nextjs-toploader";

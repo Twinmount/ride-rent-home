@@ -290,7 +290,7 @@ export interface FetchExchangeRatesResponse {
   statusCode: number;
 }
 
-export interface FetcFAQResponse {
+export interface FetchFAQResponse {
   result: {
     _id?: string;
     stateId: string;
