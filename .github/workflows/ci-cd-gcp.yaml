@@ -2,12 +2,10 @@ name: CI-CD to GCP Cloud Run for Ride Rent Home
 on:
     push:
         branches:
-            - development
-            - prod
-            - main
+            # - development
+            # - main
             - devops-*
-            - dev
-            - production
+
 
 permissions:
     contents: read
