@@ -130,7 +130,7 @@ jobs:
                     az webapp config container set \
                         --name ${{ vars.AZ_AE_APP_NAME }} \
                         --resource-group ${{ vars.AZ_APPS_RG }} \
-                        --docker-custom-image-name asia-docker.pkg.dev/${{ secrets.GCP_SHRD_PROJECT }}/${{ secrets.GCP_IMAGE_REPOSITORY }}/${{ vars.AZ_AE_APP_NAME }}:${IMAGE_TAG}
+                        --container-image-name asia-docker.pkg.dev/${{ secrets.GCP_SHRD_PROJECT }}/${{ secrets.GCP_IMAGE_REPOSITORY }}/${{ vars.AZ_AE_APP_NAME }}:${IMAGE_TAG}
                     
             -   name: Restart UAE Web App
                 run: |        
@@ -145,7 +145,7 @@ jobs:
                     az webapp config container set \
                         --name ${{ vars.AZ_IN_APP_NAME }} \
                         --resource-group ${{ vars.AZ_APPS_RG }} \
-                        --docker-custom-image-name asia-docker.pkg.dev/${{ secrets.GCP_SHRD_PROJECT }}/${{ secrets.GCP_IMAGE_REPOSITORY }}/${{ vars.AZ_IN_APP_NAME }}:${IMAGE_TAG}
+                        --container-image-name asia-docker.pkg.dev/${{ secrets.GCP_SHRD_PROJECT }}/${{ secrets.GCP_IMAGE_REPOSITORY }}/${{ vars.AZ_IN_APP_NAME }}:${IMAGE_TAG}
                     
             -   name: Restart IN Web App
                 run: |        
@@ -186,7 +186,7 @@ jobs:
                     az webapp config container set \
                         --name ${{ vars.AZ_AE_APP_NAME }} \
                         --resource-group ${{ vars.AZ_APPS_RG }} \
-                        --docker-custom-image-name asia-docker.pkg.dev/${{ secrets.GCP_SHRD_PROJECT }}/${{ secrets.GCP_IMAGE_REPOSITORY }}/${{ vars.AZ_AE_APP_NAME }}:${IMAGE_TAG}
+                        --container-image-name asia-docker.pkg.dev/${{ secrets.GCP_SHRD_PROJECT }}/${{ secrets.GCP_IMAGE_REPOSITORY }}/${{ vars.AZ_AE_APP_NAME }}:${IMAGE_TAG}
                     
             -   name: Restart UAE Web App
                 run: |        
@@ -201,7 +201,7 @@ jobs:
                     az webapp config container set \
                         --name ${{ vars.AZ_IN_APP_NAME }} \
                         --resource-group ${{ vars.AZ_APPS_RG }} \
-                        --docker-custom-image-name asia-docker.pkg.dev/${{ secrets.GCP_SHRD_PROJECT }}/${{ secrets.GCP_IMAGE_REPOSITORY }}/${{ vars.AZ_IN_APP_NAME }}:${IMAGE_TAG}
+                        --container-image-name asia-docker.pkg.dev/${{ secrets.GCP_SHRD_PROJECT }}/${{ secrets.GCP_IMAGE_REPOSITORY }}/${{ vars.AZ_IN_APP_NAME }}:${IMAGE_TAG}
                     
             -   name: Restart IN Web App
                 run: |        
