@@ -64,11 +64,8 @@ function isTokenExpired(token: string): boolean {
   return expirationTime <= currentTime + fiveMinutesInMs;
 }
 
-<<<<<<< HEAD
-=======
 // Temporary cache to store tokens between authorize() and JWT callback
 // Key: userId, Value: { accessToken, refreshToken }
->>>>>>> d86652f4e9a5cc0633db23b0208cead2193e3536
 const requiredEnvVars = {
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
